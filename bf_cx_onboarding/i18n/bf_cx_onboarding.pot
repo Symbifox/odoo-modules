@@ -1,0 +1,117 @@
+# Translation template for Expérience client : panneau de mise en route.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_onboarding 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,done_text:bf_cx_onboarding.bf_onb_step_cadence
+msgid "Cadence configured"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,done_text:bf_cx_onboarding.bf_onb_step_complaint_team
+msgid "Complaints team set up"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,title:bf_cx_onboarding.bf_onb_step_program
+msgid "Create a program"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding,name:bf_cx_onboarding.bf_onboarding_panel
+msgid "Customer experience"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,done_text:bf_cx_onboarding.bf_onb_step_wave
+msgid "First wave sent"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,title:bf_cx_onboarding.bf_onb_step_wave
+msgid "Launch a first wave"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,step_image_alt:bf_cx_onboarding.bf_onb_step_cadence
+#: model:onboarding.onboarding.step,step_image_alt:bf_cx_onboarding.bf_onb_step_complaint_team
+#: model:onboarding.onboarding.step,step_image_alt:bf_cx_onboarding.bf_onb_step_program
+#: model:onboarding.onboarding.step,step_image_alt:bf_cx_onboarding.bf_onb_step_wave
+msgid "Onboarding Step Image"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,button_text:bf_cx_onboarding.bf_onb_step_program
+msgid "Open Programs"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,button_text:bf_cx_onboarding.bf_onb_step_cadence
+msgid "Open Settings"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,button_text:bf_cx_onboarding.bf_onb_step_complaint_team
+msgid "Open Users"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,button_text:bf_cx_onboarding.bf_onb_step_wave
+msgid "Open Waves"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,done_text:bf_cx_onboarding.bf_onb_step_program
+msgid "Program created"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,title:bf_cx_onboarding.bf_onb_step_complaint_team
+msgid "Set up the Complaints team"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,title:bf_cx_onboarding.bf_onb_step_cadence
+msgid "Set up the cadence"
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,description:bf_cx_onboarding.bf_onb_step_complaint_team
+msgid ""
+"[action:base.action_res_users] Add your colleagues to the Customer "
+"experience groups (user or manager) and set the complaint acknowledgement "
+"delay in the settings."
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,description:bf_cx_onboarding.bf_onb_step_program
+msgid ""
+"[action:bf_cx.action_cx_program] Create a measurement program (relationship "
+"NPS, transactional CSAT or continuous pulse) linked to its Odoo survey."
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,description:bf_cx_onboarding.bf_onb_step_cadence
+msgid ""
+"[action:bf_cx.action_cx_settings] Set the global over-solicitation guard "
+"and, if needed, each program's own minimum cadence (common practice: 90 days"
+" for a relationship NPS)."
+msgstr ""
+
+#. module: bf_cx_onboarding
+#: model:onboarding.onboarding.step,description:bf_cx_onboarding.bf_onb_step_wave
+msgid ""
+"[action:bf_cx.action_cx_wave] Build a wave of recipients, then send the "
+"invitations: the answers feed the feedback register automatically."
+msgstr ""

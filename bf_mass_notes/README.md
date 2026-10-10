@@ -1,6 +1,6 @@
 # bf_mass_notes
 
-Adds a contextual **list-view Action** — *"Ajouter une note (en lot)"* — to every
+Adds a contextual **list-view Action** — *"Add a note (in bulk)"* — to every
 chatter-enabled model. Select several records, open the **Action** menu, type a note
 once, and it is posted to each selected record's chatter in a single step.
 
@@ -30,7 +30,7 @@ No other dependency — the module is installable standalone.
 
 ## UX
 
-- **Action ▸ Ajouter une note (en lot)** in the list view of any chatter model
+- **Action ▸ Add a note (in bulk)** in the list view of any chatter model
   (Tasks, CRM leads, Contacts, Helpdesk tickets, Invoices, Sales orders, …).
 - The wizard shows the target model and the number of selected records.
 - **Type** toggle:
@@ -57,3 +57,7 @@ bf_mass_notes/
 The Action is bound to **all** concrete `mail.thread` models present at install time —
 this can be a few dozen bindings on a typical database. This is intentional, so the
 feature is available from every chatter-bearing list view.
+
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The **Add a note (in bulk)** action carries its name in every language installed when the module is installed or upgraded: the install hook writes them, since no catalogue reaches records it creates. The wizard window is titled in the user's language. On upgrade, actions still carrying the delivered French name are renamed.

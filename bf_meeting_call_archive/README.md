@@ -19,6 +19,10 @@ Auto-installs when `bf_meeting` **and** `bf_sms_archive` are both installed.
 
 `bf_meeting`, `bf_sms_archive`.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The linked-reports window is titled in the user's language.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

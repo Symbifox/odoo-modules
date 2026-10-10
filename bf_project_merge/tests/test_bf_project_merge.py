@@ -37,11 +37,12 @@ class TestBfProjectTaskMerge(TransactionCase):
             vals["parent_id"] = parent.id
         return self.Message.create(vals)
 
-    def _merge_into(self, dst, *sources):
+    def _merge_into(self, dst, *sources, lang="en_US"):
         rs = dst
         for t in sources:
             rs |= t
-        wizard = self.env["bf.task.merge.wizard"].create(
+        # The breadcrumbs are written in the language of whoever merges.
+        wizard = self.env["bf.task.merge.wizard"].with_context(lang=lang).create(
             {
                 "source_task_ids": [(6, 0, rs.ids)],
                 "target_mode": "existing",
@@ -119,12 +120,18 @@ class TestBfProjectTaskMerge(TransactionCase):
     def test_tombstone_note_stays_on_source(self):
         self._merge_into(self.dst, self.src)
         bodies = " ".join(self.src.message_ids.mapped("body") or [])
-        self.assertIn("regroupée dans", bodies.lower())
+        self.assertIn("merged into", bodies.lower())
 
     def test_destination_gets_summary_note(self):
         self._merge_into(self.dst, self.src)
         bodies = " ".join(self.dst.message_ids.mapped("body") or [])
-        self.assertIn("regroupées ici", bodies.lower())
+        self.assertIn("tasks merged here", bodies.lower())
+
+    def test_breadcrumbs_in_french(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self._merge_into(self.dst, self.src, lang="fr_CA")
+        self.assertIn("regroupée dans", " ".join(self.src.message_ids.mapped("body")).lower())
+        self.assertIn("regroupées ici", " ".join(self.dst.message_ids.mapped("body")).lower())
 
     def test_parent_id_preserved_when_parent_stays(self):
         parent = self._msg(self.src, "notification", "<p>parent système</p>")

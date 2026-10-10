@@ -92,3 +92,7 @@ a version bump.
 31 tests, `--test-tags '/bf_expense_tip'`. Four of them exist only to prove
 the module is invisible when the tip is zero: the amounts, the entry and both
 payment modes must match core exactly.
+
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

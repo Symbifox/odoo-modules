@@ -1,0 +1,173 @@
+# Translation of Symbifox : Regroupement de tâches - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_project_merge 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__assignee_ids
+msgid "Assignees"
+msgstr "Personnes assignées"
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_project_merge.task_merge_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "Choose at least two tasks to merge."
+msgstr "Choisissez au moins deux tâches à regrouper."
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__target_mode
+msgid "Destination"
+msgstr "Destination"
+
+#. module: bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_project_merge.task_merge_wizard_form
+msgid "Destination task"
+msgstr "Tâche de destination"
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "Enter the title and the project of the new task."
+msgstr "Indiquez le titre et le projet de la nouvelle tâche."
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_project_merge
+#: model:ir.model.fields.selection,name:bf_project_merge.selection__bf_task_merge_wizard__target_mode__new
+msgid "Into a new task"
+msgstr "Vers une nouvelle tâche"
+
+#. module: bf_project_merge
+#: model:ir.model.fields.selection,name:bf_project_merge.selection__bf_task_merge_wizard__target_mode__existing
+msgid "Into an existing task"
+msgstr "Vers une tâche existante"
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_project_merge
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_project_merge.task_merge_wizard_form
+msgid "Merge"
+msgstr "Regrouper"
+
+#. module: bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_project_merge.task_merge_wizard_form
+msgid "Merge tasks"
+msgstr "Regrouper des tâches"
+
+#. module: bf_project_merge
+#: model:ir.actions.act_window,name:bf_project_merge.action_task_merge_wizard
+msgid "Merge the tasks"
+msgstr "Regrouper les tâches"
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "Merged into %s."
+msgstr "Regroupée dans %s."
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__new_task_name
+msgid "New task title"
+msgstr "Titre de la nouvelle tâche"
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__new_project_id
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "Select the task to keep."
+msgstr "Sélectionnez la tâche à conserver."
+
+#. module: bf_project_merge
+#: model:ir.model,name:bf_project_merge.model_bf_task_merge_wizard
+msgid "Task merge wizard"
+msgstr "Assistant de regroupement de tâches"
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__target_task_id
+msgid "Task to keep"
+msgstr "Tâche conservée"
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "Tasks merged here: %s."
+msgstr "Tâches regroupées ici : %s."
+
+#. module: bf_project_merge
+#: model:ir.model.fields,field_description:bf_project_merge.field_bf_task_merge_wizard__source_task_ids
+msgid "Tasks to merge"
+msgstr "Tâches à regrouper"
+
+#. module: bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_project_merge.task_merge_wizard_form
+msgid ""
+"The conversation, activities, attachments, timesheets and dependencies of "
+"the other tasks will be moved to the task you keep; those tasks will then be"
+" archived. System messages (stage changes, field tracking) stay on the "
+"original task as a trace."
+msgstr ""
+"La conversation, les activités, les pièces jointes, les heures et\n"
+"                    les dépendances des autres tâches seront déplacées vers la tâche\n"
+"                    conservée ; ces tâches seront ensuite archivées. Les messages\n"
+"                    système (changements d'étape, suivi de champs) restent sur la tâche\n"
+"                    d'origine comme trace."
+
+#. module: bf_project_merge
+#. odoo-python
+#: code:addons/bf_project_merge/wizard/task_merge_wizard.py:0
+msgid "The destination cannot be the only selected task."
+msgstr "La destination ne peut pas être la seule tâche sélectionnée."

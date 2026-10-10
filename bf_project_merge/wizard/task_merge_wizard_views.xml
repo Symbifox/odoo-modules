@@ -4,7 +4,7 @@
         <field name="name">bf.task.merge.wizard.form</field>
         <field name="model">bf.task.merge.wizard</field>
         <field name="arch" type="xml">
-            <form string="Regrouper des tâches">
+            <form string="Merge tasks">
                 <field name="target_mode" widget="radio" options="{'horizontal': True}" />
                 <group>
                     <field
@@ -14,7 +14,7 @@
                     />
                     <field name="assignee_ids" widget="many2many_tags_avatar" />
                 </group>
-                <group string="Tâche de destination">
+                <group string="Destination task">
                     <field
                         name="target_task_id"
                         invisible="target_mode != 'existing'"
@@ -33,27 +33,23 @@
                     />
                 </group>
                 <p class="text-muted">
-                    La conversation, les activités, les pièces jointes, les heures et
-                    les dépendances des autres tâches seront déplacées vers la tâche
-                    conservée ; ces tâches seront ensuite archivées. Les messages
-                    système (changements d'étape, suivi de champs) restent sur la tâche
-                    d'origine comme trace.
+                    The conversation, activities, attachments, timesheets and dependencies of the other tasks will be moved to the task you keep; those tasks will then be archived. System messages (stage changes, field tracking) stay on the original task as a trace.
                 </p>
                 <footer>
                     <button
                         name="action_merge"
                         type="object"
-                        string="Regrouper"
+                        string="Merge"
                         class="btn-primary"
                     />
-                    <button special="cancel" string="Annuler" class="btn-secondary" />
+                    <button special="cancel" string="Cancel" class="btn-secondary" />
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_task_merge_wizard" model="ir.actions.act_window">
-        <field name="name">Regrouper les tâches</field>
+        <field name="name">Merge the tasks</field>
         <field name="res_model">bf.task.merge.wizard</field>
         <field name="view_mode">form</field>
         <field name="binding_model_id" ref="project.model_project_task" />

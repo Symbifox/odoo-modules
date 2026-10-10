@@ -7,16 +7,16 @@ class ResConfigSettings(models.TransientModel):
 
     bf_cx_loss_program_id = fields.Many2one(
         "bf.cx.program",
-        string="Programme post-perte",
+        string="Lost-deal program",
         config_parameter="bf_cx.loss_program_id",
-        help="Programme dont le sondage est envoyé au contact quand une "
-             "opportunité est marquée perdue. Vide = aucun envoi.",
+        help="Program whose survey is sent to the contact when an "
+             "opportunity is marked lost. Empty = nothing is sent.",
     )
     bf_cx_won_program_id = fields.Many2one(
         "bf.cx.program",
-        string="Programme d'enrôlement au gagné",
+        string="Won-deal enrollment program",
         config_parameter="bf_cx.won_program_id",
-        help="À la signature d'une opportunité, le client est ajouté à la "
-             "prochaine vague BROUILLON de ce programme (aucun envoi "
-             "immédiat). Vide = désactivé.",
+        help="When an opportunity is won, the customer is added to the "
+             "next DRAFT wave of this program (nothing is sent right "
+             "away). Empty = disabled.",
     )

@@ -6,9 +6,9 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_cx_sign_feedback = fields.Boolean(
-        string="Feedback après signature",
+        string="Feedback after a signature",
         config_parameter="bf_cx.sign_feedback",
-        help="Quand une demande de signature est complétée, envoyer une "
-             "demande de feedback à 3 émojis au signataire principal "
-             "(le garde-fou anti-sursollicitation s'applique).",
+        help="When a signature request is completed, send a 3-emoji "
+             "feedback request to the main signer (the over-solicitation "
+             "guard applies).",
     )

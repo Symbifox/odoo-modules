@@ -1,0 +1,135 @@
+# Translation of BF Activités - Lien Calendrier - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_activity_calendar_link 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_schedule_view_form_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_view_form_popup_calendar_link
+msgid ""
+"<span class=\"badge text-bg-info\" invisible=\"calendar_event_sync_source != 'nextcloud'\">\n"
+"                            Nextcloud\n"
+"                        </span>"
+msgstr ""
+"<span class=\"badge text-bg-info\" invisible=\"calendar_event_sync_source != 'nextcloud'\">\n"
+"                            Nextcloud\n"
+"                        </span>"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_view_form_popup_calendar_link
+msgid "<strong>Attendees: </strong>"
+msgstr "<strong>Participants : </strong>"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_schedule_view_form_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_view_form_popup_calendar_link
+msgid "<strong>Location: </strong>"
+msgstr "<strong>Lieu : </strong>"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_schedule_view_form_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_view_form_popup_calendar_link
+msgid "<strong>When: </strong>"
+msgstr "<strong>Quand : </strong>"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.view_calendar_event_form_activity_link
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_id
+msgid "Calendar event"
+msgstr "Événement calendrier"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.view_calendar_event_form_activity_link
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_stop
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity__calendar_event_attendee_names
+msgid "Event attendees"
+msgstr "Participants"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity__calendar_event_start
+msgid "Event start"
+msgstr "Début événement"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_id
+msgid "Link this activity to an existing calendar event"
+msgstr "Lier cette activité à un événement calendrier existant"
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_schedule_view_form_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.mail_activity_view_form_popup_calendar_link
+msgid "Link to a calendar event..."
+msgstr "Lier à un événement calendrier..."
+
+#. module: bf_activity_calendar_link
+#: model_terms:ir.ui.view,arch_db:bf_activity_calendar_link.view_calendar_event_form_activity_link
+msgid "Linked activities"
+msgstr "Activités liées"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity__calendar_event_location
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_location
+msgid "Location"
+msgstr "Lieu"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity__calendar_event_sync_source
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_sync_source
+msgid "Origin of this calendar event"
+msgstr "Origine de cet événement du calendrier"
+
+#. module: bf_activity_calendar_link
+#. odoo-python
+#: code:addons/bf_activity_calendar_link/models/calendar_event.py:0
+msgid "Schedule an activity"
+msgstr "Planifier une activité"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity__calendar_event_start
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_start
+msgid "Start date of an event, without time for full days events"
+msgstr ""
+"Date de début d'un événement, sans heure pour les événements durant toute la"
+" journée"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,help:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_stop
+msgid "Stop date of an event, without time for full days events"
+msgstr ""
+"Date de fin d'événement, sans heure pour les événements durant toute la "
+"journée"
+
+#. module: bf_activity_calendar_link
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity__calendar_event_sync_source
+#: model:ir.model.fields,field_description:bf_activity_calendar_link.field_mail_activity_schedule__calendar_event_sync_source
+msgid "Sync source"
+msgstr "Source sync"

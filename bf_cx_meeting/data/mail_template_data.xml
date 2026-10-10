@@ -4,12 +4,13 @@
         <!-- 3-emoji rating request after a meeting report. Same branded
              shell as the bf_cx emails; the access token creates the
              rating.rating carrier and the /rate links are absolutized at
-             send time. English is applied per-language by the module hook
-             (shared bf_cx i18n machinery). -->
+             send time. Written in English; i18n/fr_CA.po
+             carries the French, and the template is rendered in the
+             contact's language. -->
         <record id="mail_template_meeting_rating" model="mail.template">
-            <field name="name">Expérience client : feedback post-rencontre</field>
+            <field name="name">Customer experience: post-meeting feedback</field>
             <field name="model_id" ref="bf_meeting.model_meeting_record"/>
-            <field name="subject">Comment s'est passée notre rencontre ?</field>
+            <field name="subject">How did our meeting go?</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
@@ -29,7 +30,7 @@
                                 <img t-att-src="'/brand/logo/%d' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                             </td>
                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                Votre avis
+                                Your feedback
                             </td>
                         </tr></tbody></table>
                     </td>
@@ -38,35 +39,32 @@
                 <tr>
                     <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Bonjour <t t-out="object.partner_id.name or ''"/>,
+                            Hello <t t-out="object.partner_id.name or ''"/>,
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Nous venons de vous transmettre le compte rendu de
-                            notre rencontre. En un clic, comment évaluez-vous
-                            nos services jusqu'ici&#160;?
+                            We have just sent you the report from our meeting. In one click, how would you rate our services so far?
                         </p>
                         <table role="presentation" style="margin:24px auto; text-align:center;">
                             <tbody><tr>
                                 <td style="padding:0 16px;">
                                     <a t-attf-href="/rate/{{ access_token }}/5">
-                                        <img alt="Satisfait" src="/rating/static/src/img/rating_5.png" title="Satisfait"/>
+                                        <img alt="Satisfied" src="/rating/static/src/img/rating_5.png" title="Satisfied"/>
                                     </a>
                                 </td>
                                 <td style="padding:0 16px;">
                                     <a t-attf-href="/rate/{{ access_token }}/3">
-                                        <img alt="Correct" src="/rating/static/src/img/rating_3.png" title="Correct"/>
+                                        <img alt="Okay" src="/rating/static/src/img/rating_3.png" title="Okay"/>
                                     </a>
                                 </td>
                                 <td style="padding:0 16px;">
                                     <a t-attf-href="/rate/{{ access_token }}/1">
-                                        <img alt="Insatisfait" src="/rating/static/src/img/rating_1.png" title="Insatisfait"/>
+                                        <img alt="Dissatisfied" src="/rating/static/src/img/rating_1.png" title="Dissatisfied"/>
                                     </a>
                                 </td>
                             </tr></tbody>
                         </table>
                         <p style="font-size:13px; color:#6B7280; margin:0;">
-                            Un commentaire libre peut être ajouté après le
-                            clic. Merci&#160;!
+                            You can add a free-form comment after clicking. Thank you!
                         </p>
                     </td>
                 </tr>
@@ -74,8 +72,8 @@
                     <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
                         <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
                             <t t-if="company.name"><t t-out="company.name"/><br/></t>
-                            Vous préférez ne plus recevoir de demandes d'avis&#160;?
-                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Me désabonner</a>.
+                            Prefer not to receive feedback requests?
+                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Unsubscribe</a>.
                         </p>
                     </td>
                 </tr>

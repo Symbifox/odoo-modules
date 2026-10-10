@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
-                <setting string="Invitations de sondage par SMS"
-                         help="Bouton « Inviter par SMS » sur les vagues : envoie le lien de sondage aux destinataires sans adresse courriel mais avec un numéro (maximum 5 SMS par clic, action manuelle seulement, garde-fou anti-sursollicitation appliqué).">
+                <setting string="Survey invitations by SMS"
+                         help="&quot;Invite by SMS&quot; button on waves: sends the survey link to recipients who have no email address but a phone number (at most 5 SMS per click, manual action only, over-solicitation guard applied).">
                     <field name="bf_cx_sms_invite"/>
                     <div class="content-group" invisible="not bf_cx_sms_invite">
                         <field name="bf_cx_sms_line_id" class="o_light_label"/>

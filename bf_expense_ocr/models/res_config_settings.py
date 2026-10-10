@@ -7,6 +7,6 @@ class ResConfigSettings(models.TransientModel):
 
     expense_ocr_auto = fields.Boolean(
         related="company_id.expense_ocr_auto",
-        string="Lire les reçus au téléversement",
+        string="Read receipts on upload",
         readonly=False,
     )

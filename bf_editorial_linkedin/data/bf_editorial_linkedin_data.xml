@@ -13,7 +13,7 @@
         </record>
 
         <record id="cron_warn_token_expiry" model="ir.cron">
-            <field name="name">Atelier éditorial : jeton LinkedIn qui approche de sa fin</field>
+            <field name="name">Editorial workshop: LinkedIn token about to expire</field>
             <field name="model_id" ref="bf_editorial_social.model_bf_social_channel"/>
             <field name="state">code</field>
             <field name="code">model._cron_warn_linkedin_expiry()</field>

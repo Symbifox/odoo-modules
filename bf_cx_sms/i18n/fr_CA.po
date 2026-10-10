@@ -1,0 +1,173 @@
+# Translation of Expérience client : invitation de sondage par SMS - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_sms 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.res_config_settings_view_form
+msgid ""
+"\"Invite by SMS\" button on waves: sends the survey link to recipients who "
+"have no email address but a phone number (at most 5 SMS per click, manual "
+"action only, over-solicitation guard applied)."
+msgstr ""
+"Bouton « Inviter par SMS » sur les vagues : envoie le lien de sondage aux "
+"destinataires sans adresse courriel mais avec un numéro (maximum 5 SMS par "
+"clic, action manuelle seulement, garde-fou anti-sursollicitation appliqué)."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "%(count)d invitation(s) sent by SMS (line \"%(line)s\")."
+msgstr "%(count)d invitation(s) envoyée(s) par SMS (ligne « %(line)s »)."
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,help:bf_cx_sms.field_res_config_settings__bf_cx_sms_invite
+msgid ""
+"Enables the \"Invite by SMS\" button on waves to reach recipients without an"
+" email address. Manual action only (no scheduled job), at most 5 SMS per "
+"click."
+msgstr ""
+"Active le bouton « Inviter par SMS » sur les vagues d'envoi pour rejoindre "
+"les destinataires sans adresse courriel. Action manuelle seulement (aucun "
+"cron), maximum 5 SMS par clic."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Held back by the guards (recent contact, do-not-contact list, collections): "
+"%s"
+msgstr ""
+"Reportés par les garde-fous (sollicitation récente, liste à ne pas "
+"contacter, recouvrement) : %s"
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Hello %(name)s, your feedback matters to us. Please answer our short survey "
+"(2 minutes): %(url)s Thank you!"
+msgstr ""
+"Bonjour %(name)s, votre avis compte pour nous. Répondez à notre court "
+"sondage (2 minutes) : %(url)s Merci !"
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.view_cx_wave_form
+msgid "Invite by SMS"
+msgstr "Inviter par SMS"
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Limit of %(cap)d SMS per click reached: %(count)d recipient(s) waiting. "
+"Click the button again later (daily cap of the SMS provider)."
+msgstr ""
+"Limite de %(cap)d SMS par clic atteinte : %(count)d destinataire(s) en "
+"attente. Relancer le bouton plus tard (plafond quotidien du fournisseur "
+"SMS)."
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,help:bf_cx_sms.field_res_config_settings__bf_cx_sms_line_id
+msgid ""
+"Line used for SMS invitations. Empty = first active line (the default line "
+"is preferred)."
+msgstr ""
+"Ligne utilisée pour les invitations par SMS. Vide = première ligne active "
+"(la ligne par défaut est privilégiée)."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No active SMS line. Set up a sending line in the Customer experience "
+"settings or in the SMS module."
+msgstr ""
+"Aucune ligne SMS active. Configurez une ligne d'envoi dans les paramètres "
+"Expérience client ou dans le module SMS."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "No new recipient to invite by SMS."
+msgstr "Aucun nouveau destinataire à inviter par SMS."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No recipient to invite by SMS: %s contacted recently (over-solicitation "
+"guard)."
+msgstr ""
+"Aucun destinataire à inviter par SMS : %s sollicité(s) récemment (garde-fou "
+"anti-sursollicitation)."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No recipient without an email address but with a phone number to invite by "
+"SMS."
+msgstr ""
+"Aucun destinataire sans courriel avec un numéro de téléphone à inviter par "
+"SMS."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"SMS invitations are disabled. Enable \"Survey invitations by SMS\" in the "
+"Customer experience settings."
+msgstr ""
+"Les invitations par SMS sont désactivées. Activez « Invitations de sondage "
+"par SMS » dans les paramètres Expérience client."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "SMS sending failed (see the server log): %s"
+msgstr "Échec d'envoi SMS (voir le journal du serveur) : %s"
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.view_cx_wave_form
+msgid ""
+"Send the survey link by SMS to recipients without an email address (at most "
+"5 SMS per click)?"
+msgstr ""
+"Envoyer par SMS le lien du sondage aux destinataires sans adresse courriel "
+"(maximum 5 SMS par clic) ?"
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,field_description:bf_cx_sms.field_res_config_settings__bf_cx_sms_line_id
+msgid "Sending SMS line"
+msgstr "Ligne SMS d'envoi"
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,field_description:bf_cx_sms.field_res_config_settings__bf_cx_sms_invite
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.res_config_settings_view_form
+msgid "Survey invitations by SMS"
+msgstr "Invitations de sondage par SMS"
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "The \"%s\" program has no survey."
+msgstr "Le programme « %s » n'a pas de sondage."
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "The \"%s\" wave is closed."
+msgstr "La vague « %s » est fermée."

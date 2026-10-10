@@ -8,3 +8,7 @@ channel) in the unified register. No outbound messages. Reads are bounded
 to the user's commercial partner (strict-domain controller plus read-only
 ACL plus a portal record rule); on create, only the comment text comes
 from the user, everything else is forced server-side.
+
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

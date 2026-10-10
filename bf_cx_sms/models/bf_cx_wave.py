@@ -38,9 +38,9 @@ class BfCxWave(models.Model):
         """
         if not param_is_true(self.env, "bf_cx.sms_invite", default=False):
             raise UserError(
-                _("Les invitations par SMS sont désactivées. Activez "
-                  "« Invitations de sondage par SMS » dans les paramètres "
-                  "Expérience client.")
+                _("SMS invitations are disabled. Enable \"Survey "
+                  "invitations by SMS\" in the Customer experience "
+                  "settings.")
             )
         line = self._bf_cx_sms_get_line()
         base = (
@@ -49,11 +49,11 @@ class BfCxWave(models.Model):
         ).rstrip("/")
         for wave in self:
             if wave.state == "closed":
-                raise UserError(_("La vague « %s » est fermée.") % wave.name)
+                raise UserError(_("The \"%s\" wave is closed.") % wave.name)
             program = wave.program_id
             if not program.survey_id:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de sondage.") % program.name
+                    _("The \"%s\" program has no survey.") % program.name
                 )
             already = wave.user_input_ids.partner_id
             candidates = (wave.partner_ids - already).filtered(
@@ -72,17 +72,17 @@ class BfCxWave(models.Model):
                 if wave.state == "draft":
                     if cooled:
                         raise UserError(
-                            _("Aucun destinataire à inviter par SMS : %s "
-                              "sollicité(s) récemment (garde-fou "
-                              "anti-sursollicitation).")
+                            _("No recipient to invite by SMS: %s "
+                              "contacted recently (over-solicitation "
+                              "guard).")
                             % ", ".join(cooled.mapped("display_name"))
                         )
                     raise UserError(
-                        _("Aucun destinataire sans courriel avec un numéro "
-                          "de téléphone à inviter par SMS.")
+                        _("No recipient without an email address but with "
+                          "a phone number to invite by SMS.")
                     )
                 wave.message_post(
-                    body=_("Aucun nouveau destinataire à inviter par SMS.")
+                    body=_("No new recipient to invite by SMS.")
                 )
                 continue
             overflow = candidates[MAX_SMS_PER_CLICK:]
@@ -98,10 +98,13 @@ class BfCxWave(models.Model):
                         deadline=wave.deadline,
                         bf_cx_wave_id=wave.id,
                     )
-                    body = _(
-                        "Bonjour %(name)s, votre avis compte pour nous. "
-                        "Répondez à notre court sondage (2 minutes) : "
-                        "%(url)s Merci !",
+                    # The SMS is read by the recipient: in their language.
+                    body = wave.with_context(
+                        lang=wave._bf_cx_sms_lang(partner)
+                    ).env._(
+                        "Hello %(name)s, your feedback matters to us. Please "
+                        "answer our short survey (2 minutes): %(url)s Thank "
+                        "you!",
                         name=partner.name,
                         url=base + answer.get_start_url(),
                     )
@@ -133,28 +136,26 @@ class BfCxWave(models.Model):
             if sent and program.program_type != "internal":
                 sent._bf_cx_mark_solicited()
             body_lines = [
-                _("%(count)d invitation(s) envoyée(s) par SMS "
-                  "(ligne « %(line)s »).",
+                _("%(count)d invitation(s) sent by SMS (line \"%(line)s\").",
                   count=len(sent),
                   line=line.label)
             ]
             if failed:
                 body_lines.append(
-                    _("Échec d'envoi SMS (voir le journal du serveur) : %s")
+                    _("SMS sending failed (see the server log): %s")
                     % ", ".join(failed.mapped("display_name"))
                 )
             if cooled:
                 body_lines.append(
-                    _("Reportés par les garde-fous (sollicitation récente, "
-                      "liste à ne pas contacter, recouvrement) : %s")
+                    _("Held back by the guards (recent contact, "
+                      "do-not-contact list, collections): %s")
                     % ", ".join(cooled.mapped("display_name"))
                 )
             if overflow:
                 body_lines.append(
-                    _("Limite de %(cap)d SMS par clic atteinte : "
-                      "%(count)d destinataire(s) en attente. Relancer le "
-                      "bouton plus tard (plafond quotidien du fournisseur "
-                      "SMS).",
+                    _("Limit of %(cap)d SMS per click reached: %(count)d "
+                      "recipient(s) waiting. Click the button again later "
+                      "(daily cap of the SMS provider).",
                       cap=MAX_SMS_PER_CLICK,
                       count=len(overflow))
                 )
@@ -188,8 +189,18 @@ class BfCxWave(models.Model):
             )
         if not line:
             raise UserError(
-                _("Aucune ligne SMS active. Configurez une ligne d'envoi "
-                  "dans les paramètres Expérience client ou dans le module "
-                  "SMS.")
+                _("No active SMS line. Set up a sending line in the "
+                  "Customer experience settings or in the SMS module.")
             )
         return line
+
+    def _bf_cx_sms_lang(self, partner):
+        """Language of an SMS invitation: the recipient's, when installed.
+
+        Otherwise the sender's: before the source switched to English, every
+        invitation went out in French, whoever received it.
+        """
+        installed = {code for code, _name in self.env["res.lang"].get_installed()}
+        if partner.lang in installed:
+            return partner.lang
+        return self.env.lang or self.env.user.lang

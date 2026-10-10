@@ -9,24 +9,37 @@ _logger = logging.getLogger(__name__)
 
 class MassNoteWizard(models.TransientModel):
     _name = "bf.mass.note.wizard"
-    _description = "Ajouter une note à plusieurs fils en lot"
+    _description = "Add a note to several threads in bulk"
 
-    model_name = fields.Char(string="Modèle technique", readonly=True)
-    model_label = fields.Char(string="Modèle", readonly=True)
-    record_count = fields.Integer(string="Enregistrements sélectionnés", readonly=True)
-    body = fields.Html(string="Contenu", sanitize_style=True)
+    model_name = fields.Char(string="Technical model", readonly=True)
+    model_label = fields.Char(string="Model", readonly=True)
+    record_count = fields.Integer(string="Selected records", readonly=True)
+    body = fields.Html(string="Content", sanitize_style=True)
     post_type = fields.Selection(
         selection=[
-            ("note", "Note interne (journal)"),
-            ("comment", "Message (notifie les abonnés)"),
+            ("note", "Internal note (log)"),
+            ("comment", "Message (notifies followers)"),
         ],
-        string="Type de publication",
+        string="Post type",
         default="note",
         required=True,
     )
     confirm_message = fields.Boolean(
-        string="Je confirme l'envoi en tant que message aux abonnés de chaque enregistrement",
+        string="I confirm sending this as a message to the followers of "
+               "each record",
     )
+
+    @api.model
+    def action_open_for(self, model_name, record_ids):
+        """Window action of the wizard on a selection (list-view Action menu)."""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Add a note in bulk"),
+            "res_model": self._name,
+            "view_mode": "form",
+            "target": "new",
+            "context": dict(self.env.context, active_model=model_name, active_ids=record_ids),
+        }
 
     @api.model
     def default_get(self, fields_list):
@@ -43,22 +56,22 @@ class MassNoteWizard(models.TransientModel):
     def action_post(self):
         self.ensure_one()
         if is_html_empty(self.body):
-            raise UserError(_("Veuillez saisir le contenu de la note."))
+            raise UserError(_("Please enter the content of the note."))
 
         model = self.env.context.get("active_model") or self.model_name
         active_ids = self.env.context.get("active_ids") or []
         if not model or not active_ids:
-            raise UserError(_("Aucun enregistrement sélectionné."))
+            raise UserError(_("No record selected."))
 
         if self.post_type == "comment" and not self.confirm_message:
             raise UserError(_(
-                "Publier en tant que « Message » notifiera les abonnés de %s "
-                "enregistrement(s). Cochez la case de confirmation pour continuer."
+                "Posting as a \"Message\" will notify the followers of %s "
+                "record(s). Tick the confirmation box to continue."
             ) % len(active_ids))
 
         records = self.env[model].browse(active_ids).exists()
         if not records or not hasattr(records, "message_post"):
-            raise UserError(_("Ce modèle ne gère pas les fils de discussion."))
+            raise UserError(_("This model has no discussion thread."))
 
         subtype = "mail.mt_note" if self.post_type == "note" else "mail.mt_comment"
         posted, failed = 0, 0
@@ -76,14 +89,14 @@ class MassNoteWizard(models.TransientModel):
                     "bf_mass_notes: post failed on %s,%s: %s", model, record.id, exc
                 )
 
-        message = _("%s note(s) publiée(s).") % posted
+        message = _("%s note(s) posted.") % posted
         if failed:
-            message += _(" %s échec(s).") % failed
+            message += _(" %s failed.") % failed
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Notes en lot"),
+                "title": _("Notes in bulk"),
                 "message": message,
                 "type": "success" if not failed else "warning",
                 "next": {"type": "ir.actions.act_window_close"},

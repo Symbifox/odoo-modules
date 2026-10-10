@@ -1,0 +1,77 @@
+# Translation of Expérience client : XP Fox Quest - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_gamification 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields,help:bf_cx_gamification.field_bf_cx_feedback__gamification_xp_awarded
+msgid "Anti-duplicate flag: closed-loop XP is awarded only once per feedback."
+msgstr ""
+"Drapeau anti-double : l'XP de boucle fermée n'est accordé qu'une seule fois "
+"par feedback."
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields,help:bf_cx_gamification.field_bf_cx_complaint__gamification_xp_awarded
+msgid "Anti-duplicate flag: resolution XP is awarded only once per complaint."
+msgstr ""
+"Drapeau anti-double : l'XP de résolution n'est accordé qu'une seule fois par"
+" plainte."
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_rule__source__cx_feedback
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_transaction__source__cx_feedback
+msgid "CX closed loop"
+msgstr "Boucle fermée CX"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_transaction__reference__bf_cx_feedback
+msgid "CX feedback"
+msgstr "Feedback CX"
+
+#. module: bf_cx_gamification
+#. odoo-python
+#: code:addons/bf_cx_gamification/models/bf_cx_feedback.py:0
+msgid "Closed loop completed: %s"
+msgstr "Boucle fermée complétée : %s"
+
+#. module: bf_cx_gamification
+#. odoo-python
+#: code:addons/bf_cx_gamification/models/bf_cx_complaint.py:0
+msgid "Complaint resolved: %s"
+msgstr "Plainte résolue : %s"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_rule__source__cx_complaint
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_transaction__reference__bf_cx_complaint
+#: model:ir.model.fields.selection,name:bf_cx_gamification.selection__bf_gamification_xp_transaction__source__cx_complaint
+msgid "Customer complaint"
+msgstr "Plainte client"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields,field_description:bf_cx_gamification.field_bf_cx_complaint__gamification_xp_awarded
+#: model:ir.model.fields,field_description:bf_cx_gamification.field_bf_cx_feedback__gamification_xp_awarded
+msgid "Fox Quest XP awarded"
+msgstr "XP Fox Quest accordé"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields,field_description:bf_cx_gamification.field_bf_gamification_xp_transaction__reference
+msgid "Référence"
+msgstr "Référence"
+
+#. module: bf_cx_gamification
+#: model:ir.model.fields,field_description:bf_cx_gamification.field_bf_gamification_xp_rule__source
+#: model:ir.model.fields,field_description:bf_cx_gamification.field_bf_gamification_xp_transaction__source
+msgid "Source"
+msgstr "Source"

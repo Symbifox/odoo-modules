@@ -50,7 +50,7 @@ PREAVIS_JOURS = 7
 class LinkedInConnector(models.AbstractModel):
     _name = "bf.social.connector.linkedin"
     _inherit = "bf.social.connector"
-    _description = "Connecteur LinkedIn"
+    _description = "LinkedIn connector"
 
     _network_label = "LinkedIn"
 
@@ -74,8 +74,8 @@ class LinkedInConnector(models.AbstractModel):
         jeton = channel._decrypt_secret()
         if not jeton:
             raise UserError(_(
-                "Canal « %s » : aucun jeton d'accès. Collez celui que"
-                " l'application LinkedIn a délivré.", channel.name,
+                "Channel \"%s\": no access token. Paste the one the "
+                "LinkedIn app issued.", channel.name,
             ))
         entetes = {
             "Authorization": "Bearer %s" % jeton,
@@ -93,7 +93,7 @@ class LinkedInConnector(models.AbstractModel):
         l'épreuve sans application LinkedIn, en ne remplaçant qu'une méthode.
         """
         if not requests:
-            raise UserError(_("La bibliothèque « requests » n'est pas installée."))
+            raise UserError(_("The \"requests\" library is not installed."))
         return requests.request(
             methode, "%s%s" % (API, chemin),
             headers=self._entetes(channel, avec_version=avec_version),
@@ -107,21 +107,21 @@ class LinkedInConnector(models.AbstractModel):
         except UserError as exc:
             return False, str(exc)
         except Exception as exc:                        # noqa: BLE001
-            return False, _("Erreur réseau : %s", str(exc)[:180])
+            return False, _("Network error: %s", str(exc)[:180])
 
         if r.status_code == 401:
             return False, _(
-                "LinkedIn refuse le jeton (401). Un jeton dure 60 jours :"
-                " celui-ci est probablement expiré ou révoqué."
+                "LinkedIn rejects the token (401). A token lasts 60 days: "
+                "this one has probably expired or been revoked."
             )
         if r.status_code == 403:
             return False, _(
-                "LinkedIn accepte le jeton mais refuse la portée (403). Il"
-                " manque « openid » et « profile » sur l'application."
+                "LinkedIn accepts the token but refuses the scope (403). "
+                "The app is missing \"openid\" and \"profile\"."
             )
         if r.status_code != 200:
             return False, _(
-                "LinkedIn répond HTTP %(code)s : %(corps)s",
+                "LinkedIn returned HTTP %(code)s: %(corps)s",
                 code=r.status_code, corps=(r.text or "")[:200],
             )
 
@@ -129,19 +129,19 @@ class LinkedInConnector(models.AbstractModel):
         sujet = donnees.get("sub")
         if not sujet:
             return False, _(
-                "La réponse ne porte pas d'identifiant de membre. La portée"
-                " « openid » manque probablement."
+                "The response carries no member identifier. The "
+                "\"openid\" scope is probably missing."
             )
         urn = "urn:li:person:%s" % sujet
         if channel.linkedin_member_urn != urn:
             channel.sudo().write({"linkedin_member_urn": urn})
 
-        message = _("Jeton valide pour %(nom)s (%(urn)s).",
+        message = _("Valid token for %(nom)s (%(urn)s).",
                     nom=donnees.get("name") or "?", urn=urn)
         reste = channel._linkedin_days_left()
         if reste is not None:
             message = "%s %s" % (message, _(
-                "Expiration déclarée dans %s jour(s).", reste,
+                "Declared expiry in %s day(s).", reste,
             ))
         return True, message
 
@@ -185,11 +185,11 @@ class LinkedInConnector(models.AbstractModel):
             # le pose, mais personne ne devrait avoir à la lancer d'abord.
             ok, message = self._validate_credentials(canal)
             if not ok:
-                raise UserError(_("LinkedIn : %s", message))
+                raise UserError(_("LinkedIn: %s", message))
         texte = post.body or ""
         if len(texte) > LIMITE_TEXTE:
             raise UserError(_(
-                "Texte de %(n)s caractères pour une limite de %(l)s.",
+                "The text is %(n)s characters long; the limit is %(l)s.",
                 n=len(texte), l=LIMITE_TEXTE,
             ))
 
@@ -199,7 +199,7 @@ class LinkedInConnector(models.AbstractModel):
         )
         if reponse.status_code not in (200, 201):
             raise UserError(_(
-                "LinkedIn refuse le billet (HTTP %(code)s) : %(corps)s",
+                "LinkedIn rejects the post (HTTP %(code)s): %(corps)s",
                 code=reponse.status_code, corps=(reponse.text or "")[:300],
             ))
 
@@ -208,10 +208,10 @@ class LinkedInConnector(models.AbstractModel):
         urn = (reponse.headers or {}).get("x-restli-id")
         if not urn:
             raise UserError(_(
-                "LinkedIn a accepté le billet (HTTP %(code)s) sans rendre son"
-                " identifiant dans l'en-tête « x-restli-id ». Le billet est"
-                " probablement en ligne : vérifiez le fil avant de relancer,"
-                " sinon vous le publierez deux fois.",
+                "LinkedIn accepted the post (HTTP %(code)s) without "
+                "returning its identifier in the \"x-restli-id\" header. "
+                "The post is probably online: check the feed before "
+                "retrying, or you will publish it twice.",
                 code=reponse.status_code,
             ))
         return {

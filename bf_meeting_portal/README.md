@@ -147,6 +147,10 @@ No configuration is required. The scope depends entirely on
 `report_recipient_ids`: on a database whose history was sent without populating
 that field, the portal will only cover future sends.
 
+## Languages (v18.0.2.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Attendance statuses and the PDF file name follow the visitor's language.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

@@ -8,9 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//header/button[@name='action_close']" position="before">
                 <button name="action_send_sms_invites" type="object"
-                        string="Inviter par SMS"
+                        string="Invite by SMS"
                         invisible="state not in ('draft', 'sent')"
-                        confirm="Envoyer par SMS le lien du sondage aux destinataires sans adresse courriel (maximum 5 SMS par clic) ?"/>
+                        confirm="Send the survey link by SMS to recipients without an email address (at most 5 SMS per click)?"/>
             </xpath>
         </field>
     </record>

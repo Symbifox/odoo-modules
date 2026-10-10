@@ -1,0 +1,105 @@
+# Translation of Pourboire - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_expense_tip 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid "%(nom)s (tip)"
+msgstr "%(nom)s (pourboire)"
+
+#. module: bf_expense_tip
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.hr_expense_view_form_tip
+msgid ""
+"<span class=\"text-muted d-flex\" invisible=\"not tip_amount_currency\">\n"
+"                        tax-exempt\n"
+"                    </span>"
+msgstr ""
+"<span class=\"text-muted d-flex\" invisible=\"not tip_amount_currency\">\n"
+"                        hors taxes\n"
+"                    </span>"
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid "A tip cannot be negative."
+msgstr "Un pourboire ne peut pas être négatif."
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,help:bf_expense_tip.field_res_company__expense_tip_account_id
+#: model:ir.model.fields,help:bf_expense_tip.field_res_config_settings__expense_tip_account_id
+msgid ""
+"Left empty, the tip goes to the same account as the expense that carries it,"
+" as part of entertainment expenses. Setting it here isolates it for "
+"analysis."
+msgstr ""
+"Laissé vide, le pourboire va au même compte que la dépense qui le porte — il"
+" fait partie des frais de représentation. Le désigner ici sert à l'isoler "
+"pour l'analyse."
+
+#. module: bf_expense_tip
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.res_config_settings_view_form_tip
+msgid ""
+"Left empty, the tip goes to the same account as the expense that carries it."
+msgstr ""
+"Laissé vide, le pourboire va au même compte que la dépense qui le porte."
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,help:bf_expense_tip.field_hr_expense__tip_amount_currency
+msgid ""
+"Part of the total that bears no tax. It is removed from the GST and QST base"
+" and booked on its own journal item."
+msgstr ""
+"Part du total qui ne porte aucune taxe. Elle est retirée de l'assiette de "
+"TPS et de TVQ, et comptabilisée sur sa propre ligne d'écriture."
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid ""
+"The \"%(categorie)s\" category computes its amount from a fixed price: a tip"
+" cannot be added to it."
+msgstr ""
+"La catégorie « %(categorie)s » calcule son montant à partir d'un prix fixe :"
+" un pourboire ne peut pas s'y ajouter."
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid ""
+"The tip (%(pourboire)s) exceeds the expense total (%(total)s). The total is "
+"what was paid, tip included."
+msgstr ""
+"Le pourboire (%(pourboire)s) dépasse le total de la dépense (%(total)s). Le "
+"total est ce qui a été payé, pourboire compris."
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_hr_expense__tip_amount_currency
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.view_expenses_tree_tip
+msgid "Tip"
+msgstr "Pourboire"
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_hr_expense__tip_amount
+msgid "Tip (company currency)"
+msgstr "Pourboire (devise de la société)"
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_res_company__expense_tip_account_id
+#: model:ir.model.fields,field_description:bf_expense_tip.field_res_config_settings__expense_tip_account_id
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.res_config_settings_view_form_tip
+msgid "Tip account"
+msgstr "Compte des pourboires"

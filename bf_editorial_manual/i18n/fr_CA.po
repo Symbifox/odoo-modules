@@ -1,0 +1,125 @@
+# Translation of Atelier éditorial : canal manuel - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_manual 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_manual
+#: model:ir.model.fields,field_description:bf_editorial_manual.field_bf_social_post__is_manual_channel
+msgid "Canal manuel"
+msgstr "Canal manuel"
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/billet.py:0
+msgid ""
+"First paste the post's URL in \"Post URL\": without it, nothing proves it "
+"went out."
+msgstr ""
+"Collez d'abord l'adresse de la publication dans « Adresse de la publication "
+"» : sans elle, rien ne prouve qu'elle est sortie."
+
+#. module: bf_editorial_manual
+#: model:ir.model,name:bf_editorial_manual.model_bf_social_connector_linkedin_manual
+msgid "LinkedIn (manual posting)"
+msgstr "LinkedIn (publication manuelle)"
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/connecteur_manuel.py:0
+msgid ""
+"Manual channel: no credentials are required and no session is opened. "
+"Posting is done on LinkedIn."
+msgstr ""
+"Canal manuel : aucun identifiant n'est requis, et aucune session n'est "
+"ouverte. La publication se fait sur LinkedIn."
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/billet.py:0
+msgid "Manual post recorded on %(canal)s: %(url)s"
+msgstr "Publication manuelle consignée sur %(canal)s : %(url)s"
+
+#. module: bf_editorial_manual
+#: model_terms:ir.ui.view,arch_db:bf_editorial_manual.view_social_post_form_manual
+msgid "Mark as published"
+msgstr "Marquer comme diffusé"
+
+#. module: bf_editorial_manual
+#: model:ir.model.fields,field_description:bf_editorial_manual.field_bf_social_post__manual_url
+msgid "Post URL"
+msgstr "Adresse de la publication"
+
+#. module: bf_editorial_manual
+#: model_terms:ir.ui.view,arch_db:bf_editorial_manual.view_social_post_form_manual
+msgid "Records a post made by hand on the network."
+msgstr "Consigne une publication faite à la main sur le réseau."
+
+#. module: bf_editorial_manual
+#: model:ir.model.fields,help:bf_editorial_manual.field_bf_social_post__manual_url
+msgid ""
+"The URL of the post as it was published on the network. It is the proof of "
+"publication: do not paste the article's URL here, it already lives in "
+"\"Shared link\"."
+msgstr ""
+"L'adresse du billet tel qu'il est sorti sur le réseau. C'est elle qui prouve"
+" la publication : ne pas y coller l'adresse de l'article, qui vit déjà dans "
+"« Lien diffusé »."
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/connecteur_manuel.py:0
+msgid ""
+"This channel is manual: nothing is sent from here.\n"
+"\n"
+"Copy the post text, publish it on LinkedIn, then use \"Mark as published\" and paste the URL of the post.\n"
+"\n"
+"Posting to a LinkedIn page through the API requires the Community Management API product, which LinkedIn must approve."
+msgstr ""
+"Ce canal est manuel : rien ne part d'ici.\n"
+"\n"
+"Copiez le texte du billet, publiez-le sur LinkedIn, puis utilisez « Marquer comme diffusé » en collant l'adresse de la publication.\n"
+"\n"
+"La publication par API sur une page LinkedIn demande le produit Community Management API, soumis à l'approbation de LinkedIn."
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/billet.py:0
+msgid ""
+"This channel posts through the API: use \"Publish now\" instead of recording"
+" a manual post."
+msgstr ""
+"Ce canal publie par API : utilisez « Diffuser maintenant » plutôt que de "
+"consigner une publication manuelle."
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/billet.py:0
+msgid ""
+"This is the article's URL, not the post's. Paste the URL of the post as it "
+"was published on the network."
+msgstr ""
+"C'est l'adresse de l'article, pas celle de la publication. Collez l'adresse "
+"du billet tel qu'il est sorti sur le réseau."
+
+#. module: bf_editorial_manual
+#. odoo-python
+#: code:addons/bf_editorial_manual/models/billet.py:0
+msgid "This post is already recorded as published."
+msgstr "Ce billet est déjà consigné comme diffusé."
+
+#. module: bf_editorial_manual
+#: model_terms:ir.ui.view,arch_db:bf_editorial_manual.view_social_post_form_manual
+msgid "https://www.linkedin.com/feed/update/..."
+msgstr "https://www.linkedin.com/feed/update/..."

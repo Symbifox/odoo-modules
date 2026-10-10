@@ -1,22 +1,23 @@
 import logging
 
+from odoo.tools.translate import LazyTranslate
+
 _logger = logging.getLogger(__name__)
+_lt = LazyTranslate(__name__)
 
 #: Display name of the contextual list-view Action created on every thread model.
-ACTION_NAME = "Ajouter une note (en lot)"
+#: The actions are created by this hook, after Odoo has loaded the catalogues:
+#: the hook writes each installed language itself.
+ACTION_NAME = _lt("Add a note (in bulk)")
 
-#: Python executed by the server action. Opens the wizard, forwarding the
-#: current selection (``model._name`` / ``records.ids``) through the context.
+#: Python executed by the server action. Opens the wizard on the current
+#: selection; the wizard titles its window in the user's language.
 SERVER_ACTION_CODE = """\
-action = {
-    'type': 'ir.actions.act_window',
-    'name': 'Ajouter une note en lot',
-    'res_model': 'bf.mass.note.wizard',
-    'view_mode': 'form',
-    'target': 'new',
-    'context': dict(env.context, active_model=model._name, active_ids=records.ids),
-}
+action = env['bf.mass.note.wizard'].action_open_for(model._name, records.ids)
 """
+
+#: Marker shared by every version of the server action code (search key).
+ACTION_CODE_MARKER = "bf.mass.note.wizard"
 
 
 def _thread_models(env):
@@ -31,31 +32,44 @@ def _thread_models(env):
             yield model_name
 
 
+def _name_translations(env):
+    """{lang: name} for every installed language other than English (the source)."""
+    return {
+        code: env(context=dict(env.context, lang=code))._(ACTION_NAME)
+        for code, _name in env["res.lang"].get_installed()
+        if code != "en_US"
+    }
+
+
 def post_init_hook(env):
     """Create one contextual list Action per thread model so a note can be
     posted to several chatters at once. Idempotent (safe to re-run on upgrade)."""
     IrModel = env["ir.model"]
     ServerAction = env["ir.actions.server"]
+    english = env(context=dict(env.context, lang="en_US"))._(ACTION_NAME)
+    translations = _name_translations(env)
     created = 0
     for model_name in _thread_models(env):
         ir_model = IrModel._get(model_name)
         if not ir_model:
             continue
         existing = ServerAction.search([
-            ("name", "=", ACTION_NAME),
             ("binding_model_id", "=", ir_model.id),
             ("state", "=", "code"),
+            ("code", "like", ACTION_CODE_MARKER),
         ], limit=1)
         if existing:
             continue
-        ServerAction.create({
-            "name": ACTION_NAME,
+        action = ServerAction.with_context(lang="en_US").create({
+            "name": english,
             "model_id": ir_model.id,
             "binding_model_id": ir_model.id,
             "binding_view_types": "list",
             "state": "code",
             "code": SERVER_ACTION_CODE,
         })
+        for code, name in translations.items():
+            action.update_field_translations("name", {code: name})
         created += 1
     _logger.info("bf_mass_notes: created %s mass-note list bindings", created)
 
@@ -64,9 +78,8 @@ def uninstall_hook(env):
     """Remove the server actions created by post_init_hook (created imperatively,
     so the ORM does not clean them up on uninstall)."""
     actions = env["ir.actions.server"].search([
-        ("name", "=", ACTION_NAME),
         ("state", "=", "code"),
-        ("code", "like", "bf.mass.note.wizard"),
+        ("code", "like", ACTION_CODE_MARKER),
     ])
     count = len(actions)
     actions.unlink()

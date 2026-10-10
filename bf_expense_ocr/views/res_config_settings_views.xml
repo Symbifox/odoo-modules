@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="hr_expense.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//setting[field[@name='expense_tip_account_id']]" position="after">
-                <setting company_dependent="1" string="Lire les reçus au téléversement"
-                         help="Éteint, le reçu n'est lu que sur demande. Allumé, chaque photo jointe part vers le fournisseur configuré dans la passerelle LLM.">
+                <setting company_dependent="1" string="Read receipts on upload"
+                         help="Off, the receipt is read only on request. On, every attached photo goes to the provider configured in the LLM gateway.">
                     <field name="expense_ocr_auto"/>
                 </setting>
             </xpath>

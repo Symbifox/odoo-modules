@@ -4,12 +4,17 @@ from odoo.tools import format_datetime
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
-# Statuts de présence -> libellé client (meeting.attendance.status)
-ATTENDANCE_LABELS = {
-    'present': 'Présent',
-    'absent': 'Absent',
-    'excused': 'Excusé',
-}
+def _attendance_label(status):
+    """Statut de présence -> libellé client (meeting.attendance.status).
+
+    Traduit à l'appel, dans la langue du visiteur du portail : un dictionnaire
+    de module figerait le libellé dans une seule langue pour tout le monde.
+    """
+    return {
+        'present': request.env._("Present"),
+        'absent': request.env._("Absent"),
+        'excused': request.env._("Excused"),
+    }.get(status, '')
 
 
 def _partner_ids():
@@ -165,7 +170,7 @@ class PortalMeeting(CustomerPortal):
         return {
             'id': rec.id,
             'kind': 'record',
-            'name': rec.name or 'Compte rendu',
+            'name': rec.name or request.env._("Meeting report"),
             'date': _fmt_date(rec.date),
             'chip': _date_chip(rec.date),
             'n_decisions': len(decisions),
@@ -248,7 +253,7 @@ class PortalMeeting(CustomerPortal):
         return [
             {
                 'name': a.partner_id.name or a.partner_id.display_name,
-                'status': ATTENDANCE_LABELS.get(a.status, ''),
+                'status': _attendance_label(a.status),
                 'key': a.status or '',      # sert au style de la pastille
                 'role': a.role or '',
             }
@@ -322,6 +327,6 @@ class PortalMeeting(CustomerPortal):
             return request.redirect('/my/meetings')
         return self._serve_pdf(
             'bf_meeting.action_report_meeting_record', rec,
-            'Compte_rendu_%s.pdf' % rec.id,
+            request.env._("Meeting_report_%s.pdf", rec.id),
         )
 

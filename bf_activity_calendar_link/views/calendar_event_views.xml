@@ -12,12 +12,12 @@
                         class="oe_stat_button"
                         icon="fa-clock-o">
                     <field name="activity_ids" widget="statinfo"
-                           string="Activités"/>
+                           string="Activities"/>
                 </button>
             </xpath>
             <!-- Activities tab in notebook -->
             <xpath expr="//notebook" position="inside">
-                <page name="page_linked_activities" string="Activités liées">
+                <page name="page_linked_activities" string="Linked activities">
                     <field name="activity_ids" readonly="1"
                            context="{'default_calendar_event_id': id}">
                         <list create="false" delete="false">

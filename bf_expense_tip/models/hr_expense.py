@@ -21,16 +21,15 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     tip_amount_currency = fields.Monetary(
-        string="Pourboire",
+        string="Tip",
         currency_field="currency_id",
         default=0.0,
         tracking=True,
-        help="Part du total qui ne porte aucune taxe. Elle est retirée de "
-             "l'assiette de TPS et de TVQ, et comptabilisée sur sa propre "
-             "ligne d'écriture.",
+        help="Part of the total that bears no tax. It is removed from the "
+             "GST and QST base and booked on its own journal item.",
     )
     tip_amount = fields.Monetary(
-        string="Pourboire (devise de la société)",
+        string="Tip (company currency)",
         currency_field="company_currency_id",
         compute="_compute_tip_amount", precompute=True, store=True,
     )
@@ -110,19 +109,20 @@ class HrExpense(models.Model):
             if not expense.tip_amount_currency:
                 continue
             if expense.tip_amount_currency < 0:
-                raise ValidationError(_("Un pourboire ne peut pas être négatif."))
+                raise ValidationError(_("A tip cannot be negative."))
             if expense.currency_id.compare_amounts(
                     expense.tip_amount_currency, expense.total_amount_currency) > 0:
                 raise ValidationError(_(
-                    "Le pourboire (%(pourboire)s) dépasse le total de la dépense "
-                    "(%(total)s). Le total est ce qui a été payé, pourboire compris.",
+                    "The tip (%(pourboire)s) exceeds the expense total "
+                    "(%(total)s). The total is what was paid, tip "
+                    "included.",
                     pourboire=expense.tip_amount_currency,
                     total=expense.total_amount_currency,
                 ))
             if expense.product_has_cost:
                 raise ValidationError(_(
-                    "La catégorie « %(categorie)s » calcule son montant à partir "
-                    "d'un prix fixe : un pourboire ne peut pas s'y ajouter.",
+                    "The \"%(categorie)s\" category computes its amount "
+                    "from a fixed price: a tip cannot be added to it.",
                     categorie=expense.product_id.display_name,
                 ))
 
@@ -167,7 +167,7 @@ class HrExpense(models.Model):
         """
         self.ensure_one()
         return {
-            "name": _("%(nom)s (pourboire)", nom=self._get_move_line_name()),
+            "name": _("%(nom)s (tip)", nom=self._get_move_line_name()),
             "account_id": self._get_tip_account().id,
             "quantity": 1,
             "price_unit": self.tip_amount,

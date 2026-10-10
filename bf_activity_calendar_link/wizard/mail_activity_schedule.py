@@ -6,24 +6,24 @@ class MailActivitySchedule(models.TransientModel):
 
     calendar_event_id = fields.Many2one(
         "calendar.event",
-        string="Événement calendrier",
-        help="Lier cette activité à un événement calendrier existant",
+        string="Calendar event",
+        help="Link this activity to an existing calendar event",
     )
     calendar_event_start = fields.Datetime(
         related="calendar_event_id.start",
-        string="Début",
+        string="Start",
     )
     calendar_event_stop = fields.Datetime(
         related="calendar_event_id.stop",
-        string="Fin",
+        string="End",
     )
     calendar_event_location = fields.Char(
         related="calendar_event_id.location",
-        string="Lieu",
+        string="Location",
     )
     calendar_event_sync_source = fields.Selection(
         related="calendar_event_id.x_sync_source",
-        string="Source sync",
+        string="Sync source",
     )
 
     @api.onchange("calendar_event_id")

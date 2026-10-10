@@ -11,6 +11,8 @@ import logging
 
 from odoo import fields, models
 
+from .lang import reader_lang
+
 _logger = logging.getLogger(__name__)
 
 
@@ -18,10 +20,10 @@ class BfCxFeedback(models.Model):
     _inherit = "bf.cx.feedback"
 
     gamification_xp_awarded = fields.Boolean(
-        string="XP Fox Quest accordé",
+        string="Fox Quest XP awarded",
         copy=False,
-        help="Drapeau anti-double : l'XP de boucle fermée n'est accordé "
-             "qu'une seule fois par feedback.",
+        help="Anti-duplicate flag: closed-loop XP is awarded only once "
+             "per feedback.",
     )
 
     def write(self, vals):
@@ -59,11 +61,17 @@ class BfCxFeedback(models.Model):
                 ("active", "=", True),
             ], limit=1)
             if rule:
+                # The XP ledger is read by the person who earns it: in their language.
                 profile._award_xp(
                     rule.xp_amount, "cx_feedback",
-                    "Boucle fermée complétée : %s" % (rec.display_name or ""),
+                    rec.with_context(lang=reader_lang(user))._bf_cx_xp_label(),
                     reference=rec,
                 )
                 rec.write({"gamification_xp_awarded": True})
         except Exception:
             _logger.warning("Fox Quest: erreur XP boucle fermée", exc_info=True)
+
+    def _bf_cx_xp_label(self):
+        """Description of the closed-loop XP, in the language of the context."""
+        self.ensure_one()
+        return self.env._("Closed loop completed: %s", self.display_name or "")

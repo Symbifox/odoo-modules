@@ -82,7 +82,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | Directory | Name | Version | License | Description |
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.2 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
-| `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
+| `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.64.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
@@ -149,21 +149,21 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_credit_identity` | Credit & Identity | 18.0.1.0.1 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
 | `bf_cx` | Expérience client | 18.0.1.13.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
-| `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
-| `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
+| `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
+| `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.2.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
 | `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.2.0 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
 | `bf_cx_digest` | Expérience client - digest quotidien | 18.0.1.2.0 | BUSL-1.1 | Customer-experience section (follow-ups, complaints, NPS) in the daily digest |
 | `bf_cx_fundraising` | Expérience client : sondage donateur | 18.0.1.1.0 | AGPL-3 | Donor experience survey after a donation is confirmed (fundraising suite) |
-| `bf_cx_gamification` | Expérience client : XP Fox Quest | 18.0.1.0.0 | BUSL-1.1 | Fox Quest XP for closed-loop follow-ups and resolved complaints |
+| `bf_cx_gamification` | Expérience client : XP Fox Quest | 18.0.1.1.0 | BUSL-1.1 | Fox Quest XP for closed-loop follow-ups and resolved complaints |
 | `bf_cx_helpdesk` | Expérience client - pont Helpdesk | 18.0.1.1.1 | BUSL-1.1 | Helpdesk tickets from complaints and detractor feedback, with a dedicated Complaints team |
-| `bf_cx_hosting` | Expérience client : CSAT post-maintenance | 18.0.1.1.2 | BUSL-1.1 | CSAT request after a completed planned maintenance (opt-in) |
+| `bf_cx_hosting` | Expérience client : CSAT post-maintenance | 18.0.1.2.0 | BUSL-1.1 | CSAT request after a completed planned maintenance (opt-in) |
 | `bf_cx_mass_mailing` | Expérience client : exclusion des boucles ouvertes (mailing) | 18.0.1.1.0 | BUSL-1.1 | Option to exclude open-CX-loop contacts from a mass mailing |
-| `bf_cx_meeting` | Expérience client - feedback post-rencontre | 18.0.1.2.2 | BUSL-1.1 | Three-smiley feedback request after a meeting report is sent to the client |
-| `bf_cx_onboarding` | Expérience client : panneau de mise en route | 18.0.1.0.0 | BUSL-1.1 | Onboarding panel to set up the Customer Experience module |
-| `bf_cx_portal` | Expérience client : feedback au portail | 18.0.1.0.0 | BUSL-1.1 | Clients view their feedback and submit a comment from the portal |
+| `bf_cx_meeting` | Expérience client - feedback post-rencontre | 18.0.1.3.0 | BUSL-1.1 | Three-smiley feedback request after a meeting report is sent to the client |
+| `bf_cx_onboarding` | Expérience client : panneau de mise en route | 18.0.1.1.0 | BUSL-1.1 | Onboarding panel to set up the Customer Experience module |
+| `bf_cx_portal` | Expérience client : feedback au portail | 18.0.1.1.0 | BUSL-1.1 | Clients view their feedback and submit a comment from the portal |
 | `bf_cx_privacy` | Expérience client - pont Vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Formal Law 25 consent flow for testimonials through the privacy module |
-| `bf_cx_sign` | Expérience client : feedback post-signature | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when a signature is completed (opt-in) |
-| `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.0.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
+| `bf_cx_sign` | Expérience client : feedback post-signature | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when a signature is completed (opt-in) |
+| `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.1.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.0 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
@@ -176,8 +176,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
 | `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.1.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
 | `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.4.1 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
-| `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
-| `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
+| `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.1.0 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
+| `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.2.0 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.60.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
@@ -190,8 +190,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.1 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
-| `bf_expense_ocr` | Lecture des reçus | 18.0.2.1.1 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
-| `bf_expense_tip` | Pourboire | 18.0.1.0.1 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
+| `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
+| `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
 | `bf_federation` | Fédération | 18.0.1.5.2 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
@@ -236,10 +236,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.1 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
-| `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
+| `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.1.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.66.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
-| `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
-| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
+| `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
+| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.2.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
 | `bf_membership` | Membres | 18.0.1.0.4 | BUSL-1.1 | The member register of an association, a non-profit or a federation: categories, memberships, renewals and delegates, without depending on an invoice |
 | `bf_membership_account` | Membres : facturation et reçus fiscaux | 18.0.1.0.2 | BUSL-1.1 | Invoices the membership fee in Odoo, follows its payment on the membership, and issues a registered charity's partial tax receipt for money actually received |
@@ -275,7 +275,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.13.0 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_process` | Cartographie de processus | 18.0.5.0.8 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
-| `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
+| `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
 | `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.2 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |

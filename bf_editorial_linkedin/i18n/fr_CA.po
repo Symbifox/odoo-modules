@@ -1,0 +1,189 @@
+# Translation of Atelier éditorial : LinkedIn - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_linkedin 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_linkedin
+#: model_terms:ir.ui.view,arch_db:bf_editorial_linkedin.view_bf_social_channel_form_linkedin
+msgid ""
+"A LinkedIn member token lasts 60 days and nothing renews it. Note its date "
+"here: a reminder is posted in the chatter one week ahead."
+msgstr ""
+"Un jeton LinkedIn de membre dure 60 jours et rien ne le renouvelle. Notez sa"
+" date ici : un rappel part au chatter une semaine d'avance."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Channel \"%s\": no access token. Paste the one the LinkedIn app issued."
+msgstr ""
+"Canal « %s » : aucun jeton d'accès. Collez celui que l'application LinkedIn "
+"a délivré."
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_days_left
+msgid "Days left"
+msgstr "Jours restants"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Declared expiry in %s day(s)."
+msgstr "Expiration déclarée dans %s jour(s)."
+
+#. module: bf_editorial_linkedin
+#: model:ir.actions.server,name:bf_editorial_linkedin.cron_warn_token_expiry_ir_actions_server
+msgid "Editorial workshop: LinkedIn token about to expire"
+msgstr "Atelier éditorial : jeton LinkedIn qui approche de sa fin"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn accepted the post (HTTP %(code)s) without returning its identifier "
+"in the \"x-restli-id\" header. The post is probably online: check the feed "
+"before retrying, or you will publish it twice."
+msgstr ""
+"LinkedIn a accepté le billet (HTTP %(code)s) sans rendre son identifiant "
+"dans l'en-tête « x-restli-id ». Le billet est probablement en ligne : "
+"vérifiez le fil avant de relancer, sinon vous le publierez deux fois."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn accepts the token but refuses the scope (403). The app is missing "
+"\"openid\" and \"profile\"."
+msgstr ""
+"LinkedIn accepte le jeton mais refuse la portée (403). Il manque « openid » "
+"et « profile » sur l'application."
+
+#. module: bf_editorial_linkedin
+#: model:ir.model,name:bf_editorial_linkedin.model_bf_social_connector_linkedin
+msgid "LinkedIn connector"
+msgstr "Connecteur LinkedIn"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn rejects the post (HTTP %(code)s): %(corps)s"
+msgstr "LinkedIn refuse le billet (HTTP %(code)s) : %(corps)s"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn rejects the token (401). A token lasts 60 days: this one has "
+"probably expired or been revoked."
+msgstr ""
+"LinkedIn refuse le jeton (401). Un jeton dure 60 jours : celui-ci est "
+"probablement expiré ou révoqué."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn returned HTTP %(code)s: %(corps)s"
+msgstr "LinkedIn répond HTTP %(code)s : %(corps)s"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn: %s"
+msgstr "LinkedIn : %s"
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_member_urn
+msgid "Member URN"
+msgstr "URN du membre"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Network error: %s"
+msgstr "Erreur réseau : %s"
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,help:bf_editorial_linkedin.field_bf_social_channel__linkedin_member_urn
+msgid ""
+"Resolved when the credentials are checked. It is the declared author of each"
+" post."
+msgstr ""
+"Résolu à la vérification des identifiants. C'est l'auteur déclaré de chaque "
+"publication."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "The \"requests\" library is not installed."
+msgstr "La bibliothèque « requests » n'est pas installée."
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,help:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_expiry
+msgid ""
+"The date LinkedIn gave when it issued the token, to copy here. Nothing reads"
+" it from the token: it is a note, and it is what triggers the advance "
+"warning."
+msgstr ""
+"La date que LinkedIn a donnée en délivrant le jeton, à recopier ici. Rien ne"
+" la lit dans le jeton : c'est une note, et c'est elle qui déclenche le "
+"préavis."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"The response carries no member identifier. The \"openid\" scope is probably "
+"missing."
+msgstr ""
+"La réponse ne porte pas d'identifiant de membre. La portée « openid » manque"
+" probablement."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "The text is %(n)s characters long; the limit is %(l)s."
+msgstr "Texte de %(n)s caractères pour une limite de %(l)s."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/canal.py:0
+msgid ""
+"This channel's LinkedIn token expired %s day(s) ago. Posts fail until a new "
+"token is pasted."
+msgstr ""
+"Le jeton LinkedIn de ce canal est expiré depuis %s jour(s). Les diffusions "
+"échouent jusqu'à ce qu'un nouveau jeton soit collé."
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/canal.py:0
+msgid ""
+"This channel's LinkedIn token expires in %s day(s). A member token does not "
+"renew itself: a new one must be generated from the app."
+msgstr ""
+"Le jeton LinkedIn de ce canal expire dans %s jour(s). Un jeton de membre ne "
+"se renouvelle pas tout seul : il faut en générer un neuf depuis "
+"l'application."
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_expiry
+msgid "Token expiry"
+msgstr "Expiration du jeton"
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Valid token for %(nom)s (%(urn)s)."
+msgstr "Jeton valide pour %(nom)s (%(urn)s)."

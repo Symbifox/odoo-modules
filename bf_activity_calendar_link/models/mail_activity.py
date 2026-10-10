@@ -6,18 +6,18 @@ class MailActivity(models.Model):
 
     calendar_event_start = fields.Datetime(
         related="calendar_event_id.start",
-        string="Début événement",
+        string="Event start",
     )
     calendar_event_location = fields.Char(
         related="calendar_event_id.location",
-        string="Lieu",
+        string="Location",
     )
     calendar_event_sync_source = fields.Selection(
         related="calendar_event_id.x_sync_source",
-        string="Source sync",
+        string="Sync source",
     )
     calendar_event_attendee_names = fields.Char(
-        string="Participants",
+        string="Event attendees",
         compute="_compute_calendar_event_attendee_names",
     )
 

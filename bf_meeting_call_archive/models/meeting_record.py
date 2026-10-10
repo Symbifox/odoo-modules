@@ -6,11 +6,11 @@ class MeetingRecord(models.Model):
 
     call_archive_id = fields.Many2one(
         'call.archive.call',
-        string='Appel archivé',
+        string="Archived call",
         index=True,
         ondelete='set null',
-        help='Appel téléphonique archivé promu en compte rendu. '
-             'Pré-remplit la durée et le client à la sélection.',
+        help="Archived phone call promoted to a meeting report. Fills in "
+             "the duration and the customer when selected.",
     )
 
     @api.onchange('call_archive_id')

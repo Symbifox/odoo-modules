@@ -58,6 +58,10 @@ This module serves the same need as the OCA community module
 independently by Symbifox and adds full content reassignment (conversation,
 hours, dependencies, and so on).
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 LGPL-3 — © Les services de consultation Blue Fox, Inc.

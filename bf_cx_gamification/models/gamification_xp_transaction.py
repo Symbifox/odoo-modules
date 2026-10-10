@@ -12,8 +12,8 @@ class GamificationXpTransaction(models.Model):
 
     source = fields.Selection(
         selection_add=[
-            ("cx_feedback", "Boucle fermée CX"),
-            ("cx_complaint", "Plainte client"),
+            ("cx_feedback", "CX closed loop"),
+            ("cx_complaint", "Customer complaint"),
         ],
         ondelete={
             "cx_feedback": "cascade",
@@ -22,8 +22,8 @@ class GamificationXpTransaction(models.Model):
     )
     reference = fields.Reference(
         selection_add=[
-            ("bf.cx.feedback", "Feedback CX"),
-            ("bf.cx.complaint", "Plainte client"),
+            ("bf.cx.feedback", "CX feedback"),
+            ("bf.cx.complaint", "Customer complaint"),
         ],
         ondelete={
             "bf.cx.feedback": "set null",

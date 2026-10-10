@@ -7,12 +7,12 @@
         <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
-                <setting string="Sondage post-perte (CRM)"
-                         help="Quand une opportunité est marquée perdue, envoyer le sondage de ce programme au contact (une fois par opportunité, garde-fou anti-sursollicitation appliqué).">
+                <setting string="Lost-deal survey (CRM)"
+                         help="When an opportunity is marked lost, send this program's survey to the contact (once per opportunity, over-solicitation guard applied).">
                     <field name="bf_cx_loss_program_id"/>
                 </setting>
-                <setting string="Enrôlement NPS au gagné (CRM)"
-                         help="À la signature, ajouter le client à la prochaine vague brouillon de ce programme. Aucun envoi immédiat : la vague part manuellement.">
+                <setting string="NPS enrollment on won deals (CRM)"
+                         help="When a deal is won, add the customer to the next draft wave of this program. Nothing is sent right away: the wave goes out manually.">
                     <field name="bf_cx_won_program_id"/>
                 </setting>
             </xpath>

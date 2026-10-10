@@ -19,10 +19,10 @@ class SocialPost(models.Model):
         string="Canal manuel", compute="_compute_is_manual_channel",
     )
     manual_url = fields.Char(
-        string="Adresse de la publication",
-        help="L'adresse du billet tel qu'il est sorti sur le réseau. C'est"
-             " elle qui prouve la publication : ne pas y coller l'adresse de"
-             " l'article, qui vit déjà dans « Lien diffusé ».",
+        string="Post URL",
+        help="The URL of the post as it was published on the network. It "
+             "is the proof of publication: do not paste the article's URL "
+             "here, it already lives in \"Shared link\".",
     )
 
     @api.depends("channel_id.network")
@@ -35,21 +35,19 @@ class SocialPost(models.Model):
         self.ensure_one()
         if not self.is_manual_channel:
             raise UserError(_(
-                "Ce canal publie par API : utilisez « Diffuser maintenant »"
-                " plutôt que de consigner une publication manuelle."))
+                "This channel posts through the API: use \"Publish now\" "
+                "instead of recording a manual post."))
         if self.remote_id:
-            raise UserError(_("Ce billet est déjà consigné comme diffusé."))
+            raise UserError(_("This post is already recorded as published."))
         url = (self.manual_url or "").strip()
         if not url:
             raise UserError(_(
-                "Collez d'abord l'adresse de la publication dans « Adresse de"
-                " la publication » : sans elle, rien ne prouve qu'elle est"
-                " sortie."))
+                "First paste the post's URL in \"Post URL\": without it, "
+                "nothing proves it went out."))
         if self.link_url and url == self.link_url:
             raise UserError(_(
-                "C'est l'adresse de l'article, pas celle de la publication."
-                " Collez l'adresse du billet tel qu'il est sorti sur le"
-                " réseau."))
+                "This is the article's URL, not the post's. Paste the URL "
+                "of the post as it was published on the network."))
         self.write({
             "state": "sent",
             "remote_id": url,
@@ -58,6 +56,6 @@ class SocialPost(models.Model):
             "error_message": False,
         })
         self.message_post(body=_(
-            "Publication manuelle consignée sur %(canal)s : %(url)s",
+            "Manual post recorded on %(canal)s: %(url)s",
             canal=self.channel_id.name, url=url))
         return True

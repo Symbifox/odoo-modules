@@ -1,0 +1,178 @@
+# Translation template for Symbifox : Notes en lot.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_mass_notes 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid " %s failed."
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid "%s note(s) posted."
+msgstr ""
+
+#. module: bf_mass_notes
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid ""
+"A \"Message\" will be posted on the thread of each selected record and will "
+"notify its followers. Depending on the configuration, this may send emails."
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/hooks.py:0
+msgid "Add a note (in bulk)"
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Add a note in bulk"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model,name:bf_mass_notes.model_bf_mass_note_wizard
+msgid "Add a note to several threads in bulk"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__body
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Content"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__confirm_message
+msgid "I confirm sending this as a message to the followers of each record"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields.selection,name:bf_mass_notes.selection__bf_mass_note_wizard__post_type__note
+msgid "Internal note (log)"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_mass_notes
+#. modules: bf_mass_notes, bf_project_merge
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields.selection,name:bf_mass_notes.selection__bf_mass_note_wizard__post_type__comment
+msgid "Message (notifies followers)"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__model_label
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Model"
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid "No record selected."
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid "Notes in bulk"
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid "Please enter the content of the note."
+msgstr ""
+
+#. module: bf_mass_notes
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Post"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__post_type
+msgid "Post type"
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid ""
+"Posting as a \"Message\" will notify the followers of %s record(s). Tick the"
+" confirmation box to continue."
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__record_count
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Selected records"
+msgstr ""
+
+#. module: bf_mass_notes
+#: model:ir.model.fields,field_description:bf_mass_notes.field_bf_mass_note_wizard__model_name
+msgid "Technical model"
+msgstr ""
+
+#. module: bf_mass_notes
+#. odoo-python
+#: code:addons/bf_mass_notes/wizard/mass_note_wizard.py:0
+msgid "This model has no discussion thread."
+msgstr ""
+
+#. module: bf_mass_notes
+#: model_terms:ir.ui.view,arch_db:bf_mass_notes.bf_mass_note_wizard_view_form
+msgid "Type the note to post on all the selected records…"
+msgstr ""

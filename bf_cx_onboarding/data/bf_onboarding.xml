@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_program" model="onboarding.onboarding.step">
-        <field name="title">Créer un programme</field>
-        <field name="description">[action:bf_cx.action_cx_program] Créez un programme de mesure (NPS relationnel, CSAT transactionnel ou pulse continu) relié à son sondage Odoo.</field>
-        <field name="button_text">Ouvrir Programmes</field>
-        <field name="done_text">Programme créé</field>
+        <field name="title">Create a program</field>
+        <field name="description">[action:bf_cx.action_cx_program] Create a measurement program (relationship NPS, transactional CSAT or continuous pulse) linked to its Odoo survey.</field>
+        <field name="button_text">Open Programs</field>
+        <field name="done_text">Program created</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_cadence" model="onboarding.onboarding.step">
-        <field name="title">Configurer la cadence</field>
-        <field name="description">[action:bf_cx.action_cx_settings] Réglez le garde-fou anti-sursollicitation global et, au besoin, la cadence minimale propre à chaque programme (pratique : 90 jours pour un NPS relationnel).</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Cadence configurée</field>
+        <field name="title">Set up the cadence</field>
+        <field name="description">[action:bf_cx.action_cx_settings] Set the global over-solicitation guard and, if needed, each program's own minimum cadence (common practice: 90 days for a relationship NPS).</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Cadence configured</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onb_step_wave" model="onboarding.onboarding.step">
-        <field name="title">Lancer une première vague</field>
-        <field name="description">[action:bf_cx.action_cx_wave] Composez une vague de destinataires puis envoyez les invitations : les réponses alimentent automatiquement le registre des feedbacks.</field>
-        <field name="button_text">Ouvrir Vagues</field>
-        <field name="done_text">Première vague envoyée</field>
+        <field name="title">Launch a first wave</field>
+        <field name="description">[action:bf_cx.action_cx_wave] Build a wave of recipients, then send the invitations: the answers feed the feedback register automatically.</field>
+        <field name="button_text">Open Waves</field>
+        <field name="done_text">First wave sent</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">3</field>
     </record>
     <record id="bf_onb_step_complaint_team" model="onboarding.onboarding.step">
-        <field name="title">Configurer l'équipe Plaintes</field>
-        <field name="description">[action:base.action_res_users] Ajoutez vos collègues aux groupes Expérience client (utilisateur ou gestionnaire) et réglez le délai d'accusé de réception des plaintes dans les paramètres.</field>
-        <field name="button_text">Ouvrir Utilisateurs</field>
-        <field name="done_text">Équipe Plaintes configurée</field>
+        <field name="title">Set up the Complaints team</field>
+        <field name="description">[action:base.action_res_users] Add your colleagues to the Customer experience groups (user or manager) and set the complaint acknowledgement delay in the settings.</field>
+        <field name="button_text">Open Users</field>
+        <field name="done_text">Complaints team set up</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">4</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Expérience client</field>
+        <field name="name">Customer experience</field>
         <field name="route_name">bf_cx_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_cx_onboarding</field>
         <field name="step_ids" eval="[

@@ -32,6 +32,10 @@ class TestConnecteurLinkedIn(TransactionCase):
 
     def setUp(self):
         super().setUp()
+        # Le préavis s'écrit dans la langue de la société quand le canal n'a pas
+        # de créateur humain : la poser rend ces essais vrais sur toute base.
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env.company.partner_id.lang = "fr_CA"
         self.connecteur = self.env["bf.social.connector.linkedin"]
         self.canal = self.env["bf.social.channel"].create({
             "name": "LinkedIn d'essai",

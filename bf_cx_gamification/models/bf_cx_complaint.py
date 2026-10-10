@@ -10,6 +10,8 @@ import logging
 
 from odoo import fields, models
 
+from .lang import reader_lang
+
 _logger = logging.getLogger(__name__)
 
 
@@ -17,10 +19,10 @@ class BfCxComplaint(models.Model):
     _inherit = "bf.cx.complaint"
 
     gamification_xp_awarded = fields.Boolean(
-        string="XP Fox Quest accordé",
+        string="Fox Quest XP awarded",
         copy=False,
-        help="Drapeau anti-double : l'XP de résolution n'est accordé "
-             "qu'une seule fois par plainte.",
+        help="Anti-duplicate flag: resolution XP is awarded only once per "
+             "complaint.",
     )
 
     def write(self, vals):
@@ -54,11 +56,17 @@ class BfCxComplaint(models.Model):
                 ("active", "=", True),
             ], limit=1)
             if rule:
+                # The XP ledger is read by the person who earns it: in their language.
                 profile._award_xp(
                     rule.xp_amount, "cx_complaint",
-                    "Plainte résolue : %s" % (rec.number or rec.name or ""),
+                    rec.with_context(lang=reader_lang(user))._bf_cx_xp_label(),
                     reference=rec,
                 )
                 rec.write({"gamification_xp_awarded": True})
         except Exception:
             _logger.warning("Fox Quest: erreur XP plainte", exc_info=True)
+
+    def _bf_cx_xp_label(self):
+        """Description of the resolution XP, in the language of the context."""
+        self.ensure_one()
+        return self.env._("Complaint resolved: %s", self.number or self.name or "")

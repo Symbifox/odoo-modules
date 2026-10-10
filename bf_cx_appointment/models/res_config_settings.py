@@ -6,9 +6,9 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_cx_appointment_feedback = fields.Boolean(
-        string="Feedback après rendez-vous",
+        string="Feedback after an appointment",
         config_parameter="bf_cx.appointment_feedback",
-        help="Quand un rendez-vous est terminé, envoyer une demande de "
-             "feedback à 3 émojis au contact du rendez-vous (le garde-fou "
-             "anti-sursollicitation s'applique).",
+        help="When an appointment is over, send a 3-emoji feedback "
+             "request to the appointment's contact (the over-solicitation "
+             "guard applies).",
     )

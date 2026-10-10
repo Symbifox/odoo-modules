@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class CallArchiveCall(models.Model):
@@ -7,7 +7,7 @@ class CallArchiveCall(models.Model):
     meeting_record_ids = fields.One2many(
         'meeting.record',
         'call_archive_id',
-        string='Comptes rendus liés',
+        string="Linked meeting reports",
     )
     meeting_record_count = fields.Integer(
         compute='_compute_meeting_record_count',
@@ -21,7 +21,7 @@ class CallArchiveCall(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Comptes rendus liés',
+            'name': _("Linked meeting reports"),
             'res_model': 'meeting.record',
             'view_mode': 'list,form',
             'domain': [('call_archive_id', '=', self.id)],

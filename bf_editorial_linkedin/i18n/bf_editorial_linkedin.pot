@@ -1,0 +1,164 @@
+# Translation template for Atelier éditorial : LinkedIn.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_linkedin 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_editorial_linkedin
+#: model_terms:ir.ui.view,arch_db:bf_editorial_linkedin.view_bf_social_channel_form_linkedin
+msgid ""
+"A LinkedIn member token lasts 60 days and nothing renews it. Note its date "
+"here: a reminder is posted in the chatter one week ahead."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Channel \"%s\": no access token. Paste the one the LinkedIn app issued."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_days_left
+msgid "Days left"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Declared expiry in %s day(s)."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.actions.server,name:bf_editorial_linkedin.cron_warn_token_expiry_ir_actions_server
+msgid "Editorial workshop: LinkedIn token about to expire"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn accepted the post (HTTP %(code)s) without returning its identifier "
+"in the \"x-restli-id\" header. The post is probably online: check the feed "
+"before retrying, or you will publish it twice."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn accepts the token but refuses the scope (403). The app is missing "
+"\"openid\" and \"profile\"."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model,name:bf_editorial_linkedin.model_bf_social_connector_linkedin
+msgid "LinkedIn connector"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn rejects the post (HTTP %(code)s): %(corps)s"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"LinkedIn rejects the token (401). A token lasts 60 days: this one has "
+"probably expired or been revoked."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn returned HTTP %(code)s: %(corps)s"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "LinkedIn: %s"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_member_urn
+msgid "Member URN"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Network error: %s"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,help:bf_editorial_linkedin.field_bf_social_channel__linkedin_member_urn
+msgid ""
+"Resolved when the credentials are checked. It is the declared author of each"
+" post."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "The \"requests\" library is not installed."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,help:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_expiry
+msgid ""
+"The date LinkedIn gave when it issued the token, to copy here. Nothing reads"
+" it from the token: it is a note, and it is what triggers the advance "
+"warning."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid ""
+"The response carries no member identifier. The \"openid\" scope is probably "
+"missing."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "The text is %(n)s characters long; the limit is %(l)s."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/canal.py:0
+msgid ""
+"This channel's LinkedIn token expired %s day(s) ago. Posts fail until a new "
+"token is pasted."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/canal.py:0
+msgid ""
+"This channel's LinkedIn token expires in %s day(s). A member token does not "
+"renew itself: a new one must be generated from the app."
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#: model:ir.model.fields,field_description:bf_editorial_linkedin.field_bf_social_channel__linkedin_token_expiry
+msgid "Token expiry"
+msgstr ""
+
+#. module: bf_editorial_linkedin
+#. odoo-python
+#: code:addons/bf_editorial_linkedin/models/connecteur_linkedin.py:0
+msgid "Valid token for %(nom)s (%(urn)s)."
+msgstr ""

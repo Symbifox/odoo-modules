@@ -6,3 +6,4 @@ from . import test_robustesse
 from . import test_frais_inclus
 from . import test_recadrage
 from . import test_rattrapage
+from . import test_langue

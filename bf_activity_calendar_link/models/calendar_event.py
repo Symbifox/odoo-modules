@@ -8,7 +8,7 @@ class CalendarEvent(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Planifier une activité"),
+            "name": _("Schedule an activity"),
             "res_model": "mail.activity",
             "views": [[False, "form"]],
             "view_mode": "form",

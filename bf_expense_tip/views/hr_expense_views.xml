@@ -15,7 +15,7 @@
                            options="{'currency_field': 'currency_id'}"
                            readonly="not is_editable" class="oe_inline mw-50 me-0"/>
                     <span class="text-muted d-flex" invisible="not tip_amount_currency">
-                        hors taxes
+                        tax-exempt
                     </span>
                 </div>
             </xpath>
@@ -33,7 +33,7 @@
         <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
         <field name="arch" type="xml">
             <field name="total_amount_currency" position="after">
-                <field name="tip_amount_currency" optional="hide" sum="Pourboire"/>
+                <field name="tip_amount_currency" optional="hide" sum="Tip"/>
             </field>
         </field>
     </record>

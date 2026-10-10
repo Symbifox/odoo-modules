@@ -1,0 +1,74 @@
+# Translation of Rencontres ↔ Archive d'appels - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_meeting_call_archive 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid ""
+"<i class=\"fa fa-file-text-o me-1\"/>\n"
+"                    This call was promoted to a structured meeting report."
+msgstr ""
+"<i class=\"fa fa-file-text-o me-1\"/>\n"
+"                    Cet appel a été promu en compte rendu structuré."
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_meeting_record__call_archive_id
+msgid "Archived call"
+msgstr "Appel archivé"
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,help:bf_meeting_call_archive.field_meeting_record__call_archive_id
+msgid ""
+"Archived phone call promoted to a meeting report. Fills in the duration and "
+"the customer when selected."
+msgstr ""
+"Appel téléphonique archivé promu en compte rendu. Pré-remplit la durée et le"
+" client à la sélection."
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.meeting_record_view_form_inherit_call_archive
+msgid "Link an archived call..."
+msgstr "Lier un appel archivé..."
+
+#. module: bf_meeting_call_archive
+#. odoo-python
+#: code:addons/bf_meeting_call_archive/models/call_archive_call.py:0
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_call_archive_call__meeting_record_ids
+msgid "Linked meeting reports"
+msgstr "Comptes rendus liés"
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_call_archive_call__meeting_record_count
+msgid "Meeting Record Count"
+msgstr "Nombre de comptes rendus"
+
+#. module: bf_meeting_call_archive
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_tree_inherit_meeting
+msgid "Meeting report"
+msgstr "Compte rendu"
+
+#. module: bf_meeting_call_archive
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid "Meeting reports"
+msgstr "Comptes rendus"
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid "View the meeting report"
+msgstr "Voir le compte rendu"

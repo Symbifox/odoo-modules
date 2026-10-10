@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
-                <setting string="Feedback après rendez-vous"
-                         help="Quand un rendez-vous est terminé, demander un feedback à 3 émojis au contact du rendez-vous (une fois par rendez-vous, garde-fou anti-sursollicitation appliqué).">
+                <setting string="Feedback after an appointment"
+                         help="When an appointment is over, ask the appointment's contact for 3-emoji feedback (once per appointment, over-solicitation guard applied).">
                     <field name="bf_cx_appointment_feedback"/>
                 </setting>
             </xpath>

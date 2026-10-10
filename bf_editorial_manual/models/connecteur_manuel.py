@@ -14,7 +14,7 @@ from odoo.exceptions import UserError
 class ConnecteurLinkedInManuel(models.AbstractModel):
     _name = "bf.social.connector.linkedin_manual"
     _inherit = "bf.social.connector"
-    _description = "LinkedIn (publication manuelle)"
+    _description = "LinkedIn (manual posting)"
 
     _network_label = "LinkedIn (manuel)"
 
@@ -38,16 +38,15 @@ class ConnecteurLinkedInManuel(models.AbstractModel):
         problème à corriger. On dit ce qui est.
         """
         return True, _(
-            "Canal manuel : aucun identifiant n'est requis, et aucune session"
-            " n'est ouverte. La publication se fait sur LinkedIn."
+            "Manual channel: no credentials are required and no session "
+            "is opened. Posting is done on LinkedIn."
         )
 
     def _publish(self, post):
         raise UserError(_(
-            "Ce canal est manuel : rien ne part d'ici.\n\n"
-            "Copiez le texte du billet, publiez-le sur LinkedIn, puis"
-            " utilisez « Marquer comme diffusé » en collant l'adresse de la"
-            " publication.\n\n"
-            "La publication par API sur une page LinkedIn demande le produit"
-            " Community Management API, soumis à l'approbation de LinkedIn."
+            "This channel is manual: nothing is sent from here.\n\nCopy "
+            "the post text, publish it on LinkedIn, then use \"Mark as "
+            "published\" and paste the URL of the post.\n\nPosting to a "
+            "LinkedIn page through the API requires the Community "
+            "Management API product, which LinkedIn must approve."
         ))

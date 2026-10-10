@@ -51,11 +51,12 @@ class TestRecadrage(BancLecture):
                                        mimetype="image/jpeg")
         originale = depense.message_main_attachment_id
         with self._passerelle(enveloppe=self._enveloppe_recadree()):
-            self.assertTrue(depense.action_ocr_scan())
+            # Nommée dans la langue de l'appel : test_langue voit le français.
+            self.assertTrue(depense.with_context(lang="en_US").action_ocr_scan())
 
         copies = self._recadrees(depense)
         self.assertEqual(len(copies), 1, "une copie recadrée, pas plus")
-        self.assertIn("recadré", copies.name)
+        self.assertIn("(cropped)", copies.name)
         self.assertEqual(copies.mimetype, "image/jpeg")
         self.assertTrue(copies.datas)
 

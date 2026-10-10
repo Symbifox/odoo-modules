@@ -14,8 +14,8 @@ class GamificationXpRule(models.Model):
 
     source = fields.Selection(
         selection_add=[
-            ("cx_feedback", "Boucle fermée CX"),
-            ("cx_complaint", "Plainte client"),
+            ("cx_feedback", "CX closed loop"),
+            ("cx_complaint", "Customer complaint"),
         ],
         ondelete={
             "cx_feedback": "cascade",

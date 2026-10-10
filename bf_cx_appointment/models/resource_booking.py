@@ -26,7 +26,7 @@ class ResourceBooking(models.Model):
     _inherit = "resource.booking"
 
     bf_cx_feedback_requested = fields.Boolean(
-        string="Feedback post-rendez-vous demandé", copy=False
+        string="Post-appointment feedback requested", copy=False
     )
 
     # Postgres advisory-lock key for the feedback pass. It is DISTINCT from
@@ -104,8 +104,9 @@ class ResourceBooking(models.Model):
                 )
                 continue
             try:
-                booking.rating_send_request(
-                    template, lang=partner.lang, force_send=False
+                lang = booking._bf_cx_contact_lang(partner)
+                booking.with_context(lang=lang or booking.env.lang).rating_send_request(
+                    template, lang=lang, force_send=False
                 )
             except Exception:  # noqa: BLE001 - one booking, not the pass
                 _logger.exception(
@@ -116,3 +117,17 @@ class ResourceBooking(models.Model):
                 continue
             booking.bf_cx_feedback_requested = True
             partner._bf_cx_mark_solicited()
+
+    def _bf_cx_contact_lang(self, partner):
+        """Language of the feedback email: the contact's, else the company's.
+
+        A contact without a language would get the email in the language of
+        the context, and a scheduled job has none: the English source. The
+        company's language is the better guess. False when neither is
+        installed (the template then decides).
+        """
+        installed = {code for code, _name in self.env["res.lang"].get_installed()}
+        for lang in (partner.lang, self.env.company.partner_id.lang):
+            if lang in installed:
+                return lang
+        return False

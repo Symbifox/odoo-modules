@@ -10,16 +10,16 @@
                 <div class="alert alert-info mb-0" role="status"
                      invisible="meeting_record_count == 0">
                     <i class="fa fa-file-text-o me-1"/>
-                    Cet appel a été promu en compte rendu structuré.
+                    This call was promoted to a structured meeting report.
                     <button name="action_view_meeting_records" type="object"
                             class="btn btn-link p-0 ms-2"
-                            string="Voir le compte rendu"/>
+                            string="View the meeting report"/>
                 </div>
             </xpath>
             <xpath expr="//field[@name='recording_url']" position="after">
                 <field name="meeting_record_count" invisible="1"/>
                 <field name="meeting_record_ids" widget="many2many_tags"
-                       readonly="1" string="Comptes rendus"
+                       readonly="1" string="Meeting reports"
                        invisible="meeting_record_count == 0"/>
             </xpath>
         </field>
@@ -31,7 +31,7 @@
         <field name="inherit_id" ref="bf_sms_archive.call_archive_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='recording_url']" position="after">
-                <field name="meeting_record_count" string="Compte rendu"
+                <field name="meeting_record_count" string="Meeting report"
                        optional="hide"
                        widget="badge"
                        decoration-info="meeting_record_count &gt; 0"/>

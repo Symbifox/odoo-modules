@@ -1,0 +1,146 @@
+# Translation template for Expérience client : invitation de sondage par SMS.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_sms 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.res_config_settings_view_form
+msgid ""
+"\"Invite by SMS\" button on waves: sends the survey link to recipients who "
+"have no email address but a phone number (at most 5 SMS per click, manual "
+"action only, over-solicitation guard applied)."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "%(count)d invitation(s) sent by SMS (line \"%(line)s\")."
+msgstr ""
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,help:bf_cx_sms.field_res_config_settings__bf_cx_sms_invite
+msgid ""
+"Enables the \"Invite by SMS\" button on waves to reach recipients without an"
+" email address. Manual action only (no scheduled job), at most 5 SMS per "
+"click."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Held back by the guards (recent contact, do-not-contact list, collections): "
+"%s"
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Hello %(name)s, your feedback matters to us. Please answer our short survey "
+"(2 minutes): %(url)s Thank you!"
+msgstr ""
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.view_cx_wave_form
+msgid "Invite by SMS"
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"Limit of %(cap)d SMS per click reached: %(count)d recipient(s) waiting. "
+"Click the button again later (daily cap of the SMS provider)."
+msgstr ""
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,help:bf_cx_sms.field_res_config_settings__bf_cx_sms_line_id
+msgid ""
+"Line used for SMS invitations. Empty = first active line (the default line "
+"is preferred)."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No active SMS line. Set up a sending line in the Customer experience "
+"settings or in the SMS module."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "No new recipient to invite by SMS."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No recipient to invite by SMS: %s contacted recently (over-solicitation "
+"guard)."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"No recipient without an email address but with a phone number to invite by "
+"SMS."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid ""
+"SMS invitations are disabled. Enable \"Survey invitations by SMS\" in the "
+"Customer experience settings."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "SMS sending failed (see the server log): %s"
+msgstr ""
+
+#. module: bf_cx_sms
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.view_cx_wave_form
+msgid ""
+"Send the survey link by SMS to recipients without an email address (at most "
+"5 SMS per click)?"
+msgstr ""
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,field_description:bf_cx_sms.field_res_config_settings__bf_cx_sms_line_id
+msgid "Sending SMS line"
+msgstr ""
+
+#. module: bf_cx_sms
+#: model:ir.model.fields,field_description:bf_cx_sms.field_res_config_settings__bf_cx_sms_invite
+#: model_terms:ir.ui.view,arch_db:bf_cx_sms.res_config_settings_view_form
+msgid "Survey invitations by SMS"
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "The \"%s\" program has no survey."
+msgstr ""
+
+#. module: bf_cx_sms
+#. odoo-python
+#: code:addons/bf_cx_sms/models/bf_cx_wave.py:0
+msgid "The \"%s\" wave is closed."
+msgstr ""

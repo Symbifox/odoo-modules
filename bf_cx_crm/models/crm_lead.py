@@ -16,7 +16,7 @@ class CrmLead(models.Model):
     _inherit = "crm.lead"
 
     bf_cx_loss_survey_sent = fields.Boolean(
-        string="Sondage post-perte envoyé", copy=False
+        string="Lost-deal survey sent", copy=False
     )
 
     def action_set_won(self):
@@ -61,7 +61,7 @@ class CrmLead(models.Model):
             if not wave:
                 wave = self.env["bf.cx.wave"].sudo().create(
                     {
-                        "name": _("Prochaine vague (enrôlements gagnés)"),
+                        "name": _("Next wave (won-deal enrollments)"),
                         "program_id": program.id,
                     }
                 )
@@ -69,8 +69,8 @@ class CrmLead(models.Model):
                 wave.partner_ids = [(4, partner.id)]
                 lead.message_post(
                     body=_(
-                        "Client ajouté à la prochaine vague du programme "
-                        "« %s » (aucun envoi immédiat)."
+                        "Customer added to the next wave of the \"%s\" "
+                        "program (nothing sent yet)."
                     )
                     % program.name
                 )
@@ -116,8 +116,8 @@ class CrmLead(models.Model):
             if blocked:
                 lead.message_post(
                     body=_(
-                        "Sondage post-perte non envoyé : %s a été sollicité "
-                        "récemment (garde-fou anti-sursollicitation)."
+                        "Lost-deal survey not sent: %s was contacted "
+                        "recently (over-solicitation guard)."
                     )
                     % partner.display_name
                 )
@@ -132,10 +132,10 @@ class CrmLead(models.Model):
             lead.bf_cx_loss_survey_sent = True
             lead.message_post(
                 body=_(
-                    "Sondage post-perte « %(program)s » envoyé à %(partner)s "
-                    "(motif de perte : %(reason)s).",
+                    "Lost-deal survey \"%(program)s\" sent to %(partner)s "
+                    "(loss reason: %(reason)s).",
                     program=program.name,
                     partner=partner.display_name,
-                    reason=lead.lost_reason_id.name or _("non précisé"),
+                    reason=lead.lost_reason_id.name or _("not specified"),
                 )
             )

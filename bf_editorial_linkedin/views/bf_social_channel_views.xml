@@ -11,7 +11,7 @@
                        invisible="network != 'linkedin'"/>
                 <field name="linkedin_token_expiry"
                        invisible="network != 'linkedin'"
-                       help="Un jeton LinkedIn de membre dure 60 jours et rien ne le renouvelle. Notez sa date ici : un rappel part au chatter une semaine d'avance."/>
+                       help="A LinkedIn member token lasts 60 days and nothing renews it. Note its date here: a reminder is posted in the chatter one week ahead."/>
                 <field name="linkedin_token_days_left"
                        invisible="network != 'linkedin' or not linkedin_token_expiry"/>
             </field>

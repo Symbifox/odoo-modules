@@ -43,6 +43,12 @@ class TestDiscussedPortal(TransactionCase):
         self.assertEqual(ctx['actions'], [])
 
     def test_le_gabarit_affiche_la_section(self):
-        arch = self.env.ref('bf_meeting_portal.portal_meeting_record').arch
+        vue = self.env.ref('bf_meeting_portal.portal_meeting_record')
+        arch = vue.with_context(lang='en_US').arch
         self.assertIn("doc.get('discussed')", arch)
-        self.assertIn('Tâches existantes discutées', arch)
+        self.assertIn('Existing tasks discussed', arch)
+        # Le visiteur français lit le titre de la section dans sa langue (fr_CA.po).
+        self.env['res.lang']._activate_lang('fr_CA')
+        self.env['ir.module.module']._load_module_terms(
+            ['bf_meeting_portal'], ['fr_CA'], overwrite=True)
+        self.assertIn('Tâches existantes discutées', vue.with_context(lang='fr_CA').arch)

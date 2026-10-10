@@ -1,0 +1,174 @@
+# Translation template for Lecture des reçus.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_expense_ocr 18.0.2.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "%(nom)s (cropped)%(ext)s"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_hr_expense__ocr_confidence
+msgid "Confidence"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields.selection,name:bf_expense_ocr.selection__hr_expense__ocr_state__error
+msgid "Error"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields.selection,name:bf_expense_ocr.selection__hr_expense__ocr_state__pending
+msgid "In progress"
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "No photo or PDF attached to read."
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model_terms:ir.ui.view,arch_db:bf_expense_ocr.res_config_settings_view_form_ocr
+msgid ""
+"Off, the receipt is read only on request. On, every attached photo goes to "
+"the provider configured in the LLM gateway."
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,help:bf_expense_ocr.field_res_company__expense_ocr_auto
+#: model:ir.model.fields,help:bf_expense_ocr.field_res_config_settings__expense_ocr_auto
+msgid ""
+"Off, the receipt is read only when someone presses the button. On, every "
+"photo attached to an expense is sent to the provider configured in the LLM "
+"gateway as soon as it is uploaded."
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_hr_expense__ocr_raw_response
+msgid "Raw extraction"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields.selection,name:bf_expense_ocr.selection__hr_expense__ocr_state__done
+msgid "Read"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_hr_expense__ocr_scanned_date
+msgid "Read on"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_res_company__expense_ocr_auto
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_res_config_settings__expense_ocr_auto
+#: model_terms:ir.ui.view,arch_db:bf_expense_ocr.res_config_settings_view_form_ocr
+msgid "Read receipts on upload"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model_terms:ir.ui.view,arch_db:bf_expense_ocr.hr_expense_view_form_ocr
+msgid "Read the receipt"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_hr_expense__ocr_error_message
+msgid "Reading error"
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "Reading returned no data"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields,field_description:bf_expense_ocr.field_hr_expense__ocr_state
+msgid "Receipt reading"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.actions.server,name:bf_expense_ocr.ir_cron_expense_ocr_batch_ir_actions_server
+msgid "Receipt reading: catch-up"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model_terms:ir.ui.view,arch_db:bf_expense_ocr.hr_expense_view_form_ocr
+msgid "The amounts were not prefilled: the receipt does not add up."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "The attachment is empty."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid ""
+"The gap between the total and the detail (%(residu).2f) is too large to be a"
+" tip."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid ""
+"The receipt does not add up: subtotal + taxes + tip = %(somme).2f, total "
+"read = %(total).2f."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid ""
+"The receipt does not add up: subtotal and taxes (%(part).2f) exceed the "
+"total (%(total).2f)."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "The subtotal before taxes was not read."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "The tip read is negative."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "The total read is not an amount (%s)."
+msgstr ""
+
+#. module: bf_expense_ocr
+#. odoo-python
+#: code:addons/bf_expense_ocr/models/hr_expense.py:0
+msgid "The total was not read."
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields.selection,name:bf_expense_ocr.selection__hr_expense__ocr_state__doubt
+msgid "To review"
+msgstr ""
+
+#. module: bf_expense_ocr
+#: model:ir.model.fields.selection,name:bf_expense_ocr.selection__hr_expense__ocr_state__none
+msgid "Unread"
+msgstr ""

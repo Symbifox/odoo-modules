@@ -1,0 +1,90 @@
+# Translation template for Pourboire.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_expense_tip 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid "%(nom)s (tip)"
+msgstr ""
+
+#. module: bf_expense_tip
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.hr_expense_view_form_tip
+msgid ""
+"<span class=\"text-muted d-flex\" invisible=\"not tip_amount_currency\">\n"
+"                        tax-exempt\n"
+"                    </span>"
+msgstr ""
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid "A tip cannot be negative."
+msgstr ""
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,help:bf_expense_tip.field_res_company__expense_tip_account_id
+#: model:ir.model.fields,help:bf_expense_tip.field_res_config_settings__expense_tip_account_id
+msgid ""
+"Left empty, the tip goes to the same account as the expense that carries it,"
+" as part of entertainment expenses. Setting it here isolates it for "
+"analysis."
+msgstr ""
+
+#. module: bf_expense_tip
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.res_config_settings_view_form_tip
+msgid ""
+"Left empty, the tip goes to the same account as the expense that carries it."
+msgstr ""
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,help:bf_expense_tip.field_hr_expense__tip_amount_currency
+msgid ""
+"Part of the total that bears no tax. It is removed from the GST and QST base"
+" and booked on its own journal item."
+msgstr ""
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid ""
+"The \"%(categorie)s\" category computes its amount from a fixed price: a tip"
+" cannot be added to it."
+msgstr ""
+
+#. module: bf_expense_tip
+#. odoo-python
+#: code:addons/bf_expense_tip/models/hr_expense.py:0
+msgid ""
+"The tip (%(pourboire)s) exceeds the expense total (%(total)s). The total is "
+"what was paid, tip included."
+msgstr ""
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_hr_expense__tip_amount_currency
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.view_expenses_tree_tip
+msgid "Tip"
+msgstr ""
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_hr_expense__tip_amount
+msgid "Tip (company currency)"
+msgstr ""
+
+#. module: bf_expense_tip
+#: model:ir.model.fields,field_description:bf_expense_tip.field_res_company__expense_tip_account_id
+#: model:ir.model.fields,field_description:bf_expense_tip.field_res_config_settings__expense_tip_account_id
+#: model_terms:ir.ui.view,arch_db:bf_expense_tip.res_config_settings_view_form_tip
+msgid "Tip account"
+msgstr ""

@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_ocr_scan" type="object"
-                        string="Lire le reçu" icon="fa-magic"
+                        string="Read the receipt" icon="fa-magic"
                         class="btn-secondary"
                         invisible="state not in ('draft', 'reported') or nb_attachment &lt; 1"/>
             </xpath>
@@ -19,7 +19,7 @@
                 <div class="alert alert-warning" role="alert"
                      invisible="ocr_state != 'doubt'">
                     <field name="ocr_error_message" readonly="1" nolabel="1"/>
-                    Les montants n'ont pas été préremplis : le reçu ne balance pas.
+                    The amounts were not prefilled: the receipt does not add up.
                 </div>
                 <div class="alert alert-danger" role="alert"
                      invisible="ocr_state != 'error'">

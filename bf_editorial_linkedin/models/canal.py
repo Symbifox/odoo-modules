@@ -6,7 +6,7 @@ Deux champs, et les deux existent pour la même raison : un jeton LinkedIn dure
 on peut refuser de la découvrir le matin où une diffusion échoue.
 """
 
-from odoo import _, api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 
 PREAVIS_JOURS = 7
 
@@ -15,18 +15,18 @@ class SocialChannel(models.Model):
     _inherit = "bf.social.channel"
 
     linkedin_member_urn = fields.Char(
-        string="URN du membre", readonly=True, copy=False,
-        help="Résolu à la vérification des identifiants. C'est l'auteur"
-             " déclaré de chaque publication.",
+        string="Member URN", readonly=True, copy=False,
+        help="Resolved when the credentials are checked. It is the "
+             "declared author of each post.",
     )
     linkedin_token_expiry = fields.Date(
-        string="Expiration du jeton",
-        help="La date que LinkedIn a donnée en délivrant le jeton, à recopier"
-             " ici. Rien ne la lit dans le jeton : c'est une note, et c'est"
-             " elle qui déclenche le préavis.",
+        string="Token expiry",
+        help="The date LinkedIn gave when it issued the token, to copy "
+             "here. Nothing reads it from the token: it is a note, and it "
+             "is what triggers the advance warning.",
     )
     linkedin_token_days_left = fields.Integer(
-        string="Jours restants", compute="_compute_linkedin_days_left",
+        string="Days left", compute="_compute_linkedin_days_left",
     )
 
     @api.depends("linkedin_token_expiry")
@@ -59,18 +59,35 @@ class SocialChannel(models.Model):
             reste = canal._linkedin_days_left()
             if reste is None or reste > PREAVIS_JOURS:
                 continue
+            # Le travail planifié n'a la langue de personne : on écrit dans celle
+            # de qui lira le chatter du canal.
+            lu = canal.with_context(lang=canal._linkedin_langue_lecteur())
             if reste < 0:
-                corps = _(
-                    "Le jeton LinkedIn de ce canal est expiré depuis %s"
-                    " jour(s). Les diffusions échouent jusqu'à ce qu'un"
-                    " nouveau jeton soit collé.", abs(reste),
+                corps = lu.env._(
+                    "This channel's LinkedIn token expired %s day(s) ago. "
+                    "Posts fail until a new token is pasted.", abs(reste),
                 )
             else:
-                corps = _(
-                    "Le jeton LinkedIn de ce canal expire dans %s jour(s)."
-                    " Un jeton de membre ne se renouvelle pas tout seul :"
-                    " il faut en générer un neuf depuis l'application.", reste,
+                corps = lu.env._(
+                    "This channel's LinkedIn token expires in %s day(s). "
+                    "A member token does not renew itself: a new one must "
+                    "be generated from the app.", reste,
                 )
             canal.message_post(body=corps)
             prevenus |= canal
         return len(prevenus)
+
+    def _linkedin_langue_lecteur(self):
+        """La langue de qui a créé le canal, sinon celle de la société.
+
+        Jamais celle d'OdooBot ni d'un compte partagé. None laisse le contexte
+        sans langue : le texte s'écrit alors dans la langue source (l'anglais).
+        """
+        self.ensure_one()
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        createur = self.create_uid
+        langues = []
+        if createur and createur.active and not createur.share and createur.id != SUPERUSER_ID:
+            langues.append(createur.lang)
+        langues.append(self.env.company.partner_id.lang)
+        return next((lang for lang in langues if lang in installees), None)

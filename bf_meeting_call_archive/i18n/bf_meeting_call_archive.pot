@@ -1,0 +1,68 @@
+# Translation template for Rencontres ↔ Archive d'appels.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_meeting_call_archive 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid ""
+"<i class=\"fa fa-file-text-o me-1\"/>\n"
+"                    This call was promoted to a structured meeting report."
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_meeting_record__call_archive_id
+msgid "Archived call"
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,help:bf_meeting_call_archive.field_meeting_record__call_archive_id
+msgid ""
+"Archived phone call promoted to a meeting report. Fills in the duration and "
+"the customer when selected."
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.meeting_record_view_form_inherit_call_archive
+msgid "Link an archived call..."
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#. odoo-python
+#: code:addons/bf_meeting_call_archive/models/call_archive_call.py:0
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_call_archive_call__meeting_record_ids
+msgid "Linked meeting reports"
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#: model:ir.model.fields,field_description:bf_meeting_call_archive.field_call_archive_call__meeting_record_count
+msgid "Meeting Record Count"
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_tree_inherit_meeting
+msgid "Meeting report"
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid "Meeting reports"
+msgstr ""
+
+#. module: bf_meeting_call_archive
+#: model_terms:ir.ui.view,arch_db:bf_meeting_call_archive.call_archive_view_form_inherit_meeting
+msgid "View the meeting report"
+msgstr ""

@@ -100,3 +100,7 @@ The spy also asserts on what would have been *sent*. That is how the
 the `org` field: a wrong tenant does not make the call fail, it makes it
 succeed **on somebody else's subscription**, so the check has to be on the way
 out, not on the way back.
+
+## Languages (v18.0.2.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. When the scheduled catch-up reads a receipt, its failure reason is written in the employee's language; the cropped copy is named in the language of the reading. On upgrade, the scheduled job's name switches to English where it still holds the delivered French.

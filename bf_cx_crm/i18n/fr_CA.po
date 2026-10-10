@@ -1,0 +1,118 @@
+# Translation of Expérience client - sondage post-perte CRM - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_crm 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "Customer added to the next wave of the \"%s\" program (nothing sent yet)."
+msgstr ""
+"Client ajouté à la prochaine vague du programme « %s » (aucun envoi "
+"immédiat)."
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_res_config_settings__bf_cx_loss_program_id
+msgid "Lost-deal program"
+msgstr "Programme post-perte"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid ""
+"Lost-deal survey \"%(program)s\" sent to %(partner)s (loss reason: "
+"%(reason)s)."
+msgstr ""
+"Sondage post-perte « %(program)s » envoyé à %(partner)s (motif de perte : "
+"%(reason)s)."
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid "Lost-deal survey (CRM)"
+msgstr "Sondage post-perte (CRM)"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid ""
+"Lost-deal survey not sent: %s was contacted recently (over-solicitation "
+"guard)."
+msgstr ""
+"Sondage post-perte non envoyé : %s a été sollicité récemment (garde-fou "
+"anti-sursollicitation)."
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_crm_lead__bf_cx_loss_survey_sent
+msgid "Lost-deal survey sent"
+msgstr "Sondage post-perte envoyé"
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid "NPS enrollment on won deals (CRM)"
+msgstr "Enrôlement NPS au gagné (CRM)"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "Next wave (won-deal enrollments)"
+msgstr "Prochaine vague (enrôlements gagnés)"
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,help:bf_cx_crm.field_res_config_settings__bf_cx_loss_program_id
+msgid ""
+"Program whose survey is sent to the contact when an opportunity is marked "
+"lost. Empty = nothing is sent."
+msgstr ""
+"Programme dont le sondage est envoyé au contact quand une opportunité est "
+"marquée perdue. Vide = aucun envoi."
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid ""
+"When a deal is won, add the customer to the next draft wave of this program."
+" Nothing is sent right away: the wave goes out manually."
+msgstr ""
+"À la signature, ajouter le client à la prochaine vague brouillon de ce "
+"programme. Aucun envoi immédiat : la vague part manuellement."
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid ""
+"When an opportunity is marked lost, send this program's survey to the "
+"contact (once per opportunity, over-solicitation guard applied)."
+msgstr ""
+"Quand une opportunité est marquée perdue, envoyer le sondage de ce programme"
+" au contact (une fois par opportunité, garde-fou anti-sursollicitation "
+"appliqué)."
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,help:bf_cx_crm.field_res_config_settings__bf_cx_won_program_id
+msgid ""
+"When an opportunity is won, the customer is added to the next DRAFT wave of "
+"this program (nothing is sent right away). Empty = disabled."
+msgstr ""
+"À la signature d'une opportunité, le client est ajouté à la prochaine vague "
+"BROUILLON de ce programme (aucun envoi immédiat). Vide = désactivé."
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_res_config_settings__bf_cx_won_program_id
+msgid "Won-deal enrollment program"
+msgstr "Programme d'enrôlement au gagné"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "not specified"
+msgstr "non précisé"

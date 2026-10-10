@@ -8,7 +8,11 @@
     #   d'action, alimentée par bf_meeting 18.0.3.59.0 (même filtre que le PDF et le
     #   courriel). Le meeting-processor verse une action dans une tâche ouverte au lieu
     #   d'en créer une neuve.
-    'version': '18.0.2.1.0',
+    # 18.0.2.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    'version': '18.0.2.2.0',
     'category': 'Services/Project',
     'summary': "Accès portail aux comptes rendus de rencontre déjà envoyés",
     'description': """

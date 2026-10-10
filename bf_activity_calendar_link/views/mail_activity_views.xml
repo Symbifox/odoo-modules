@@ -9,7 +9,7 @@
                 <field name="calendar_event_id"
                        options="{'no_create': True, 'no_open': True, 'no_quick_create': True}"
                        domain="[('partner_ids.user_ids', 'in', uid)]"
-                       placeholder="Lier à un événement calendrier..."/>
+                       placeholder="Link to a calendar event..."/>
             </xpath>
             <xpath expr="//field[@name='note']" position="before">
                 <field name="calendar_event_start" invisible="1"/>
@@ -20,15 +20,15 @@
                      invisible="not calendar_event_id">
                     <div class="d-flex flex-wrap gap-3">
                         <span invisible="not calendar_event_start">
-                            <strong>Quand : </strong>
+                            <strong>When: </strong>
                             <field name="calendar_event_start" readonly="1" class="d-inline"/>
                         </span>
                         <span invisible="not calendar_event_location">
-                            <strong>Lieu : </strong>
+                            <strong>Location: </strong>
                             <field name="calendar_event_location" readonly="1" class="d-inline"/>
                         </span>
                         <span invisible="not calendar_event_attendee_names">
-                            <strong>Participants : </strong>
+                            <strong>Attendees: </strong>
                             <field name="calendar_event_attendee_names" readonly="1" class="d-inline"/>
                         </span>
                         <span class="badge text-bg-info"

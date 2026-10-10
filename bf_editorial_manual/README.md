@@ -30,6 +30,10 @@ here is lost in the switch.
 
 Depends on `bf_editorial_social`. No credentials, no configuration.
 
+## Languages (v18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 BUSL-1.1. Internal use is free; providing a product or service to third parties

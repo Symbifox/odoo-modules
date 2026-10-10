@@ -31,7 +31,7 @@
                      embarque le raster en 128 px (2x) pour rester net en retina.
                      L'original backend fait 1080 px et 1 Mo. -->
                 <t t-set="icon" t-value="'/bf_meeting_portal/static/src/img/portal_icon.svg'"/>
-                <t t-set="title">Rencontres</t>
+                <t t-set="title">Meetings</t>
                 <t t-set="url" t-value="'/my/meetings'"/>
                 <t t-set="placeholder_count" t-value="'meeting_count'"/>
             </t>
@@ -48,8 +48,8 @@
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name in ('meetings', 'meeting_record')"
                 t-attf-class="breadcrumb-item #{'active' if page_name == 'meetings' else ''}">
-                <a t-if="page_name != 'meetings'" href="/my/meetings">Rencontres</a>
-                <t t-else="">Rencontres</t>
+                <a t-if="page_name != 'meetings'" href="/my/meetings">Meetings</a>
+                <t t-else="">Meetings</t>
             </li>
             <li t-if="page_name == 'meeting_record' and doc"
                 class="breadcrumb-item active">
@@ -295,7 +295,7 @@
                     <t t-if="item['project']">
                         <t t-out="item['project']"/><span class="sep">•</span>
                     </t>
-                    <t t-out="item['n_decisions']"/> décision<t t-if="item['n_decisions'] != 1">s</t>
+                    <t t-out="item['n_decisions']"/> decision<t t-if="item['n_decisions'] != 1">s</t>
                     <span class="sep">•</span>
                     <t t-out="item['n_attendance']"/> participant<t t-if="item['n_attendance'] != 1">s</t>
                 </span>
@@ -315,23 +315,23 @@
 
             <div class="bfm">
                 <div class="bfm-head">
-                    <h3>Rencontres</h3>
+                    <h3>Meetings</h3>
                     <p class="bfm-sub">
-                        Les comptes rendus qui vous ont été transmis.
+                        The meeting reports that were sent to you.
                     </p>
                 </div>
 
                 <t t-if="not records">
                     <div class="bfm-empty">
                         <i class="fa fa-calendar-o"/>
-                        Aucun compte rendu ne vous a encore été transmis.
+                        No meeting report has been sent to you yet.
                     </div>
                 </t>
 
 
                 <t t-if="records">
                     <div class="bfm-section">
-                        Comptes rendus
+                        Meeting reports
                         <span class="bfm-n"><t t-out="len(records)"/></span>
                     </div>
                     <div class="bfm-grid">
@@ -348,7 +348,7 @@
     <!-- Détail : compte rendu                                        -->
     <!-- ============================================================ -->
 
-    <template id="portal_meeting_record" name="Compte rendu">
+    <template id="portal_meeting_record" name="Meeting report">
         <t t-call="portal.portal_layout">
             <t t-call="bf_meeting_portal.portal_meeting_styles"/>
 
@@ -356,7 +356,7 @@
                 <div class="bfm-hero">
                     <div class="row align-items-center">
                         <div class="col-md-9">
-                            <span class="kind">Compte rendu</span>
+                            <span class="kind">Meeting report</span>
                             <h3><t t-out="doc['name']"/></h3>
                             <p class="meta">
                                 <t t-out="doc['date']"/>
@@ -375,7 +375,7 @@
 
                 <t t-if="doc['summary']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Résumé</div>
+                        <div class="bfm-h5">Summary</div>
                         <p class="bfm-prose"><t t-out="doc['summary']"/></p>
                     </div>
                 </t>
@@ -393,13 +393,13 @@
 
                 <t t-if="doc['decisions']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Décisions</div>
+                        <div class="bfm-h5">Decisions</div>
                         <ul class="bfm-list">
                             <li t-foreach="doc['decisions']" t-as="d">
                                 <t t-out="d['name']"/>
                                 <t t-if="d['maker'] or d['item']">
                                     <span class="bfm-note">
-                                        <t t-if="d['maker']">Décideur : <t t-out="d['maker']"/></t>
+                                        <t t-if="d['maker']">Decision maker: <t t-out="d['maker']"/></t>
                                         <t t-if="d['maker'] and d['item']"> • </t>
                                         <t t-if="d['item']"><t t-out="d['item']"/></t>
                                     </span>
@@ -411,7 +411,7 @@
 
                 <t t-if="doc['actions']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Éléments d'action</div>
+                        <div class="bfm-h5">Action items</div>
                         <ul class="bfm-list">
                             <li t-foreach="doc['actions']" t-as="a">
                                 <t t-out="a['name']"/>
@@ -419,8 +419,8 @@
                                     <span class="bfm-note">
                                         <t t-if="a['who']"><t t-out="a['who']"/></t>
                                         <t t-if="a['who'] and a['deadline']"> • </t>
-                                        <t t-if="a['deadline']">échéance <t t-out="a['deadline']"/></t>
-                                        <t t-if="a['done']"> • fait</t>
+                                        <t t-if="a['deadline']">due <t t-out="a['deadline']"/></t>
+                                        <t t-if="a['done']"> • done</t>
                                     </span>
                                 </t>
                             </li>
@@ -430,7 +430,7 @@
 
                 <t t-if="doc.get('discussed')">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Tâches existantes discutées</div>
+                        <div class="bfm-h5">Existing tasks discussed</div>
                         <ul class="bfm-list">
                             <li t-foreach="doc['discussed']" t-as="a">
                                 <t t-out="a['name']"/>
@@ -438,8 +438,8 @@
                                     <span class="bfm-note">
                                         <t t-if="a['who']"><t t-out="a['who']"/></t>
                                         <t t-if="a['who'] and a['deadline']"> • </t>
-                                        <t t-if="a['deadline']">échéance <t t-out="a['deadline']"/></t>
-                                        <t t-if="a['done']"> • fait</t>
+                                        <t t-if="a['deadline']">due <t t-out="a['deadline']"/></t>
+                                        <t t-if="a['done']"> • done</t>
                                     </span>
                                 </t>
                             </li>
@@ -449,7 +449,7 @@
 
                 <t t-if="doc['open_questions']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Questions ouvertes</div>
+                        <div class="bfm-h5">Open questions</div>
                         <ul class="bfm-list">
                             <li t-foreach="doc['open_questions']" t-as="q"><t t-out="q"/></li>
                         </ul>
@@ -458,7 +458,7 @@
 
                 <t t-if="doc['deliverables']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Livrables</div>
+                        <div class="bfm-h5">Deliverables</div>
                         <ul class="bfm-list">
                             <li t-foreach="doc['deliverables']" t-as="dv"><t t-out="dv"/></li>
                         </ul>
@@ -467,7 +467,7 @@
 
                 <t t-if="doc['attendance']">
                     <div class="bfm-block">
-                        <div class="bfm-h5">Présences</div>
+                        <div class="bfm-h5">Attendance</div>
                         <div class="bfm-people">
                             <t t-foreach="doc['attendance']" t-as="a">
                                 <span t-attf-class="bfm-person #{a['key']}">
@@ -483,10 +483,7 @@
                 </t>
 
                 <p class="bfm-foot">
-                    Compte rendu transmis le <t t-out="doc['sent_date']"/>.
-                    Le PDF reprend l'intégralité du compte rendu, dans sa version
-                    à jour : il peut différer de la copie reçue par courriel si
-                    des correctifs y ont été apportés depuis.
+                    Report sent on <t t-out="doc['sent_date']"/>. The PDF contains the full, up-to-date report: it may differ from the copy you received by email if it has been corrected since.
                 </p>
             </div>
         </t>

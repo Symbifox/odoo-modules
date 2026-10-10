@@ -10,7 +10,7 @@
                        options="{'no_create': True, 'no_open': True, 'no_quick_create': True}"
                        domain="[('partner_ids.user_ids', 'in', uid)]"
                        invisible="plan_id"
-                       placeholder="Lier à un événement calendrier..."/>
+                       placeholder="Link to a calendar event..."/>
             </xpath>
             <xpath expr="//field[@name='note']" position="before">
                 <div class="alert alert-info mb-2" role="status"
@@ -21,13 +21,13 @@
                     <field name="calendar_event_sync_source" invisible="1"/>
                     <div class="d-flex flex-wrap gap-3">
                         <span>
-                            <strong>Quand : </strong>
+                            <strong>When: </strong>
                             <field name="calendar_event_start" widget="daterange"
                                    options="{'end_date_field': 'calendar_event_stop'}"
                                    readonly="1" class="d-inline"/>
                         </span>
                         <span invisible="not calendar_event_location">
-                            <strong>Lieu : </strong>
+                            <strong>Location: </strong>
                             <field name="calendar_event_location" readonly="1" class="d-inline"/>
                         </span>
                         <span class="badge text-bg-info"

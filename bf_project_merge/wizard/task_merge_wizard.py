@@ -11,24 +11,24 @@ _SYSTEM_MESSAGE_TYPES = ("notification",)
 
 class TaskMergeWizard(models.TransientModel):
     _name = "bf.task.merge.wizard"
-    _description = "Assistant de regroupement de tâches"
+    _description = "Task merge wizard"
 
     source_task_ids = fields.Many2many(
-        "project.task", string="Tâches à regrouper", required=True
+        "project.task", string="Tasks to merge", required=True
     )
-    assignee_ids = fields.Many2many("res.users", string="Personnes assignées")
+    assignee_ids = fields.Many2many("res.users", string="Assignees")
     target_mode = fields.Selection(
         [
-            ("existing", "Vers une tâche existante"),
-            ("new", "Vers une nouvelle tâche"),
+            ("existing", "Into an existing task"),
+            ("new", "Into a new task"),
         ],
         string="Destination",
         default="existing",
         required=True,
     )
-    target_task_id = fields.Many2one("project.task", string="Tâche conservée")
-    new_task_name = fields.Char(string="Titre de la nouvelle tâche")
-    new_project_id = fields.Many2one("project.project", string="Projet")
+    target_task_id = fields.Many2one("project.task", string="Task to keep")
+    new_task_name = fields.Char(string="New task title")
+    new_project_id = fields.Many2one("project.project", string="Project")
 
     @api.model
     def default_get(self, fields_list):
@@ -52,7 +52,7 @@ class TaskMergeWizard(models.TransientModel):
         self.ensure_one()
         sources = self.source_task_ids
         if len(sources) < 2:
-            raise UserError(_("Choisissez au moins deux tâches à regrouper."))
+            raise UserError(_("Choose at least two tasks to merge."))
         # The operator must be allowed to modify every selected task before any
         # elevated (sudo) re-pointing of its sub-records runs.
         sources.check_access("write")
@@ -62,7 +62,7 @@ class TaskMergeWizard(models.TransientModel):
         absorbed = sources - keeper
         if not absorbed:
             raise UserError(
-                _("La destination ne peut pas être la seule tâche sélectionnée.")
+                _("The destination cannot be the only selected task.")
             )
 
         self._absorb_conversation(absorbed, keeper)
@@ -90,7 +90,7 @@ class TaskMergeWizard(models.TransientModel):
         if self.target_mode == "new":
             if not self.new_task_name or not self.new_project_id:
                 raise UserError(
-                    _("Indiquez le titre et le projet de la nouvelle tâche.")
+                    _("Enter the title and the project of the new task.")
                 )
             partners = sources.partner_id
             priorities = set(sources.mapped("priority"))
@@ -105,7 +105,7 @@ class TaskMergeWizard(models.TransientModel):
 
         keeper = self.target_task_id
         if not keeper:
-            raise UserError(_("Sélectionnez la tâche à conserver."))
+            raise UserError(_("Select the task to keep."))
         extra = self._stitch_descriptions(sources - keeper)
         if extra:
             carried["description"] = Markup(keeper.description or "") + extra
@@ -242,12 +242,12 @@ class TaskMergeWizard(models.TransientModel):
         keeper_link = keeper._get_html_link()
         for task in absorbed:
             task.message_post(
-                body=Markup(_("Regroupée dans %s.")) % keeper_link,
+                body=Markup(_("Merged into %s.")) % keeper_link,
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
             )
         keeper.message_post(
-            body=Markup(_("Tâches regroupées ici : %s."))
+            body=Markup(_("Tasks merged here: %s."))
             % escape(", ".join(absorbed.mapped("display_name"))),
             message_type="comment",
             subtype_xmlid="mail.mt_note",

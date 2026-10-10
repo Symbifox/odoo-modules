@@ -3,7 +3,11 @@
     "name": "Lecture des reçus",
     "summary": "Photographier un reçu de repas et laisser l'extraction "
                "remplir le total, les taxes et le pourboire",
-    "version": "18.0.2.1.1",
+    # 18.0.2.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.2.2.0",
     "category": "Human Resources/Expenses",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

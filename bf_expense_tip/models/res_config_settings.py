@@ -7,6 +7,6 @@ class ResConfigSettings(models.TransientModel):
 
     expense_tip_account_id = fields.Many2one(
         related="company_id.expense_tip_account_id",
-        string="Compte des pourboires",
+        string="Tip account",
         readonly=False,
     )

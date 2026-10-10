@@ -1,0 +1,186 @@
+# Translation of Rencontres - Portail client - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_meeting_portal 18.0.2.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:05+0000\n"
+"PO-Revision-Date: 2026-10-10 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid ""
+". The PDF contains the full, up-to-date report: it may differ from the copy "
+"you received by email if it has been corrected since."
+msgstr ""
+".\n"
+"                    Le PDF reprend l'intégralité du compte rendu, dans sa version\n"
+"                    à jour : il peut différer de la copie reçue par courriel si\n"
+"                    des correctifs y ont été apportés depuis."
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_my_meetings
+msgid ""
+"<i class=\"fa fa-calendar-o\"/>\n"
+"                        No meeting report has been sent to you yet."
+msgstr ""
+"<i class=\"fa fa-calendar-o\"/>\n"
+"                        Aucun compte rendu ne vous a encore été transmis."
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "<i class=\"fa fa-file-pdf-o me-1\"/> PDF"
+msgstr "<i class=\"fa fa-file-pdf-o me-1\"/> PDF"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "<span class=\"kind\">Meeting report</span>"
+msgstr "<span class=\"kind\">Compte rendu</span>"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_card
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "<span class=\"sep\">•</span>"
+msgstr "<span class=\"sep\">•</span>"
+
+#. module: bf_meeting_portal
+#. odoo-python
+#: code:addons/bf_meeting_portal/controllers/portal.py:0
+msgid "Absent"
+msgstr "Absent"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Action items"
+msgstr "Éléments d'action"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Attendance"
+msgstr "Présences"
+
+#. module: bf_meeting_portal
+#: model:ir.model.fields,field_description:bf_meeting_portal.field_meeting_record__report_sent_date
+msgid "Date d'envoi"
+msgstr "Date d'envoi"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Decision maker:"
+msgstr "Décideur :"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Decisions"
+msgstr "Décisions"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Deliverables"
+msgstr "Livrables"
+
+#. module: bf_meeting_portal
+#: model:ir.model.fields,field_description:bf_meeting_portal.field_meeting_record__report_recipient_ids
+msgid "Destinataires"
+msgstr "Destinataires"
+
+#. module: bf_meeting_portal
+#. odoo-python
+#: code:addons/bf_meeting_portal/controllers/portal.py:0
+msgid "Excused"
+msgstr "Excusé"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Existing tasks discussed"
+msgstr "Tâches existantes discutées"
+
+#. module: bf_meeting_portal
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#. odoo-python
+#: code:addons/bf_meeting_portal/controllers/portal.py:0
+msgid "Meeting report"
+msgstr "Compte rendu"
+
+#. module: bf_meeting_portal
+#. modules: bf_meeting_call_archive, bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_my_meetings
+msgid "Meeting reports"
+msgstr "Comptes rendus"
+
+#. module: bf_meeting_portal
+#. odoo-python
+#: code:addons/bf_meeting_portal/controllers/portal.py:0
+msgid "Meeting_report_%s.pdf"
+msgstr "Compte_rendu_%s.pdf"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_breadcrumb_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_my_home_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_my_meetings
+msgid "Meetings"
+msgstr "Rencontres"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Open questions"
+msgstr "Questions ouvertes"
+
+#. module: bf_meeting_portal
+#. odoo-python
+#: code:addons/bf_meeting_portal/controllers/portal.py:0
+msgid "Present"
+msgstr "Présent"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Report sent on"
+msgstr "Compte rendu transmis le"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "Summary"
+msgstr "Résumé"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_my_meetings
+msgid "The meeting reports that were sent to you."
+msgstr "Les comptes rendus qui vous ont été transmis."
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_card
+msgid "decision"
+msgstr "décision"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "due"
+msgstr "échéance"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_card
+msgid "participant"
+msgstr "participant"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_card
+msgid "s"
+msgstr "s"
+
+#. module: bf_meeting_portal
+#: model:ir.model.fields,field_description:bf_meeting_portal.field_meeting_record__report_state
+msgid "État du rapport"
+msgstr "État du rapport"
+
+#. module: bf_meeting_portal
+#: model_terms:ir.ui.view,arch_db:bf_meeting_portal.portal_meeting_record
+msgid "• done"
+msgstr "• fait"

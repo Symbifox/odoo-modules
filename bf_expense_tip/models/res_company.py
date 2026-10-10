@@ -7,9 +7,9 @@ class ResCompany(models.Model):
 
     expense_tip_account_id = fields.Many2one(
         comodel_name="account.account",
-        string="Compte des pourboires",
+        string="Tip account",
         domain="[('deprecated', '=', False)]",
-        help="Laissé vide, le pourboire va au même compte que la dépense qui "
-             "le porte — il fait partie des frais de représentation. Le "
-             "désigner ici sert à l'isoler pour l'analyse.",
+        help="Left empty, the tip goes to the same account as the expense "
+             "that carries it, as part of entertainment expenses. Setting "
+             "it here isolates it for analysis.",
     )

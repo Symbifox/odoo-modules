@@ -5,24 +5,23 @@
         <field name="name">bf.mass.note.wizard.form</field>
         <field name="model">bf.mass.note.wizard</field>
         <field name="arch" type="xml">
-            <form string="Ajouter une note en lot">
+            <form string="Add a note in bulk">
                 <group>
                     <field name="model_name" invisible="1"/>
-                    <field name="model_label" string="Modèle" readonly="1"/>
-                    <field name="record_count" string="Enregistrements sélectionnés" readonly="1"/>
+                    <field name="model_label" string="Model" readonly="1"/>
+                    <field name="record_count" string="Selected records" readonly="1"/>
                     <field name="post_type" widget="radio"/>
                 </group>
                 <div class="alert alert-warning" role="alert" invisible="post_type != 'comment'">
-                    Un « Message » sera publié sur le fil de chaque enregistrement sélectionné et
-                    notifiera ses abonnés. Selon la configuration, ceci peut générer des courriels.
+                    A "Message" will be posted on the thread of each selected record and will notify its followers. Depending on the configuration, this may send emails.
                 </div>
                 <field name="confirm_message" invisible="post_type != 'comment'"/>
-                <separator string="Contenu"/>
+                <separator string="Content"/>
                 <field name="body" nolabel="1"
-                       placeholder="Saisissez la note à publier sur tous les enregistrements sélectionnés…"/>
+                       placeholder="Type the note to post on all the selected records…"/>
                 <footer>
-                    <button name="action_post" string="Publier" type="object" class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button name="action_post" string="Post" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

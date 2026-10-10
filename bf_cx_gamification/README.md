@@ -5,3 +5,7 @@ Awards Fox Quest XP to the owner when a closed-loop follow-up is completed
 (feedback moved to "Handled") and when a client complaint is resolved. One
 award per record (anti-double flag), nothing is sent to the client, and
 any XP error is logged without blocking the originating flow.
+
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The XP description is written in the language of the user who earns it.

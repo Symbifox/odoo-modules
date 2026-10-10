@@ -28,7 +28,7 @@
                      SVG vectoriel 64x64, même taille intrinsèque que les
                      icônes natives. -->
                 <t t-set="icon" t-value="'/bf_cx_portal/static/src/img/portal_icon.svg'"/>
-                <t t-set="title">Mon feedback</t>
+                <t t-set="title">My feedback</t>
                 <t t-set="url" t-value="'/my/feedback'"/>
                 <t t-set="placeholder_count" t-value="'cx_feedback_count'"/>
             </t>
@@ -44,7 +44,7 @@
               inherit_id="portal.portal_breadcrumbs" priority="50">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'cx_feedback'" class="breadcrumb-item active">
-                Mon feedback
+                My feedback
             </li>
         </xpath>
     </template>
@@ -179,52 +179,50 @@
     <!-- Page : /my/feedback                                          -->
     <!-- ============================================================ -->
 
-    <template id="portal_my_cx_feedback" name="Mon feedback">
+    <template id="portal_my_cx_feedback" name="My feedback">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             <t t-call="bf_cx_portal.portal_cx_feedback_styles"/>
 
             <div class="bfcx">
                 <div class="bfcx-head">
-                    <h3>Mon feedback</h3>
+                    <h3>My feedback</h3>
                     <p class="bfcx-sub">
-                        Vos réponses à nos demandes de feedback et vos commentaires,
-                        au même endroit.
+                        Your answers to our feedback requests and your comments, in one place.
                     </p>
                 </div>
 
                 <div t-if="thanks" class="bfcx-alert ok">
-                    Merci! Votre commentaire a bien été transmis à notre équipe.
+                    Thank you! Your comment has been sent to our team.
                 </div>
                 <div t-if="error == 'empty'" class="bfcx-alert ko">
-                    Votre commentaire est vide : écrivez-nous quelques mots avant d'envoyer.
+                    Your comment is empty: write us a few words before sending.
                 </div>
                 <div t-if="error == 'save'" class="bfcx-alert ko">
-                    Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.
+                    An error occurred while saving. Please try again.
                 </div>
 
-                <div class="bfcx-section">Nous écrire</div>
+                <div class="bfcx-section">Write to us</div>
                 <form method="post" action="/my/feedback/submit" class="bfcx-form">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <label for="bfcx_comment" class="form-label">
-                        Un commentaire, une idée, une insatisfaction?
+                        A comment, an idea, something you were unhappy with?
                     </label>
                     <textarea id="bfcx_comment" name="comment" rows="4"
                               maxlength="5000" required="required"
-                              placeholder="Écrivez-nous ici."></textarea>
-                    <button type="submit" class="btn bfcx-btn mt-2">Envoyer</button>
+                              placeholder="Write to us here."></textarea>
+                    <button type="submit" class="btn bfcx-btn mt-2">Send</button>
                 </form>
 
                 <div class="bfcx-section">
-                    Historique
+                    History
                     <span class="bfcx-n"><t t-out="total"/></span>
                 </div>
 
                 <t t-if="not feedbacks">
                     <div class="bfcx-empty">
                         <i class="fa fa-comments-o"/>
-                        Aucun feedback pour l'instant. Votre premier commentaire
-                        apparaîtra ici.
+                        No feedback yet. Your first comment will appear here.
                     </div>
                 </t>
 
@@ -240,8 +238,7 @@
                         <p t-if="item['comment']" class="bfcx-comment"><t t-out="item['comment']"/></p>
                     </div>
                     <p t-if="truncated" class="bfcx-foot">
-                        Affichage des <t t-out="page_limit"/> feedbacks les plus
-                        récents sur <t t-out="total"/>.
+                        Showing the <t t-out="page_limit"/> most recent feedback entries out of <t t-out="total"/>.
                     </p>
                 </t>
             </div>

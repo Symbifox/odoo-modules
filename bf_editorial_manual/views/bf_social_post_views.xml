@@ -10,9 +10,9 @@
       <xpath expr="//header" position="inside">
         <field name="is_manual_channel" invisible="1"/>
         <button name="action_mark_published_manually" type="object"
-                string="Marquer comme diffusé" class="btn-primary"
+                string="Mark as published" class="btn-primary"
                 invisible="not is_manual_channel or state == 'sent' or remote_id"
-                help="Consigne une publication faite à la main sur le réseau."/>
+                help="Records a post made by hand on the network."/>
       </xpath>
 
       <xpath expr="//field[@name='link_url']" position="after">

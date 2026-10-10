@@ -1,0 +1,101 @@
+# Translation template for Expérience client - sondage post-perte CRM.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_crm 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 02:04+0000\n"
+"PO-Revision-Date: 2026-10-10 02:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "Customer added to the next wave of the \"%s\" program (nothing sent yet)."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_res_config_settings__bf_cx_loss_program_id
+msgid "Lost-deal program"
+msgstr ""
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid ""
+"Lost-deal survey \"%(program)s\" sent to %(partner)s (loss reason: "
+"%(reason)s)."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid "Lost-deal survey (CRM)"
+msgstr ""
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid ""
+"Lost-deal survey not sent: %s was contacted recently (over-solicitation "
+"guard)."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_crm_lead__bf_cx_loss_survey_sent
+msgid "Lost-deal survey sent"
+msgstr ""
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid "NPS enrollment on won deals (CRM)"
+msgstr ""
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "Next wave (won-deal enrollments)"
+msgstr ""
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,help:bf_cx_crm.field_res_config_settings__bf_cx_loss_program_id
+msgid ""
+"Program whose survey is sent to the contact when an opportunity is marked "
+"lost. Empty = nothing is sent."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid ""
+"When a deal is won, add the customer to the next draft wave of this program."
+" Nothing is sent right away: the wave goes out manually."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model_terms:ir.ui.view,arch_db:bf_cx_crm.res_config_settings_view_form
+msgid ""
+"When an opportunity is marked lost, send this program's survey to the "
+"contact (once per opportunity, over-solicitation guard applied)."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,help:bf_cx_crm.field_res_config_settings__bf_cx_won_program_id
+msgid ""
+"When an opportunity is won, the customer is added to the next DRAFT wave of "
+"this program (nothing is sent right away). Empty = disabled."
+msgstr ""
+
+#. module: bf_cx_crm
+#: model:ir.model.fields,field_description:bf_cx_crm.field_res_config_settings__bf_cx_won_program_id
+msgid "Won-deal enrollment program"
+msgstr ""
+
+#. module: bf_cx_crm
+#. odoo-python
+#: code:addons/bf_cx_crm/models/crm_lead.py:0
+msgid "not specified"
+msgstr ""

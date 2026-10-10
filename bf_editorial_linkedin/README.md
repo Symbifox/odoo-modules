@@ -51,6 +51,10 @@ expiry date, then switch the channel's network from manual to LinkedIn. The
 Fernet key of `bf_editorial_social` must be in place first, or writing the
 credential is refused.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The token-expiry warning is written in the language of the channel's creator, or the company's. On upgrade, the scheduled job's name switches to English where it still holds the delivered French.
+
 ## Licence
 
 BUSL-1.1. Internal use is free; providing a product or service to third parties

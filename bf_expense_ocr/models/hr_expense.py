@@ -83,21 +83,21 @@ class HrExpense(models.Model):
 
     ocr_state = fields.Selection(
         [
-            ("none", "Non lue"),
-            ("pending", "En cours"),
-            ("done", "Lue"),
-            ("doubt", "À vérifier"),
-            ("error", "Erreur"),
+            ("none", "Unread"),
+            ("pending", "In progress"),
+            ("done", "Read"),
+            ("doubt", "To review"),
+            ("error", "Error"),
         ],
-        string="Lecture du reçu",
+        string="Receipt reading",
         default="none",
         copy=False,
         tracking=True,
     )
-    ocr_scanned_date = fields.Datetime(string="Lu le", copy=False)
-    ocr_confidence = fields.Float(string="Confiance", copy=False)
-    ocr_raw_response = fields.Text(string="Extraction brute", copy=False)
-    ocr_error_message = fields.Char(string="Erreur de lecture", copy=False)
+    ocr_scanned_date = fields.Datetime(string="Read on", copy=False)
+    ocr_confidence = fields.Float(string="Confidence", copy=False)
+    ocr_raw_response = fields.Text(string="Raw extraction", copy=False)
+    ocr_error_message = fields.Char(string="Reading error", copy=False)
 
     # ------------------------------------------------------------------
     # La pièce jointe à lire
@@ -149,7 +149,7 @@ class HrExpense(models.Model):
         base = ".".join((piece.name or "recu").split(".")[:-1]) or (piece.name or "recu")
         try:
             return self.env["ir.attachment"].create({
-                "name": f"{base} (recadré){info.get('ext', '.jpg')}",
+                "name": _("%(nom)s (cropped)%(ext)s", nom=base, ext=info.get("ext", ".jpg")),
                 "datas": recadre,
                 "mimetype": info.get("mimetype") or "image/jpeg",
                 "res_model": "hr.expense",
@@ -174,13 +174,13 @@ class HrExpense(models.Model):
         if not piece:
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": _("Aucune photo ni PDF joint à lire."),
+                "ocr_error_message": _("No photo or PDF attached to read."),
             })
             return False
         if not piece.datas:
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": _("La pièce jointe est vide."),
+                "ocr_error_message": _("The attachment is empty."),
             })
             return False
 
@@ -213,7 +213,7 @@ class HrExpense(models.Model):
             motif = (res or {}).get("error") if isinstance(res, dict) else None
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": (motif or _("Lecture sans données"))[:255],
+                "ocr_error_message": (motif or _("Reading returned no data"))[:255],
                 "ocr_raw_response": json.dumps(res, ensure_ascii=False)
                 if isinstance(res, dict) else "",
             })
@@ -262,11 +262,11 @@ class HrExpense(models.Model):
         pourboire_lu = _nombre(donnees.get("tip"))
 
         if total is None:
-            return None, None, _("Le total n'a pas été lu.")
+            return None, None, _("The total was not read.")
         if total <= 0:
-            return None, None, _("Le total lu n'est pas un montant (%s).") % total
+            return None, None, _("The total read is not an amount (%s).") % total
         if sous_total is None:
-            return None, None, _("Le sous-total avant taxes n'a pas été lu.")
+            return None, None, _("The subtotal before taxes was not read.")
 
         premier_motif = None
         for taxes in (gst + qst + autres, gst + qst):
@@ -290,27 +290,27 @@ class HrExpense(models.Model):
             residu = round(total - (sous_total + taxes), 2)
             if residu < -TOLERANCE_BALANCE:
                 return None, _(
-                    "Le reçu ne balance pas : sous-total et taxes (%(part).2f) "
-                    "dépassent le total (%(total).2f)."
+                    "The receipt does not add up: subtotal and taxes "
+                    "(%(part).2f) exceed the total (%(total).2f)."
                 ) % {"part": sous_total + taxes, "total": total}
             if residu <= TOLERANCE_BALANCE:
                 pourboire = 0.0
             elif residu > sous_total * POURBOIRE_MAX_RATIO:
                 return None, _(
-                    "L'écart entre le total et le détail (%(residu).2f) est trop "
-                    "grand pour être un pourboire."
+                    "The gap between the total and the detail "
+                    "(%(residu).2f) is too large to be a tip."
                 ) % {"residu": residu}
             else:
                 pourboire = residu
 
         if pourboire < 0:
-            return None, _("Le pourboire lu est négatif.")
+            return None, _("The tip read is negative.")
 
         ecart = abs((sous_total + taxes + pourboire) - total)
         if ecart > TOLERANCE_BALANCE:
             return None, _(
-                "Le reçu ne balance pas : sous-total + taxes + pourboire = "
-                "%(somme).2f, total lu = %(total).2f."
+                "The receipt does not add up: subtotal + taxes + tip = "
+                "%(somme).2f, total read = %(total).2f."
             ) % {"somme": sous_total + taxes + pourboire, "total": total}
 
         return pourboire, None
@@ -454,6 +454,19 @@ class HrExpense(models.Model):
     # Le rattrapage
     # ------------------------------------------------------------------
 
+    def _ocr_langue_lecteur(self):
+        """La langue de l'employé dont c'est la dépense, sinon celle de la société.
+
+        None laisse le contexte sans langue : le texte s'écrit alors dans la
+        langue source (l'anglais).
+        """
+        self.ensure_one()
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        usager = self.employee_id.user_id
+        langues = [usager.lang] if usager and usager.active and not usager.share else []
+        langues.append((self.company_id or self.env.company).partner_id.lang)
+        return next((lang for lang in langues if lang in installees), None)
+
     @api.model
     def _cron_ocr_batch(self, limite=20):
         """Rattraper les dépenses en brouillon jamais lues.
@@ -470,7 +483,9 @@ class HrExpense(models.Model):
         _logger.info("Lecture des reçus : %d dépense(s) à lire", len(a_lire))
         for depense in a_lire:
             try:
-                depense.action_ocr_scan()
+                # Le motif d'échec est écrit dans la fiche : dans la langue de qui
+                # la lira, pas dans celle de l'usager du cron.
+                depense.with_context(lang=depense._ocr_langue_lecteur()).action_ocr_scan()
                 self.env.cr.commit()
             except Exception:  # noqa: BLE001
                 _logger.exception("Lecture du reçu %s en échec", depense.id)

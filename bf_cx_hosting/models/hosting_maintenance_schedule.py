@@ -26,10 +26,10 @@ class HostingMaintenanceSchedule(models.Model):
     _inherit = "hosting.maintenance.schedule"
 
     bf_cx_feedback_sent = fields.Boolean(
-        string="Feedback post-maintenance envoyé",
+        string="Post-maintenance feedback sent",
         copy=False,
-        help="Indicateur par cycle de maintenance : réinitialisé à chaque "
-        "nouvelle occurrence (la planification est récurrente).",
+        help="Per maintenance cycle flag: reset at each new occurrence "
+             "(the schedule is recurring).",
     )
 
     def action_mark_done(self):
@@ -75,14 +75,29 @@ class HostingMaintenanceSchedule(models.Model):
             if blocked:
                 record.message_post(
                     body=_(
-                        "Demande de feedback non envoyée : %s a été sollicité "
-                        "récemment (garde-fou anti-sursollicitation)."
+                        "Feedback request not sent: %s was contacted "
+                        "recently (over-solicitation guard)."
                     )
                     % partner.display_name
                 )
                 continue
-            record.rating_send_request(
-                template, lang=partner.lang, force_send=False
+            lang = record._bf_cx_contact_lang(partner)
+            record.with_context(lang=lang or record.env.lang).rating_send_request(
+                template, lang=lang, force_send=False
             )
             partner._bf_cx_mark_solicited()
             record.bf_cx_feedback_sent = True
+
+    def _bf_cx_contact_lang(self, partner):
+        """Language of the feedback email: the contact's, else the company's.
+
+        A contact without a language would get the email in the language of
+        the context, and a scheduled job has none: the English source. The
+        company's language is the better guess. False when neither is
+        installed (the template then decides).
+        """
+        installed = {code for code, _name in self.env["res.lang"].get_installed()}
+        for lang in (partner.lang, self.env.company.partner_id.lang):
+            if lang in installed:
+                return lang
+        return False
