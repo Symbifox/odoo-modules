@@ -9,21 +9,21 @@
 
             <xpath expr="//header/button[@name='action_run_qa']" position="after">
                 <button name="action_genfox_full" type="object"
-                        string="Revue Gen" class="btn-secondary"
+                        string="Gen review" class="btn-secondary"
                         invisible="not genfox_available or genfox_pending"
                         groups="bf_editorial.group_editorial_manager"
-                        help="Une seule passe : ce que les expressions régulières n'atteignent pas — répétitions, texte des liens, dérive par rapport à l'angle déclaré, style maison — et un texte étoffé si l'entrée en a besoin. Rien n'est écrit dans l'article de lui-même."/>
+                        help="A single run: what regular expressions cannot reach (repetitions, link text, drift from the declared angle, house style) and an expanded text if the entry needs one. Nothing is written to the article on its own."/>
                 <button name="action_view_suggestions" type="object"
-                        string="Gen travaille…" class="btn-secondary" disabled="1"
+                        string="Gen is working…" class="btn-secondary" disabled="1"
                         invisible="not genfox_pending"/>
                 <!-- Deux variantes du même bouton, mutuellement exclusives : le
                      bleu signale une proposition qui attend une décision, le
                      gris n'annonce qu'une lecture. -->
                 <button name="action_view_suggestions" type="object"
-                        string="Propositions Gen" class="btn-primary"
+                        string="Gen suggestions" class="btn-primary"
                         invisible="not genfox_pending_decision or genfox_pending"/>
                 <button name="action_view_suggestions" type="object"
-                        string="Propositions Gen" class="btn-secondary"
+                        string="Gen suggestions" class="btn-secondary"
                         invisible="genfox_pending_decision or not suggestion_ids or genfox_pending"/>
             </xpath>
 
@@ -35,30 +35,22 @@
 
                 <div class="alert alert-info mb-2" role="alert"
                      invisible="not genfox_pending">
-                    <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
+                    <i class="fa fa-circle-o-notch fa-spin me-2" title="In progress"/>
                     <span>
-                        <b>Gen travaille sur cet article.</b>
-                        Lancé le <field name="genfox_started" readonly="1" class="d-inline"/> :
-                        comptez quelques minutes, puis rechargez la page. Le résultat
-                        s'ouvrira dans l'onglet « Gen ».
+                        <b>Gen is working on this article.</b> Started on <field name="genfox_started" readonly="1" class="d-inline"/> (allow a few minutes, then reload the page). The result will open in the "Gen" tab.
                     </span>
                 </div>
                 <div class="alert alert-warning mb-2" role="alert"
                      invisible="not genfox_stalled">
-                    <b>Passe sans nouvelle.</b>
-                    Celle lancée le <field name="genfox_started" readonly="1" class="d-inline"/>
-                    n'a jamais rendu de statut : le pont a probablement été redémarré,
-                    ou le plafond de temps est passé. Rien n'a été écrit dans l'article.
-                    Les boutons sont redevenus disponibles, relancez-la.
+                    <b>Stalled run.</b> The run started on <field name="genfox_started" readonly="1" class="d-inline"/>
+                    never reported a status: the bridge was probably restarted, or the time limit passed. Nothing was written to the article. The buttons are available again, run it again.
                 </div>
             </xpath>
 
             <xpath expr="//page[@name='qa']" position="after">
                 <page string="Gen" name="genfox" invisible="not suggestion_ids">
                     <div class="alert alert-info" role="alert">
-                        Gen propose, vous appliquez. Une proposition n'entre
-                        dans l'article que par le bouton « Appliquer au billet »,
-                        et elle refuse si l'article a bougé depuis son calcul.
+                        Gen suggests, you apply. A suggestion only enters the article through the "Apply to the post" button, and it refuses if the article has changed since it was computed.
                     </div>
                     <field name="suggestion_ids" nolabel="1" readonly="1">
                         <list decoration-muted="applied" decoration-danger="state == 'error'"
@@ -72,7 +64,7 @@
                             <field name="applied"/>
                             <field name="triggered_by" optional="hide"/>
                             <button name="action_open" type="object"
-                                    icon="fa-arrow-right" title="Ouvrir la proposition"/>
+                                    icon="fa-arrow-right" title="Open the suggestion"/>
                         </list>
                     </field>
                 </page>

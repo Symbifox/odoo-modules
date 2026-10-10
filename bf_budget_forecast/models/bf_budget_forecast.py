@@ -24,7 +24,7 @@ class BfBudgetForecast(models.Model):
     """
 
     _name = "bf.budget.forecast"
-    _description = "Prévision glissante"
+    _description = "Rolling forecast"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, vintage desc, id desc"
 
@@ -33,47 +33,48 @@ class BfBudgetForecast(models.Model):
         "res.company", required=True, default=lambda self: self.env.company,
         tracking=True, index=True,
     )
-    currency_id = fields.Many2one(related="company_id.currency_id", string="Devise")
+    currency_id = fields.Many2one(related="company_id.currency_id", string="Currency")
 
-    date_start = fields.Date(string="Début de l'horizon", required=True, tracking=True)
-    date_end = fields.Date(string="Fin de l'horizon", required=True, tracking=True)
+    date_start = fields.Date(string="Horizon start", required=True, tracking=True)
+    date_end = fields.Date(string="Horizon end", required=True, tracking=True)
     actuals_through = fields.Date(
-        string="Réel arrêté au",
+        string="Actuals through",
         required=True,
         tracking=True,
-        help="Les mois qui finissent à cette date ou avant sont du réel, relu "
-        "dans la comptabilité. Les suivants sont de la prévision.",
+        help="Months ending on or before this date are actuals, read from "
+             "accounting. The following ones are forecast.",
     )
 
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("published", "Publiée"),
-            ("superseded", "Remplacée"),
+            ("draft", "Draft"),
+            ("published", "Published"),
+            ("superseded", "Superseded"),
         ],
         default="draft",
         required=True,
         tracking=True,
     )
-    vintage = fields.Integer(string="Millésime", default=1, readonly=True)
+    vintage = fields.Integer(string="Vintage", default=1, readonly=True)
     previous_id = fields.Many2one(
-        "bf.budget.forecast", string="Passe précédente", readonly=True, ondelete="set null"
+        "bf.budget.forecast", string="Previous version", readonly=True, ondelete="set null"
     )
-    next_ids = fields.One2many("bf.budget.forecast", "previous_id", string="Passes suivantes")
+    next_ids = fields.One2many("bf.budget.forecast", "previous_id", string="Next "
+                                                                           "versions")
 
     line_ids = fields.One2many(
-        "bf.budget.forecast.line", "forecast_id", string="Lignes", copy=True
+        "bf.budget.forecast.line", "forecast_id", string="Lines", copy=True
     )
     line_count = fields.Integer(compute="_compute_totals")
 
     amount_actual = fields.Monetary(
-        string="Réel à ce jour", compute="_compute_totals", currency_field="currency_id"
+        string="Actual to date", compute="_compute_totals", currency_field="currency_id"
     )
     amount_forecast = fields.Monetary(
-        string="Prévu sur les mois ouverts", compute="_compute_totals", currency_field="currency_id"
+        string="Forecast over the open months", compute="_compute_totals", currency_field="currency_id"
     )
     amount_total = fields.Monetary(
-        string="Total de l'horizon", compute="_compute_totals", currency_field="currency_id"
+        string="Horizon total", compute="_compute_totals", currency_field="currency_id"
     )
     month_count = fields.Integer(compute="_compute_totals")
     closed_month_count = fields.Integer(compute="_compute_totals")
@@ -99,20 +100,21 @@ class BfBudgetForecast(models.Model):
         for forecast in self:
             if forecast.date_end < forecast.date_start:
                 raise ValidationError(
-                    _("La fin de l'horizon ne peut pas précéder son début.")
+                    _("The horizon end cannot come before its start.")
                 )
             if forecast.actuals_through > fields.Date.context_today(forecast):
                 raise ValidationError(
                     _(
-                        "Le réel ne peut pas être arrêté dans le futur : "
-                        "la comptabilité ne l'a pas encore vu."
+                        "Actuals cannot be closed in the future: "
+                        "accounting has not seen them yet."
                     )
                 )
             if forecast.actuals_through >= forecast.date_end:
                 raise ValidationError(
                     _(
-                        "Si le réel est arrêté à la fin de l'horizon, il ne reste "
-                        "aucun mois à prévoir : ce n'est plus une prévision."
+                        "If actuals are closed at the horizon end, no "
+                        "month is left to forecast: it is no longer a "
+                        "forecast."
                     )
                 )
 
@@ -124,9 +126,9 @@ class BfBudgetForecast(models.Model):
             if frozen:
                 raise UserError(
                     _(
-                        "« %(name)s » est publiée : ses chiffres sont la trace de ce "
-                        "qu'on croyait à ce moment-là. Roulez une nouvelle passe "
-                        "plutôt que de retoucher celle-ci.",
+                        "\"%(name)s\" is published: its figures record "
+                        "what was believed at that time. Roll a new "
+                        "version forward rather than editing this one.",
                         name=frozen[0].display_name,
                     )
                 )
@@ -136,7 +138,8 @@ class BfBudgetForecast(models.Model):
         published = self.filtered(lambda f: f.state != "draft")
         if published:
             raise UserError(
-                _("Une passe publiée ne se supprime pas : c'est une trace datée.")
+                _("A published version cannot be deleted: it is a dated "
+                  "record.")
             )
         return super().unlink()
 
@@ -144,12 +147,12 @@ class BfBudgetForecast(models.Model):
     def action_publish(self):
         for forecast in self:
             if forecast.state != "draft":
-                raise UserError(_("Seule une passe au brouillon se publie."))
+                raise UserError(_("Only a draft version can be published."))
             if not forecast.line_ids:
-                raise UserError(_("Une passe sans ligne ne prévoit rien."))
+                raise UserError(_("A version without lines forecasts nothing."))
             forecast.state = "published"
             forecast.message_post(
-                body=_("Passe %(n)s publiée, réel arrêté au %(date)s.",
+                body=_("Version %(n)s published, actuals through %(date)s.",
                        n=forecast.vintage, date=forecast.actuals_through)
             )
         return True
@@ -157,10 +160,12 @@ class BfBudgetForecast(models.Model):
     def action_reset_draft(self):
         for forecast in self:
             if forecast.state != "published":
-                raise UserError(_("Seule une passe publiée revient au brouillon."))
+                raise UserError(_("Only a published version can be reset "
+                                  "to draft."))
             if forecast.next_ids:
                 raise UserError(
-                    _("Une passe déjà roulée ne se rouvre pas : c'est la suivante qui vit.")
+                    _("A version already rolled forward cannot be "
+                      "reopened: the next one is the live one.")
                 )
             forecast.state = "draft"
         return True
@@ -174,7 +179,7 @@ class BfBudgetForecast(models.Model):
         """
         self.ensure_one()
         if self.state == "superseded":
-            raise UserError(_("Cette passe a déjà été roulée."))
+            raise UserError(_("This version has already been rolled forward."))
         if self.state == "draft":
             self.action_publish()
 
@@ -187,7 +192,9 @@ class BfBudgetForecast(models.Model):
 
         suivante = self.create(
             {
-                "name": _("%(name)s — %(date)s", name=self._base_name(), date=new_through),
+                # Hors catalogue : `_base_name` relit ce nom sur « — ». Traduit, un
+                # autre séparateur ferait s'empiler les dates à chaque roulement.
+                "name": "%s — %s" % (self._base_name(), new_through),
                 "company_id": self.company_id.id,
                 "date_start": new_start,
                 "date_end": new_end,
@@ -200,7 +207,7 @@ class BfBudgetForecast(models.Model):
             suivante._carry_line(line)
         self.state = "superseded"
         self.message_post(
-            body=_("Roulée vers la passe %(n)s.", n=suivante.vintage)
+            body=_("Rolled forward to version %(n)s.", n=suivante.vintage)
         )
         return {
             "type": "ir.actions.act_window",
@@ -242,7 +249,7 @@ class BfBudgetForecast(models.Model):
     def action_seed(self):
         for forecast in self:
             if forecast.state != "draft":
-                raise UserError(_("On n'amorce que le brouillon."))
+                raise UserError(_("Only a draft can be seeded."))
             forecast.line_ids._seed_open_months()
         return True
 
@@ -250,7 +257,7 @@ class BfBudgetForecast(models.Model):
         """Une ligne par poste de charges de la société."""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Les lignes ne se génèrent que sur un brouillon."))
+            raise UserError(_("Lines can only be generated on a draft."))
         positions = self.env["bf.budget.position"].search(
             [("budget_type", "=", "expense"), ("company_id", "=", self.company_id.id)]
         )
@@ -261,7 +268,7 @@ class BfBudgetForecast(models.Model):
                 {"forecast_id": self.id, "position_id": position.id}
             )
         if not created:
-            raise UserError(_("Chaque poste a déjà sa ligne."))
+            raise UserError(_("Each budget item already has its forecast line."))
         created._seed_open_months()
         return True
 
@@ -294,10 +301,11 @@ class BfBudgetForecast(models.Model):
     def action_open_comparison(self):
         self.ensure_one()
         if not self.previous_id:
-            raise UserError(_("Cette passe n'a pas de précédente à comparer."))
+            raise UserError(_("This version has no previous one to "
+                              "compare with."))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Comparaison des passes"),
+            "name": _("Version comparison"),
             "res_model": "bf.budget.forecast.line",
             "view_mode": "list",
             "domain": [("forecast_id", "in", (self.id, self.previous_id.id))],

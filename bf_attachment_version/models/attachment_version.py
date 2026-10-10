@@ -47,48 +47,48 @@ class BfAttachmentVersion(models.Model):
     """
 
     _name = "bf.attachment.version"
-    _description = "Version d'une pièce jointe"
+    _description = "Attachment version"
     _order = "attachment_id, numero desc"
 
     attachment_id = fields.Many2one(
         "ir.attachment",
-        string="Pièce jointe",
+        string="Attachment",
         required=True,
         index=True,
         ondelete="cascade",
     )
     content_id = fields.Many2one(
         "ir.attachment",
-        string="Contenu conservé",
+        string="Kept content",
         ondelete="cascade",
-        help="La pièce jointe qui porte les octets d'avant le remplacement.",
+        help="The attachment that holds the bytes from before the replacement.",
     )
     numero = fields.Integer(string="Version", required=True, default=1)
-    name = fields.Char(string="Nom du fichier", required=True)
-    mimetype = fields.Char(string="Type MIME")
-    file_size = fields.Integer(string="Taille (octets)")
-    checksum = fields.Char(string="Empreinte", index=True)
+    name = fields.Char(string="File name", required=True)
+    mimetype = fields.Char(string="MIME type")
+    file_size = fields.Integer(string="Size (bytes)")
+    checksum = fields.Char(string="Checksum", index=True)
     origine = fields.Selection(
         [
-            ("onlyoffice", "Éditeur ONLYOFFICE"),
-            ("collabora", "Éditeur Collabora"),
-            ("interface", "Interface Odoo"),
-            ("autre", "Autre"),
+            ("onlyoffice", "ONLYOFFICE editor"),
+            ("collabora", "Collabora editor"),
+            ("interface", "Odoo interface"),
+            ("autre", "Other"),
         ],
-        string="Origine du remplacement",
+        string="Replacement origin",
         default="autre",
     )
     res_model = fields.Char(
-        string="Modèle lié", related="attachment_id.res_model", readonly=True)
+        string="Related model", related="attachment_id.res_model", readonly=True)
     res_id = fields.Many2oneReference(
-        string="Enregistrement lié", related="attachment_id.res_id",
+        string="Related record", related="attachment_id.res_id",
         model_field="res_model", readonly=True)
 
     _sql_constraints = [
         (
             "numero_unique",
             "unique(attachment_id, numero)",
-            "Deux versions ne peuvent pas porter le même numéro pour une même pièce jointe.",
+            "Two versions cannot have the same number for the same attachment.",
         ),
     ]
 
@@ -213,7 +213,7 @@ class BfAttachmentVersion(models.Model):
 
     def _bf_refus_acces(self, operation):
         return AccessError(_(
-            "Vous n'avez pas accès à la pièce jointe dont vient cette version."))
+            "You do not have access to the attachment this version comes from."))
 
     # ------------------------------------------------------------------
     # Cycle de vie
@@ -315,7 +315,7 @@ class BfAttachmentVersion(models.Model):
     def action_telecharger(self):
         self.ensure_one()
         if not self.content_id:
-            raise UserError(_("Cette version n'a plus de contenu conservé."))
+            raise UserError(_("This version no longer has any kept content."))
         return {
             "type": "ir.actions.act_url",
             "url": "/web/content/%s?download=true" % self.content_id.id,
@@ -331,9 +331,9 @@ class BfAttachmentVersion(models.Model):
         """
         self.ensure_one()
         if not self.content_id:
-            raise UserError(_("Cette version n'a plus de contenu conservé."))
+            raise UserError(_("This version no longer has any kept content."))
         if not self.attachment_id:
-            raise UserError(_("La pièce jointe d'origine n'existe plus."))
+            raise UserError(_("The original attachment no longer exists."))
         self.attachment_id.check("write")
         octets = self.content_id.sudo().raw
         # Volontairement PAS en sudo : la version que la restauration crée doit

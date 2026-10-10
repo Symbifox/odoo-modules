@@ -1,0 +1,742 @@
+# Translation of Atelier éditorial : Gen - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_genfox 18.0.1.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid ""
+"(allow a few minutes, then reload the page). The result will open in the "
+"\"Gen\" tab."
+msgstr ""
+":\n"
+"                        comptez quelques minutes, puis rechargez la page. Le résultat\n"
+"                        s'ouvrira dans l'onglet « Gen »."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "<b>Gen is working on this article.</b> Started on"
+msgstr ""
+"<b>Gen travaille sur cet article.</b>\n"
+"                        Lancé le"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid ""
+"<b>Stalled run.</b> It never reported a status: the bridge was probably "
+"restarted, or the time limit passed. Nothing was written to the article. Run"
+" it again from the entry."
+msgstr ""
+"<b>Passe sans nouvelle.</b>\n"
+"                        Elle n'a jamais rendu de statut : le pont a probablement été\n"
+"                        redémarré, ou le plafond de temps est passé. Rien n'a été écrit\n"
+"                        dans l'article. Relancez la passe depuis l'entrée."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "<b>Stalled run.</b> The run started on"
+msgstr ""
+"<b>Passe sans nouvelle.</b>\n"
+"                    Celle lancée le"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "<i class=\"fa fa-circle-o-notch fa-spin me-2\" title=\"In progress\"/>"
+msgstr "<i class=\"fa fa-circle-o-notch fa-spin me-2\" title=\"En cours\"/>"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid ""
+"<i class=\"fa fa-circle-o-notch fa-spin me-2\" title=\"In progress\"/> "
+"<span> <b>Gen is working.</b> This record will fill in by itself: allow a "
+"few minutes, then reload the page. </span>"
+msgstr ""
+"<i class=\"fa fa-circle-o-notch fa-spin me-2\" title=\"En cours\"/>\n"
+"                        <span>\n"
+"                            <b>Gen travaille.</b>\n"
+"                            Cette fiche se remplira toute seule : comptez quelques\n"
+"                            minutes, puis rechargez la page.\n"
+"                        </span>"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid ""
+"<p>Gen suggestion applied by %s. Slots written: %s.</p><p>The editorial QA "
+"must be run again. %s</p>"
+msgstr ""
+"<p>Proposition Gen appliquée par %s. Créneaux écrits : %s.</p><p>La QA "
+"éditoriale est à repasser. %s</p>"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_entry__genfox_pending_decision
+msgid ""
+"A delivered suggestion carries text that nobody has applied or discarded "
+"yet. Turns the \"Gen suggestions\" button blue: there is a decision to make,"
+" not just something to read."
+msgstr ""
+"Une proposition rendue porte un texte que personne n'a encore appliqué ni "
+"écarté. Fait passer le bouton « Propositions Gen » en bleu : il y a une "
+"décision à prendre, pas seulement une lecture."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__pending_decision
+msgid ""
+"A delivered suggestion that carries text and that nobody has applied or "
+"discarded yet. Discarding deletes it, so this field only has to check "
+"\"delivered, has text, not applied\"."
+msgstr ""
+"Une proposition rendue, qui porte un texte, et que personne n'a encore "
+"appliquée ni écartée. Écarter la supprime : ce champ n'a donc qu'à vérifier "
+"« rendue, porte un texte, pas appliquée »."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_entry__genfox_stalled
+msgid ""
+"A run that was started never came back. The buttons are available again: "
+"better to be able to run it again than to stay stuck."
+msgstr ""
+"Une passe lancée n'est jamais revenue. Les boutons redeviennent disponibles "
+": mieux vaut pouvoir relancer que rester bloqué."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid ""
+"A single run: what regular expressions cannot reach (repetitions, link text,"
+" drift from the declared angle, house style) and an expanded text if the "
+"entry needs one. Nothing is written to the article on its own."
+msgstr ""
+"Une seule passe : ce que les expressions régulières n'atteignent pas — "
+"répétitions, texte des liens, dérive par rapport à l'angle déclaré, style "
+"maison — et un texte étoffé si l'entrée en a besoin. Rien n'est écrit dans "
+"l'article de lui-même."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__applied
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Applied"
+msgstr "Appliquée"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__applied_by
+msgid "Applied by"
+msgstr "Appliquée par"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__applied_date
+msgid "Applied on"
+msgstr "Appliquée le"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Apply to the post"
+msgstr "Appliquer au billet"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "Applying a suggestion is reserved to the \"Editorial management\" group."
+msgstr ""
+"Appliquer une proposition est réservé au groupe « Direction éditoriale »."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "Asking Gen is reserved to the \"Editorial management\" group."
+msgstr "Demander à Gen est réservé au groupe « Direction éditoriale »."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message
+msgid "Bridge message"
+msgstr "Message du pont"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__calendar_id
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__source_digest
+msgid ""
+"Checksum of the French slot when the suggestion was computed. If the article"
+" has changed since, the suggestion no longer applies: it would erase the "
+"work done in the meantime."
+msgstr ""
+"Empreinte du créneau français au moment du calcul. Si l'article a changé "
+"depuis, la proposition ne s'applique plus : elle effacerait le travail fait "
+"entre-temps."
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__state__done
+msgid "Delivered"
+msgstr "Rendue"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Discard"
+msgstr "Écarter"
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__kind__review
+msgid "Editorial review (legacy)"
+msgstr "Revue éditoriale (ancien)"
+
+#. module: bf_editorial_genfox
+#. modules: bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__entry_id
+msgid "Entry"
+msgstr "Entrée"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__kind__expand
+msgid "Expand and align (legacy)"
+msgstr "Étoffer et aligner (ancien)"
+
+#. module: bf_editorial_genfox
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__state__error
+msgid "Failed"
+msgstr "En échec"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_entry__genfox_available
+msgid ""
+"False when the bridge socket is missing. The buttons then disappear rather "
+"than fail on click."
+msgstr ""
+"Faux quand la socket du pont est absente. Les boutons disparaissent alors "
+"plutôt que d'échouer au clic."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "Gen"
+msgstr "Gen"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/calendrier.py:0
+#: code:addons/bf_editorial_genfox/models/entree.py:0
+msgid "Gen is on it"
+msgstr "Gen est parti travailler"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__genfox_pending
+msgid "Gen is working"
+msgstr "Gen travaille"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "Gen is working…"
+msgstr "Gen travaille…"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_calendar__genfox_available
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__genfox_available
+msgid "Gen reachable"
+msgstr "Gen joignable"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/calendrier.py:0
+msgid ""
+"Gen reads the calendar, the ranking and the idea notebook, then returns its "
+"recommendation. It will appear under Editorial workshop > Gen suggestions."
+msgstr ""
+"Gen lit le calendrier, le classement et le carnet d'idées, puis rend sa "
+"recommandation. Elle apparaîtra sous Atelier éditorial > Propositions Gen."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__kind__full
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "Gen review"
+msgstr "Revue Gen"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/entree.py:0
+msgid ""
+"Gen reviews the article (repetitions, link text, drift from the declared "
+"angle, house style) and suggests an expanded text if the entry needs one. "
+"Nothing is written to the post on its own: the result will arrive in the "
+"\"Gen\" tab."
+msgstr ""
+"Gen relit l'article — répétitions, texte des liens, dérive par rapport à "
+"l'angle déclaré, style maison — et propose un texte étoffé si l'entrée en a "
+"besoin. Rien n'est écrit dans le billet de lui-même : le résultat arrivera "
+"dans l'onglet « Gen »."
+
+#. module: bf_editorial_genfox
+#: model:ir.model,name:bf_editorial_genfox.model_bf_editorial_suggestion
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Gen suggestion"
+msgstr "Proposition Gen"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "Gen suggestion \"%s\" discarded."
+msgstr "Proposition Gen « %s » écartée."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/entree.py:0
+#: model:ir.actions.act_window,name:bf_editorial_genfox.action_editorial_suggestion
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__suggestion_ids
+#: model:ir.ui.menu,name:bf_editorial_genfox.menu_editorial_suggestion
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "Gen suggestions"
+msgstr "Propositions Gen"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid ""
+"Gen suggests, you apply. A suggestion only enters the article through the "
+"\"Apply to the post\" button, and it refuses if the article has changed "
+"since it was computed."
+msgstr ""
+"Gen propose, vous appliquez. Une proposition n'entre\n"
+"                        dans l'article que par le bouton « Appliquer au billet »,\n"
+"                        et elle refuse si l'article a bougé depuis son calcul."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "Gen therefore cannot be asked."
+msgstr "Gen ne peut donc pas être sollicité."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid ""
+"Gen will write to the article. The current slots are saved on this "
+"suggestion before writing. Continue?"
+msgstr ""
+"Gen va écrire dans l'article. Les créneaux actuels sont sauvegardés sur "
+"cette proposition avant l'écriture. Continuer ?"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__body_html
+msgid "Gen's answer"
+msgstr "Ce que Gen répond"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__has_proposal
+msgid "Has text"
+msgstr "Porte un texte"
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_error
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_editorial_genfox
+#. modules: bf_editorial_genfox, bf_stepbystep_clients
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__state__queued
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_editorial_genfox
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__kind
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_editorial_genfox
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields.selection,name:bf_editorial_genfox.selection__bf_editorial_suggestion__kind__propose
+msgid "Next article"
+msgstr "Prochain article"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/calendrier.py:0
+msgid "No editorial calendar is defined: there is nothing to suggest."
+msgstr "Aucun calendrier éditorial n'est défini : il n'y a rien à suggérer."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Nothing yet."
+msgstr "Rien encore."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid "Open the suggestion"
+msgstr "Ouvrir la proposition"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__pending_decision
+msgid "Pending decision"
+msgstr "Décision en attente"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__genfox_pending_decision
+msgid "Pending suggestion"
+msgstr "Proposition en attente"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Reading"
+msgstr "Lecture"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__triggered_by
+msgid "Requested by"
+msgstr "Demandée par"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__in_progress
+msgid "Run in progress"
+msgstr "Passe en cours"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__genfox_started
+msgid "Run started on"
+msgstr "Passe lancée le"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid ""
+"Slot(s) moved to \"Translated\": %s. Human proofreading is still to be done:"
+" Gen wrote the text, nobody has read it yet."
+msgstr ""
+"Créneau(x) passé(s) à « Traduite » : %s. La relecture humaine reste à faire "
+"— Gen a écrit le texte, personne ne l'a encore lu."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__backup_json
+msgid "Slots before applying"
+msgstr "Créneaux avant application"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__source_digest
+msgid "Source checksum"
+msgstr "Empreinte d'origine"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__stalled
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_list
+msgid "Stalled"
+msgstr "Sans nouvelle"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__genfox_stalled
+msgid "Stalled run"
+msgstr "Passe sans nouvelle"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__stalled
+msgid ""
+"Started, never came back. The bridge was restarted, the time limit passed, "
+"or the container was recreated."
+msgstr ""
+"Lancée, jamais revenue. Le pont a été redémarré, le plafond de temps est "
+"passé, ou le conteneur a été recréé."
+
+#. module: bf_editorial_genfox
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__state
+msgid "Status"
+msgstr "État"
+
+#. module: bf_editorial_genfox
+#: model:ir.actions.server,name:bf_editorial_genfox.action_editorial_genfox_propose
+#: model:ir.ui.menu,name:bf_editorial_genfox.menu_editorial_genfox_propose
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_calendar_form_genfox
+msgid "Suggest with Gen"
+msgstr "Suggérer avec Gen"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__proposed_en
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Suggested text (English)"
+msgstr "Texte proposé (anglais)"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__proposed_fr
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_suggestion_form
+msgid "Suggested text (French)"
+msgstr "Texte proposé (français)"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_entry__suggestion_count
+msgid "Suggestions"
+msgstr "Propositions"
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid ""
+"The article has changed since the suggestion was computed. Applying it would"
+" erase that work. Run \"Expand and align\" again on the current version."
+msgstr ""
+"L'article a changé depuis que la proposition a été calculée. L'appliquer "
+"effacerait ce travail. Relancez « Étoffer et aligner » sur la version "
+"actuelle."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "The bridge answered \"ok\" without delivering anything."
+msgstr "Le pont a répondu « ok » sans rien déposer."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "The entry is not linked to any post: there is nowhere to write."
+msgstr ""
+"L'entrée n'est rattachée à aucun billet : il n'y a nulle part où écrire."
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_calendar_form_genfox
+msgid ""
+"The ranking tells what is furthest along. Gen tells whether the angle still "
+"holds and what it would do."
+msgstr ""
+"Le classement dit ce qui est le plus avancé. Gen dit si l'angle tient encore"
+" et ce qu'il ferait."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__body_html
+msgid ""
+"The reading, the findings or the recommendation. This text never goes into "
+"the article on its own."
+msgstr ""
+"La lecture, les constats ou la recommandation. Ce texte ne part jamais dans "
+"l'article de lui-même."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__backup_json
+msgid ""
+"The three slots as they were just before writing. This is the rollback."
+msgstr ""
+"Les trois créneaux tels qu'ils étaient juste avant l'écriture. C'est le "
+"retour arrière."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "This suggestion carries no text."
+msgstr "Cette proposition ne porte aucun texte."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "This suggestion has already been applied."
+msgstr "Cette proposition a déjà été appliquée."
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__name
+msgid "Title"
+msgstr "Intitulé"
+
+#. module: bf_editorial_genfox
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__in_progress
+msgid ""
+"True only in the window during which the run can still return a result."
+msgstr ""
+"Vrai seulement dans la fenêtre où la passe peut encore rendre un résultat."
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_genfox.field_bf_editorial_suggestion__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_editorial_genfox
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_genfox.field_bf_editorial_suggestion__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_editorial_genfox
+#: model_terms:ir.ui.view,arch_db:bf_editorial_genfox.view_editorial_entry_form_genfox
+msgid ""
+"never reported a status: the bridge was probably restarted, or the time "
+"limit passed. Nothing was written to the article. The buttons are available "
+"again, run it again."
+msgstr ""
+"n'a jamais rendu de statut : le pont a probablement été redémarré,\n"
+"                    ou le plafond de temps est passé. Rien n'a été écrit dans l'article.\n"
+"                    Les boutons sont redevenus disponibles, relancez-la."
+
+#. module: bf_editorial_genfox
+#. odoo-python
+#: code:addons/bf_editorial_genfox/models/suggestion.py:0
+msgid "no target"
+msgstr "sans cible"

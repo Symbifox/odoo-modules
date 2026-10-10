@@ -8,7 +8,7 @@ class SurveyUserInputLine(models.Model):
     # satisfies the native _check_answer_type_skipped constraint, which
     # requires a non-falsy answer_type when skipped is False.
     answer_type = fields.Selection(
-        selection_add=[("file_upload", "Téléversement de fichiers")],
+        selection_add=[("file_upload", "File upload")],
         ondelete={"file_upload": "set null"},
     )
 
@@ -17,14 +17,14 @@ class SurveyUserInputLine(models.Model):
         "bf_survey_input_line_attachment_rel",
         "line_id",
         "attachment_id",
-        string="Fichiers téléversés",
+        string="Uploaded files",
     )
 
     # Native _check_answer_type_skipped reads `line['value_<answer_type>']` to
     # confirm the answer is non-empty. We expose value_file_upload as a
     # computed boolean derived from the M2M presence so the check passes.
     value_file_upload = fields.Boolean(
-        string="A des fichiers téléversés",
+        string="Has uploaded files",
         compute="_compute_value_file_upload",
         store=False,
     )

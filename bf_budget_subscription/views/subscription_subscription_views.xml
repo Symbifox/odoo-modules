@@ -9,8 +9,7 @@
                 <field name="budget_position_id"/>
                 <field name="budget_has_calendar" invisible="1"/>
                 <div class="text-warning" invisible="budget_has_calendar or state not in ['active', 'paused']">
-                    Cet abonnement dépense sans échéancier : les budgets ne peuvent pas
-                    prévoir sa prochaine échéance.
+                    This subscription spends without a schedule: budgets cannot forecast its next due date.
                 </div>
             </field>
         </field>
@@ -33,12 +32,12 @@
         <field name="inherit_id" ref="bf_subscription.subscription_subscription_search"/>
         <field name="arch" type="xml">
             <search position="inside">
-                <filter name="no_budget_position" string="Sans poste budgétaire"
+                <filter name="no_budget_position" string="Without a budget item"
                         domain="[('budget_position_id', '=', False)]"/>
-                <filter name="no_calendar" string="Sans échéancier"
+                <filter name="no_calendar" string="Without a schedule"
                         domain="[('budget_has_calendar', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_budget_position" string="Poste budgétaire"
+                <group expand="0" string="Group by">
+                    <filter name="group_budget_position" string="Budget item"
                             context="{'group_by': 'budget_position_id'}"/>
                 </group>
             </search>

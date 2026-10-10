@@ -1,0 +1,966 @@
+# Translation of Atelier éditorial : réseaux sociaux - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_social 18.0.1.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/blurb.py:0
+msgid "%s characters too long for this network."
+msgstr "Trop long de %s caractères pour ce réseau."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "%s source(s) no longer respond."
+msgstr "%s source(s) ne répondent plus."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "(empty)"
+msgstr "(vide)"
+
+#. module: bf_editorial_social
+#: model_terms:ir.actions.act_window,help:bf_editorial_social.action_social_channel
+msgid ""
+"A channel is an account on a network, with the language it publishes in and "
+"its app password. The password is encrypted outside the database: never put "
+"the account password there."
+msgstr ""
+"Un canal est un compte sur un réseau, avec la langue qu'il publie et\n"
+"         son mot de passe d'application. Le mot de passe est chiffré hors de\n"
+"         la base : ne jamais y poser le mot de passe du compte."
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Account"
+msgstr "Compte"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_needaction
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__kind__adhoc
+msgid "Ad hoc"
+msgstr "Ad hoc"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Already published (remote ID present)."
+msgstr "Déjà diffusé (identifiant distant présent)."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__secret
+msgid "App password"
+msgstr "Mot de passe d'application"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_editorial_blurb__state__approved
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__article_url
+msgid "Article link"
+msgstr "Lien de l'article"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_attachment_count
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__attempt_count
+msgid "Attempts"
+msgstr "Tentatives"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Attribution"
+msgstr "Attribution"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__blurb_id
+msgid "Blurb"
+msgstr "Blurb"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_entry__blurb_ids
+msgid "Blurbs"
+msgstr "Blurbs"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__calendar_ids
+msgid "Calendars fed"
+msgstr "Calendriers alimentés"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__capture_date
+msgid "Capture date"
+msgstr "Date de capture"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__channel_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__channel_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__channel_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Channel"
+msgstr "Canal"
+
+#. module: bf_editorial_social
+#: model:ir.actions.act_window,name:bf_editorial_social.action_social_channel
+#: model:ir.ui.menu,name:bf_editorial_social.menu_social_channel
+msgid "Channels"
+msgstr "Canaux"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__body_limit
+msgid "Character limit"
+msgstr "Limite de caractères"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__body_length
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__body_length
+msgid "Characters"
+msgstr "Caractères"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Check credentials"
+msgstr "Vérifier les identifiants"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__last_checked
+msgid "Checked on"
+msgstr "Vérifiés le"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__clicks
+msgid "Clicks"
+msgstr "Clics"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_budget_subscription, bf_editorial_audience,
+#. bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__company_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__create_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__create_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__create_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__create_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__create_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__create_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Credentials"
+msgstr "Identifiants"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/canal.py:0
+msgid "Credentials check: %s"
+msgstr "Vérification des identifiants : %s"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__credentials_state
+msgid "Credentials status"
+msgstr "État des identifiants"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__display_name
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__display_name
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__display_name
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_editorial_blurb__state__draft
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__entry_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__entry_id
+msgid "Editorial entry"
+msgstr "Entrée éditoriale"
+
+#. module: bf_editorial_social
+#: model:ir.actions.server,name:bf_editorial_social.cron_fetch_metrics_ir_actions_server
+msgid "Editorial workshop: social post metrics"
+msgstr "Atelier éditorial : mesures des billets sociaux"
+
+#. module: bf_editorial_social
+#: model:ir.actions.server,name:bf_editorial_social.cron_send_scheduled_ir_actions_server
+msgid "Editorial workshop: social posts due"
+msgstr "Atelier éditorial : diffusions sociales dues"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Empty text."
+msgstr "Texte vide."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__secret
+msgid ""
+"Encrypted outside the database. An app password can be revoked without "
+"touching the account password: never put the main password here."
+msgstr ""
+"Chiffré hors de la base. Un mot de passe d'application se révoque sans "
+"toucher au mot de passe du compte : ne jamais poser ici le mot de passe "
+"principal."
+
+#. module: bf_editorial_social
+#. modules: bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__entry_id
+msgid "Entry"
+msgstr "Entrée"
+
+#. module: bf_editorial_social
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__failed
+msgid "Failed"
+msgstr "Échec"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__failed_message_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_follower_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_partner_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__handle
+msgid "Handle"
+msgstr "Pseudonyme"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__has_message
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__hashtags
+msgid "Hashtags"
+msgstr "Mots-clics"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__idempotency_key
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "Idempotency key"
+msgstr "Clé d'idempotence"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_needaction
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_has_error
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_has_sms_error
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_has_error
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__impressions
+msgid "Impressions"
+msgstr "Affichages"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_is_follower
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_editorial_social
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__kind
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__write_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__write_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__write_uid
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_editorial_social
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__write_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__write_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__write_date
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__error_message
+msgid "Last error"
+msgstr "Dernière erreur"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_entry__last_social_date
+msgid "Last published"
+msgstr "Dernière diffusion"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__credentials_message
+msgid "Last response"
+msgstr "Dernier retour"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__likes
+msgid "Likes"
+msgstr "Mentions j'aime"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__login
+msgid "Login"
+msgstr "Identifiant de connexion"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_content
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_has_error
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_search
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_content
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_search
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__metric_ids
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "Metrics"
+msgstr "Mesures"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__network
+msgid "Network"
+msgstr "Réseau"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_channel__credentials_state__unknown
+msgid "Never checked"
+msgstr "Jamais vérifiés"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__kind__new
+msgid "New article"
+msgstr "Nouveauté"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/canal.py:0
+msgid "No connector installed"
+msgstr "Aucun connecteur installé"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/connecteur.py:0
+msgid ""
+"No connector installed for \"%(reseau)s\". The matching module is not "
+"installed on this database."
+msgstr ""
+"Aucun connecteur installé pour « %(reseau)s ». Le module correspondant n'est"
+" pas installé sur cette base."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/_fernet.py:0
+msgid ""
+"No encryption key is configured. Set %(env)s in the environment or %(conf)s "
+"in odoo.conf."
+msgstr ""
+"Aucune clé de chiffrement configurée. Poser %(env)s dans l'environnement ou "
+"%(conf)s dans odoo.conf."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid ""
+"No link to the article. Queue the blurb again so it resolves one, or fill in"
+" \"Shared link\"."
+msgstr ""
+"Aucun lien vers l'article. Remettre le blurb en file pour qu'il en résolve "
+"un, ou renseigner « Lien diffusé »."
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_needaction_counter
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__message_has_error_counter
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__login
+msgid ""
+"Often the full handle. What the network expects as the username for an app "
+"password."
+msgstr ""
+"Souvent le pseudonyme complet. Ce que le réseau attend comme nom d'usager "
+"pour un mot de passe d'application."
+
+#. module: bf_editorial_social
+#: model:ir.model.constraint,message:bf_editorial_social.constraint_bf_social_metric_one_per_day
+msgid "Only one capture per post per day."
+msgstr "Une seule capture par billet et par jour."
+
+#. module: bf_editorial_social
+#. modules: bf_editorial_audience, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__post_id
+msgid "Post"
+msgstr "Billet"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__post_count
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__post_ids
+msgid "Posts"
+msgstr "Billets"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__name
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_list
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__remote_url
+msgid "Public URL"
+msgstr "URL publique"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/entree.py:0
+#: model:ir.actions.act_window,name:bf_editorial_social.action_social_post
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_entry__social_post_count
+#: model:ir.ui.menu,name:bf_editorial_social.menu_social_post
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_editorial_entry_form_social
+msgid "Publications"
+msgstr "Diffusions"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "Publish now"
+msgstr "Diffuser maintenant"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_editorial_blurb__state__used
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__sent
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "Published"
+msgstr "Diffusé"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__lang_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__lang_id
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__lang_id
+msgid "Published language"
+msgstr "Langue publiée"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__published_datetime
+msgid "Published on"
+msgstr "Diffusé le"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Published on %s."
+msgstr "Diffusé sur %s."
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_editorial_entry_form_social
+msgid "Publishing"
+msgstr "Diffusion"
+
+#. module: bf_editorial_social
+#: model:ir.model,name:bf_editorial_social.model_bf_editorial_blurb
+msgid "Publishing blurb"
+msgstr "Blurb de diffusion"
+
+#. module: bf_editorial_social
+#: model:ir.model,name:bf_editorial_social.model_bf_social_channel
+msgid "Publishing channel"
+msgstr "Canal de diffusion"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Publishing failed: %s"
+msgstr "Échec de diffusion : %s"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid ""
+"Publishing refused:\n"
+"\n"
+"%s"
+msgstr ""
+"Diffusion refusée :\n"
+"\n"
+"%s"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__qa_findings
+msgid "QA findings"
+msgstr "Constats QA"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_editorial_entry_form_social
+msgid "Queue for publishing"
+msgstr "Mettre en file de diffusion"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__rating_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__kind__recycle
+msgid "Recycled backlist"
+msgstr "Fonds recyclé"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_channel__credentials_state__ko
+msgid "Rejected"
+msgstr "Refusés"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__remote_id
+msgid "Remote ID"
+msgstr "Identifiant distant"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__replies
+msgid "Replies"
+msgstr "Réponses"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_metric__reposts
+msgid "Reposts"
+msgstr "Repartages"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_editorial_entry_form_social
+msgid "Run QA on this blurb"
+msgstr "Passer la QA sur ce blurb"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__scheduled
+msgid "Scheduled"
+msgstr "Planifié"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__scheduled_datetime
+msgid "Scheduled for"
+msgstr "Diffusion prévue"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid ""
+"Scheduled publishing refused:\n"
+"%s"
+msgstr ""
+"Diffusion différée refusée :\n"
+"%s"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "Scope"
+msgstr "Portée"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_post__state__sending
+msgid "Sending"
+msgstr "En cours d'envoi"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__idempotency_key
+msgid ""
+"Set at creation and never changed. It prevents the same post from being sent"
+" twice on the same channel."
+msgstr ""
+"Posée à la création et jamais modifiée. C'est elle qui empêche un second "
+"envoi du même billet sur le même canal."
+
+#. module: bf_editorial_social
+#: model_terms:ir.actions.act_window,help:bf_editorial_social.action_social_channel
+msgid "Set up a channel"
+msgstr "Déclarer un canal"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__link_url
+msgid "Shared link"
+msgstr "Lien diffusé"
+
+#. module: bf_editorial_social
+#: model:ir.model,name:bf_editorial_social.model_bf_social_connector
+msgid "Social network connector contract"
+msgstr "Contrat de connecteur de réseau social"
+
+#. module: bf_editorial_social
+#: model:ir.model,name:bf_editorial_social.model_bf_social_post
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "Social post"
+msgstr "Billet social"
+
+#. module: bf_editorial_social
+#: model:ir.model,name:bf_editorial_social.model_bf_social_metric
+msgid "Social post metric"
+msgstr "Mesure de billet social"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_entry__social_post_ids
+msgid "Social posts"
+msgstr "Billets sociaux"
+
+#. module: bf_editorial_social
+#. modules: bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__state
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__state
+msgid "Status"
+msgstr "État"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Status \"%s\"."
+msgstr "État « %s »."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_metric__clicks
+msgid ""
+"Taken from the tracked link, not from the network: it is the only click "
+"count that does not depend on the platform's goodwill."
+msgstr ""
+"Repris du lien suivi, pas du réseau : c'est la seule mesure de clic qui ne "
+"dépende pas du bon vouloir de la plateforme."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__body
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__body
+msgid "Text"
+msgstr "Texte"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "Text too long: %(n)s characters for a limit of %(l)s."
+msgstr "Texte trop long : %(n)s caractères pour une limite de %(l)s."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid ""
+"The \"%s\" slot is not published: the link would lead to a missing or "
+"incomplete version."
+msgstr ""
+"Le créneau « %s » n'est pas publié : le lien mènerait à une version absente "
+"ou incomplète."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__handle
+msgid "The account's public handle, as the network knows it."
+msgstr "Le pseudonyme public du compte, tel que le réseau le connaît."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "The article did not pass its preflight guard."
+msgstr "L'article n'a pas passé sa garde de pré-vol."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_editorial_blurb__lang_id
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__lang_id
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__lang_id
+msgid ""
+"The article's language slot that goes out on this channel. An account kept "
+"in a single language stays readable."
+msgstr ""
+"Le créneau de langue de l'article qui part sur ce canal. Un compte tenu dans"
+" une seule langue reste lisible."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_editorial_blurb__article_url
+msgid ""
+"The article's public URL, in the channel's language. It is not exactly what "
+"goes out: queuing resolves a tracked link, shorter and attributable, shown "
+"on the social post."
+msgstr ""
+"L'URL publique de l'article, dans la langue du canal. Ce n'est pas "
+"exactement ce qui part : la mise en file résout un lien suivi, plus court et"
+" attribuable, lisible sur le billet de diffusion."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "The channel's credentials were rejected."
+msgstr "Les identifiants du canal ont été refusés."
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "The credentials were rejected: nothing will go out on this channel."
+msgstr "Les identifiants ont été refusés : rien ne partira sur ce canal."
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid ""
+"The product described has changed since the fact-check (%(a)s to %(b)s): fix"
+" it before promoting it again."
+msgstr ""
+"Le produit décrit a changé depuis le fact-check (%(a)s vers %(b)s) : à "
+"corriger avant de le remettre en avant."
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_post_form
+msgid "The published text, link included"
+msgstr "Le texte diffusé, lien compris"
+
+#. module: bf_editorial_social
+#. odoo-python
+#: code:addons/bf_editorial_social/models/billet.py:0
+msgid "This article was never published: nothing to recycle."
+msgstr "Cet article n'a jamais été publié : rien à recycler."
+
+#. module: bf_editorial_social
+#: model:ir.model.constraint,message:bf_editorial_social.constraint_bf_social_channel_handle_unique_per_network_lang
+msgid "This handle is already declared for this network in this language."
+msgstr "Ce pseudonyme est déjà déclaré pour ce réseau dans cette langue."
+
+#. module: bf_editorial_social
+#: model:ir.model.constraint,message:bf_editorial_social.constraint_bf_social_post_idempotency_unique
+msgid "This post already exists on this channel."
+msgstr "Ce billet existe déjà sur ce canal."
+
+#. module: bf_editorial_social
+#: model:ir.model.constraint,message:bf_editorial_social.constraint_bf_social_post_remote_unique
+msgid "This remote post is already linked on this channel."
+msgstr "Ce billet distant est déjà rattaché sur ce canal."
+
+#. module: bf_editorial_social
+#: model:ir.model.constraint,message:bf_editorial_social.constraint_bf_editorial_blurb_unique_variant
+msgid "This variant already exists for this article and this channel."
+msgstr "Cette variante existe déjà pour cet article et ce canal."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__over_limit
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__over_limit
+msgid "Too long"
+msgstr "Trop long"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__tracker_id
+msgid "Tracked link"
+msgstr "Lien suivi"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_editorial_blurb__variant
+msgid "Two variants of the same blurb are then compared on their clicks."
+msgstr "Deux variantes du même blurb se comparent ensuite sur leurs clics."
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__utm_medium_id
+msgid "UTM medium"
+msgstr "Médium UTM"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__utm_source_id
+msgid "UTM source"
+msgstr "Source UTM"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_editorial_social.selection__bf_social_channel__credentials_state__ok
+msgid "Valid"
+msgstr "Valides"
+
+#. module: bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_editorial_blurb__variant
+msgid "Variant"
+msgstr "Variante"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_channel__website_message_ids
+#: model:ir.model.fields,field_description:bf_editorial_social.field_bf_social_post__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_editorial_social
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_channel__website_message_ids
+#: model:ir.model.fields,help:bf_editorial_social.field_bf_social_post__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_editorial_social
+#: model_terms:ir.ui.view,arch_db:bf_editorial_social.view_social_channel_form
+msgid "bluefoxconsultant.com"
+msgstr "bluefoxconsultant.com"

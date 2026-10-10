@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="bf_budget.bf_budget_line_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
-                <group string="Engagements récurrents" invisible="not subscription_count">
+                <group string="Recurring commitments" invisible="not subscription_count">
                     <group>
                         <field name="subscription_count"/>
                         <field name="subscription_due_to_date"/>
@@ -22,9 +22,7 @@
                 </group>
                 <div class="alert alert-warning" role="alert"
                      invisible="not has_subscription_without_calendar">
-                    Un abonnement rattaché à ce poste dépense sans échéancier. Le théorique
-                    de calendrier ne le couvre pas, donc il sous-estime ce poste et peut
-                    faire passer une dérive réelle pour un budget tenu.
+                    A subscription linked to this budget item spends without a schedule. The calendar-based theoretical amount does not cover it, so it underestimates this budget item and can make a real overrun look like a budget on track.
                 </div>
             </xpath>
         </field>
@@ -36,7 +34,7 @@
         <field name="inherit_id" ref="bf_budget.bf_budget_line_view_list"/>
         <field name="arch" type="xml">
             <field name="amount_committed" position="after">
-                <field name="subscription_upcoming" optional="show" sum="Renouvellements à venir"/>
+                <field name="subscription_upcoming" optional="show" sum="Upcoming renewals"/>
             </field>
         </field>
     </record>

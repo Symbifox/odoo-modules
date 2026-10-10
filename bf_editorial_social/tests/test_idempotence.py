@@ -22,6 +22,9 @@ class TestIdempotence(TransactionCase):
 
     def setUp(self):
         super().setUp()
+        # Les motifs s'attendent en anglais, la source : épinglé, parce qu'un
+        # contexte sans langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
         self.cal = self.env["bf.editorial.calendar"].create({
             "name": "Diffusion", "require_all_langs": "no", "word_floor": 10,
         })
@@ -40,7 +43,7 @@ class TestIdempotence(TransactionCase):
                 "body": "Un texte court.", "state": "scheduled",
                 "scheduled_datetime": "2000-01-01 00:00:00"}
         vals.update(kw)
-        return self.env["bf.social.post"].create(vals)
+        return self.env["bf.social.post"].with_context(lang="en_US").create(vals)
 
     def test_cle_posee_a_la_creation(self):
         p = self._billet()
@@ -66,7 +69,7 @@ class TestIdempotence(TransactionCase):
 
     def test_un_billet_deja_diffuse_ne_repart_pas(self):
         p = self._billet(remote_id="at://x/2", state="sent")
-        self.assertIn("Déjà diffusé", " ".join(p._blocking_reasons()))
+        self.assertIn("Already published", " ".join(p._blocking_reasons()))
         self.assertFalse(p._claim_and_send(), "un billet avec identifiant distant ne repart jamais")
 
     def test_le_cron_ignore_ce_qui_porte_un_identifiant(self):
@@ -77,7 +80,7 @@ class TestIdempotence(TransactionCase):
     def test_texte_trop_long_bloque(self):
         p = self._billet(body="x" * 400)
         self.assertTrue(p.over_limit)
-        self.assertIn("trop long", " ".join(p._blocking_reasons()).lower())
+        self.assertIn("too long", " ".join(p._blocking_reasons()).lower())
         with self.assertRaises(UserError):
             p.action_send_now()
 
@@ -86,12 +89,12 @@ class TestIdempotence(TransactionCase):
         self.entry.qa_state = "todo"
         self.entry.invalidate_recordset()
         p = self._billet()
-        self.assertIn("pré-vol", " ".join(p._blocking_reasons()))
+        self.assertIn("preflight", " ".join(p._blocking_reasons()))
 
     def test_identifiants_refuses_bloquent_le_canal(self):
         self.canal.credentials_state = "ko"
         p = self._billet()
-        self.assertIn("identifiants", " ".join(p._blocking_reasons()).lower())
+        self.assertIn("credentials", " ".join(p._blocking_reasons()).lower())
 
     def test_cron_marque_en_echec_sans_appeler_le_reseau(self):
         self.canal.credentials_state = "ko"
@@ -122,7 +125,7 @@ class TestIdempotence(TransactionCase):
         self.assertEqual(recycle._blocking_reasons(), [],
                          "un article du fonds ne se bloque pas sur du style")
         nouveau = self._billet(kind="new")
-        self.assertIn("pré-vol", " ".join(nouveau._blocking_reasons()),
+        self.assertIn("preflight", " ".join(nouveau._blocking_reasons()),
                       "une nouveauté, elle, reste tenue par la garde")
 
     def test_le_fonds_se_bloque_sur_une_derive_de_version(self):
@@ -136,4 +139,4 @@ class TestIdempotence(TransactionCase):
         })
         self.entry.invalidate_recordset()
         self.assertTrue(self.entry.version_drift)
-        self.assertIn("a changé", " ".join(self._billet(kind="recycle")._blocking_reasons()))
+        self.assertIn("has changed", " ".join(self._billet(kind="recycle")._blocking_reasons()))

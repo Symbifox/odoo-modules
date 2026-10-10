@@ -12,7 +12,7 @@ from odoo.exceptions import UserError
 
 class SocialConnector(models.AbstractModel):
     _name = "bf.social.connector"
-    _description = "Contrat de connecteur de réseau social"
+    _description = "Social network connector contract"
 
     # --- à implémenter par chaque réseau ---------------------------------
     def _publish(self, post):
@@ -67,8 +67,8 @@ class SocialConnector(models.AbstractModel):
         nom = "bf.social.connector.%s" % network
         if nom not in self.env:
             raise UserError(_(
-                "Aucun connecteur installé pour « %(reseau)s ». Le module"
-                " correspondant n'est pas installé sur cette base.",
+                "No connector installed for \"%(reseau)s\". The matching "
+                "module is not installed on this database.",
                 reseau=network,
             ))
         return self.env[nom]

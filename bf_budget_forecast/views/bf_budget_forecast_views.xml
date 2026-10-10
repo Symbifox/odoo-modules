@@ -4,14 +4,14 @@
         <field name="name">bf.budget.forecast.list</field>
         <field name="model">bf.budget.forecast</field>
         <field name="arch" type="xml">
-            <list string="Prévisions" decoration-muted="state == 'superseded'">
+            <list string="Forecasts" decoration-muted="state == 'superseded'">
                 <field name="name"/>
                 <field name="vintage"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="actuals_through"/>
-                <field name="amount_actual" sum="Réel"/>
-                <field name="amount_forecast" sum="Prévu"/>
+                <field name="amount_actual" sum="Actual"/>
+                <field name="amount_forecast" sum="Forecast amount"/>
                 <field name="amount_total" sum="Total"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'published'"
@@ -26,31 +26,29 @@
         <field name="name">bf.budget.forecast.form</field>
         <field name="model">bf.budget.forecast</field>
         <field name="arch" type="xml">
-            <form string="Prévision glissante">
+            <form string="Rolling forecast">
                 <header>
-                    <button name="action_generate_lines" string="Une ligne par poste"
+                    <button name="action_generate_lines" string="One line per budget item"
                             type="object" invisible="state != 'draft'"/>
-                    <button name="action_seed" string="Amorcer les mois ouverts"
+                    <button name="action_seed" string="Seed the open months"
                             type="object" invisible="state != 'draft'"/>
-                    <button name="action_publish" string="Publier la passe" type="object"
+                    <button name="action_publish" string="Publish the version" type="object"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_roll_forward" string="Rouler d'un mois" type="object"
+                    <button name="action_roll_forward" string="Roll forward one month" type="object"
                             class="btn-primary" invisible="state == 'superseded'"/>
-                    <button name="action_reset_draft" string="Remettre au brouillon"
+                    <button name="action_reset_draft" string="Reset to draft"
                             type="object" invisible="state != 'published'"/>
-                    <button name="action_open_comparison" string="Comparer à la précédente"
+                    <button name="action_open_comparison" string="Compare with the previous one"
                             type="object" invisible="not previous_id"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,published"/>
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="alert" invisible="state == 'draft'">
-                        Cette passe est publiée : ses chiffres sont la trace de ce qu'on croyait
-                        au <field name="actuals_through" readonly="1" nolabel="1" class="oe_inline"/>.
-                        Pour prévoir autrement, roulez une nouvelle passe.
+                        This version is published: its figures record what was believed as of <field name="actuals_through" readonly="1" nolabel="1" class="oe_inline"/>. To forecast differently, roll a new version forward.
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Exploitation glissante"/></h1>
+                        <h1><field name="name" placeholder="Rolling operations"/></h1>
                     </div>
                     <group>
                         <group>
@@ -68,26 +66,26 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Lignes" name="lines">
+                        <page string="Lines" name="lines">
                             <field name="line_ids" readonly="state != 'draft'">
                                 <list>
                                     <field name="position_id"/>
-                                    <field name="amount_actual" sum="Réel des mois clos"/>
-                                    <field name="amount_forecast" sum="Prévu des mois ouverts"/>
+                                    <field name="amount_actual" sum="Actual, closed months"/>
+                                    <field name="amount_forecast" sum="Forecast, open months"/>
                                     <field name="amount_total" sum="Total"/>
                                     <field name="currency_id" column_invisible="True"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Mois" name="periods">
+                        <page string="Months" name="periods">
                             <field name="line_ids" nolabel="1" readonly="1">
                                 <list>
                                     <field name="position_id"/>
                                 </list>
                             </field>
-                            <separator string="Le détail mois par mois s'ouvre depuis la ligne"/>
+                            <separator string="The month-by-month detail opens from the line"/>
                         </page>
-                        <page string="Totaux" name="totals">
+                        <page string="Totals" name="totals">
                             <group>
                                 <field name="amount_actual"/>
                                 <field name="amount_forecast"/>
@@ -105,14 +103,14 @@
         <field name="name">bf.budget.forecast.line.list</field>
         <field name="model">bf.budget.forecast.line</field>
         <field name="arch" type="xml">
-            <list string="Lignes de prévision" create="0">
+            <list string="Forecast lines" create="0">
                 <field name="forecast_id"/>
                 <field name="position_id"/>
-                <field name="amount_actual" sum="Réel"/>
-                <field name="amount_forecast" sum="Prévu"/>
+                <field name="amount_actual" sum="Actual"/>
+                <field name="amount_forecast" sum="Forecast amount"/>
                 <field name="amount_total" sum="Total"/>
                 <field name="currency_id" column_invisible="True"/>
-                <button name="action_view_periods" type="object" string="Mois" icon="fa-calendar"/>
+                <button name="action_view_periods" type="object" string="Months" icon="fa-calendar"/>
             </list>
         </field>
     </record>
@@ -121,12 +119,12 @@
         <field name="name">bf.budget.forecast.line.search</field>
         <field name="model">bf.budget.forecast.line</field>
         <field name="arch" type="xml">
-            <search string="Lignes de prévision">
+            <search string="Forecast lines">
                 <field name="forecast_id"/>
                 <field name="position_id"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_forecast" string="Passe" context="{'group_by': 'forecast_id'}"/>
-                    <filter name="group_position" string="Poste" context="{'group_by': 'position_id'}"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_forecast" string="Forecast version" context="{'group_by': 'forecast_id'}"/>
+                    <filter name="group_position" string="Budget item" context="{'group_by': 'position_id'}"/>
                 </group>
             </search>
         </field>
@@ -136,13 +134,13 @@
         <field name="name">bf.budget.forecast.period.list</field>
         <field name="model">bf.budget.forecast.period</field>
         <field name="arch" type="xml">
-            <list string="Mois" editable="bottom" create="0" decoration-muted="is_closed">
+            <list string="Months" editable="bottom" create="0" decoration-muted="is_closed">
                 <field name="name" readonly="1"/>
                 <field name="position_id" readonly="1" optional="hide"/>
                 <field name="is_closed" readonly="1"/>
-                <field name="amount_forecast" readonly="is_closed" sum="Prévu"/>
-                <field name="amount_actual" readonly="1" sum="Réel"/>
-                <field name="variance" readonly="1" sum="Écart"/>
+                <field name="amount_forecast" readonly="is_closed" sum="Forecast amount"/>
+                <field name="amount_actual" readonly="1" sum="Actual"/>
+                <field name="variance" readonly="1" sum="Variance"/>
                 <field name="currency_id" column_invisible="True"/>
             </list>
         </field>
@@ -152,31 +150,30 @@
         <field name="name">bf.budget.forecast.period.pivot</field>
         <field name="model">bf.budget.forecast.period</field>
         <field name="arch" type="xml">
-            <pivot string="Prévision par mois">
+            <pivot string="Forecast by month">
                 <field name="position_id" type="row"/>
                 <field name="name" type="col"/>
-                <field name="amount" type="measure"/>
+                <!-- `amount` (le retenu) est calculé, non stocké : sans agrégat, le
+                     client web refuse d'ouvrir le pivot. -->
+                <field name="amount_forecast" type="measure"/>
             </pivot>
         </field>
     </record>
 
     <record id="bf_budget_forecast_action" model="ir.actions.act_window">
-        <field name="name">Prévisions glissantes</field>
+        <field name="name">Rolling forecasts</field>
         <field name="res_model">bf.budget.forecast</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Ouvrez votre première passe</p>
+            <p class="o_view_nocontent_smiling_face">Open your first version</p>
             <p>
-                Une prévision se refait chaque mois : le réel gagne un mois, l'horizon
-                avance d'autant, et la passe précédente reste lisible telle qu'on l'avait
-                faite. C'est la comparaison entre les passes qui apprend quelque chose,
-                pas le chiffre d'une passe isolée.
+                A forecast is redone every month: actuals gain a month, the horizon moves forward by as much, and the previous version stays readable as it was made. Comparing versions is what teaches something, not the figure of a single version.
             </p>
         </field>
     </record>
 
     <record id="bf_budget_forecast_period_action" model="ir.actions.act_window">
-        <field name="name">Prévision par mois</field>
+        <field name="name">Forecast by month</field>
         <field name="res_model">bf.budget.forecast.period</field>
         <field name="view_mode">pivot,list</field>
     </record>

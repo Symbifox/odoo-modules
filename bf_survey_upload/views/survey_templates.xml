@@ -36,10 +36,10 @@
 
             <div class="o_survey_form_file_upload_dropzone p-3 border rounded text-center">
                 <label class="btn btn-secondary mb-2"
-                       aria-label="Téléverser un fichier">
+                       aria-label="Upload a file">
                     <i class="fa fa-paperclip me-2"/>
-                    <span t-if="question.file_upload_multiple">Choisir des fichiers</span>
-                    <span t-else="">Choisir un fichier</span>
+                    <span t-if="question.file_upload_multiple">Choose files</span>
+                    <span t-else="">Choose a file</span>
                     <input type="file"
                            class="o_survey_form_file_upload_picker d-none"
                            t-att-multiple="'multiple' if question.file_upload_multiple else None"
@@ -47,9 +47,9 @@
                 </label>
                 <div class="text-muted small">
                     <span t-if="question.file_upload_allowed_extensions">
-                        Formats acceptés : <t t-out="question.file_upload_allowed_extensions"/>.
+                        Accepted formats: <t t-out="question.file_upload_allowed_extensions"/>.
                     </span>
-                    <span>Taille max : <t t-out="question.file_upload_max_size_mb"/> Mo par fichier.</span>
+                    <span>Max size: <t t-out="question.file_upload_max_size_mb"/> MB per file.</span>
                 </div>
                 <div class="o_survey_form_file_upload_error text-danger small mt-2 d-none"
                      role="alert"

@@ -11,11 +11,11 @@ class SurveyUserInput(models.Model):
 
     bf_attachment_ids = fields.Many2many(
         "ir.attachment",
-        string="Fichiers téléversés",
+        string="Uploaded files",
         compute="_compute_bf_attachment_ids",
     )
     bf_attachment_count = fields.Integer(
-        string="Nombre de fichiers",
+        string="Number of files",
         compute="_compute_bf_attachment_ids",
     )
 
@@ -125,7 +125,15 @@ class SurveyUserInput(models.Model):
             if c
         }
 
-        partner_label = (self.partner_id.display_name or "").strip() or "(anonyme)"
+        # The copy is described for the project's team, not for the respondent
+        # who submits (often from the public survey page, in their own language).
+        team = self.with_context(lang=self._bf_project_reader_lang(project))
+        partner_label = (self.partner_id.display_name or "").strip() or team.env._("(anonymous)")
+        description = team.env._(
+            "Uploaded through the \"%(survey)s\" survey by %(who)s",
+            survey=survey.with_context(lang=team.env.lang).title,
+            who=partner_label,
+        )
         for att in attachments:
             if att.checksum and att.checksum in existing_checksums:
                 continue
@@ -133,8 +141,18 @@ class SurveyUserInput(models.Model):
                 {
                     "res_model": "project.project",
                     "res_id": project.id,
-                    "description": (
-                        f"Téléversé via le sondage « {survey.title} » par {partner_label}"
-                    ),
+                    "description": description,
                 }
             )
+
+    def _bf_project_reader_lang(self, project):
+        """Language of the project's team: its manager's, else the company's.
+
+        None leaves the context without a language: the text is then written in
+        the source language (English).
+        """
+        installed = {code for code, _name in self.env["res.lang"].get_installed()}
+        manager = project.user_id
+        langs = [manager.lang] if manager and manager.active and not manager.share else []
+        langs.append((project.company_id or self.env.company).partner_id.lang)
+        return next((lang for lang in langs if lang in installed), None)

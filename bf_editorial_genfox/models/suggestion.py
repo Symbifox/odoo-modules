@@ -77,96 +77,100 @@ def lang_codes(entry):
 
 class EditorialSuggestion(models.Model):
     _name = "bf.editorial.suggestion"
-    _description = "Proposition Gen"
+    _description = "Gen suggestion"
     _inherit = ["mail.thread"]
     _order = "create_date desc, id desc"
 
-    name = fields.Char(string="Intitulé", compute="_compute_name", store=True)
+    name = fields.Char(string="Title", compute="_compute_name", store=True)
     kind = fields.Selection(
         [
-            ("propose", "Prochain article"),
-            ("full", "Revue Gen"),
+            ("propose", "Next article"),
+            ("full", "Gen review"),
             # Conservés pour les enregistrements déjà en base (avant la
             # fusion) : « full » reprend les deux, et c'est le seul que le
             # bouton de l'entrée lance désormais.
-            ("review", "Revue éditoriale (ancien)"),
-            ("expand", "Étoffer et aligner (ancien)"),
+            ("review", "Editorial review (legacy)"),
+            ("expand", "Expand and align (legacy)"),
         ],
-        string="Nature", required=True, index=True,
+        string="Kind", required=True, index=True,
     )
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", ondelete="cascade", index=True,
+        "bf.editorial.entry", string="Entry", ondelete="cascade", index=True,
     )
     calendar_id = fields.Many2one(
-        "bf.editorial.calendar", string="Calendrier", ondelete="cascade",
+        "bf.editorial.calendar", string="Calendar", ondelete="cascade",
         index=True,
     )
     state = fields.Selection(
         [
-            ("queued", "En cours"),
-            ("done", "Rendue"),
-            ("error", "En échec"),
+            ("queued", "In progress"),
+            ("done", "Delivered"),
+            ("error", "Failed"),
         ],
-        string="État", default="queued", required=True, index=True, tracking=True,
+        string="Status", default="queued", required=True, index=True, tracking=True,
     )
-    message = fields.Char(string="Message du pont", readonly=True)
+    message = fields.Char(string="Bridge message", readonly=True)
     triggered_by = fields.Many2one(
-        "res.users", string="Demandée par", default=lambda self: self.env.user,
+        "res.users", string="Requested by", default=lambda self: self.env.user,
         readonly=True,
     )
 
     body_html = fields.Html(
-        string="Ce que Gen répond", sanitize=False, readonly=True,
-        help="La lecture, les constats ou la recommandation. Ce texte ne part"
-             " jamais dans l'article de lui-même.",
+        string="Gen's answer", sanitize=False, readonly=True,
+        help="The reading, the findings or the recommendation. This text "
+             "never goes into the article on its own.",
     )
     proposed_fr = fields.Html(
-        string="Texte proposé (français)", sanitize=False, readonly=True,
+        string="Suggested text (French)", sanitize=False, readonly=True,
     )
     proposed_en = fields.Html(
-        string="Texte proposé (anglais)", sanitize=False, readonly=True,
+        string="Suggested text (English)", sanitize=False, readonly=True,
     )
     has_proposal = fields.Boolean(
-        string="Porte un texte", compute="_compute_has_proposal",
+        string="Has text", compute="_compute_has_proposal",
     )
     pending_decision = fields.Boolean(
-        string="Décision en attente", compute="_compute_pending_decision",
-        help="Une proposition rendue, qui porte un texte, et que personne n'a"
-             " encore appliquée ni écartée. Écarter la supprime : ce champ n'a"
-             " donc qu'à vérifier « rendue, porte un texte, pas appliquée ».",
+        string="Pending decision", compute="_compute_pending_decision",
+        help="A delivered suggestion that carries text and that nobody "
+             "has applied or discarded yet. Discarding deletes it, so "
+             "this field only has to check \"delivered, has text, not "
+             "applied\".",
     )
 
     source_digest = fields.Char(
-        string="Empreinte d'origine", readonly=True,
-        help="Empreinte du créneau français au moment du calcul. Si l'article"
-             " a changé depuis, la proposition ne s'applique plus : elle"
-             " effacerait le travail fait entre-temps.",
+        string="Source checksum", readonly=True,
+        help="Checksum of the French slot when the suggestion was "
+             "computed. If the article has changed since, the suggestion "
+             "no longer applies: it would erase the work done in the "
+             "meantime.",
     )
     backup_json = fields.Text(
-        string="Créneaux avant application", readonly=True,
-        help="Les trois créneaux tels qu'ils étaient juste avant l'écriture."
-             " C'est le retour arrière.",
+        string="Slots before applying", readonly=True,
+        help="The three slots as they were just before writing. This is "
+             "the rollback.",
     )
     in_progress = fields.Boolean(
-        string="Passe en cours", compute="_compute_in_progress",
-        help="Vrai seulement dans la fenêtre où la passe peut encore rendre"
-             " un résultat.",
+        string="Run in progress", compute="_compute_in_progress",
+        help="True only in the window during which the run can still "
+             "return a result.",
     )
     stalled = fields.Boolean(
-        string="Sans nouvelle", compute="_compute_in_progress",
-        help="Lancée, jamais revenue. Le pont a été redémarré, le plafond de"
-             " temps est passé, ou le conteneur a été recréé.",
+        string="Stalled", compute="_compute_in_progress",
+        help="Started, never came back. The bridge was restarted, the "
+             "time limit passed, or the container was recreated.",
     )
 
-    applied = fields.Boolean(string="Appliquée", readonly=True, copy=False)
-    applied_by = fields.Many2one("res.users", string="Appliquée par", readonly=True)
-    applied_date = fields.Datetime(string="Appliquée le", readonly=True)
+    applied = fields.Boolean(string="Applied", readonly=True, copy=False)
+    applied_by = fields.Many2one("res.users", string="Applied by", readonly=True)
+    applied_date = fields.Datetime(string="Applied on", readonly=True)
 
     @api.depends("kind", "entry_id.name", "calendar_id.name", "create_date")
     def _compute_name(self):
-        labels = dict(self._fields["kind"].selection)
+        # Les libellés traduits, pas ceux de la source (anglaise) : le nom stocké
+        # se lit dans la langue de qui crée la proposition.
+        labels = dict(self._fields["kind"]._description_selection(self.env))
         for rec in self:
-            cible = rec.entry_id.name or rec.calendar_id.name or _("sans cible")
+            cible = rec.entry_id.name or rec.calendar_id.name or _("no target")
             rec.name = "%s — %s" % (labels.get(rec.kind, rec.kind), cible)
 
     @api.depends("state", "create_date")
@@ -213,11 +217,10 @@ class EditorialSuggestion(models.Model):
         """
         if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
             raise UserError(_(
-                "Demander à Gen est réservé au groupe « Direction"
-                " éditoriale »."
+                "Asking Gen is reserved to the \"Editorial management\" group."
             ))
         self.env["bf.ai.bridge"].check_available(_(
-            "Gen ne peut donc pas être sollicité."
+            "Gen therefore cannot be asked."
         ))
         if not calendar and entry:
             calendar = entry.calendar_id
@@ -280,7 +283,8 @@ class EditorialSuggestion(models.Model):
                 elif rec.state == "queued":
                     rec.write({
                         "state": "error",
-                        "message": _("Le pont a répondu « ok » sans rien déposer."),
+                        "message": _("The bridge answered \"ok\" without "
+                                     "delivering anything."),
                     })
 
         threading.Thread(target=_run, daemon=True).start()
@@ -297,27 +301,27 @@ class EditorialSuggestion(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
             raise UserError(_(
-                "Appliquer une proposition est réservé au groupe « Direction"
-                " éditoriale »."
+                "Applying a suggestion is reserved to the \"Editorial "
+                "management\" group."
             ))
         if self.applied:
-            raise UserError(_("Cette proposition a déjà été appliquée."))
+            raise UserError(_("This suggestion has already been applied."))
         if not self.has_proposal:
-            raise UserError(_("Cette proposition ne porte aucun texte."))
+            raise UserError(_("This suggestion carries no text."))
         post = self.entry_id.post_id
         if not post:
             raise UserError(_(
-                "L'entrée n'est rattachée à aucun billet : il n'y a nulle part"
-                " où écrire."
+                "The entry is not linked to any post: there is nowhere to "
+                "write."
             ))
 
         code_source, code_cible = lang_codes(self.entry_id)
         actuel = self.entry_id._genfox_source_content()
         if self.source_digest and digest(actuel) != self.source_digest:
             raise UserError(_(
-                "L'article a changé depuis que la proposition a été calculée."
-                " L'appliquer effacerait ce travail. Relancez « Étoffer et"
-                " aligner » sur la version actuelle."
+                "The article has changed since the suggestion was "
+                "computed. Applying it would erase that work. Run "
+                "\"Expand and align\" again on the current version."
             ))
 
         slots = self._read_slots(post.id)
@@ -350,14 +354,14 @@ class EditorialSuggestion(models.Model):
         self.entry_id.write({"qa_state": "todo"})
         self.entry_id.action_sync_from_post()
         traduits = self._mark_written_versions_translated(ecrits)
-        self.entry_id.message_post(body=Markup(
-            "<p>Proposition Gen appliquée par %s. Créneaux écrits : %s.</p>"
-            "<p>La QA éditoriale est à repasser. %s</p>"
-        ) % (
+        self.entry_id.message_post(body=Markup(_(
+            "<p>Gen suggestion applied by %s. Slots written: "
+            "%s.</p><p>The editorial QA must be run again. %s</p>"
+        )) % (
             escape(self.env.user.name), escape(", ".join(ecrits)),
-            _("Créneau(x) passé(s) à « Traduite » : %s. La relecture humaine"
-              " reste à faire — Gen a écrit le texte, personne ne l'a"
-              " encore lu.", ", ".join(traduits))
+            _("Slot(s) moved to \"Translated\": %s. Human proofreading is "
+              "still to be done: Gen wrote the text, nobody has read it "
+              "yet.", ", ".join(traduits))
             if traduits else "",
         ))
         return True
@@ -411,7 +415,7 @@ class EditorialSuggestion(models.Model):
         for rec in self:
             if rec.entry_id:
                 rec.entry_id.message_post(body=_(
-                    "Proposition Gen « %s » écartée.", rec.name,
+                    "Gen suggestion \"%s\" discarded.", rec.name,
                 ))
         return self.unlink()
 

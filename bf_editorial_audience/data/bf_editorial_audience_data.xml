@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_capture_audience" model="ir.cron">
-            <field name="name">Atelier éditorial : relevé d'audience de la veille</field>
+            <field name="name">Editorial workshop: yesterday's audience snapshot</field>
             <field name="model_id" ref="model_bf_editorial_audience"/>
             <field name="state">code</field>
             <field name="code">model._cron_capture()</field>
@@ -13,7 +13,7 @@
         </record>
 
         <record id="cron_reclass_agents" model="ir.cron">
-            <field name="name">Atelier éditorial : ranger les agents non classés</field>
+            <field name="name">Editorial workshop: sort unclassified user agents</field>
             <field name="model_id" ref="website.model_website_visitor"/>
             <field name="state">code</field>
             <field name="code">model._cron_reclass_agents()</field>
@@ -23,7 +23,7 @@
         </record>
 
         <record id="cron_forget_agents" model="ir.cron">
-            <field name="name">Atelier éditorial : oublier les agents trop vieux</field>
+            <field name="name">Editorial workshop: forget old user agents</field>
             <field name="model_id" ref="website.model_website_visitor"/>
             <field name="state">code</field>
             <field name="code">model._cron_forget_agents()</field>

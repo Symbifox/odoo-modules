@@ -49,6 +49,10 @@ periodic job cannot spend an afternoon's worth of calls in a minute.
 
 Depends on `bf_editorial`, `bf_ai_bridge`.
 
+## Languages (v18.0.1.5.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A suggestion's stored name uses the translated label of its kind, and the note left on the entry when a suggestion is applied goes through the catalogue.
+
 ## Licence
 
 BUSL-1.1. Internal use is free; providing a product or service to third parties

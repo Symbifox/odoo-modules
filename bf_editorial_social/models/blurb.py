@@ -6,44 +6,44 @@ from odoo import _, api, fields, models
 
 class EditorialBlurb(models.Model):
     _name = "bf.editorial.blurb"
-    _description = "Blurb de diffusion"
+    _description = "Publishing blurb"
     _order = "entry_id, channel_id, id"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
     channel_id = fields.Many2one(
-        "bf.social.channel", string="Canal", required=True, ondelete="cascade",
+        "bf.social.channel", string="Channel", required=True, ondelete="cascade",
     )
     lang_id = fields.Many2one(
         "res.lang", related="channel_id.lang_id", store=True, readonly=True,
     )
     variant = fields.Char(
-        string="Variante", default="A",
-        help="Deux variantes du même blurb se comparent ensuite sur leurs clics.",
+        string="Variant", default="A",
+        help="Two variants of the same blurb are then compared on their "
+             "clicks.",
     )
-    body = fields.Text(string="Texte", required=True)
-    body_length = fields.Integer(string="Caractères", compute="_compute_length")
-    over_limit = fields.Boolean(string="Trop long", compute="_compute_length")
-    hashtags = fields.Char(string="Mots-clics")
+    body = fields.Text(string="Text", required=True)
+    body_length = fields.Integer(string="Characters", compute="_compute_length")
+    over_limit = fields.Boolean(string="Too long", compute="_compute_length")
+    hashtags = fields.Char(string="Hashtags")
     article_url = fields.Char(
-        string="Lien de l'article", compute="_compute_article_url",
-        help="L'URL publique de l'article, dans la langue du canal. Ce n'est"
-             " pas exactement ce qui part : la mise en file résout un lien"
-             " suivi, plus court et attribuable, lisible sur le billet de"
-             " diffusion.",
+        string="Article link", compute="_compute_article_url",
+        help="The article's public URL, in the channel's language. It is "
+             "not exactly what goes out: queuing resolves a tracked link, "
+             "shorter and attributable, shown on the social post.",
     )
     state = fields.Selection(
-        [("draft", "Brouillon"), ("approved", "Approuvé"), ("used", "Diffusé")],
-        string="État", default="draft", required=True,
+        [("draft", "Draft"), ("approved", "Approved"), ("used", "Published")],
+        string="Status", default="draft", required=True,
     )
-    qa_findings = fields.Text(string="Constats QA", readonly=True)
+    qa_findings = fields.Text(string="QA findings", readonly=True)
 
     _sql_constraints = [
         ("unique_variant",
          "UNIQUE(entry_id, channel_id, variant)",
-         "Cette variante existe déjà pour cet article et ce canal."),
+         "This variant already exists for this article and this channel."),
     ]
 
     @api.depends("body", "channel_id.body_limit", "hashtags", "channel_id.network")
@@ -80,7 +80,7 @@ class EditorialBlurb(models.Model):
             )
             if b.over_limit:
                 constats.append(_(
-                    "Trop long de %s caractères pour ce réseau.",
+                    "%s characters too long for this network.",
                     b.body_length - b.channel_id.body_limit,
                 ))
             b.qa_findings = "\n".join(constats) if constats else False

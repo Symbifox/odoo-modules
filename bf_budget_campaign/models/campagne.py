@@ -29,40 +29,40 @@ class UtmCampaign(models.Model):
     # arrivent avec `sale`. Un Monetary qui hérite du `currency_field` par défaut
     # fait échouer le MONTAGE DU REGISTRE, pas une lecture. On porte la nôtre.
     bf_currency_id = fields.Many2one(
-        "res.currency", string="Devise", compute="_compute_bf_currency_id",
+        "res.currency", string="Budget currency", compute="_compute_bf_currency_id",
     )
     analytic_account_id = fields.Many2one(
         "account.analytic.account",
-        string="Compte analytique",
+        string="Analytic account",
         copy=False,
-        help="Le compte qui porte la dépense de cette campagne. Une dépense"
-             " imputée à ce compte remonte ici sans double saisie.",
+        help="The account that carries this campaign's spend. An expense "
+             "charged to this account shows up here with no double entry.",
     )
 
     bf_cost_accounting = fields.Monetary(
-        string="Dépense comptabilisée", compute="_compute_bf_cost",
+        string="Posted spend", compute="_compute_bf_cost",
         currency_field="bf_currency_id",
-        help="Les lignes analytiques adossées à une écriture comptable. C'est"
-             " l'argent sorti, taxes comprises, tel que le grand livre le porte.",
+        help="Analytic lines backed by a journal entry. This is the money "
+             "spent, taxes included, as the general ledger records it.",
     )
     bf_cost_internal = fields.Monetary(
-        string="Coût interne", compute="_compute_bf_cost",
+        string="Internal cost", compute="_compute_bf_cost",
         currency_field="bf_currency_id",
-        help="Les lignes analytiques SANS pièce comptable : feuilles de temps et"
-             " saisies manuelles. Disjoint de la dépense comptabilisée.",
+        help="Analytic lines WITHOUT a journal entry: timesheets and "
+             "manual entries. Separate from posted spend.",
     )
     bf_cost_total = fields.Monetary(
-        string="Dépense totale", compute="_compute_bf_cost",
+        string="Total spend", compute="_compute_bf_cost",
         currency_field="bf_currency_id",
     )
     bf_hours_internal = fields.Float(
-        string="Heures internes", compute="_compute_bf_cost",
+        string="Internal hours", compute="_compute_bf_cost",
     )
     bf_unvalued_hours = fields.Float(
-        string="Heures non valorisées", compute="_compute_bf_cost",
-        help="Heures saisies dont le coût est nul. Odoo valorise le temps au coût"
-             " horaire de l'employé : quand ce taux manque, la campagne lit zéro"
-             " et a l'air parfaitement normale.",
+        string="Uncosted hours", compute="_compute_bf_cost",
+        help="Logged hours whose cost is zero. Odoo costs time at the "
+             "employee's hourly cost: when that rate is missing, the "
+             "campaign reads zero and looks perfectly normal.",
     )
     bf_has_unvalued_time = fields.Boolean(compute="_compute_bf_cost")
 
@@ -71,44 +71,44 @@ class UtmCampaign(models.Model):
     # Elle vit donc dans ses propres champs, à côté de la dépense réelle, et le
     # total réel reste intact.
     bf_estimate_rate = fields.Float(
-        string="Taux d'estimation", compute="_compute_bf_cost",
-        help="Le taux de revient par défaut réglé pour cette instance. Il ne"
-             " sert qu'aux heures sans coût horaire.",
+        string="Estimation rate", compute="_compute_bf_cost",
+        help="The default cost rate set for this instance. It only "
+             "applies to hours with no hourly cost.",
     )
     bf_cost_internal_estimated = fields.Monetary(
-        string="Coût interne estimé", compute="_compute_bf_cost",
+        string="Estimated internal cost", compute="_compute_bf_cost",
         currency_field="bf_currency_id",
-        help="Les heures non valorisées, au taux par défaut. C'est une"
-             " estimation, jamais un montant comptabilisé.",
+        help="Uncosted hours at the default rate. It is an estimate, "
+             "never a posted amount.",
     )
     bf_cost_total_estimated = fields.Monetary(
-        string="Dépense totale estimée", compute="_compute_bf_cost",
+        string="Estimated total spend", compute="_compute_bf_cost",
         currency_field="bf_currency_id",
-        help="La dépense réelle plus l'estimation des heures non valorisées."
-             " À ne pas confondre avec la dépense totale, qui ne porte que du réel.",
+        help="Actual spend plus the estimate of uncosted hours. Not to be "
+             "confused with total spend, which carries actuals only.",
     )
 
     bf_budget_line_ids = fields.Many2many(
-        "bf.budget.line", string="Lignes budgétaires",
+        "bf.budget.line", string="Budget lines",
         compute="_compute_bf_budget_lines",
-        help="Les lignes budgétaires dont l'axe analytique nomme le compte de"
-             " cette campagne.",
+        help="The budget lines whose analytic axis names this campaign's "
+             "account.",
     )
     bf_amount_planned = fields.Monetary(
-        string="Prévu", compute="_compute_bf_budget_lines",
+        string="Planned", compute="_compute_bf_budget_lines",
         currency_field="bf_currency_id",
     )
     bf_budget_count = fields.Integer(
-        string="Lignes budgétaires", compute="_compute_bf_budget_lines",
+        string="Budget lines", compute="_compute_bf_budget_lines",
     )
 
     _sql_constraints = [
         (
             "analytic_account_uniq",
             "unique(analytic_account_id)",
-            "Ce compte analytique sert déjà une autre campagne. Un compte ne peut"
-            " porter qu'une campagne, sans quoi les deux afficheraient la même"
-            " dépense.",
+            "This analytic account is already used by another campaign. "
+            "An account can carry only one campaign, otherwise both would "
+            "show the same spend.",
         ),
     ]
 
@@ -126,12 +126,13 @@ class UtmCampaign(models.Model):
             compte = campagne.analytic_account_id
             if compte and compte.plan_id._column_name() != "account_id":
                 raise ValidationError(_(
-                    "Le compte « %(compte)s » appartient au plan « %(plan)s », un"
-                    " plan racine distinct du plan projet. Les lignes analytiques"
-                    " d'un tel plan sont rangées dans une autre colonne, et la"
-                    " dépense de la campagne resterait à zéro sans le dire."
-                    " Rangez ce plan sous le plan projet, ou choisissez un compte"
-                    " du plan projet.",
+                    "The \"%(compte)s\" account belongs to the "
+                    "\"%(plan)s\" plan, a root plan separate from the "
+                    "project plan. Analytic lines of such a plan are "
+                    "stored in another column, and the campaign's spend "
+                    "would silently stay at zero. Move this plan under "
+                    "the project plan, or choose an account from the "
+                    "project plan.",
                     compte=compte.display_name, plan=compte.plan_id.display_name,
                 ))
 
@@ -152,11 +153,19 @@ class UtmCampaign(models.Model):
         parent = Plan.browse(int(Params.get_param("analytic.project_plan", 0))).exists()
         if not parent:
             raise UserError(_(
-                "Le plan analytique projet est introuvable. Odoo le désigne par le"
-                " paramètre système « analytic.project_plan » ; sans lui, on ne"
-                " sait pas sous quel plan ranger les campagnes."
+                "The project analytic plan cannot be found. Odoo points "
+                "to it with the \"analytic.project_plan\" system "
+                "parameter; without it, there is no way to know which "
+                "plan to put campaigns under."
             ))
-        plan = Plan.create({"name": _("Campagnes"), "parent_id": parent.id})
+        # Le plan est partagé : chaque langue installée reçoit son nom, plutôt
+        # que la seule langue de qui clique le premier (un `create` en fr_CA
+        # écrit le français aussi en en_US).
+        plan = Plan.with_context(lang="en_US").create({"name": "Campaigns", "parent_id": parent.id})
+        plan.update_field_translations("name", {
+            code: self.with_context(lang=code).env._("Campaigns")
+            for code, _nom in self.env["res.lang"].get_installed() if code != "en_US"
+        })
         Params.set_param(PARAM_PLAN, str(plan.id))
         return plan
 
@@ -242,7 +251,7 @@ class UtmCampaign(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Mouvements de la campagne"),
+            "name": _("Campaign entries"),
             "res_model": "account.analytic.line",
             "view_mode": "list,form",
             "domain": self._bf_analytic_domain() or [("id", "=", False)],
@@ -253,7 +262,7 @@ class UtmCampaign(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Lignes budgétaires de la campagne"),
+            "name": _("Campaign budget lines"),
             "res_model": "bf.budget.line",
             "view_mode": "list,form",
             "domain": [("id", "in", self.bf_budget_line_ids.ids)],

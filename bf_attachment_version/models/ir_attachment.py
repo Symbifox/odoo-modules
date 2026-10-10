@@ -16,9 +16,9 @@ class IrAttachment(models.Model):
     _inherit = "ir.attachment"
 
     version_ids = fields.One2many(
-        "bf.attachment.version", "attachment_id", string="Versions conservées")
+        "bf.attachment.version", "attachment_id", string="Kept versions")
     version_count = fields.Integer(
-        string="Nombre de versions", compute="_compute_version_count")
+        string="Version count", compute="_compute_version_count")
 
     def _compute_version_count(self):
         comptes = {}

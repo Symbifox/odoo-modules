@@ -75,6 +75,10 @@ Set the Fernet key before creating a channel, or writing a credential will be
 refused. Install at least one connector module, or the manual channel
 (`bf_editorial_manual`), before expecting anything to leave.
 
+## Languages (v18.0.1.6.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. When the scheduled publishing refuses a post, the reason and the note on the post are written in the language of the post's creator, else the company's, else English, and no longer in the scheduler's. A missing encryption key now raises a translated message. On upgrade, the two scheduled actions are renamed unless their names were edited by hand.
+
 ## Licence
 
 BUSL-1.1. Internal use is free; providing a product or service to third parties

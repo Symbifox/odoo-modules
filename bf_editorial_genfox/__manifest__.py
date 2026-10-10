@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial — Gen",
-    "version": "18.0.1.4.1",
+    # 18.0.1.5.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.5.0",
     "category": "Marketing",
     "summary": "Suggestion, revue et étoffement d'articles par Gen,"
                " en propositions relues avant d'être appliquées",

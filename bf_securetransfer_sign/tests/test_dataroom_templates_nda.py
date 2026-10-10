@@ -82,7 +82,10 @@ class TestDataroomTemplateNda(BaseNeuve, TransactionCase):
     def test_nda_is_dropped_and_announced_when_the_brand_has_none(self):
         """Le cas qui compte : l'exigence tombe, et l'expéditeur l'apprend
         MAINTENANT plutôt qu'au refus final de l'envoi."""
-        wizard = self.Wizard.new({"brand_id": self.brand_bare.id})
+        # L'avertissement s'attend en anglais, la source : épinglé, parce qu'un
+        # contexte sans langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
+        wizard = self.Wizard.with_context(lang="en_US").new({"brand_id": self.brand_bare.id})
         tmpl = self.Template.create({
             "name": "QA — entente impossible",
             "audience_mode": "open",
@@ -93,7 +96,7 @@ class TestDataroomTemplateNda(BaseNeuve, TransactionCase):
         self.assertFalse(wizard.nda_required)
         self.assertTrue(res and res.get("warning"),
                         "le retrait de l'entente doit remonter")
-        self.assertIn("entente", res["warning"]["message"].lower())
+        self.assertIn("nda", res["warning"]["message"].lower())
 
     def test_nda_removes_the_sms_channel(self):
         """Une signature exige une adresse courriel. `action_send` le refuse

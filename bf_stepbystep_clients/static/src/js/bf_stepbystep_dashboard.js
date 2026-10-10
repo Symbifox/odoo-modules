@@ -64,8 +64,8 @@ export class BfStepbystepDashboard extends Component {
         } catch (error) {
             console.error("Error loading client detail:", error);
             this.notification.add(
-                _t("Erreur lors du chargement de la fiche client."),
-                { type: "danger", title: _t("Erreur") }
+                _t("Error while loading the client record."),
+                { type: "danger", title: _t("Error") }
             );
         }
         this.state.detailLoading = false;
@@ -304,10 +304,10 @@ export class BfStepbystepDashboard extends Component {
 
     getModuleStatusLabel(status) {
         const map = {
-            done: _t("Complété"),
-            current: _t("En cours"),
-            pending: _t("En attente"),
-            upcoming: _t("À venir"),
+            done: _t("Complete"),
+            current: _t("In progress"),
+            pending: _t("Pending"),
+            upcoming: _t("Upcoming"),
         };
         return map[status] || status;
     }
@@ -326,9 +326,11 @@ export class BfStepbystepDashboard extends Component {
         if (!dateStr || dateStr === "False" || dateStr === "None") return "-";
         try {
             const clean = dateStr.includes(" ") ? dateStr.split(" ")[0] : dateStr;
-            const d = new Date(clean + "T12:00:00");
-            if (isNaN(d.getTime())) return "-";
-            return d.toLocaleDateString("fr-CA", {
+            // Luxon follows the user's language (set by the web client), not a
+            // fixed "fr-CA".
+            const d = luxon.DateTime.fromISO(clean);
+            if (!d.isValid) return "-";
+            return d.toLocaleString({
                 day: "numeric",
                 month: "short",
                 year: "numeric",
@@ -338,14 +340,24 @@ export class BfStepbystepDashboard extends Component {
         }
     }
 
+    // Terms of their own: the web client merges the JS translations of every
+    // module, where a bare "in" or "d" meets other modules' translations.
+    formatDaysAhead(days) {
+        return _t("in %s d", days);
+    }
+
+    formatDaysAgo(days) {
+        return _t("%s d", days);
+    }
+
     getSectorLabel(sector) {
         const map = {
-            cpe: "CPE",
-            obnl: "OBNL",
-            scolaire: "Scolaire",
-            entreprise: "Entreprise",
-            interne: "Interne",
-            pause: "En pause",
+            cpe: _t("CPE"),
+            obnl: _t("Non-profit"),
+            scolaire: _t("School"),
+            entreprise: _t("Business"),
+            interne: _t("Internal"),
+            pause: _t("Paused"),
         };
         return map[sector] || sector;
     }

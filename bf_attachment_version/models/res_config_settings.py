@@ -8,39 +8,39 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_av_actif = fields.Boolean(
-        string="Conserver les versions remplacées",
+        string="Keep replaced versions",
         default=True,
         config_parameter="bf_attachment_version.actif",
-        help="Quand c'est éteint, une réécriture de pièce jointe redevient "
-             "définitive et sans trace.",
+        help="When off, rewriting an attachment is final again and leaves "
+             "no trace.",
     )
     bf_av_extensions = fields.Char(
-        string="Extensions versionnées",
+        string="Versioned extensions",
         default=EXTENSIONS,
         config_parameter="bf_attachment_version.extensions",
-        help="Séparées par des virgules, sans le point.",
+        help="Comma-separated, without the dot.",
     )
     bf_av_modeles_exclus = fields.Char(
-        string="Modèles exclus",
+        string="Excluded models",
         default=",".join(MODELES_EXCLUS),
         config_parameter="bf_attachment_version.modeles_exclus",
-        help="Modèles dont les pièces ne sont jamais versionnées.",
+        help="Models whose attachments are never versioned.",
     )
     bf_av_max_versions = fields.Integer(
-        string="Versions gardées par pièce",
+        string="Versions kept per attachment",
         default=MAX_VERSIONS,
         config_parameter="bf_attachment_version.max_versions",
-        help="0 pour ne rien purger.",
+        help="0 to purge nothing.",
     )
     bf_av_max_jours = fields.Integer(
-        string="Âge maximal (jours)",
+        string="Maximum age (days)",
         default=MAX_JOURS,
         config_parameter="bf_attachment_version.max_jours",
-        help="0 pour ne pas purger sur l'âge.",
+        help="0 to not purge by age.",
     )
     bf_av_taille_max_mo = fields.Integer(
-        string="Taille maximale versionnée (Mo)",
+        string="Maximum versioned size (MB)",
         default=TAILLE_MAX_MO,
         config_parameter="bf_attachment_version.taille_max_mo",
-        help="Au-delà, le remplacement reste définitif. 0 pour ne pas limiter.",
+        help="Above this, the replacement stays final. 0 for no limit.",
     )

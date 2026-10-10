@@ -16,6 +16,8 @@ except ImportError:  # pragma: no cover
     Fernet = None
     InvalidToken = Exception
 
+from odoo import _
+from odoo.exceptions import UserError
 from odoo.tools import config
 
 ENV_VAR = "BF_SOCIAL_FERNET_KEY"
@@ -38,11 +40,13 @@ def encrypt(value):
         return ""
     key = get_encryption_key()
     if not (Fernet and key):
-        raise ValueError(
-            "bf_editorial_social : aucune clé de chiffrement configurée. "
-            "Poser %s dans l'environnement ou %s dans odoo.conf."
-            % (ENV_VAR, CONF_KEY)
-        )
+        # Remonte à l'écran quand on enregistre un secret : un message pour
+        # l'usager, dans sa langue.
+        raise UserError(_(
+            "No encryption key is configured. Set %(env)s in the environment "
+            "or %(conf)s in odoo.conf.",
+            env=ENV_VAR, conf=CONF_KEY,
+        ))
     return Fernet(key).encrypt(value.encode()).decode()
 
 

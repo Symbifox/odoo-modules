@@ -5,17 +5,17 @@
         <field name="name">bf.editorial.audience.list</field>
         <field name="model">bf.editorial.audience</field>
         <field name="arch" type="xml">
-            <list string="Relevés d'audience" create="0">
+            <list string="Audience snapshots" create="0">
                 <field name="capture_date"/>
                 <field name="entry_id"/>
                 <field name="lang_id"/>
-                <field name="tracked_views" sum="Retenues"/>
-                <field name="human_views" sum="Humaines"/>
-                <field name="bot_views" sum="Robots"/>
-                <field name="unknown_views" sum="Agent non relevé"/>
+                <field name="tracked_views" sum="Tracked"/>
+                <field name="human_views" sum="Human"/>
+                <field name="bot_views" sum="Bots"/>
+                <field name="unknown_views" sum="Agent not recorded"/>
                 <field name="bot_share" widget="percentage" optional="show"/>
-                <field name="human_visitors" sum="Visiteurs humains" optional="hide"/>
-                <field name="tracked_visitors" sum="Visiteurs retenus" optional="hide"/>
+                <field name="human_visitors" sum="Human visitors" optional="hide"/>
+                <field name="tracked_visitors" sum="Tracked visitors" optional="hide"/>
             </list>
         </field>
     </record>
@@ -51,18 +51,18 @@
             <search>
                 <field name="entry_id"/>
                 <field name="lang_id"/>
-                <filter name="lus" string="Vues humaines"
+                <filter name="lus" string="Human views"
                         domain="[('human_views', '>', 0)]"/>
-                <filter name="robots" string="Surtout des robots"
+                <filter name="robots" string="Mostly bots"
                         domain="[('bot_share', '>=', 50)]"/>
                 <separator/>
-                <filter name="jour" string="Journée" date="capture_date"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="g_entry" string="Entrée"
+                <filter name="jour" string="Day" date="capture_date"/>
+                <group expand="0" string="Group by">
+                    <filter name="g_entry" string="Entry"
                             context="{'group_by': 'entry_id'}"/>
-                    <filter name="g_lang" string="Langue"
+                    <filter name="g_lang" string="Language"
                             context="{'group_by': 'lang_id'}"/>
-                    <filter name="g_date" string="Journée"
+                    <filter name="g_date" string="Day"
                             context="{'group_by': 'capture_date'}"/>
                 </group>
             </search>
@@ -74,34 +74,24 @@
         <field name="res_model">bf.editorial.audience</field>
         <field name="view_mode">list,graph,pivot</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun relevé encore</p>
+            <p class="o_view_nocontent_smiling_face">No snapshot yet</p>
             <p>
-                Le relevé fige chaque journée avant que la purge des visiteurs
-                n'emporte ses traces. Il commence à dire quelque chose d'utile
-                le lendemain de sa mise en service : les visites d'avant n'ont
-                pas d'agent relevé et comptent comme telles.
-                Attention au vocabulaire : « vues retenues » est déjà filtré
-                par Odoo, qui refuse de tracer tout agent qui se nomme robot.
-                Le brut, c'est le compteur natif du billet.
+                The snapshot freezes each day before the visitor purge wipes its traces. It starts saying something useful the day after it goes live: earlier visits have no recorded agent and count as such. Mind the wording: "tracked views" is already filtered by Odoo, which refuses to track any agent that calls itself a bot. The raw figure is the post's native counter.
             </p>
         </field>
     </record>
 
     <!-- Le palmarès brut, gardé et annoté pour ce qu'il est. -->
     <record id="action_editorial_palmares_brut" model="ir.actions.act_window">
-        <field name="name">Palmarès (brut, robots compris)</field>
+        <field name="name">Ranking (raw, bots included)</field>
         <field name="res_model">bf.editorial.entry</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('post_id', '!=', False)]</field>
         <field name="context">{'search_default_published': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Le palmarès historique</p>
+            <p class="o_view_nocontent_smiling_face">The historical ranking</p>
             <p>
-                Trié sur le compteur natif d'Odoo, qui compte tout ce qui
-                passe, robots compris. Il est gardé tel quel parce qu'on ne
-                sait pas ce qu'il contenait, et il n'est pas corrigé
-                rétroactivement. Pour un classement d'où les robots sont
-                retirés, voir Audience.
+                Sorted on Odoo's native counter, which counts everything that comes through, bots included. It is kept as is because what it contained is unknown, and it is not corrected retroactively. For a ranking with bots removed, see Audience.
             </p>
         </field>
     </record>

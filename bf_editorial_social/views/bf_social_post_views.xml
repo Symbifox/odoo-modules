@@ -4,16 +4,16 @@
     <field name="name">bf.social.post.form</field>
     <field name="model">bf.social.post</field>
     <field name="arch" type="xml">
-      <form string="Billet social">
+      <form string="Social post">
         <header>
-          <button name="action_send_now" type="object" string="Diffuser maintenant"
+          <button name="action_send_now" type="object" string="Publish now"
                   class="btn-primary" invisible="state in ('sent','cancelled')"
                   groups="bf_editorial.group_editorial_manager"/>
           <field name="state" widget="statusbar"
                  statusbar_visible="draft,scheduled,sent"/>
         </header>
         <sheet>
-          <widget name="web_ribbon" title="Diffusé" bg_color="text-bg-success"
+          <widget name="web_ribbon" title="Published" bg_color="text-bg-success"
                   invisible="state != 'sent'"/>
           <group>
             <group>
@@ -31,7 +31,7 @@
                      invisible="not remote_url"/>
             </group>
           </group>
-          <field name="body" placeholder="Le texte diffusé, lien compris"/>
+          <field name="body" placeholder="The published text, link included"/>
           <group>
             <field name="body_length" readonly="1"/>
             <field name="over_limit" readonly="1"/>
@@ -41,11 +41,11 @@
           <div class="alert alert-danger" role="alert" invisible="not error_message">
             <field name="error_message" nolabel="1" readonly="1"/>
           </div>
-          <group string="Clé d'idempotence" groups="base.group_no_one">
+          <group string="Idempotency key" groups="base.group_no_one">
             <field name="idempotency_key" readonly="1"/>
             <field name="remote_id" readonly="1"/>
           </group>
-          <separator string="Mesures"/>
+          <separator string="Metrics"/>
           <field name="metric_ids" readonly="1">
             <list>
               <field name="capture_date"/>
@@ -71,7 +71,7 @@
         <field name="scheduled_datetime"/>
         <field name="channel_id"/>
         <field name="entry_id"/>
-        <field name="name" string="Aperçu"/>
+        <field name="name" string="Preview"/>
         <field name="kind"/>
         <field name="body_length"/>
         <field name="over_limit" optional="hide"/>
@@ -82,7 +82,7 @@
   </record>
 
   <record id="action_social_post" model="ir.actions.act_window">
-    <field name="name">Diffusions</field>
+    <field name="name">Publications</field>
     <field name="res_model">bf.social.post</field>
     <field name="view_mode">list,form</field>
   </record>

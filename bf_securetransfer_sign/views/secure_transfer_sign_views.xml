@@ -8,23 +8,18 @@
         <field name="inherit_id" ref="bf_securetransfer.brand_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='group_audience']" position="after">
-                <group string="Entente de confidentialité (NDA)">
+                <group string="Non-disclosure agreement (NDA)">
                     <div class="alert alert-info" role="alert" colspan="2">
-                        Chaque visiteur signe SA propre entente, à l'identité qu'il
-                        vient de confirmer par code. Le document signé et son
-                        certificat sont versés au fil du transfert.
-                        <br/>
-                        <strong>À noter :</strong> une entente retire l'identification
-                        par mobile — un signataire sans adresse courriel n'existe pas.
+                        Each visitor signs THEIR own NDA, under the identity they just confirmed with a code. The signed document and its certificate are filed in the transfer's thread. <br/> <strong>Note:</strong> an NDA removes identification by mobile, since a signer must have an email address.
                     </div>
                     <field name="nda_required"/>
                     <field name="nda_document" filename="nda_filename"/>
                     <field name="nda_filename" invisible="1"/>
                     <field name="nda_field_template_id"
                            invisible="not nda_document"
-                           help="Sans gabarit, la signature reste valide et certifiée, mais elle n'est pas dessinée sur les pages du document."/>
+                           help="Without a template, the signature stays valid and certified, but it is not drawn on the document's pages."/>
                     <field name="nda_consent_text" invisible="not nda_document"
-                           placeholder="Vide = texte de consentement par défaut de bf_sign."/>
+                           placeholder="Empty = bf_sign default consent text."/>
                 </group>
             </xpath>
         </field>
@@ -44,7 +39,7 @@
                 <field name="nda_document" filename="nda_filename"
                        invisible="not nda_required"
                        readonly="state not in ('draft', 'active')"
-                       help="Vide = l'entente de la marque."/>
+                       help="Empty = the brand's NDA."/>
                 <field name="nda_filename" invisible="1"/>
                 <field name="nda_field_template_id"
                        invisible="not nda_required or not nda_document"
@@ -86,9 +81,9 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='filter_sms']" position="after">
                 <separator/>
-                <filter name="filter_nda_pending" string="Entente non signée"
+                <filter name="filter_nda_pending" string="Unsigned NDA"
                         domain="[('nda_state', '=', 'pending')]"/>
-                <filter name="filter_nda_signed" string="Entente signée"
+                <filter name="filter_nda_signed" string="Signed NDA"
                         domain="[('nda_state', '=', 'signed')]"/>
             </xpath>
         </field>

@@ -1,6 +1,10 @@
 {
     "name": "Budgets opérationnels — engagements récurrents",
-    "version": "18.0.1.0.1",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Accounting/Accounting",
     "summary": "Les abonnements deviennent un calendrier d'engagements datés, et le théorique s'y appuie",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -13,10 +13,10 @@ class SecureTransferTemplate(models.Model):
     _inherit = "secure.transfer.template"
 
     nda_required = fields.Boolean(
-        string="Exiger la signature d'une entente",
-        help="Chaque visiteur signera l'entente à son nom, après avoir "
-             "confirmé son identité par code et avant de voir le contenu. "
-             "L'entente elle-même vient de la marque.",
+        string="Require an NDA signature",
+        help="Each visitor will sign the NDA in their own name, after "
+             "confirming their identity with a code and before seeing the "
+             "content. The NDA itself comes from the brand.",
     )
 
     def _apply_vals(self):

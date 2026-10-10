@@ -55,6 +55,10 @@ odoo -d <database> -i bf_stepbystep_clients --stop-after-init
 
 Odoo dependencies: `base`, `project`, `hr_timesheet`.
 
+## Languages (v18.0.2.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The dashboard reads stage, project and activity type names in the user's language first, and formats dates in it. Its short labels (mandate start and end, days ahead) have terms of their own: the web client merges the JavaScript translations of every module, and a bare "Start" or "in" would take another module's French.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

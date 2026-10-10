@@ -1,0 +1,276 @@
+# Translation template for Budgets opérationnels : engagements récurrents.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_subscription 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid "- %(sub)s: no posted bill, nothing to infer"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_line_form_subscription
+msgid ""
+"A subscription linked to this budget item spends without a schedule. The "
+"calendar-based theoretical amount does not cover it, so it underestimates "
+"this budget item and can make a real overrun look like a budget on track."
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_budget_forecast, bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_subscription_subscription__budget_position_id
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
+msgid "Budget item"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/models/bf_budget_line.py:0
+msgid "Budget item subscriptions"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_subscription_link_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_period_total
+msgid "Commitments for the period"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_budget_forecast, bf_budget_subscription, bf_editorial_audience,
+#. bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_due_to_date
+msgid "Due to date"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_subscription_subscription__budget_has_calendar
+msgid "False for an on-demand subscription: it spends without a schedule."
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
+msgid "Group by"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__has_subscription_without_calendar
+msgid "Has Subscription Without Calendar"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_subscription_subscription__budget_has_calendar
+msgid "Known schedule"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_subscription_link_wizard_form
+msgid "Link"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.actions.act_window,name:bf_budget_subscription.bf_budget_subscription_link_wizard_action
+#: model:ir.ui.menu,name:bf_budget_subscription.menu_bf_budget_subscription_link
+msgid "Link subscriptions"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_subscription_link_wizard_form
+msgid "Link subscriptions to budget items"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_ids
+msgid "Linked subscriptions"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid "No certain link to apply. The details are in the preview."
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid "No subscription to review."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_line__subscription_no_calendar_ids
+msgid ""
+"On-demand subscriptions linked to this budget item: they spend without a "
+"schedule, so the calendar-based theoretical amount does not cover them."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__only_unassigned
+msgid "Only those without a budget item"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_line_form_subscription
+msgid "Recurring commitments"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_count
+msgid "Subscription Count"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model,name:bf_budget_subscription.model_bf_budget_subscription_link_wizard
+msgid "Subscription linking to budget items"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_no_calendar_ids
+msgid "Subscriptions without a schedule"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_subscription_link_wizard_form
+msgid ""
+"The budget item is inferred from the expense account that carries most of "
+"each subscription's bills. Ambiguous cases are not settled at random: they "
+"are listed and left to be done by hand."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_subscription_subscription__budget_position_id
+msgid ""
+"The budget item whose budgets count this subscription. Inferred from vendor "
+"bills by the linking wizard."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_line__subscription_ids
+msgid ""
+"The subscriptions whose budget item is the one on this line. The list is "
+"computed: linking a subscription to a budget item is enough, nothing needs "
+"to be copied into the budgets."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_form_budget
+msgid ""
+"This subscription spends without a schedule: budgets cannot forecast its "
+"next due date."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_subscription_link_wizard__only_unassigned
+msgid "Uncheck to also reconsider subscriptions that are already linked."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_upcoming
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_line_list_subscription
+msgid "Upcoming renewals"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__preview
+msgid "What will be done"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_line__subscription_upcoming
+msgid ""
+"What will fall due by the end of the fiscal year. It is known, dated and "
+"contractual: it is already committed."
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
+msgid "Without a budget item"
+msgstr ""
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
+msgid "Without a schedule"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid ""
+"⚠️ %(sub)s: %(account)s is in %(n)s budget items, to be settled by hand"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid "⚠️ %(sub)s: account %(account)s is in no budget item"
+msgstr ""
+
+#. module: bf_budget_subscription
+#. odoo-python
+#: code:addons/bf_budget_subscription/wizard/bf_budget_subscription_link_wizard.py:0
+msgid "✅ %(sub)s → %(position)s (dominant account %(account)s)"
+msgstr ""

@@ -1,0 +1,792 @@
+# Translation template for Budgets opérationnels : prévision glissante.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_forecast 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast_period.py:0
+msgid ""
+"\"%(name)s\" belongs to a published version: its figures can no longer be "
+"edited."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid ""
+"\"%(name)s\" is published: its figures record what was believed at that "
+"time. Roll a new version forward rather than editing this one."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid ". To forecast differently, roll a new version forward."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.constraint,message:bf_budget_forecast.constraint_bf_budget_forecast_line_position_uniq_per_forecast
+msgid "A budget item has only one line per forecast version."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.actions.act_window,help:bf_budget_forecast.bf_budget_forecast_action
+msgid ""
+"A forecast is redone every month: actuals gain a month, the horizon moves "
+"forward by as much, and the previous version stays readable as it was made. "
+"Comparing versions is what teaches something, not the figure of a single "
+"version."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast_period__is_closed
+msgid "A month that ends on or before the actuals date."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "A published version cannot be deleted: it is a dated record."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid ""
+"A version already rolled forward cannot be reopened: the next one is the "
+"live one."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "A version without lines forecasts nothing."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_campaign, bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__amount_actual
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_period_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_list
+msgid "Actual"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__amount_actual
+msgid "Actual to date"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__amount_actual
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Actual, closed months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid ""
+"Actuals cannot be closed in the future: accounting has not seen them yet."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__actuals_through
+msgid "Actuals through"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__name
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__position_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__position_id
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_search
+msgid "Budget item"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__closed_month_count
+msgid "Closed Month Count"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__is_closed
+msgid "Closed month"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_budget_subscription, bf_editorial_audience,
+#. bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__company_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__company_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Compare with the previous one"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__create_uid
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__create_uid
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__create_date
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__create_date
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__currency_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__currency_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__date_end
+msgid "Date End"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__date_start
+msgid "Date Start"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__display_name
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__display_name
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_budget_forecast.selection__bf_budget_forecast__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Each budget item already has its forecast line."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__forecast_id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__forecast_id
+msgid "Forecast"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__amount_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_period_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_list
+msgid "Forecast amount"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.actions.act_window,name:bf_budget_forecast.bf_budget_forecast_period_action
+#: model:ir.ui.menu,name:bf_budget_forecast.menu_bf_budget_forecast_pivot
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_period_view_pivot
+msgid "Forecast by month"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model,name:bf_budget_forecast.model_bf_budget_forecast_line
+msgid "Forecast line"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_search
+msgid "Forecast lines"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__amount_forecast
+msgid "Forecast over the open months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_search
+msgid "Forecast version"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__amount_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Forecast, open months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_list
+msgid "Forecasts"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__date_end
+msgid "Horizon end"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__date_start
+msgid "Horizon start"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__amount_total
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__amount_total
+msgid "Horizon total"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__id
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid ""
+"If actuals are closed at the horizon end, no month is left to forecast: it "
+"is no longer a forecast."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_has_error
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__write_uid
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__write_uid
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__write_date
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__write_date
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__line_id
+msgid "Line"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__line_count
+msgid "Line Count"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast_line.py:0
+msgid "Line months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Lines"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Lines can only be generated on a draft."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__month_count
+msgid "Month Count"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model,name:bf_budget_forecast.model_bf_budget_forecast_period
+msgid "Month of a forecast line"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__period_ids
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_period_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__actuals_through
+msgid ""
+"Months ending on or before this date are actuals, read from accounting. The "
+"following ones are forecast."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__name
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__next_ids
+msgid "Next versions"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast_period__variance
+msgid "On a closed month: the actual minus what was forecast."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "One line per budget item"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Only a draft can be seeded."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Only a draft version can be published."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Only a published version can be reset to draft."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.actions.act_window,help:bf_budget_forecast.bf_budget_forecast_action
+msgid "Open your first version"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__previous_id
+msgid "Previous version"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Publish the version"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields.selection,name:bf_budget_forecast.selection__bf_budget_forecast__state__published
+msgid "Published"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Reset to draft"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__amount
+msgid "Retained"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Roll forward one month"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Rolled forward to version %(n)s."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model,name:bf_budget_forecast.model_bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Rolling forecast"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.actions.act_window,name:bf_budget_forecast.bf_budget_forecast_action
+#: model:ir.ui.menu,name:bf_budget_forecast.menu_bf_budget_forecast
+msgid "Rolling forecasts"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Rolling operations"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Seed the open months"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__state
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_line__state
+msgid "State"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields.selection,name:bf_budget_forecast.selection__bf_budget_forecast__state__superseded
+msgid "Superseded"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast_period__amount
+msgid "The actual if the month is closed, the forecast otherwise."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast_line.py:0
+msgid "The budget item and the forecast must belong to the same company."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "The horizon end cannot come before its start."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast_period.py:0
+msgid ""
+"The month %(mois)s is closed: its actual is known, forecasting it no longer "
+"makes sense."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "The month-by-month detail opens from the line"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "This version has already been rolled forward."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "This version has no previous one to compare with."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "This version is published: its figures record what was believed as of"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_attachment_version, bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_list
+msgid "Total"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_view_form
+msgid "Totals"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_forecast.bf_budget_forecast_period_view_list
+msgid "Variance"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast_period__variance
+msgid "Variance from forecast"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Version %(n)s published, actuals through %(date)s."
+msgstr ""
+
+#. module: bf_budget_forecast
+#. odoo-python
+#: code:addons/bf_budget_forecast/models/bf_budget_forecast.py:0
+msgid "Version comparison"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__vintage
+msgid "Vintage"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_budget_forecast.field_bf_budget_forecast__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_budget_forecast
+#. modules: bf_budget_forecast, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_budget_forecast
+#: model:ir.model.fields,help:bf_budget_forecast.field_bf_budget_forecast_period__amount_forecast
+msgid ""
+"What was decided to forecast for this month. Kept even after the month "
+"closes: it is the record of what was believed."
+msgstr ""

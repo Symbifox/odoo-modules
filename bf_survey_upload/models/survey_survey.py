@@ -6,21 +6,21 @@ class SurveySurvey(models.Model):
     _inherit = "survey.survey"
 
     bf_link_uploads_to_project = fields.Boolean(
-        string="Copier les téléversements sur un projet",
+        string="Copy uploads to a project",
         default=False,
         help=(
-            "Lors de la complétion du sondage, copie les pièces jointes "
-            "téléversées vers le projet ciblé ci-dessous."
+            "When the survey is completed, copies the uploaded "
+            "attachments to the target project below."
         ),
     )
     bf_target_project_id = fields.Many2one(
         "project.project",
-        string="Projet cible pour les téléversements",
+        string="Target project for uploads",
         help=(
-            "Projet vers lequel copier les pièces jointes téléversées via ce "
-            "sondage. Requis si « Copier les téléversements sur un projet » "
-            "est activé. Définir explicitement évite que des fichiers "
-            "atterrissent sur le mauvais projet."
+            "Project to copy the attachments uploaded through this survey "
+            "to. Required if \"Copy uploads to a project\" is enabled. "
+            "Setting it explicitly keeps files from landing on the wrong "
+            "project."
         ),
     )
 
@@ -44,7 +44,7 @@ class SurveySurvey(models.Model):
             except AccessError as e:
                 raise ValidationError(
                     _(
-                        "Vous n'avez pas accès au projet ciblé. "
-                        "Choisissez un projet auquel vous avez accès en lecture."
+                        "You do not have access to the target project. "
+                        "Choose a project you can read."
                     )
                 ) from e

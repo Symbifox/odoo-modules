@@ -1,6 +1,10 @@
 {
     "name": "Budgets opérationnels — prévision glissante",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Accounting/Accounting",
     "summary": "Prévision refaite chaque mois sur 12 à 18 mois, et comparable à ce qu'on croyait avant",
     "author": "Les services de consultation Blue Fox, Inc.",

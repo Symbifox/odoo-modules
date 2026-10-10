@@ -33,7 +33,14 @@ docker exec <client>-odoo /usr/bin/odoo --stop-after-init -d <db> -u bf_survey_u
 - Odoo 18 (community, with `survey` module)
 - Tested with `survey` and `project` only; no PME-specific dependencies
 
+## Languages (v18.0.1.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The copy of an upload filed on the target project is described in the language of the project's team (its manager's, else the company's), not in the respondent's. The upload errors shown on the public survey page are translated too: the module now declares itself to the website, which only loads the translations of the modules that do. On upgrade, the onboarding step and panel still carrying the delivered French switch to English; edited ones are left.
+
 ## Changelog
+
+### 18.0.1.3.0
+- Labels and messages in English, French in `i18n/fr_CA.po`; the project copy is described in the team's language; the upload errors are translated on the public survey page.
 
 ### 18.0.1.2.0
 - Added per-question `max_file_count` (0 = unlimited). When multiple files are allowed, the total number of files is capped both at upload time (controller, under the row lock, counting already-attached files) and at final answer validation. Exposed in the question config view next to the single/multiple toggle.

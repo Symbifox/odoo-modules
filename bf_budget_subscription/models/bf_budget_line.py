@@ -12,36 +12,38 @@ class BfBudgetLine(models.Model):
 
     subscription_ids = fields.Many2many(
         "subscription.subscription",
-        string="Abonnements rattachés",
+        string="Linked subscriptions",
         compute="_compute_subscription_ids",
-        help="Les abonnements dont le poste est celui de cette ligne. La liste se "
-        "calcule : rattacher un abonnement à un poste suffit, il n'y a rien à "
-        "reporter dans les budgets.",
+        help="The subscriptions whose budget item is the one on this "
+             "line. The list is computed: linking a subscription to a "
+             "budget item is enough, nothing needs to be copied into the "
+             "budgets.",
     )
     subscription_count = fields.Integer(compute="_compute_subscription_ids")
     subscription_no_calendar_ids = fields.Many2many(
         "subscription.subscription",
-        string="Abonnements sans échéancier",
+        string="Subscriptions without a schedule",
         compute="_compute_subscription_ids",
-        help="Abonnements à la demande rattachés à ce poste : ils dépensent sans "
-        "calendrier, donc le théorique de calendrier ne les couvre pas.",
+        help="On-demand subscriptions linked to this budget item: they "
+             "spend without a schedule, so the calendar-based theoretical "
+             "amount does not cover them.",
     )
     has_subscription_without_calendar = fields.Boolean(compute="_compute_subscription_ids")
 
     subscription_due_to_date = fields.Monetary(
-        string="Échu à ce jour",
+        string="Due to date",
         compute="_compute_subscription_amounts",
         currency_field="currency_id",
     )
     subscription_upcoming = fields.Monetary(
-        string="Renouvellements à venir",
+        string="Upcoming renewals",
         compute="_compute_subscription_amounts",
         currency_field="currency_id",
-        help="Ce qui tombera d'ici la fin de l'exercice. C'est connu, daté et "
-        "contractuel : c'est déjà engagé.",
+        help="What will fall due by the end of the fiscal year. It is "
+             "known, dated and contractual: it is already committed.",
     )
     subscription_period_total = fields.Monetary(
-        string="Engagements de la période",
+        string="Commitments for the period",
         compute="_compute_subscription_amounts",
         currency_field="currency_id",
     )
@@ -140,7 +142,7 @@ class BfBudgetLine(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Abonnements du poste"),
+            "name": _("Budget item subscriptions"),
             "res_model": "subscription.subscription",
             "view_mode": "list,form",
             "domain": [("id", "in", self.subscription_ids.ids)],

@@ -19,17 +19,18 @@ class BfBudgetSubscriptionLinkWizard(models.TransientModel):
     """
 
     _name = "bf.budget.subscription.link.wizard"
-    _description = "Rattacher les abonnements aux postes budgétaires"
+    _description = "Subscription linking to budget items"
 
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
     only_unassigned = fields.Boolean(
-        string="Seulement ceux qui n'ont pas de poste",
+        string="Only those without a budget item",
         default=True,
-        help="Décocher pour reconsidérer aussi les abonnements déjà rattachés.",
+        help="Uncheck to also reconsider subscriptions that are already "
+             "linked.",
     )
-    preview = fields.Text(string="Ce qui sera fait", compute="_compute_preview")
+    preview = fields.Text(string="What will be done", compute="_compute_preview")
 
     def _candidates(self):
         """⚠️ En `sudo` par prudence, pas par nécessité de droits.
@@ -99,39 +100,40 @@ class BfBudgetSubscriptionLinkWizard(models.TransientModel):
             lines = []
             for subscription, account, position in matched:
                 lines.append(
-                    _("✅ %(sub)s → %(position)s (compte dominant %(account)s)",
+                    _("✅ %(sub)s → %(position)s (dominant account %(account)s)",
                       sub=subscription.name, position=position.display_name,
                       account=account.display_name)
                 )
             for subscription in no_bill:
                 lines.append(
-                    _("— %(sub)s : aucune facture comptabilisée, rien à déduire",
+                    _("- %(sub)s: no posted bill, nothing to infer",
                       sub=subscription.name)
                 )
             for subscription, account in no_position:
                 lines.append(
-                    _("⚠️ %(sub)s : le compte %(account)s n'est dans aucun poste",
+                    _("⚠️ %(sub)s: account %(account)s is in no budget item",
                       sub=subscription.name, account=account.display_name)
                 )
             for subscription, account, covering in ambiguous:
                 lines.append(
-                    _("⚠️ %(sub)s : %(account)s est dans %(n)s postes, à trancher à la main",
+                    _("⚠️ %(sub)s: %(account)s is in %(n)s budget items, "
+                      "to be settled by hand",
                       sub=subscription.name, account=account.display_name, n=len(covering))
                 )
-            wizard.preview = "\n".join(lines) or _("Aucun abonnement à examiner.")
+            wizard.preview = "\n".join(lines) or _("No subscription to review.")
 
     def action_apply(self):
         self.ensure_one()
         matched, _no_bill, _no_position, _ambiguous = self._resolve()
         if not matched:
             raise UserError(
-                _("Aucun rattachement certain à poser. Le détail est dans l'aperçu.")
+                _("No certain link to apply. The details are in the preview.")
             )
         for subscription, _account, position in matched:
             subscription.sudo().budget_position_id = position
         return {
             "type": "ir.actions.act_window",
-            "name": _("Abonnements rattachés"),
+            "name": _("Linked subscriptions"),
             "res_model": "subscription.subscription",
             "view_mode": "list,form",
             "domain": [("id", "in", [s.id for s, _a, _p in matched])],

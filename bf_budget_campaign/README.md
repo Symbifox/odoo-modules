@@ -133,6 +133,10 @@ odoo -d <db> -u bf_budget_campaign --test-enable --test-tags /bf_budget_campaign
 
 `bf_budget`, `utm`.
 
+## Languages (v18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The analytic plan for campaigns is created with its name in every installed language, rather than in the language of whoever created the first campaign account.
+
 ## Licence
 
 LGPL-3.

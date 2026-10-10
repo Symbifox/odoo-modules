@@ -36,6 +36,10 @@ class SecureTransferSignPortal(SecureTransferController):
     def _nda_context(self, transfer, token, locale, member, **kw):
         visuals = transfer.brand_id._visuals()
         return {
+            # Odoo ne traduit jamais le contenu d'un <title> : il se compose ici,
+            # dans la langue du visiteur, que porte le transfert résolu après
+            # `_apply_locale`.
+            "page_title": transfer.env._("Non-disclosure agreement: %s", visuals["name"]),
             "brand": transfer.brand_id,
             "visuals": visuals,
             "transfer": transfer,

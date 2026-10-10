@@ -1,0 +1,410 @@
+# Translation of Atelier éditorial : audience - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_audience 18.0.1.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid ""
+"\"Tracked views\" is not the raw figure: Odoo itself drops from its tracking"
+" any agent that calls itself a bot. The raw figure is the native counter, on"
+" the right. What you see here is the split of what Odoo agreed to track, in "
+"three buckets that add up. The \"agent not recorded\" bucket holds "
+"everything that could not be read, including every visit from before the "
+"capture went live."
+msgstr ""
+"« Vues retenues » n'est pas le brut : Odoo écarte\n"
+"                        lui-même de sa traçabilité tout agent qui se nomme\n"
+"                        robot. Le brut est le compteur natif, à droite. Ce que\n"
+"                        vous voyez ici, c'est le partage de ce qu'Odoo a bien\n"
+"                        voulu tracer, en trois seaux qui s'additionnent. Le\n"
+"                        seau « agent non relevé » porte tout ce qu'on n'a pas\n"
+"                        su lire, y compris chaque visite d'avant la mise en\n"
+"                        service de la capture."
+
+#. module: bf_editorial_audience
+#: model:ir.model.constraint,message:bf_editorial_audience.constraint_bf_editorial_audience_unique_par_jour
+msgid "A day is captured only once per entry and per language."
+msgstr "Une journée ne se relève qu'une fois par entrée et par langue."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_website_visitor__agent_family
+msgid "Agent family"
+msgstr "Famille d'agent"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+msgid "Agent not recorded"
+msgstr "Agent non relevé"
+
+#. module: bf_editorial_audience
+#: model:ir.actions.act_window,name:bf_editorial_audience.action_editorial_audience
+#: model:ir.ui.menu,name:bf_editorial_audience.menu_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_graph
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_pivot
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Audience"
+msgstr "Audience"
+
+#. module: bf_editorial_audience
+#: model:ir.model,name:bf_editorial_audience.model_bf_editorial_audience
+msgid "Audience snapshot"
+msgstr "Relevé d'audience"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_ids
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+msgid "Audience snapshots"
+msgstr "Relevés d'audience"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Bots"
+msgstr "Robots"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_bot
+msgid "Bots that got through"
+msgstr "Robots passés au travers"
+
+#. module: bf_editorial_audience
+#. modules: bf_budget_forecast, bf_budget_subscription, bf_editorial_audience,
+#. bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__capture_date
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Day"
+msgstr "Journée"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_website_visitor__is_bot
+msgid "Declared bot"
+msgstr "Robot déclaré"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_editorial_audience
+#: model:ir.actions.server,name:bf_editorial_audience.cron_forget_agents_ir_actions_server
+msgid "Editorial workshop: forget old user agents"
+msgstr "Atelier éditorial : oublier les agents trop vieux"
+
+#. module: bf_editorial_audience
+#: model:ir.actions.server,name:bf_editorial_audience.cron_reclass_agents_ir_actions_server
+msgid "Editorial workshop: sort unclassified user agents"
+msgstr "Atelier éditorial : ranger les agents non classés"
+
+#. module: bf_editorial_audience
+#: model:ir.actions.server,name:bf_editorial_audience.cron_capture_audience_ir_actions_server
+msgid "Editorial workshop: yesterday's audience snapshot"
+msgstr "Atelier éditorial : relevé d'audience de la veille"
+
+#. module: bf_editorial_audience
+#. modules: bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__entry_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Entry"
+msgstr "Entrée"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_first_day
+msgid "First snapshot"
+msgstr "Premier relevé"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Human"
+msgstr "Humaines"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_human
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Human views"
+msgstr "Vues humaines"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+msgid "Human visitors"
+msgstr "Visiteurs humains"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__lang_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Language"
+msgstr "Langue"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_editorial_audience
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_search
+msgid "Mostly bots"
+msgstr "Surtout des robots"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Native counter"
+msgstr "Compteur natif"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.actions.act_window,help:bf_editorial_audience.action_editorial_audience
+msgid "No snapshot yet"
+msgstr "Aucun relevé encore"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Not recorded"
+msgstr "Non relevé"
+
+#. module: bf_editorial_audience
+#. modules: bf_editorial_audience, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__post_id
+msgid "Post"
+msgstr "Billet"
+
+#. module: bf_editorial_audience
+#: model:ir.ui.menu,name:bf_editorial_audience.menu_editorial_palmares_brut
+msgid "Ranking (raw)"
+msgstr "Palmarès (brut)"
+
+#. module: bf_editorial_audience
+#: model:ir.actions.act_window,name:bf_editorial_audience.action_editorial_palmares_brut
+msgid "Ranking (raw, bots included)"
+msgstr "Palmarès (brut, robots compris)"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__bot_share
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_bot_share
+msgid "Share of bots that got through"
+msgstr "Part des robots passés au travers"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Since the first snapshot"
+msgstr "Depuis le premier relevé"
+
+#. module: bf_editorial_audience
+#: model_terms:ir.actions.act_window,help:bf_editorial_audience.action_editorial_palmares_brut
+msgid ""
+"Sorted on Odoo's native counter, which counts everything that comes through,"
+" bots included. It is kept as is because what it contained is unknown, and "
+"it is not corrected retroactively. For a ranking with bots removed, see "
+"Audience."
+msgstr ""
+"Trié sur le compteur natif d'Odoo, qui compte tout ce qui\n"
+"                passe, robots compris. Il est gardé tel quel parce qu'on ne\n"
+"                sait pas ce qu'il contenait, et il n'est pas corrigé\n"
+"                rétroactivement. Pour un classement d'où les robots sont\n"
+"                retirés, voir Audience."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_entry__audience_bot
+msgid "The bots Odoo's list does not name."
+msgstr "Les robots que la liste d'Odoo ne nomme pas."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_audience__bot_views
+msgid ""
+"The bots Odoo's list does not name: meta-externalagent, Barkrowler, "
+"DataForSeo, python-requests, Go-http-client, Scrapy and the others that say "
+"neither bot nor crawl."
+msgstr ""
+"Les robots que la liste d'Odoo ne nomme pas : meta-externalagent, "
+"Barkrowler, DataForSeo, python-requests, Go-http-client, Scrapy et les "
+"autres qui ne disent ni bot ni crawl."
+
+#. module: bf_editorial_audience
+#: model_terms:ir.actions.act_window,help:bf_editorial_audience.action_editorial_palmares_brut
+msgid "The historical ranking"
+msgstr "Le palmarès historique"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_entry__audience_unknown
+msgid ""
+"The honesty bucket: everything that could not be read, including all visits "
+"from before the capture went live."
+msgstr ""
+"Le seau de l'honnêteté : tout ce qu'on n'a pas su lire, y compris toutes les"
+" visites d'avant la mise en service de la capture."
+
+#. module: bf_editorial_audience
+#: model_terms:ir.actions.act_window,help:bf_editorial_audience.action_editorial_audience
+msgid ""
+"The snapshot freezes each day before the visitor purge wipes its traces. It "
+"starts saying something useful the day after it goes live: earlier visits "
+"have no recorded agent and count as such. Mind the wording: \"tracked "
+"views\" is already filtered by Odoo, which refuses to track any agent that "
+"calls itself a bot. The raw figure is the post's native counter."
+msgstr ""
+"Le relevé fige chaque journée avant que la purge des visiteurs\n"
+"                n'emporte ses traces. Il commence à dire quelque chose d'utile\n"
+"                le lendemain de sa mise en service : les visites d'avant n'ont\n"
+"                pas d'agent relevé et comptent comme telles.\n"
+"                Attention au vocabulaire : « vues retenues » est déjà filtré\n"
+"                par Odoo, qui refuse de tracer tout agent qui se nomme robot.\n"
+"                Le brut, c'est le compteur natif du billet."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_website_visitor__user_agent
+msgid ""
+"The string declared by the client, kept in clear so the history can be "
+"reclassified when a new bot appears. The "
+"bf_editorial_audience.ua_retention_days parameter sets how long it is kept."
+msgstr ""
+"La chaîne déclarée par le client, gardée en clair pour pouvoir reclasser "
+"l'historique quand un robot nouveau apparaît. Le paramètre "
+"bf_editorial_audience.ua_retention_days règle sa durée de conservation."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_audience__tracked_views
+msgid ""
+"The views Odoo agreed to track. This is NOT the raw figure: Odoo itself "
+"drops from website.track any agent containing bot, crawl, slurp, spider, "
+"curl, wget and eight other substrings. The true raw figure is the post's "
+"native counter."
+msgstr ""
+"Les vues qu'Odoo a bien voulu tracer. Ce n'est PAS le brut : Odoo écarte "
+"lui-même de website.track tout agent contenant bot, crawl, slurp, spider, "
+"curl, wget et huit autres sous-chaînes. Le vrai brut est le compteur natif "
+"du billet."
+
+#. module: bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_entry_form_audience
+msgid "Tracked"
+msgstr "Retenues"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__tracked_views
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_tracked
+msgid "Tracked views"
+msgstr "Vues retenues"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__tracked_visitors
+#: model_terms:ir.ui.view,arch_db:bf_editorial_audience.view_editorial_audience_list
+msgid "Tracked visitors"
+msgstr "Visiteurs retenus"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_website_visitor__is_bot
+msgid ""
+"True when the declared agent matches a known bot. An agent can be faked: "
+"this flag measures what is declared."
+msgstr ""
+"Vrai quand l'agent déclaré correspond à un robot connu. Un agent se falsifie"
+" : ce drapeau mesure ce qui se déclare."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_website_visitor__user_agent
+msgid "User agent"
+msgstr "Agent utilisateur"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_audience__post_id
+msgid "Vide pour une publication qui ne passe pas par le blogue."
+msgstr "Vide pour une publication qui ne passe pas par le blogue."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__unknown_views
+msgid "Views (agent not recorded)"
+msgstr "Vues (agent non relevé)"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__human_views
+msgid "Views (human)"
+msgstr "Vues (humaines)"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__bot_views
+msgid "Views from bots that got through"
+msgstr "Vues de robots passés au travers"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_entry__audience_human
+msgid ""
+"Views whose visitor declared itself a browser. Neither bots nor those whose "
+"agent was not recorded."
+msgstr ""
+"Les vues dont le visiteur s'est déclaré navigateur. Ni les robots, ni ceux "
+"dont l'agent n'a pas été relevé."
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_entry__audience_unknown
+msgid "Views with an unrecorded agent"
+msgstr "Vues à agent non relevé"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,field_description:bf_editorial_audience.field_bf_editorial_audience__human_visitors
+msgid "Visitors (human)"
+msgstr "Visiteurs (humains)"
+
+#. module: bf_editorial_audience
+#: model:ir.model.fields,help:bf_editorial_audience.field_bf_editorial_entry__audience_tracked
+msgid ""
+"What Odoo tracked, once its own bot list was applied. The raw figure is the "
+"post's native counter."
+msgstr ""
+"Ce qu'Odoo a tracé, une fois sa propre liste de robots appliquée. Le brut, "
+"lui, est le compteur natif du billet."

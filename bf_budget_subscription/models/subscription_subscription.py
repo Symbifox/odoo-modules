@@ -14,18 +14,19 @@ class Subscription(models.Model):
 
     budget_position_id = fields.Many2one(
         "bf.budget.position",
-        string="Poste budgétaire",
+        string="Budget item",
         ondelete="set null",
         index=True,
         domain="[('budget_type', '=', 'expense'), ('company_id', '=', company_id)]",
-        help="Le poste dont les budgets comptent cet abonnement. Se déduit des "
-        "factures fournisseur par l'assistant de rattachement.",
+        help="The budget item whose budgets count this subscription. "
+             "Inferred from vendor bills by the linking wizard.",
     )
     budget_has_calendar = fields.Boolean(
-        string="Échéancier connu",
+        string="Known schedule",
         compute="_compute_budget_has_calendar",
         store=True,
-        help="Faux pour un abonnement à la demande : il dépense sans échéancier.",
+        help="False for an on-demand subscription: it spends without a "
+             "schedule.",
     )
 
     @api.depends("cycle", "start_date")

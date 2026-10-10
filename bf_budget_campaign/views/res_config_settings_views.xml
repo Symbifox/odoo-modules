@@ -8,10 +8,10 @@
         <field name="inherit_id" ref="bf_budget.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//app[@name='bf_budget']" position="inside">
-                <block title="Campagnes" name="bf_budget_campaign">
+                <block title="Campaigns" name="bf_budget_campaign">
                     <setting id="bf_campaign_hourly_cost_setting"
-                             string="Taux de revient par défaut"
-                             help="Sert uniquement à estimer les heures qu'Odoo n'a pas pu valoriser, faute de coût horaire sur la fiche employé. L'estimation reste affichée à part et n'entre jamais dans la dépense réelle.">
+                             string="Default cost rate"
+                             help="Used only to estimate the hours Odoo could not cost, for lack of an hourly cost on the employee record. The estimate stays separate and never enters actual spend.">
                         <div class="content-group">
                             <div class="row mt16">
                                 <label for="bf_campaign_hourly_cost" class="col-lg-4 o_light_label"/>

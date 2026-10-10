@@ -1,0 +1,463 @@
+# Translation of Symbifox : Transfert sécurisé : entente de confidentialité - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_securetransfer_sign 18.0.1.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid ""
+"\"%(tmpl)s\" requires an NDA, but the \"%(brand)s\" brand has none uploaded. The requirement is removed.\n"
+"\n"
+"Upload the NDA on the brand (Settings › Brands), or choose a brand that has one."
+msgstr ""
+"« %(tmpl)s » exige une entente de confidentialité, mais la marque « %(brand)s » n'en a aucune de téléversée. L'exigence est retirée.\n"
+"\n"
+"Téléversez l'entente sur la marque (Configuration › Marques), ou choisissez une marque qui en porte une."
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid ""
+"\"%(tmpl)s\" requires an NDA: identification by mobile is removed, since a "
+"signer must have an email address."
+msgstr ""
+"« %(tmpl)s » exige une entente : l'identification par mobile est retirée, un"
+" signataire sans adresse courriel n'existant pas."
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid "\"%s\" has no NDA uploaded: there is nothing to sign."
+msgstr ""
+"« %s » n'a aucune entente de confidentialité téléversée : il n'y a rien à "
+"faire signer."
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_brand.py:0
+msgid ""
+"\"%s\" requires an NDA, but no document is uploaded: visitors would be stuck"
+" in front of an NDA that does not exist."
+msgstr ""
+"« %s » exige une entente de confidentialité, mais aucun document n'est "
+"téléversé : les visiteurs resteraient bloqués devant une entente "
+"inexistante."
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid "(none)"
+msgstr "(aucune)"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_audience.py:0
+msgid "(not sealed)"
+msgstr "(non scellée)"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "(the identity you just confirmed with your code)."
+msgstr ""
+"— l'identité que vous\n"
+"                                venez de confirmer par code."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "<span class=\"st-gate-icon\" aria-hidden=\"true\">📜</span>"
+msgstr "<span class=\"st-gate-icon\" aria-hidden=\"true\">📜</span>"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.sign_done_return
+msgid "Access the content"
+msgstr "Accéder au contenu"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid ""
+"An NDA cannot be signed by a visitor identified only by their mobile (a "
+"signature requires an email address). Uncheck \"Offer the code by SMS\", or "
+"do not require an NDA."
+msgstr ""
+"Une entente de confidentialité ne peut pas être signée par un visiteur "
+"identifié seulement par son mobile (une signature exige une adresse "
+"courriel). Décochez « Offrir le code par SMS », ou n'exigez pas d'entente."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__recipient_otp_status
+msgid "Code du destinataire"
+msgstr "Code du destinataire"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_brand__nda_consent_text
+msgid "Consent text"
+msgstr "Texte de consentement"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields.selection,name:bf_securetransfer_sign.selection__secure_transfer_audience__nda_state__refused
+msgid "Declined"
+msgstr "Refusée"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_brand__nda_required
+msgid ""
+"Default value for new transfers of this brand. Each sending can keep it or "
+"drop it."
+msgstr ""
+"Valeur par défaut des nouveaux transferts de cette marque. Chaque envoi peut"
+" la retenir ou l'écarter."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_send_wizard__nda_required
+msgid ""
+"Each recipient will sign the NDA in their own name, after confirming their "
+"identity with a code and before seeing the content."
+msgstr ""
+"Chaque destinataire signera l'entente à son nom, après avoir confirmé son "
+"identité par code et avant de voir le contenu."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.brand_form_nda
+msgid ""
+"Each visitor signs THEIR own NDA, under the identity they just confirmed "
+"with a code. The signed document and its certificate are filed in the "
+"transfer's thread. <br/> <strong>Note:</strong> an NDA removes "
+"identification by mobile, since a signer must have an email address."
+msgstr ""
+"Chaque visiteur signe SA propre entente, à l'identité qu'il\n"
+"                        vient de confirmer par code. Le document signé et son\n"
+"                        certificat sont versés au fil du transfert.\n"
+"                        <br/>\n"
+"                        <strong>À noter :</strong> une entente retire l'identification\n"
+"                        par mobile — un signataire sans adresse courriel n'existe pas."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_template__nda_required
+msgid ""
+"Each visitor will sign the NDA in their own name, after confirming their "
+"identity with a code and before seeing the content. The NDA itself comes "
+"from the brand."
+msgstr ""
+"Chaque visiteur signera l'entente à son nom, après avoir confirmé son "
+"identité par code et avant de voir le contenu. L'entente elle-même vient de "
+"la marque."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.brand_form_nda
+msgid "Empty = bf_sign default consent text."
+msgstr "Vide = texte de consentement par défaut de bf_sign."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer__nda_document
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.secure_transfer_form_nda
+msgid "Empty = the brand's NDA."
+msgstr "Vide = l'entente de la marque."
+
+#. module: bf_securetransfer_sign
+#. modules: bf_attachment_version, bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__nda_filename
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_brand__nda_filename
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"Go back to the code step: your identity must be confirmed before the "
+"agreement can be drawn up in your name."
+msgstr ""
+"Reprenez à l'étape du code :\n"
+"                                votre identité doit être confirmée avant que\n"
+"                                l'entente puisse être établie à votre nom."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"If this was a mistake, contact the person who sent you this link: they can "
+"prepare a new one for you."
+msgstr ""
+"Si c'était une erreur,\n"
+"                                communiquez avec la personne qui vous a transmis ce\n"
+"                                lien : elle peut vous en préparer un nouveau."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "It will be signed in the name of"
+msgstr "Elle sera signée au nom de"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_audience__nda_state
+msgid "NDA"
+msgstr "Entente"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__nda_document
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_brand__nda_document
+msgid "NDA (PDF)"
+msgstr "Entente (PDF)"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__nda_required
+msgid "NDA required"
+msgstr "Entente de confidentialité exigée"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_audience.py:0
+msgid "NDA signed by %(who)s (request %(ref)s)."
+msgstr "Entente de confidentialité signée par %(who)s (demande %(ref)s)."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_audience__nda_signed_on
+msgid "NDA signed on"
+msgstr "Entente signée le"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_audience.py:0
+msgid "NDA signed, SHA-256 fingerprint: %s"
+msgstr "Entente de confidentialité signée — empreinte SHA-256 : %s"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_audience.py:0
+msgid "NDA to sign (%s)"
+msgstr "Entente de confidentialité à signer (%s)"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer.py:0
+msgid "NDA.pdf"
+msgstr "Entente de confidentialité.pdf"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer_audience.py:0
+msgid "NDA: %s"
+msgstr "Entente de confidentialité — %s"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_send_wizard__nda_available
+msgid "Nda Available"
+msgstr "Entente disponible"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "Non-disclosure agreement"
+msgstr "Entente de confidentialité"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.brand_form_nda
+msgid "Non-disclosure agreement (NDA)"
+msgstr "Entente de confidentialité (NDA)"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/controllers/main.py:0
+msgid "Non-disclosure agreement: %s"
+msgstr "Entente de confidentialité : %s"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields.selection,name:bf_securetransfer_sign.selection__secure_transfer_audience__nda_state__none
+msgid "None"
+msgstr "Aucune"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_brand__nda_field_template_id
+msgid ""
+"Position of the signature fields on the NDA. Optional: without a template, "
+"the signature is valid and certified, but it is not drawn on the document's "
+"pages."
+msgstr ""
+"Position des pavés de signature sur l'entente. Facultatif : sans gabarit, la"
+" signature est valide et certifiée, mais elle n'est pas dessinée sur les "
+"pages du document."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "Powered by"
+msgstr "Propulsé par"
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_send_wizard.py:0
+msgid "Preset partly applied"
+msgstr "Préréglage appliqué en partie"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "Read and sign the agreement"
+msgstr "Lire et signer l'entente"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_brand__nda_required
+msgid "Require an NDA"
+msgstr "Exiger une entente de confidentialité"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_template__nda_required
+msgid "Require an NDA signature"
+msgstr "Exiger la signature d'une entente"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_send_wizard__nda_required
+msgid "Require signing an NDA"
+msgstr "Exiger la signature d'une entente de confidentialité"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields.selection,name:bf_securetransfer_sign.selection__secure_transfer__recipient_otp_status__nda
+msgid "Required: NDA to sign"
+msgstr "Exigé — entente à signer"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_brand__nda_consent_text
+msgid ""
+"Sentence the signer checks before signing. Empty = the bf_sign default text."
+msgstr ""
+"Phrase que le signataire coche avant de signer. Vide = le texte par défaut "
+"de bf_sign."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__nda_field_template_id
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_brand__nda_field_template_id
+msgid "Signature field template"
+msgstr "Gabarit de pavés"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields.selection,name:bf_securetransfer_sign.selection__secure_transfer_audience__nda_state__signed
+msgid "Signed"
+msgstr "Signée"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer_audience__nda_request_id
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.secure_transfer_audience_search_nda
+msgid "Signed NDA"
+msgstr "Entente signée"
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_securetransfer_sign.field_secure_transfer__nda_signed_count
+msgid "Signed NDAs"
+msgstr "Ententes signées"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "Start over"
+msgstr "Recommencer"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"The agreement could not be prepared. Try again in a moment; if the problem "
+"persists, let the sender know."
+msgstr ""
+"L'entente n'a pas pu être préparée. Réessayez dans un\n"
+"                                instant ; si le problème persiste, prévenez l'expéditeur."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.sign_done_return
+msgid ""
+"The agreement is signed: you can now access the content that was sent to "
+"you."
+msgstr ""
+"L'entente est signée : vous pouvez maintenant accéder au contenu\n"
+"                    qui vous a été transmis."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"The content of this transfer is confidential. Before accessing it, you must "
+"sign the agreement below."
+msgstr ""
+"Le contenu de ce transfert est confidentiel. Avant d'y\n"
+"                                accéder, vous devez signer l'entente ci-dessous."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer_brand__nda_document
+msgid ""
+"The document each visitor must sign before accessing the content. A separate"
+" signature request is created for each of them, in their name."
+msgstr ""
+"Le document que chaque visiteur devra signer avant d'accéder au contenu. Une"
+" demande de signature distincte est créée pour chacun, à son nom."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"The signature is electronic and timestamped. You will receive the signed "
+"document and its certificate."
+msgstr ""
+"La signature est électronique et\n"
+"                                horodatée. Vous recevrez le document signé et son\n"
+"                                certificat."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields,help:bf_securetransfer_sign.field_secure_transfer__nda_required
+msgid ""
+"The visitor must sign the NDA before the message and files are shown. A "
+"separate signature request is created for each person, under their confirmed"
+" identity."
+msgstr ""
+"Le visiteur devra signer l'entente avant que le message et les fichiers lui "
+"soient montrés. Une demande de signature distincte est créée pour chaque "
+"personne, à son identité confirmée."
+
+#. module: bf_securetransfer_sign
+#. odoo-python
+#: code:addons/bf_securetransfer_sign/models/secure_transfer.py:0
+msgid ""
+"This transfer requires an NDA, but no document is available, neither on the "
+"transfer nor on the \"%s\" brand. Visitors would be stuck."
+msgstr ""
+"Ce transfert exige une entente de confidentialité, mais aucun document n'est"
+" disponible — ni sur le transfert, ni sur la marque « %s ». Les visiteurs "
+"resteraient bloqués."
+
+#. module: bf_securetransfer_sign
+#: model:ir.model.fields.selection,name:bf_securetransfer_sign.selection__secure_transfer_audience__nda_state__pending
+msgid "To sign"
+msgstr "À signer"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.secure_transfer_audience_search_nda
+msgid "Unsigned NDA"
+msgstr "Entente non signée"
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.brand_form_nda
+msgid ""
+"Without a template, the signature stays valid and certified, but it is not "
+"drawn on the document's pages."
+msgstr ""
+"Sans gabarit, la signature reste valide et certifiée, mais elle n'est pas "
+"dessinée sur les pages du document."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid "You declined this agreement. Access to the content stays closed."
+msgstr ""
+"Vous avez décliné cette entente. L'accès au contenu\n"
+"                                reste fermé."
+
+#. module: bf_securetransfer_sign
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer_sign.page_nda
+msgid ""
+"Your session no longer carries a confirmed identity: it may have expired, or"
+" you switched browsers."
+msgstr ""
+"Votre session ne porte plus d'identité confirmée —\n"
+"                                elle a peut-être expiré, ou vous avez changé de\n"
+"                                navigateur."

@@ -1,0 +1,437 @@
+# Translation of Versionnement des pièces jointes - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_attachment_version 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_max_jours
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "0 to not purge by age."
+msgstr "0 pour ne pas purger sur l'âge."
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_max_versions
+msgid "0 to purge nothing."
+msgstr "0 pour ne rien purger."
+
+#. module: bf_attachment_version
+#: model_terms:ir.actions.act_window,help:bf_attachment_version.action_bf_attachment_version
+msgid ""
+"A version appears here as soon as an attachment has its content replaced, by"
+" an office editor or otherwise. It holds the bytes from before the "
+"replacement."
+msgstr ""
+"Une version apparaît ici dès qu'une pièce jointe voit son contenu\n"
+"               remplacé, par un éditeur bureautique ou autrement. Elle porte les\n"
+"               octets d'avant le remplacement."
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_taille_max_mo
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Above this, the replacement stays final. 0 for no limit."
+msgstr "Au-delà, le remplacement reste définitif. 0 pour ne pas limiter."
+
+#. module: bf_attachment_version
+#: model:ir.model,name:bf_attachment_version.model_ir_attachment
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__attachment_id
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_attachment_version
+#: model:ir.model,name:bf_attachment_version.model_bf_attachment_version
+msgid "Attachment version"
+msgstr "Version d'une pièce jointe"
+
+#. module: bf_attachment_version
+#: model:ir.actions.act_window,name:bf_attachment_version.action_bf_attachment_version
+#: model:ir.ui.menu,name:bf_attachment_version.menu_bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Attachment versions"
+msgstr "Versions de pièces jointes"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "By"
+msgstr "Par"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__checksum
+msgid "Checksum"
+msgstr "Empreinte"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields.selection,name:bf_attachment_version.selection__bf_attachment_version__origine__collabora
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Collabora editor"
+msgstr "Éditeur Collabora"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_extensions
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Comma-separated, without the dot."
+msgstr "Séparées par des virgules, sans le point."
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_stepbystep_clients
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Download"
+msgstr "Télécharger"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid "Download this version"
+msgstr "Télécharger cette version"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_modeles_exclus
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Excluded models"
+msgstr "Modèles exclus"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_securetransfer_sign
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__name
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_actif
+msgid "Keep replaced versions"
+msgstr "Conserver les versions remplacées"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__content_id
+msgid "Kept content"
+msgstr "Contenu conservé"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Kept version"
+msgstr "Version conservée"
+
+#. module: bf_attachment_version
+#. odoo-javascript
+#: code:addons/bf_attachment_version/static/src/xml/attachment_version.xml:0
+#: model:ir.model.fields,field_description:bf_attachment_version.field_ir_attachment__version_ids
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Kept versions"
+msgstr "Versions conservées"
+
+#. module: bf_attachment_version
+#. odoo-javascript
+#: code:addons/bf_attachment_version/static/src/js/attachment_version.js:0
+msgid "Kept versions: %s"
+msgstr "Versions conservées : %s"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
+#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Last seven days"
+msgstr "Sept derniers jours"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "MB"
+msgstr "Mo"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__mimetype
+msgid "MIME type"
+msgstr "Type MIME"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Maximum age"
+msgstr "Âge maximal"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_max_jours
+msgid "Maximum age (days)"
+msgstr "Âge maximal (jours)"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Maximum versioned size"
+msgstr "Taille maximale versionnée"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_taille_max_mo
+msgid "Maximum versioned size (MB)"
+msgstr "Taille maximale versionnée (Mo)"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_modeles_exclus
+msgid "Models whose attachments are never versioned."
+msgstr "Modèles dont les pièces ne sont jamais versionnées."
+
+#. module: bf_attachment_version
+#: model_terms:ir.actions.act_window,help:bf_attachment_version.action_bf_attachment_version
+msgid "No version kept yet."
+msgstr "Aucune version conservée pour l'instant."
+
+#. module: bf_attachment_version
+#: model:ir.model.fields.selection,name:bf_attachment_version.selection__bf_attachment_version__origine__onlyoffice
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "ONLYOFFICE editor"
+msgstr "Éditeur ONLYOFFICE"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields.selection,name:bf_attachment_version.selection__bf_attachment_version__origine__interface
+msgid "Odoo interface"
+msgstr "Interface Odoo"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Origin"
+msgstr "Origine"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields.selection,name:bf_attachment_version.selection__bf_attachment_version__origine__autre
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Purge"
+msgstr "Purge"
+
+#. module: bf_attachment_version
+#: model:ir.actions.server,name:bf_attachment_version.cron_purger_versions_ir_actions_server
+msgid "Purge attachment versions"
+msgstr "Purger les versions de pièces jointes"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid "Put this content back into the attachment"
+msgstr "Remettre ce contenu dans la pièce jointe"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__res_model
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Related model"
+msgstr "Modèle lié"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__res_id
+msgid "Related record"
+msgstr "Enregistrement lié"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid "Replaced by"
+msgstr "Remplacée par"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid "Replaced on"
+msgstr "Remplacée le"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Replacement"
+msgstr "Remplacement"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_search
+msgid "Replacement date"
+msgstr "Date de remplacement"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__origine
+msgid "Replacement origin"
+msgstr "Origine du remplacement"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Restore"
+msgstr "Restaurer"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Retention"
+msgstr "Conservation"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__file_size
+msgid "Size (bytes)"
+msgstr "Taille (octets)"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_bf_attachment_version__content_id
+msgid "The attachment that holds the bytes from before the replacement."
+msgstr "La pièce jointe qui porte les octets d'avant le remplacement."
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid ""
+"The current content will be replaced by this one. It will itself be kept as "
+"a new version."
+msgstr ""
+"Le contenu actuel sera remplacé par celui-ci. Il sera lui-même conservé "
+"comme une nouvelle version."
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "The oldest ones are deleted beyond this. 0 to purge nothing."
+msgstr "Les plus anciennes sont supprimées au-delà. 0 pour ne rien purger."
+
+#. module: bf_attachment_version
+#. odoo-python
+#: code:addons/bf_attachment_version/models/attachment_version.py:0
+msgid "The original attachment no longer exists."
+msgstr "La pièce jointe d'origine n'existe plus."
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Their attachments are never versioned."
+msgstr "Leurs pièces ne sont jamais versionnées."
+
+#. module: bf_attachment_version
+#. odoo-python
+#: code:addons/bf_attachment_version/models/attachment_version.py:0
+msgid "This version no longer has any kept content."
+msgstr "Cette version n'a plus de contenu conservé."
+
+#. module: bf_attachment_version
+#. modules: bf_attachment_version, bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_attachment_version
+#: model:ir.model.constraint,message:bf_attachment_version.constraint_bf_attachment_version_numero_unique
+msgid "Two versions cannot have the same number for the same attachment."
+msgstr ""
+"Deux versions ne peuvent pas porter le même numéro pour une même pièce "
+"jointe."
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_bf_attachment_version__numero
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "Version"
+msgstr "Version"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_ir_attachment__version_count
+msgid "Version count"
+msgstr "Nombre de versions"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_extensions
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Versioned extensions"
+msgstr "Extensions versionnées"
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,field_description:bf_attachment_version.field_res_config_settings__bf_av_max_versions
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "Versions kept per attachment"
+msgstr "Versions gardées par pièce"
+
+#. module: bf_attachment_version
+#. odoo-javascript
+#: code:addons/bf_attachment_version/static/src/js/attachment_version.js:0
+msgid "Versions of %s"
+msgstr "Versions de %s"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_bf_attachment_version_form
+msgid "What was kept"
+msgstr "Ce qui a été conservé"
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid ""
+"When an attachment is rewritten, the old content is kept. When off, a "
+"replacement is final again and leaves no trace."
+msgstr ""
+"Quand une pièce jointe est réécrite, l'ancien contenu est conservé. Éteint, "
+"un remplacement redevient définitif et sans trace."
+
+#. module: bf_attachment_version
+#: model:ir.model.fields,help:bf_attachment_version.field_res_config_settings__bf_av_actif
+msgid "When off, rewriting an attachment is final again and leaves no trace."
+msgstr ""
+"Quand c'est éteint, une réécriture de pièce jointe redevient définitive et "
+"sans trace."
+
+#. module: bf_attachment_version
+#. odoo-python
+#: code:addons/bf_attachment_version/models/attachment_version.py:0
+msgid "You do not have access to the attachment this version comes from."
+msgstr "Vous n'avez pas accès à la pièce jointe dont vient cette version."
+
+#. module: bf_attachment_version
+#: model_terms:ir.ui.view,arch_db:bf_attachment_version.view_res_config_settings_bf_attachment_version
+msgid "days"
+msgstr "jours"

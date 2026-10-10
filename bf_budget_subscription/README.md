@@ -41,6 +41,10 @@ It still spends. The module does not let it pass for a zero commitment in
 silence: the budget line flags it, because a partial calendar mistaken for a
 complete one understates the theoretical and manufactures false alerts.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. In English, the budget position a subscription is attached to is labelled **Budget item**, so that it no longer reads like a budget line.
+
 ## Licence
 
 LGPL-3.

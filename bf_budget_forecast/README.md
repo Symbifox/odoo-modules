@@ -50,6 +50,10 @@ No formulas, no quantity × rate. One forecast per position and per month,
 seeded automatically, corrected by hand where you know better. Drivers can be
 grafted onto `_seed_value_for` later without breaking anything.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The budget position is labelled **Budget item** in English, and a month's planned figure **Forecast amount**. The monthly forecast pivot now measures that forecast amount: it measured the retained amount, which is computed and cannot be aggregated, so the view did not open.
+
 ## Licence
 
 LGPL-3.

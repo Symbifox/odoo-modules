@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="survey.survey_question_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Téléversement"
+                <page string="Upload"
                       invisible="question_type != 'file_upload'">
                     <group>
                         <field name="file_upload_max_size_mb"/>
@@ -17,9 +17,7 @@
                                placeholder="pdf,docx,doc,xlsx,jpg,jpeg,png"/>
                     </group>
                     <p class="text-muted">
-                        Le répondant pourra joindre un ou plusieurs fichiers à
-                        sa réponse. Les fichiers sont stockés comme pièces
-                        jointes liées à la réponse au sondage.
+                        The respondent can attach one or more files to their answer. The files are stored as attachments linked to the survey response.
                     </p>
                 </page>
             </xpath>

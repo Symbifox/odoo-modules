@@ -28,44 +28,45 @@ EXTRACTION_ID = r"-([0-9]+)/?$"
 
 class EditorialAudience(models.Model):
     _name = "bf.editorial.audience"
-    _description = "Relevé d'audience"
+    _description = "Audience snapshot"
     _order = "capture_date desc, tracked_views desc"
     _rec_name = "capture_date"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
     post_id = fields.Many2one(
-        "blog.post", string="Billet", related="entry_id.post_id", store=True,
+        "blog.post", string="Post", related="entry_id.post_id", store=True,
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", related="entry_id.company_id",
+        "res.company", string="Company", related="entry_id.company_id",
         store=True, index=True,
     )
-    lang_id = fields.Many2one("res.lang", string="Langue", index=True)
-    capture_date = fields.Date(string="Journée", required=True, index=True)
+    lang_id = fields.Many2one("res.lang", string="Language", index=True)
+    capture_date = fields.Date(string="Day", required=True, index=True)
 
     tracked_views = fields.Integer(
-        string="Vues retenues",
-        help="Les vues qu'Odoo a bien voulu tracer. Ce n'est PAS le brut :"
-             " Odoo écarte lui-même de website.track tout agent contenant"
-             " bot, crawl, slurp, spider, curl, wget et huit autres"
-             " sous-chaînes. Le vrai brut est le compteur natif du billet.",
+        string="Tracked views",
+        help="The views Odoo agreed to track. This is NOT the raw figure: "
+             "Odoo itself drops from website.track any agent containing "
+             "bot, crawl, slurp, spider, curl, wget and eight other "
+             "substrings. The true raw figure is the post's native "
+             "counter.",
     )
-    human_views = fields.Integer(string="Vues (humaines)")
+    human_views = fields.Integer(string="Views (human)")
     bot_views = fields.Integer(
-        string="Vues de robots passés au travers",
-        help="Les robots que la liste d'Odoo ne nomme pas : meta-externalagent,"
-             " Barkrowler, DataForSeo, python-requests, Go-http-client,"
-             " Scrapy et les autres qui ne disent ni bot ni crawl.",
+        string="Views from bots that got through",
+        help="The bots Odoo's list does not name: meta-externalagent, "
+             "Barkrowler, DataForSeo, python-requests, Go-http-client, "
+             "Scrapy and the others that say neither bot nor crawl.",
     )
-    unknown_views = fields.Integer(string="Vues (agent non relevé)")
-    tracked_visitors = fields.Integer(string="Visiteurs retenus")
-    human_visitors = fields.Integer(string="Visiteurs (humains)")
+    unknown_views = fields.Integer(string="Views (agent not recorded)")
+    tracked_visitors = fields.Integer(string="Tracked visitors")
+    human_visitors = fields.Integer(string="Visitors (human)")
 
     bot_share = fields.Float(
-        string="Part des robots passés au travers", compute="_compute_bot_share", store=True,
+        string="Share of bots that got through", compute="_compute_bot_share", store=True,
         aggregator="avg", digits=(5, 2),
     )
 
@@ -73,7 +74,7 @@ class EditorialAudience(models.Model):
         (
             "unique_par_jour",
             "unique(entry_id, lang_id, capture_date)",
-            "Une journée ne se relève qu'une fois par entrée et par langue.",
+            "A day is captured only once per entry and per language.",
         ),
     ]
 

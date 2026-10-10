@@ -10,7 +10,10 @@ class TestLinkWizard(BfBudgetSubscriptionCommon):
     def _wizard(self, **extra):
         vals = {"company_id": self.company.id, "only_unassigned": True}
         vals.update(extra)
-        return self.env["bf.budget.subscription.link.wizard"].create(vals)
+        # L'aperçu s'attend en anglais, la source : épinglé, parce qu'un
+        # contexte sans langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
+        return self.env["bf.budget.subscription.link.wizard"].with_context(lang="en_US").create(vals)
 
     def test_it_deduces_the_position_from_the_real_bills(self):
         sub = self._make_subscription("monthly", 100.0)
@@ -30,7 +33,7 @@ class TestLinkWizard(BfBudgetSubscriptionCommon):
     def test_a_subscription_without_a_bill_is_left_alone(self):
         self._make_subscription("monthly", 100.0)
         wizard = self._wizard()
-        self.assertIn("aucune facture", wizard.preview)
+        self.assertIn("no posted bill", wizard.preview)
         with self.assertRaises(UserError):
             wizard.action_apply()
 
@@ -41,7 +44,7 @@ class TestLinkWizard(BfBudgetSubscriptionCommon):
         sub = self._make_subscription("monthly", 100.0)
         self._vendor_bill(sub, orphelin, 100.0, self.date_start)
         wizard = self._wizard()
-        self.assertIn("n'est dans aucun poste", wizard.preview)
+        self.assertIn("is in no budget item", wizard.preview)
         with self.assertRaises(UserError):
             wizard.action_apply()
         self.assertFalse(sub.budget_position_id)
@@ -57,7 +60,7 @@ class TestLinkWizard(BfBudgetSubscriptionCommon):
         sub = self._make_subscription("monthly", 100.0)
         self._vendor_bill(sub, self.account_software, 100.0, self.date_start)
         wizard = self._wizard()
-        self.assertIn("à trancher à la main", wizard.preview)
+        self.assertIn("to be settled by hand", wizard.preview)
         with self.assertRaises(UserError):
             wizard.action_apply()
         self.assertFalse(sub.budget_position_id)
@@ -67,10 +70,18 @@ class TestLinkWizard(BfBudgetSubscriptionCommon):
         self._vendor_bill(sub, self.account_software, 100.0, self.date_start)
         sub.budget_position_id = self.position_telecom
         wizard = self._wizard()
-        self.assertEqual(wizard.preview, "Aucun abonnement à examiner.")
+        self.assertEqual(wizard.preview, "No subscription to review.")
         wizard.only_unassigned = False
         wizard.invalidate_recordset()
         self.assertIn("✅", wizard.preview)
+
+    def test_l_apercu_se_lit_dans_la_langue_de_l_usager(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        sub = self._make_subscription("monthly", 100.0)
+        sub.budget_position_id = self.position_telecom
+        wizard = self._wizard().with_context(lang="fr_CA")
+        wizard.invalidate_recordset()
+        self.assertEqual(wizard.preview, "Aucun abonnement à examiner.")
 
 
 @tagged("post_install", "-at_install")

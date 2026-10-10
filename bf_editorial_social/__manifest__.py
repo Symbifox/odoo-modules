@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial — réseaux sociaux",
-    "version": "18.0.1.5.0",
+    # 18.0.1.6.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.6.0",
     "category": "Marketing",
     "summary": "Diffusion différée sur les réseaux sociaux depuis l'atelier"
                " éditorial, avec garantie de non-doublon et retour de mesure",

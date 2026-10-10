@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <menuitem id="menu_bf_budget_forecast"
-              name="Prévisions glissantes"
+              name="Rolling forecasts"
               parent="bf_budget.menu_bf_budget_main"
               action="bf_budget_forecast_action"
               sequence="40"/>
     <menuitem id="menu_bf_budget_forecast_pivot"
-              name="Prévision par mois"
+              name="Forecast by month"
               parent="bf_budget.menu_bf_budget_main"
               action="bf_budget_forecast_period_action"
               sequence="50"/>

@@ -5,7 +5,7 @@ expose. Le reste du module sert à le renseigner honnêtement.
 """
 import logging
 
-from odoo import _, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -15,29 +15,29 @@ class SecureTransfer(models.Model):
     _inherit = "secure.transfer"
 
     nda_required = fields.Boolean(
-        string="Entente de confidentialité exigée",
+        string="NDA required",
         default=False,
         tracking=True,
-        help="Le visiteur devra signer l'entente avant que le message et les "
-             "fichiers lui soient montrés. Une demande de signature distincte "
-             "est créée pour chaque personne, à son identité confirmée.",
+        help="The visitor must sign the NDA before the message and files "
+             "are shown. A separate signature request is created for each "
+             "person, under their confirmed identity.",
     )
     nda_document = fields.Binary(
-        string="Entente (PDF)", attachment=True,
-        help="Vide = l'entente de la marque.",
+        string="NDA (PDF)", attachment=True,
+        help="Empty = the brand's NDA.",
     )
-    nda_filename = fields.Char(string="Nom du fichier")
+    nda_filename = fields.Char(string="File name")
     nda_field_template_id = fields.Many2one(
-        "bf.sign.field.template", string="Gabarit de pavés", ondelete="restrict",
+        "bf.sign.field.template", string="Signature field template", ondelete="restrict",
     )
     nda_signed_count = fields.Integer(
-        string="Ententes signées", compute="_compute_nda_signed_count",
+        string="Signed NDAs", compute="_compute_nda_signed_count",
     )
     # Le motif « entente » s'ajoute aux trois du socle. Le champ est CALCULÉ et
     # non stocké : `selection_add` n'y demande donc aucune politique
     # `ondelete`, contrairement au journal d'accès.
     recipient_otp_status = fields.Selection(
-        selection_add=[("nda", "Exigé — entente à signer")],
+        selection_add=[("nda", "Required: NDA to sign")],
     )
 
     # ------------------------------------------------------------------ identité
@@ -91,9 +91,9 @@ class SecureTransfer(models.Model):
         for rec in self:
             if rec.nda_required and not rec._nda_document_source():
                 raise ValidationError(_(
-                    "Ce transfert exige une entente de confidentialité, mais "
-                    "aucun document n'est disponible — ni sur le transfert, ni "
-                    "sur la marque « %s ». Les visiteurs resteraient bloqués.",
+                    "This transfer requires an NDA, but no document is "
+                    "available, neither on the transfer nor on the \"%s\" "
+                    "brand. Visitors would be stuck.",
                     rec.brand_id.display_name,
                 ))
 
@@ -112,6 +112,23 @@ class SecureTransfer(models.Model):
             return self.brand_id
         return self.browse()
 
+    def _nda_langue_lecteur(self):
+        """La langue de l'expéditeur du transfert, sinon celle de la société.
+
+        Le journal d'accès et le fil du transfert se lisent par l'expéditeur.
+        Jamais la langue d'OdooBot ni d'un compte partagé ; None laisse le
+        contexte sans langue (la source, anglaise).
+        """
+        self.ensure_one()
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        expediteur = self.sudo().create_uid
+        langues = []
+        if expediteur and expediteur.active and not expediteur.share \
+                and expediteur.id != SUPERUSER_ID:
+            langues.append(expediteur.lang)
+        langues.append((self.sudo().company_id or self.env.company).partner_id.lang)
+        return next((lang for lang in langues if lang in installees), None)
+
     def _nda_config(self):
         """(document_b64, nom_de_fichier, gabarit, texte_de_consentement)."""
         self.ensure_one()
@@ -122,7 +139,7 @@ class SecureTransfer(models.Model):
         return {
             "document": source.nda_document,
             "filename": (source.nda_filename
-                         or _("Entente de confidentialité.pdf")),
+                         or _("NDA.pdf")),
             "field_template": (self.nda_field_template_id
                                or brand.nda_field_template_id),
             "consent_text": brand.nda_consent_text or False,

@@ -5,21 +5,21 @@
         <field name="name">bf.editorial.suggestion.form</field>
         <field name="model">bf.editorial.suggestion</field>
         <field name="arch" type="xml">
-            <form string="Proposition Gen">
+            <form string="Gen suggestion">
                 <header>
-                    <button name="action_apply" type="object" string="Appliquer au billet"
+                    <button name="action_apply" type="object" string="Apply to the post"
                             class="btn-primary"
                             invisible="not has_proposal or applied or state != 'done'"
-                            confirm="Gen va écrire dans l'article. Les créneaux actuels sont sauvegardés sur cette proposition avant l'écriture. Continuer ?"
+                            confirm="Gen will write to the article. The current slots are saved on this suggestion before writing. Continue?"
                             groups="bf_editorial.group_editorial_manager"/>
-                    <button name="action_discard" type="object" string="Écarter"
+                    <button name="action_discard" type="object" string="Discard"
                             class="btn-secondary" invisible="applied"
                             groups="bf_editorial.group_editorial_manager"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="queued,done"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Appliquée" bg_color="text-bg-success"
+                    <widget name="web_ribbon" title="Applied" bg_color="text-bg-success"
                             invisible="not applied"/>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
@@ -44,33 +44,25 @@
                     <field name="in_progress" invisible="1"/>
                     <field name="stalled" invisible="1"/>
                     <div class="alert alert-info" role="alert" invisible="not in_progress">
-                        <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
-                        <span>
-                            <b>Gen travaille.</b>
-                            Cette fiche se remplira toute seule : comptez quelques
-                            minutes, puis rechargez la page.
-                        </span>
+                        <i class="fa fa-circle-o-notch fa-spin me-2" title="In progress"/> <span> <b>Gen is working.</b> This record will fill in by itself: allow a few minutes, then reload the page. </span>
                     </div>
                     <div class="alert alert-warning" role="alert" invisible="not stalled">
-                        <b>Passe sans nouvelle.</b>
-                        Elle n'a jamais rendu de statut : le pont a probablement été
-                        redémarré, ou le plafond de temps est passé. Rien n'a été écrit
-                        dans l'article. Relancez la passe depuis l'entrée.
+                        <b>Stalled run.</b> It never reported a status: the bridge was probably restarted, or the time limit passed. Nothing was written to the article. Run it again from the entry.
                     </div>
                     <div class="alert alert-danger" role="alert" invisible="state != 'error'">
                         <field name="message" nolabel="1" readonly="1"/>
                     </div>
 
                     <notebook>
-                        <page string="Lecture" name="lecture">
+                        <page string="Reading" name="lecture">
                             <field name="body_html" nolabel="1" readonly="1"
-                                   placeholder="Rien encore."/>
+                                   placeholder="Nothing yet."/>
                         </page>
-                        <page string="Texte proposé (français)" name="fr"
+                        <page string="Suggested text (French)" name="fr"
                               invisible="not proposed_fr">
                             <field name="proposed_fr" nolabel="1" readonly="1"/>
                         </page>
-                        <page string="Texte proposé (anglais)" name="en"
+                        <page string="Suggested text (English)" name="en"
                               invisible="not proposed_en">
                             <field name="proposed_en" nolabel="1" readonly="1"/>
                         </page>
@@ -95,7 +87,7 @@
                 <field name="entry_id" optional="show"/>
                 <field name="calendar_id" optional="hide"/>
                 <field name="state"/>
-                <field name="stalled" optional="show" string="Sans nouvelle"/>
+                <field name="stalled" optional="show" string="Stalled"/>
                 <field name="has_proposal" optional="show"/>
                 <field name="applied" optional="show"/>
                 <field name="triggered_by" optional="hide"/>
@@ -104,7 +96,7 @@
     </record>
 
     <record id="action_editorial_suggestion" model="ir.actions.act_window">
-        <field name="name">Propositions Gen</field>
+        <field name="name">Gen suggestions</field>
         <field name="res_model">bf.editorial.suggestion</field>
         <field name="view_mode">list,form</field>
     </record>

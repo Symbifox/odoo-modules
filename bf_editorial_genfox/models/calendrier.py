@@ -14,7 +14,7 @@ class EditorialCalendar(models.Model):
     _inherit = "bf.editorial.calendar"
 
     genfox_available = fields.Boolean(
-        string="Gen joignable", compute="_compute_genfox_available",
+        string="Gen reachable", compute="_compute_genfox_available",
     )
 
     def _compute_genfox_available(self):
@@ -30,11 +30,11 @@ class EditorialCalendar(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "info",
-                "title": _("Gen est parti travailler"),
+                "title": _("Gen is on it"),
                 "message": _(
-                    "Gen lit le calendrier, le classement et le carnet"
-                    " d'idées, puis rend sa recommandation. Elle apparaîtra"
-                    " sous Atelier éditorial > Propositions Gen."
+                    "Gen reads the calendar, the ranking and the idea "
+                    "notebook, then returns its recommendation. It will "
+                    "appear under Editorial workshop > Gen suggestions."
                 ),
                 "sticky": False,
                 "next": {"type": "ir.actions.client", "tag": "soft_reload"},
@@ -47,7 +47,7 @@ class EditorialCalendar(models.Model):
         calendar = self.env["bf.editorial.proposal"]._default_calendar()
         if not calendar:
             raise UserError(_(
-                "Aucun calendrier éditorial n'est défini : il n'y a rien à"
-                " suggérer."
+                "No editorial calendar is defined: there is nothing to "
+                "suggest."
             ))
         return calendar.action_genfox_propose()

@@ -1,0 +1,283 @@
+# Translation template for Budgets opérationnels : campagnes.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_campaign 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 08:44+0000\n"
+"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "$ an hour, they would be worth"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid ". The rate is set in the settings, Budgets section."
+msgstr ""
+
+#. module: bf_budget_campaign
+#. modules: bf_budget_campaign, bf_budget_forecast
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Actual"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_cost_total_estimated
+msgid ""
+"Actual spend plus the estimate of uncosted hours. Not to be confused with "
+"total spend, which carries actuals only."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__analytic_account_id
+msgid "Analytic account"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_cost_internal
+msgid ""
+"Analytic lines WITHOUT a journal entry: timesheets and manual entries. "
+"Separate from posted spend."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_cost_accounting
+msgid ""
+"Analytic lines backed by a journal entry. This is the money spent, taxes "
+"included, as the general ledger records it."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Assignment"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_has_unvalued_time
+msgid "Bf Has Unvalued Time"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Budget"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_currency_id
+msgid "Budget currency"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_budget_count
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_budget_line_ids
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Budget lines"
+msgstr ""
+
+#. module: bf_budget_campaign
+#. odoo-python
+#: code:addons/bf_budget_campaign/models/campagne.py:0
+msgid "Campaign budget lines"
+msgstr ""
+
+#. module: bf_budget_campaign
+#. odoo-python
+#: code:addons/bf_budget_campaign/models/campagne.py:0
+msgid "Campaign entries"
+msgstr ""
+
+#. module: bf_budget_campaign
+#. odoo-python
+#: code:addons/bf_budget_campaign/models/campagne.py:0
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.res_config_settings_view_form_campaign
+msgid "Campaigns"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_search_budget
+msgid "Campaigns no expense can be charged to"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Create the analytic account"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_res_config_settings__bf_campaign_hourly_cost
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.res_config_settings_view_form_campaign
+msgid "Default cost rate"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Estimate of uncosted hours"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_cost_internal_estimated
+msgid "Estimated internal cost"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_cost_total_estimated
+msgid "Estimated total spend"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_estimate_rate
+msgid "Estimation rate"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_cost_internal
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_tree_budget
+msgid "Internal cost"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_hours_internal
+msgid "Internal hours"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_unvalued_hours
+msgid ""
+"Logged hours whose cost is zero. Odoo costs time at the employee's hourly "
+"cost: when that rate is missing, the campaign reads zero and looks perfectly"
+" normal."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_amount_planned
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Planned"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_tree_budget
+msgid "Posted"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_cost_accounting
+msgid "Posted spend"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Spend"
+msgstr ""
+
+#. module: bf_budget_campaign
+#. odoo-python
+#: code:addons/bf_budget_campaign/models/campagne.py:0
+msgid ""
+"The \"%(compte)s\" account belongs to the \"%(plan)s\" plan, a root plan "
+"separate from the project plan. Analytic lines of such a plan are stored in "
+"another column, and the campaign's spend would silently stay at zero. Move "
+"this plan under the project plan, or choose an account from the project "
+"plan."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__analytic_account_id
+msgid ""
+"The account that carries this campaign's spend. An expense charged to this "
+"account shows up here with no double entry."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_budget_line_ids
+msgid "The budget lines whose analytic axis names this campaign's account."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_estimate_rate
+msgid ""
+"The default cost rate set for this instance. It only applies to hours with "
+"no hourly cost."
+msgstr ""
+
+#. module: bf_budget_campaign
+#. odoo-python
+#: code:addons/bf_budget_campaign/models/campagne.py:0
+msgid ""
+"The project analytic plan cannot be found. Odoo points to it with the "
+"\"analytic.project_plan\" system parameter; without it, there is no way to "
+"know which plan to put campaigns under."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.constraint,message:bf_budget_campaign.constraint_utm_campaign_analytic_account_uniq
+msgid ""
+"This analytic account is already used by another campaign. An account can "
+"carry only one campaign, otherwise both would show the same spend."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid ""
+"This campaign has no analytic account. Without one, no expense can be "
+"charged to it: Odoo knows what the campaign brought in, never what it cost."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_cost_total
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_tree_budget
+msgid "Total spend"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,field_description:bf_budget_campaign.field_utm_campaign__bf_unvalued_hours
+msgid "Uncosted hours"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_utm_campaign__bf_cost_internal_estimated
+msgid ""
+"Uncosted hours at the default rate. It is an estimate, never a posted "
+"amount."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model:ir.model.fields,help:bf_budget_campaign.field_res_config_settings__bf_campaign_hourly_cost
+msgid ""
+"Used ONLY to estimate the hours Odoo could not cost, for lack of an hourly "
+"cost on the employee record. The estimate is shown separately and never "
+"enters actual spend."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.res_config_settings_view_form_campaign
+msgid ""
+"Used only to estimate the hours Odoo could not cost, for lack of an hourly "
+"cost on the employee record. The estimate stays separate and never enters "
+"actual spend."
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid "Variance from plan"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_search_budget
+msgid "Without an analytic account"
+msgstr ""
+
+#. module: bf_budget_campaign
+#: model_terms:ir.ui.view,arch_db:bf_budget_campaign.utm_campaign_view_form_budget
+msgid ""
+"hours are charged to this campaign with no hourly cost on the employee "
+"record, so they are not counted in actual spend. Estimated at the default "
+"rate of"
+msgstr ""

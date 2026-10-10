@@ -1,6 +1,10 @@
 {
     'name': 'Symbifox — Transfert sécurisé : entente de confidentialité',
-    'version': '18.0.1.2.0',
+    # 18.0.1.3.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    'version': '18.0.1.3.0',
     'category': 'Website',
     'summary': "Pont bf_securetransfer × bf_sign : exiger la signature d'une "
                "entente de confidentialité avant l'accès au contenu d'un transfert",

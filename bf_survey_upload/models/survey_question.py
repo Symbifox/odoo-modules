@@ -6,31 +6,31 @@ class SurveyQuestion(models.Model):
     _inherit = "survey.question"
 
     question_type = fields.Selection(
-        selection_add=[("file_upload", "Téléversement de fichiers")],
+        selection_add=[("file_upload", "File upload")],
         # On uninstall, downgrade existing file_upload questions to text_box
         # so the survey remains valid (admin can decide what to do next).
         ondelete={"file_upload": lambda recs: recs.write({"question_type": "text_box"})},
     )
 
     file_upload_max_size_mb = fields.Integer(
-        string="Taille max par fichier (Mo)",
+        string="Max size per file (MB)",
         default=25,
     )
     file_upload_allowed_extensions = fields.Char(
-        string="Extensions autorisées",
+        string="Allowed extensions",
         default="pdf,docx,doc,xlsx,jpg,jpeg,png",
-        help="Liste séparée par des virgules, sans le point. Vide = toutes extensions.",
+        help="Comma-separated list, without the dot. Empty = all extensions.",
     )
     file_upload_multiple = fields.Boolean(
-        string="Plusieurs fichiers autorisés",
+        string="Multiple files allowed",
         default=True,
     )
     max_file_count = fields.Integer(
-        string="Nombre max de fichiers",
+        string="Max number of files",
         default=0,
-        help="0 = illimité. Nombre maximal de fichiers que le répondant peut "
-             "téléverser pour cette question (s'applique seulement lorsque "
-             "plusieurs fichiers sont autorisés).",
+        help="0 = unlimited. Maximum number of files the respondent can "
+             "upload for this question (applies only when several files "
+             "are allowed).",
     )
 
     @api.constrains("file_upload_max_size_mb")
@@ -38,7 +38,7 @@ class SurveyQuestion(models.Model):
         for q in self:
             if q.question_type == "file_upload" and q.file_upload_max_size_mb <= 0:
                 raise ValidationError(
-                    _("La taille maximale par fichier doit être supérieure à 0 Mo.")
+                    _("The maximum size per file must be greater than 0 MB.")
                 )
 
     @api.constrains("max_file_count")
@@ -46,8 +46,8 @@ class SurveyQuestion(models.Model):
         for q in self:
             if q.question_type == "file_upload" and q.max_file_count < 0:
                 raise ValidationError(
-                    _("Le nombre maximal de fichiers ne peut pas être négatif "
-                      "(0 = illimité).")
+                    _("The maximum number of files cannot be negative (0 "
+                      "= unlimited).")
                 )
 
     def _get_allowed_extensions_list(self):
@@ -70,9 +70,10 @@ class SurveyQuestion(models.Model):
         # answer here is expected to be a list of ir.attachment ids (ints)
         attachment_ids = self._coerce_attachment_ids(answer)
         if self.constr_mandatory and not attachment_ids:
-            return {self.id: self.constr_error_msg or _("Cette question est obligatoire.")}
+            return {self.id: self.constr_error_msg or _("This question is "
+                                                        "required.")}
         if not self.file_upload_multiple and len(attachment_ids) > 1:
-            return {self.id: _("Un seul fichier est autorisé pour cette question.")}
+            return {self.id: _("Only one file is allowed for this question.")}
         if (
             self.file_upload_multiple
             and self.max_file_count > 0
@@ -80,8 +81,7 @@ class SurveyQuestion(models.Model):
         ):
             return {
                 self.id: _(
-                    "Vous pouvez téléverser au maximum %(n)s fichier(s) "
-                    "pour cette question.",
+                    "You can upload at most %(n)s file(s) for this question.",
                     n=self.max_file_count,
                 )
             }

@@ -16,12 +16,12 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_campaign_hourly_cost = fields.Float(
-        string="Taux de revient par défaut",
+        string="Default cost rate",
         config_parameter=PARAM_TAUX,
         default=TAUX_DEFAUT,
-        help="Sert UNIQUEMENT à estimer les heures qu'Odoo n'a pas pu valoriser,"
-             " faute de coût horaire sur la fiche employé. L'estimation est"
-             " affichée à part et n'entre jamais dans la dépense réelle.",
+        help="Used ONLY to estimate the hours Odoo could not cost, for "
+             "lack of an hourly cost on the employee record. The estimate "
+             "is shown separately and never enters actual spend.",
     )
 
     @api.model

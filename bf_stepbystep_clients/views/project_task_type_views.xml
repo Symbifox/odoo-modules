@@ -8,12 +8,12 @@
         <field name="inherit_id" ref="project.task_type_edit"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
-                <group string="Step-by-Step — Progression linéaire" name="bf_stepbystep">
+                <group string="Step-by-Step: linear progression" name="bf_stepbystep">
                     <field name="progression_step_number"/>
                     <field name="progression_step_name"/>
                     <field name="progression_client_visible"/>
                     <field name="progression_client_action_hint"
-                           placeholder="Instruction affichée au client lorsque le projet est rendu à cette étape…"/>
+                           placeholder="Instruction shown to the client when the project reaches this stage…"/>
                 </group>
             </xpath>
         </field>

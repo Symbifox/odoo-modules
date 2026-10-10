@@ -105,9 +105,12 @@ class TestGenFox(TransactionCase):
     def test_refuse_si_l_article_a_bouge(self):
         suggestion = self._suggestion(proposed_fr="<p>Version étoffée.</p>")
         self._poser_creneaux("<p>Quelqu'un a réécrit entre-temps.</p>", EN)
+        # Le message s'attend en anglais, la source : épinglé, parce qu'un
+        # contexte sans langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
         with self.assertRaises(UserError) as caught:
-            suggestion.action_apply()
-        self.assertIn("changé", str(caught.exception))
+            suggestion.with_context(lang="en_US").action_apply()
+        self.assertIn("has changed", str(caught.exception))
 
     def test_refuse_sans_texte(self):
         with self.assertRaises(UserError):
@@ -184,8 +187,16 @@ class TestGenFox(TransactionCase):
 
         Le service ne doit pas tomber pour une histoire de paramétrage
         régional : on retombe sur la lecture par défaut.
+
+        Une troisième langue sert ici : le français, s'il sert à un site web,
+        refuse de se désactiver (« Cannot deactivate a language that is
+        currently used on a website »).
         """
-        self.fr.active = False
+        Lang = self.env["res.lang"]
+        Lang._activate_lang("de_DE")
+        allemand = Lang.search([("code", "=", "de_DE")], limit=1)
+        self.entry.version_ids.filtered("is_source").lang_id = allemand
+        allemand.active = False
         self.entry.invalidate_recordset()
         self.assertIsInstance(self.entry._genfox_source_content(), str)
 

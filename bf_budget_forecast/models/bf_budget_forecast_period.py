@@ -17,7 +17,7 @@ class BfBudgetForecastPeriod(models.Model):
     """
 
     _name = "bf.budget.forecast.period"
-    _description = "Mois d'une ligne de prévision"
+    _description = "Month of a forecast line"
     _order = "line_id, sequence, date_start"
 
     line_id = fields.Many2one(
@@ -34,25 +34,26 @@ class BfBudgetForecastPeriod(models.Model):
     name = fields.Char(compute="_compute_name", store=True)
 
     amount_forecast = fields.Monetary(
-        string="Prévu", currency_field="currency_id",
-        help="Ce qu'on a décidé de prévoir pour ce mois. Conservé même après la "
-        "clôture du mois : c'est la trace de ce qu'on croyait.",
+        string="Forecast amount", currency_field="currency_id",
+        help="What was decided to forecast for this month. Kept even "
+             "after the month closes: it is the record of what was "
+             "believed.",
     )
     amount_actual = fields.Monetary(
-        string="Réel", compute="_compute_amount_actual", currency_field="currency_id"
+        string="Actual", compute="_compute_amount_actual", currency_field="currency_id"
     )
     is_closed = fields.Boolean(
-        string="Mois clos", compute="_compute_is_closed", store=True,
-        help="Un mois qui finit à la date d'arrêt du réel ou avant.",
+        string="Closed month", compute="_compute_is_closed", store=True,
+        help="A month that ends on or before the actuals date.",
     )
     amount = fields.Monetary(
-        string="Retenu", compute="_compute_amount", currency_field="currency_id",
-        help="Le réel si le mois est clos, la prévision sinon.",
+        string="Retained", compute="_compute_amount", currency_field="currency_id",
+        help="The actual if the month is closed, the forecast otherwise.",
     )
     variance = fields.Monetary(
-        string="Écart à la prévision", compute="_compute_amount",
+        string="Variance from forecast", compute="_compute_amount",
         currency_field="currency_id",
-        help="Sur un mois clos : le réel moins ce qu'on avait prévu.",
+        help="On a closed month: the actual minus what was forecast.",
     )
 
     @api.depends("date_start")
@@ -105,8 +106,8 @@ class BfBudgetForecastPeriod(models.Model):
             fige = self.filtered(lambda p: p.forecast_id.state != "draft")
             if fige:
                 raise UserError(
-                    _("« %(name)s » appartient à une passe publiée : ses chiffres "
-                      "ne se retouchent plus.", name=fige[0].forecast_id.display_name)
+                    _("\"%(name)s\" belongs to a published version: its "
+                      "figures can no longer be edited.", name=fige[0].forecast_id.display_name)
                 )
             # ⚠️ COPIER N'EST PAS PRÉVOIR. Le report d'une passe à la suivante
             # recopie la prévision HISTORIQUE dans des mois qui sont désormais
@@ -117,7 +118,7 @@ class BfBudgetForecastPeriod(models.Model):
                 clos = self.filtered("is_closed")
                 if clos:
                     raise UserError(
-                        _("Le mois %(mois)s est clos : son réel est connu, le prévoir "
-                          "n'a plus de sens.", mois=clos[0].name)
+                        _("The month %(mois)s is closed: its actual is "
+                          "known, forecasting it no longer makes sense.", mois=clos[0].name)
                     )
         return super().write(vals)

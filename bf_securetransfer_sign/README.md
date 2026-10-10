@@ -100,3 +100,7 @@ Each send may then keep or drop the requirement from the wizard.
 `test_nda_gate.py` covers the gate on both surfaces (page and file route), the
 per-visitor agreement, the refusal of a mobile identity, and the invariant that
 a gate never returns the URL of the page that calls it.
+
+## Languages (v18.0.1.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The NDA evidence written to the transfer's access log and chatter is in the sender's language (the transfer's creator, else the company), while the signing request itself stays in the visitor's. The title of the NDA page is composed in the visitor's language: a browser `<title>` is never translated by Odoo.

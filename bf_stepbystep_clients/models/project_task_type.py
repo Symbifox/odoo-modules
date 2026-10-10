@@ -5,29 +5,28 @@ class ProjectTaskType(models.Model):
     _inherit = "project.task.type"
 
     progression_step_number = fields.Integer(
-        string="Numéro d'étape de progression",
-        help="Numéro de l'étape dans la progression linéaire du mandat. "
-             "Laisser à 0 (par défaut) pour exclure ce stage de la "
-             "visualisation Step-by-Step.",
+        string="Progression step number",
+        help="Step number in the engagement's linear progression. Leave "
+             "at 0 (default) to exclude this stage from the Step-by-Step "
+             "view.",
     )
     progression_step_name = fields.Char(
-        string="Nom d'étape de progression",
+        string="Progression step name",
         translate=True,
-        help="Libellé court affiché dans la visualisation linéaire "
-             "(ex: « Démarrage », « Audit initial »). Si vide, le nom du "
-             "stage est utilisé.",
+        help="Short label shown in the linear view (e.g. \"Kickoff\", "
+             "\"Initial audit\"). If empty, the stage name is used.",
     )
     progression_client_visible = fields.Boolean(
-        string="Visible portail client",
+        string="Visible on client portal",
         default=True,
-        help="Cocher pour afficher cette étape sur le portail public du "
-             "client. Décocher pour les étapes internes (ex: revue interne, "
-             "facturation).",
+        help="Check to show this stage on the client's public portal. "
+             "Uncheck for internal stages (e.g. internal review, "
+             "invoicing).",
     )
     progression_client_action_hint = fields.Text(
-        string="Consigne client",
+        string="Client instruction",
         translate=True,
-        help="Instruction affichée au client sur le portail lorsque le "
-             "projet est rendu à cette étape "
-             "(ex: « Téléversez vos formulaires X et Y »).",
+        help="Instruction shown to the client on the portal when the "
+             "project reaches this stage (e.g. \"Upload your forms X and "
+             "Y\").",
     )

@@ -1,7 +1,7 @@
 import logging
 from datetime import date, timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def _activity_status(days):
 
 class BfStepbystepDashboard(models.AbstractModel):
     _name = "bf.stepbystep.dashboard"
-    _description = "Tableau de bord Step-by-Step (suivi d'accompagnement client)"
+    _description = "Step-by-Step dashboard (client engagement tracking)"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
@@ -147,8 +147,11 @@ class BfStepbystepDashboard(models.AbstractModel):
                 step_count += 1
                 global_progress += step["pct"]
                 if step["pct"] < 100 and not current_step_label:
-                    label = step.get("name") or f"Étape {step_num}"
-                    current_step_label = f"Étape {step_num} — {label}" if step.get("name") else f"Étape {step_num}"
+                    label = step.get("name") or _("Step %s", step_num)
+                    current_step_label = (
+                        _("Step %(num)s: %(label)s", num=step_num, label=label)
+                        if step.get("name") else _("Step %s", step_num)
+                    )
 
             if step_count > 0:
                 global_progress = round(global_progress / step_count, 0)
@@ -268,23 +271,23 @@ class BfStepbystepDashboard(models.AbstractModel):
         self.env.cr.execute("""
             SELECT
                 ptt.progression_step_number AS step_num,
-                COALESCE(ptt.progression_step_name->>'fr_CA',
+                COALESCE(ptt.progression_step_name->>%(lang)s,
                          ptt.progression_step_name->>'en_US',
                          ptt.progression_step_name #>> '{}',
-                         ptt.name->>'fr_CA',
+                         ptt.name->>%(lang)s,
                          ptt.name->>'en_US',
                          '') AS step_name,
                 pt.state,
                 COUNT(*) AS cnt
             FROM project_task pt
             JOIN project_task_type ptt ON ptt.id = pt.stage_id
-            WHERE pt.project_id = %s
+            WHERE pt.project_id = %(project_id)s
               AND pt.active = true
               AND ptt.progression_step_number > 0
             GROUP BY ptt.progression_step_number, ptt.progression_step_name,
                      ptt.name, pt.state
             ORDER BY ptt.progression_step_number
-        """, (project_id,))
+        """, {"lang": self._display_lang(), "project_id": project_id})
         rows = self.env.cr.dictfetchall()
 
         step_data = {}
@@ -296,7 +299,7 @@ class BfStepbystepDashboard(models.AbstractModel):
                 step_data[step_num] = {
                     "total": 0,
                     "completed": 0,
-                    "name": row["step_name"] or f"Étape {step_num}",
+                    "name": row["step_name"] or _("Step %s", step_num),
                 }
             step_data[step_num]["total"] += row["cnt"]
             if row["state"] in ("1_done", "1_canceled"):
@@ -330,16 +333,16 @@ class BfStepbystepDashboard(models.AbstractModel):
         # Overdue tasks
         self.env.cr.execute("""
             SELECT pt.id, pt.name, pt.date_deadline,
-                   COALESCE(ptt.name->>'fr_CA', ptt.name->>'en_US', '') AS stage_name
+                   COALESCE(ptt.name->>%(lang)s, ptt.name->>'en_US', '') AS stage_name
             FROM project_task pt
             LEFT JOIN project_task_type ptt ON ptt.id = pt.stage_id
-            WHERE pt.project_id = %s
+            WHERE pt.project_id = %(project_id)s
               AND pt.active = true
               AND pt.state NOT IN ('1_done', '1_canceled')
-              AND pt.date_deadline < %s
+              AND pt.date_deadline < %(today)s
             ORDER BY pt.date_deadline
             LIMIT 20
-        """, (project_id, str(today)))
+        """, {"lang": self._display_lang(), "project_id": project_id, "today": str(today)})
         overdue_tasks = [
             {
                 "id": r["id"],
@@ -354,17 +357,20 @@ class BfStepbystepDashboard(models.AbstractModel):
         future = today + timedelta(days=60)
         self.env.cr.execute("""
             SELECT pt.id, pt.name, pt.date_deadline,
-                   COALESCE(ptt.name->>'fr_CA', ptt.name->>'en_US', '') AS stage_name
+                   COALESCE(ptt.name->>%(lang)s, ptt.name->>'en_US', '') AS stage_name
             FROM project_task pt
             LEFT JOIN project_task_type ptt ON ptt.id = pt.stage_id
-            WHERE pt.project_id = %s
+            WHERE pt.project_id = %(project_id)s
               AND pt.active = true
               AND pt.state NOT IN ('1_done', '1_canceled')
-              AND pt.date_deadline >= %s
-              AND pt.date_deadline <= %s
+              AND pt.date_deadline >= %(today)s
+              AND pt.date_deadline <= %(future)s
             ORDER BY pt.date_deadline
             LIMIT 20
-        """, (project_id, str(today), str(future)))
+        """, {
+            "lang": self._display_lang(), "project_id": project_id,
+            "today": str(today), "future": str(future),
+        })
         upcoming_tasks = [
             {
                 "id": r["id"],
@@ -456,7 +462,7 @@ class BfStepbystepDashboard(models.AbstractModel):
     def action_open_project(self, project_id):
         return {
             "type": "ir.actions.act_window",
-            "name": "Tâches du projet",
+            "name": _("Project tasks"),
             "res_model": "project.task",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("project_id", "=", project_id)],
@@ -486,11 +492,16 @@ class BfStepbystepDashboard(models.AbstractModel):
     # ------------------------------------------------------------------
 
     @api.model
+    def _display_lang(self):
+        """The key read first in translated names (stages, projects, activity types)."""
+        return self.env.lang or "en_US"
+
+    @api.model
     def _get_projects(self):
         """Get active client projects."""
         self.env.cr.execute("""
             SELECT pp.id,
-                   COALESCE(pp.name->>'fr_CA', pp.name->>'en_US',
+                   COALESCE(pp.name->>%(lang)s, pp.name->>'en_US',
                             pp.name #>> '{}') AS name,
                    COALESCE(rp.name, '') AS partner_name,
                    pp.partner_id,
@@ -503,15 +514,18 @@ class BfStepbystepDashboard(models.AbstractModel):
                        WHERE rel.project_project_id = pp.id
                          AND lower(COALESCE(pt.name->>'fr_CA',
                                             pt.name->>'en_US',
-                                            pt.name #>> '{}', '')) LIKE %s
+                                            pt.name #>> '{}', '')) LIKE %(paused)s
                    ) AS is_paused
             FROM project_project pp
             LEFT JOIN res_partner rp ON rp.id = pp.partner_id
             WHERE pp.active = true
               AND (pp.date IS NULL OR pp.date >= CURRENT_DATE)
-              AND (pp.company_id IS NULL OR pp.company_id = ANY(%s))
-            ORDER BY COALESCE(pp.name->>'fr_CA', pp.name->>'en_US')
-        """, (f"%{PAUSED_TAG_FRAGMENT}%", self.env.companies.ids))
+              AND (pp.company_id IS NULL OR pp.company_id = ANY(%(companies)s))
+            ORDER BY COALESCE(pp.name->>%(lang)s, pp.name->>'en_US')
+        """, {
+            "lang": self._display_lang(), "paused": f"%{PAUSED_TAG_FRAGMENT}%",
+            "companies": self.env.companies.ids,
+        })
         return self.env.cr.dictfetchall()
 
     @api.model
@@ -592,10 +606,10 @@ class BfStepbystepDashboard(models.AbstractModel):
             SELECT
                 pt.project_id,
                 ptt.progression_step_number AS step_num,
-                COALESCE(ptt.progression_step_name->>'fr_CA',
+                COALESCE(ptt.progression_step_name->>%(lang)s,
                          ptt.progression_step_name->>'en_US',
                          ptt.progression_step_name #>> '{}',
-                         ptt.name->>'fr_CA',
+                         ptt.name->>%(lang)s,
                          ptt.name->>'en_US',
                          '') AS step_name,
                 pt.state,
@@ -606,7 +620,7 @@ class BfStepbystepDashboard(models.AbstractModel):
               AND ptt.progression_step_number > 0
             GROUP BY pt.project_id, ptt.progression_step_number,
                      ptt.progression_step_name, ptt.name, pt.state
-        """)
+        """, {"lang": self._display_lang()})
 
         result = {}
         for row in self.env.cr.dictfetchall():
@@ -622,7 +636,7 @@ class BfStepbystepDashboard(models.AbstractModel):
                     "total": 0,
                     "completed": 0,
                     "pct": 0,
-                    "name": row["step_name"] or f"Étape {step_num}",
+                    "name": row["step_name"] or _("Step %s", step_num),
                 }
 
             result[pid][step_num]["total"] += row["cnt"]
@@ -646,7 +660,7 @@ class BfStepbystepDashboard(models.AbstractModel):
             SELECT DISTINCT ON (pt.project_id)
                 pt.project_id,
                 ma.date_deadline,
-                COALESCE(mat.name->>'fr_CA', mat.name->>'en_US',
+                COALESCE(mat.name->>%(lang)s, mat.name->>'en_US',
                          mat.name #>> '{}', '') AS type_name,
                 COALESCE(ma.summary, '') AS summary
             FROM mail_activity ma
@@ -654,12 +668,12 @@ class BfStepbystepDashboard(models.AbstractModel):
                 AND ma.res_model = 'project.task'
             LEFT JOIN mail_activity_type mat ON mat.id = ma.activity_type_id
             WHERE pt.project_id IS NOT NULL
-              AND ma.date_deadline >= %s
+              AND ma.date_deadline >= %(today)s
             ORDER BY pt.project_id, ma.date_deadline
-        """, (today_str,))
+        """, {"lang": self._display_lang(), "today": today_str})
         result = {}
         for r in self.env.cr.dictfetchall():
-            label = r["summary"] or r["type_name"] or "Activité"
+            label = r["summary"] or r["type_name"] or _("Activity")
             result[r["project_id"]] = {
                 "date": r["date_deadline"],
                 "label": label,
@@ -683,7 +697,7 @@ class BfStepbystepDashboard(models.AbstractModel):
             if not existing or r["date_deadline"] < existing["date"]:
                 result[pid] = {
                     "date": r["date_deadline"],
-                    "label": r["task_name"] or "Tâche",
+                    "label": r["task_name"] or _("Task"),
                 }
 
         return result

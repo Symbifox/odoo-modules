@@ -10,11 +10,11 @@ from odoo import api, fields, models
 
 class SocialMetric(models.Model):
     _name = "bf.social.metric"
-    _description = "Mesure de billet social"
+    _description = "Social post metric"
     _order = "capture_date desc, id desc"
 
     post_id = fields.Many2one(
-        "bf.social.post", string="Billet", required=True,
+        "bf.social.post", string="Post", required=True,
         ondelete="cascade", index=True,
     )
     entry_id = fields.Many2one(
@@ -24,23 +24,24 @@ class SocialMetric(models.Model):
         "bf.social.channel", related="post_id.channel_id", store=True, index=True,
     )
     capture_date = fields.Date(
-        string="Date de capture", required=True,
+        string="Capture date", required=True,
         default=fields.Date.context_today,
     )
-    impressions = fields.Integer(string="Affichages")
-    likes = fields.Integer(string="Mentions j'aime")
-    reposts = fields.Integer(string="Repartages")
-    replies = fields.Integer(string="Réponses")
+    impressions = fields.Integer(string="Impressions")
+    likes = fields.Integer(string="Likes")
+    reposts = fields.Integer(string="Reposts")
+    replies = fields.Integer(string="Replies")
     clicks = fields.Integer(
-        string="Clics",
-        help="Repris du lien suivi, pas du réseau : c'est la seule mesure"
-             " de clic qui ne dépende pas du bon vouloir de la plateforme.",
+        string="Clicks",
+        help="Taken from the tracked link, not from the network: it is "
+             "the only click count that does not depend on the platform's "
+             "goodwill.",
     )
 
     _sql_constraints = [
         ("one_per_day",
          "UNIQUE(post_id, capture_date)",
-         "Une seule capture par billet et par jour."),
+         "Only one capture per post per day."),
     ]
 
     @api.model

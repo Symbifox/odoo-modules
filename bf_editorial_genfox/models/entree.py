@@ -8,33 +8,34 @@ class EditorialEntry(models.Model):
     _inherit = "bf.editorial.entry"
 
     suggestion_ids = fields.One2many(
-        "bf.editorial.suggestion", "entry_id", string="Propositions Gen",
+        "bf.editorial.suggestion", "entry_id", string="Gen suggestions",
     )
     suggestion_count = fields.Integer(
-        string="Propositions", compute="_compute_genfox_state",
+        string="Suggestions", compute="_compute_genfox_state",
     )
     genfox_pending = fields.Boolean(
-        string="Gen travaille", compute="_compute_genfox_state",
+        string="Gen is working", compute="_compute_genfox_state",
     )
     genfox_stalled = fields.Boolean(
-        string="Passe sans nouvelle", compute="_compute_genfox_state",
-        help="Une passe lancée n'est jamais revenue. Les boutons redeviennent"
-             " disponibles : mieux vaut pouvoir relancer que rester bloqué.",
+        string="Stalled run", compute="_compute_genfox_state",
+        help="A run that was started never came back. The buttons are "
+             "available again: better to be able to run it again than to "
+             "stay stuck.",
     )
     genfox_started = fields.Datetime(
-        string="Passe lancée le", compute="_compute_genfox_state",
+        string="Run started on", compute="_compute_genfox_state",
     )
     genfox_available = fields.Boolean(
-        string="Gen joignable", compute="_compute_genfox_available",
-        help="Faux quand la socket du pont est absente. Les boutons"
-             " disparaissent alors plutôt que d'échouer au clic.",
+        string="Gen reachable", compute="_compute_genfox_available",
+        help="False when the bridge socket is missing. The buttons then "
+             "disappear rather than fail on click.",
     )
     genfox_pending_decision = fields.Boolean(
-        string="Proposition en attente", compute="_compute_genfox_state",
-        help="Une proposition rendue porte un texte que personne n'a encore"
-             " appliqué ni écarté. Fait passer le bouton « Propositions"
-             " Gen » en bleu : il y a une décision à prendre, pas"
-             " seulement une lecture.",
+        string="Pending suggestion", compute="_compute_genfox_state",
+        help="A delivered suggestion carries text that nobody has applied "
+             "or discarded yet. Turns the \"Gen suggestions\" button "
+             "blue: there is a decision to make, not just something to "
+             "read.",
     )
 
     @api.depends("suggestion_ids.state", "suggestion_ids.in_progress",
@@ -88,17 +89,17 @@ class EditorialEntry(models.Model):
         self.ensure_one()
         self.env["bf.editorial.suggestion"].launch("full", entry=self)
         return self._notify(_(
-            "Gen relit l'article — répétitions, texte des liens, dérive par"
-            " rapport à l'angle déclaré, style maison — et propose un texte"
-            " étoffé si l'entrée en a besoin. Rien n'est écrit dans le billet"
-            " de lui-même : le résultat arrivera dans l'onglet « Gen »."
+            "Gen reviews the article (repetitions, link text, drift from "
+            "the declared angle, house style) and suggests an expanded "
+            "text if the entry needs one. Nothing is written to the post "
+            "on its own: the result will arrive in the \"Gen\" tab."
         ))
 
     def action_view_suggestions(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Propositions Gen"),
+            "name": _("Gen suggestions"),
             "res_model": "bf.editorial.suggestion",
             "view_mode": "list,form",
             "domain": [("entry_id", "=", self.id)],
@@ -123,7 +124,7 @@ class EditorialEntry(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "info",
-                "title": _("Gen est parti travailler"),
+                "title": _("Gen is on it"),
                 "message": message,
                 "sticky": False,
                 "next": {"type": "ir.actions.client", "tag": "soft_reload"},

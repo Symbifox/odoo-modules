@@ -97,7 +97,7 @@ class BfSurveyUpload(Survey):
         )
         if content_length > request_cap + 65536:
             return request.make_json_response(
-                {"error": "too_large", "message": _("Requête trop volumineuse.")},
+                {"error": "too_large", "message": _("Request too large.")},
                 status=413,
             )
 
@@ -109,7 +109,7 @@ class BfSurveyUpload(Survey):
                 {
                     "error": "too_many_files",
                     "message": _(
-                        "Maximum %(n)s fichiers par envoi.",
+                        "At most %(n)s files per upload.",
                         n=MAX_FILES_PER_REQUEST,
                     ),
                 },
@@ -150,8 +150,8 @@ class BfSurveyUpload(Survey):
                     {
                         "error": "too_many_files",
                         "message": _(
-                            "Vous pouvez téléverser au maximum %(n)s fichier(s) "
-                            "pour cette question.",
+                            "You can upload at most %(n)s file(s) for "
+                            "this question.",
                             n=question.max_file_count,
                         ),
                     },
@@ -181,7 +181,7 @@ class BfSurveyUpload(Survey):
                 return request.make_json_response(
                     {
                         "error": "bad_extension",
-                        "message": _("Le fichier doit avoir une extension."),
+                        "message": _("The file must have an extension."),
                     },
                     status=400,
                 )
@@ -192,7 +192,8 @@ class BfSurveyUpload(Survey):
                     {
                         "error": "bad_extension",
                         "message": _(
-                            "Le format « .%(ext)s » n'est pas autorisé pour des raisons de sécurité.",
+                            "The \".%(ext)s\" format is not allowed for "
+                            "security reasons.",
                             ext=ext,
                         ),
                     },
@@ -204,8 +205,8 @@ class BfSurveyUpload(Survey):
                     {
                         "error": "bad_extension",
                         "message": _(
-                            "Le format « .%(ext)s » n'est pas autorisé. "
-                            "Formats acceptés : %(exts)s.",
+                            "The \".%(ext)s\" format is not allowed. "
+                            "Accepted formats: %(exts)s.",
                             ext=ext or "?",
                             exts=", ".join(allowed_exts),
                         ),
@@ -227,7 +228,7 @@ class BfSurveyUpload(Survey):
                 return request.make_json_response(
                     {
                         "error": "empty_file",
-                        "message": _("Le fichier « %(name)s » est vide.", name=display_name),
+                        "message": _("The file \"%(name)s\" is empty.", name=display_name),
                     },
                     status=400,
                 )
@@ -236,7 +237,8 @@ class BfSurveyUpload(Survey):
                     {
                         "error": "too_large",
                         "message": _(
-                            "Le fichier « %(name)s » dépasse la taille maximale de %(mb)s Mo.",
+                            "The file \"%(name)s\" exceeds the maximum "
+                            "size of %(mb)s MB.",
                             name=display_name,
                             mb=per_file_max // (1024 * 1024),
                         ),
@@ -250,8 +252,8 @@ class BfSurveyUpload(Survey):
                     {
                         "error": "quota_exceeded",
                         "message": _(
-                            "Quota total dépassé pour cette réponse au sondage "
-                            "(maximum %(mb)s Mo cumulés).",
+                            "Total quota exceeded for this survey "
+                            "response (at most %(mb)s MB combined).",
                             mb=MAX_TOTAL_BYTES_PER_ANSWER // (1024 * 1024),
                         ),
                     },

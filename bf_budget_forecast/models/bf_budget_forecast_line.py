@@ -11,7 +11,7 @@ class BfBudgetForecastLine(models.Model):
     """
 
     _name = "bf.budget.forecast.line"
-    _description = "Ligne de prévision"
+    _description = "Forecast line"
     _order = "forecast_id, position_id"
 
     forecast_id = fields.Many2one(
@@ -19,7 +19,7 @@ class BfBudgetForecastLine(models.Model):
     )
     position_id = fields.Many2one(
         "bf.budget.position",
-        string="Poste",
+        string="Budget item",
         required=True,
         ondelete="restrict",
         index=True,
@@ -28,27 +28,27 @@ class BfBudgetForecastLine(models.Model):
     company_id = fields.Many2one(related="forecast_id.company_id", store=True, index=True)
     currency_id = fields.Many2one(related="forecast_id.currency_id")
     state = fields.Selection(related="forecast_id.state", store=True)
-    name = fields.Char(related="position_id.display_name", string="Poste")
+    name = fields.Char(related="position_id.display_name", string="Budget item")
 
     period_ids = fields.One2many(
-        "bf.budget.forecast.period", "line_id", string="Mois", copy=True
+        "bf.budget.forecast.period", "line_id", string="Months", copy=True
     )
 
     amount_actual = fields.Monetary(
-        string="Réel des mois clos", compute="_compute_amounts", currency_field="currency_id"
+        string="Actual, closed months", compute="_compute_amounts", currency_field="currency_id"
     )
     amount_forecast = fields.Monetary(
-        string="Prévu des mois ouverts", compute="_compute_amounts", currency_field="currency_id"
+        string="Forecast, open months", compute="_compute_amounts", currency_field="currency_id"
     )
     amount_total = fields.Monetary(
-        string="Total de l'horizon", compute="_compute_amounts", currency_field="currency_id"
+        string="Horizon total", compute="_compute_amounts", currency_field="currency_id"
     )
 
     _sql_constraints = [
         (
             "position_uniq_per_forecast",
             "unique(forecast_id, position_id)",
-            "Un poste n'a qu'une ligne par passe de prévision.",
+            "A budget item has only one line per forecast version.",
         ),
     ]
 
@@ -57,7 +57,8 @@ class BfBudgetForecastLine(models.Model):
         for line in self:
             if line.position_id.company_id != line.forecast_id.company_id:
                 raise ValidationError(
-                    _("Le poste et la prévision doivent être de la même société.")
+                    _("The budget item and the forecast must belong to "
+                      "the same company.")
                 )
 
     @api.depends("period_ids.amount", "period_ids.is_closed")
@@ -149,7 +150,7 @@ class BfBudgetForecastLine(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Mois de la ligne"),
+            "name": _("Line months"),
             "res_model": "bf.budget.forecast.period",
             "view_mode": "list",
             "domain": [("line_id", "=", self.id)],

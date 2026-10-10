@@ -59,6 +59,11 @@ patch(AttachmentList.prototype, {
         this.bfVersions.comptes = comptes;
     },
 
+    /** Le titre du bouton : un `t-attf` n'est jamais traduit, ce getter l'est. */
+    bfTitreVersions(attachment) {
+        return _t("Kept versions: %s", this.bfNombreVersions(attachment));
+    },
+
     bfNombreVersions(attachment) {
         return this.bfVersions.comptes[attachment.id] || 0;
     },
@@ -66,7 +71,7 @@ patch(AttachmentList.prototype, {
     bfOuvrirVersions(attachment) {
         this.bfAction.doAction({
             type: "ir.actions.act_window",
-            name: _t("Versions de %s", attachment.name),
+            name: _t("Versions of %s", attachment.name),
             res_model: "bf.attachment.version",
             views: [
                 [false, "list"],

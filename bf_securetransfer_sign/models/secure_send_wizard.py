@@ -14,9 +14,10 @@ class SecureSendWizard(models.TransientModel):
     _inherit = "secure.transfer.send.wizard"
 
     nda_required = fields.Boolean(
-        string="Exiger la signature d'une entente de confidentialité",
-        help="Chaque destinataire signera l'entente à son nom, après avoir "
-             "confirmé son identité par code et avant de voir le contenu.",
+        string="Require signing an NDA",
+        help="Each recipient will sign the NDA in their own name, after "
+             "confirming their identity with a code and before seeing the "
+             "content.",
     )
     nda_available = fields.Boolean(compute="_compute_nda_available")
 
@@ -47,14 +48,13 @@ class SecureSendWizard(models.TransientModel):
             if rec.nda_required and not rec.brand_id.nda_document \
                     and not rec.nda_available:
                 raise UserError(_(
-                    "« %s » n'a aucune entente de confidentialité téléversée : "
-                    "il n'y a rien à faire signer.", rec.brand_id.display_name))
+                    "\"%s\" has no NDA uploaded: there is nothing to sign.", rec.brand_id.display_name))
             if rec.nda_required and rec.audience_allow_sms:
                 raise UserError(_(
-                    "Une entente de confidentialité ne peut pas être signée par "
-                    "un visiteur identifié seulement par son mobile (une "
-                    "signature exige une adresse courriel). Décochez « Offrir "
-                    "le code par SMS », ou n'exigez pas d'entente."))
+                    "An NDA cannot be signed by a visitor identified only "
+                    "by their mobile (a signature requires an email "
+                    "address). Uncheck \"Offer the code by SMS\", or do "
+                    "not require an NDA."))
         return super().action_send()
 
 
@@ -79,21 +79,20 @@ class SecureSendWizard(models.TransientModel):
             if not rec.brand_id.nda_document:
                 rec.nda_required = False
                 extra = _(
-                    "« %(tmpl)s » exige une entente de confidentialité, mais "
-                    "la marque « %(brand)s » n'en a aucune de téléversée. "
-                    "L'exigence est retirée.\n\n"
-                    "Téléversez l'entente sur la marque (Configuration › "
-                    "Marques), ou choisissez une marque qui en porte une.",
+                    "\"%(tmpl)s\" requires an NDA, but the \"%(brand)s\" "
+                    "brand has none uploaded. The requirement is "
+                    "removed.\n\nUpload the NDA on the brand (Settings › "
+                    "Brands), or choose a brand that has one.",
                     tmpl=rec.template_id.display_name,
-                    brand=rec.brand_id.display_name or _("(aucune)"))
+                    brand=rec.brand_id.display_name or _("(none)"))
             elif rec.audience_allow_sms:
                 # Même refus que `action_send`, un écran plus tôt : une
                 # signature exige une adresse courriel.
                 rec.audience_allow_sms = False
                 extra = _(
-                    "« %(tmpl)s » exige une entente : l'identification par "
-                    "mobile est retirée, un signataire sans adresse courriel "
-                    "n'existant pas.",
+                    "\"%(tmpl)s\" requires an NDA: identification by "
+                    "mobile is removed, since a signer must have an email "
+                    "address.",
                     tmpl=rec.template_id.display_name)
         if not extra:
             return res
@@ -101,7 +100,7 @@ class SecureSendWizard(models.TransientModel):
         message = "%s\n\n%s" % (existing["message"], extra) \
             if existing.get("message") else extra
         return {"warning": {
-            "title": existing.get("title") or _("Préréglage appliqué en partie"),
+            "title": existing.get("title") or _("Preset partly applied"),
             "message": message,
         }}
 

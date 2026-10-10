@@ -9,63 +9,63 @@ from . import _fernet
 
 class SocialChannel(models.Model):
     _name = "bf.social.channel"
-    _description = "Canal de diffusion"
+    _description = "Publishing channel"
     _inherit = ["mail.thread"]
     _order = "sequence, id"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     network = fields.Selection(
-        selection="_selection_network", string="Réseau", required=True,
+        selection="_selection_network", string="Network", required=True,
         tracking=True,
     )
     handle = fields.Char(
-        string="Pseudonyme", required=True, tracking=True,
-        help="Le pseudonyme public du compte, tel que le réseau le connaît.",
+        string="Handle", required=True, tracking=True,
+        help="The account's public handle, as the network knows it.",
     )
     lang_id = fields.Many2one(
-        "res.lang", string="Langue publiée", required=True,
-        help="Le créneau de langue de l'article qui part sur ce canal. Un"
-             " compte tenu dans une seule langue reste lisible.",
+        "res.lang", string="Published language", required=True,
+        help="The article's language slot that goes out on this channel. "
+             "An account kept in a single language stays readable.",
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", default=lambda s: s.env.company,
+        "res.company", string="Company", default=lambda s: s.env.company,
         required=True, index=True,
     )
     calendar_ids = fields.Many2many(
-        "bf.editorial.calendar", string="Calendriers alimentés",
+        "bf.editorial.calendar", string="Calendars fed",
     )
-    utm_source_id = fields.Many2one("utm.source", string="Source UTM")
-    utm_medium_id = fields.Many2one("utm.medium", string="Médium UTM")
+    utm_source_id = fields.Many2one("utm.source", string="UTM source")
+    utm_medium_id = fields.Many2one("utm.medium", string="UTM medium")
 
     # --- identifiants -----------------------------------------------------
     login = fields.Char(
-        string="Identifiant de connexion",
-        help="Souvent le pseudonyme complet. Ce que le réseau attend comme"
-             " nom d'usager pour un mot de passe d'application.",
+        string="Login",
+        help="Often the full handle. What the network expects as the "
+             "username for an app password.",
     )
     secret = fields.Char(
-        string="Mot de passe d'application",
+        string="App password",
         compute="_compute_secret", inverse="_inverse_secret",
         groups="bf_editorial.group_editorial_manager",
-        help="Chiffré hors de la base. Un mot de passe d'application se"
-             " révoque sans toucher au mot de passe du compte : ne jamais"
-             " poser ici le mot de passe principal.",
+        help="Encrypted outside the database. An app password can be "
+             "revoked without touching the account password: never put "
+             "the main password here.",
     )
     credentials_state = fields.Selection(
-        [("unknown", "Jamais vérifiés"), ("ok", "Valides"), ("ko", "Refusés")],
-        string="État des identifiants", default="unknown", readonly=True,
+        [("unknown", "Never checked"), ("ok", "Valid"), ("ko", "Rejected")],
+        string="Credentials status", default="unknown", readonly=True,
         copy=False, tracking=True,
     )
-    credentials_message = fields.Char(string="Dernier retour", readonly=True, copy=False)
-    last_checked = fields.Datetime(string="Vérifiés le", readonly=True, copy=False)
+    credentials_message = fields.Char(string="Last response", readonly=True, copy=False)
+    last_checked = fields.Datetime(string="Checked on", readonly=True, copy=False)
 
     # --- dérivé -----------------------------------------------------------
-    post_ids = fields.One2many("bf.social.post", "channel_id", string="Billets")
-    post_count = fields.Integer(string="Billets", compute="_compute_post_count")
+    post_ids = fields.One2many("bf.social.post", "channel_id", string="Posts")
+    post_count = fields.Integer(string="Posts", compute="_compute_post_count")
     body_limit = fields.Integer(
-        string="Limite de caractères", compute="_compute_limits",
+        string="Character limit", compute="_compute_limits",
     )
 
     # La langue fait partie de la clé : un même compte se tient légitimement
@@ -76,7 +76,7 @@ class SocialChannel(models.Model):
     _sql_constraints = [
         ("handle_unique_per_network_lang",
          "UNIQUE(network, handle, company_id, lang_id)",
-         "Ce pseudonyme est déjà déclaré pour ce réseau dans cette langue."),
+         "This handle is already declared for this network in this language."),
     ]
 
     @api.model
@@ -88,7 +88,7 @@ class SocialChannel(models.Model):
                 cle = nom.rsplit(".", 1)[1]
                 lib = getattr(self.env[nom], "_network_label", cle.capitalize())
                 reseaux.append((cle, lib))
-        return sorted(reseaux) or [("none", _("Aucun connecteur installé"))]
+        return sorted(reseaux) or [("none", _("No connector installed"))]
 
     def _secret_param(self):
         self.ensure_one()
@@ -136,7 +136,7 @@ class SocialChannel(models.Model):
                 "credentials_message": (message or "")[:255],
                 "last_checked": fields.Datetime.now(),
             })
-            canal.message_post(body=_("Vérification des identifiants : %s", message))
+            canal.message_post(body=_("Credentials check: %s", message))
         return True
 
     def _connector(self):

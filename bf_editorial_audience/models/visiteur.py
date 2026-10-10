@@ -31,19 +31,19 @@ class WebsiteVisitor(models.Model):
     _inherit = "website.visitor"
 
     user_agent = fields.Char(
-        string="Agent utilisateur", readonly=True, copy=False,
-        help="La chaîne déclarée par le client, gardée en clair pour pouvoir"
-             " reclasser l'historique quand un robot nouveau apparaît. Le"
-             " paramètre bf_editorial_audience.ua_retention_days règle sa"
-             " durée de conservation.",
+        string="User agent", readonly=True, copy=False,
+        help="The string declared by the client, kept in clear so the "
+             "history can be reclassified when a new bot appears. The "
+             "bf_editorial_audience.ua_retention_days parameter sets how "
+             "long it is kept.",
     )
     is_bot = fields.Boolean(
-        string="Robot déclaré", readonly=True, copy=False, index=True,
-        help="Vrai quand l'agent déclaré correspond à un robot connu. Un agent"
-             " se falsifie : ce drapeau mesure ce qui se déclare.",
+        string="Declared bot", readonly=True, copy=False, index=True,
+        help="True when the declared agent matches a known bot. An agent "
+             "can be faked: this flag measures what is declared.",
     )
     agent_family = fields.Char(
-        string="Famille d'agent", readonly=True, copy=False, index=True,
+        string="Agent family", readonly=True, copy=False, index=True,
     )
 
     # --- capture ---------------------------------------------------------

@@ -13,36 +13,35 @@ class EditorialEntry(models.Model):
     _inherit = "bf.editorial.entry"
 
     audience_ids = fields.One2many(
-        "bf.editorial.audience", "entry_id", string="Relevés d'audience",
+        "bf.editorial.audience", "entry_id", string="Audience snapshots",
     )
     audience_tracked = fields.Integer(
-        string="Vues retenues", compute="_compute_audience", store=True,
-        help="Ce qu'Odoo a tracé, une fois sa propre liste de robots"
-             " appliquée. Le brut, lui, est le compteur natif du billet.",
+        string="Tracked views", compute="_compute_audience", store=True,
+        help="What Odoo tracked, once its own bot list was applied. The "
+             "raw figure is the post's native counter.",
     )
     audience_human = fields.Integer(
-        string="Vues humaines", compute="_compute_audience", store=True,
-        help="Les vues dont le visiteur s'est déclaré navigateur. Ni les"
-             " robots, ni ceux dont l'agent n'a pas été relevé.",
+        string="Human views", compute="_compute_audience", store=True,
+        help="Views whose visitor declared itself a browser. Neither bots "
+             "nor those whose agent was not recorded.",
     )
     audience_bot = fields.Integer(
-        string="Robots passés au travers", compute="_compute_audience",
+        string="Bots that got through", compute="_compute_audience",
         store=True,
-        help="Les robots que la liste d'Odoo ne nomme pas.",
+        help="The bots Odoo's list does not name.",
     )
     audience_unknown = fields.Integer(
-        string="Vues à agent non relevé", compute="_compute_audience",
+        string="Views with an unrecorded agent", compute="_compute_audience",
         store=True,
-        help="Le seau de l'honnêteté : tout ce qu'on n'a pas su lire, y"
-             " compris toutes les visites d'avant la mise en service de la"
-             " capture.",
+        help="The honesty bucket: everything that could not be read, "
+             "including all visits from before the capture went live.",
     )
     audience_bot_share = fields.Float(
-        string="Part des robots passés au travers", compute="_compute_audience", store=True,
+        string="Share of bots that got through", compute="_compute_audience", store=True,
         digits=(5, 2), aggregator="avg",
     )
     audience_first_day = fields.Date(
-        string="Premier relevé", compute="_compute_audience", store=True,
+        string="First snapshot", compute="_compute_audience", store=True,
     )
 
     @api.depends(

@@ -20,19 +20,19 @@ class SecureTransferAudience(models.Model):
     # précisément pour pouvoir l'écrire que le pont existe (le poser dans le
     # socle aurait rendu bf_sign obligatoire pour tous les locataires).
     nda_request_id = fields.Many2one(
-        "bf.sign.request", string="Entente signée", readonly=True,
+        "bf.sign.request", string="Signed NDA", readonly=True,
         ondelete="set null", copy=False,
     )
     nda_state = fields.Selection(
         selection=[
-            ("none", "Aucune"),
-            ("pending", "À signer"),
-            ("signed", "Signée"),
-            ("refused", "Refusée"),
+            ("none", "None"),
+            ("pending", "To sign"),
+            ("signed", "Signed"),
+            ("refused", "Declined"),
         ],
-        string="Entente", compute="_compute_nda_state", store=True,
+        string="NDA", compute="_compute_nda_state", store=True,
     )
-    nda_signed_on = fields.Datetime(string="Entente signée le", readonly=True)
+    nda_signed_on = fields.Datetime(string="NDA signed on", readonly=True)
 
     @api.depends("nda_request_id.state", "transfer_id.nda_required")
     def _compute_nda_state(self):
@@ -78,10 +78,13 @@ class SecureTransferAudience(models.Model):
             return
         self.sudo().nda_signed_on = request_rec.signed_on or fields.Datetime.now()
         transfer = self.transfer_id
+        # Constaté depuis la page publique, dans la langue du visiteur ; le
+        # journal et le fil se lisent par l'expéditeur, dans la sienne.
+        lu = self.with_context(lang=transfer._nda_langue_lecteur())
         transfer._log(
             "nda_signed", actor=self.display_identity,
-            note=_("Entente de confidentialité signée — empreinte SHA-256 : %s")
-            % (request_rec.hash_signed or _("(non scellée)")),
+            note=lu.env._("NDA signed, SHA-256 fingerprint: %s",
+                          request_rec.hash_signed or lu.env._("(not sealed)")),
         )
         # L'entente signée rejoint le fil du transfert : c'est là que
         # l'expéditeur ira la chercher, pas dans une autre application.
@@ -93,9 +96,8 @@ class SecureTransferAudience(models.Model):
                     attachments |= att.sudo().copy({
                         "res_model": transfer._name, "res_id": transfer.id})
             transfer.sudo().message_post(
-                body=_("Entente de confidentialité signée par %(who)s "
-                       "(demande %(ref)s).",
-                       who=self.display_identity, ref=request_rec.name),
+                body=lu.env._("NDA signed by %(who)s (request %(ref)s).",
+                              who=self.display_identity, ref=request_rec.name),
                 attachment_ids=attachments.ids)
         except Exception:  # noqa: BLE001 — la preuve est déjà au journal
             _logger.exception(
@@ -131,7 +133,7 @@ class SecureTransferAudience(models.Model):
             # cette même adresse. Un second code ici n'ajouterait aucune preuve
             # et coûterait un abandon sur deux.
             "require_signer_otp": False,
-            "title": _("Entente de confidentialité — %s")
+            "title": _("NDA: %s")
             % (transfer.subject or transfer.name),
             "signing_order": "parallel",
         }
@@ -152,9 +154,12 @@ class SecureTransferAudience(models.Model):
         # courriels dont aucun n'était demandé.
         request_rec.with_context(st_nda_silent=True).action_send()
         self.sudo().nda_request_id = request_rec.id
+        # Le titre de la demande suit le visiteur, qui la signe ; la note du
+        # journal suit l'expéditeur, qui la lit.
+        lu = self.with_context(lang=transfer._nda_langue_lecteur())
         transfer._log(
             "nda_requested", actor=self.display_identity, ip=ip, ua=ua,
-            note=_("Entente de confidentialité à signer (%s)") % request_rec.name)
+            note=lu.env._("NDA to sign (%s)", request_rec.name))
         return request_rec
 
     def _nda_signing_url(self, ip=None, ua=None):

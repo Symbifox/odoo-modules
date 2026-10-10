@@ -13,30 +13,30 @@ class SecureTransferBrand(models.Model):
     _inherit = "secure.transfer.brand"
 
     nda_required = fields.Boolean(
-        string="Exiger une entente de confidentialité",
+        string="Require an NDA",
         default=False,
-        help="Valeur par défaut des nouveaux transferts de cette marque. "
-             "Chaque envoi peut la retenir ou l'écarter.",
+        help="Default value for new transfers of this brand. Each sending "
+             "can keep it or drop it.",
     )
     nda_document = fields.Binary(
-        string="Entente (PDF)", attachment=True,
-        help="Le document que chaque visiteur devra signer avant d'accéder au "
-             "contenu. Une demande de signature distincte est créée pour "
-             "chacun, à son nom.",
+        string="NDA (PDF)", attachment=True,
+        help="The document each visitor must sign before accessing the "
+             "content. A separate signature request is created for each "
+             "of them, in their name.",
     )
-    nda_filename = fields.Char(string="Nom du fichier")
+    nda_filename = fields.Char(string="File name")
     nda_field_template_id = fields.Many2one(
         "bf.sign.field.template",
-        string="Gabarit de pavés",
+        string="Signature field template",
         ondelete="restrict",
-        help="Position des pavés de signature sur l'entente. Facultatif : sans "
-             "gabarit, la signature est valide et certifiée, mais elle n'est "
-             "pas dessinée sur les pages du document.",
+        help="Position of the signature fields on the NDA. Optional: "
+             "without a template, the signature is valid and certified, "
+             "but it is not drawn on the document's pages.",
     )
     nda_consent_text = fields.Text(
-        string="Texte de consentement",
-        help="Phrase que le signataire coche avant de signer. Vide = le texte "
-             "par défaut de bf_sign.",
+        string="Consent text",
+        help="Sentence the signer checks before signing. Empty = the "
+             "bf_sign default text.",
     )
 
     @api.constrains("nda_required", "nda_document")
@@ -46,8 +46,8 @@ class SecureTransferBrand(models.Model):
         for rec in self:
             if rec.nda_required and not rec.nda_document:
                 raise ValidationError(_(
-                    "« %s » exige une entente de confidentialité, mais aucun "
-                    "document n'est téléversé : les visiteurs resteraient "
-                    "bloqués devant une entente inexistante.",
+                    "\"%s\" requires an NDA, but no document is uploaded: "
+                    "visitors would be stuck in front of an NDA that does "
+                    "not exist.",
                     rec.display_name,
                 ))

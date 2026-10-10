@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import publicWidget from "@web/legacy/js/public/public_widget";
+import { _t } from "@web/core/l10n/translation";
 import "@survey/js/survey_form";
 
 // Collect uploaded attachment ids and inject them into submit params under the
@@ -56,14 +57,20 @@ publicWidget.registry.BfSurveyFileUpload = publicWidget.Widget.extend({
 
     _validateLocal: function (file) {
         if (file.size > this.maxSizeMb * 1024 * 1024) {
-            return `Le fichier « ${file.name} » dépasse ${this.maxSizeMb} Mo.`;
+            return _t('The file "%(name)s" exceeds %(max)s MB.', {
+                name: file.name,
+                max: this.maxSizeMb,
+            });
         }
         if (this.allowedExts.length) {
             const ext = file.name.includes(".")
                 ? file.name.split(".").pop().toLowerCase()
                 : "";
             if (!this.allowedExts.includes(ext)) {
-                return `Le format « .${ext || "?"} » n'est pas accepté. Formats : ${this.allowedExts.join(", ")}.`;
+                return _t('The ".%(ext)s" format is not accepted. Formats: %(formats)s.', {
+                    ext: ext || "?",
+                    formats: this.allowedExts.join(", "),
+                });
             }
         }
         return null;
@@ -92,7 +99,7 @@ publicWidget.registry.BfSurveyFileUpload = publicWidget.Widget.extend({
                     this._addAttachment(att);
                 }
             } catch (e) {
-                this._showError(e.message || "Échec du téléversement.");
+                this._showError(e.message || _t("Upload failed."));
             }
         }
         // Reset input so re-selecting the same file fires change
@@ -110,7 +117,7 @@ publicWidget.registry.BfSurveyFileUpload = publicWidget.Widget.extend({
         });
         const data = await resp.json().catch(() => ({}));
         if (!resp.ok) {
-            throw new Error(data.message || `Erreur ${resp.status}`);
+            throw new Error(data.message || _t("Error %s", resp.status));
         }
         const atts = data.attachments || [];
         return atts[0];

@@ -10,7 +10,7 @@
         <!-- ⚠️ Les deux travaux périodiques sont livrés ÉTEINTS. Une diffusion
              qui part toute seule est une décision d'exploitation. -->
         <record id="cron_send_scheduled" model="ir.cron">
-            <field name="name">Atelier éditorial : diffusions sociales dues</field>
+            <field name="name">Editorial workshop: social posts due</field>
             <field name="model_id" ref="model_bf_social_post"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_scheduled()</field>
@@ -21,7 +21,7 @@
             <field name="active" eval="False"/>
         </record>
         <record id="cron_fetch_metrics" model="ir.cron">
-            <field name="name">Atelier éditorial : mesures des billets sociaux</field>
+            <field name="name">Editorial workshop: social post metrics</field>
             <field name="model_id" ref="model_bf_social_post"/>
             <field name="state">code</field>
             <field name="code">model._cron_fetch_metrics()</field>

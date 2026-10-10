@@ -8,8 +8,8 @@
             <button t-if="bfNombreVersions(attachment)"
                     class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 border-0 bg-300 o_bf_av_bouton"
                     t-on-click.stop="() => this.bfOuvrirVersions(attachment)"
-                    t-attf-title="Versions conservées : {{ bfNombreVersions(attachment) }}">
-                <i class="fa fa-history" role="img" aria-label="Versions conservées"/>
+                    t-att-title="bfTitreVersions(attachment)">
+                <i class="fa fa-history" role="img" aria-label="Kept versions"/>
             </button>
         </xpath>
     </t>

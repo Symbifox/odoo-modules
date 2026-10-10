@@ -17,7 +17,7 @@
                 <!-- Le titre ne dit rien du contenu : il s'affiche dans l'onglet
                      et dans l'historique du navigateur, bien avant que quoi que
                      ce soit ait été accordé. -->
-                <title>Entente de confidentialité — <t t-esc="visuals['name']"/></title>
+                <title t-esc="page_title"/>
                 <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
                 <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
                 <t t-call="bf_securetransfer.brand_style"/>
@@ -32,52 +32,40 @@
 
                     <section class="st-card st-gate">
                         <span class="st-gate-icon" aria-hidden="true">&#128220;</span>
-                        <h1 class="st-title">Entente de confidentialité</h1>
+                        <h1 class="st-title">Non-disclosure agreement</h1>
 
                         <t t-if="nda_state == 'no_identity'">
-                            <p>Votre session ne porte plus d'identité confirmée —
-                                elle a peut-être expiré, ou vous avez changé de
-                                navigateur.</p>
-                            <p class="st-field-hint">Reprenez à l'étape du code :
-                                votre identité doit être confirmée avant que
-                                l'entente puisse être établie à votre nom.</p>
+                            <p>Your session no longer carries a confirmed identity: it may have expired, or you switched browsers.</p>
+                            <p class="st-field-hint">Go back to the code step: your identity must be confirmed before the agreement can be drawn up in your name.</p>
                             <a class="st-btn st-btn-primary" t-attf-href="/s/#{token}">
-                                Recommencer</a>
+                                Start over</a>
                         </t>
                         <t t-elif="nda_state == 'refused'">
-                            <p>Vous avez décliné cette entente. L'accès au contenu
-                                reste fermé.</p>
-                            <p class="st-field-hint">Si c'était une erreur,
-                                communiquez avec la personne qui vous a transmis ce
-                                lien : elle peut vous en préparer un nouveau.</p>
+                            <p>You declined this agreement. Access to the content stays closed.</p>
+                            <p class="st-field-hint">If this was a mistake, contact the person who sent you this link: they can prepare a new one for you.</p>
                         </t>
                         <t t-else="">
-                            <p>Le contenu de ce transfert est confidentiel. Avant d'y
-                                accéder, vous devez signer l'entente ci-dessous.</p>
+                            <p>The content of this transfer is confidential. Before accessing it, you must sign the agreement below.</p>
                             <p t-if="identity_label" class="st-field-hint">
-                                Elle sera signée au nom de
-                                <strong t-esc="identity_label"/> — l'identité que vous
-                                venez de confirmer par code.
+                                It will be signed in the name of
+                                <strong t-esc="identity_label"/> (the identity you just confirmed with your code).
                             </p>
                             <div t-if="nda_error" class="st-error">
-                                L'entente n'a pas pu être préparée. Réessayez dans un
-                                instant ; si le problème persiste, prévenez l'expéditeur.
+                                The agreement could not be prepared. Try again in a moment; if the problem persists, let the sender know.
                             </div>
                             <form method="post" t-attf-action="/s/#{token}/nda/sign">
                                 <button type="submit" class="st-btn st-btn-primary">
-                                    Lire et signer l'entente
+                                    Read and sign the agreement
                                 </button>
                             </form>
-                            <p class="st-field-hint">La signature est électronique et
-                                horodatée. Vous recevrez le document signé et son
-                                certificat.</p>
+                            <p class="st-field-hint">The signature is electronic and timestamped. You will receive the signed document and its certificate.</p>
                         </t>
                     </section>
 
                     <footer class="st-footer">
                         <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>
                         <span t-if="visuals['powered_by']" class="st-powered">
-                            Propulsé par <t t-esc="visuals['powered_by_name']"/></span>
+                            Powered by <t t-esc="visuals['powered_by_name']"/></span>
                     </footer>
                 </main>
             </body>
@@ -95,10 +83,9 @@
             <t t-set="st_return" t-value="req._st_return_url()"/>
             <t t-if="st_return">
                 <p style="margin-top:22px; color:#555;">
-                    L'entente est signée : vous pouvez maintenant accéder au contenu
-                    qui vous a été transmis.
+                    The agreement is signed: you can now access the content that was sent to you.
                 </p>
-                <a class="bf-btn" t-att-href="st_return">Accéder au contenu</a>
+                <a class="bf-btn" t-att-href="st_return">Access the content</a>
             </t>
         </xpath>
     </template>

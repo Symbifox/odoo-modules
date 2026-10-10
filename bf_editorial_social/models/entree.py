@@ -9,15 +9,15 @@ class EditorialEntry(models.Model):
 
     blurb_ids = fields.One2many("bf.editorial.blurb", "entry_id", string="Blurbs")
     social_post_ids = fields.One2many(
-        "bf.social.post", "entry_id", string="Billets sociaux",
+        "bf.social.post", "entry_id", string="Social posts",
     )
     social_post_count = fields.Integer(
-        string="Diffusions", compute="_compute_social_post_count",
+        string="Publications", compute="_compute_social_post_count",
     )
     # Calcul SÉPARÉ du compteur : Odoo avertit à chaque chargement du registre
     # quand une même méthode calcule des champs de « store » différents.
     last_social_date = fields.Datetime(
-        string="Dernière diffusion", compute="_compute_last_social_date", store=True,
+        string="Last published", compute="_compute_last_social_date", store=True,
     )
 
     @api.depends("social_post_ids.state")
@@ -37,7 +37,7 @@ class EditorialEntry(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Diffusions"),
+            "name": _("Publications"),
             "res_model": "bf.social.post",
             "view_mode": "list,form",
             "domain": [("entry_id", "=", self.id)],

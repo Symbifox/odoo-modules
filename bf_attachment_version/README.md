@@ -65,6 +65,10 @@ set a flag, but the path is an observable fact.
 35 tests, including an adversarial pass: each guarantee was removed from the code
 in turn and the suite went red every time.
 
+## Languages (v18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The title of the versions button on an attachment card is translated. On upgrade, the purge scheduled action is renamed unless its name was edited by hand.
+
 ## Licence
 
 BUSL-1.1, converting to LGPL-3.0-or-later on 2030-09-02. Internal production use
