@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox Corporate Governance',
-    'version': '18.0.1.1.0',
+    'version': '18.0.1.1.1',
     'category': 'Services/Project',
     'summary': 'Résolutions, registres corporatifs et calendrier de conformité',
     'description': """

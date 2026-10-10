@@ -144,7 +144,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.1.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.1.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
-| `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.0 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
+| `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.1 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.1.1 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_credit_identity` | Credit & Identity | 18.0.1.0.1 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
 | `bf_cx` | Expérience client | 18.0.1.13.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
@@ -386,7 +386,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
 | `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.0 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
-| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.4.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.5.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 <!-- MODULES_TABLE:END -->
 
 ## Installation

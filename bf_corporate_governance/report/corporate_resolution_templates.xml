@@ -37,8 +37,12 @@
                      Lire report_brand_* directement lève une AttributeError
                      chez un locataire sans bluefox_branding, qui n'est PAS une
                      dépendance déclarée : la garde « company and company.champ »
-                     protège d'une société absente, pas d'un champ absent. -->
-                <t t-set="marque" t-value="env.company._pkm_brand() if env.company else {}"/>
+                     protège d'une société absente, pas d'un champ absent.
+                     La société est celle de la résolution, pas celle de la
+                     session : sinon la palette d'une autre société
+                     habille un logo et un nom qui ne sont pas les siens. -->
+                <t t-set="societe" t-value="doc.company_id or env.company"/>
+                <t t-set="marque" t-value="societe._pkm_brand() if societe else {}"/>
                 <t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
                 <t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">

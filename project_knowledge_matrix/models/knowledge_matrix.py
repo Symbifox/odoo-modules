@@ -225,11 +225,49 @@ class KnowledgeMatrix(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Set project from context if not provided."""
+        """Set project from context if not provided.
+
+        Sans société explicite, la matrice prend celle de son projet plutôt que
+        celle de la session : c'est elle qui habille ses courriels et son PDF.
+        """
         for vals in vals_list:
             if not vals.get('project_id') and self.env.context.get('default_project_id'):
                 vals['project_id'] = self.env.context['default_project_id']
+            if vals.get('project_id') and 'company_id' not in vals:
+                societe = self.env['project.project'].browse(vals['project_id']).company_id
+                if societe:
+                    vals['company_id'] = societe.id
         return super().create(vals_list)
+
+    def write(self, vals):
+        """Un changement de projet aligne la société, sauf si elle est fournie.
+
+        Seules les matrices qui CHANGENT de projet sont alignées : réécrire le même
+        projet (import, modification en masse) garde une société posée exprès.
+        """
+        if vals.get('project_id') and 'company_id' not in vals:
+            societe = self.env['project.project'].browse(vals['project_id']).company_id
+            deplacees = self.filtered(lambda m: m.project_id.id != vals['project_id'])
+            if societe and deplacees:
+                super(KnowledgeMatrix, deplacees).write(dict(vals, company_id=societe.id))
+                return super(KnowledgeMatrix, self - deplacees).write(vals)
+        return super().write(vals)
+
+    @api.onchange('project_id')
+    def _onchange_project_id_company(self):
+        if self.project_id.company_id:
+            self.company_id = self.project_id.company_id
+
+    def _pkm_company(self):
+        """Société dont la matrice porte la marque : son champ Société, à défaut
+        celle du projet, à défaut celle de la session.
+
+        Courriel (bouton et envoi planifié) et PDF passent tous par ici. Lire
+        `env.company` à la place peignait la matrice d'une société aux couleurs
+        de la première société de la session.
+        """
+        self.ensure_one()
+        return self.company_id or self.project_id.company_id or self.env.company
 
     # === PDF Report sending ===
 
@@ -284,7 +322,7 @@ class KnowledgeMatrix(models.Model):
                 'res_id': matrix.id,
             })
 
-            company = matrix.project_id.company_id or self.env.company
+            company = matrix._pkm_company()
             # Build branded body
             progress = "%.0f" % matrix.progress
             inner_html = (

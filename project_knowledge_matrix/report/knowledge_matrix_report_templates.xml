@@ -9,8 +9,11 @@
                      Lire report_brand_* directement lève une AttributeError
                      chez un locataire sans bluefox_branding, qui n'est PAS une
                      dépendance déclarée : la garde « company and company.champ »
-                     protège d'une société absente, pas d'un champ absent. -->
-                <t t-set="marque" t-value="env.company._pkm_brand() if env.company else {}"/>
+                     protège d'une société absente, pas d'un champ absent.
+                     La société est celle de la matrice, pas celle de la session
+                     : palette, logo et nom suivent la même. -->
+                <t t-set="societe" t-value="doc._pkm_company()"/>
+                <t t-set="marque" t-value="societe._pkm_brand() if societe else {}"/>
                 <t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
                 <t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
@@ -254,7 +257,7 @@
                         <!-- Dark banner header -->
                         <div class="km-banner">
                             <div class="banner-logo">
-                                <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
+                                <img t-if="societe.logo" t-att-src="image_data_uri(societe.logo)" alt="Logo"/>
                             </div>
                             <div class="banner-content">
                                 <div class="doc-type">Rapport</div>
@@ -384,7 +387,7 @@
                         <!-- Footer -->
                         <div class="km-footer">
                             <div class="km-footer-left">
-                                <t t-out="doc.company_id.name"/>
+                                <t t-out="societe.name"/>
                             </div>
                             <div class="km-footer-right">
                                 Matrice de connaissances &#8212; Document confidentiel

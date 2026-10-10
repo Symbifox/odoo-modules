@@ -194,6 +194,21 @@ and leaves a body rebuilt by hand as it is. Where the templates are not
 layout field, so a refused language would be dressed twice; the log says so. No
 stored body met so far triggers this case.
 
+### Company of the Matrix (13.5.0)
+
+On a database with several companies, the report email and its PDF wear the
+identity of the matrix's own company: its Company field, else its project's
+company, else the session's. Colours, logo, name and footer follow it, through
+the wizard and the scheduled report alike. Before 13.5.0 they followed the first
+company of the user's session, so a matrix of a secondary company went out
+dressed as the main one, and its PDF mixed that company's logo with the
+session's palette. The sender and Reply-To addresses do not change.
+
+A matrix created on a project takes that project's company when none is given,
+and moving a matrix to another project aligns its company the same way; a
+company chosen explicitly is kept, including when the same project is written
+again (an import, a bulk edit).
+
 ### Automatic Follow-up Activities
 
 Daily cron job creates Odoo activities to keep matrix items on track:

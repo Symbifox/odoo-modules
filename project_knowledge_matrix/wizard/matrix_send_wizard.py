@@ -102,8 +102,10 @@ class MatrixSendWizard(models.TransientModel):
         return records
 
     def _wrap_branded_body(self, inner_html):
-        """Habille le message de la mise en page commune, aux couleurs de la société."""
-        return render_branded_body(self.env.company, inner_html, record=self.matrix_id)
+        """Habille le message de la mise en page commune, aux couleurs de la société
+        de la matrice (pas celle de la session, voir `_pkm_company`)."""
+        return render_branded_body(
+            self.matrix_id._pkm_company(), inner_html, record=self.matrix_id)
 
     def action_preview_pdf(self):
         """Generate PDF preview and re-open wizard with download link."""

@@ -256,6 +256,9 @@ declares, and that the resolution sequence kept counting.
 
 ## Changelog
 
+- **18.0.1.1.1**: the resolution PDF takes its palette from the resolution's
+  company, like its logo and name, rather than from the first company of the
+  user's session.
 - **18.0.1.1.0**: members' resolutions. A new resolution type for resolutions
   adopted at a members' meeting of a non-profit or an association, with its
   PDF header (« Résolution de l'assemblée des membres ») and signature heading

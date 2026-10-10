@@ -492,3 +492,30 @@ class TestCorporateSignatories(TransactionCase):
             actionnaire.write({'resolution_id': membres.id})
         with self.assertRaises(ValidationError):
             conseil.write({'resolution_type': 'members'})
+
+
+class TestResolutionBrand(TransactionCase):
+    """Le PDF d'une résolution porte la marque de SA société.
+
+    La palette se lisait sur ``env.company``, la première société de la session,
+    pendant que le logo et le nom venaient de la résolution : une résolution d'une
+    autre société sortait avec son logo sur les couleurs de la session.
+    """
+
+    def test_the_pdf_wears_the_palette_of_the_resolution_company(self):
+        session = self.env['res.company'].create({'name': 'Société de la session'})
+        autre = self.env['res.company'].create({'name': 'Société de la résolution'})
+        for societe, primaire, sombre in ((session, '#0A64A0', '#0B1F33'), (autre, '#E17A4B', '#2A1F1D')):
+            societe.write({champ: valeur for champ, valeur in (
+                ('report_brand_primary', primaire), ('primary_color', primaire),
+                ('report_brand_dark', sombre), ('secondary_color', sombre)) if champ in societe._fields})
+        env = self.env(context=dict(self.env.context, allowed_company_ids=[session.id, autre.id]))
+        resolution = env['corporate.resolution'].create({
+            'name': 'Résolution d\'essai', 'resolution_type': 'board',
+            'meeting_date': fields.Date.today(), 'company_id': autre.id})
+        rendu, _type = env['ir.actions.report']._render_qweb_html(
+            'bf_corporate_governance.action_report_corporate_resolution', resolution.ids)
+        rendu = rendu.decode().lower()
+        self.assertIn('#2a1f1d', rendu, 'palette de la résolution')
+        self.assertNotIn('#0b1f33', rendu, 'palette de la session')
+        self.assertNotIn('#0a64a0', rendu, 'palette de la session')
