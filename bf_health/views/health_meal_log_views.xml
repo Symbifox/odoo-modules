@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List (editable) -->
+    <record id="health_meal_log_view_list" model="ir.ui.view">
+        <field name="name">health.meal.log.list</field>
+        <field name="model">health.meal.log</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="date desc">
+                <field name="date"/>
+                <field name="meal_type"/>
+                <field name="food_id"/>
+                <field name="servings"/>
+                <field name="calories" sum="Total"/>
+                <field name="protein_g" sum="Total"/>
+                <field name="carbs_g" sum="Total"/>
+                <field name="fat_g" sum="Total"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="health_meal_log_view_form" model="ir.ui.view">
+        <field name="name">health.meal.log.form</field>
+        <field name="model">health.meal.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="meal_type"/>
+                        <field name="food_id"/>
+                        <field name="servings"/>
+                    </group>
+                    <group string="Valeurs nutritives">
+                        <field name="calories"/>
+                        <field name="protein_g"/>
+                        <field name="carbs_g"/>
+                        <field name="fat_g"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="notes"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="health_meal_log_view_graph" model="ir.ui.view">
+        <field name="name">health.meal.log.graph</field>
+        <field name="model">health.meal.log</field>
+        <field name="arch" type="xml">
+            <graph string="Apport calorique" type="bar">
+                <field name="date" interval="day"/>
+                <field name="calories" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot -->
+    <record id="health_meal_log_view_pivot" model="ir.ui.view">
+        <field name="name">health.meal.log.pivot</field>
+        <field name="model">health.meal.log</field>
+        <field name="arch" type="xml">
+            <pivot string="Journal alimentaire">
+                <field name="date" interval="day" type="row"/>
+                <field name="meal_type" type="col"/>
+                <field name="calories" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_meal_log_view_search" model="ir.ui.view">
+        <field name="name">health.meal.log.search</field>
+        <field name="model">health.meal.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="food_id"/>
+                <field name="meal_type"/>
+                <field name="date"/>
+                <filter name="today" string="Aujourd'hui"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_week" string="Cette semaine"
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_meal" string="Repas" context="{'group_by': 'meal_type'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="health_meal_log_action" model="ir.actions.act_window">
+        <field name="name">Journal alimentaire</field>
+        <field name="res_model">health.meal.log</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="search_view_id" ref="health_meal_log_view_search"/>
+        <field name="context">{'search_default_today': 1, 'search_default_group_meal': 1}</field>
+    </record>
+
+    <record id="health_meal_log_pivot_action" model="ir.actions.act_window">
+        <field name="name">Apport calorique</field>
+        <field name="res_model">health.meal.log</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="health_meal_log_view_search"/>
+    </record>
+
+</odoo>

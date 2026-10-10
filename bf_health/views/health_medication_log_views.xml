@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List (editable) -->
+    <record id="health_medication_log_view_list" model="ir.ui.view">
+        <field name="name">health.medication.log.list</field>
+        <field name="model">health.medication.log</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="date desc, time_slot asc">
+                <field name="date"/>
+                <field name="medication_id"/>
+                <field name="time_slot"/>
+                <field name="taken" widget="boolean_toggle"/>
+                <field name="skipped_reason"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form (minimal) -->
+    <record id="health_medication_log_view_form" model="ir.ui.view">
+        <field name="name">health.medication.log.form</field>
+        <field name="model">health.medication.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="date"/>
+                    <field name="medication_id"/>
+                    <field name="time_slot"/>
+                    <field name="taken"/>
+                    <field name="skipped_reason"/>
+                    <field name="notes"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph (compliance bar) -->
+    <record id="health_medication_log_view_graph" model="ir.ui.view">
+        <field name="name">health.medication.log.graph</field>
+        <field name="model">health.medication.log</field>
+        <field name="arch" type="xml">
+            <graph string="Observance" type="bar">
+                <field name="date" interval="day"/>
+                <field name="taken" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_medication_log_view_search" model="ir.ui.view">
+        <field name="name">health.medication.log.search</field>
+        <field name="model">health.medication.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="medication_id"/>
+                <field name="date"/>
+                <filter name="today" string="Aujourd'hui" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="taken" string="Pris" domain="[('taken', '=', True)]"/>
+                <filter name="not_taken" string="Non pris" domain="[('taken', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_date" string="Date" context="{'group_by': 'date'}"/>
+                    <filter name="group_med" string="Médicament" context="{'group_by': 'medication_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="health_medication_log_action" model="ir.actions.act_window">
+        <field name="name">Médicaments du jour</field>
+        <field name="res_model">health.medication.log</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="search_view_id" ref="health_medication_log_view_search"/>
+        <field name="context">{'search_default_today': 1, 'search_default_group_date': 1}</field>
+    </record>
+
+</odoo>

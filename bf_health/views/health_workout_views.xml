@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="health_workout_view_list" model="ir.ui.view">
+        <field name="name">health.workout.list</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <list default_order="date desc">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="activity_type"/>
+                <field name="duration_min" sum="Total"/>
+                <field name="distance_km" sum="Total"/>
+                <field name="elevation_m"/>
+                <field name="calories_burned" sum="Total"/>
+                <field name="avg_heart_rate"/>
+                <field name="perceived_effort"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="health_workout_view_form" model="ir.ui.view">
+        <field name="name">health.workout.form</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Titre de la séance"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Séance">
+                            <field name="activity_type"/>
+                            <field name="date"/>
+                            <field name="duration_min"/>
+                            <field name="distance_km"/>
+                            <field name="elevation_m"/>
+                        </group>
+                        <group string="Effort">
+                            <field name="calories_burned"/>
+                            <field name="avg_heart_rate"/>
+                            <field name="max_heart_rate"/>
+                            <field name="perceived_effort"/>
+                            <field name="avg_pace_min_km"/>
+                            <field name="avg_speed_kmh"/>
+                        </group>
+                    </group>
+                    <group string="Import GPX">
+                        <field name="gpx_file" filename="gpx_filename"/>
+                        <field name="gpx_filename" invisible="1"/>
+                        <!-- L'avis à l'import. -->
+                        <div class="text-muted small" colspan="2">
+                            Healthy Fox lit la trace à l'enregistrement et n'en garde que la
+                            distance, le dénivelé et la durée. Le fichier lui-même est jeté :
+                            il révèle souvent votre point de départ, comme votre domicile.
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="health_workout_view_graph" model="ir.ui.view">
+        <field name="name">health.workout.graph</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <graph string="Entraînement" type="bar">
+                <field name="date" interval="week"/>
+                <field name="activity_type"/>
+                <field name="distance_km" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Calendar -->
+    <record id="health_workout_view_calendar" model="ir.ui.view">
+        <field name="name">health.workout.calendar</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <calendar string="Entraînement" date_start="date" color="activity_type" mode="month">
+                <field name="name"/>
+                <field name="distance_km"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Pivot -->
+    <record id="health_workout_view_pivot" model="ir.ui.view">
+        <field name="name">health.workout.pivot</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <pivot string="Entraînement">
+                <field name="date" interval="month" type="row"/>
+                <field name="activity_type" type="col"/>
+                <field name="distance_km" type="measure"/>
+                <field name="duration_min" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_workout_view_search" model="ir.ui.view">
+        <field name="name">health.workout.search</field>
+        <field name="model">health.workout</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="activity_type"/>
+                <field name="date"/>
+                <filter name="this_week" string="Cette semaine"
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_month" string="Ce mois"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_type" string="Type d'activité" context="{'group_by': 'activity_type'}"/>
+                    <filter name="group_month" string="Mois" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="health_workout_action" model="ir.actions.act_window">
+        <field name="name">Entraînement</field>
+        <field name="res_model">health.workout</field>
+        <field name="view_mode">list,calendar,graph,pivot,form</field>
+        <field name="search_view_id" ref="health_workout_view_search"/>
+    </record>
+
+</odoo>

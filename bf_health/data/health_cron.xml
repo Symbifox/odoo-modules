@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="ir_cron_check_screenings" model="ir.cron">
+            <field name="name">Santé : vérifier les examens à venir</field>
+            <field name="model_id" ref="model_health_screening"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_screenings()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_check_renewals" model="ir.cron">
+            <field name="name">Santé : vérifier les renouvellements de prescription</field>
+            <field name="model_id" ref="model_health_medication"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_renewals()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_check_lab_tests" model="ir.cron">
+            <field name="name">Santé : vérifier les analyses de labo</field>
+            <field name="model_id" ref="model_health_lab_test"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_lab_tests()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_create_daily_med_logs" model="ir.cron">
+            <field name="name">Santé : créer les entrées de médicaments du jour</field>
+            <field name="model_id" ref="model_health_medication"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_create_daily_med_logs()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_check_reduction_steps" model="ir.cron">
+            <field name="name">Santé : vérifier les étapes de réduction</field>
+            <field name="model_id" ref="model_health_reduction_step"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_reduction_steps()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

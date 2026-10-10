@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_share_line_list" model="ir.ui.view">
+        <field name="name">personal.budget.share.line.list</field>
+        <field name="model">personal.budget.share.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="sequence, id">
+                <field name="sequence" widget="handle"/>
+                <field name="date"/>
+                <field name="description"/>
+                <field name="amount" sum="Total"/>
+                <field name="running_balance" readonly="1"/>
+                <field name="book_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_share_line_form" model="ir.ui.view">
+        <field name="name">personal.budget.share.line.form</field>
+        <field name="model">personal.budget.share.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="date"/>
+                            <field name="book_id"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                            <field name="amount"/>
+                            <field name="running_balance"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_share_line_search" model="ir.ui.view">
+        <field name="name">personal.budget.share.line.search</field>
+        <field name="model">personal.budget.share.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="description"/>
+                <field name="book_id"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_book" string="Budget" context="{'group_by': 'book_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_share_line" model="ir.actions.act_window">
+        <field name="name">Sharing ledger</field>
+        <field name="res_model">personal.budget.share.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_share_line_search"/>
+    </record>
+</odoo>

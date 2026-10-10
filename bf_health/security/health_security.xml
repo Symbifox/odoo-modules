@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_health" model="ir.module.category">
+        <field name="name">Santé</field>
+        <field name="description">Suivi de la santé personnelle</field>
+        <field name="sequence">90</field>
+    </record>
+
+    <record id="group_health_user" model="res.groups">
+        <field name="name">Utilisateur santé</field>
+        <field name="category_id" ref="module_category_health"/>
+        <field name="comment">Accès complet au suivi de santé personnel</field>
+    </record>
+
+    <!-- Record rules: each user sees only their own records -->
+
+    <record id="health_medication_rule" model="ir.rule">
+        <field name="name">Médicaments : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_medication"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_medication_log_rule" model="ir.rule">
+        <field name="name">Journal médicaments : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_medication_log"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_vital_rule" model="ir.rule">
+        <field name="name">Signes vitaux : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_vital"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_lab_test_rule" model="ir.rule">
+        <field name="name">Analyses labo : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_lab_test"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_symptom_log_rule" model="ir.rule">
+        <field name="name">Symptômes : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_symptom_log"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_condition_rule" model="ir.rule">
+        <field name="name">Conditions : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_condition"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_substance_log_rule" model="ir.rule">
+        <field name="name">Consommation : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_substance_log"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_reduction_step_rule" model="ir.rule">
+        <field name="name">Réduction : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_reduction_step"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_screening_rule" model="ir.rule">
+        <field name="name">Examens : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_screening"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_workout_rule" model="ir.rule">
+        <field name="name">Entraînement : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_workout"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_food_rule" model="ir.rule">
+        <field name="name">Aliments : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_food"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_meal_log_rule" model="ir.rule">
+        <field name="name">Journal alimentaire : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_meal_log"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <record id="health_nutrition_goal_rule" model="ir.rule">
+        <field name="name">Objectif nutritionnel : ses propres enregistrements</field>
+        <field name="model_id" ref="model_health_nutrition_goal"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <!-- Journal d'humeur. Règles GLOBALES (sans groupe) : elles
+         s'appliquent à tout le monde, administrateurs compris. Une règle de
+         groupe se contourne en s'ajoutant un groupe ; une règle globale, non.
+         Seul le superutilisateur (crons, coquille, base) y échappe. -->
+    <record id="health_mood_entry_rule_global" model="ir.rule">
+        <field name="name">Humeur : à la personne seule, administrateurs compris</field>
+        <field name="model_id" ref="model_health_mood_entry"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="health_mood_activity_rule_global" model="ir.rule">
+        <field name="name">Activités d'humeur : à la personne seule, administrateurs compris</field>
+        <field name="model_id" ref="model_health_mood_activity"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="health_mood_settings_rule_global" model="ir.rule">
+        <field name="name">Journal d'humeur : à la personne seule, administrateurs compris</field>
+        <field name="model_id" ref="model_health_mood_settings"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <!-- Les assistants de saisie ne sont PAS isolés d'office par
+         Odoo 18 (mesuré au banc : B relisait l'assistant de A). L'assistant
+         porte l'humeur et les signes vitaux avant l'enregistrement. -->
+    <record id="health_daily_log_wizard_rule_global" model="ir.rule">
+        <field name="name">Saisie rapide : à la personne seule</field>
+        <field name="model_id" ref="model_health_daily_log_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="health_daily_log_wizard_med_line_rule_global" model="ir.rule">
+        <field name="name">Saisie rapide, médicaments : à la personne seule</field>
+        <field name="model_id" ref="model_health_daily_log_wizard_med_line"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="health_daily_log_wizard_meal_line_rule_global" model="ir.rule">
+        <field name="name">Saisie rapide, repas : à la personne seule</field>
+        <field name="model_id" ref="model_health_daily_log_wizard_meal_line"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="health_mood_report_wizard_rule_global" model="ir.rule">
+        <field name="name">Rapport d'humeur : à la personne seule</field>
+        <field name="model_id" ref="model_health_mood_report_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+</odoo>

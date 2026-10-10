@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="module_category_budget" model="ir.module.category">
+            <field name="name">Budget</field>
+            <field name="description">Personal Budget</field>
+            <field name="sequence">91</field>
+        </record>
+
+        <record id="group_budget_user" model="res.groups">
+            <field name="name">Budget user</field>
+            <field name="category_id" ref="module_category_budget"/>
+            <field name="comment">Full access to the personal budget (each person only sees their own budgets and the ones shared with them).</field>
+        </record>
+    </data>
+</odoo>

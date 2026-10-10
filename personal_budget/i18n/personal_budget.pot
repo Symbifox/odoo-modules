@@ -1,0 +1,1974 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* personal_budget
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 00:16+0000\n"
+"PO-Revision-Date: 2026-10-10 00:16+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "  ... and %s more"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "  ... and %s more errors"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "  transfer skipped: %(date)s %(name)s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "  ⚠ %s warning(s)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/recurring.py:0
+msgid "\"%s\" has no payment left to record."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__month_number
+msgid "# month"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__month_number
+msgid "# month (absolute)"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__contributor_percent
+msgid "% contributor"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__self_percent
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__self_percent
+msgid "% me"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid ""
+"%(created)s created, %(reconciled)s reconciled (legacy), %(dup)s duplicate "
+"FITID(s) skipped,"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid ""
+"%(label)s: %(count)s transaction(s) — %(created)s created, %(reconciled)s "
+"reconciled"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid ""
+"%(payment)s CC payment(s) skipped, %(transfer)s transfer(s) skipped, "
+"%(floor)s before the floor date."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "%d monthly lines added."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "%s error(s):"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "%s record(s) created."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/recurring.py:0
+msgid "%s transaction(s) created."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "(no date)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "+ Transaction"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_plan__month
+msgid ""
+"0 = lump-sum annual amount (spread /12). 1-12 = amount for that specific "
+"month."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "=== Detail ==="
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "=== Summary ==="
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid ""
+"A budget can only be shared with people who have an internal account in this"
+" database."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.constraint,message:personal_budget.constraint_personal_budget_category_unique_name_type
+msgid "A category with this name and type already exists in this budget."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "A person has only one default budget."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.constraint,message:personal_budget.constraint_personal_budget_plan_unique_year_month_category
+msgid "A plan for this category, year and month already exists."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/recurring.py:0
+msgid "A recurring expense belongs in an expense category."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_transaction__month_number
+msgid "Absolute month since January 2013 (for sorting/pivot)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Account %(account)s (%(kind)s)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid ""
+"Account %(account)s (%(kind)s, %(currency)s) — %(count)s transaction(s) "
+"%(span)s"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__account_ref
+msgid "Account (ref.)"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__active
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__active
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__active
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__active
+msgid "Active"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.actions.act_window,help:personal_budget.action_budget_recurring
+msgid "Add a subscription or a recurring expense"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__amount
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__amount
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__amount
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__amount
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_quick_form
+msgid "Amount"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_analysis
+#: model:ir.ui.menu,name:personal_budget.menu_budget_analysis
+msgid "Analysis"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "Annual"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+msgid "Annual lines"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_bulk_category_form
+msgid "Apply"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Apr"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "April"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_form
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid "Archived"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_search
+msgid "Archived budgets"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+msgid "Archived expenses"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_bulk_category
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_bulk_category_form
+msgid "Assign a category"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_bulk_category
+msgid "Assign a category to several transactions"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Aug"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "August"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Balance"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__bank_label
+msgid "Bank label"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_book
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book_mixin__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__book_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__book_id
+#: model:ir.module.category,name:personal_budget.module_category_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_share_line_search
+msgid "Budget"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_analysis
+msgid "Budget analysis"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_category
+msgid "Budget category"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_dashboard
+msgid "Budget dashboard"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_pivot
+msgid "Budget grid month × category"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_book_mixin
+msgid "Budget ownership"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_plan
+msgid "Budget plan"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_plan
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__plan
+#: model:ir.ui.menu,name:personal_budget.menu_budget_plan
+msgid "Budget plans"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_import_wizard__book_id
+msgid ""
+"Budget receiving the import. Categories are looked up and created in this "
+"budget only."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Budget shown"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_transaction
+msgid "Budget transaction"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_book__is_default
+msgid "Budget used by default for the owner's new entries."
+msgstr ""
+
+#. module: personal_budget
+#: model:res.groups,name:personal_budget.group_budget_user
+msgid "Budget user"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.server,name:personal_budget.ir_cron_post_due_recurring_ir_actions_server
+msgid "Budget: record due recurring expenses"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_book
+msgid "Budgets"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.ui.menu,name:personal_budget.menu_budget_book
+msgid "Budgets and sharing"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "CC refunds created as income (%s): "
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "CSV import"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_import_wizard
+msgid "CSV import wizard"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_bulk_category_form
+msgid "Cancel"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__is_cashed
+msgid "Cashed"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_cheque_search
+msgid "Cashed cheques"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_category
+#: model:ir.ui.menu,name:personal_budget.menu_budget_category
+msgid "Categories"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__category_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__category_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__category_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__category_id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__category_id
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Category"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_cheque
+msgid "Cheque"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_cheque
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__cheque
+#: model:ir.ui.menu,name:personal_budget.menu_budget_cheque
+msgid "Cheques"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_import_wizard_form
+msgid "Close"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__delimiter__,
+msgid "Comma (,)"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__comments
+msgid "Comments"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__company_label
+msgid "Company"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.ui.menu,name:personal_budget.menu_budget_config_parent
+msgid "Configuration"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_contributor
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__contributor_id
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Contributor"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_contributor
+#: model:ir.ui.menu,name:personal_budget.menu_budget_contributor
+msgid "Contributors"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__is_duplicate
+msgid "Copy"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_form
+msgid "Couple budget, Cottage, Holidays…"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.actions.act_window,help:personal_budget.action_budget_book
+msgid "Create a budget"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__create_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__create_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_form
+msgid ""
+"Creates the 12 monthly lines with annual amount/12 as a starting point."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid ""
+"Creates the transaction for the next payment, even if it is not due yet."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__current_balance
+msgid "Current balance"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__partner_name
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_search
+msgid "Customer"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.actions.client,name:personal_budget.action_budget_dashboard
+#: model:ir.ui.menu,name:personal_budget.menu_budget_dashboard
+msgid "Dashboard"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__date
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_search
+msgid "Date"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Dec"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "December"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__is_default
+msgid "Default"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__is_default
+msgid "Default budget"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__delimiter
+msgid "Delimiter"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__description
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__description
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__description
+msgid "Description"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__details
+msgid "Details"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__display_name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__due_date
+msgid "Due date"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.actions.act_window,help:personal_budget.action_budget_book
+msgid ""
+"Each person has a budget of their own. A couple or household budget is "
+"created here, then shared with the people you choose."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_quick_add_expense
+#: model:ir.ui.menu,name:personal_budget.menu_budget_quick_add_expense
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_quick_form
+msgid "Enter a transaction"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Error while loading budgets"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Error while loading the dashboard"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Error while loading years"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_recurring__auto_post
+msgid "Every day, due payments are turned into transactions automatically."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__semiannual
+msgid "Every six months"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__biweekly
+msgid "Every two weeks"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_analysis__category_type__expense
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_category__category_type__expense
+msgid "Expense"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Expenses"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Expenses:"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__fitid
+msgid "FITID"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "FITID %(fitid)s (%(date)s): %(error)s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid ""
+"FITID %(fitid)s: several tied candidates, chose id=%(id)s (%(details)s)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Feb"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "February"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__csv_file
+msgid "File"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__csv_filename
+msgid "File name"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.ui.menu,name:personal_budget.menu_budget_finance_parent
+msgid "Finances"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__date_start
+msgid "First payment"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_list
+msgid ""
+"For each selected plan, creates the 12 monthly lines prefilled with annual "
+"amount/12."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_invoice
+msgid "Freelance invoice"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__frequency
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+msgid "Frequency"
+msgstr ""
+
+#. module: personal_budget
+#: model:res.groups,comment:personal_budget.group_budget_user
+msgid ""
+"Full access to the personal budget (each person only sees their own budgets "
+"and the ones shared with them)."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Gap"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__gross_amount
+msgid "Gross amount"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__gross_total
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_list
+msgid "Gross total"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_share_line_search
+msgid "Group by"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__is_owner
+msgid "I am the owner"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__id
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__id
+msgid "ID"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__date_floor
+msgid "Ignore before"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_import_wizard
+#: model:ir.ui.menu,name:personal_budget.menu_budget_import
+msgid "Import"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_import_wizard_form
+msgid "Import file"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__import_type
+msgid "Import type"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Income"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Income year to date"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__initial_amount
+msgid "Initial amount"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_form
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_list
+msgid "Initialise 12 months"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/ofx_parser.py:0
+msgid "Invalid OFX file: <OFX> tag not found."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__invoice_date
+msgid "Invoice date"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+#: model:ir.actions.act_window,name:personal_budget.action_budget_invoice
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__invoice
+#: model:ir.ui.menu,name:personal_budget.menu_budget_invoice
+msgid "Invoices"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Invoices (freelance)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Jan"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "January"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Jul"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "July"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Jun"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "June"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Last 180 days"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__write_uid
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__write_date
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__date_end
+msgid "Last possible payment"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__last_posted_date
+msgid "Last recorded payment"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Last year"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_recurring__date_end
+msgid "Leave empty for a subscription with no planned end."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Left to pay this year"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Line %(line)s: %(error)s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Line %(line)s: not enough columns (%(count)s)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Line %s: missing category"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Line %s: not enough columns"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__line_ids
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_loan_form
+msgid "Lines"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Loading dashboard..."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_loan
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__loan_id
+msgid "Loan"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_loan_line
+msgid "Loan line"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__loan_line
+msgid "Loan lines"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.actions.act_window,name:personal_budget.action_budget_loan
+#: model:ir.ui.menu,name:personal_budget.menu_budget_loan
+msgid "Loans"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Mar"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "March"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "May"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__memo
+msgid "Memo"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_quick_form
+msgid "Merchant / description"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__month
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__month
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__month
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Month"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__month_name
+msgid "Month (name)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Month range"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__monthly
+msgid "Monthly"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_budget_transaction_monthly
+#: model:ir.ui.menu,name:personal_budget.menu_budget_transaction_monthly
+msgid "Monthly analysis"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__monthly_amount
+msgid "Monthly equivalent"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+msgid "Monthly lines"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "Monthly lines created"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__monthly_payment
+msgid "Monthly payment"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_list
+msgid "Monthly total"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_recurring__last_posted_date
+msgid "Most recent payment already turned into a transaction."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__self_amount
+msgid "My amount"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "My budget"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_search
+msgid "My budgets"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_contributor__name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__name
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__name
+msgid "Name"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Net year to date"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_recurring__name
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid "Netflix, home insurance, mobile phone…"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+msgid "Next 30 days"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__next_date
+msgid "Next payment"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+msgid "No budget to display."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "No data available"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "No monthly line created: all 12 months already existed."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid ""
+"No recurring expense in this budget. Add your subscriptions so they count in"
+" the forecast."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_cheque_search
+msgid "Not cashed"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__notes
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__notes
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__notes
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__notes
+msgid "Notes"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Nothing due in the next 30 days."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Nov"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "November"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__number
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__invoice_number
+msgid "Number"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__ofx
+msgid "OFX / QFX statement"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/ofx_parser.py:0
+msgid "OFX file without a usable statement (no STMTRS/CCSTMTRS)."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "OFX read error: %s"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_import_wizard__date_floor
+msgid "OFX transactions before this date are ignored (optional)."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Oct"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "October"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_form
+msgid ""
+"Only you can see this budget. To make it a shared budget, add the household "
+"members you want to share it with."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_list
+msgid "Operating"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Operating 60%"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__operating_amount
+msgid "Operating amount (60%)"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_search
+msgid "Originals"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Other income"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Overall gap"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__is_overdue
+msgid "Overdue"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__user_id
+msgid "Owner"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_cheque__payee
+msgid "Payee"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_search
+msgid "Payment due"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/recurring.py:0
+msgid "Payments recorded"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_book__member_ids
+msgid ""
+"People of this database who see and edit this budget. Nobody else has "
+"access."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Per month"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.module.category,description:personal_budget.module_category_budget
+#: model:ir.ui.menu,name:personal_budget.menu_budget_root
+msgid "Personal Budget"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__self_total
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_list
+msgid "Personal total"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__planned_amount
+msgid "Planned amount"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__planned_monthly
+msgid "Planned monthly"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_list
+msgid "Planned total"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Planned:"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.ui.menu,name:personal_budget.menu_budget_plan_parent
+msgid "Planning"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Please select a target loan."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_loan_line__amount
+msgid "Positive = fees/interest, Negative = payment"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_share_line__amount
+msgid "Positive = the person owes, Negative = the person paid"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__pretax_amount
+msgid "Pre-tax amount"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__preview
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_import_wizard_form
+msgid "Preview"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "Private budget"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "Private budget entry"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Projected expenses for the year:"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__provider
+msgid "Provider"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__quarterly
+msgid "Quarterly"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Read error: %s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Recent transactions"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Reconciliation ambiguities:"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__auto_post
+msgid "Record automatically"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid "Record due payments"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid "Record the payment"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__transaction_ids
+msgid "Recorded transactions"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__is_recurring
+msgid "Recurring"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+msgid "Recurring categories"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_recurring
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__recurring_id
+msgid "Recurring expense"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_transaction__recurring_id
+msgid "Recurring expense payment that this transaction settles."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Recurring expense payments"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+#: model:ir.actions.act_window,name:personal_budget.action_budget_recurring
+#: model:ir.ui.menu,name:personal_budget.menu_budget_recurring
+msgid "Recurring expenses"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Refresh"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_list
+msgid "Reserve"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Reserve 40%"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__result
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_import_wizard_form
+msgid "Result"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Retry"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_analysis__category_type__revenue
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_category__category_type__revenue
+msgid "Revenue"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan_line__running_balance
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__running_balance
+msgid "Running balance"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "See all"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_bulk_category__transaction_count
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_bulk_category_form
+msgid "Selected transactions"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__delimiter__;
+msgid "Semicolon (;)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/js/budget_dashboard.js:0
+msgid "Sep"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/plan.py:0
+msgid "September"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__sequence
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_share_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__is_shared
+msgid "Shared"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Shared transactions"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_book__member_ids
+msgid "Shared with"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_search
+msgid "Shared with me"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.actions.act_window,name:personal_budget.action_share_line
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__share
+#: model:ir.ui.menu,name:personal_budget.menu_budget_share_line
+msgid "Sharing ledger"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model,name:personal_budget.model_personal_budget_share_line
+msgid "Sharing ledger line"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__skip_header
+msgid "Skip header"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__start_date
+msgid "Start date"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Status"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.actions.act_window,help:personal_budget.action_budget_recurring
+msgid ""
+"Streaming, insurance, mobile phone, internet: an amount, a frequency and a "
+"first payment date. The dashboard includes them in the forecast and shows "
+"what is left to pay this year."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Subscriptions and recurring expenses"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__delimiter__
+msgid "Tab"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_import_wizard__loan_id
+msgid "Target loan"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_invoice__tax_reserve
+msgid "Tax reserve (40%)"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_loan__total_months
+msgid "Term (months)"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "The %(field)s belongs to a different budget than this entry."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.constraint,message:personal_budget.constraint_personal_budget_recurring_amount_positive
+msgid "The amount of a recurring expense cannot be negative."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "The budget \"%s\" contains data: archive it instead of deleting it."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/recurring.py:0
+msgid "The last possible payment is before the first one."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.constraint,message:personal_budget.constraint_personal_budget_plan_month_range
+msgid "The month must be 0 (annual) or between 1 and 12."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid ""
+"The owner of a budget does not need to be listed among the people it is "
+"shared with."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_form
+msgid ""
+"The people added here see and edit everything in this budget: categories, "
+"transactions, plans, recurring expenses. Only the owner can change this "
+"sharing."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "The target loan belongs to a different budget than the import."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.constraint,message:personal_budget.constraint_personal_budget_transaction_account_fitid_uniq
+msgid "This OFX transaction (account + FITID) already exists in this budget."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+msgid "This budget does not exist or is not shared with you."
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "This month"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "This year"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "To assign"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_cheque_list
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_invoice_list
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_list
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_share_line_list
+msgid "Total"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Total invoiced"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+msgid "Transaction"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/ofx_parser.py:0
+msgid "Transaction FITID %s without a valid amount."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/ofx_parser.py:0
+msgid "Transaction FITID %s without a valid date."
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__transaction_count
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_recurring__transaction_count
+msgid "Transaction count"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/ofx_parser.py:0
+msgid "Transaction without FITID skipped (date %(date)s, amount %(amount)s)."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/dashboard.py:0
+#: model:ir.actions.act_window,name:personal_budget.action_budget_transaction
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_import_wizard__import_type__transaction
+#: model:ir.ui.menu,name:personal_budget.menu_budget_transaction
+#: model:ir.ui.menu,name:personal_budget.menu_budget_transactions_parent
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_book_form
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_recurring_form
+msgid "Transactions"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__category_type
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_category__category_type
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__category_type
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__category_type
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_category_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Type"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields,help:personal_budget.field_personal_budget_transaction__fitid
+msgid "Unique transaction identifier in the OFX statement."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "Unsupported import type: %s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Up to date"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__weekly
+msgid "Weekly"
+msgstr ""
+
+#. module: personal_budget
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Without FITID"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_analysis__year
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_plan__year
+#: model:ir.model.fields,field_description:personal_budget.field_personal_budget_transaction__year
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_analysis_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_plan_search
+#: model_terms:ir.ui.view,arch_db:personal_budget.view_budget_transaction_search
+msgid "Year"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "Year to date"
+msgstr ""
+
+#. module: personal_budget
+#: model:ir.model.fields.selection,name:personal_budget.selection__personal_budget_recurring__frequency__yearly
+msgid "Yearly"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/models/book.py:0
+msgid "You cannot move a record to a budget that is not shared with you."
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "compared with"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "days left"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-python
+#: code:addons/personal_budget/wizard/import_wizard.py:0
+msgid "from %(start)s to %(end)s"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "invoice(s) in total"
+msgstr ""
+
+#. module: personal_budget
+#. odoo-javascript
+#: code:addons/personal_budget/static/src/xml/budget_dashboard.xml:0
+msgid "months"
+msgstr ""

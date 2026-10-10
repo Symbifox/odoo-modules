@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Form -->
+    <record id="health_daily_log_wizard_view_form" model="ir.ui.view">
+        <field name="name">health.daily.log.wizard.form</field>
+        <field name="model">health.daily.log.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Saisie rapide">
+                <group>
+                    <field name="date"/>
+                </group>
+                <notebook>
+                    <page string="Humeur" name="humeur">
+                        <group>
+                            <field name="mood_level" widget="radio" options="{'horizontal': true}"/>
+                            <field name="mood_activity_ids" widget="many2many_tags"
+                                   options="{'no_create_edit': true}"/>
+                            <field name="mood_note" placeholder="Une note, si vous voulez (facultatif)"/>
+                        </group>
+                    </page>
+                    <page string="Médicaments">
+                        <field name="med_line_ids">
+                            <list editable="bottom">
+                                <field name="medication_id"/>
+                                <field name="time_slot"/>
+                                <field name="taken" widget="boolean_toggle"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Signes vitaux">
+                        <group>
+                            <group>
+                                <field name="weight"/>
+                                <field name="bp_systolic"/>
+                                <field name="bp_diastolic"/>
+                            </group>
+                            <group>
+                                <field name="heart_rate"/>
+                                <field name="water_ml"/>
+                                <field name="calories"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Consommation">
+                        <group>
+                            <group>
+                                <field name="substance_type"/>
+                                <field name="substance_qty"/>
+                            </group>
+                            <group>
+                                <field name="substance_unit"/>
+                                <field name="substance_context"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Activité">
+                        <group>
+                            <group>
+                                <field name="steps"/>
+                                <field name="active_minutes"/>
+                            </group>
+                            <group>
+                                <field name="resting_hr"/>
+                                <field name="sleep_hours"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Entraînement">
+                        <group>
+                            <group>
+                                <field name="workout_type"/>
+                                <field name="workout_duration"/>
+                            </group>
+                            <group>
+                                <field name="workout_distance"/>
+                                <field name="workout_calories"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Alimentation">
+                        <field name="meal_line_ids">
+                            <list editable="bottom">
+                                <field name="meal_type"/>
+                                <field name="food_id"/>
+                                <field name="servings"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_confirm" string="Enregistrer" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="health_daily_log_wizard_action" model="ir.actions.act_window">
+        <field name="name">Saisie rapide</field>
+        <field name="res_model">health.daily.log.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

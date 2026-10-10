@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="health_reduction_step_list" model="ir.ui.view">
+        <field name="name">health.reduction.step.list</field>
+        <field name="model">health.reduction.step</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'done'"
+                  decoration-muted="state == 'skipped'"
+                  decoration-info="state == 'in_progress'"
+                  editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="phase"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state" widget="badge"/>
+                <field name="substance_type" optional="hide"/>
+                <field name="dependency_ids" widget="many2many_tags" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="health_reduction_step_form" model="ir.ui.view">
+        <field name="name">health.reduction.step.form</field>
+        <field name="model">health.reduction.step</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="todo,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" class="oe_inline"/>
+                            <span> — </span>
+                            <field name="name" class="oe_inline" placeholder="Nom de l'étape"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="phase"/>
+                            <field name="substance_type"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="dependency_ids" widget="many2many_tags"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="health_reduction_step_search" model="ir.ui.view">
+        <field name="name">health.reduction.step.search</field>
+        <field name="model">health.reduction.step</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <filter name="todo" string="À faire"
+                        domain="[('state', '=', 'todo')]"/>
+                <filter name="in_progress" string="En cours"
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter name="done" string="Fait"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="phase1" string="Stabilisation"
+                        domain="[('phase', '=', '1_stabilisation')]"/>
+                <filter name="phase2" string="Réduction"
+                        domain="[('phase', '=', '2_reduction')]"/>
+                <filter name="phase3" string="Sevrage"
+                        domain="[('phase', '=', '3_sevrage')]"/>
+                <filter name="phase4" string="Arrêt"
+                        domain="[('phase', '=', '4_arret')]"/>
+                <filter name="phase5" string="Zéro"
+                        domain="[('phase', '=', '5_zero')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_phase" string="Phase"
+                            context="{'group_by': 'phase'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_substance" string="Substance"
+                            context="{'group_by': 'substance_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="health_reduction_step_action" model="ir.actions.act_window">
+        <field name="name">Plan de réduction</field>
+        <field name="res_model">health.reduction.step</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="health_reduction_step_search"/>
+        <field name="context">{'search_default_group_phase': 1}</field>
+    </record>
+
+    <record id="health_reduction_step_active_action" model="ir.actions.act_window">
+        <field name="name">Étapes actives</field>
+        <field name="res_model">health.reduction.step</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ['todo', 'in_progress'])]</field>
+        <field name="search_view_id" ref="health_reduction_step_search"/>
+    </record>
+
+</odoo>

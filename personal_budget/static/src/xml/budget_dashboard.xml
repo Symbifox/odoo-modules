@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="personal_budget.Dashboard">
+        <div class="o_action" style="overflow-y: auto;">
+            <!-- Loading -->
+            <t t-if="state.loading">
+                <div class="text-center p-5">
+                    <div class="spinner-border" style="color: #1a3a5c;" role="status"/>
+                    <p class="mt-3 text-muted">Loading dashboard...</p>
+                </div>
+            </t>
+
+            <!-- Main content -->
+            <t t-if="!state.loading and state.data">
+                <div class="container-fluid px-4 py-3" style="background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom: 2px solid #1a3a5c;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 4px; height: 36px; background: linear-gradient(180deg, #e8751a 0%, #1a3a5c 100%); border-radius: 2px;"/>
+                            <div>
+                                <h2 class="mb-0 fw-bold" style="color: #1a3a5c;">Dashboard</h2>
+                                <small class="text-muted">
+                                    <t t-esc="state.data.book.name"/>
+                                    <span t-if="state.data.book.is_shared" class="badge rounded-pill text-bg-info ms-1">Shared</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn btn-sm fw-semibold" style="background: #e8751a; color: white; border: none;" t-on-click="onQuickAddExpense">
+                                + Transaction
+                            </button>
+                            <select t-if="state.availableBooks.length > 1" class="form-select form-select-sm"
+                                    style="width: auto; border-color: #1a3a5c; color: #1a3a5c;"
+                                    aria-label="Budget shown"
+                                    t-on-change="(ev) => this.onBookChange(ev)">
+                                <t t-foreach="state.availableBooks" t-as="b" t-key="b.id">
+                                    <option t-att-value="b.id" t-att-selected="b.id === state.bookId">
+                                        <t t-esc="b.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Month range">
+                                <t t-foreach="[3, 6, 12]" t-as="n" t-key="n">
+                                    <button t-attf-class="btn btn-sm {{state.monthRange === n ? 'text-white' : 'text-secondary'}}"
+                                            t-att-style="state.monthRange === n ? 'background: #1a3a5c; border-color: #1a3a5c;' : 'border-color: #cbd5e1;'"
+                                            t-on-click="() => this.onMonthRangeChange(n)">
+                                        <t t-esc="n"/> months
+                                    </button>
+                                </t>
+                            </div>
+                            <select class="form-select form-select-sm" style="width: auto; border-color: #1a3a5c; color: #1a3a5c;" aria-label="Year" t-on-change="(ev) => this.onYearChange(ev)">
+                                <t t-foreach="state.availableYears" t-as="y" t-key="y">
+                                    <option t-att-value="y" t-att-selected="y === state.year">
+                                        <t t-esc="y"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <button class="btn btn-sm" style="background: #1a3a5c; color: white; border: none;" t-on-click="onRefresh" t-att-disabled="state.refreshing">
+                                <t t-if="state.refreshing">
+                                    <span class="spinner-border spinner-border-sm me-1"/>
+                                </t>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <t t-if="state.data.summary">
+                        <div class="row g-3 mb-4">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm h-100" style="border-top: 3px solid #1a3a5c !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em; color: #8899aa;">Net year to date</div>
+                                        <h3 class="mb-1 fw-bold" t-att-style="state.data.summary.net_real >= 0 ? 'color: #1a8a5c;' : 'color: #c0392b;'">
+                                            <t t-esc="formatCurrency(state.data.summary.net_real)"/>
+                                        </h3>
+                                        <small class="text-muted">Planned: <t t-esc="formatCurrency(state.data.summary.net_planned)"/></small>
+                                        <t t-if="state.data.summary.net_vs_prev_pct !== null and state.data.summary.net_vs_prev_pct !== undefined">
+                                            <div class="mt-1">
+                                                <small t-attf-class="fw-semibold {{state.data.summary.net_vs_prev_pct >= 0 ? 'text-success' : 'text-danger'}}">
+                                                    <t t-esc="formatDeltaPct(state.data.summary.net_vs_prev_pct)"/>
+                                                </small>
+                                                <small class="text-muted ms-1">compared with <t t-esc="state.year - 1"/> (<t t-esc="formatCurrency(state.data.summary.prev_year_net_real)"/>)</small>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm h-100" style="border-top: 3px solid #1a3a5c !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em; color: #8899aa;">Overall gap</div>
+                                        <h3 class="mb-1">
+                                            <span t-attf-class="badge rounded-pill fs-5 {{getOverallOffsetClass(state.data.summary.overall_offset_pct)}}">
+                                                <t t-esc="state.data.summary.overall_offset_pct"/>%
+                                            </span>
+                                        </h3>
+                                        <small class="text-muted"><t t-esc="state.data.summary.days_remaining"/> days left</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm h-100" style="border-top: 3px solid #e8751a !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em; color: #8899aa;">Income year to date</div>
+                                        <h3 class="mb-1 fw-bold" style="color: #1a3a5c;">
+                                            <t t-esc="formatCurrency(state.data.summary.total_income_real)"/>
+                                        </h3>
+                                        <small class="text-muted">Expenses: <t t-esc="formatCurrency(state.data.summary.total_expense_real)"/></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Revenue Table -->
+                    <t t-if="state.data.income_rows and state.data.income_rows.length">
+                        <t t-call="personal_budget.MonthGridTable">
+                            <t t-set="title">Income</t>
+                            <t t-set="rows" t-value="state.data.income_rows"/>
+                            <t t-set="totals" t-value="state.data.monthly_totals_income"/>
+                            <t t-set="header_gradient" t-value="'linear-gradient(90deg, #1a3a5c 0%, #2a5a8c 100%)'"/>
+                            <t t-set="ytd_color" t-value="'#1a3a5c'"/>
+                            <t t-set="category_type" t-value="'revenue'"/>
+                            <t t-set="grand_total_real" t-value="state.data.summary.total_income_real"/>
+                            <t t-set="grand_total_planned" t-value="state.data.summary.total_income_planned"/>
+                        </t>
+                    </t>
+
+                    <!-- Expense Table -->
+                    <t t-if="state.data.expense_rows and state.data.expense_rows.length">
+                        <t t-call="personal_budget.MonthGridTable">
+                            <t t-set="title">Expenses</t>
+                            <t t-set="rows" t-value="state.data.expense_rows"/>
+                            <t t-set="totals" t-value="state.data.monthly_totals_expense"/>
+                            <t t-set="header_gradient" t-value="'linear-gradient(90deg, #e8751a 0%, #f09040 100%)'"/>
+                            <t t-set="ytd_color" t-value="'#e8751a'"/>
+                            <t t-set="category_type" t-value="'expense'"/>
+                            <t t-set="grand_total_real" t-value="state.data.summary.total_expense_real"/>
+                            <t t-set="grand_total_planned" t-value="state.data.summary.total_expense_planned"/>
+                        </t>
+                    </t>
+
+                    <!-- Bottom cards -->
+                    <div class="row g-3 mb-4">
+                        <!-- Dépenses récurrentes (abonnements) -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 d-flex justify-content-between align-items-center py-3" style="background: #f1f5f9;">
+                                    <h6 class="mb-0 fw-bold" style="color: #1a3a5c;">Subscriptions and recurring expenses</h6>
+                                    <button class="btn btn-sm" style="background: #1a3a5c; color: white; font-size: 0.75rem;" t-on-click="viewRecurring">See all</button>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="state.data.recurring.count">
+                                        <div class="row text-center mb-3">
+                                            <div class="col-6">
+                                                <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em; color: #8899aa;">Per month</div>
+                                                <h5 class="fw-bold" style="color: #1a3a5c;"><t t-esc="formatCurrency(state.data.recurring.monthly_total)"/></h5>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em; color: #8899aa;">Left to pay this year</div>
+                                                <h5 class="fw-bold" style="color: #e8751a;"><t t-esc="formatCurrency(state.data.recurring.remaining)"/></h5>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted text-center mb-2" style="font-size: 0.8rem;">
+                                            Projected expenses for the year: <t t-esc="formatCurrency(state.data.summary.expense_projected)"/>
+                                        </p>
+                                        <table t-if="state.data.recurring.upcoming.length" class="table table-sm mb-0 align-middle">
+                                            <tbody>
+                                                <t t-foreach="state.data.recurring.upcoming" t-as="u" t-key="u.id + '-' + u.date">
+                                                    <tr>
+                                                        <td style="width: 70px; font-size: 0.75rem;" t-att-class="u.is_overdue ? 'text-danger fw-bold' : 'text-muted'">
+                                                            <t t-esc="formatShortDate(u.date)"/>
+                                                        </td>
+                                                        <td style="font-size: 0.85rem;">
+                                                            <t t-esc="u.name"/>
+                                                            <span t-if="u.is_overdue" class="badge rounded-pill text-bg-danger ms-1">Overdue</span>
+                                                        </td>
+                                                        <td class="text-end fw-bold"><t t-esc="formatCurrency(u.amount)"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                        <p t-else="" class="text-muted text-center mb-0" style="font-size: 0.8rem;">Nothing due in the next 30 days.</p>
+                                    </t>
+                                    <p t-else="" class="text-muted text-center mb-0" style="font-size: 0.85rem;">
+                                        No recurring expense in this budget. Add your subscriptions so they count in the forecast.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loans -->
+                        <t t-if="state.data.loan_balances and state.data.loan_balances.length">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header border-0 d-flex justify-content-between align-items-center py-3" style="background: #f1f5f9;">
+                                        <h6 class="mb-0 fw-bold" style="color: #1a3a5c;">Loans</h6>
+                                        <button class="btn btn-sm" style="background: #1a3a5c; color: white; font-size: 0.75rem;" t-on-click="viewLoans">See all</button>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <table class="table table-sm mb-0 align-middle">
+                                            <thead style="font-size: 0.8rem; color: #64748b;">
+                                                <tr>
+                                                    <th class="ps-3">Name</th>
+                                                    <th class="text-end">Balance</th>
+                                                    <th class="text-center pe-3">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.loan_balances" t-as="loan" t-key="loan.id">
+                                                    <tr>
+                                                        <td class="ps-3"><t t-esc="loan.name"/></td>
+                                                        <td t-att-style="loan.current_balance > 0 ? 'color: #c0392b;' : 'color: #1a8a5c;'" class="text-end fw-bold">
+                                                            <t t-esc="formatCurrency(loan.current_balance)"/>
+                                                        </td>
+                                                        <td class="text-center pe-3">
+                                                            <span t-if="loan.is_overdue" class="badge rounded-pill" style="background: #c0392b;">Overdue</span>
+                                                            <span t-else="" class="badge rounded-pill" style="background: #1a8a5c;">Up to date</span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Invoices -->
+                        <t t-if="state.data.invoice_summary">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header border-0 d-flex justify-content-between align-items-center py-3" style="background: #f1f5f9;">
+                                        <h6 class="mb-0 fw-bold" style="color: #1a3a5c;">Invoices (freelance)</h6>
+                                        <button class="btn btn-sm" style="background: #e8751a; color: white; font-size: 0.75rem;" t-on-click="viewInvoices">See all</button>
+                                    </div>
+                                    <div class="card-body py-4">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em; color: #8899aa;">Total invoiced</div>
+                                                <h5 class="fw-bold" style="color: #1a3a5c;"><t t-esc="formatCurrency(state.data.invoice_summary.total_pretax)"/></h5>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em; color: #8899aa;">Reserve 40%</div>
+                                                <h5 class="fw-bold" style="color: #e8751a;"><t t-esc="formatCurrency(state.data.invoice_summary.total_reserve)"/></h5>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-uppercase fw-semibold mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em; color: #8899aa;">Operating 60%</div>
+                                                <h5 class="fw-bold" style="color: #1a8a5c;"><t t-esc="formatCurrency(state.data.invoice_summary.total_operating)"/></h5>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted text-center mb-0 mt-2" style="font-size: 0.8rem;">
+                                            <t t-esc="state.data.invoice_summary.total_invoices"/> invoice(s) in total
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Recent transactions -->
+                        <t t-if="state.data.recent_transactions and state.data.recent_transactions.length">
+                            <div class="col-lg-4 col-md-12">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header border-0 py-3" style="background: #f1f5f9;">
+                                        <h6 class="mb-0 fw-bold" style="color: #1a3a5c;">Recent transactions</h6>
+                                    </div>
+                                    <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
+                                        <table class="table table-sm mb-0 align-middle">
+                                            <tbody>
+                                                <t t-foreach="state.data.recent_transactions" t-as="tx" t-key="tx.id">
+                                                    <tr role="button" t-on-click="() => this.viewTransactionForm(tx.id)" style="cursor: pointer;">
+                                                        <td class="ps-3" style="width: 70px; font-size: 0.75rem; color: #64748b;"><t t-esc="formatShortDate(tx.date)"/></td>
+                                                        <td style="font-size: 0.85rem;">
+                                                            <div class="fw-semibold" t-att-style="tx.category_type === 'revenue' ? 'color: #1a8a5c;' : 'color: #334155;'">
+                                                                <t t-esc="tx.category_name"/>
+                                                            </div>
+                                                            <div t-if="tx.details" class="text-muted" style="font-size: 0.75rem;">
+                                                                <t t-esc="tx.details"/>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end pe-3 fw-bold" t-att-style="tx.category_type === 'revenue' ? 'color: #1a8a5c;' : 'color: #c0392b;'">
+                                                            <t t-esc="formatCurrency(tx.gross_amount)"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                </div>
+            </t>
+
+            <!-- No data -->
+            <t t-if="!state.loading and !state.data">
+                <div class="text-center p-5">
+                    <h4 style="color: #1a3a5c;">No data available</h4>
+                    <button class="btn mt-3" style="background: #1a3a5c; color: white;" t-on-click="onRefresh">Retry</button>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- Reusable month-grid table sub-template -->
+    <t t-name="personal_budget.MonthGridTable">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header border-0 py-3" t-attf-style="background: {{header_gradient}};">
+                <h5 class="mb-0 text-white fw-semibold"><t t-esc="title"/></h5>
+            </div>
+            <div class="card-body p-0" style="overflow-x: auto;">
+                <table class="table table-sm table-hover mb-0 align-middle" style="font-size: 0.85rem;">
+                    <thead style="background: #f1f5f9;">
+                        <tr style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; color: #64748b;">
+                            <th class="ps-3" style="min-width: 180px;">Category</th>
+                            <t t-foreach="visibleMonths()" t-as="m" t-key="m">
+                                <th class="text-end border-start"><t t-esc="monthName(m)"/></th>
+                            </t>
+                            <th class="text-end border-start" style="background: #e2e8f0;">Year to date</th>
+                            <th class="text-end pe-3">Gap</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="rows" t-as="row" t-key="row.category_id">
+                            <tr role="button" t-on-click="() => this.viewTransactions(row.category_id, state.data.year, category_type)" style="transition: background 0.15s;">
+                                <td class="ps-3 fw-medium"><t t-esc="row.category_name"/></td>
+                                <t t-foreach="visibleMonths()" t-as="m" t-key="m">
+                                    <td class="text-end border-start" t-attf-class="text-end border-start {{getMonthCellClass(row, m, category_type)}}">
+                                        <t t-esc="formatCurrencyShort(row.by_month[m])"/>
+                                    </td>
+                                </t>
+                                <td class="text-end fw-bold border-start" t-att-style="'color: ' + ytd_color + ';'" style="background: #f8fafc;">
+                                    <t t-esc="formatCurrency(row.ytd_real)"/>
+                                </td>
+                                <td t-attf-class="text-end pe-3 fw-semibold {{getGapClass(row.ytd_gap_pct)}}">
+                                    <t t-if="row.ytd_gap_pct" t-esc="(row.ytd_gap_pct > 0 ? '+' : '') + row.ytd_gap_pct + '%'"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot style="background: #f1f5f9;">
+                        <tr class="fw-bold" t-att-style="'color: ' + ytd_color + ';'">
+                            <td class="ps-3">Total</td>
+                            <t t-foreach="visibleMonths()" t-as="m" t-key="m">
+                                <td class="text-end border-start"><t t-esc="formatCurrency(totals[m])"/></td>
+                            </t>
+                            <td class="text-end border-start" style="background: #e2e8f0;"><t t-esc="formatCurrency(grand_total_real)"/></td>
+                            <td class="text-end pe-3 text-muted" style="font-weight: normal; font-size: 0.8rem;">
+                                Planned: <t t-esc="formatCurrency(grand_total_planned)"/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </t>
+</templates>

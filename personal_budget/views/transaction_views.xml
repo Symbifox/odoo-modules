@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_transaction_list" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.list</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="date desc, id desc"
+                  decoration-info="category_type == 'revenue'"
+                  decoration-muted="category_type == 'expense'">
+                <field name="date"/>
+                <field name="category_id"/>
+                <field name="category_type" column_invisible="1"/>
+                <field name="details"/>
+                <field name="gross_amount" sum="Gross total"/>
+                <field name="self_percent" optional="hide"/>
+                <field name="contributor_id" optional="hide"/>
+                <field name="self_amount" sum="Personal total"/>
+                <field name="book_id" optional="show"/>
+                <field name="recurring_id" optional="hide"/>
+                <field name="fitid" optional="hide"/>
+                <field name="account_ref" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_transaction_form" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.form</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="category_id"/>
+                            <field name="category_type"/>
+                            <field name="details"/>
+                            <field name="book_id"/>
+                            <field name="recurring_id" invisible="not recurring_id"/>
+                        </group>
+                        <group>
+                            <field name="gross_amount"/>
+                            <field name="self_percent"/>
+                            <field name="contributor_id"/>
+                            <field name="contributor_percent"/>
+                            <field name="self_amount"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="year"/>
+                            <field name="month"/>
+                        </group>
+                        <group>
+                            <field name="fitid" readonly="1"/>
+                            <field name="account_ref" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_budget_transaction_search" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.search</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="details"/>
+                <field name="category_id"/>
+                <field name="contributor_id"/>
+                <field name="book_id"/>
+                <field name="fitid"/>
+                <filter name="this_month" string="This month"
+                    domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"/>
+                <filter name="last_180" string="Last 180 days"
+                    domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=180)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="this_year" string="This year"
+                    domain="[('date', '&gt;=', context_today().strftime('%%Y-01-01'))]"/>
+                <filter name="last_year" string="Last year"
+                    domain="[
+                        ('date', '&gt;=', (context_today() - datetime.timedelta(days=365)).strftime('%%Y-01-01')),
+                        ('date', '&lt;', context_today().strftime('%%Y-01-01'))
+                    ]"/>
+                <separator/>
+                <filter name="revenue" string="Income" domain="[('category_type', '=', 'revenue')]"/>
+                <filter name="expense" string="Expenses" domain="[('category_type', '=', 'expense')]"/>
+                <separator/>
+                <filter name="shared" string="Shared transactions" domain="[('self_percent', '&lt;', 100)]"/>
+                <filter name="no_fitid" string="Without FITID" domain="[('fitid', '=', False)]"/>
+                <filter name="from_recurring" string="Recurring expense payments" domain="[('recurring_id', '!=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_book" string="Budget" context="{'group_by': 'book_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'category_type'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'date:month'}"/>
+                    <filter name="group_year" string="Year" context="{'group_by': 'date:year'}"/>
+                    <filter name="group_contributor" string="Contributor" context="{'group_by': 'contributor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_budget_transaction_pivot" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.pivot</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="category_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="self_amount" type="measure"/>
+                <field name="gross_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_budget_transaction_graph" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.graph</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="date" interval="month"/>
+                <field name="self_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_budget_transaction" model="ir.actions.act_window">
+        <field name="name">Transactions</field>
+        <field name="res_model">personal.budget.transaction</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_budget_transaction_search"/>
+        <field name="context">{'search_default_this_year': 1, 'search_default_group_month': 1}</field>
+    </record>
+
+    <!-- Analyse mensuelle: pivot-first action with this-year defaults -->
+    <record id="action_budget_transaction_monthly" model="ir.actions.act_window">
+        <field name="name">Monthly analysis</field>
+        <field name="res_model">personal.budget.transaction</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="view_budget_transaction_search"/>
+        <field name="context">{'search_default_this_year': 1, 'pivot_row_groupby': ['category_id'], 'pivot_column_groupby': ['date:month'], 'pivot_measures': ['self_amount']}</field>
+    </record>
+
+    <!-- Saisie rapide d'une transaction (revenu ou dépense) -->
+    <record id="view_budget_transaction_quick_form" model="ir.ui.view">
+        <field name="name">personal.budget.transaction.quick.form</field>
+        <field name="model">personal.budget.transaction</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Enter a transaction">
+                <sheet>
+                    <group>
+                        <field name="date"/>
+                        <field name="gross_amount" string="Amount"/>
+                        <field name="category_id"
+                               domain="[('active', '=', True)]"
+                               options="{'no_create_edit': True}"/>
+                        <field name="category_type" widget="badge"
+                               decoration-info="category_type == 'revenue'"
+                               decoration-muted="category_type == 'expense'"
+                               readonly="1"/>
+                        <field name="details" placeholder="Merchant / description"/>
+                        <field name="book_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quick_add_expense" model="ir.actions.act_window">
+        <field name="name">Enter a transaction</field>
+        <field name="res_model">personal.budget.transaction</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_budget_transaction_quick_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_self_percent': 100, 'form_view_initial_mode': 'edit'}</field>
+    </record>
+
+    <!-- Bulk category assignment: select rows in the list → Action → Assigner une catégorie -->
+    <record id="view_budget_bulk_category_form" model="ir.ui.view">
+        <field name="name">personal.budget.bulk.category.form</field>
+        <field name="model">personal.budget.bulk.category</field>
+        <field name="arch" type="xml">
+            <form string="Assign a category">
+                <group>
+                    <field name="transaction_count" string="Selected transactions"/>
+                    <field name="category_id"
+                           domain="[('active', '=', True)]"
+                           options="{'no_create_edit': True}"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"
+                            data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_bulk_category" model="ir.actions.act_window">
+        <field name="name">Assign a category</field>
+        <field name="res_model">personal.budget.bulk.category</field>
+        <field name="binding_model_id" ref="model_personal_budget_transaction"/>
+        <field name="binding_view_types">list</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

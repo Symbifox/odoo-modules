@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List (editable) -->
+    <record id="health_vital_view_list" model="ir.ui.view">
+        <field name="name">health.vital.list</field>
+        <field name="model">health.vital</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="date desc">
+                <field name="date"/>
+                <field name="vital_type"/>
+                <field name="value"/>
+                <field name="unit"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form (minimal) -->
+    <record id="health_vital_view_form" model="ir.ui.view">
+        <field name="name">health.vital.form</field>
+        <field name="model">health.vital</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="date"/>
+                    <field name="vital_type"/>
+                    <field name="value"/>
+                    <field name="unit"/>
+                    <field name="notes"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph (line trends) -->
+    <record id="health_vital_view_graph" model="ir.ui.view">
+        <field name="name">health.vital.graph</field>
+        <field name="model">health.vital</field>
+        <field name="arch" type="xml">
+            <graph string="Tendances" type="line">
+                <field name="date" interval="day"/>
+                <field name="value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_vital_view_search" model="ir.ui.view">
+        <field name="name">health.vital.search</field>
+        <field name="model">health.vital</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="vital_type"/>
+                <field name="date"/>
+                <filter name="weight" string="Poids" domain="[('vital_type', '=', 'weight')]"/>
+                <filter name="bp" string="Pression artérielle" domain="[('vital_type', 'in', ['bp_systolic', 'bp_diastolic'])]"/>
+                <filter name="heart_rate" string="Fréquence cardiaque" domain="[('vital_type', '=', 'heart_rate')]"/>
+                <filter name="water" string="Eau" domain="[('vital_type', '=', 'water_ml')]"/>
+                <filter name="calories" string="Calories" domain="[('vital_type', '=', 'calories')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_type" string="Type" context="{'group_by': 'vital_type'}"/>
+                    <filter name="group_month" string="Mois" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="health_vital_action" model="ir.actions.act_window">
+        <field name="name">Signes vitaux</field>
+        <field name="res_model">health.vital</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="search_view_id" ref="health_vital_view_search"/>
+    </record>
+
+    <record id="health_vital_weight_action" model="ir.actions.act_window">
+        <field name="name">Tendance du poids</field>
+        <field name="res_model">health.vital</field>
+        <field name="view_mode">graph,list,form</field>
+        <field name="search_view_id" ref="health_vital_view_search"/>
+        <field name="domain">[('vital_type', '=', 'weight')]</field>
+    </record>
+
+    <record id="health_vital_bp_action" model="ir.actions.act_window">
+        <field name="name">Pression artérielle</field>
+        <field name="res_model">health.vital</field>
+        <field name="view_mode">graph,list,form</field>
+        <field name="search_view_id" ref="health_vital_view_search"/>
+        <field name="domain">[('vital_type', 'in', ['bp_systolic', 'bp_diastolic'])]</field>
+    </record>
+
+</odoo>

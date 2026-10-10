@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Saisies ─────────────────────────────────────────────────── -->
+    <record id="health_mood_entry_view_list" model="ir.ui.view">
+        <field name="name">health.mood.entry.list</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <list string="Humeur">
+                <field name="date"/>
+                <field name="level" widget="badge"
+                       decoration-danger="level == '1'" decoration-warning="level == '2'"
+                       decoration-info="level == '3'" decoration-success="level in ('4', '5')"/>
+                <field name="activity_ids" widget="many2many_tags" optional="show"/>
+                <field name="note" optional="show"/>
+                <field name="score" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_view_form" model="ir.ui.view">
+        <field name="name">health.mood.entry.form</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <form string="Humeur">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="level" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+                        <group>
+                            <field name="activity_ids" widget="many2many_tags"
+                                   options="{'no_create_edit': true}"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Une note, si vous voulez (facultatif)"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_view_graph" model="ir.ui.view">
+        <field name="name">health.mood.entry.graph</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <graph string="Humeur" type="line" sample="1">
+                <field name="date" interval="day"/>
+                <field name="score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_view_pivot" model="ir.ui.view">
+        <field name="name">health.mood.entry.pivot</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <pivot string="Humeur">
+                <field name="date" interval="week" type="row"/>
+                <field name="score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_view_calendar" model="ir.ui.view">
+        <field name="name">health.mood.entry.calendar</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <calendar string="Humeur" date_start="date" mode="month" color="level"
+                      quick_create="0">
+                <field name="level"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_view_search" model="ir.ui.view">
+        <field name="name">health.mood.entry.search</field>
+        <field name="model">health.mood.entry</field>
+        <field name="arch" type="xml">
+            <search string="Humeur">
+                <field name="note"/>
+                <field name="activity_ids"/>
+                <filter name="last_7" string="7 derniers jours"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(days=6)).strftime('%Y-%m-%d'))]"/>
+                <filter name="last_30" string="30 derniers jours"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(days=29)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="low" string="Jours difficiles" domain="[('level', 'in', ('1', '2'))]"/>
+                <filter name="high" string="Bons jours" domain="[('level', 'in', ('4', '5'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_level" string="Humeur" context="{'group_by': 'level'}"/>
+                    <filter name="group_week" string="Semaine" context="{'group_by': 'date:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="health_mood_entry_action" model="ir.actions.act_window">
+        <field name="name">Humeur</field>
+        <field name="res_model">health.mood.entry</field>
+        <field name="view_mode">list,form,calendar,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Comment ça va aujourd'hui ?</p>
+            <p>Cinq crans, quelques activités à cocher, une note si vous voulez.
+               Ce journal est à vous seul : personne d'autre ne le voit, administrateurs compris.</p>
+        </field>
+    </record>
+
+    <!-- ── Activités à cocher ──────────────────────────────────────── -->
+    <record id="health_mood_activity_view_list" model="ir.ui.view">
+        <field name="name">health.mood.activity.list</field>
+        <field name="model">health.mood.activity</field>
+        <field name="arch" type="xml">
+            <list string="Activités" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="health_mood_activity_action" model="ir.actions.act_window">
+        <field name="name">Activités du journal d'humeur</field>
+        <field name="res_model">health.mood.activity</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <!-- ── Mon journal : réglages, permission de Gen, rapport, export ── -->
+    <record id="health_mood_settings_view_form" model="ir.ui.view">
+        <field name="name">health.mood.settings.form</field>
+        <field name="model">health.mood.settings</field>
+        <field name="arch" type="xml">
+            <form string="Mon journal d'humeur" create="false" delete="false" duplicate="false">
+                <header>
+                    <button name="action_open_phone_page" type="object" string="Saisir au téléphone"
+                            class="btn-primary"/>
+                    <button name="action_open_report_wizard" type="object" string="Rapport pour le médecin (PDF)"/>
+                    <button name="action_export_csv" type="object" string="Exporter (CSV)"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Mon journal d'humeur</h1>
+                        <p class="text-muted">Privé : personne d'autre ne le voit, administrateurs compris.
+                            L'historique, l'export et le rapport restent toujours libres.</p>
+                    </div>
+                    <group>
+                        <group string="Rappel quotidien">
+                            <field name="reminder_enabled"/>
+                            <field name="reminder_time" widget="float_time" invisible="not reminder_enabled"/>
+                            <field name="reminder_tz" invisible="not reminder_enabled"/>
+                        </group>
+                        <group string="Résumé">
+                            <field name="entry_count"/>
+                            <field name="average_30"/>
+                        </group>
+                    </group>
+                    <group string="Gen, l'assistant IA" invisible="not gen_available">
+                        <field name="gen_available" invisible="1"/>
+                        <field name="gen_instance_open" invisible="1"/>
+                        <field name="gen_instance_health_open" invisible="1"/>
+                        <div colspan="2" class="text-muted">
+                            Gen ne lit rien de Healthy Fox sans deux permissions : celle de cette
+                            instance, réservée à son administration, puis la vôtre. Une conversation
+                            que vous ouvrez depuis une fiche ne lui montre que cette fiche, et
+                            seulement si l'instance le permet.
+                        </div>
+                        <field name="gen_consent" widget="boolean_toggle" readonly="not gen_instance_open"/>
+                        <div colspan="2" class="text-muted" invisible="gen_instance_open">
+                            Gen est fermé au journal d'humeur sur cette instance : votre permission ne
+                            peut pas l'ouvrir.
+                        </div>
+                        <field name="gen_consent_health" widget="boolean_toggle"
+                               readonly="not gen_instance_health_open"/>
+                        <div colspan="2" class="text-muted" invisible="gen_instance_health_open">
+                            Gen est fermé aux données de santé sur cette instance.
+                        </div>
+                    </group>
+                    <separator string="Corrélations"/>
+                    <group>
+                        <field name="correlations_enabled" widget="boolean_toggle"/>
+                    </group>
+                    <field name="correlation_html" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Une action serveur RÉSERVÉE au groupe santé : sans `groups_id`, Odoo
+         exigerait le droit d'écriture sur le modèle avant même de l'ouvrir. -->
+    <record id="action_mood_settings_open" model="ir.actions.server">
+        <field name="name">Mon journal d'humeur</field>
+        <field name="model_id" ref="model_health_mood_settings"/>
+        <field name="state">code</field>
+        <field name="code">action = model._bf_action_mes_reglages()</field>
+        <field name="groups_id" eval="[(4, ref('bf_health.group_health_user'))]"/>
+    </record>
+
+    <record id="action_mood_phone_page" model="ir.actions.act_url">
+        <field name="name">Humeur au téléphone</field>
+        <field name="url">/healthy-fox/humeur</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ── Rapport pour le médecin ─────────────────────────────────── -->
+    <record id="health_mood_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">health.mood.report.wizard.form</field>
+        <field name="model">health.mood.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Rapport pour le médecin">
+                <p class="text-muted">Un résumé à montrer à un soignant : moyenne, courbe,
+                    répartition, corrélations. Vos notes n'y figurent que si vous le demandez.</p>
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="correlations_enabled" invisible="1"/>
+                        <field name="include_correlations" invisible="not correlations_enabled"/>
+                        <field name="include_notes"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print" type="object" string="Télécharger le PDF" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

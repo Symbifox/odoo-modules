@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="health_symptom_log_view_list" model="ir.ui.view">
+        <field name="name">health.symptom.log.list</field>
+        <field name="model">health.symptom.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="severity"/>
+                <field name="body_area"/>
+                <field name="condition_id"/>
+                <field name="duration"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="health_symptom_log_view_form" model="ir.ui.view">
+        <field name="name">health.symptom.log.form</field>
+        <field name="model">health.symptom.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="name"/>
+                        <field name="severity"/>
+                    </group>
+                    <group>
+                        <field name="body_area"/>
+                        <field name="condition_id"/>
+                        <field name="duration"/>
+                    </group>
+                </group>
+                <field name="notes" placeholder="Notes..."/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph (by area) -->
+    <record id="health_symptom_log_view_graph" model="ir.ui.view">
+        <field name="name">health.symptom.log.graph</field>
+        <field name="model">health.symptom.log</field>
+        <field name="arch" type="xml">
+            <graph string="Symptômes par zone" type="bar">
+                <field name="body_area"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_symptom_log_view_search" model="ir.ui.view">
+        <field name="name">health.symptom.log.search</field>
+        <field name="model">health.symptom.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="body_area"/>
+                <field name="condition_id"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_area" string="Zone" context="{'group_by': 'body_area'}"/>
+                    <filter name="group_condition" string="Condition" context="{'group_by': 'condition_id'}"/>
+                    <filter name="group_severity" string="Sévérité" context="{'group_by': 'severity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="health_symptom_log_action" model="ir.actions.act_window">
+        <field name="name">Symptômes</field>
+        <field name="res_model">health.symptom.log</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="search_view_id" ref="health_symptom_log_view_search"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Jamais gardé en pièce jointe (pas d'attribut `attachment`) : le PDF
+         sort une fois, vers la personne qui le télécharge. -->
+    <record id="action_report_mood_doctor" model="ir.actions.report">
+        <field name="name">Humeur : rapport pour le médecin</field>
+        <field name="model">health.mood.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_health.report_mood_doctor</field>
+        <field name="report_file">bf_health.report_mood_doctor</field>
+        <field name="print_report_name">'Humeur - %s au %s' % (object.date_from, object.date_to)</field>
+    </record>
+
+    <template id="report_mood_doctor">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="d" t-value="doc._bf_donnees_rapport()"/>
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: 'Lexend', Arial, sans-serif; color: #2E3132; font-size: 11pt;">
+                        <div style="border-bottom: 3px solid #29ABE2; padding-bottom: 6px; margin-bottom: 14px;">
+                            <div style="font-size: 9pt; color: #5b6670;">Healthy Fox</div>
+                            <h2 style="margin: 2px 0;">Journal d'humeur : résumé pour un soignant</h2>
+                            <div><t t-esc="d['personne']"/> · du <t t-esc="d['du']"/> au <t t-esc="d['au']"/></div>
+                        </div>
+
+                        <table style="width: 100%; margin-bottom: 12px;">
+                            <tr>
+                                <td style="width: 33%;"><strong t-esc="d['nb_jours']"/> jours saisis sur <t t-esc="d['nb_jours_periode']"/></td>
+                                <td style="width: 33%;"><strong t-esc="d['nb_saisies']"/> saisies</td>
+                                <td style="width: 33%;">Moyenne : <strong t-esc="d['moyenne'] or '–'"/> sur 5</td>
+                            </tr>
+                        </table>
+                        <p style="font-size: 9pt; color: #5b6670;">Échelle : 1 très mal, 2 mal, 3 correct, 4 bien, 5 très bien. Moyenne par jour quand il y a plusieurs saisies.</p>
+
+                        <h4>Courbe quotidienne</h4>
+                        <t t-if="d['nb_jours']"><t t-out="d['courbe']"/></t>
+                        <p t-else="">Aucune saisie sur la période.</p>
+
+                        <h4>Répartition</h4>
+                        <table class="table table-sm" style="width: 60%;">
+                            <tr t-foreach="d['repartition']" t-as="r">
+                                <td><t t-esc="r['code']"/> · <t t-esc="r['libelle']"/></td>
+                                <td style="text-align: right;"><t t-esc="r['n']"/></td>
+                                <td style="text-align: right;"><t t-esc="r['pct']"/> %</td>
+                            </tr>
+                        </table>
+
+                        <t t-if="d['semaines']">
+                            <h4>Par semaine</h4>
+                            <table class="table table-sm" style="width: 60%;">
+                                <tr><th>Semaine du</th><th style="text-align: right;">Moyenne</th><th style="text-align: right;">Jours</th></tr>
+                                <tr t-foreach="d['semaines']" t-as="s">
+                                    <td t-esc="s['du']"/>
+                                    <td style="text-align: right;" t-esc="s['moyenne']"/>
+                                    <td style="text-align: right;" t-esc="s['n']"/>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <t t-if="d['correlations']">
+                            <h4>Liens observés</h4>
+                            <p t-foreach="d['correlations']" t-as="c" t-att-style="'' if c.get('suffisant') else 'color: #5b6670;'">
+                                <strong t-esc="c['titre']"/> · <t t-esc="c['texte']"/>
+                            </p>
+                        </t>
+
+                        <t t-if="d['notes']">
+                            <h4>Notes de la personne</h4>
+                            <p t-foreach="d['notes']" t-as="n">
+                                <strong t-esc="n['date']"/> (<t t-esc="n['libelle']"/>) : <t t-esc="n['note']"/>
+                            </p>
+                        </t>
+
+                        <p style="margin-top: 18px; font-size: 9pt; color: #5b6670; border-top: 1px solid #d8dee4; padding-top: 6px;">
+                            Données saisies par la personne elle-même dans Healthy Fox, produit le <t t-esc="d['genere']"/>.
+                            Une corrélation n'est pas une cause : ces liens sont des pistes de discussion, pas un diagnostic.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

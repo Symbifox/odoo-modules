@@ -1,0 +1,191 @@
+/* Page Humeur de Healthy Fox.
+ *
+ * Sombre par dessein, comme /notes et /capture : elle sert debout, à bout de
+ * bras, souvent le soir. Rien ici ne vient des paquets d'actifs d'Odoo : la
+ * page s'affiche avant que le client web ait commencé à se charger. */
+
+:root {
+    --bg: #12161a;
+    --surface: #1b2127;
+    --line: #2f3841;
+    --text: #e8edf2;
+    --muted: #9aa7b4;
+    /* L'accent ne sert qu'aux bordures et aux fonds : le bleu de la marque ne
+       se lit pas en texte sur fond sombre. L'encre est calculée par le serveur. */
+    --accent: var(--brand-primary, #29ABE2);
+    --accent-ink: var(--brand-ink, #0b0f13);
+    --danger: #e5534b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;              /* 16 px au moins, sinon iOS zoome au focus */
+    min-height: 100%;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: max(.75rem, env(safe-area-inset-top)) 1rem .25rem;
+}
+
+h1 { font-size: 1.15rem; font-weight: 600; margin: 0; flex: 1; color: var(--muted); }
+h2 { font-size: 1.6rem; font-weight: 600; margin: .5rem 0 1rem; }
+h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 .5rem; color: var(--muted); }
+
+.reseau {
+    font-size: .8rem;
+    color: #12161a;
+    background: #e0b44c;
+    border-radius: 999px;
+    padding: .15rem .6rem;
+}
+
+main {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: .25rem 1rem calc(3rem + env(safe-area-inset-bottom));
+}
+
+.hidden { display: none !important; }
+
+/* ── Cinq visages ─────────────────────────────────────────────────── */
+.visages {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .5rem;
+}
+
+.visage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.5rem;
+    padding: .5rem .25rem;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: 1rem;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.visage .emoji { font-size: 2.1rem; line-height: 1; }
+.visage .chiffre { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+
+.visage[aria-checked="true"] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+
+.niveau { min-height: 1.4rem; margin: .5rem 0 0; color: var(--muted); text-align: center; }
+
+/* ── Activités en pastilles ───────────────────────────────────────── */
+.activites { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.pastille {
+    padding: .45rem .8rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text);
+    font: inherit;
+    font-size: .95rem;
+    cursor: pointer;
+}
+
+.pastille[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+
+.lien {
+    background: none;
+    border: 0;
+    color: var(--text);
+    text-decoration: underline;
+    font: inherit;
+    padding: .75rem 0 .25rem;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    margin-top: .5rem;
+    padding: .75rem;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: .75rem;
+    font: inherit;
+}
+
+.pied {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-top: 1rem;
+}
+
+.etat { flex: 1; color: var(--muted); font-size: .9rem; }
+
+.principal {
+    padding: .8rem 1.4rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: 0;
+    border-radius: .75rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.principal[aria-disabled="true"] { opacity: .45; }
+
+/* ── La semaine, sans compteur ────────────────────────────────────── */
+.semaine ul { list-style: none; margin: 0; padding: 0; }
+
+.semaine li {
+    display: flex;
+    justify-content: space-between;
+    padding: .55rem .25rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.semaine .jour { color: var(--muted); }
+.semaine .vide { color: var(--muted); font-size: .9rem; }
+.semaine .attente { font-size: .8rem; color: #e0b44c; margin-left: .5rem; }
+
+.discret { color: var(--muted); font-size: .85rem; margin: 1rem 0 0; }
+
+.liens { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.liens a { color: var(--text); }
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    max-width: 90vw;
+    padding: .7rem 1rem;
+    background: #e8edf2;
+    color: #12161a;
+    border-radius: .75rem;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .4);
+}
+
+.toast.erreur { background: var(--danger); color: #ffffff; }
+
+@media (min-width: 40rem) {
+    .visage .emoji { font-size: 2.6rem; }
+}

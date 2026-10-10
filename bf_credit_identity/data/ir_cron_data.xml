@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Une fois par jour : les rappels qui tombent dans 7 jours deviennent une
+         activité pour leur propriétaire, sans avis par courriel. -->
+    <record id="ir_cron_credit_reminders" model="ir.cron">
+        <field name="name">Credit and identity: raise due reminders</field>
+        <field name="model_id" ref="model_bf_credit_reminder"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_raise_activities()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

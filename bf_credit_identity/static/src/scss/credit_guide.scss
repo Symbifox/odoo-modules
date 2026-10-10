@@ -1,0 +1,23 @@
+// Le guide se lit comme une page : largeur de lecture, titres espacés.
+.o_bf_credit_guide_page {
+    max-width: 52rem;
+
+    h1 {
+        margin-bottom: 1rem;
+    }
+
+    h2 {
+        margin-top: 2rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-color, #dee2e6);
+        font-size: 1.35rem;
+    }
+
+    p, li {
+        line-height: 1.55;
+    }
+
+    li {
+        margin-bottom: 0.4rem;
+    }
+}

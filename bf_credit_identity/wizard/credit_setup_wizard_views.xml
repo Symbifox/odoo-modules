@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_setup_form" model="ir.ui.view">
+        <field name="name">bf.credit.setup.form</field>
+        <field name="model">bf.credit.setup</field>
+        <field name="arch" type="xml">
+            <form string="Set up my reminders">
+                <p>
+                    A starter calendar, for you only: your Equifax credit report on the first date,
+                    your TransUnion credit report six months later, then each one every year. Running
+                    this again does not create duplicates.
+                </p>
+                <group>
+                    <field name="start_date"/>
+                    <field name="include_statements"/>
+                    <field name="include_review"/>
+                    <field name="alert_date"/>
+                    <field name="alert_bureau" invisible="not alert_date" required="alert_date"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Create my reminders"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_setup" model="ir.actions.act_window">
+        <field name="name">Set up my reminders</field>
+        <field name="res_model">bf.credit.setup</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

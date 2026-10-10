@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_invoice_list" model="ir.ui.view">
+        <field name="name">personal.budget.invoice.list</field>
+        <field name="model">personal.budget.invoice</field>
+        <field name="arch" type="xml">
+            <list default_order="invoice_date desc, id desc"
+                  decoration-warning="is_duplicate">
+                <field name="invoice_number"/>
+                <field name="partner_name"/>
+                <field name="invoice_date"/>
+                <field name="due_date"/>
+                <field name="pretax_amount" sum="Total"/>
+                <field name="tax_reserve" sum="Reserve"/>
+                <field name="operating_amount" sum="Operating"/>
+                <field name="company_label" optional="hide"/>
+                <field name="is_duplicate"/>
+                <field name="book_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_invoice_form" model="ir.ui.view">
+        <field name="name">personal.budget.invoice.form</field>
+        <field name="model">personal.budget.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="invoice_number"/>
+                            <field name="partner_name"/>
+                            <field name="description"/>
+                            <field name="company_label"/>
+                            <field name="book_id"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date"/>
+                            <field name="due_date"/>
+                            <field name="pretax_amount"/>
+                            <field name="tax_reserve"/>
+                            <field name="operating_amount"/>
+                            <field name="is_duplicate"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_budget_invoice_search" model="ir.ui.view">
+        <field name="name">personal.budget.invoice.search</field>
+        <field name="model">personal.budget.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="invoice_number"/>
+                <field name="partner_name"/>
+                <field name="book_id"/>
+                <filter name="not_duplicate" string="Originals" domain="[('is_duplicate', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_partner" string="Customer" context="{'group_by': 'partner_name'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'invoice_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_budget_invoice" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">personal.budget.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_not_duplicate': 1}</field>
+    </record>
+</odoo>

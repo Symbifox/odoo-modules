@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_credit_root" name="Credit &amp; Identity" sequence="62"
+              web_icon="bf_credit_identity,static/description/icon.png"
+              groups="base.group_user"/>
+    <menuitem id="menu_credit_reminders" name="My reminders" parent="menu_credit_root"
+              action="action_credit_reminder" sequence="10"/>
+    <menuitem id="menu_credit_guide" name="Guide" parent="menu_credit_root"
+              action="action_credit_guide" sequence="20"/>
+    <menuitem id="menu_credit_setup" name="Set up my reminders" parent="menu_credit_root"
+              action="action_credit_setup" sequence="30"/>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_loan_list" model="ir.ui.view">
+        <field name="name">personal.budget.loan.list</field>
+        <field name="model">personal.budget.loan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="initial_amount"/>
+                <field name="monthly_payment"/>
+                <field name="total_months"/>
+                <field name="start_date"/>
+                <field name="current_balance" decoration-danger="current_balance > 0"/>
+                <field name="is_overdue"/>
+                <field name="book_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_loan_form" model="ir.ui.view">
+        <field name="name">personal.budget.loan.form</field>
+        <field name="model">personal.budget.loan</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="initial_amount"/>
+                            <field name="monthly_payment"/>
+                            <field name="book_id"/>
+                        </group>
+                        <group>
+                            <field name="total_months"/>
+                            <field name="start_date"/>
+                            <field name="current_balance"/>
+                            <field name="is_overdue"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="running_balance" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_loan" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">personal.budget.loan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

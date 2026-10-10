@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_recurring_list" model="ir.ui.view">
+        <field name="name">personal.budget.recurring.list</field>
+        <field name="model">personal.budget.recurring</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="next_date and next_date &lt; current_date"
+                  decoration-muted="not next_date">
+                <field name="name"/>
+                <field name="provider" optional="show"/>
+                <field name="category_id"/>
+                <field name="amount" sum="Total"/>
+                <field name="frequency"/>
+                <field name="monthly_amount" sum="Monthly total"/>
+                <field name="next_date"/>
+                <field name="auto_post" optional="show"/>
+                <field name="book_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_recurring_form" model="ir.ui.view">
+        <field name="name">personal.budget.recurring.form</field>
+        <field name="model">personal.budget.recurring</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_post_next" type="object" string="Record the payment"
+                            class="btn-primary" invisible="not next_date or not id"
+                            help="Creates the transaction for the next payment, even if it is not due yet."/>
+                    <button name="action_post_due" type="object" string="Record due payments"
+                            invisible="not next_date or not id"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transactions" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Netflix, home insurance, mobile phone…"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="provider"/>
+                            <field name="category_id"
+                                   options="{'no_create_edit': True}"/>
+                            <field name="book_id"/>
+                            <field name="amount"/>
+                            <field name="self_percent"/>
+                        </group>
+                        <group>
+                            <field name="frequency"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="next_date"/>
+                            <field name="last_posted_date" readonly="1"/>
+                            <field name="monthly_amount"/>
+                            <field name="auto_post"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_budget_recurring_search" model="ir.ui.view">
+        <field name="name">personal.budget.recurring.search</field>
+        <field name="model">personal.budget.recurring</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="provider"/>
+                <field name="category_id"/>
+                <field name="book_id"/>
+                <filter name="due" string="Payment due"
+                        domain="[('next_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="next_30" string="Next 30 days"
+                        domain="[('next_date', '&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="archived" string="Archived expenses" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_book" string="Budget" context="{'group_by': 'book_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_frequency" string="Frequency" context="{'group_by': 'frequency'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_budget_recurring" model="ir.actions.act_window">
+        <field name="name">Recurring expenses</field>
+        <field name="res_model">personal.budget.recurring</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_budget_recurring_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a subscription or a recurring expense</p>
+            <p>Streaming, insurance, mobile phone, internet: an amount, a frequency and a first payment date. The dashboard includes them in the forecast and shows what is left to pay this year.</p>
+        </field>
+    </record>
+</odoo>

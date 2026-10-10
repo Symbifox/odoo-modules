@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Isolation par budget, pour une instance de ménage.
+
+        Chaque donnée appartient à un budget (`book_id`). Un budget est visible
+        de la personne propriétaire et des personnes avec qui elle l'a partagé EXPRÈS
+        (`member_ids`), de personne d'autre. Les règles sont GLOBALES : elles
+        s'appliquent aussi aux administrateurs de la base ; seul `sudo()` passe.
+
+        noupdate="0" VOULU : une règle de sécurité doit suivre le code à chaque
+        montée. En 18.0.1.5.1 ces règles étaient en noupdate="1" et filtraient
+        sur `create_uid` ; la migration 18.0.2.0.0 lève le verrou pour que les
+        nouveaux domaines s'appliquent aux bases montées.
+    -->
+    <data noupdate="0">
+        <!-- Le budget lui-même : lu par la personne propriétaire et les personnes invitées… -->
+        <record id="budget_book_read_rule" model="ir.rule">
+            <field name="name">Budget: visible to its owner and invited people</field>
+            <field name="model_id" ref="model_personal_budget_book"/>
+            <field name="domain_force">['|', ('user_id', '=', user.id), ('member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <!-- …mais créé, modifié (partage compris) et supprimé par la seule personne propriétaire. -->
+        <record id="budget_book_owner_rule" model="ir.rule">
+            <field name="name">Budget: managed by its owner only</field>
+            <field name="model_id" ref="model_personal_budget_book"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="False"/>
+        </record>
+
+        <record id="budget_category_rule" model="ir.rule">
+            <field name="name">Budget: categories of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_category"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_contributor_rule" model="ir.rule">
+            <field name="name">Budget: contributors of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_contributor"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_transaction_rule" model="ir.rule">
+            <field name="name">Budget: transactions of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_transaction"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_plan_rule" model="ir.rule">
+            <field name="name">Budget: plans of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_plan"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_recurring_rule" model="ir.rule">
+            <field name="name">Budget: recurring expenses of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_recurring"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_loan_rule" model="ir.rule">
+            <field name="name">Budget: loans of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_loan"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_loan_line_rule" model="ir.rule">
+            <field name="name">Budget: loan lines of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_loan_line"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_cheque_rule" model="ir.rule">
+            <field name="name">Budget: cheques of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_cheque"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_invoice_rule" model="ir.rule">
+            <field name="name">Budget: invoices of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_invoice"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_share_line_rule" model="ir.rule">
+            <field name="name">Budget: sharing ledger of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_share_line"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="budget_analysis_rule" model="ir.rule">
+            <field name="name">Budget: analysis of own or shared budgets</field>
+            <field name="model_id" ref="model_personal_budget_analysis"/>
+            <field name="domain_force">['|', ('book_id.user_id', '=', user.id), ('book_id.member_ids', 'in', [user.id])]</field>
+        </record>
+
+        <!-- Les assistants : Odoo 18 n'isole pas les enregistrements transitoires
+             par lui-même. Sans ces règles, une autre personne lisait le relevé
+             importé (fichier, aperçu, résultat) et l'assignation en lot. -->
+        <record id="budget_import_wizard_rule" model="ir.rule">
+            <field name="name">Budget: own import wizards only</field>
+            <field name="model_id" ref="model_personal_budget_import_wizard"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+        <record id="budget_bulk_category_rule" model="ir.rule">
+            <field name="name">Budget: own bulk assignments only</field>
+            <field name="model_id" ref="model_personal_budget_bulk_category"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+    </data>
+</odoo>

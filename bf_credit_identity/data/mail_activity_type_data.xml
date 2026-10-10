@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_activity_type_credit" model="mail.activity.type">
+        <field name="name">Credit and identity</field>
+        <field name="icon">fa-shield</field>
+        <field name="res_model">bf.credit.reminder</field>
+        <field name="delay_count">0</field>
+        <field name="sequence">60</field>
+    </record>
+</odoo>

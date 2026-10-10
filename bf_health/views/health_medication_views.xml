@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="health_medication_view_list" model="ir.ui.view">
+        <field name="name">health.medication.list</field>
+        <field name="model">health.medication</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="dosage"/>
+                <field name="form"/>
+                <field name="frequency"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'paused'"
+                       decoration-danger="state == 'discontinued'"/>
+                <field name="renewal_date"/>
+                <field name="days_until_renewal"/>
+                <field name="refills_remaining"/>
+                <field name="prescriber"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="health_medication_view_form" model="ir.ui.view">
+        <field name="name">health.medication.form</field>
+        <field name="model">health.medication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="active,paused,discontinued"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du médicament"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Médicament">
+                            <field name="dosage"/>
+                            <field name="form"/>
+                            <field name="din"/>
+                            <field name="purpose"/>
+                        </group>
+                        <group string="Posologie">
+                            <field name="frequency"/>
+                            <field name="times_per_day"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Renouvellement">
+                            <field name="renewal_date"/>
+                            <field name="renewal_lead_days"/>
+                            <field name="refills_remaining"/>
+                            <field name="days_until_renewal"/>
+                            <field name="is_renewal_due" invisible="1"/>
+                        </group>
+                        <group string="Coordonnées">
+                            <field name="prescriber"/>
+                            <field name="pharmacy"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Effets secondaires">
+                            <field name="side_effects"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Historique de prise">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="time_slot"/>
+                                    <field name="taken" widget="boolean_toggle"/>
+                                    <field name="skipped_reason"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban -->
+    <record id="health_medication_view_kanban" model="ir.ui.view">
+        <field name="name">health.medication.kanban</field>
+        <field name="model">health.medication</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="dosage"/>
+                <field name="frequency"/>
+                <field name="renewal_date"/>
+                <field name="days_until_renewal"/>
+                <field name="state"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="color" widget="color_picker"/>
+                        <div class="fw-bold fs-5 mb-1">
+                            <field name="name"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="dosage"/> — <field name="frequency"/>
+                        </div>
+                        <div t-if="record.renewal_date.raw_value" class="mt-1">
+                            Renouvellement : <field name="renewal_date"/>
+                            (<field name="days_until_renewal"/> jours)
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_medication_view_search" model="ir.ui.view">
+        <field name="name">health.medication.search</field>
+        <field name="model">health.medication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="prescriber"/>
+                <field name="pharmacy"/>
+                <filter name="active_meds" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="renewal_due" string="Renouvellement dû" domain="[('renewal_date', '&lt;=', (context_today() + datetime.timedelta(days=14)).strftime('%Y-%m-%d')), ('renewal_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="paused" string="En pause" domain="[('state', '=', 'paused')]"/>
+                <filter name="discontinued" string="Cessés" domain="[('state', '=', 'discontinued')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_form" string="Forme" context="{'group_by': 'form'}"/>
+                    <filter name="group_prescriber" string="Prescripteur" context="{'group_by': 'prescriber'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Activity -->
+    <record id="health_medication_view_activity" model="ir.ui.view">
+        <field name="name">health.medication.activity</field>
+        <field name="model">health.medication</field>
+        <field name="arch" type="xml">
+            <activity string="Médicaments">
+                <templates>
+                    <div t-name="activity-box">
+                        <field name="name" display="full"/>
+                        <field name="dosage" muted="1" display="full"/>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="health_medication_action" model="ir.actions.act_window">
+        <field name="name">Médicaments</field>
+        <field name="res_model">health.medication</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="search_view_id" ref="health_medication_view_search"/>
+        <field name="context">{'search_default_active_meds': 1}</field>
+    </record>
+
+    <record id="health_medication_renewal_action" model="ir.actions.act_window">
+        <field name="name">Renouvellements à venir</field>
+        <field name="res_model">health.medication</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="health_medication_view_search"/>
+        <field name="domain">[('state', '=', 'active'), ('renewal_date', '!=', False)]</field>
+        <field name="context">{'search_default_renewal_due': 1}</field>
+    </record>
+
+</odoo>

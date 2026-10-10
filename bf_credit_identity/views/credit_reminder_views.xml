@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_reminder_list" model="ir.ui.view">
+        <field name="name">bf.credit.reminder.list</field>
+        <field name="model">bf.credit.reminder</field>
+        <field name="arch" type="xml">
+            <list string="Reminders"
+                  decoration-danger="due_state == 'overdue'"
+                  decoration-warning="due_state == 'soon'">
+                <field name="next_date"/>
+                <field name="name"/>
+                <field name="kind" optional="hide"/>
+                <field name="bureau" optional="show"/>
+                <field name="recurring" optional="hide"/>
+                <field name="last_done_date" optional="show"/>
+                <field name="due_state" widget="badge"
+                       decoration-danger="due_state == 'overdue'"
+                       decoration-warning="due_state == 'soon'"
+                       decoration-info="due_state == 'planned'"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <button name="action_mark_done" type="object" string="Done" icon="fa-check"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_credit_reminder_form" model="ir.ui.view">
+        <field name="name">bf.credit.reminder.form</field>
+        <field name="model">bf.credit.reminder</field>
+        <field name="arch" type="xml">
+            <form string="Reminder">
+                <header>
+                    <button name="action_mark_done" type="object" string="Done"
+                            class="btn-primary" invisible="not id or not active"/>
+                    <button name="action_open_link" type="object" string="Open the official page"
+                            invisible="not link_url"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Equifax credit report"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="bureau"/>
+                            <field name="next_date"/>
+                            <field name="due_state" widget="badge"
+                                   decoration-danger="due_state == 'overdue'"
+                                   decoration-warning="due_state == 'soon'"
+                                   decoration-info="due_state == 'planned'"/>
+                        </group>
+                        <group>
+                            <field name="recurring"/>
+                            <label for="interval_number" invisible="not recurring"/>
+                            <div class="o_row" invisible="not recurring">
+                                <field name="interval_number" required="recurring"/>
+                                <field name="interval_unit"/>
+                            </div>
+                            <field name="last_done_date"/>
+                            <field name="link_url" widget="url"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="note"
+                           placeholder="A note for yourself. Never write an account number, a password or your SIN here."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_reminder_search" model="ir.ui.view">
+        <field name="name">bf.credit.reminder.search</field>
+        <field name="model">bf.credit.reminder</field>
+        <field name="arch" type="xml">
+            <search string="Reminders">
+                <field name="name"/>
+                <filter name="overdue" string="Overdue"
+                        domain="[('next_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="next_30_days" string="Next 30 days"
+                        domain="[('next_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                    <filter name="group_bureau" string="Bureau" context="{'group_by': 'bureau'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_credit_reminder" model="ir.actions.act_window">
+        <field name="name">My reminders</field>
+        <field name="res_model">bf.credit.reminder</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_credit_reminder_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No reminder yet</p>
+            <p>Use <strong>Set up my reminders</strong> to create a starter calendar: your Equifax
+                and TransUnion credit reports, your monthly statements and a yearly review of your
+                protective measures. Only you can see your reminders.</p>
+        </field>
+    </record>
+</odoo>

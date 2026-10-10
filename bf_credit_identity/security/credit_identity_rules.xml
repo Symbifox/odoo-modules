@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        🔴 La règle d'isolation. GLOBALE (aucun groupe) : elle s'applique à toute
+        personne, administrateurs compris. Le superutilisateur (sudo(), tâches
+        planifiées) n'y est pas soumis, et un administrateur système peut modifier
+        les règles elles-mêmes. Un rappel de crédit est privé à la personne qui le
+        possède, sans exception ni partage.
+
+        noupdate="0" VOULU : une règle de sécurité suit le code à chaque montée.
+        Permissions déclarées explicitement : une montée ne remet pas une valeur
+        absente du XML.
+    -->
+    <data noupdate="0">
+        <record id="rule_credit_reminder_own" model="ir.rule">
+            <field name="name">Credit reminder: own reminders only</field>
+            <field name="model_id" ref="model_bf_credit_reminder"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- L'assistant de mise en route : Odoo 18 n'isole pas les enregistrements
+             transitoires par lui-même. Sans cette règle, une autre personne lisait
+             qui a posé une alerte de sécurité, auprès de quelle agence, et quand. -->
+        <record id="rule_credit_setup_own" model="ir.rule">
+            <field name="name">Credit setup: own wizards only</field>
+            <field name="model_id" ref="model_bf_credit_setup"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</odoo>

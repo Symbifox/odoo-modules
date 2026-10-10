@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_health.Dashboard">
+        <div class="o_action" style="overflow-y: auto;">
+
+            <!-- Loading -->
+            <t t-if="state.loading">
+                <div class="text-center p-5">
+                    <div class="spinner-border" style="color: #2e8b57;" role="status"/>
+                    <p class="mt-3 text-muted">Chargement...</p>
+                </div>
+            </t>
+
+            <!-- Main content -->
+            <t t-if="!state.loading and state.data">
+                <div class="container-fluid px-4 py-3" style="background: linear-gradient(135deg, #f0faf4 0%, #e8f5ec 100%);">
+
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0 fw-bold" style="color: #2e8b57;">
+                            <i class="fa fa-heartbeat me-2"/>Tableau de bord santé
+                        </h2>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm text-white"
+                                    style="background: #2e8b57;"
+                                    t-on-click="openWizard">
+                                <i class="fa fa-plus me-1"/>Saisie rapide
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="onRefresh">
+                                <i class="fa fa-refresh"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI row -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Med compliance -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.medication.log', 'Médicaments du jour')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Observance aujourd'hui
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" t-attf-class="{{complianceClass}}">
+                                        <t t-esc="compliancePercent"/>%
+                                    </h3>
+                                    <small class="text-muted">
+                                        <t t-esc="state.data.med_compliance.taken"/>/<t t-esc="state.data.med_compliance.total"/> pris
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active meds -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.medication', 'Médicaments', 'kanban')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Médicaments actifs
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #2e8b57;">
+                                        <t t-esc="state.data.active_meds"/>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Water today -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Eau aujourd'hui
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #3498db;">
+                                        <t t-esc="Math.round(state.data.water_today)"/> mL
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calories today -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Calories aujourd'hui
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #e67e22;">
+                                        <t t-esc="Math.round(state.data.calories_today)"/> kcal
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Activity KPI row (Fitbit-style) -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Steps today -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Pas aujourd'hui
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #16a085;">
+                                        <t t-esc="Math.round(state.data.steps_today)"/>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active minutes -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Minutes actives
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #16a085;">
+                                        <t t-esc="Math.round(state.data.active_minutes_today)"/>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sleep -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Sommeil (dernier)
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #6c5ce7;">
+                                        <t t-esc="formatSleep()"/>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Net calories -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.meal.log', 'Journal alimentaire')">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Calories nettes
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" t-attf-class="{{netCalorieClass}}">
+                                        <t t-esc="caloriesNet"/> kcal
+                                    </h3>
+                                    <small class="text-muted">
+                                        <t t-esc="caloriesConsumed"/> consommées − <t t-esc="caloriesBurned"/> brûlées
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Second row: vitals + overdue -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Latest vitals -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #2e8b57 0%, #3cb371 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-stethoscope me-2"/>Derniers signes vitaux
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-sm table-hover mb-0 align-middle">
+                                        <tbody>
+                                            <tr t-if="state.data.vitals_snapshot.weight">
+                                                <td class="ps-3"><i class="fa fa-balance-scale me-2 text-muted"/>Poids</td>
+                                                <td class="text-end fw-bold"><t t-esc="formatVital('weight')"/> kg</td>
+                                                <td class="text-end text-muted pe-3" style="font-size: 0.8rem;"><t t-esc="formatVitalDate('weight')"/></td>
+                                            </tr>
+                                            <tr t-if="state.data.vitals_snapshot.bp_systolic">
+                                                <td class="ps-3"><i class="fa fa-heart me-2 text-muted"/>PA</td>
+                                                <td class="text-end fw-bold">
+                                                    <t t-esc="formatVital('bp_systolic')"/>/<t t-esc="formatVital('bp_diastolic')"/> mmHg
+                                                </td>
+                                                <td class="text-end text-muted pe-3" style="font-size: 0.8rem;"><t t-esc="formatVitalDate('bp_systolic')"/></td>
+                                            </tr>
+                                            <tr t-if="state.data.vitals_snapshot.heart_rate">
+                                                <td class="ps-3"><i class="fa fa-heartbeat me-2 text-muted"/>FC</td>
+                                                <td class="text-end fw-bold"><t t-esc="formatVital('heart_rate')"/> bpm</td>
+                                                <td class="text-end text-muted pe-3" style="font-size: 0.8rem;"><t t-esc="formatVitalDate('heart_rate')"/></td>
+                                            </tr>
+                                            <tr t-if="state.data.vitals_snapshot.blood_sugar">
+                                                <td class="ps-3"><i class="fa fa-tint me-2 text-muted"/>Glycémie</td>
+                                                <td class="text-end fw-bold"><t t-esc="formatVital('blood_sugar')"/> mmol/L</td>
+                                                <td class="text-end text-muted pe-3" style="font-size: 0.8rem;"><t t-esc="formatVitalDate('blood_sugar')"/></td>
+                                            </tr>
+                                            <tr t-if="state.data.vitals_snapshot.spo2">
+                                                <td class="ps-3"><i class="fa fa-lungs me-2 text-muted"/>SpO2</td>
+                                                <td class="text-end fw-bold"><t t-esc="formatVital('spo2')"/>%</td>
+                                                <td class="text-end text-muted pe-3" style="font-size: 0.8rem;"><t t-esc="formatVitalDate('spo2')"/></td>
+                                            </tr>
+                                            <tr t-if="!Object.keys(state.data.vitals_snapshot).length">
+                                                <td colspan="3" class="text-center text-muted py-3">
+                                                    Aucune donnée enregistrée
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Overdue items -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-exclamation-triangle me-2"/>En retard
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="state.data.overdue_items.length">
+                                        <table class="table table-sm table-hover mb-0 align-middle">
+                                            <tbody>
+                                                <t t-foreach="state.data.overdue_items" t-as="item" t-key="item.type + '_' + item.id">
+                                                    <tr>
+                                                        <td class="ps-3">
+                                                            <span class="badge bg-secondary me-1">
+                                                                <t t-esc="overdueLabel(item.type)"/>
+                                                            </span>
+                                                            <t t-esc="item.name"/>
+                                                        </td>
+                                                        <td class="text-end text-danger pe-3">
+                                                            <t t-esc="item.due_date"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-4">
+                                            <i class="fa fa-check-circle fa-2x mb-2" style="color: #2e8b57;"/>
+                                            <p class="mb-0">Tout est à jour</p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Third row: upcoming screenings + substance weekly -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Upcoming screenings -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-calendar me-2"/>Examens à venir (30 jours)
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="state.data.upcoming_screenings.length">
+                                        <table class="table table-sm table-hover mb-0 align-middle">
+                                            <tbody>
+                                                <t t-foreach="state.data.upcoming_screenings" t-as="scr" t-key="scr.id">
+                                                    <tr role="button"
+                                                        t-on-click="() => this.openModel('health.screening', 'Examens', 'kanban')">
+                                                        <td class="ps-3 fw-medium">
+                                                            <t t-esc="scr.name"/>
+                                                        </td>
+                                                        <td class="text-end pe-3">
+                                                            <t t-esc="scr.next_due"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-4">
+                                            Aucun examen dans les 30 prochains jours
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Substance weekly -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #8e44ad 0%, #9b59b6 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-glass me-2"/>Consommation (7 derniers jours)
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="Object.keys(state.data.substance_weekly).length">
+                                        <table class="table table-sm table-hover mb-0 align-middle">
+                                            <tbody>
+                                                <t t-foreach="Object.entries(state.data.substance_weekly)" t-as="entry" t-key="entry[0]">
+                                                    <tr role="button"
+                                                        t-on-click="() => this.openModel('health.substance.log', 'Consommation')">
+                                                        <td class="ps-3 fw-medium">
+                                                            <t t-esc="substanceLabel(entry[0])"/>
+                                                        </td>
+                                                        <td class="text-end fw-bold pe-3">
+                                                            <t t-esc="entry[1]"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-4">
+                                            Aucune consommation enregistrée
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Nutrition + workout row -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Nutrition today -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #e67e22 0%, #f39c12 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-cutlery me-2"/>Nutrition du jour
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                        <span class="fw-bold fs-4" style="color: #e67e22;">
+                                            <t t-esc="caloriesConsumed"/>
+                                            <t t-if="calorieGoal"> / <t t-esc="calorieGoal"/></t> kcal
+                                        </span>
+                                        <span t-if="calorieRemaining !== null" class="text-muted">
+                                            <t t-esc="calorieRemaining"/> kcal restantes
+                                        </span>
+                                    </div>
+                                    <table class="table table-sm mb-0 align-middle">
+                                        <tbody>
+                                            <tr>
+                                                <td>Protéines</td>
+                                                <td class="text-end fw-bold">
+                                                    <t t-esc="Math.round(state.data.nutrition_today.protein)"/> g
+                                                    <t t-if="state.data.nutrition_goal"> / <t t-esc="state.data.nutrition_goal.protein_target_g"/> g</t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Glucides</td>
+                                                <td class="text-end fw-bold">
+                                                    <t t-esc="Math.round(state.data.nutrition_today.carbs)"/> g
+                                                    <t t-if="state.data.nutrition_goal"> / <t t-esc="state.data.nutrition_goal.carbs_target_g"/> g</t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lipides</td>
+                                                <td class="text-end fw-bold">
+                                                    <t t-esc="Math.round(state.data.nutrition_today.fat)"/> g
+                                                    <t t-if="state.data.nutrition_goal"> / <t t-esc="state.data.nutrition_goal.fat_target_g"/> g</t>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weekly workouts -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="() => this.openModel('health.workout', 'Entraînement')">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #16a085 0%, #1abc9c 100%);">
+                                    <h5 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-bicycle me-2"/>Entraînement (7 derniers jours)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <div class="fw-bold fs-3" style="color: #16a085;">
+                                                <t t-esc="state.data.weekly_workouts.count"/>
+                                            </div>
+                                            <small class="text-muted">séances</small>
+                                        </div>
+                                        <div class="col">
+                                            <div class="fw-bold fs-3" style="color: #16a085;">
+                                                <t t-esc="Math.round(state.data.weekly_workouts.distance * 10) / 10"/>
+                                            </div>
+                                            <small class="text-muted">km</small>
+                                        </div>
+                                        <div class="col">
+                                            <div class="fw-bold fs-3" style="color: #16a085;">
+                                                <t t-esc="Math.round(state.data.weekly_workouts.duration)"/>
+                                            </div>
+                                            <small class="text-muted">min</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Quick nav buttons -->
+                    <div class="row g-2">
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.medication', 'Médicaments', 'kanban')">
+                                <i class="fa fa-pills me-1"/>Médicaments
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                <i class="fa fa-stethoscope me-1"/>Signes vitaux
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.lab.test', 'Analyses')">
+                                <i class="fa fa-flask me-1"/>Analyses
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.screening', 'Examens', 'kanban')">
+                                <i class="fa fa-calendar-check-o me-1"/>Examens
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.condition', 'Conditions')">
+                                <i class="fa fa-medkit me-1"/>Conditions
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.substance.log', 'Consommation')">
+                                <i class="fa fa-glass me-1"/>Consommation
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.workout', 'Entraînement')">
+                                <i class="fa fa-bicycle me-1"/>Entraînement
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.openModel('health.meal.log', 'Journal alimentaire')">
+                                <i class="fa fa-cutlery me-1"/>Alimentation
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+
+            <!-- No data -->
+            <t t-if="!state.loading and !state.data">
+                <div class="text-center p-5">
+                    <h4 style="color: #2e8b57;">Aucune donnée disponible</h4>
+                    <button class="btn mt-3 text-white" style="background: #2e8b57;" t-on-click="onRefresh">
+                        Réessayer
+                    </button>
+                </div>
+            </t>
+
+        </div>
+    </t>
+</templates>

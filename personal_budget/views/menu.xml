@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root menu -->
+    <menuitem id="menu_budget_root"
+        name="Personal Budget"
+        web_icon="personal_budget,static/description/icon.png"
+        groups="personal_budget.group_budget_user"
+        sequence="100"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_budget_dashboard"
+        name="Dashboard"
+        parent="menu_budget_root"
+        action="action_budget_dashboard"
+        sequence="1"/>
+
+    <!-- Transactions -->
+    <menuitem id="menu_budget_transactions_parent"
+        name="Transactions"
+        parent="menu_budget_root"
+        sequence="10"/>
+
+    <menuitem id="menu_budget_quick_add_expense"
+        name="Enter a transaction"
+        parent="menu_budget_transactions_parent"
+        action="action_quick_add_expense"
+        sequence="0"/>
+
+    <menuitem id="menu_budget_transaction"
+        name="Transactions"
+        parent="menu_budget_transactions_parent"
+        action="action_budget_transaction"
+        sequence="1"/>
+
+    <menuitem id="menu_budget_transaction_monthly"
+        name="Monthly analysis"
+        parent="menu_budget_transactions_parent"
+        action="action_budget_transaction_monthly"
+        sequence="4"/>
+
+    <menuitem id="menu_budget_share_line"
+        name="Sharing ledger"
+        parent="menu_budget_transactions_parent"
+        action="action_share_line"
+        sequence="2"/>
+
+    <menuitem id="menu_budget_cheque"
+        name="Cheques"
+        parent="menu_budget_transactions_parent"
+        action="action_budget_cheque"
+        sequence="3"/>
+
+    <!-- Planification -->
+    <menuitem id="menu_budget_plan_parent"
+        name="Planning"
+        parent="menu_budget_root"
+        sequence="20"/>
+
+    <menuitem id="menu_budget_plan"
+        name="Budget plans"
+        parent="menu_budget_plan_parent"
+        action="action_budget_plan"
+        sequence="1"/>
+
+    <menuitem id="menu_budget_recurring"
+        name="Recurring expenses"
+        parent="menu_budget_plan_parent"
+        action="action_budget_recurring"
+        sequence="3"/>
+
+    <menuitem id="menu_budget_analysis"
+        name="Analysis"
+        parent="menu_budget_plan_parent"
+        action="action_budget_analysis"
+        sequence="2"/>
+
+    <!-- Finances -->
+    <menuitem id="menu_budget_finance_parent"
+        name="Finances"
+        parent="menu_budget_root"
+        sequence="30"/>
+
+    <menuitem id="menu_budget_loan"
+        name="Loans"
+        parent="menu_budget_finance_parent"
+        action="action_budget_loan"
+        sequence="1"/>
+
+    <menuitem id="menu_budget_invoice"
+        name="Invoices"
+        parent="menu_budget_finance_parent"
+        action="action_budget_invoice"
+        sequence="2"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_budget_config_parent"
+        name="Configuration"
+        parent="menu_budget_root"
+        sequence="90"/>
+
+    <menuitem id="menu_budget_book"
+        name="Budgets and sharing"
+        parent="menu_budget_config_parent"
+        action="action_budget_book"
+        sequence="0"/>
+
+    <menuitem id="menu_budget_category"
+        name="Categories"
+        parent="menu_budget_config_parent"
+        action="action_budget_category"
+        sequence="1"/>
+
+    <menuitem id="menu_budget_contributor"
+        name="Contributors"
+        parent="menu_budget_config_parent"
+        action="action_budget_contributor"
+        sequence="2"/>
+
+    <menuitem id="menu_budget_import"
+        name="Import"
+        parent="menu_budget_config_parent"
+        action="action_budget_import_wizard"
+        sequence="10"/>
+</odoo>

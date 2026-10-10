@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_import_wizard_form" model="ir.ui.view">
+        <field name="name">personal.budget.import.wizard.form</field>
+        <field name="model">personal.budget.import.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="book_id" options="{'no_create': True}"/>
+                        <field name="import_type"/>
+                        <field name="csv_file" filename="csv_filename"/>
+                        <field name="csv_filename" invisible="1"/>
+                        <field name="delimiter" invisible="import_type == 'ofx'"/>
+                        <field name="skip_header" invisible="import_type == 'ofx'"/>
+                        <field name="date_floor" invisible="import_type != 'ofx'"/>
+                        <field name="loan_id" invisible="import_type != 'loan_line'"/>
+                    </group>
+                </group>
+                <group string="Preview">
+                    <field name="preview" nolabel="1" widget="text"/>
+                </group>
+                <group string="Result" invisible="not result">
+                    <field name="result" nolabel="1" widget="text"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import file" type="object" class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import</field>
+        <field name="res_model">personal.budget.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="screening_annual_physical" model="health.screening">
+            <field name="name">Examen annuel</field>
+            <field name="screening_type">physical</field>
+            <field name="frequency">yearly</field>
+            <field name="lead_days">30</field>
+        </record>
+
+        <record id="screening_dental_cleaning" model="health.screening">
+            <field name="name">Nettoyage dentaire</field>
+            <field name="screening_type">dental</field>
+            <field name="frequency">biannually</field>
+            <field name="lead_days">30</field>
+        </record>
+
+        <record id="screening_eye_exam" model="health.screening">
+            <field name="name">Examen de la vue</field>
+            <field name="screening_type">vision</field>
+            <field name="frequency">yearly</field>
+            <field name="lead_days">30</field>
+        </record>
+
+        <record id="screening_dermatology" model="health.screening">
+            <field name="name">Examen dermatologique</field>
+            <field name="screening_type">dermatology</field>
+            <field name="frequency">yearly</field>
+            <field name="lead_days">30</field>
+        </record>
+
+        <record id="screening_blood_work" model="health.screening">
+            <field name="name">Bilan sanguin complet</field>
+            <field name="screening_type">blood_test</field>
+            <field name="frequency">yearly</field>
+            <field name="lead_days">30</field>
+        </record>
+
+    </data>
+</odoo>

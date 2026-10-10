@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List (editable) -->
+    <record id="health_food_view_list" model="ir.ui.view">
+        <field name="name">health.food.list</field>
+        <field name="model">health.food</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="brand"/>
+                <field name="serving_size"/>
+                <field name="serving_unit"/>
+                <field name="calories"/>
+                <field name="protein_g"/>
+                <field name="carbs_g"/>
+                <field name="fat_g"/>
+                <field name="barcode"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="health_food_view_form" model="ir.ui.view">
+        <field name="name">health.food.form</field>
+        <field name="model">health.food</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom de l'aliment"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identité">
+                            <field name="brand"/>
+                            <field name="serving_size"/>
+                            <field name="serving_unit"/>
+                            <div class="o_row">
+                                <field name="barcode"/>
+                                <button name="action_lookup_barcode" type="object"
+                                        string="Chercher par code-barres" class="btn-secondary"
+                                        icon="fa-barcode" invisible="not barcode"/>
+                            </div>
+                        </group>
+                        <group string="Valeurs nutritives (par portion)">
+                            <field name="calories"/>
+                            <field name="protein_g"/>
+                            <field name="carbs_g"/>
+                            <field name="fat_g"/>
+                            <field name="fiber_g"/>
+                            <field name="sodium_mg"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" colspan="2">
+                        La recherche par code-barres utilise Open Food Facts et remplit
+                        les valeurs par 100 g/mL.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="health_food_view_search" model="ir.ui.view">
+        <field name="name">health.food.search</field>
+        <field name="model">health.food</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="brand"/>
+                <field name="barcode"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_brand" string="Marque" context="{'group_by': 'brand'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="health_food_action" model="ir.actions.act_window">
+        <field name="name">Aliments</field>
+        <field name="res_model">health.food</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="health_food_view_search"/>
+    </record>
+
+</odoo>

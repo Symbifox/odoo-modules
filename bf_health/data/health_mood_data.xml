@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Le rappel du journal d'humeur. SANS gabarit de courriel : rien ne
+             sort de l'instance. -->
+        <record id="mail_activity_type_mood_reminder" model="mail.activity.type">
+            <field name="name">Humeur du jour</field>
+            <field name="summary">Healthy Fox : votre saisie du jour</field>
+            <field name="res_model">health.mood.settings</field>
+            <field name="icon">fa-smile-o</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+        <!-- Aux 15 minutes : chaque personne reçoit son rappel à SON heure,
+             dans SON fuseau. -->
+        <record id="ir_cron_mood_reminders" model="ir.cron">
+            <field name="name">Santé : rappels du journal d'humeur</field>
+            <field name="model_id" ref="model_health_mood_settings"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_mood_reminders()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

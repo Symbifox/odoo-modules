@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top-level app menu (opens dashboard) -->
+    <menuitem id="health_menu_root"
+              name="Healthy Fox"
+              web_icon="bf_health,static/description/icon.png"
+              action="health_dashboard_action"
+              groups="bf_health.group_health_user"
+              sequence="90"/>
+
+    <!-- Quotidien -->
+    <menuitem id="health_menu_daily" name="Quotidien"
+              parent="health_menu_root" sequence="10"/>
+    <menuitem id="health_menu_daily_wizard" name="Saisie rapide"
+              parent="health_menu_daily"
+              action="health_daily_log_wizard_action" sequence="10"/>
+    <menuitem id="health_menu_daily_med_log" name="Médicaments du jour"
+              parent="health_menu_daily"
+              action="health_medication_log_action" sequence="20"/>
+    <menuitem id="health_menu_daily_vitals" name="Signes vitaux"
+              parent="health_menu_daily"
+              action="health_vital_action" sequence="30"/>
+    <menuitem id="health_menu_daily_symptoms" name="Symptômes"
+              parent="health_menu_daily"
+              action="health_symptom_log_action" sequence="40"/>
+    <menuitem id="health_menu_daily_substance" name="Consommation"
+              parent="health_menu_daily"
+              action="health_substance_log_action" sequence="50"/>
+
+    <!-- Humeur -->
+    <menuitem id="health_menu_mood" name="Humeur"
+              parent="health_menu_root" sequence="12"/>
+    <menuitem id="health_menu_mood_entries" name="Saisies"
+              parent="health_menu_mood"
+              action="health_mood_entry_action" sequence="10"/>
+    <menuitem id="health_menu_mood_settings" name="Mon journal et corrélations"
+              parent="health_menu_mood"
+              action="action_mood_settings_open" sequence="20"/>
+    <menuitem id="health_menu_mood_activities" name="Activités"
+              parent="health_menu_mood"
+              action="health_mood_activity_action" sequence="30"/>
+    <menuitem id="health_menu_mood_phone" name="Saisir au téléphone"
+              parent="health_menu_mood"
+              action="action_mood_phone_page" sequence="40"/>
+
+    <!-- Réduction -->
+    <menuitem id="health_menu_reduction" name="Réduction"
+              parent="health_menu_root" sequence="15"/>
+    <menuitem id="health_menu_reduction_plan" name="Plan de réduction"
+              parent="health_menu_reduction"
+              action="health_reduction_step_action" sequence="10"/>
+    <menuitem id="health_menu_reduction_active" name="Étapes actives"
+              parent="health_menu_reduction"
+              action="health_reduction_step_active_action" sequence="20"/>
+
+    <!-- Entraînement -->
+    <menuitem id="health_menu_workout" name="Entraînement"
+              parent="health_menu_root" sequence="16"/>
+    <menuitem id="health_menu_workout_all" name="Séances"
+              parent="health_menu_workout"
+              action="health_workout_action" sequence="10"/>
+
+    <!-- Alimentation -->
+    <menuitem id="health_menu_nutrition" name="Alimentation"
+              parent="health_menu_root" sequence="17"/>
+    <menuitem id="health_menu_nutrition_journal" name="Journal alimentaire"
+              parent="health_menu_nutrition"
+              action="health_meal_log_action" sequence="10"/>
+    <menuitem id="health_menu_nutrition_food" name="Aliments"
+              parent="health_menu_nutrition"
+              action="health_food_action" sequence="20"/>
+    <menuitem id="health_menu_nutrition_goal" name="Objectif nutritionnel"
+              parent="health_menu_nutrition"
+              action="health_nutrition_goal_action" sequence="30"/>
+
+    <!-- Médicaments -->
+    <menuitem id="health_menu_medication" name="Médicaments"
+              parent="health_menu_root" sequence="20"/>
+    <menuitem id="health_menu_medication_all" name="Tous les médicaments"
+              parent="health_menu_medication"
+              action="health_medication_action" sequence="10"/>
+    <menuitem id="health_menu_medication_renewal" name="Renouvellements à venir"
+              parent="health_menu_medication"
+              action="health_medication_renewal_action" sequence="20"/>
+
+    <!-- Analyses -->
+    <menuitem id="health_menu_lab" name="Analyses"
+              parent="health_menu_root" sequence="30"/>
+    <menuitem id="health_menu_lab_all" name="Toutes les analyses"
+              parent="health_menu_lab"
+              action="health_lab_test_action" sequence="10"/>
+    <menuitem id="health_menu_lab_requisition" name="Réquisitions en attente"
+              parent="health_menu_lab"
+              action="health_lab_test_requisition_action" sequence="20"/>
+
+    <!-- Examens -->
+    <menuitem id="health_menu_screening" name="Examens"
+              parent="health_menu_root" sequence="40"/>
+    <menuitem id="health_menu_screening_all" name="Tous les examens"
+              parent="health_menu_screening"
+              action="health_screening_action" sequence="10"/>
+    <menuitem id="health_menu_screening_calendar" name="Calendrier"
+              parent="health_menu_screening"
+              action="health_screening_calendar_action" sequence="20"/>
+
+    <!-- Conditions -->
+    <menuitem id="health_menu_condition" name="Conditions"
+              parent="health_menu_root" sequence="50"/>
+    <menuitem id="health_menu_condition_active" name="Conditions actives"
+              parent="health_menu_condition"
+              action="health_condition_active_action" sequence="10"/>
+    <menuitem id="health_menu_condition_all" name="Toutes les conditions"
+              parent="health_menu_condition"
+              action="health_condition_action" sequence="20"/>
+
+    <!-- Rapports -->
+    <menuitem id="health_menu_reports" name="Rapports"
+              parent="health_menu_root" sequence="60"/>
+    <menuitem id="health_menu_reports_dashboard" name="Tableau de bord"
+              parent="health_menu_reports"
+              action="health_dashboard_action" sequence="10"/>
+    <menuitem id="health_menu_reports_weight" name="Tendance du poids"
+              parent="health_menu_reports"
+              action="health_vital_weight_action" sequence="20"/>
+    <menuitem id="health_menu_reports_bp" name="Pression artérielle"
+              parent="health_menu_reports"
+              action="health_vital_bp_action" sequence="30"/>
+    <menuitem id="health_menu_reports_substance" name="Consommation mensuelle"
+              parent="health_menu_reports"
+              action="health_substance_log_pivot_action" sequence="40"/>
+    <menuitem id="health_menu_reports_nutrition" name="Apport calorique"
+              parent="health_menu_reports"
+              action="health_meal_log_pivot_action" sequence="50"/>
+    <menuitem id="health_menu_reports_workout" name="Entraînement (pivot)"
+              parent="health_menu_reports"
+              action="health_workout_action" sequence="60"/>
+
+</odoo>

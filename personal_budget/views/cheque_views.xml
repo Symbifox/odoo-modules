@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_cheque_list" model="ir.ui.view">
+        <field name="name">personal.budget.cheque.list</field>
+        <field name="model">personal.budget.cheque</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="number desc">
+                <field name="number"/>
+                <field name="date"/>
+                <field name="payee"/>
+                <field name="amount" sum="Total"/>
+                <field name="memo"/>
+                <field name="is_cashed"/>
+                <field name="bank_label"/>
+                <field name="comments"/>
+                <field name="book_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_cheque_form" model="ir.ui.view">
+        <field name="name">personal.budget.cheque.form</field>
+        <field name="model">personal.budget.cheque</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="date"/>
+                            <field name="payee"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="memo"/>
+                            <field name="is_cashed"/>
+                            <field name="bank_label"/>
+                            <field name="book_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="comments"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_budget_cheque_search" model="ir.ui.view">
+        <field name="name">personal.budget.cheque.search</field>
+        <field name="model">personal.budget.cheque</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="payee"/>
+                <field name="memo"/>
+                <field name="book_id"/>
+                <filter name="not_cashed" string="Not cashed" domain="[('is_cashed', '=', False)]"/>
+                <filter name="cashed" string="Cashed cheques" domain="[('is_cashed', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_budget_cheque" model="ir.actions.act_window">
+        <field name="name">Cheques</field>
+        <field name="res_model">personal.budget.cheque</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

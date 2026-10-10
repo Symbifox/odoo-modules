@@ -1,0 +1,3671 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_health
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 00:33+0000\n"
+"PO-Revision-Date: 2026-10-02 06:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "%(force)s (r = %(r)s, %(n)s jours) : %(sens)s."
+msgstr "%(force)s (r = %(r)s, %(n)s days): %(sens)s."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "%(force)s avec la sévérité (r = %(r)s) : plus le symptôme est sévère, %(sens)s."
+msgstr "%(force)s with severity (r = %(r)s): the more severe the symptom, %(sens)s."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "%(n)s jours avec sommeil et humeur : il en faut %(min)s."
+msgstr "%(n)s days with both sleep and mood: %(min)s are needed."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "%(n)s jours saisis sur la période. Les liens se calculent à partir de %(min)s jours."
+msgstr "%(n)s days logged in this period. Links are calculated once there are %(min)s days."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "%(oui)s : humeur moyenne de %(m_oui)s sur 5 (%(n_oui)s jours). %(non)s : %(m_non)s (%(n_non)s jours)."
+msgstr "%(oui)s: average mood of %(m_oui)s out of 5 (%(n_oui)s days). %(non)s: %(m_non)s (%(n_non)s days)."
+
+#. module: bf_health
+#: model:ir.actions.report,print_report_name:bf_health.action_report_mood_doctor
+msgid "'Humeur - %s au %s' % (object.date_from, object.date_to)"
+msgstr "'Mood - %s to %s' % (object.date_from, object.date_to)"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid ""
+".\n"
+"                            Une corrélation n'est pas une cause : ces liens sont des pistes de discussion, pas un diagnostic."
+msgstr ""
+".\n"
+"                            A correlation is not a cause: these links are starting points for discussion, not a diagnosis."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__severity__1
+msgid "1 - Léger"
+msgstr "1 - Mild"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__1
+msgid "1 — Très facile"
+msgstr "1: Very easy"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__10
+msgid "10 — Maximal"
+msgstr "10: Maximum"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__severity__2
+msgid "2 - Modéré"
+msgstr "2 - Moderate"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__twice_daily
+msgid "2x par jour"
+msgstr "Twice a day"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__severity__3
+msgid "3 - Important"
+msgstr "3 - Significant"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__3
+msgid "3 — Facile"
+msgstr "3: Easy"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "30 derniers jours"
+msgstr "Last 30 days"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__three_daily
+msgid "3x par jour"
+msgstr "3 times a day"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__severity__4
+msgid "4 - Sévère"
+msgstr "4 - Severe"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__severity__5
+msgid "5 - Intense"
+msgstr "5 - Intense"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__5
+msgid "5 — Modéré"
+msgstr "5: Moderate"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "7 derniers jours"
+msgstr "Last 7 days"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__7
+msgid "7 — Difficile"
+msgstr "7: Hard"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__9
+msgid "9 — Très difficile"
+msgstr "9: Very hard"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_form
+msgid "<span> — </span>"
+msgstr "<span> - </span>"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__abdomen
+msgid "Abdomen"
+msgstr "Abdomen"
+
+#. module: bf_health
+#: model:res.groups,comment:bf_health.group_health_user
+msgid "Accès complet au suivi de santé personnel"
+msgstr "Full access to personal health tracking"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__active
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__state__active
+msgid "Actif"
+msgstr "Active"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "Actifs"
+msgstr "Active"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__active
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__active
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__state__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+msgid "Actives"
+msgstr "Active"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_mail_activity
+msgid "Activity"
+msgstr "Activity"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_state
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_state
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_state
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_state
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_state
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_type_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_type_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_type_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_type_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_type_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__name
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+msgid "Activité"
+msgstr "Activity"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_mood_activity
+msgid "Activité du journal d'humeur"
+msgstr "Mood journal activity"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__mood_activity_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__activity_ids
+#: model:ir.ui.menu,name:bf_health.health_menu_mood_activities
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_activity_view_list
+msgid "Activités"
+msgstr "Activities"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_mood_activity_action
+msgid "Activités du journal d'humeur"
+msgstr "Mood journal activities"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__condition_type__acute
+msgid "Aiguë"
+msgstr "Acute"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Ajouter une note"
+msgstr "Add a note"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__alcohol
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__alcohol
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__alcohol
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+msgid "Alcool"
+msgstr "Alcohol"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_food
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__food_id
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__food_id
+msgid "Aliment"
+msgstr "Food"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.ui.menu,name:bf_health.health_menu_nutrition
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+msgid "Alimentation"
+msgstr "Nutrition"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_food_action
+#: model:ir.ui.menu,name:bf_health.health_menu_nutrition_food
+msgid "Aliments"
+msgstr "Foods"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__avg_pace_min_km
+msgid "Allure (min/km)"
+msgstr "Pace (min/km)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Amis"
+msgstr "Friends"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_form
+msgid "Analyse"
+msgstr "Test"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__test_type__urine
+msgid "Analyse d'urine"
+msgstr "Urine test"
+
+#. module: bf_health
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_lab_test
+msgid "Analyse de labo à prévoir"
+msgstr "Lab test to schedule"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_lab_test
+msgid "Analyse de laboratoire"
+msgstr "Lab test"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_lab_test_action
+#: model:ir.ui.menu,name:bf_health.health_menu_lab
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_activity
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_calendar
+msgid "Analyses"
+msgstr "Lab tests"
+
+#. module: bf_health
+#: model:mail.activity.type,name:bf_health.mail_activity_type_lab_test
+msgid "Analyses de laboratoire"
+msgstr "Lab tests"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__yearly
+msgid "Annuel"
+msgstr "Yearly"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_report_wizard_view_form
+msgid "Annuler"
+msgstr "Cancel"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__year
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__year
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__year
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__year
+msgid "Année"
+msgstr "Year"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_meal_log_pivot_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_nutrition
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_graph
+msgid "Apport calorique"
+msgstr "Calorie intake"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Arrêt"
+msgstr "Stopping"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__date_to
+msgid "Au"
+msgstr "To"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__as_needed
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__as_needed
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__as_needed
+msgid "Au besoin"
+msgstr "As needed"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Aucun examen dans les 30 prochains jours"
+msgstr "No screenings in the next 30 days"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Aucun lien net (r = %(r)s, %(n)s jours)."
+msgstr "No clear link (r = %(r)s, %(n)s days)."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_food.py:0
+msgid "Aucun produit trouvé pour le code-barres %s."
+msgstr "No product found for barcode %s."
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Aucune consommation enregistrée"
+msgstr "No substance use logged"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Aucune donnée disponible"
+msgstr "No data available"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Aucune donnée enregistrée"
+msgstr "No data recorded"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Aucune saisie sur la période."
+msgstr "No entries in this period."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_workout.py:0
+msgid "Aucune trace exploitable dans ce fichier GPX (moins de deux points)."
+msgstr "No usable track in this GPX file (fewer than two points)."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+msgid "Aujourd'hui"
+msgstr "Today"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__test_type__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__other
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__other
+msgid "Autre"
+msgstr "Other"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__two_years
+msgid "Aux 2 ans"
+msgstr "Every 2 years"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__biweekly
+msgid "Aux 2 semaines"
+msgstr "Every 2 weeks"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__five_years
+msgid "Aux 5 ans"
+msgstr "Every 5 years"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Avec %s"
+msgstr "With %s"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__mood_level__4
+#: model:ir.model.fields.selection,name:bf_health.selection__health_mood_entry__level__4
+msgid "Bien"
+msgstr "Good"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__state__due_soon
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+msgid "Bientôt dû"
+msgstr "Due soon"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__blood_test
+msgid "Bilan sanguin"
+msgstr "Blood work"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "Bons jours"
+msgstr "Good days"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__caffeine
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__caffeine
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__caffeine
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+msgid "Caféine"
+msgstr "Caffeine"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__correlations_enabled
+msgid "Calculer les corrélations"
+msgstr "Calculate correlations"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_screening_calendar
+msgid "Calendrier"
+msgstr "Calendar"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_screening_calendar_action
+msgid "Calendrier des examens"
+msgstr "Screening calendar"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__calories
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Calories"
+msgstr "Calories"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__calories
+#: model:ir.model.fields,field_description:bf_health.field_health_food__calories
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__calories
+msgid "Calories (kcal)"
+msgstr "Calories (kcal)"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Calories aujourd'hui"
+msgstr "Calories today"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__workout_calories
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__calories_burned
+msgid "Calories brûlées"
+msgstr "Calories burned"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Calories nettes"
+msgstr "Net calories"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__cannabis
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__cannabis
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__cannabis
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+msgid "Cannabis"
+msgstr "Cannabis"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__capsule
+msgid "Capsule"
+msgstr "Capsule"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__cardio
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__cardio
+msgid "Cardio"
+msgstr "Cardio"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
+msgid "Ce mois"
+msgstr "This month"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__state__discontinued
+msgid "Cessé"
+msgstr "Discontinued"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "Cessés"
+msgstr "Discontinued"
+
+#. module: bf_health
+#: model:ir.model.constraint,message:bf_health.constraint_health_mood_activity_bf_mood_activity_unique
+msgid "Cette activité existe déjà."
+msgstr "This activity already exists."
+
+#. module: bf_health
+#: model:ir.model.constraint,message:bf_health.constraint_health_mood_entry_bf_mood_client_uuid_unique
+msgid "Cette saisie est déjà enregistrée."
+msgstr "This entry is already saved."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
+msgid "Cette semaine"
+msgstr "This week"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Chargement..."
+msgstr "Loading..."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
+msgid "Chercher par code-barres"
+msgstr "Search by barcode"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Choisissez d'abord un visage."
+msgstr "Pick a face first."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Choisissez un des cinq visages."
+msgstr "Pick one of the five faces."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__condition_type__chronic
+msgid "Chronique"
+msgstr "Chronic"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__cigarettes
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__cigarettes
+msgid "Cigarettes"
+msgstr "Cigarettes"
+
+#. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_mood_entry_action
+msgid ""
+"Cinq crans, quelques activités à cocher, une note si vous voulez.\n"
+"               Ce journal est à vous seul : personne d'autre ne le voit, administrateurs compris."
+msgstr ""
+"Five levels, a few activities to check off, a note if you like.\n"
+"               This journal is yours alone: no one else sees it, administrators included."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__barcode
+msgid "Code-barres"
+msgstr "Barcode"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_meal_line__meal_type__snack
+#: model:ir.model.fields.selection,name:bf_health.selection__health_meal_log__meal_type__snack
+msgid "Collation"
+msgstr "Snack"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__color
+msgid "Color"
+msgstr "Color"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Comment ça va ?"
+msgstr "How are you doing?"
+
+#. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_mood_entry_action
+msgid "Comment ça va aujourd'hui ?"
+msgstr "How are you doing today?"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__correlations_enabled
+msgid "Compare votre humeur à votre sommeil, vos médicaments, vos symptômes et vos activités. Le calcul se fait dans votre instance, sur vos seules données, et seulement si vous l'activez. Vous pouvez le désactiver en tout temps."
+msgstr "Compares your mood with your sleep, medications, symptoms and activities. The calculation runs in your instance, on your data only, and only if you turn it on. You can turn it off at any time."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__tablet
+msgid "Comprimé"
+msgstr "Tablet"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__condition_id
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_search
+msgid "Condition"
+msgstr "Condition"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_condition
+msgid "Condition de santé"
+msgstr "Health condition"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_condition_action
+#: model:ir.ui.menu,name:bf_health.health_menu_condition
+msgid "Conditions"
+msgstr "Conditions"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_condition_active_action
+#: model:ir.ui.menu,name:bf_health.health_menu_condition_active
+msgid "Conditions actives"
+msgstr "Active conditions"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_substance_log_action
+#: model:ir.ui.menu,name:bf_health.health_menu_daily_substance
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_graph
+msgid "Consommation"
+msgstr "Substance use"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Consommation (7 derniers jours)"
+msgstr "Substance use (last 7 days)"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_substance_log_pivot_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_substance
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_pivot
+msgid "Consommation mensuelle"
+msgstr "Monthly substance use"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__drinks
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__drinks
+msgid "Consommations"
+msgstr "Drinks"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__substance_context
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__context
+msgid "Contexte"
+msgstr "Context"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Coordonnées"
+msgstr "Contact details"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__mood_level__3
+#: model:ir.model.fields.selection,name:bf_health.selection__health_mood_entry__level__3
+msgid "Correct"
+msgstr "Okay"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__correlations_enabled
+msgid "Correlations Enabled"
+msgstr "Correlations Enabled"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__correlation_html
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Corrélations"
+msgstr "Correlations"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__color
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__color
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__color
+msgid "Couleur"
+msgstr "Colour"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Courbe quotidienne"
+msgstr "Daily trend"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__running
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__running
+msgid "Course"
+msgstr "Running"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_food__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_food__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Création"
+msgstr "Creating"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__din
+msgid "DIN"
+msgstr "DIN"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__date
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__date
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__date
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__date
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__date
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__date
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__date
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__date_onset
+msgid "Date d'apparition"
+msgstr "Onset date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__date_start
+msgid "Date de début"
+msgstr "Start date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__date_end
+msgid "Date de fin"
+msgstr "End date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__date_performed
+msgid "Date de l'analyse"
+msgstr "Test date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__date_requisition
+msgid "Date de la réquisition"
+msgstr "Requisition date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__renewal_date
+msgid "Date de renouvellement"
+msgstr "Renewal date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__date_resolved
+msgid "Date de résolution"
+msgstr "Resolution date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__date_results
+msgid "Date des résultats"
+msgstr "Results date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__date_start
+msgid "Date début"
+msgstr "Start date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__date_end
+msgid "Date fin"
+msgstr "End date"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
+msgid "Dates"
+msgstr "Dates"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__dental
+msgid "Dentaire"
+msgstr "Dental"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__dermatology
+msgid "Dermatologie"
+msgstr "Dermatology"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__last_reminder_date
+msgid "Dernier rappel"
+msgstr "Last reminder"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Derniers signes vitaux"
+msgstr "Latest vital signs"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__last_date
+msgid "Dernière date"
+msgstr "Last date"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__description
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_form
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_food__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__workout_distance
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__distance_km
+msgid "Distance (km)"
+msgstr "Distance (km)"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_mail_followers
+msgid "Document Followers"
+msgstr "Document Followers"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Données saisies par la personne elle-même dans Healthy Fox, produit le"
+msgstr "Data entered by the person themselves in Healthy Fox, generated on"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__back
+msgid "Dos"
+msgstr "Back"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__dosage
+msgid "Dosage"
+msgstr "Dosage"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__times_per_day
+msgid "Doses par jour"
+msgstr "Doses per day"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__date_from
+msgid "Du"
+msgstr "From"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__duration
+msgid "Durée"
+msgstr "Duration"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__workout_duration
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__duration_min
+msgid "Durée (min)"
+msgstr "Duration (min)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_meal_line__meal_type__breakfast
+#: model:ir.model.fields.selection,name:bf_health.selection__health_meal_log__meal_type__breakfast
+msgid "Déjeuner"
+msgstr "Breakfast"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__elevation_m
+msgid "Dénivelé + (m)"
+msgstr "Elevation gain (m)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__dependency_ids
+msgid "Dépendances"
+msgstr "Dependencies"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_meal_line__meal_type__lunch
+#: model:ir.model.fields.selection,name:bf_health.selection__health_meal_log__meal_type__lunch
+msgid "Dîner"
+msgstr "Lunch"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__test_type__ecg
+msgid "ECG"
+msgstr "ECG"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__water_ml
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Eau"
+msgstr "Water"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__water_ml
+msgid "Eau (mL)"
+msgstr "Water (mL)"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Eau aujourd'hui"
+msgstr "Water today"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__state__performed
+msgid "Effectuée"
+msgstr "Done"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__side_effects
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Effets secondaires"
+msgstr "Side effects"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid "Effort"
+msgstr "Effort"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__perceived_effort
+msgid "Effort perçu (RPE)"
+msgstr "Perceived effort (RPE)"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "Email composition wizard"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__in_progress
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "En cours"
+msgstr "In progress"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__state__paused
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "En pause"
+msgstr "Paused"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__is_overdue
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__state__overdue
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+msgid "En retard"
+msgstr "Overdue"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+msgid "Enregistrer"
+msgstr "Save"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Enregistré. Merci !"
+msgstr "Saved. Thank you!"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_workout_action
+#: model:ir.ui.menu,name:bf_health.health_menu_workout
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_calendar
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_pivot
+msgid "Entraînement"
+msgstr "Training"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Entraînement (7 derniers jours)"
+msgstr "Training (last 7 days)"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_workout
+msgid "Entraînement (pivot)"
+msgstr "Training (pivot)"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_meal_log
+msgid "Entrée du journal alimentaire"
+msgstr "Food log entry"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
+msgid "Examen"
+msgstr "Screening"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_screening
+msgid "Examen de santé"
+msgstr "Health screening"
+
+#. module: bf_health
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_screening_reminder
+msgid "Examen de santé à planifier"
+msgstr "Health screening to schedule"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__physical
+msgid "Examen physique"
+msgstr "Physical exam"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_screening_action
+#: model:ir.ui.menu,name:bf_health.health_menu_screening
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_activity
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_calendar
+msgid "Examens"
+msgstr "Screenings"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Examens à venir (30 jours)"
+msgstr "Upcoming screenings (30 days)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Exporter (CSV)"
+msgstr "Export (CSV)"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "FC"
+msgstr "HR"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__resting_hr
+msgid "FC au repos"
+msgstr "Resting HR"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__resting_hr
+msgid "FC au repos (bpm)"
+msgstr "Resting HR (bpm)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__max_heart_rate
+msgid "FC max (bpm)"
+msgstr "Max HR (bpm)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__avg_heart_rate
+msgid "FC moyenne (bpm)"
+msgstr "Average HR (bpm)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__done
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Fait"
+msgstr "Done"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Famille"
+msgstr "Family"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__fiber_g
+msgid "Fibres (g)"
+msgstr "Fibre (g)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/nom_prive.py:0
+msgid "Fiche santé privée"
+msgstr "Private health record"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__gpx_file
+msgid "Fichier GPX"
+msgstr "GPX file"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_workout.py:0
+msgid "Fichier GPX illisible : %s"
+msgstr "Unreadable GPX file: %s"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_bf_health_note_only
+msgid "Fil santé : notes internes seulement"
+msgstr "Health thread: internal notes only"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_type_icon
+#: model:ir.model.fields,help:bf_health.field_health_medication__activity_type_icon
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_type_icon
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__activity_type_icon
+#: model:ir.model.fields,help:bf_health.field_health_screening__activity_type_icon
+#: model:ir.model.fields,help:bf_health.field_health_workout__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "Forme"
+msgstr "Form"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__provider
+msgid "Fournisseur / Clinique"
+msgstr "Provider / Clinic"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__frequency
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__frequency
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
+msgid "Fréquence"
+msgstr "Frequency"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__frequency_months
+msgid "Fréquence (mois)"
+msgstr "Frequency (months)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__heart_rate
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Fréquence cardiaque"
+msgstr "Heart rate"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__heart_rate
+msgid "Fréquence cardiaque (bpm)"
+msgstr "Heart rate (bpm)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__reminder_tz
+msgid "Fuseau"
+msgstr "Time zone"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_bf_health_parent_guard
+msgid "Garde de fiche parente (santé)"
+msgstr "Parent record guard (health)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Gardé sur cet appareil. L'envoi se fera au retour du réseau."
+msgstr "Kept on this device. It will be sent when you are back online."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__gen_available
+msgid "Gen Available"
+msgstr "Gen Available"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid ""
+"Gen est fermé au journal d'humeur sur cette instance : votre permission ne\n"
+"                            peut pas l'ouvrir."
+msgstr ""
+"Gen is closed to the mood journal on this instance: your permission\n"
+"                            cannot open it."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Gen est fermé aux données de santé sur cette instance."
+msgstr "Gen is closed to health data on this instance."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid ""
+"Gen ne lit rien de Healthy Fox sans deux permissions : celle de cette\n"
+"                            instance, réservée à son administration, puis la vôtre. Une conversation\n"
+"                            que vous ouvrez depuis une fiche ne lui montre que cette fiche, et\n"
+"                            seulement si l'instance le permet."
+msgstr ""
+"Gen reads nothing from Healthy Fox without two permissions: this\n"
+"                            instance's, which only its administrators can give, then yours. A conversation\n"
+"                            you open from a record shows it only that record, and\n"
+"                            only if the instance allows it."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__gen_instance_open
+msgid "Gen ouvert à l'humeur sur cette instance"
+msgstr "Gen open to mood on this instance"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__gen_instance_health_open
+msgid "Gen ouvert à la santé sur cette instance"
+msgstr "Gen open to health data on this instance"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__gen_consent_health
+msgid "Gen peut lire mes autres données Healthy Fox"
+msgstr "Gen can read my other Healthy Fox data"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__gen_consent
+msgid "Gen peut lire mon journal d'humeur"
+msgstr "Gen can read my mood journal"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Gen, l'assistant IA"
+msgstr "Gen, the AI assistant"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Glucides"
+msgstr "Carbs"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__carbs_g
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__carbs_g
+msgid "Glucides (g)"
+msgstr "Carbs (g)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__carbs_target_g
+msgid "Glucides cibles (g)"
+msgstr "Carb target (g)"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__blood_sugar
+msgid "Glycémie"
+msgstr "Blood sugar"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__general
+msgid "Général"
+msgstr "General"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__state__managed
+msgid "Gérée"
+msgstr "Managed"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_root
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Healthy Fox"
+msgstr "Healthy Fox"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_lab_test.py:0
+msgid "Healthy Fox : analyse à prévoir"
+msgstr "Healthy Fox: lab test coming up"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/gen_portees.py:0
+msgid "Healthy Fox : données de santé"
+msgstr "Healthy Fox: health data"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_screening.py:0
+msgid "Healthy Fox : examen à planifier"
+msgstr "Healthy Fox: screening to schedule"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Healthy Fox : humeur"
+msgstr "Healthy Fox: mood"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/gen_portees.py:0
+msgid "Healthy Fox : journal d'humeur"
+msgstr "Healthy Fox: mood journal"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_bf_health_private_name
+msgid "Healthy Fox : nom neutre pour qui ne lit pas la fiche"
+msgstr "Healthy Fox: neutral name for whoever cannot read the record"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_medication.py:0
+msgid "Healthy Fox : renouvellement à prévoir"
+msgstr "Healthy Fox: prescription renewal coming up"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/gen_portees.py:0
+msgid "Healthy Fox : saisies en cours (jamais ouvertes à Gen)"
+msgstr "Healthy Fox: entries in progress (never open to Gen)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_mood_reminder
+msgid "Healthy Fox : votre saisie du jour"
+msgstr "Healthy Fox: your entry for today"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_reduction_step.py:0
+msgid "Healthy Fox : étape à venir"
+msgstr "Healthy Fox: upcoming step"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dashboard.py:0
+msgid "Healthy Fox est fermé à cet appel."
+msgstr "Healthy Fox is closed to this request."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid ""
+"Healthy Fox lit la trace à l'enregistrement et n'en garde que la\n"
+"                            distance, le dénivelé et la durée. Le fichier lui-même est jeté :\n"
+"                            il révèle souvent votre point de départ, comme votre domicile."
+msgstr ""
+"Healthy Fox reads the track when you save and keeps only the\n"
+"                            distance, the elevation gain and the duration. The file itself is discarded:\n"
+"                            it often reveals your starting point, such as your home."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__weekly
+msgid "Hebdomadaire"
+msgstr "Weekly"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__reminder_time
+msgid "Heure du rappel"
+msgstr "Reminder time"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__reminder_time
+msgid "Heure locale, selon le fuseau de vos préférences."
+msgstr "Local time, based on the time zone in your preferences."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__log_ids
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Historique de prise"
+msgstr "Intake history"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Hors ligne : vos saisies restent sur cet appareil."
+msgstr "Offline: your entries stay on this device."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:ir.actions.act_window,name:bf_health.health_mood_entry_action
+#: model:ir.model,name:bf_health.model_health_mood_entry
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__mood_level
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__level
+#: model:ir.ui.menu,name:bf_health.health_menu_mood
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_calendar
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_list
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_pivot
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "Humeur"
+msgstr "Mood"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__score
+msgid "Humeur (1 à 5)"
+msgstr "Mood (1 to 5)"
+
+#. module: bf_health
+#: model:ir.actions.report,name:bf_health.action_report_mood_doctor
+msgid "Humeur : rapport pour le médecin"
+msgstr "Mood: report for your doctor"
+
+#. module: bf_health
+#: model:ir.actions.act_url,name:bf_health.action_mood_phone_page
+msgid "Humeur au téléphone"
+msgstr "Mood on your phone"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Humeur du %s"
+msgstr "Mood for %s"
+
+#. module: bf_health
+#: model:mail.activity.type,name:bf_health.mail_activity_type_mood_reminder
+msgid "Humeur du jour"
+msgstr "Today's mood"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__id
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__id
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__id
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__id
+#: model:ir.model.fields,field_description:bf_health.field_health_food__id
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__id
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__id
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__id
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__id
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__id
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__id
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__id
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__id
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_exception_icon
+#: model:ir.model.fields,help:bf_health.field_health_medication__activity_exception_icon
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_exception_icon
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__activity_exception_icon
+#: model:ir.model.fields,help:bf_health.field_health_screening__activity_exception_icon
+#: model:ir.model.fields,help:bf_health.field_health_workout__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__icon
+msgid "Icône"
+msgstr "Icon"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__client_uuid
+msgid "Identifiant de la saisie au téléphone"
+msgstr "Phone entry ID"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
+msgid "Identité"
+msgstr "Identity"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_condition__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_medication__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_screening__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_workout__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_condition__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_medication__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_screening__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_workout__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__skipped
+msgid "Ignoré"
+msgstr "Skipped"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Il faut au moins %(min)s jours avec et %(min)s jours sans symptôme."
+msgstr "At least %(min)s days with and %(min)s days without symptoms are needed."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Il faut au moins %(min)s jours de chaque sorte (sans oubli, avec oubli) parmi les jours saisis."
+msgstr "At least %(min)s days of each kind (no missed dose, missed dose) are needed among the days logged."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__test_type__imaging
+msgid "Imagerie"
+msgstr "Imaging"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid "Import GPX"
+msgstr "GPX import"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_food.py:0
+msgid "Impossible de joindre Open Food Facts : %s"
+msgstr "Could not reach Open Food Facts: %s"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__include_correlations
+msgid "Inclure les corrélations"
+msgstr "Include correlations"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__include_notes
+msgid "Inclure mes notes"
+msgstr "Include my notes"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__inhaler
+msgid "Inhalateur"
+msgstr "Inhaler"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__injection
+msgid "Injection"
+msgstr "Injection"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__joints
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__joints
+msgid "Joints"
+msgstr "Joints"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_meal_log_action
+#: model:ir.ui.menu,name:bf_health.health_menu_nutrition_journal
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_pivot
+msgid "Journal alimentaire"
+msgstr "Food log"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Journal d'humeur"
+msgstr "Mood journal"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_mood_settings
+msgid "Journal d'humeur : réglages"
+msgstr "Mood journal: settings"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Journal d'humeur : résumé pour un soignant"
+msgstr "Mood journal: summary for a health-care provider"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_substance_log
+msgid "Journal de consommation"
+msgstr "Substance use log"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_medication_log
+msgid "Journal de prise de médicament"
+msgstr "Medication intake log"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_symptom_log
+msgid "Journal de symptômes"
+msgstr "Symptom log"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Jours"
+msgstr "Days"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__days_until_renewal
+msgid "Jours avant renouvellement"
+msgstr "Days until renewal"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__days_until_due
+msgid "Jours avant échéance"
+msgstr "Days until due"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Jours avec un oubli"
+msgstr "Days with a missed dose"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Jours avec un symptôme"
+msgstr "Days with a symptom"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__next_due_lead_days
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__renewal_lead_days
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__lead_days
+msgid "Jours d'avance pour rappel"
+msgstr "Reminder lead time (days)"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "Jours difficiles"
+msgstr "Hard days"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Jours sans oubli de médicament"
+msgstr "Days with no missed medication"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Jours sans symptôme"
+msgstr "Days without symptoms"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__gummies
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__gummies
+msgid "Jujubes"
+msgstr "Gummies"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "La période commence après sa fin."
+msgstr "The period starts after it ends."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
+msgid ""
+"La recherche par code-barres utilise Open Food Facts et remplit\n"
+"                        les valeurs par 100 g/mL."
+msgstr ""
+"Barcode search uses Open Food Facts and fills in\n"
+"                        the values per 100 g/mL."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__lab_name
+msgid "Laboratoire"
+msgstr "Laboratory"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_food__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_food__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_report_wizard__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Le serveur a refusé :"
+msgstr "The server refused:"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Le serveur n'a pas pu terminer la demande."
+msgstr "The server could not complete the request."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Lecture"
+msgstr "Reading"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/mail_followers.py:0
+msgid "Les abonnés d'une fiche santé ne se lisent pas."
+msgstr "The followers of a health record cannot be read."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Les corrélations sont désactivées. Activées, elles comparent votre humeur à votre sommeil, vos médicaments, vos symptômes et vos activités, dans votre instance et sur vos seules données. C'est vous qui décidez de les activer."
+msgstr "Correlations are turned off. When on, they compare your mood with your sleep, medications, symptoms and activities, in your instance and on your data only. It is up to you to turn them on."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Liens observés"
+msgstr "Observed links"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_daily_log_wizard_med_line
+msgid "Ligne de médicament du wizard"
+msgstr "Wizard medication line"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_daily_log_wizard_meal_line
+msgid "Ligne de repas du wizard"
+msgstr "Wizard meal line"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Lipides"
+msgstr "Fat"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__fat_g
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__fat_g
+msgid "Lipides (g)"
+msgstr "Fat (g)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__fat_target_g
+msgid "Lipides cibles (g)"
+msgstr "Fat target (g)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__liquid
+msgid "Liquide"
+msgstr "Liquid"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_form
+msgid "Macros cibles"
+msgstr "Macro targets"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__mood_level__2
+#: model:ir.model.fields.selection,name:bf_health.selection__health_mood_entry__level__2
+msgid "Mal"
+msgstr "Bad"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__walking
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__walking
+msgid "Marche"
+msgstr "Walking"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__brand
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_search
+msgid "Marque"
+msgstr "Brand"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__morning
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__morning
+msgid "Matin"
+msgstr "Morning"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__limbs
+msgid "Membres"
+msgstr "Limbs"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__monthly
+msgid "Mensuel"
+msgstr "Monthly"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__mental
+msgid "Mental"
+msgstr "Mental"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__noon
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__noon
+msgid "Midi"
+msgstr "Noon"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__active_minutes
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__active_minutes
+msgid "Minutes actives"
+msgstr "Active minutes"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__month
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__month
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__month
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__month
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
+msgid "Mois"
+msgstr "Month"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__time_slot
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__time_slot
+msgid "Moment"
+msgstr "Time of day"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:ir.actions.server,name:bf_health.action_mood_settings_open
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Mon journal d'humeur"
+msgstr "My mood journal"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model:ir.ui.menu,name:bf_health.health_menu_mood_settings
+msgid "Mon journal et corrélations"
+msgstr "My journal and correlations"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Moyenne"
+msgstr "Average"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Moyenne :"
+msgstr "Average:"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__average_30
+msgid "Moyenne sur 30 jours"
+msgstr "30-day average"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__strength
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__strength
+msgid "Musculation"
+msgstr "Strength training"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__ordering_doctor
+msgid "Médecin prescripteur"
+msgstr "Ordering doctor"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_medication
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__medication_id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__medication_id
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Médicament"
+msgstr "Medication"
+
+#. module: bf_health
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_medication_action
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__med_line_ids
+#: model:ir.ui.menu,name:bf_health.health_menu_medication
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_activity
+msgid "Médicaments"
+msgstr "Medications"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Médicaments actifs"
+msgstr "Active medications"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_medication_log_action
+#: model:ir.ui.menu,name:bf_health.health_menu_daily_med_log
+msgid "Médicaments du jour"
+msgstr "Today's medications"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__gen_consent_health
+msgid "Médicaments, signes vitaux, analyses, examens, symptômes, consommation, entraînement, alimentation. Vous pouvez la retirer en tout temps."
+msgstr "Medications, vital signs, lab tests, screenings, symptoms, substance use, training, nutrition. You can withdraw it at any time."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Méditation"
+msgstr "Meditation"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__swimming
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__swimming
+msgid "Natation"
+msgstr "Swimming"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_summary
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_summary
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_summary
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_summary
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_summary
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_type_id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_type_id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_type_id
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_type_id
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_type_id
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__name
+#: model:ir.model.fields,field_description:bf_health.field_health_food__name
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__medication_name
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__name
+msgid "Nom"
+msgstr "Name"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
+msgid "Nom de l'aliment"
+msgstr "Food name"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__name
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_form
+msgid "Nom de l'analyse"
+msgstr "Test name"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__name
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
+msgid "Nom de l'examen"
+msgstr "Screening name"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_form
+msgid "Nom de l'objectif"
+msgstr "Goal name"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_form
+msgid "Nom de l'étape"
+msgstr "Step name"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_form
+msgid "Nom de la condition"
+msgstr "Condition name"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__gpx_filename
+msgid "Nom du fichier GPX"
+msgstr "GPX file name"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__name
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Nom du médicament"
+msgstr "Medication name"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+msgid "Non pris"
+msgstr "Not taken"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_entry__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__mood_note
+msgid "Note sur l'humeur"
+msgstr "Mood note"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__notes
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__notes
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Notes de la personne"
+msgstr "The person's notes"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_form
+msgid "Notes..."
+msgstr "Notes..."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__night
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__night
+msgid "Nuit"
+msgstr "Night"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Nuits de 7 h ou plus"
+msgstr "Nights of 7 hours or more"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Nuits plus courtes"
+msgstr "Shorter nights"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_condition__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_medication__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_screening__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_workout__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_condition__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_medication__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_screening__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_workout__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Nutrition du jour"
+msgstr "Today's nutrition"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__daily_calorie_goal
+msgid "Objectif calorique (kcal/jour)"
+msgstr "Calorie goal (kcal/day)"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_nutrition_goal_action
+#: model:ir.model,name:bf_health.model_health_nutrition_goal
+#: model:ir.ui.menu,name:bf_health.health_menu_nutrition_goal
+msgid "Objectif nutritionnel"
+msgstr "Nutrition goal"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_form
+msgid "Objectifs quotidiens"
+msgstr "Daily goals"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_graph
+msgid "Observance"
+msgstr "Adherence"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Observance aujourd'hui"
+msgstr "Adherence today"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "PA"
+msgstr "BP"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__bp_diastolic
+msgid "PA diastolique"
+msgstr "Diastolic BP"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__bp_diastolic
+msgid "PA diastolique (mmHg)"
+msgstr "Diastolic BP (mmHg)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__bp_systolic
+msgid "PA systolique"
+msgstr "Systolic BP"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__bp_systolic
+msgid "PA systolique (mmHg)"
+msgstr "Systolic BP (mmHg)"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Par semaine"
+msgstr "By week"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__steps
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__steps
+msgid "Pas"
+msgstr "Steps"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Pas aujourd'hui"
+msgstr "Steps today"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Pas encore assez de jours"
+msgstr "Not enough days yet"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__skin
+msgid "Peau"
+msgstr "Skin"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__custom
+msgid "Personnalisé"
+msgstr "Custom"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__user_id
+msgid "Personne"
+msgstr "Person"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__pharmacy
+msgid "Pharmacie"
+msgstr "Pharmacy"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__phase
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Phase"
+msgstr "Phase"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__phase__1_stabilisation
+msgid "Phase 1 — Stabilisation"
+msgstr "Phase 1: Stabilization"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__phase__2_reduction
+msgid "Phase 2 — Réduction"
+msgstr "Phase 2: Reduction"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__phase__3_sevrage
+msgid "Phase 3 — Sevrage"
+msgstr "Phase 3: Tapering"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__phase__4_arret
+msgid "Phase 4 — Arrêt"
+msgstr "Phase 4: Stopping"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__phase__5_zero
+msgid "Phase 5 — Zéro"
+msgstr "Phase 5: Zero"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_reduction_step_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reduction_plan
+msgid "Plan de réduction"
+msgstr "Reduction plan"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__state__scheduled
+msgid "Planifiée"
+msgstr "Scheduled"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Plein air"
+msgstr "Outdoors"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__weight
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Poids"
+msgstr "Weight"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__weight
+msgid "Poids (kg)"
+msgstr "Weight (kg)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__chest
+msgid "Poitrine"
+msgstr "Chest"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__serving_size
+msgid "Portion"
+msgstr "Serving"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__servings
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__servings
+msgid "Portions"
+msgstr "Servings"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Posologie"
+msgstr "Dosing"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__prescriber
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "Prescripteur"
+msgstr "Prescriber"
+
+#. module: bf_health
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_prescription_renewal
+msgid "Prescription à renouveler"
+msgstr "Prescription to renew"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_vital_bp_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_bp
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Pression artérielle"
+msgstr "Blood pressure"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__taken
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__taken
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+msgid "Pris"
+msgstr "Taken"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__test_type__blood_work
+msgid "Prise de sang"
+msgstr "Blood test"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid ""
+"Privé : personne d'autre ne le voit, administrateurs compris.\n"
+"                            L'historique, l'export et le rapport restent toujours libres."
+msgstr ""
+"Private: no one else sees it, administrators included.\n"
+"                            History, export and the report always stay available to you."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Privé : personne d'autre ne voit ce journal, administrateurs compris."
+msgstr "Private: no one else sees this journal, administrators included."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_kanban
+msgid "Prochaine :"
+msgstr "Next:"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__next_due_date
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__next_due
+msgid "Prochaine échéance"
+msgstr "Next due date"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Protéines"
+msgstr "Protein"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__protein_g
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__protein_g
+msgid "Protéines (g)"
+msgstr "Protein (g)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__protein_target_g
+msgid "Protéines cibles (g)"
+msgstr "Protein target (g)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Qu'avez-vous fait ?"
+msgstr "What did you do?"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__substance_qty
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__quantity
+msgid "Quantité"
+msgstr "Quantity"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__daily
+#: model:ir.ui.menu,name:bf_health.health_menu_daily
+msgid "Quotidien"
+msgstr "Daily"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__purpose
+msgid "Raison"
+msgstr "Reason"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__skipped_reason
+msgid "Raison du saut"
+msgstr "Reason skipped"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__hiking
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__hiking
+msgid "Randonnée"
+msgstr "Hiking"
+
+#. module: bf_health
+#: model:mail.activity.type,name:bf_health.mail_activity_type_screening_reminder
+msgid "Rappel d'examen de santé"
+msgstr "Health screening reminder"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__reminder_enabled
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Rappel quotidien"
+msgstr "Daily reminder"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Rappel quotidien désactivé"
+msgstr "Daily reminder off"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Rappel quotidien à %s"
+msgstr "Daily reminder at %s"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_mood_report_wizard
+msgid "Rapport d'humeur pour le médecin"
+msgstr "Mood report for your doctor"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_report_wizard_view_form
+msgid "Rapport pour le médecin"
+msgstr "Report for your doctor"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Rapport pour le médecin (PDF)"
+msgstr "Report for your doctor (PDF)"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_reports
+msgid "Rapports"
+msgstr "Reports"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Refusé."
+msgstr "Refused."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
+msgid "Renouvellement"
+msgstr "Renewal"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_kanban
+msgid "Renouvellement :"
+msgstr "Renewal:"
+
+#. module: bf_health
+#: model:mail.activity.type,name:bf_health.mail_activity_type_prescription_renewal
+msgid "Renouvellement de prescription"
+msgstr "Prescription renewal"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__is_renewal_due
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+msgid "Renouvellement dû"
+msgstr "Renewal due"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__refills_remaining
+msgid "Renouvellements restants"
+msgstr "Refills remaining"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_medication_renewal_action
+#: model:ir.ui.menu,name:bf_health.health_menu_medication_renewal
+msgid "Renouvellements à venir"
+msgstr "Upcoming renewals"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__meal_line_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__meal_type
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__meal_type
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
+msgid "Repas"
+msgstr "Meal"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Repos"
+msgstr "Rest"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_user_id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_user_id
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_user_id
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__activity_user_id
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_user_id
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Rien de saisi"
+msgstr "Nothing logged"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__condition_type__recurring
+msgid "Récurrente"
+msgstr "Recurring"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_reduction
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Réduction"
+msgstr "Reduction"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Réessayer"
+msgstr "Try again"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Répartition"
+msgstr "Distribution"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_food.py:0
+msgid "Réponse invalide d'Open Food Facts."
+msgstr "Invalid response from Open Food Facts."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__state__requisition
+msgid "Réquisition"
+msgstr "Requisition"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_lab_test_requisition_action
+#: model:ir.ui.menu,name:bf_health.health_menu_lab_requisition
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
+msgid "Réquisitions en attente"
+msgstr "Pending requisitions"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_condition__state__resolved
+msgid "Résolue"
+msgstr "Resolved"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+msgid "Résolues"
+msgstr "Resolved"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_form
+msgid "Résultats"
+msgstr "Results"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__results_normal
+msgid "Résultats normaux"
+msgstr "Normal results"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__state__results_received
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
+msgid "Résultats reçus"
+msgstr "Results received"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Résumé"
+msgstr "Summary"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__results_summary
+msgid "Résumé des résultats"
+msgstr "Results summary"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_daily_log_wizard_action
+#: model:ir.ui.menu,name:bf_health.health_menu_daily_wizard
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+msgid "Saisie rapide"
+msgstr "Quick entry"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_daily_log_wizard
+msgid "Saisie rapide quotidienne"
+msgstr "Daily quick entry"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__entry_count
+#: model:ir.ui.menu,name:bf_health.health_menu_mood_entries
+msgid "Saisies"
+msgstr "Entries"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_mood_phone
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_settings_view_form
+msgid "Saisir au téléphone"
+msgstr "Log on your phone"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Sans"
+msgstr "Without"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__gen_consent
+msgid "Sans cette permission, Gen ne lit votre journal que dans une conversation que vous lancez depuis une fiche du journal, et seulement cette fiche. Vous pouvez la retirer en tout temps."
+msgstr "Without this permission, Gen reads your journal only in a conversation you start from a journal record, and only that record. You can withdraw it at any time."
+
+#. module: bf_health
+#: model:ir.module.category,name:bf_health.module_category_health
+msgid "Santé"
+msgstr "Health"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_create_daily_med_logs_ir_actions_server
+msgid "Santé : créer les entrées de médicaments du jour"
+msgstr "Health: create today's medication entries"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_mood_reminders_ir_actions_server
+msgid "Santé : rappels du journal d'humeur"
+msgstr "Health: mood journal reminders"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_check_lab_tests_ir_actions_server
+msgid "Santé : vérifier les analyses de labo"
+msgstr "Health: check lab tests"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_check_screenings_ir_actions_server
+msgid "Santé : vérifier les examens à venir"
+msgstr "Health: check upcoming screenings"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_check_renewals_ir_actions_server
+msgid "Santé : vérifier les renouvellements de prescription"
+msgstr "Health: check prescription renewals"
+
+#. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_check_reduction_steps_ir_actions_server
+msgid "Santé : vérifier les étapes de réduction"
+msgstr "Health: check reduction steps"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
+msgid "Semaine"
+msgstr "Week"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Semaine du"
+msgstr "Week of"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__biannually
+msgid "Semestriel"
+msgstr "Every 6 months"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__sequence
+msgid "Sequence"
+msgstr "Sequence"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Seule la personne elle-même donne ou retire cette permission."
+msgstr "Only the person themselves can give or withdraw this permission."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Sevrage"
+msgstr "Tapering"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_vital
+msgid "Signe vital"
+msgstr "Vital sign"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_health.health_vital_action
+#: model:ir.ui.menu,name:bf_health.health_menu_daily_vitals
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+msgid "Signes vitaux"
+msgstr "Vital signs"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__sodium_mg
+msgid "Sodium (mg)"
+msgstr "Sodium (mg)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__evening
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__evening
+msgid "Soir"
+msgstr "Evening"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__sleep_hours
+msgid "Sommeil"
+msgstr "Sleep"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Sommeil (dernier)"
+msgstr "Sleep (latest)"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__sleep_hours
+msgid "Sommeil (h)"
+msgstr "Sleep (h)"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_meal_line__meal_type__dinner
+#: model:ir.model.fields.selection,name:bf_health.selection__health_meal_log__meal_type__dinner
+msgid "Souper"
+msgstr "Dinner"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__spo2
+msgid "SpO2"
+msgstr "SpO2"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__sports
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__sports
+msgid "Sport"
+msgstr "Sports"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Stabilisation"
+msgstr "Stabilization"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_state
+#: model:ir.model.fields,help:bf_health.field_health_medication__activity_state
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_state
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__activity_state
+#: model:ir.model.fields,help:bf_health.field_health_screening__activity_state
+#: model:ir.model.fields,help:bf_health.field_health_workout__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__substance_type
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__substance_type
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__substance_type
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_search
+msgid "Substance"
+msgstr "Substance"
+
+#. module: bf_health
+#: model:ir.module.category,description:bf_health.module_category_health
+msgid "Suivi de la santé personnelle"
+msgstr "Personal health tracking"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Sur les 90 derniers jours. Une corrélation n'est pas une cause : c'est une piste à regarder, seul ou avec un soignant."
+msgstr "Over the last 90 days. A correlation is not a cause: it is a lead to look into, on your own or with a health-care provider."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__name
+msgid "Symptôme"
+msgstr "Symptom"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+#: model:ir.actions.act_window,name:bf_health.health_symptom_log_action
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__symptom_ids
+#: model:ir.ui.menu,name:bf_health.health_menu_daily_symptoms
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_form
+msgid "Symptômes"
+msgstr "Symptoms"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_graph
+msgid "Symptômes par zone"
+msgstr "Symptoms by area"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid "Séance"
+msgstr "Workout"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_workout
+msgid "Séance d'entraînement"
+msgstr "Workout"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_workout_all
+msgid "Séances"
+msgstr "Workouts"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_mood_activity__sequence
+msgid "Séquence"
+msgstr "Sequence"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__severity
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_search
+msgid "Sévérité"
+msgstr "Severity"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__tobacco
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__tobacco
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__tobacco
+msgid "Tabac"
+msgstr "Tobacco"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_dashboard
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.actions.client,name:bf_health.health_dashboard_action
+#: model:ir.model,name:bf_health.model_health_dashboard
+msgid "Tableau de bord santé"
+msgstr "Health dashboard"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__cups
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__cups
+msgid "Tasses"
+msgstr "Cups"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__temperature
+msgid "Température"
+msgstr "Temperature"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_vital_weight_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reports_weight
+msgid "Tendance du poids"
+msgstr "Weight trend"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_graph
+msgid "Tendances"
+msgstr "Trends"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__patch
+msgid "Timbre"
+msgstr "Patch"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_entry__client_uuid
+msgid "Tiré par la page du téléphone : une saisie renvoyée après une coupure retrouve la sienne au lieu d'en créer une seconde."
+msgstr "Generated by the phone page: an entry resent after a dropped connection finds its match instead of creating a second one."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__name
+msgid "Titre"
+msgstr "Title"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_form
+msgid "Titre de la séance"
+msgstr "Workout title"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_medication__form__topical
+msgid "Topique"
+msgstr "Topical"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_list
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_screening_all
+msgid "Tous les examens"
+msgstr "All screenings"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_medication_all
+msgid "Tous les médicaments"
+msgstr "All medications"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Tout est à jour"
+msgstr "All up to date"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_lab_all
+msgid "Toutes les analyses"
+msgstr "All lab tests"
+
+#. module: bf_health
+#: model:ir.ui.menu,name:bf_health.health_menu_condition_all
+msgid "Toutes les conditions"
+msgstr "All conditions"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Travail"
+msgstr "Work"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__frequency__quarterly
+msgid "Trimestriel"
+msgstr "Quarterly"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__mood_level__5
+#: model:ir.model.fields.selection,name:bf_health.selection__health_mood_entry__level__5
+msgid "Très bien"
+msgstr "Very good"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__mood_level__1
+#: model:ir.model.fields.selection,name:bf_health.selection__health_mood_entry__level__1
+msgid "Très mal"
+msgstr "Very bad"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__condition_type
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__test_type
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__screening_type
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__vital_type
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_type
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
+msgid "Type d'activité"
+msgstr "Activity type"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__workout_type
+msgid "Type de séance"
+msgstr "Workout type"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_exception_decoration
+#: model:ir.model.fields,help:bf_health.field_health_medication__activity_exception_decoration
+#: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_exception_decoration
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__activity_exception_decoration
+#: model:ir.model.fields,help:bf_health.field_health_screening__activity_exception_decoration
+#: model:ir.model.fields,help:bf_health.field_health_workout__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_report_wizard_view_form
+msgid "Télécharger le PDF"
+msgstr "Download the PDF"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__head
+msgid "Tête"
+msgstr "Head"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_report_wizard_view_form
+msgid ""
+"Un résumé à montrer à un soignant : moyenne, courbe,\n"
+"                    répartition, corrélations. Vos notes n'y figurent que si vous le demandez."
+msgstr ""
+"A summary to show a health-care provider: average, trend,\n"
+"                    distribution, correlations. Your notes are included only if you ask."
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_activity__icon
+msgid "Un émoji."
+msgstr "An emoji."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_note_only.py:0
+msgid "Une activité de Healthy Fox reste à la personne qui tient la fiche."
+msgstr "A Healthy Fox activity stays with the person who keeps the record."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_note_only.py:0
+msgid "Une fiche de Healthy Fox ne s'envoie pas par courriel."
+msgstr "A Healthy Fox record is not sent by email."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Une note (facultatif)"
+msgstr "A note (optional)"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_form
+msgid "Une note, si vous voulez (facultatif)"
+msgstr "A note, if you like (optional)"
+
+#. module: bf_health
+#: model:ir.model.constraint,message:bf_health.constraint_health_mood_settings_bf_mood_settings_unique
+msgid "Une seule fiche de réglages par personne."
+msgstr "Only one settings record per person."
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__substance_unit
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__quantity_unit
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__unit
+msgid "Unité"
+msgstr "Unit"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_food__serving_unit
+msgid "Unité de portion"
+msgstr "Serving unit"
+
+#. module: bf_health
+#: model:res.groups,name:bf_health.group_health_user
+msgid "Utilisateur santé"
+msgstr "Health user"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__value
+msgid "Valeur"
+msgstr "Value"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_form
+msgid "Valeurs nutritives"
+msgstr "Nutrition facts"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
+msgid "Valeurs nutritives (par portion)"
+msgstr "Nutrition facts (per serving)"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_food.py:0
+msgid "Veuillez saisir un code-barres."
+msgstr "Please enter a barcode."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__vision
+msgid "Vision"
+msgstr "Vision"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__avg_speed_kmh
+msgid "Vitesse moy. (km/h)"
+msgstr "Avg. speed (km/h)"
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_mood_report_wizard__include_notes
+msgid "Vos notes sont privées. Cochez seulement si vous voulez les montrer."
+msgstr "Your notes are private. Check this only if you want to show them."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Votre humeur du jour en quelques secondes, même hors ligne."
+msgstr "Your mood for the day in a few seconds, even offline."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "Votre session a expiré. Rechargez la page pour vous reconnecter."
+msgstr "Your session has expired. Reload the page to sign in again."
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__cycling
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__cycling
+msgid "Vélo"
+msgstr "Cycling"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__wizard_id
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__wizard_id
+msgid "Wizard"
+msgstr "Wizard"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__yoga
+#: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__yoga
+msgid "Yoga"
+msgstr "Yoga"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__body_area
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_search
+msgid "Zone"
+msgstr "Area"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "Zéro"
+msgstr "Zero"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "au"
+msgstr "to"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "aucun lien net"
+msgstr "no clear link"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "bpm"
+msgstr "bpm"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "brûlées"
+msgstr "burned"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "consommées −"
+msgstr "consumed −"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "g"
+msgstr "g"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "jours saisis sur"
+msgstr "days logged out of"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_kanban
+msgid "jours)"
+msgstr "days)"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "kcal"
+msgstr "kcal"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "kcal restantes"
+msgstr "kcal left"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "kg"
+msgstr "kg"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "km"
+msgstr "km"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "mL"
+msgstr "mL"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__mg
+#: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__mg
+msgid "mg"
+msgstr "mg"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "min"
+msgstr "min"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "mmHg"
+msgstr "mmHg"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "mmol/L"
+msgstr "mmol/L"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "plus de sommeil va avec une humeur plus basse"
+msgstr "more sleep goes with a lower mood"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "plus de sommeil va avec une meilleure humeur"
+msgstr "more sleep goes with a better mood"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "plus l'humeur est basse"
+msgstr "the lower the mood"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "plus l'humeur est haute"
+msgstr "the higher the mood"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "pris"
+msgstr "taken"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "saisies"
+msgstr "entries"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "sur 5"
+msgstr "out of 5"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "séances"
+msgstr "workouts"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "un lien faible"
+msgstr "a weak link"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "un lien fort"
+msgstr "a strong link"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "un lien modéré"
+msgstr "a moderate link"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "· du"
+msgstr "· from"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+msgid "À envoyer"
+msgstr "Waiting to send"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__todo
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+msgid "À faire"
+msgstr "To do"
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_screening__state__up_to_date
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+msgid "À jour"
+msgstr "Up to date"
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
+msgid "Échelle : 1 très mal, 2 mal, 3 correct, 4 bien, 5 très bien. Moyenne par jour quand il y a plusieurs saisies."
+msgstr "Scale: 1 very bad, 2 bad, 3 okay, 4 good, 5 very good. Daily average when there are several entries."
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_mood.py:0
+msgid "Écrans"
+msgstr "Screens"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__name
+msgid "Étape"
+msgstr "Step"
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_reduction_step
+#: model:mail.activity.type,name:bf_health.mail_activity_type_reduction_step
+msgid "Étape de réduction"
+msgstr "Reduction step"
+
+#. module: bf_health
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_reduction_step
+msgid "Étape de réduction à débuter"
+msgstr "Reduction step to start"
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_reduction_step_active_action
+#: model:ir.ui.menu,name:bf_health.health_menu_reduction_active
+msgid "Étapes actives"
+msgstr "Active steps"
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__state
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__state
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__state
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__state
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__state
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
+msgid "État"
+msgstr "Status"

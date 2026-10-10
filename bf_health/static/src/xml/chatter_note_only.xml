@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Pas de « Envoyer un message » sur une
+         fiche santé, notes internes seulement. Le serveur l'impose aussi
+         (models/health_note_only.py, même liste de modèles) : ce bouton
+         masqué n'est qu'un confort. -->
+    <t t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="attributes">
+            <attribute name="t-if">!['health.condition', 'health.lab.test', 'health.medication', 'health.mood.settings', 'health.reduction.step', 'health.screening', 'health.workout'].includes(props.threadModel)</attribute>
+        </xpath>
+    </t>
+</templates>
