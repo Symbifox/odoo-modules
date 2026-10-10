@@ -4,6 +4,19 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.0] - 2026-10-09
+
+### Fixed
+
+- **"Mark as read" on the phone now reads the whole conversation.** In
+  conversation view, a row of the mobile app is a thread, but the app only sends
+  the id of the thread's latest message. An older unread message in the same
+  thread turned the row bold again at the next refresh. The server now extends
+  the gesture to the thread's unread incoming messages, for the same owner and
+  no newer than the message the list was showing, as opening the thread already
+  did. Notifications of those messages are cleared after the commit, a handful
+  at most. No app update needed.
+
 ## [18.0.11.59.1] - 2026-10-09
 
 ### Fixed

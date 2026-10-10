@@ -117,7 +117,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.6.1.1 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
-| `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.7.1 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
+| `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.8.1 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_capture` | Captation audio | 18.0.1.4.2 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
@@ -179,7 +179,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.59.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.60.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.1 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
@@ -237,7 +237,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.1 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.65.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.66.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |

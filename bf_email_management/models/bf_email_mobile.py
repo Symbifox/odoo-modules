@@ -37,11 +37,14 @@ from datetime import datetime, time, timedelta
 
 import pytz
 
-from odoo import _, api, fields, models, tools
+import threading
+
+from odoo import SUPERUSER_ID, _, api, fields, models, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 from . import bf_email_imap
 from .bf_email import split_address_list
+from .push_transport import safe_push_endpoint
 from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
@@ -52,6 +55,10 @@ MAX_PAGE = 100
 # Messages returned in one conversation payload. Threads longer than this are
 # truncated from the top (oldest dropped) — the recent end is what's read.
 MAX_THREAD_MESSAGES = 60
+# « Marquer lu » d'une ligne regroupée : au plus tant de messages du fil.
+MAX_FIL_MARQUE = 200
+# Et au plus tant de notifications effacées après coup pour les messages du fil.
+MAX_AVIS_EFFACES = 10
 PREVIEW_CHARS = 160
 
 # Recipients allowed on one send (To + Cc). Well above any real business
@@ -983,14 +990,87 @@ class BfEmailMobile(models.Model):
             raise AccessError(_("Ces courriels appartiennent à un autre utilisateur."))
         return records
 
+    def _mobile_non_lus_du_fil(self):
+        """Les entrants non lus des fils de ces lignes, chez le même propriétaire.
+
+        🔴 En vue par conversation, une ligne de la liste EST un fil, mais
+        l'appli n'envoie que l'identifiant de son dernier message. « Marquer lu »
+        ne marquait que lui : un message plus ancien et non lu du même fil
+        rallumait la ligne en gras au rafraîchissement suivant, alors que l'appli
+        venait d'en effacer le compteur. On étend au fil, comme l'ouverture du
+        fil le fait déjà (`get_mobile_conversation`). Même clé de fil que la
+        liste : la racine RFC 2822, un message sans racine restant seul.
+
+        ⚠️ Seulement les messages au plus aussi récents que la ligne envoyée :
+        l'appli envoie le DERNIER message que la liste montrait. Un message
+        arrivé après, que la personne n'a jamais vu, garde son gras et sa
+        notification.
+        """
+        racines = {r.thread_root_id for r in self if r.thread_root_id}
+        if not racines:
+            return self.browse()
+        return self.search([
+            ("thread_root_id", "in", list(racines)),
+            ("user_id", "=", self.env.uid),
+            ("status", "=", "new"),
+            ("direction", "=", "in"),
+            ("id", "<=", max(self.ids)),
+        ], limit=MAX_FIL_MARQUE)
+
     @api.model
     def mobile_mark_read(self, email_ids, grouped=True):
         records = self._mobile_browse(email_ids)
-        records.action_mark_read()
+        etendus = records._mobile_non_lus_du_fil() - records if grouped else self.browse()
+        (records | etendus).action_mark_read()
         push = self.env["bf.email.unifiedpush"]
         for rec in records:
             push._notify_clear(self.env.user, rec.id)
+        # Seuls les messages RÉCENTS du fil ont pu garder leur propre notification
+        # (au-delà de 5 à la fois, le téléphone reçoit un résumé sans identifiant,
+        # que l'effacement par id n'atteint pas). Peu, donc : une rafale de 400
+        # POST viderait le seau de l'ntfy pour les autres avis.
+        limite = fields.Datetime.now() - timedelta(hours=48)
+        a_effacer = etendus.filtered(lambda r: r.create_date and r.create_date >= limite)[:MAX_AVIS_EFFACES]
+        if a_effacer:
+            # APRÈS la validation et dans un fil : un POST de 8 s par message et
+            # par appareil ne doit pas tenir la requête.
+            a_effacer._mobile_effacer_avis_apres_commit()
         return self._mobile_counts(grouped=grouped)
+
+    def _mobile_effacer_avis_apres_commit(self):
+        base, uid, ids = self.env.cr.dbname, self.env.uid, list(self.ids)
+
+        def _effacer():
+            from odoo.modules.registry import Registry
+            try:
+                # Les appareils lus une fois, dans un premier curseur refermé ; le
+                # second n'écrit rien pendant les POST : les appareils morts ne sont
+                # purgés qu'à la fin, pour ne tenir aucun verrou pendant le réseau.
+                with Registry(base).cursor() as cr:
+                    env = api.Environment(cr, SUPERUSER_ID, {})
+                    appareils = env["bf.email.unifiedpush"]._devices(env["res.users"].browse(uid))
+                    cibles = [(a.id, a.push_endpoint, a.push_p256dh, a.push_auth) for a in appareils]
+                morts = set()
+                with Registry(base).cursor() as cr:
+                    push = api.Environment(cr, SUPERUSER_ID, {})["bf.email.unifiedpush"]
+                    for email_id in ids:
+                        for app_id, point, p256dh, auth in cibles:
+                            if app_id in morts or not safe_push_endpoint(point):
+                                continue
+                            try:
+                                reponse = push._post(point, {"type": "mail_clear", "email_id": int(email_id)},
+                                                     p256dh, auth)
+                                if reponse.status_code in (403, 404, 410):
+                                    morts.add(app_id)
+                            except Exception:  # noqa: BLE001
+                                continue
+                    if morts:
+                        env = push.env
+                        env["bf.email.mobile.device"].browse(list(morts)).write({"push_endpoint": False})
+            except Exception:  # noqa: BLE001 — une notification restée affichée ne casse rien
+                _logger.warning("Marquer lu : effacement des notifications du fil échoué.", exc_info=True)
+
+        self.env.cr.postcommit.add(lambda: threading.Thread(target=_effacer, daemon=True).start())
 
     @api.model
     def mobile_set_handled(self, email_ids, handled=True, grouped=True):

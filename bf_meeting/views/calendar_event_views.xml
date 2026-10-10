@@ -133,6 +133,16 @@
                        groups="bf_meeting.group_meeting_user"
                        invisible="not location"/>
             </xpath>
+            <!-- « Sans préparation » dès la création : sans elles,
+                 il fallait créer, rouvrir la bulle, puis cliquer « Aucune
+                 préparation ». Les mêmes champs que la section « Préparation de la
+                 rencontre » du formulaire complet. -->
+            <xpath expr="//field[@name='location']" position="after">
+                <field name="bf_skip_agenda" widget="boolean_toggle"
+                       groups="bf_meeting.group_meeting_user"/>
+                <field name="bf_skip_dashboard" widget="boolean_toggle"
+                       groups="bf_meeting.group_meeting_user"/>
+            </xpath>
         </field>
     </record>
 

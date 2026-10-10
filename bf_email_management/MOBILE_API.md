@@ -199,7 +199,7 @@ badges from the response instead of refetching `/config`.
 
 | route | body |
 |---|---|
-| `POST /mark_read` | `{"email_ids": [12, 13], "grouped": true}` |
+| `POST /mark_read` | `{"email_ids": [12, 13], "grouped": true}`; with `grouped`, the thread's older unread incoming messages are marked read too (18.0.11.60.0) |
 | `POST /handle` | `{"email_ids": [12], "handled": true, "grouped": true}` |
 | `POST /snooze` | `{"email_ids": [12], "until_ms": 1786831200000, "grouped": true}` |
 

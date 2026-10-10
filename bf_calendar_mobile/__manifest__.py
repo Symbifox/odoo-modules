@@ -5,7 +5,12 @@
                "(OdJ, compte rendu, report de rappel)",
     # 18.0.3.7.1 : la fiche d'un événement s'ouvre au téléphone sans le groupe
     #   Rencontres ; l'ordre du jour et le compte rendu y sont omis.
-    "version": "18.0.3.7.1",
+    # 18.0.3.8.0 : api 8. Les puces « sans préparation » acceptées à la
+    #   création ; l'avis « agenda » poussé quand une rencontre change, une fois
+    #   par personne et par transaction, au plus aux 20 s.
+    # 18.0.3.8.1 : l'avis « agenda » a son propre interrupteur,
+    #   `bf_calendar_mobile.avis_agenda` (vide : suit `bf_email.push_enabled`).
+    "version": "18.0.3.8.1",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

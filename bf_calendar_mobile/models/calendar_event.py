@@ -368,6 +368,14 @@ class CalendarEvent(models.Model):
         # remplace.
         if "alarm_ids" in (raw or {}):
             vals["alarm_ids"] = self._mobile_alarm_command(raw.get("alarm_ids"))
+        # Les puces « sans préparation » du composeur, posées avec la
+        # rencontre plutôt que par un second appel. Seulement là où le suivi des
+        # rencontres existe ; ailleurs, ignorées comme avant l'api 8.
+        if "bf_skip_agenda" in self._fields:
+            if (raw or {}).get("skip_agenda") is True:
+                vals["bf_skip_agenda"] = True
+            if (raw or {}).get("skip_dashboard") is True:
+                vals["bf_skip_dashboard"] = True
         partner = self.env.user.partner_id
         vals["partner_ids"] = [(6, 0, partner.ids)]
         vals["user_id"] = self.env.uid

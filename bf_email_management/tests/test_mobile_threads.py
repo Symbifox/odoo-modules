@@ -180,3 +180,54 @@ class TestMobileThreads(MobileApiCase):
         for bad in ("abc", None, [], {"x": 1}, ["abc"]):
             with self.assertRaises(UserError):
                 BfEmail.mobile_mark_read(bad)
+
+    # ── « Marquer lu » sur une ligne regroupée ────────────────────────────
+
+    def test_marquer_lu_une_ligne_regroupee_marque_tout_le_fil(self):
+        """🔴 L'appli n'envoie que le DERNIER message de la ligne (ici le sortant) ;
+        l'entrant plus ancien et non lu du même fil doit passer lu aussi, sinon la
+        ligne se rallume en gras au rafraîchissement."""
+        self.assertEqual(self.inbound.status, "new")
+        counts = self.as_owner().mobile_mark_read([self.outbound.id], grouped=True)
+        self.assertEqual(self.inbound.status, "read")
+        folded = next(t for t in self.as_owner().get_mobile_threads(filter_name="all", limit=50)["threads"]
+                      if t["thread_key"] == "<racine-1@test.invalid>")
+        self.assertEqual(folded["unread_count"], 0)
+        self.assertIn("unread", counts)
+
+    def test_marquer_lu_en_vue_par_message_ne_touche_que_le_message(self):
+        """Vue par message : une ligne est UN message, le reste du fil ne bouge pas."""
+        self.as_owner().mobile_mark_read([self.outbound.id], grouped=False)
+        self.assertEqual(self.inbound.status, "new")
+
+    def test_marquer_lu_ne_deborde_pas_sur_un_autre_proprietaire(self):
+        """Même racine chez quelqu'un d'autre : son courriel reste non lu."""
+        autre = self.env["bf.email"].with_user(self.stranger).create({
+            "subject": "Même fil, autre boîte", "email_from": "client@acme.test",
+            "direction": "in", "status": "new", "source": "imap",
+            "user_id": self.stranger.id, "imap_in_inbox": True,
+            "message_id_header": "<autre-proprio@test.invalid>",
+            "thread_root_id": "<racine-1@test.invalid>",
+            "date": "2026-08-11 13:00:00",
+        })
+        # Un message du propriétaire PLUS RÉCENT que `autre` : la borne d'id ne
+        # l'écarte donc pas, seul le filtre de propriétaire le peut.
+        recent = self.env["bf.email"].with_user(self.owner).create(self._vals(
+            subject="Re: Question sur la facture", sender="owner@test.invalid",
+            direction="out", status="read", root="<racine-1@test.invalid>",
+            body="Suite.", uid="108"))
+        self.assertGreater(recent.id, autre.id)
+        self.as_owner().mobile_mark_read([recent.id], grouped=True)
+        self.assertEqual(autre.status, "new")
+        self.assertEqual(self.inbound.status, "read")
+
+    def test_marquer_lu_ne_prend_pas_un_message_arrive_apres(self):
+        """Arrivé après l'affichage de la liste : jamais vu, il reste non lu."""
+        neuf = self.env["bf.email"].with_user(self.owner).create(self._vals(
+            subject="Re: Question sur la facture", sender="client@acme.test",
+            direction="in", status="new", root="<racine-1@test.invalid>",
+            body="Et une autre question.", uid="109"))
+        self.as_owner().mobile_mark_read([self.outbound.id], grouped=True)
+        self.assertEqual(self.inbound.status, "read")
+        self.assertEqual(neuf.status, "new")
+

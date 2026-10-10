@@ -163,6 +163,14 @@ class CalendarEvent(models.Model):
             agenda = self.env['meeting.agenda'].browse(agenda_id).exists()
             if not agenda or not agenda.bf_to_schedule:
                 res.pop('meeting_agenda_id')
+        # Les bascules « sans préparation » de la création rapide, par
+        # des clés de contexte À NOUS. Un `default_bf_skip_*` suivrait le contexte
+        # vers toute fiche qui porte un champ de ce nom (contact, projet, type
+        # d'événement) ouverte depuis le formulaire complet.
+        for cle, champ in (('bf_creation_rapide_sans_odj', 'bf_skip_agenda'),
+                           ('bf_creation_rapide_hors_tableau', 'bf_skip_dashboard')):
+            if self.env.context.get(cle) is True and champ in fields_list:
+                res[champ] = True
         return res
 
     @api.onchange('meeting_agenda_id')

@@ -32,7 +32,7 @@ All of them are `auth="public"` and guarded by the app's bearer token; only
 | `/dismiss` | POST | `{event_id\|key}` |
 | `/rsvp` | POST | `{event_id\|key, state}` |
 | `/calendars` | GET | the calendars this person may write to |
-| `/event/create` | POST | create a meeting |
+| `/event/create` | POST | create a meeting; with the meeting module, `skip_agenda` / `skip_dashboard` set its two exclusions at once |
 | `/event/write` | POST | move or rename a meeting, change its location and reminders; only what changed is sent |
 | `/alarms` | GET | the reminders a meeting may carry |
 | `/event/flags` | POST | set the two meeting-module exclusions |
@@ -56,12 +56,32 @@ All of them are `auth="public"` and guarded by the app's bearer token; only
 Creating routes, `/event/write`, `/task/comment` and the four activity routes
 accept an optional `client_uuid`: a request replayed by the app's offline queue
 with the same identifier returns the original answer, with `"replay": true`,
-instead of acting twice. `/ping` announces `"idempotency": 1` and `"api": 7`.
+instead of acting twice. `/ping` announces `"idempotency": 1` and `"api": 8`.
 
 The bearer token is the device token of `bf_sms_archive` or of
 `bf_email_management`, whichever the app already holds. Recognising both is
 deliberate: the two halves of the app are independent, and depending on one
 would lock the other out.
+
+## The "agenda" notice
+
+When a meeting changes anywhere (created, moved, renamed, cancelled, an
+attendee added or removed, an invitation answered), the server pushes an
+`{"type": "agenda"}` message to the phones of the internal users it concerns,
+and an open agenda reloads at once instead of waiting for its next minute. The
+message carries **nothing else**: no title, no time, no identifier. It only
+wakes the app, which then reads through its own authenticated routes, so
+whoever knows a push endpoint learns nothing from it.
+
+- Sent after the transaction commits, from a thread, once per person and per
+  transaction (a calendar sync rewriting dozens of events sends one), and at
+  most every 20 seconds per person, with one trailing notice at the end of the
+  window so the last change is never lost. Nothing is sent while tests run.
+- Only devices running a mobile app version that knows the type receive it,
+  and the type is announced as always encrypted.
+- It has its own switch, `bf_calendar_mobile.avis_agenda`: empty, it follows
+  `bf_email.push_enabled`; `1` sends it even when email pushes are off (the
+  notice shows nothing on the phone, so it adds no noise); `0` turns it off.
 
 ## Four things not to undo
 

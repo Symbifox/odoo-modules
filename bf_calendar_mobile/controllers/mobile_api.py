@@ -192,9 +192,11 @@ class BfCalendarMobileApi(http.Controller):
             # rappels (`/event/write`, `/alarms`). api 6 : tâche privée, sans
             # projet (`private: true` sur /task/create). api 7 : mes
             # activités (`/activities`, fait, reporter, planifier),
-            # description et commentaire de tâche. Une app plus ancienne lit
+            # description et commentaire de tâche. api 8 : `skip_agenda` et
+            # `skip_dashboard` acceptés sur /event/create, et l'avis « agenda »
+            # poussé quand une rencontre change. Une app plus ancienne lit
             # le nombre et ignore ce qu'elle ne connaît pas.
-            "api": 7,
+            "api": 8,
             # `client_uuid` accepté sur /event/create, /task/create,
             # /event/write, /task/comment et les quatre routes d'activité.
             "idempotency": 1,

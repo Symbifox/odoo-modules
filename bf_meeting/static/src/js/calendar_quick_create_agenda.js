@@ -1,7 +1,8 @@
 /** @odoo-module **/
 
 /**
- * « Plus d'options » garde l'ordre du jour choisi dans la création rapide.
+ * « Plus d'options » garde l'ordre du jour choisi dans la création rapide, et
+ * les deux bascules « sans préparation ».
  *
  * Le cœur ne passe au formulaire complet qu'une liste FIXE de champs
  * (`QUICK_CREATE_CALENDAR_EVENT_FIELDS`, non exportée) : titre, dates,
@@ -18,15 +19,27 @@ import { CalendarQuickCreateFormController } from "@calendar/views/calendar_form
 
 patch(CalendarQuickCreateFormController.prototype, {
     goToFullEvent() {
-        const agenda = this.model.root.data.meeting_agenda_id;
-        if (!agenda) {
+        const data = this.model.root.data;
+        const ajouts = {};
+        if (data.meeting_agenda_id) {
+            ajouts.default_meeting_agenda_id = data.meeting_agenda_id[0];
+        }
+        // Champs absents de la vue pour qui n'a pas les Rencontres : `undefined`.
+        // Des clés à nous, lues seulement par `calendar.event.default_get` : un
+        // `default_bf_skip_*` suivrait le contexte vers d'autres fiches.
+        if (data.bf_skip_agenda) {
+            ajouts.bf_creation_rapide_sans_odj = true;
+        }
+        if (data.bf_skip_dashboard) {
+            ajouts.bf_creation_rapide_hors_tableau = true;
+        }
+        if (!Object.keys(ajouts).length) {
             return super.goToFullEvent(...arguments);
         }
         const goToFullEvent = this.props.goToFullEvent;
         const props = {
             ...this.props,
-            goToFullEvent: (context) =>
-                goToFullEvent({ ...context, default_meeting_agenda_id: agenda[0] }),
+            goToFullEvent: (context) => goToFullEvent({ ...context, ...ajouts }),
         };
         return super.goToFullEvent.call(Object.create(this, { props: { value: props } }));
     },

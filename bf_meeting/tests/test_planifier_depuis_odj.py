@@ -358,6 +358,50 @@ class TestPlanifierDepuisOdj(TransactionCase):
         arch = self.env['calendar.event'].with_user(self.organiser).get_view(view.id)['arch']
         self.assertIn('name="location"', arch)
 
+    # --- « Sans préparation » à la création rapide ---------------------------
+
+    def test_la_creation_rapide_porte_les_deux_bascules(self):
+        view = self.env.ref('calendar.view_calendar_event_form_quick_create')
+        arch = self.env['calendar.event'].with_user(self.organiser).get_view(view.id)['arch']
+        self.assertIn('name="bf_skip_agenda"', arch)
+        self.assertIn('name="bf_skip_dashboard"', arch)
+
+    def test_sans_rencontres_pas_de_bascules(self):
+        calendrier = self.env['res.users'].create({
+            'name': 'Calendrier seul bis', 'login': 'bf_planif_calendrier_bis',
+            'groups_id': [Command.set([self.env.ref('base.group_user').id])],
+        })
+        view = self.env.ref('calendar.view_calendar_event_form_quick_create')
+        arch = self.env['calendar.event'].with_user(calendrier).get_view(view.id)['arch']
+        self.assertNotIn('bf_skip_agenda', arch)
+
+    def test_creer_sans_preparation_depuis_la_creation_rapide(self):
+        Event = self.env['calendar.event'].with_user(self.organiser).with_context(
+            no_mail_to_attendees=True,
+            default_start='2026-10-15 18:00:00', default_stop='2026-10-15 19:00:00')
+        with Form(Event, view='calendar.view_calendar_event_form_quick_create') as form:
+            form.name = 'Café rapide'
+            form.bf_skip_agenda = True
+        self.assertTrue(form.record.bf_skip_agenda)
+        self.assertFalse(form.record.bf_skip_dashboard)
+        self.assertFalse(form.record.bf_needs_agenda)
+
+    def test_plus_d_options_garde_les_bascules_sans_deborder(self):
+        """« Plus d'options » transmet les bascules par des clés à nous : la
+        rencontre les reçoit, un contact ouvert du même contexte non."""
+        Event = self.env['calendar.event'].with_user(self.organiser).with_context(
+            bf_creation_rapide_sans_odj=True)
+        self.assertTrue(Event.default_get(['bf_skip_agenda'])['bf_skip_agenda'])
+        self.assertNotIn('bf_skip_dashboard', Event.default_get(['bf_skip_dashboard']))
+        # Le contact porte `bf_skip_dashboard` : c'est la clé « hors tableau » qui
+        # aurait pu déborder vers lui.
+        Partner = self.env['res.partner'].with_context(bf_creation_rapide_hors_tableau=True,
+                                                      bf_creation_rapide_sans_odj=True)
+        if 'bf_skip_dashboard' in Partner._fields:
+            self.assertFalse(Partner.default_get(['bf_skip_dashboard']).get('bf_skip_dashboard'))
+        Event = Event.with_context(bf_creation_rapide_hors_tableau=True)
+        self.assertTrue(Event.default_get(['bf_skip_dashboard'])['bf_skip_dashboard'])
+
     # --- Reporter -----------------------------------------------------------
 
     def test_reporter_detache_sans_rien_retirer(self):

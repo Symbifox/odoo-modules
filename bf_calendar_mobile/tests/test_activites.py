@@ -398,8 +398,8 @@ class TestRoutesActivites(HttpCase):
             activity_type_id=_todo(self.env).id, user_id=(user or self.user).id,
             summary="Par la route")
 
-    def test_ping_annonce_l_api_7(self):
-        self.assertEqual(self.url_open(BASE + "/ping").json()["api"], 7)
+    def test_ping_annonce_l_api_8(self):
+        self.assertEqual(self.url_open(BASE + "/ping").json()["api"], 8)
 
     def test_sans_jeton_401(self):
         r = self.url_open(BASE + "/activities")
