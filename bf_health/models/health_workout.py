@@ -28,7 +28,7 @@ class HealthWorkout(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Séance d'entraînement"
-    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin", "bf.health.dependent.mixin"]
     _order = "date desc, id desc"
 
     name = fields.Char(string="Titre", required=True, default="Séance")

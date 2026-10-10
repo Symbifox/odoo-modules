@@ -7,6 +7,7 @@ from odoo.exceptions import UserError, ValidationError
 #: identiques.
 MODELES_NOTE_SEULE = (
     "health.condition",
+    "health.dependent",
     "health.lab.test",
     "health.medication",
     "health.mood.settings",
@@ -90,9 +91,28 @@ class MailActivity(models.Model):
             fiche = self.env[act.res_model].sudo().browse(act.res_id).exists()
             if not fiche:
                 continue
-            if act.user_id not in (fiche.create_uid | self.env.ref("base.user_root")):
+            if act.user_id not in self._bf_assignables(fiche):
                 raise ValidationError(_(
                     "Une activité de Healthy Fox reste à la personne qui tient la fiche."))
+
+    def _bf_assignables(self, fiche):
+        """Qui peut recevoir une activité sur ``fiche`` : celle qui la tient, ou le
+        compte système. Depuis la 2.6.0 : sur la fiche d'un
+        enfant suivi, le second parent aussi ; sur la personne à charge, l'ado à qui
+        le passage est proposé, et Blue Fox (administratrice) une fois les 14 ans
+        atteints, que sa règle lui ouvre déjà."""
+        suivi = ("suivi", "offert")
+        permis = fiche.create_uid | self.env.ref("base.user_root")
+        if fiche._name == "health.dependent":
+            if fiche.state in suivi:
+                permis |= fiche.coparent_id
+            if fiche.state == "offert":
+                permis |= fiche.ado_id
+            if fiche.passage_atteint:
+                permis |= self.env.ref("base.group_system").users
+        elif "dependent_id" in fiche._fields and fiche.dependent_id.state in suivi:
+            permis |= fiche.dependent_id.coparent_id
+        return permis
 
 
 class MailComposeMessage(models.TransientModel):

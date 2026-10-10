@@ -1,6 +1,7 @@
 from . import gen_portees
 from . import parent_guard
 from . import health_note_only
+from . import health_dependent
 from . import health_condition
 from . import health_medication
 from . import health_medication_log

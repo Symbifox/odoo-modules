@@ -8,7 +8,7 @@ class HealthCondition(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Condition de santé"
-    _inherit = ["bf.health.note.only", "mail.thread"]
+    _inherit = ["bf.health.note.only", "mail.thread", "bf.health.dependent.mixin"]
     _order = "date_onset desc, id desc"
 
     name = fields.Char(string="Nom", required=True)

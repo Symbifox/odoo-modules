@@ -42,5 +42,17 @@
             <field name="delay_from">previous_activity</field>
         </record>
 
+        <!-- Passage à 14 ans d'une personne à charge. Aucun gabarit
+             de courriel : le rappel reste dans l'instance. -->
+        <record id="mail_activity_type_passage_14" model="mail.activity.type">
+            <field name="name">Passage à 14 ans</field>
+            <field name="summary">Passage à 14 ans</field>
+            <field name="res_model">health.dependent</field>
+            <field name="icon">fa-child</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
     </data>
 </odoo>

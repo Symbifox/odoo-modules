@@ -155,4 +155,327 @@
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
     </record>
 
+    <!-- Personnes à charge et partages de l'ado. -->
+    <record id="health_dependent_rule_parent_ado" model="ir.rule">
+        <field name="name">Personnes à charge : le parent qui tient les fiches, et l'ado qui les reçoit</field>
+        <field name="model_id" ref="model_health_dependent"/>
+        <field name="domain_force">['|', '|', ('create_uid', '=', user.id), ('ado_id', '=', user.id), ('coparent_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <!-- Blue Fox gère les comptes : pour ouvrir celui de l'ado, elle voit
+         le prénom et la naissance des enfants qui ont 14 ans, jamais leurs fiches
+         (aucun droit sur les modèles santé hors du groupe santé). -->
+    <record id="health_dependent_rule_admin" model="ir.rule">
+        <field name="name">Personnes à charge : Blue Fox voit celles qui ont 14 ans</field>
+        <field name="model_id" ref="model_health_dependent"/>
+        <field name="domain_force">[('passage_atteint', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_share_rule_lecture" model="ir.rule">
+        <field name="name">Partages santé : l'ado et son parent les voient</field>
+        <field name="model_id" ref="model_health_share"/>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), ('parent_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_share_rule_ado" model="ir.rule">
+        <field name="name">Partages santé : l'ado seul les crée et les retire</field>
+        <field name="model_id" ref="model_health_share"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+    </record>
+
+    <!-- Lecture seule de ce qu'un ado repartage avec le parent qui tenait ses
+         fiches. Règles de groupe : elles s'ajoutent (OU) à « ses propres
+         enregistrements » en lecture, et ne valent rien en écriture. -->
+    <record id="health_medication_rule_partage" model="ir.rule">
+        <field name="name">Médicaments : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_medication"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'medication')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_medication_log_rule_partage" model="ir.rule">
+        <field name="name">Journal médicaments : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_medication_log"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'medication')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_vital_rule_partage" model="ir.rule">
+        <field name="name">Signes vitaux : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_vital"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'vital')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_lab_test_rule_partage" model="ir.rule">
+        <field name="name">Analyses labo : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_lab_test"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'lab')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_condition_rule_partage" model="ir.rule">
+        <field name="name">Conditions : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_condition"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'condition')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_symptom_log_rule_partage" model="ir.rule">
+        <field name="name">Symptômes : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_symptom_log"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'condition')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_screening_rule_partage" model="ir.rule">
+        <field name="name">Examens : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_screening"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'screening')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_substance_log_rule_partage" model="ir.rule">
+        <field name="name">Consommation : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_substance_log"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'substance')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_reduction_step_rule_partage" model="ir.rule">
+        <field name="name">Étapes de réduction : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_reduction_step"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'substance')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_workout_rule_partage" model="ir.rule">
+        <field name="name">Séances : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_workout"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'workout')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_meal_log_rule_partage" model="ir.rule">
+        <field name="name">Journal alimentaire : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_meal_log"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'nutrition')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_nutrition_goal_rule_partage" model="ir.rule">
+        <field name="name">Objectif nutritionnel : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_nutrition_goal"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'nutrition')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="health_food_rule_partage" model="ir.rule">
+        <field name="name">Aliments : lecture de ce qu'un ado partage avec son parent</field>
+        <field name="model_id" ref="model_health_food"/>
+        <field name="domain_force">[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id), ('categorie', '=', 'nutrition')])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+
+    <!-- Le second parent nommé par le titulaire lit et écrit les fiches
+         de l'enfant, tant qu'il est suivi. Les fiches qu'il crée passent au
+         titulaire (create_uid réécrit, bf.health.dependent.mixin). Règles de
+         groupe : elles s'ajoutent à celles du titulaire sans les changer. -->
+    <record id="health_medication_rule_coparent" model="ir.rule">
+        <field name="name">health.medication : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_medication"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_medication_log_rule_coparent" model="ir.rule">
+        <field name="name">health.medication.log : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_medication_log"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_vital_rule_coparent" model="ir.rule">
+        <field name="name">health.vital : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_vital"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_lab_test_rule_coparent" model="ir.rule">
+        <field name="name">health.lab.test : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_lab_test"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_condition_rule_coparent" model="ir.rule">
+        <field name="name">health.condition : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_condition"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_symptom_log_rule_coparent" model="ir.rule">
+        <field name="name">health.symptom.log : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_symptom_log"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_screening_rule_coparent" model="ir.rule">
+        <field name="name">health.screening : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_screening"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_substance_log_rule_coparent" model="ir.rule">
+        <field name="name">health.substance.log : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_substance_log"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_reduction_step_rule_coparent" model="ir.rule">
+        <field name="name">health.reduction.step : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_reduction_step"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_workout_rule_coparent" model="ir.rule">
+        <field name="name">health.workout : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_workout"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_meal_log_rule_coparent" model="ir.rule">
+        <field name="name">health.meal.log : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_meal_log"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="health_nutrition_goal_rule_coparent" model="ir.rule">
+        <field name="name">health.nutrition.goal : le second parent, pour l'enfant suivi</field>
+        <field name="model_id" ref="model_health_nutrition_goal"/>
+        <field name="domain_force">[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <!-- Les aliments des repas de l'enfant : le second parent les lit (lecture
+         seule). Un repas qu'il note avec SON aliment pointe vers une copie dans le
+         catalogue du titulaire (bf.health.dependent.mixin). -->
+    <record id="health_food_rule_coparent" model="ir.rule">
+        <field name="name">Aliments : ceux des repas de l'enfant, pour le second parent</field>
+        <field name="model_id" ref="model_health_food"/>
+        <field name="domain_force">[('bf_meal_log_ids', 'any', [('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))])]</field>
+        <field name="groups" eval="[(4, ref('group_health_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
 </odoo>

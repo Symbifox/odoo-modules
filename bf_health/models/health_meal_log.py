@@ -15,8 +15,9 @@ class HealthMealLog(models.Model):
     # Verrou de Gen (voir models/gen_portees.py).
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
-    _inherit = ["bf.health.parent.guard"]
-    _bf_champs_parents = ("food_id",)
+    # Le champ « Pour » (personne à charge), gardé comme l'aliment.
+    _inherit = ["bf.health.dependent.mixin"]  # porte la garde des fiches parentes
+    _bf_champs_parents = ("food_id", "dependent_id")
     _description = "Entrée du journal alimentaire"
     _order = "date desc, id desc"
 

@@ -52,5 +52,16 @@
             <field name="active">True</field>
         </record>
 
+        <!-- Le premier jour du mois des 14 ans d'une personne à charge. -->
+        <record id="ir_cron_passage_14_ans" model="ir.cron">
+            <field name="name">Santé : passage à 14 ans des personnes à charge</field>
+            <field name="model_id" ref="model_health_dependent"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_passage_14_ans()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
     </data>
 </odoo>

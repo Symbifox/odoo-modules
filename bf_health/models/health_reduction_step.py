@@ -3,6 +3,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
 from .parent_guard import au_nom_du_proprietaire
+from .health_dependent import mention_de_la_personne
 
 
 class HealthReductionStep(models.Model):
@@ -11,7 +12,7 @@ class HealthReductionStep(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Étape de réduction"
-    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin", "bf.health.dependent.mixin"]
     _order = "sequence, date_start, id"
 
     code = fields.Char(string="Code", required=True, index=True)
@@ -109,6 +110,6 @@ class HealthReductionStep(models.Model):
                     # Résumé neutre : il part
                     # dans les résumés quotidiens par courriel. Le nom reste dans la note.
                     summary=fiche.env._("Healthy Fox : étape à venir"),
-                    note=Markup("<strong>%s</strong>") % f"{step.code} : {step.name}",
+                    note=Markup("<strong>%s</strong>%s") % (f"{step.code} : {step.name}", mention_de_la_personne(step)),
                     user_id=responsable,
                 )

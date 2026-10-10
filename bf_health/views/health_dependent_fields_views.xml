@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le champ « Pour » sur les fiches santé.
+         Vide, la fiche est à soi ; sinon, elle est tenue pour un enfant de moins
+         de 14 ans. Le champ ne paraît au formulaire qu'aux parents qui tiennent
+         des fiches. Le journal de prise le tient de son médicament. -->
+
+    <record id="health_medication_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.medication.form.pour</field>
+        <field name="model">health.medication</field>
+        <field name="inherit_id" ref="health_medication_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.medication.list.pour</field>
+        <field name="model">health.medication</field>
+        <field name="inherit_id" ref="health_medication_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.medication.search.pour</field>
+        <field name="model">health.medication</field>
+        <field name="inherit_id" ref="health_medication_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_view_bf_pour_kanban" model="ir.ui.view">
+        <field name="name">health.medication.kanban.pour</field>
+        <field name="model">health.medication</field>
+        <field name="inherit_id" ref="health_medication_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']" position="inside">
+                <div t-if="record.dependent_id.raw_value" class="small text-primary mt-1">
+                    Pour : <field name="dependent_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_log_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.medication.log.form.pour</field>
+        <field name="model">health.medication.log</field>
+        <field name="inherit_id" ref="health_medication_log_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group[1]" position="before">
+                <group>
+                    <field name="dependent_id" invisible="not dependent_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_log_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.medication.log.list.pour</field>
+        <field name="model">health.medication.log</field>
+        <field name="inherit_id" ref="health_medication_log_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_medication_log_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.medication.log.search.pour</field>
+        <field name="model">health.medication.log</field>
+        <field name="inherit_id" ref="health_medication_log_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_vital_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.vital.form.pour</field>
+        <field name="model">health.vital</field>
+        <field name="inherit_id" ref="health_vital_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group[1]" position="before">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_vital_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.vital.list.pour</field>
+        <field name="model">health.vital</field>
+        <field name="inherit_id" ref="health_vital_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_vital_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.vital.search.pour</field>
+        <field name="model">health.vital</field>
+        <field name="inherit_id" ref="health_vital_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_lab_test_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.lab.test.form.pour</field>
+        <field name="model">health.lab.test</field>
+        <field name="inherit_id" ref="health_lab_test_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_lab_test_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.lab.test.list.pour</field>
+        <field name="model">health.lab.test</field>
+        <field name="inherit_id" ref="health_lab_test_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_lab_test_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.lab.test.search.pour</field>
+        <field name="model">health.lab.test</field>
+        <field name="inherit_id" ref="health_lab_test_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_lab_test_view_bf_pour_kanban" model="ir.ui.view">
+        <field name="name">health.lab.test.kanban.pour</field>
+        <field name="model">health.lab.test</field>
+        <field name="inherit_id" ref="health_lab_test_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']" position="inside">
+                <div t-if="record.dependent_id.raw_value" class="small text-primary mt-1">
+                    Pour : <field name="dependent_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_symptom_log_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.symptom.log.form.pour</field>
+        <field name="model">health.symptom.log</field>
+        <field name="inherit_id" ref="health_symptom_log_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group[1]" position="before">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_symptom_log_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.symptom.log.list.pour</field>
+        <field name="model">health.symptom.log</field>
+        <field name="inherit_id" ref="health_symptom_log_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_symptom_log_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.symptom.log.search.pour</field>
+        <field name="model">health.symptom.log</field>
+        <field name="inherit_id" ref="health_symptom_log_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_condition_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.condition.form.pour</field>
+        <field name="model">health.condition</field>
+        <field name="inherit_id" ref="health_condition_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_condition_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.condition.list.pour</field>
+        <field name="model">health.condition</field>
+        <field name="inherit_id" ref="health_condition_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_condition_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.condition.search.pour</field>
+        <field name="model">health.condition</field>
+        <field name="inherit_id" ref="health_condition_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_condition_view_bf_pour_kanban" model="ir.ui.view">
+        <field name="name">health.condition.kanban.pour</field>
+        <field name="model">health.condition</field>
+        <field name="inherit_id" ref="health_condition_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']" position="inside">
+                <div t-if="record.dependent_id.raw_value" class="small text-primary mt-1">
+                    Pour : <field name="dependent_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_substance_log_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.substance.log.form.pour</field>
+        <field name="model">health.substance.log</field>
+        <field name="inherit_id" ref="health_substance_log_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group[1]" position="before">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_substance_log_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.substance.log.list.pour</field>
+        <field name="model">health.substance.log</field>
+        <field name="inherit_id" ref="health_substance_log_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_substance_log_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.substance.log.search.pour</field>
+        <field name="model">health.substance.log</field>
+        <field name="inherit_id" ref="health_substance_log_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_reduction_step_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.reduction.step.form.pour</field>
+        <field name="model">health.reduction.step</field>
+        <field name="inherit_id" ref="health_reduction_step_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_reduction_step_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.reduction.step.list.pour</field>
+        <field name="model">health.reduction.step</field>
+        <field name="inherit_id" ref="health_reduction_step_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_reduction_step_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.reduction.step.search.pour</field>
+        <field name="model">health.reduction.step</field>
+        <field name="inherit_id" ref="health_reduction_step_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_screening_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.screening.form.pour</field>
+        <field name="model">health.screening</field>
+        <field name="inherit_id" ref="health_screening_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_screening_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.screening.list.pour</field>
+        <field name="model">health.screening</field>
+        <field name="inherit_id" ref="health_screening_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_screening_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.screening.search.pour</field>
+        <field name="model">health.screening</field>
+        <field name="inherit_id" ref="health_screening_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_screening_view_bf_pour_kanban" model="ir.ui.view">
+        <field name="name">health.screening.kanban.pour</field>
+        <field name="model">health.screening</field>
+        <field name="inherit_id" ref="health_screening_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']" position="inside">
+                <div t-if="record.dependent_id.raw_value" class="small text-primary mt-1">
+                    Pour : <field name="dependent_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_workout_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.workout.form.pour</field>
+        <field name="model">health.workout</field>
+        <field name="inherit_id" ref="health_workout_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_workout_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.workout.list.pour</field>
+        <field name="model">health.workout</field>
+        <field name="inherit_id" ref="health_workout_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_workout_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.workout.search.pour</field>
+        <field name="model">health.workout</field>
+        <field name="inherit_id" ref="health_workout_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_meal_log_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.meal.log.form.pour</field>
+        <field name="model">health.meal.log</field>
+        <field name="inherit_id" ref="health_meal_log_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group[1]" position="before">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_meal_log_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.meal.log.list.pour</field>
+        <field name="model">health.meal.log</field>
+        <field name="inherit_id" ref="health_meal_log_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_meal_log_view_bf_pour_search" model="ir.ui.view">
+        <field name="name">health.meal.log.search.pour</field>
+        <field name="model">health.meal.log</field>
+        <field name="inherit_id" ref="health_meal_log_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_moi" string="Moi" domain="[('dependent_id', '=', False)]"/>
+                <filter name="bf_a_charge" string="Personnes à charge" domain="[('dependent_id', '!=', False)]"/>
+                <filter name="bf_groupe_pour" string="Pour" context="{'group_by': 'dependent_id'}"/>
+                <filter name="bf_partagees" string="Partagées avec moi" domain="[('create_uid', '!=', uid)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_nutrition_goal_view_bf_pour_form" model="ir.ui.view">
+        <field name="name">health.nutrition.goal.form.pour</field>
+        <field name="model">health.nutrition.goal</field>
+        <field name="inherit_id" ref="health_nutrition_goal_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not bf_partage_par">
+                    Fiche partagée avec vous par
+                    <field name="bf_partage_par" class="fw-bold" readonly="1" options="{'no_open': True}"/>,
+                    en lecture seule.
+                </div>
+                <group>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="health_nutrition_goal_view_bf_pour_list" model="ir.ui.view">
+        <field name="name">health.nutrition.goal.list.pour</field>
+        <field name="model">health.nutrition.goal</field>
+        <field name="inherit_id" ref="health_nutrition_goal_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="dependent_id" optional="show"/>
+                <field name="bf_partage_par" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

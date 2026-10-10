@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Personnes à charge. -->
+
+    <record id="health_dependent_view_list" model="ir.ui.view">
+        <field name="name">health.dependent.list</field>
+        <field name="model">health.dependent</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="passage_du" decoration-muted="state == 'transfere'">
+                <field name="name"/>
+                <field name="passage_date"/>
+                <field name="passage_du" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'suivi'"
+                       decoration-warning="state == 'offert'"
+                       decoration-success="state == 'transfere'"/>
+                <field name="parent_id" optional="show"/>
+                <field name="coparent_id" optional="show"/>
+                <field name="ado_id" optional="hide"/>
+                <field name="record_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="health_dependent_view_form" model="ir.ui.view">
+        <field name="name">health.dependent.form</field>
+        <field name="model">health.dependent</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="bf_suis_parent" invisible="1"/>
+                <field name="bf_suis_titulaire" invisible="1"/>
+                <field name="bf_suis_ado" invisible="1"/>
+                <field name="bf_suis_admin" invisible="1"/>
+                <field name="passage_du" invisible="1"/>
+                <header>
+                    <button name="action_proposer_passage" type="object" class="btn-primary"
+                            string="Proposer le passage"
+                            invisible="not bf_suis_admin or state != 'suivi' or not ado_id"/>
+                    <button name="action_recevoir" type="object" class="btn-primary"
+                            string="Recevoir mes fiches"
+                            invisible="not bf_suis_ado or state != 'offert'"
+                            confirm="Vos fiches de santé passent dans votre compte. Dès maintenant, c'est vous qui consentez : votre parent n'y a plus accès, sauf si vous les repartagez avec lui, catégorie par catégorie. Vous pourrez retirer un partage d'un geste. Recevoir vos fiches?"/>
+                    <button name="action_effacer" type="object"
+                            string="Effacer ses fiches"
+                            invisible="not ((bf_suis_parent and state in ('suivi', 'offert')) or (bf_suis_ado and state == 'offert'))"
+                            confirm="Toutes les fiches de santé de cette personne seront effacées, et la personne à charge avec elles. C'est définitif. Continuer?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="suivi,offert,transfere"/>
+                </header>
+                <sheet>
+                    <!-- L'avis au parent, avant son consentement. Version : AVIS_VERSION. -->
+                    <div class="alert alert-info" role="status" invisible="id">
+                        <p><strong>Avant de suivre la santé de votre enfant</strong></p>
+                        <ul class="mb-2">
+                            <li>Vous consentez pour votre enfant de moins de 14 ans, comme titulaire de
+                                l'autorité parentale. Ses fiches sont dans votre compte, fermées aux autres
+                                membres du foyer comme les vôtres.</li>
+                            <li>Healthy Fox ne demande que son prénom, et le mois et l'année de sa naissance,
+                                pour savoir quand il aura 14 ans. Jamais le jour.</li>
+                            <li>À 14 ans, ses fiches passent dans un compte à lui, que Blue Fox ouvre à votre
+                                demande. Il consent alors seul : vous n'y avez plus accès, sauf s'il les
+                                repartage avec vous.</li>
+                            <li>Vous pouvez retirer votre consentement en tout temps : ses fiches sont alors
+                                effacées.</li>
+                        </ul>
+                        <p class="mb-0 small">Avis du 3 octobre 2026.</p>
+                    </div>
+                    <div class="alert alert-warning" role="status" invisible="not passage_du">
+                        Le passage à 14 ans est dû. Demandez à Blue Fox d'ouvrir le compte de l'ado :
+                        ses fiches y passeront quand il les acceptera.
+                    </div>
+                    <div class="alert alert-info" role="status" invisible="not bf_suis_ado or state != 'offert'">
+                        Votre parent a tenu vos fiches de santé jusqu'à vos 14 ans. Vous pouvez les recevoir
+                        dans votre compte : c'est alors vous qui décidez de ce que votre parent voit. Vous
+                        pouvez aussi demander qu'elles soient effacées.
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Prénom"
+                                   readonly="id and (not bf_suis_parent or state == 'transfere')"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Naissance">
+                            <field name="birth_month"
+                                   readonly="id and not (bf_suis_admin and state == 'suivi')"/>
+                            <field name="birth_year" options="{'enable_formatting': false}"
+                                   readonly="id and not (bf_suis_admin and state == 'suivi')"/>
+                            <field name="passage_date" invisible="not id"/>
+                        </group>
+                        <group string="Consentement">
+                            <field name="consentement_parent" invisible="id" required="not id"/>
+                            <field name="parent_id" invisible="not id"/>
+                            <field name="coparent_id"
+                                   readonly="id and not ((bf_suis_titulaire and state in ('suivi', 'offert')))"
+                                   domain="[('share', '=', False), ('id', '!=', uid)]"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="consent_date" invisible="not id"/>
+                            <field name="consent_version" invisible="not id"/>
+                        </group>
+                    </group>
+                    <group string="Passage à 14 ans" invisible="not id">
+                        <group>
+                            <field name="ado_id"
+                                   invisible="not ado_id and not bf_suis_admin"
+                                   readonly="not bf_suis_admin or state != 'suivi'"
+                                   domain="[('share', '=', False)]"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="ado_consent_date" invisible="state != 'transfere'"/>
+                            <field name="transfer_date" invisible="state != 'transfere'"/>
+                        </group>
+                        <group>
+                            <field name="record_count" invisible="state == 'transfere'"/>
+                        </group>
+                    </group>
+                    <group string="Ce que l'ado partage avec son parent" invisible="state != 'transfere'">
+                        <div class="text-muted" colspan="2">
+                            En lecture seule. Seul l'ado coche ou décoche, catégorie par catégorie.
+                            Le journal d'humeur ne se partage pas.
+                        </div>
+                        <group>
+                            <field name="partage_medication" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_vital" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_lab" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_condition" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                        </group>
+                        <group>
+                            <field name="partage_screening" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_substance" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_workout" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage_nutrition" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                        </group>
+                    </group>
+                    <group string="Ce que l'ado partage avec son second parent" invisible="state != 'transfere' or not coparent_id">
+                        <div class="text-muted" colspan="2">
+                            Chaque parent reçoit seulement ce que l'ado lui partage.
+                        </div>
+                        <group>
+                            <field name="partage2_medication" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_vital" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_lab" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_condition" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                        </group>
+                        <group>
+                            <field name="partage2_screening" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_substance" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_workout" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                            <field name="partage2_nutrition" widget="boolean_toggle" readonly="not bf_suis_ado"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="health_dependent_view_search" model="ir.ui.view">
+        <field name="name">health.dependent.search</field>
+        <field name="model">health.dependent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="bf_mes_enfants" string="Mes enfants" domain="[('create_uid', '=', uid)]"/>
+                <filter name="bf_a_recevoir" string="Fiches à recevoir"
+                        domain="[('ado_id', '=', uid), ('state', '=', 'offert')]"/>
+                <separator/>
+                <filter name="bf_passage_du" string="Passage dû" domain="[('passage_du', '=', True)]"/>
+                <filter name="bf_suivis" string="Suivis" domain="[('state', 'in', ('suivi', 'offert'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="bf_groupe_etat" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="health_dependent_action" model="ir.actions.act_window">
+        <field name="name">Personnes à charge</field>
+        <field name="res_model">health.dependent</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="health_dependent_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Suivre la santé d'un enfant de moins de 14 ans</p>
+            <p>Ses fiches seront dans votre compte, fermées aux autres membres du foyer.
+               À 14 ans, elles passent dans un compte à lui.</p>
+        </field>
+    </record>
+
+    <!-- Blue Fox (seule administratrice, hors du groupe santé) n'a pas
+         l'application. Elle ouvre les passages depuis Réglages > Utilisateurs ;
+         la règle ne lui montre que les enfants qui ont 14 ans. -->
+    <record id="health_dependent_action_admin" model="ir.actions.act_window">
+        <field name="name">Passages à 14 ans (Healthy Fox)</field>
+        <field name="res_model">health.dependent</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="health_dependent_view_search"/>
+        <field name="context">{'search_default_bf_passage_du': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun passage à 14 ans dû</p>
+            <p>Une personne à charge paraît ici le premier jour du mois de ses 14 ans.</p>
+        </field>
+    </record>
+
+</odoo>

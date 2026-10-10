@@ -21,6 +21,18 @@
                             <i class="fa fa-heartbeat me-2"/>Tableau de bord santé
                         </h2>
                         <div class="d-flex gap-2">
+                            <!-- Le parent choisit de qui il consulte les fiches. -->
+                            <select t-if="state.data.dependents.length"
+                                    class="form-select form-select-sm w-auto"
+                                    aria-label="Fiches de"
+                                    t-on-change="onPersonChange">
+                                <option value="" t-att-selected="!state.dependentId">Moi</option>
+                                <t t-foreach="state.data.dependents" t-as="dep" t-key="dep.id">
+                                    <option t-att-value="dep.id" t-att-selected="state.dependentId === dep.id">
+                                        <t t-esc="dep.name"/><t t-if="dep.passage_du"> (passage à 14 ans dû)</t>
+                                    </option>
+                                </t>
+                            </select>
                             <button class="btn btn-sm text-white"
                                     style="background: #2e8b57;"
                                     t-on-click="openWizard">

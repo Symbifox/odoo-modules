@@ -147,6 +147,53 @@ lock closes the scope to the caller.
   of cron reminders are reduced to the record's name (a reminder the person scheduled by hand keeps
   its note); stored GPX files are read for missing values, then deleted, and file names cleared.
 
+### Dependents (18.0.2.6.0)
+A parent can follow the health of their child under 14 in their own account; at 14 the records
+move to an account of the teen's own.
+- **Express consent, month and year only**: "Personnes à charge" asks for a first name, the month
+  and year of birth (never the day) and a box the parent ticks after a notice saying what happens
+  at 14. Consent date and notice version are stored. Children of 14 or more are refused
+- **"Pour" on every health record** (medications and doses, vitals, lab tests, conditions and
+  symptoms, screenings, substance use and reduction steps, workouts, meal logs, nutrition goals):
+  empty means the record is the person's own. The child's records belong to the parent
+  (`create_uid` rule unchanged), so other household members see nothing of them, exactly as for
+  the parent's own records. A dose follows its medication; a symptom follows its condition when it
+  has one. Only one's own dependent, still followed, can be chosen (constraint, `onchange` and
+  `default_get` guards)
+- **Dashboard and Quick entry per person**: a "Moi / child" selector appears for parents; the
+  dashboard filters every raw SQL query on `dependent_id`. The mood journal stays the person's own:
+  no dependent, no sharing, and the parent's correlations ignore the child's records
+- **Passage at 14** (first day of the birth month, 14 years later): a daily cron reminds the parent
+  (in their name) and Blue Fox (`base.user_admin`, generic text, no name). Blue Fox, the only system
+  administrator, sees the first name and birth of children who are 14, never their records;
+  it opens the teen's account (internal, health group, not an administrator, not the parent) and
+  proposes the passage. The teen alone accepts (express consent, stored) or asks for erasure
+- **What the passage does**: `create_uid` of every record is rewritten in SQL to the teen and
+  `dependent_id` cleared, so the existing rules and their isolation tests stay untouched. Reminders
+  are reassigned, the parent is unsubscribed and the teen subscribed, attachments follow, the foods
+  of the meal log are copied into the teen's own catalogue. Odoo always lets the author or creator
+  of a message read it and reply to it: the passage therefore also cuts that link on the parent's
+  messages in the records' chatter (`author_id` emptied, the parent's name kept in `email_from`)
+- **Sharing back, by category, read-only**: after the passage the teen can re-share categories
+  with the parent who held the records (`health.share`, toggles on the dependent's form), and
+  withdraw in one gesture, which also unsubscribes the parent from those records. Read-only group
+  rules: nothing to write, nothing to delete
+- **Withdrawal**: the parent (while holding the records) or the teen (while the passage is proposed)
+  erases every record of the child, their messages, attachments and reminders, and the dependent
+- **Second parent (18.0.2.6.0)**: the parent who holds the records can name a second
+  parent (`coparent_id`), who reads and writes the child's records through their own group rules
+  while the child is followed. A record the second parent creates for the child is handed to the
+  holder (`create_uid` rewritten), so every record of a child has the same owner and the passage at
+  14 moves them all; a meal logged with the second parent's own food points to a copy in the
+  holder's catalogue. When the second parent steps back or is replaced, they lose the records'
+  chatter, their own messages (author link cut, as at the passage), attachments and reminders.
+  After the passage, the teen shares back with each parent separately.
+- **Merged with 18.0.2.5.1 (2026-10-09)**: the dependent's chatter is "internal notes only" too and
+  its name private for anyone who cannot read it; cron reminders keep a neutral summary, the child's
+  first name goes in the note; a parent cannot follow a record the teen shares (only the person
+  follows their records); activities on a health record go to its holder, the second parent, the
+  teen offered the passage, or Blue Fox once the child is 14.
+
 ### OWL Dashboard
 - **Today's Med Compliance**: Percentage and count (taken/total) with color-coded indicator
 - **Active Medications Count**: Quick stat with click-through to kanban view
@@ -158,6 +205,7 @@ lock closes the scope to the caller.
 - **Quick Navigation**: Buttons to jump to any model view
 - **Saisie Rapide Button**: One-click access to the daily log wizard
 - **Refresh**: Manual refresh button to reload all dashboard data
+- **Person selector** (18.0.2.6.0): "Moi" or a child under 14, for parents only
 
 ### Daily Log Wizard (Saisie rapide)
 - **One-Form Entry**: Single wizard to log medications taken, vitals, and substance use for a given date
@@ -165,6 +213,8 @@ lock closes the scope to the caller.
 - **Pre-Checked from Existing**: Detects already-logged entries and pre-checks them
 - **Creates Multiple Record Types**: Generates `health.medication.log`, `health.vital`, and `health.substance.log` records in one action
 - **Update-or-Create Logic**: Updates existing med log entries if found, creates new ones otherwise
+- **For a child** (18.0.2.6.0): "Pour" lists the child's medications only and files every entry
+  under the child; mood is refused for a child
 
 ## Data Model
 
@@ -188,6 +238,9 @@ lock closes the scope to the caller.
 | `health.mood.activity` | The person's activities to tick | — |
 | `health.mood.settings` | One per person: reminder, correlations switch, Gen consents | `mail.thread` (reminder only), `mail.activity.mixin` |
 | `health.mood.report.wizard` | TransientModel for the doctor's PDF | — |
+| `health.dependent` | A child under 14 followed by a parent: first name, birth month and year, consent, passage | `mail.thread`, `mail.activity.mixin` |
+| `health.share` | What a teen re-shares with the parent who held their records, per category | None |
+| `bf.health.dependent.mixin` | Abstract: the "Pour" field and its guards | None |
 
 ### Key Fields on health.medication
 
@@ -241,6 +294,7 @@ lock closes the scope to the caller.
 | Créer les entrées du jour | Daily | `health.medication._cron_create_daily_med_logs()` | Pre-creates medication log entries with `taken=False` for all active meds |
 | Vérifier les étapes de réduction | Daily | `health.reduction.step._cron_check_reduction_steps()` | Creates activities for steps starting within 2 days |
 | Rappels du journal d'humeur | Every 15 min | `health.mood.settings._cron_mood_reminders()` | One reminder per person and local day, at their hour, in their time zone; deletes past reminders |
+| Passage à 14 ans | Daily | `health.dependent._cron_passage_14_ans()` | Once per dependent, from the first day of the month of their 14th birthday: a reminder to the parent and one to Blue Fox |
 
 Since 18.0.2.5.0 every cron posts its activities **in the name of the record's owner and assigned
 to them** (`au_nom_du_proprietaire`), and the daily medication logs are created in their name.
@@ -260,6 +314,7 @@ All crons implement duplicate prevention: check for existing open activities of 
 | Analyses de laboratoire | `fa-flask` | `health.lab.test` | Lab test scheduling reminders |
 | Étape de réduction | `fa-leaf` | `health.reduction.step` | Step start date reminders (no email template) |
 | Humeur du jour | `fa-smile-o` | `health.mood.settings` | Daily mood reminder (no email template, neutral text) |
+| Passage à 14 ans | `fa-child` | `health.dependent` | Passage of a dependent at 14 (no email template) |
 
 ## Menu Structure
 
@@ -291,6 +346,7 @@ Santé (application, opens dashboard)
 ├── Conditions
 │   ├── Conditions actives (filtered)
 │   └── Toutes les conditions
+├── Personnes à charge (children under 14, and records to receive at 14)
 └── Rapports
     ├── Tableau de bord (OWL)
     ├── Tendance du poids (vital graph, filtered)
@@ -347,13 +403,30 @@ superuser (`/web/become`), and the hosting operator has the database. The isolat
 against ordinary household members and non-system managers, not against a system administrator
 (on a hosted household instance, nobody in the household should be a system administrator).
 
+Since 18.0.2.6.0 (dependents and second parent):
+- `health.dependent`: the parent who holds the records (`create_uid`) and the teen the passage is
+  proposed to (`ado_id`); Blue Fox (`base.group_system`) sees those who are 14 (`passage_atteint`,
+  a searchable field, so the rule's cached domain never freezes a date). Writes are guarded field
+  by field: no one writes the passage's fields directly
+- `health.share`: the teen and the parent read it; only the teen creates or removes it
+- every health model (and `health.food`) has a read-only group rule for what a teen shares with
+  their parent: `[('create_uid.bf_health_partage_ids', 'any', [('parent_id', '=', user.id),
+  ('categorie', '=', <category>)])]`
+- the second parent (`coparent_id`) has a group rule on each of the 12 models a child's record can
+  belong to, `[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]`,
+  and reads the foods of the child's meal logs (read-only)
+
 The dashboard model (`health.dashboard`) has no table and no access line: it reads the caller's
-own records in SQL (`create_uid` = caller) and refuses when the Gen lock closes the scope.
+own records in SQL (`create_uid` = caller), or a child's records under the parent who holds them once
+the caller is checked as that child's parent or second parent, and refuses when the Gen lock closes
+the scope.
 
 ### Access Control (ir.model.access.csv)
 
 Every model grants read, write, create and delete to `group_health_user`; the record rules above
-then restrict each record to the person who created it.
+then restrict each record to the person who created it. `health.dependent` and
+`health.share` keep their own guards: the dependent is written field by field and only removed by
+its gestures; a share is created or removed by the teen only.
 
 ## File Structure
 

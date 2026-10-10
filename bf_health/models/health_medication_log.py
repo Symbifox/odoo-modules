@@ -1,5 +1,6 @@
 from odoo import api, fields, models
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .health_dependent import rendre_au_titulaire
 
 
 class HealthMedicationLog(models.Model):
@@ -18,6 +19,19 @@ class HealthMedicationLog(models.Model):
         required=True,
         ondelete="cascade",
     )
+    # La prise est pour la personne du médicament.
+    dependent_id = fields.Many2one(
+        related="medication_id.dependent_id", store=True, index=True, string="Pour")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Une prise notée par le second parent pour l'enfant revient au titulaire,
+        # comme les fiches qui portent le mélange « Pour ».
+        logs = super().create(vals_list)
+        if not self.env.su:
+            rendre_au_titulaire(logs)
+        return logs
+
     medication_name = fields.Char(
         related="medication_id.name", string="Nom", store=True
     )

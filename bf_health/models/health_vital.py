@@ -25,6 +25,8 @@ class HealthVital(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Signe vital"
+    # Le champ « Pour » (personne à charge).
+    _inherit = ["bf.health.dependent.mixin"]
     _order = "date desc, id desc"
 
     date = fields.Datetime(

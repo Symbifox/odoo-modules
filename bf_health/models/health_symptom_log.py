@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
 
 
@@ -7,11 +8,15 @@ class HealthSymptomLog(models.Model):
     # Verrou de Gen (voir models/gen_portees.py).
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
-    _inherit = ["bf.health.parent.guard"]
-    _bf_champs_parents = ("condition_id",)
+    # Le champ « Pour » (personne à charge), gardé comme la condition.
+    _inherit = ["bf.health.dependent.mixin"]  # porte la garde des fiches parentes
+    _bf_champs_parents = ("condition_id", "dependent_id")
     _description = "Journal de symptômes"
     _order = "date desc, id desc"
 
+    # « Pour » suit la condition ; un symptôme sans condition le choisit.
+    dependent_id = fields.Many2one(
+        compute="_compute_dependent_id", store=True, readonly=False, precompute=True)
     condition_id = fields.Many2one(
         "health.condition",
         string="Condition",
@@ -59,3 +64,19 @@ class HealthSymptomLog(models.Model):
         """
         for rec in self:
             rec.condition_id.check_access("read")
+
+    @api.depends("condition_id")
+    def _compute_dependent_id(self):
+        for rec in self:
+            rec.dependent_id = rec.condition_id.dependent_id if rec.condition_id else rec.dependent_id
+
+    @api.constrains("condition_id", "dependent_id")
+    def _check_meme_personne_que_la_condition(self):
+        """Un symptôme rattaché à une condition est pour la même
+        personne qu'elle, sinon il changerait de compte au passage à 14 ans
+        sans sa condition, ou resterait chez le parent."""
+        if self.env.su:
+            return
+        for rec in self:
+            if rec.condition_id and rec.condition_id.dependent_id != rec.dependent_id:
+                raise ValidationError(_("Le symptôme et sa condition doivent être pour la même personne."))

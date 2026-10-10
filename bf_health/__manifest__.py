@@ -1,7 +1,7 @@
 {
     "name": "Healthy Fox",
     "summary": "Suivi santé, entraînement et nutrition : médicaments, signes vitaux, analyses, examens, séances (import GPX), journal alimentaire (code-barres Open Food Facts), métriques quotidiennes et journal d'humeur privé",
-    "version": "18.0.2.5.1",
+    "version": "18.0.2.6.0",
     "category": "Santé",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -39,6 +39,8 @@
         "views/health_dashboard_views.xml",
         "views/health_daily_log_wizard_views.xml",
         "views/health_mood_views.xml",
+        "views/health_dependent_views.xml",
+        "views/health_dependent_fields_views.xml",
         "report/health_mood_report.xml",
         "views/menu.xml",
     ],

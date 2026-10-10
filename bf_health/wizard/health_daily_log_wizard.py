@@ -1,9 +1,11 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 from ..models.health_meal_log import MEAL_TYPES
 from ..models.gen_portees import LIBELLE_SAISIE, PORTEE_SAISIE
 from ..models.health_mood import NIVEAUX
 from ..models.parent_guard import garder_parents
+from ..models.health_dependent import tient_des_fiches, verifier_personne_a_charge
 from ..models.health_workout import ACTIVITY_TYPES
 
 
@@ -19,6 +21,16 @@ class HealthDailyLogWizard(models.TransientModel):
     date = fields.Date(
         string="Date", required=True, default=fields.Date.context_today
     )
+    # La saisie est pour soi, ou pour son enfant de moins de 14 ans.
+    dependent_id = fields.Many2one(
+        "health.dependent", string="Pour",
+        domain="['|', ('create_uid', '=', uid), ('coparent_id', '=', uid), ('state', 'in', ('suivi', 'offert'))]",
+        help="Vide : la saisie est la vôtre. L'humeur se saisit toujours pour soi.",
+    )
+    # Défaut = même calcul : voir le mixin (premier ``onchange`` d'un formulaire neuf).
+    bf_tient_des_fiches = fields.Boolean(
+        string="Je tiens des fiches d'enfant", compute="_compute_bf_tient_des_fiches",
+        default=lambda self: tient_des_fiches(self.env))
 
     # Vitals
     weight = fields.Float(string="Poids (kg)", digits=(10, 1))
@@ -97,16 +109,27 @@ class HealthDailyLogWizard(models.TransientModel):
 
     def onchange(self, values, field_names, fields_spec):
         self._bf_garder_lignes(values)
-        garder_parents(self, values or {}, ("mood_activity_ids",))
+        garder_parents(self, values or {}, ("mood_activity_ids", "dependent_id"))
         return super().onchange(values, field_names, fields_spec)
 
     @api.model
     def default_get(self, fields_list):
-        """``default_med_line_ids`` du contexte."""
+        """``default_med_line_ids`` du contexte.
+        ``default_dependent_id`` aussi (le tableau de bord le passe)."""
         valeurs = super().default_get(fields_list)
         self._bf_garder_lignes(valeurs)
-        garder_parents(self, valeurs, ("mood_activity_ids",))
+        garder_parents(self, valeurs, ("mood_activity_ids", "dependent_id"))
         return valeurs
+
+    @api.depends_context("uid")
+    def _compute_bf_tient_des_fiches(self):
+        tient = tient_des_fiches(self.env)
+        for rec in self:
+            rec.bf_tient_des_fiches = tient
+
+    @api.constrains("dependent_id")
+    def _check_dependent_id(self):
+        verifier_personne_a_charge(self)
 
     @api.constrains("mood_activity_ids")
     def _check_activites_humeur_lisibles(self):
@@ -116,11 +139,12 @@ class HealthDailyLogWizard(models.TransientModel):
         for rec in self:
             rec.mood_activity_ids.check_access("read")
 
-    @api.onchange("date")
+    @api.onchange("date", "dependent_id")
     def _onchange_date(self):
-        """Populate med lines from active medications."""
+        """Populate med lines from active medications (de la personne choisie)."""
         MedLog = self.env["health.medication.log"]
-        meds = self.env["health.medication"].search([("state", "=", "active")])
+        meds = self.env["health.medication"].search([
+            ("state", "=", "active"), ("dependent_id", "=", self.dependent_id.id or False)])
         lines = []
         for med in meds:
             # Check if already logged
@@ -153,6 +177,13 @@ class HealthDailyLogWizard(models.TransientModel):
 
     def action_confirm(self):
         self.ensure_one()
+        # Chaque fiche créée ici est pour la personne choisie. Une
+        # ligne de médicament ne vise que les médicaments de cette personne.
+        pour = {"dependent_id": self.dependent_id.id or False}
+        if self.med_line_ids.medication_id.filtered(lambda m: m.dependent_id != self.dependent_id):
+            raise UserError(_("Les médicaments de la saisie doivent être ceux de la personne choisie."))
+        if self.dependent_id and (self.mood_level or self.mood_note or self.mood_activity_ids):
+            raise UserError(_("L'humeur se saisit pour soi seulement."))
         Vital = self.env["health.vital"]
         MedLog = self.env["health.medication.log"]
         SubLog = self.env["health.substance.log"]
@@ -176,6 +207,7 @@ class HealthDailyLogWizard(models.TransientModel):
                     "date": fields.Datetime.to_datetime(self.date),
                     "vital_type": vtype,
                     "value": val,
+                    **pour,
                 })
 
         # Create/update med logs
@@ -203,6 +235,7 @@ class HealthDailyLogWizard(models.TransientModel):
                 "quantity": self.substance_qty,
                 "quantity_unit": self.substance_unit,
                 "context": self.substance_context,
+                **pour,
             })
 
         # Create workout
@@ -215,6 +248,7 @@ class HealthDailyLogWizard(models.TransientModel):
                 "duration_min": self.workout_duration,
                 "distance_km": self.workout_distance,
                 "calories_burned": int(self.workout_calories or 0),
+                **pour,
             })
 
         # Humeur
@@ -235,6 +269,7 @@ class HealthDailyLogWizard(models.TransientModel):
                     "meal_type": line.meal_type,
                     "food_id": line.food_id.id,
                     "servings": line.servings or 1.0,
+                    **pour,
                 })
 
         return {"type": "ir.actions.act_window_close"}

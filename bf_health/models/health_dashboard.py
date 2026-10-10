@@ -23,7 +23,10 @@ class HealthDashboard(models.AbstractModel):
     # passe du chargeur sur une base neuve.
 
     @api.model
-    def get_dashboard_data(self):
+    def get_dashboard_data(self, dependent_id=False):
+        """Le tableau de la personne courante, ou de son enfant de moins de
+        14 ans : chaque requête filtre sur ``dependent_id``, NULL
+        pour ses propres fiches."""
         # Ce tableau lit la santé en SQL brut, à côté des règles.
         # Si le verrou de Gen ferme la santé à cet appel (canal API sans
         # permission), on refuse ici : sinon Gen lirait par ce détour ce que la
@@ -31,7 +34,11 @@ class HealthDashboard(models.AbstractModel):
         if fermee_a_cet_appel(self.env, MODELES_LUS):
             raise AccessError(_("Healthy Fox est fermé à cet appel."))
         today = fields.Date.context_today(self)
-        uid = self.env.uid
+        dependant = self._bf_personne_affichee(dependent_id)
+        dep_id = dependant.id or None
+        # Les fiches d'un enfant ont toutes pour auteur le parent qui les tient,
+        # même celles que le second parent a notées.
+        uid = dependant.sudo().create_uid.id if dependant else self.env.uid
 
         # --- Med compliance today ---
         self.env.cr.execute("""
@@ -39,8 +46,8 @@ class HealthDashboard(models.AbstractModel):
                 COUNT(*) FILTER (WHERE taken = TRUE) AS taken,
                 COUNT(*) AS total
             FROM health_medication_log
-            WHERE date = %s AND create_uid = %s
-        """, (today, uid))
+            WHERE date = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         med_row = self.env.cr.dictfetchone()
         med_compliance = {
             "taken": med_row["taken"] or 0,
@@ -54,9 +61,9 @@ class HealthDashboard(models.AbstractModel):
             self.env.cr.execute("""
                 SELECT value, date
                 FROM health_vital
-                WHERE vital_type = %s AND create_uid = %s
+                WHERE vital_type = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
                 ORDER BY date DESC LIMIT 1
-            """, (vtype, uid))
+            """, (vtype, uid, dep_id))
             row = self.env.cr.dictfetchone()
             if row:
                 vitals_snapshot[vtype] = {
@@ -69,10 +76,10 @@ class HealthDashboard(models.AbstractModel):
             SELECT date::date AS day, value
             FROM health_vital
             WHERE vital_type = 'weight'
-              AND create_uid = %s
+              AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
               AND date >= %s - INTERVAL '30 days'
             ORDER BY date ASC
-        """, (uid, today))
+        """, (uid, dep_id, today))
         weight_trend = [
             {"day": str(r["day"]), "value": float(r["value"])}
             for r in self.env.cr.dictfetchall()
@@ -84,8 +91,8 @@ class HealthDashboard(models.AbstractModel):
                 COALESCE(SUM(value) FILTER (WHERE vital_type = 'water_ml'), 0) AS water,
                 COALESCE(SUM(value) FILTER (WHERE vital_type = 'calories'), 0) AS calories
             FROM health_vital
-            WHERE date::date = %s AND create_uid = %s
-        """, (today, uid))
+            WHERE date::date = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         intake = self.env.cr.dictfetchone()
 
         # --- Upcoming screenings (30 days) ---
@@ -94,9 +101,9 @@ class HealthDashboard(models.AbstractModel):
             FROM health_screening
             WHERE next_due IS NOT NULL
               AND next_due <= %s + INTERVAL '30 days'
-              AND create_uid = %s
+              AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             ORDER BY next_due ASC
-        """, (today, uid))
+        """, (today, uid, dep_id))
         upcoming_screenings = self.env.cr.dictfetchall()
         for s in upcoming_screenings:
             s["next_due"] = str(s["next_due"]) if s["next_due"] else None
@@ -105,13 +112,13 @@ class HealthDashboard(models.AbstractModel):
         self.env.cr.execute("""
             SELECT 'screening' AS type, id, name, next_due AS due_date
             FROM health_screening
-            WHERE next_due < %s AND create_uid = %s
+            WHERE next_due < %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             UNION ALL
             SELECT 'renewal' AS type, id, name, renewal_date AS due_date
             FROM health_medication
-            WHERE renewal_date < %s AND state = 'active' AND create_uid = %s
+            WHERE renewal_date < %s AND state = 'active' AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             ORDER BY due_date ASC
-        """, (today, uid, today, uid))
+        """, (today, uid, dep_id, today, uid, dep_id))
         overdue_items = self.env.cr.dictfetchall()
         for item in overdue_items:
             item["due_date"] = str(item["due_date"]) if item["due_date"] else None
@@ -121,10 +128,10 @@ class HealthDashboard(models.AbstractModel):
             SELECT substance_type, SUM(quantity) AS total_qty
             FROM health_substance_log
             WHERE date >= %s - INTERVAL '7 days'
-              AND create_uid = %s
+              AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             GROUP BY substance_type
             ORDER BY substance_type
-        """, (today, uid))
+        """, (today, uid, dep_id))
         substance_weekly = {
             r["substance_type"]: float(r["total_qty"])
             for r in self.env.cr.dictfetchall()
@@ -134,16 +141,16 @@ class HealthDashboard(models.AbstractModel):
         self.env.cr.execute("""
             SELECT COUNT(*) AS cnt
             FROM health_medication
-            WHERE state = 'active' AND create_uid = %s
-        """, (uid,))
+            WHERE state = 'active' AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (uid, dep_id,))
         active_meds = self.env.cr.dictfetchone()["cnt"]
 
         # --- Active conditions count ---
         self.env.cr.execute("""
             SELECT COUNT(*) AS cnt
             FROM health_condition
-            WHERE state IN ('active', 'managed') AND create_uid = %s
-        """, (uid,))
+            WHERE state IN ('active', 'managed') AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (uid, dep_id,))
         active_conditions = self.env.cr.dictfetchone()["cnt"]
 
         # --- Daily activity metrics (steps / active minutes) ---
@@ -152,17 +159,17 @@ class HealthDashboard(models.AbstractModel):
                 COALESCE(SUM(value) FILTER (WHERE vital_type = 'steps'), 0) AS steps,
                 COALESCE(SUM(value) FILTER (WHERE vital_type = 'active_minutes'), 0) AS active_minutes
             FROM health_vital
-            WHERE date::date = %s AND create_uid = %s
-        """, (today, uid))
+            WHERE date::date = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         activity = self.env.cr.dictfetchone()
 
         # --- Latest sleep ---
         self.env.cr.execute("""
             SELECT value, date
             FROM health_vital
-            WHERE vital_type = 'sleep_hours' AND create_uid = %s
+            WHERE vital_type = 'sleep_hours' AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             ORDER BY date DESC LIMIT 1
-        """, (uid,))
+        """, (uid, dep_id,))
         sleep_row = self.env.cr.dictfetchone()
 
         # --- Nutrition consumed today ---
@@ -173,16 +180,16 @@ class HealthDashboard(models.AbstractModel):
                 COALESCE(SUM(carbs_g), 0) AS carbs,
                 COALESCE(SUM(fat_g), 0) AS fat
             FROM health_meal_log
-            WHERE date = %s AND create_uid = %s
-        """, (today, uid))
+            WHERE date = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         nutrition = self.env.cr.dictfetchone()
 
         # --- Calories burned via workouts today ---
         self.env.cr.execute("""
             SELECT COALESCE(SUM(calories_burned), 0) AS burned
             FROM health_workout
-            WHERE date::date = %s AND create_uid = %s
-        """, (today, uid))
+            WHERE date::date = %s AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         burned_today = self.env.cr.dictfetchone()["burned"]
 
         # --- Weekly workout summary (7 days) ---
@@ -192,20 +199,22 @@ class HealthDashboard(models.AbstractModel):
                 COALESCE(SUM(distance_km), 0) AS distance,
                 COALESCE(SUM(duration_min), 0) AS duration
             FROM health_workout
-            WHERE date >= %s::date - INTERVAL '7 days' AND create_uid = %s
-        """, (today, uid))
+            WHERE date >= %s::date - INTERVAL '7 days' AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
+        """, (today, uid, dep_id))
         weekly_workouts = self.env.cr.dictfetchone()
 
         # --- Active nutrition goal ---
         self.env.cr.execute("""
             SELECT daily_calorie_goal, protein_target_g, carbs_target_g, fat_target_g
             FROM health_nutrition_goal
-            WHERE active = TRUE AND create_uid = %s
+            WHERE active = TRUE AND create_uid = %s AND dependent_id IS NOT DISTINCT FROM %s
             ORDER BY id DESC LIMIT 1
-        """, (uid,))
+        """, (uid, dep_id,))
         goal_row = self.env.cr.dictfetchone()
 
         return {
+            "dependent_id": dependant.id or False,
+            "dependents": self._bf_personnes_a_charge(),
             "med_compliance": med_compliance,
             "vitals_snapshot": vitals_snapshot,
             "weight_trend": weight_trend,
@@ -238,6 +247,32 @@ class HealthDashboard(models.AbstractModel):
                 "fat_target_g": goal_row["fat_target_g"] or 0,
             } if goal_row else None,
         }
+
+    @api.model
+    def _bf_personne_affichee(self, dependent_id):
+        """La personne à charge demandée, si l'appelant tient ses fiches.
+        Le tableau lit ensuite en SQL brut : le contrôle se fait donc ici."""
+        Dependant = self.env["health.dependent"]
+        if not dependent_id:
+            return Dependant
+        dependant = Dependant.browse(int(dependent_id)).exists()
+        if not dependant:
+            raise AccessError(_("Cette personne n'existe pas."))
+        dependant.check_access("read")
+        proprietes = dependant.sudo()
+        if (self.env.user not in (proprietes.create_uid | proprietes.coparent_id)
+                or proprietes.state not in ("suivi", "offert")):
+            raise AccessError(_("Vous ne tenez pas les fiches de cette personne."))
+        return dependant
+
+    @api.model
+    def _bf_personnes_a_charge(self):
+        return [
+            {"id": d.id, "name": d.name, "passage_du": d.passage_du}
+            for d in self.env["health.dependent"].search(
+                ["|", ("create_uid", "=", self.env.uid), ("coparent_id", "=", self.env.uid),
+                 ("state", "in", ("suivi", "offert"))])
+        ]
 
     @api.model
     def action_open_model(self, model, name, view_type="list"):

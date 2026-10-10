@@ -16,6 +16,8 @@ from odoo import SUPERUSER_ID, _, api, models
 #: Les modèles à fiches privées (règle globale ``create_uid``), et leur sorte.
 MODELES_PRIVES = (
     ("health.condition", models.Model),
+    # Le prénom d'un enfant suivi (2.6.0).
+    ("health.dependent", models.Model),
     ("health.food", models.Model),
     ("health.lab.test", models.Model),
     ("health.meal.log", models.Model),
@@ -26,6 +28,7 @@ MODELES_PRIVES = (
     ("health.mood.settings", models.Model),
     ("health.nutrition.goal", models.Model),
     ("health.reduction.step", models.Model),
+    ("health.share", models.Model),
     ("health.screening", models.Model),
     ("health.substance.log", models.Model),
     ("health.symptom.log", models.Model),

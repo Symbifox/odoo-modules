@@ -4,16 +4,24 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 00:33+0000\n"
-"PO-Revision-Date: 2026-10-10 00:33+0000\n"
+"POT-Creation-Date: 2026-10-10 01:24+0000\n"
+"PO-Revision-Date: 2026-10-10 01:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"%(ado)s a reçu ses fiches dans son propre compte (%(n)s fiches). Son parent "
+"n'y a plus accès, sauf partage de sa part."
+msgstr ""
 
 #. module: bf_health
 #. odoo-python
@@ -57,6 +65,29 @@ msgid "'Humeur - %s au %s' % (object.date_from, object.date_to)"
 msgstr ""
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "(passage à 14 ans dû)"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_form
+msgid ""
+",\n"
+"                    en lecture seule."
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid ""
 ".\n"
@@ -76,6 +107,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_workout__perceived_effort__10
 msgid "10 — Maximal"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__passage_atteint
+msgid "14 ans atteints"
 msgstr ""
 
 #. module: bf_health
@@ -144,6 +180,11 @@ msgid "<span> — </span>"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "<strong>Avant de suivre la santé de votre enfant</strong>"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__abdomen
 msgid "Abdomen"
 msgstr ""
@@ -166,6 +207,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_needaction
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_needaction
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_needaction
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_needaction
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_needaction
@@ -188,6 +230,7 @@ msgid "Actives"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_ids
@@ -203,6 +246,7 @@ msgid "Activity"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_exception_decoration
@@ -213,6 +257,7 @@ msgid "Activity Exception Decoration"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_state
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_state
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_state
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_state
@@ -223,6 +268,7 @@ msgid "Activity State"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_type_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_type_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_type_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_type_icon
@@ -287,9 +333,16 @@ msgstr ""
 #. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_nutrition
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__nutrition
 #: model:ir.ui.menu,name:bf_health.health_menu_nutrition
 #: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
 msgid "Alimentation"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_nutrition
+msgid "Alimentation (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -340,8 +393,15 @@ msgid "Analyses"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_lab
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__lab
 #: model:mail.activity.type,name:bf_health.mail_activity_type_lab_test
 msgid "Analyses de laboratoire"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_lab
+msgid "Analyses de laboratoire (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -364,6 +424,11 @@ msgid "Année"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__birth_year
+msgid "Année de naissance"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.actions.act_window,name:bf_health.health_meal_log_pivot_action
 #: model:ir.ui.menu,name:bf_health.health_menu_reports_nutrition
 #: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_graph
@@ -377,6 +442,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_attachment_count
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_attachment_count
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_attachment_count
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_attachment_count
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_attachment_count
@@ -408,6 +474,27 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Aucun lien net (r = %(r)s, %(n)s jours)."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"Aucun membre du foyer n'est administrateur : retirez ce droit au compte de "
+"l'ado."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"Aucun membre du foyer n'est administrateur : retirez ce droit au second "
+"parent."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_dependent_action_admin
+msgid "Aucun passage à 14 ans dû"
 msgstr ""
 
 #. module: bf_health
@@ -483,6 +570,21 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Avec %s"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Avis du 3 octobre 2026."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__ado_consent_version
+msgid "Avis lu par l'ado"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__consent_version
+msgid "Avis lu par le parent"
 msgstr ""
 
 #. module: bf_health
@@ -581,8 +683,40 @@ msgid "Cardio"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_share__categorie
+msgid "Catégorie"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.constraint,message:bf_health.constraint_health_dependent_bf_health_dependent_ado_unique
+msgid "Ce compte reçoit déjà les fiches d'une autre personne à charge."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Ce compte suit lui-même des enfants : ce n'est pas celui de l'ado."
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
 msgid "Ce mois"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Ce que l'ado partage avec son parent"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Ce que l'ado partage avec son second parent"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Ces champs suivent les gestes du passage : %s"
 msgstr ""
 
 #. module: bf_health
@@ -601,6 +735,17 @@ msgid "Cette activité existe déjà."
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.constraint,message:bf_health.constraint_health_share_bf_health_share_unique
+msgid "Cette catégorie est déjà partagée avec ce parent."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dashboard.py:0
+msgid "Cette personne n'existe pas."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.constraint,message:bf_health.constraint_health_mood_entry_bf_mood_client_uuid_unique
 msgid "Cette saisie est déjà enregistrée."
 msgstr ""
@@ -614,6 +759,11 @@ msgid "Cette semaine"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Chaque parent reçoit seulement ce que l'ado lui partage."
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "Chargement..."
@@ -622,6 +772,12 @@ msgstr ""
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_form
 msgid "Chercher par code-barres"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Choisissez d'abord le compte de l'ado."
 msgstr ""
 
 #. module: bf_health
@@ -700,6 +856,11 @@ msgid "Comprimé"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__ado_id
+msgid "Compte de l'ado"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__condition_id
 #: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_search
 msgid "Condition"
@@ -725,6 +886,32 @@ msgid "Conditions actives"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_condition
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__condition
+msgid "Conditions et symptômes"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_condition
+msgid "Conditions et symptômes (second parent)"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Consentement"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__ado_consent_date
+msgid "Consentement de l'ado"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__consent_date
+msgid "Consentement du parent"
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_substance_log_action
@@ -738,6 +925,17 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "Consommation (7 derniers jours)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_substance
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__substance
+msgid "Consommation et plans de réduction"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_substance
+msgid "Consommation et plans de réduction (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -804,6 +1002,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_food__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__create_uid
@@ -816,6 +1015,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_share__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__create_uid
@@ -828,6 +1028,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_food__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__create_date
@@ -840,6 +1041,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_share__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__create_date
@@ -856,6 +1058,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__din
 msgid "DIN"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__state__transfere
+msgid "Dans son propre compte"
 msgstr ""
 
 #. module: bf_health
@@ -967,6 +1174,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_food__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__display_name
@@ -979,6 +1187,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_share__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__display_name
@@ -995,6 +1204,18 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model,name:bf_health.model_mail_followers
 msgid "Document Followers"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Donnez d'abord au compte de l'ado l'accès à Healthy Fox."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Donnez d'abord au second parent l'accès à Healthy Fox."
 msgstr ""
 
 #. module: bf_health
@@ -1078,6 +1299,11 @@ msgid "Eau aujourd'hui"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Effacer ses fiches"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_lab_test__state__performed
 msgid "Effectuée"
 msgstr ""
@@ -1107,6 +1333,13 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__in_progress
 #: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
 msgid "En cours"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"En lecture seule. Seul l'ado coche ou décoche, catégorie par catégorie.\n"
+"                            Le journal d'humeur ne se partage pas."
 msgstr ""
 
 #. module: bf_health
@@ -1141,6 +1374,8 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_workout_action
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_workout
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__workout
 #: model:ir.ui.menu,name:bf_health.health_menu_workout
 #: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_calendar
@@ -1158,6 +1393,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.ui.menu,name:bf_health.health_menu_reports_workout
 msgid "Entraînement (pivot)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_workout
+msgid "Entraînement (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -1193,6 +1433,17 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_activity
 #: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_calendar
 msgid "Examens"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_screening
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__screening
+msgid "Examens de dépistage"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_screening
+msgid "Examens de dépistage (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -1252,9 +1503,45 @@ msgid "Fibres (g)"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_form
+msgid "Fiche partagée avec vous par"
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/nom_prive.py:0
 msgid "Fiche santé privée"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_bf_health_dependent_mixin
+msgid "Fiche santé tenue pour une personne à charge"
+msgstr ""
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+msgid "Fiches de"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__record_count
+msgid "Fiches tenues"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
+msgid "Fiches à recevoir"
 msgstr ""
 
 #. module: bf_health
@@ -1275,6 +1562,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_follower_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_follower_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_follower_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_follower_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_follower_ids
@@ -1286,6 +1574,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_partner_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_partner_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_partner_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_partner_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_partner_ids
@@ -1296,6 +1585,7 @@ msgid "Followers (Partners)"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__activity_type_icon
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_type_icon
 #: model:ir.model.fields,help:bf_health.field_health_medication__activity_type_icon
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_type_icon
@@ -1442,6 +1732,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__has_message
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__has_message
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__has_message
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__has_message
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__has_message
@@ -1506,6 +1797,12 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Healthy Fox : vos fiches de santé vous attendent"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 #: model:mail.activity.type,summary:bf_health.mail_activity_type_mood_reminder
 msgid "Healthy Fox : votre saisie du jour"
@@ -1529,6 +1826,21 @@ msgid ""
 "Healthy Fox lit la trace à l'enregistrement et n'en garde que la\n"
 "                            distance, le dénivelé et la durée. Le fichier lui-même est jeté :\n"
 "                            il révèle souvent votre point de départ, comme votre domicile."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Healthy Fox ne demande que son prénom, et le mois et l'année de sa naissance,\n"
+"                                pour savoir quand il aura 14 ans. Jamais le jour."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"Healthy Fox ne suit dans le compte d'un parent que les enfants de moins de "
+"14 ans. À 14 ans, l'ado a son propre compte : demandez-le à Blue Fox."
 msgstr ""
 
 #. module: bf_health
@@ -1610,6 +1922,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__id
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__id
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__id
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__id
 #: model:ir.model.fields,field_description:bf_health.field_health_food__id
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__id
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__id
@@ -1622,6 +1935,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__id
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__id
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__id
+#: model:ir.model.fields,field_description:bf_health.field_health_share__id
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__id
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__id
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__id
@@ -1630,6 +1944,7 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_exception_icon
@@ -1640,6 +1955,7 @@ msgid "Icon"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__activity_exception_icon
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_exception_icon
 #: model:ir.model.fields,help:bf_health.field_health_medication__activity_exception_icon
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_exception_icon
@@ -1666,6 +1982,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,help:bf_health.field_health_condition__message_needaction
+#: model:ir.model.fields,help:bf_health.field_health_dependent__message_needaction
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__message_needaction
 #: model:ir.model.fields,help:bf_health.field_health_medication__message_needaction
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_needaction
@@ -1677,6 +1994,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,help:bf_health.field_health_condition__message_has_error
+#: model:ir.model.fields,help:bf_health.field_health_dependent__message_has_error
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__message_has_error
 #: model:ir.model.fields,help:bf_health.field_health_medication__message_has_error
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_has_error
@@ -1743,6 +2061,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_is_follower
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_is_follower
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_is_follower
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_is_follower
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_is_follower
@@ -1750,6 +2069,48 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__message_is_follower
 #: model:ir.model.fields,field_description:bf_health.field_health_workout__message_is_follower
 msgid "Is Follower"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__consentement_parent
+msgid "Je consens, pour mon enfant, au suivi de sa santé dans mon compte"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__bf_suis_admin
+msgid "Je gère les comptes"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__bf_suis_ado
+msgid "Je reçois ces fiches"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__bf_suis_titulaire
+msgid "Je suis le parent qui les tient"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__bf_suis_parent
+msgid "Je tiens ces fiches"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_bf_health_dependent_mixin__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__bf_tient_des_fiches
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__bf_tient_des_fiches
+msgid "Je tiens des fiches d'enfant"
 msgstr ""
 
 #. module: bf_health
@@ -1854,6 +2215,37 @@ msgid "Jujubes"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_bf_health_dependent_mixin__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_condition__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_meal_log__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_medication__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_nutrition_goal__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_screening__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_substance_log__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_symptom_log__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_vital__bf_partage_par
+#: model:ir.model.fields,help:bf_health.field_health_workout__bf_partage_par
+msgid ""
+"L'ado qui vous partage cette fiche, en lecture seule. Vide : la fiche est la"
+" vôtre."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__coparent_id
+msgid ""
+"L'autre parent, qui tient aussi les fiches de l'enfant. Le parent qui les "
+"tient le nomme."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/wizard/health_daily_log_wizard.py:0
+msgid "L'humeur se saisit pour soi seulement."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "La période commence après sa fin."
@@ -1876,6 +2268,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_food__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__write_uid
@@ -1888,6 +2281,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_share__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__write_uid
@@ -1900,6 +2294,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_food__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__write_date
@@ -1912,11 +2307,74 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_share__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_workout__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le compte de l'ado doit être un compte interne actif."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le compte de l'ado ne peut pas être celui du parent."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le compte de l'ado ne peut pas être son second parent."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le mois et l'année de naissance ne peuvent pas être dans le futur."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le passage est déjà proposé ou fait."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le passage n'est dû qu'à partir du %s."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Le passage à 14 ans est dû. Demandez à Blue Fox d'ouvrir le compte de l'ado :\n"
+"                        ses fiches y passeront quand il les acceptera."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__passage_date
+msgid ""
+"Le premier jour du mois des 14 ans : Healthy Fox ne demande pas le jour de "
+"naissance."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le second parent doit avoir un compte interne actif."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le second parent ne peut pas être le parent qui tient les fiches."
 msgstr ""
 
 #. module: bf_health
@@ -1929,6 +2387,18 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/controllers/humeur_pwa.py:0
 msgid "Le serveur n'a pas pu terminer la demande."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Le suivi d'un enfant exige votre consentement exprès, donné pour lui."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_symptom_log.py:0
+msgid "Le symptôme et sa condition doivent être pour la même personne."
 msgstr ""
 
 #. module: bf_health
@@ -1950,6 +2420,12 @@ msgid ""
 "Les corrélations sont désactivées. Activées, elles comparent votre humeur à "
 "votre sommeil, vos médicaments, vos symptômes et vos activités, dans votre "
 "instance et sur vos seules données. C'est vous qui décidez de les activer."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/wizard/health_daily_log_wizard.py:0
+msgid "Les médicaments de la saisie doivent être ceux de la personne choisie."
 msgstr ""
 
 #. module: bf_health
@@ -2034,7 +2510,13 @@ msgid "Mental"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
+msgid "Mes enfants"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_has_error
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_has_error
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_has_error
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_has_error
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_has_error
@@ -2046,6 +2528,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_ids
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_ids
@@ -2070,6 +2553,35 @@ msgid "Minutes actives"
 msgstr ""
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_nutrition_goal_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_form
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_search
+msgid "Moi"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__month
 #: model:ir.model.fields,field_description:bf_health.field_health_substance_log__month
 #: model:ir.model.fields,field_description:bf_health.field_health_vital__month
@@ -2078,6 +2590,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
 msgid "Mois"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__birth_month
+msgid "Mois de naissance"
 msgstr ""
 
 #. module: bf_health
@@ -2123,6 +2640,7 @@ msgid "Musculation"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__my_activity_date_deadline
@@ -2172,6 +2690,17 @@ msgid "Médicaments du jour"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_medication
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__medication
+msgid "Médicaments et prises"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_medication
+msgid "Médicaments et prises (second parent)"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__gen_consent_health
 msgid ""
 "Médicaments, signes vitaux, analyses, examens, symptômes, consommation, "
@@ -2185,12 +2714,18 @@ msgid "Méditation"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Naissance"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__workout_type__swimming
 #: model:ir.model.fields.selection,name:bf_health.selection__health_workout__activity_type__swimming
 msgid "Natation"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_date_deadline
@@ -2201,6 +2736,7 @@ msgid "Next Activity Deadline"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_summary
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_summary
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_summary
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_summary
@@ -2211,6 +2747,7 @@ msgid "Next Activity Summary"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_type_id
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_type_id
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_type_id
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_type_id
@@ -2339,6 +2876,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_needaction_counter
@@ -2350,6 +2888,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__message_has_error_counter
@@ -2361,6 +2900,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,help:bf_health.field_health_condition__message_needaction_counter
+#: model:ir.model.fields,help:bf_health.field_health_dependent__message_needaction_counter
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__message_needaction_counter
 #: model:ir.model.fields,help:bf_health.field_health_medication__message_needaction_counter
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_needaction_counter
@@ -2372,6 +2912,7 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,help:bf_health.field_health_condition__message_has_error_counter
+#: model:ir.model.fields,help:bf_health.field_health_dependent__message_has_error_counter
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__message_has_error_counter
 #: model:ir.model.fields,help:bf_health.field_health_medication__message_has_error_counter
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__message_has_error_counter
@@ -2416,6 +2957,12 @@ msgid "Observance aujourd'hui"
 msgstr ""
 
 #. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "On ne partage qu'avec un parent qui tenait ses fiches avant 14 ans."
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "PA"
@@ -2447,6 +2994,58 @@ msgid "Par semaine"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__parent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_share__parent_id
+msgid "Parent"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_share
+msgid "Partage avec un parent"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_res_users__bf_health_partage_ids
+msgid "Partages santé"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_share__owner_id
+msgid "Partagé par"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_bf_health_dependent_mixin__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__bf_partage_par
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__bf_partage_par
+msgid "Partagée par"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_search
+msgid "Partagées avec moi"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__steps
 #: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__steps
 msgid "Pas"
@@ -2465,6 +3064,54 @@ msgid "Pas encore assez de jours"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__passage_du
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
+msgid "Passage dû"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__state__offert
+msgid "Passage proposé"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__passage_date
+#: model:mail.activity.type,name:bf_health.mail_activity_type_passage_14
+#: model:mail.activity.type,summary:bf_health.mail_activity_type_passage_14
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Passage à 14 ans"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Passage à 14 ans : un compte à ouvrir"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Passage à 14 ans de %s : demandez son compte à Blue Fox"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Passage à 14 ans proposé à %s."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_dependent_action_admin
+#: model:ir.ui.menu,name:bf_health.health_menu_dependent_admin
+msgid "Passages à 14 ans (Healthy Fox)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__transfer_date
+msgid "Passé dans son compte le"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__skin
 msgid "Peau"
 msgstr ""
@@ -2477,6 +3124,28 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__user_id
 msgid "Personne"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_dependent
+msgid "Personne à charge"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.health_dependent_action
+#: model:ir.ui.menu,name:bf_health.health_menu_dependent
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_search
+msgid "Personnes à charge"
 msgstr ""
 
 #. module: bf_health
@@ -2567,6 +3236,43 @@ msgid "Posologie"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_bf_health_dependent_mixin__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_condition__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_lab_test__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_meal_log__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_medication_log__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_screening__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_substance_log__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_symptom_log__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_vital__dependent_id
+#: model:ir.model.fields,field_description:bf_health.field_health_workout__dependent_id
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_substance_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_symptom_log_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_bf_pour_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_bf_pour_search
+msgid "Pour"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_bf_pour_kanban
+#: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_bf_pour_kanban
+#: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_bf_pour_kanban
+#: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_bf_pour_kanban
+msgid "Pour :"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__prescriber
 #: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
 msgid "Prescripteur"
@@ -2621,6 +3327,11 @@ msgid "Prochaine échéance"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Proposer le passage"
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "Protéines"
@@ -2635,6 +3346,12 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_nutrition_goal__protein_target_g
 msgid "Protéines cibles (g)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__name
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Prénom"
 msgstr ""
 
 #. module: bf_health
@@ -2717,6 +3434,17 @@ msgid "Rapports"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid "Recevoir mes fiches"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Recherche non prise en charge."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/controllers/humeur_pwa.py:0
 msgid "Refusé."
@@ -2724,6 +3452,7 @@ msgstr ""
 
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_food_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
@@ -2774,6 +3503,7 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__meal_line_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__meal_type
+#: model:ir.model.fields,field_description:bf_health.field_health_food__bf_meal_log_ids
 #: model:ir.model.fields,field_description:bf_health.field_health_meal_log__meal_type
 #: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_search
 msgid "Repas"
@@ -2786,6 +3516,7 @@ msgid "Repos"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__activity_user_id
@@ -2928,6 +3659,11 @@ msgid "Santé : créer les entrées de médicaments du jour"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.actions.server,name:bf_health.ir_cron_passage_14_ans_ir_actions_server
+msgid "Santé : passage à 14 ans des personnes à charge"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.actions.server,name:bf_health.ir_cron_mood_reminders_ir_actions_server
 msgid "Santé : rappels du journal d'humeur"
 msgstr ""
@@ -2953,6 +3689,11 @@ msgid "Santé : vérifier les étapes de réduction"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__coparent_id
+msgid "Second parent"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
 msgid "Semaine"
 msgstr ""
@@ -2973,9 +3714,40 @@ msgid "Sequence"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_dependent_action
+msgid ""
+"Ses fiches seront dans votre compte, fermées aux autres membres du foyer.\n"
+"               À 14 ans, elles passent dans un compte à lui."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Seul l'ado choisit ce qu'il partage avec son parent."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Seul le parent qui tient les fiches de l'enfant change ce champ."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Seule Blue Fox propose le passage à 14 ans."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Seule la personne elle-même donne ou retire cette permission."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Seule la personne à qui le passage est proposé reçoit ces fiches."
 msgstr ""
 
 #. module: bf_health
@@ -2992,9 +3764,16 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_vital_action
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_vital
+#: model:ir.model.fields.selection,name:bf_health.selection__health_share__categorie__vital
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_vitals
 #: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
 msgid "Signes vitaux"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage2_vital
+msgid "Signes vitaux (second parent)"
 msgstr ""
 
 #. module: bf_health
@@ -3053,6 +3832,7 @@ msgid "Stabilisation"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__activity_state
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_state
 #: model:ir.model.fields,help:bf_health.field_health_medication__activity_state
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_state
@@ -3078,6 +3858,21 @@ msgstr ""
 #. module: bf_health
 #: model:ir.module.category,description:bf_health.module_category_health
 msgid "Suivi de la santé personnelle"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__state__suivi
+msgid "Suivi par son parent"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
+msgid "Suivis"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_dependent_action
+msgid "Suivre la santé d'un enfant de moins de 14 ans"
 msgstr ""
 
 #. module: bf_health
@@ -3236,6 +4031,13 @@ msgid "Toutes les conditions"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Toutes les fiches de santé de cette personne seront effacées, et la personne"
+" à charge avec elles. C'est définitif. Continuer?"
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Travail"
@@ -3282,6 +4084,7 @@ msgid "Type de séance"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_dependent__activity_exception_decoration
 #: model:ir.model.fields,help:bf_health.field_health_lab_test__activity_exception_decoration
 #: model:ir.model.fields,help:bf_health.field_health_medication__activity_exception_decoration
 #: model:ir.model.fields,help:bf_health.field_health_mood_settings__activity_exception_decoration
@@ -3299,6 +4102,12 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__head
 msgid "Tête"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Un partage ne se modifie pas : retirez-le, puis créez-en un autre."
 msgstr ""
 
 #. module: bf_health
@@ -3338,6 +4147,19 @@ msgid "Une note, si vous voulez (facultatif)"
 msgstr ""
 
 #. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"Une personne à charge ne se supprime pas : utilisez « Effacer ses fiches »."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.actions.act_window,help:bf_health.health_dependent_action_admin
+msgid ""
+"Une personne à charge paraît ici le premier jour du mois de ses 14 ans."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.constraint,message:bf_health.constraint_health_mood_settings_bf_mood_settings_unique
 msgid "Une seule fiche de réglages par personne."
 msgstr ""
@@ -3352,6 +4174,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_food__serving_unit
 msgid "Unité de portion"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_res_users
+msgid "User"
 msgstr ""
 
 #. module: bf_health
@@ -3381,6 +4208,30 @@ msgid "Veuillez saisir un code-barres."
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_bf_health_dependent_mixin__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_condition__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_lab_test__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_meal_log__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_medication__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_medication_log__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_nutrition_goal__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_reduction_step__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_screening__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_substance_log__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_symptom_log__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_vital__dependent_id
+#: model:ir.model.fields,help:bf_health.field_health_workout__dependent_id
+msgid ""
+"Vide : la fiche est la vôtre. Sinon, elle est tenue pour votre enfant de "
+"moins de 14 ans."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,help:bf_health.field_health_daily_log_wizard__dependent_id
+msgid "Vide : la saisie est la vôtre. L'humeur se saisit toujours pour soi."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_screening__screening_type__vision
 msgid "Vision"
 msgstr ""
@@ -3388,6 +4239,15 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_workout__avg_speed_kmh
 msgid "Vitesse moy. (km/h)"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Vos fiches de santé passent dans votre compte. Dès maintenant, c'est vous "
+"qui consentez : votre parent n'y a plus accès, sauf si vous les repartagez "
+"avec lui, catégorie par catégorie. Vous pourrez retirer un partage d'un "
+"geste. Recevoir vos fiches?"
 msgstr ""
 
 #. module: bf_health
@@ -3402,9 +4262,51 @@ msgid "Votre humeur du jour en quelques secondes, même hors ligne."
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Votre parent a tenu vos fiches de santé jusqu'à vos 14 ans. Vous pouvez les recevoir\n"
+"                        dans votre compte : c'est alors vous qui décidez de ce que votre parent voit. Vous\n"
+"                        pouvez aussi demander qu'elles soient effacées."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/controllers/humeur_pwa.py:0
 msgid "Votre session a expiré. Rechargez la page pour vous reconnecter."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Vous consentez pour votre enfant de moins de 14 ans, comme titulaire de\n"
+"                                l'autorité parentale. Ses fiches sont dans votre compte, fermées aux autres\n"
+"                                membres du foyer comme les vôtres."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Vous ne pouvez pas effacer les fiches de cette personne."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Vous ne pouvez pas modifier ces champs : %s"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/health_dashboard.py:0
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid "Vous ne tenez pas les fiches de cette personne."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"Vous pouvez retirer votre consentement en tout temps : ses fiches sont alors\n"
+"                                effacées."
 msgstr ""
 
 #. module: bf_health
@@ -3437,6 +4339,11 @@ msgid "Zéro"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__8
+msgid "août"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid "au"
 msgstr ""
@@ -3445,6 +4352,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "aucun lien net"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__4
+msgid "avril"
 msgstr ""
 
 #. module: bf_health
@@ -3466,9 +4378,24 @@ msgid "consommées −"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__12
+msgid "décembre"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__2
+msgid "février"
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "g"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__1
+msgid "janvier"
 msgstr ""
 
 #. module: bf_health
@@ -3479,6 +4406,16 @@ msgstr ""
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_kanban
 msgid "jours)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__7
+msgid "juillet"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__6
+msgid "juin"
 msgstr ""
 
 #. module: bf_health
@@ -3512,6 +4449,16 @@ msgid "mL"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__5
+msgid "mai"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__3
+msgid "mars"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_unit__mg
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__quantity_unit__mg
 msgid "mg"
@@ -3533,6 +4480,16 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "mmol/L"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__11
+msgid "novembre"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__10
+msgid "octobre"
 msgstr ""
 
 #. module: bf_health
@@ -3571,6 +4528,11 @@ msgid "saisies"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_dependent__birth_month__9
+msgid "septembre"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid "sur 5"
 msgstr ""
@@ -3602,6 +4564,14 @@ msgstr ""
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid "· du"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
+msgid ""
+"À 14 ans, ses fiches passent dans un compte à lui, que Blue Fox ouvre à votre\n"
+"                                demande. Il consent alors seul : vous n'y avez plus accès, sauf s'il les\n"
+"                                repartage avec vous."
 msgstr ""
 
 #. module: bf_health
@@ -3659,11 +4629,13 @@ msgstr ""
 
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__state
+#: model:ir.model.fields,field_description:bf_health.field_health_dependent__state
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__state
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__state
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__state
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__state
 #: model_terms:ir.ui.view,arch_db:bf_health.health_condition_view_search
+#: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_lab_test_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_search
 #: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search

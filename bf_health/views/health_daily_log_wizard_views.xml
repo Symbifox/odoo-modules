@@ -9,9 +9,13 @@
             <form string="Saisie rapide">
                 <group>
                     <field name="date"/>
+                    <field name="bf_tient_des_fiches" invisible="1"/>
+                    <field name="dependent_id" placeholder="Moi"
+                           invisible="not bf_tient_des_fiches and not dependent_id"
+                           options="{'no_create': True, 'no_open': True}"/>
                 </group>
                 <notebook>
-                    <page string="Humeur" name="humeur">
+                    <page string="Humeur" name="humeur" invisible="dependent_id">
                         <group>
                             <field name="mood_level" widget="radio" options="{'horizontal': true}"/>
                             <field name="mood_activity_ids" widget="many2many_tags"

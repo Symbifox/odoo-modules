@@ -4,6 +4,7 @@ from odoo import api, fields, models
 from datetime import timedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
 from .parent_guard import au_nom_du_proprietaire
+from .health_dependent import mention_de_la_personne
 
 
 class HealthLabTest(models.Model):
@@ -12,7 +13,7 @@ class HealthLabTest(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Analyse de laboratoire"
-    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin", "bf.health.dependent.mixin"]
     _order = "date_performed desc, id desc"
 
     name = fields.Char(string="Nom de l'analyse", required=True)
@@ -85,6 +86,6 @@ class HealthLabTest(models.Model):
                 # dans les résumés quotidiens par courriel. Le nom reste dans la note.
                 summary=fiche.env._("Healthy Fox : analyse à prévoir"),
                 # Le nom seul, ni médecin ni laboratoire.
-                note=Markup("<strong>%s</strong>") % test.name,
+                note=Markup("<strong>%s</strong>%s") % (test.name, mention_de_la_personne(test)),
                 user_id=responsable,
             )

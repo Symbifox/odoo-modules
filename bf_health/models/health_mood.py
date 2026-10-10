@@ -436,20 +436,21 @@ class HealthMoodSettings(models.Model):
         fin = datetime.combine(date_to, time.max)
         sommeil = {}
         for v in self.env["health.vital"].search(
-                [("create_uid", "=", uid), ("vital_type", "=", "sleep_hours"),
+                [("create_uid", "=", uid), ("dependent_id", "=", False), ("vital_type", "=", "sleep_hours"),
                  ("date", ">=", debut), ("date", "<=", fin)]):
             sommeil[v.date.date()] = sommeil.get(v.date.date(), 0.0) + (v.value or 0.0)
 
         meds = {}
         for log in self.env["health.medication.log"].search(
-                [("create_uid", "=", uid), ("date", ">=", date_from), ("date", "<=", date_to),
-                 ("time_slot", "!=", "as_needed")]):
+                [("create_uid", "=", uid), ("dependent_id", "=", False), ("date", ">=", date_from),
+                 ("date", "<=", date_to), ("time_slot", "!=", "as_needed")]):
             pris, prevus = meds.get(log.date, (0, 0))
             meds[log.date] = (pris + (1 if log.taken else 0), prevus + 1)
 
         symptomes = {}
         for s in self.env["health.symptom.log"].search(
-                [("create_uid", "=", uid), ("date", ">=", date_from), ("date", "<=", date_to)]):
+                [("create_uid", "=", uid), ("dependent_id", "=", False),
+                 ("date", ">=", date_from), ("date", "<=", date_to)]):
             symptomes[s.date] = max(symptomes.get(s.date, 0), int(s.severity or 1))
         return {"humeur": humeur, "activites": activites, "sommeil": sommeil,
                 "meds": meds, "symptomes": symptomes}

@@ -114,6 +114,17 @@
               parent="health_menu_condition"
               action="health_condition_action" sequence="20"/>
 
+    <!-- Personnes à charge -->
+    <menuitem id="health_menu_dependent" name="Personnes à charge"
+              parent="health_menu_root"
+              action="health_dependent_action" sequence="55"/>
+
+    <!-- Blue Fox : Réglages > Utilisateurs -->
+    <menuitem id="health_menu_dependent_admin" name="Passages à 14 ans (Healthy Fox)"
+              parent="base.menu_users"
+              action="health_dependent_action_admin"
+              groups="base.group_system" sequence="90"/>
+
     <!-- Rapports -->
     <menuitem id="health_menu_reports" name="Rapports"
               parent="health_menu_root" sequence="60"/>

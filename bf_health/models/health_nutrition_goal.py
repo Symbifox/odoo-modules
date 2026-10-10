@@ -8,6 +8,8 @@ class HealthNutritionGoal(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Objectif nutritionnel"
+    # Le champ « Pour » (personne à charge).
+    _inherit = ["bf.health.dependent.mixin"]
     _order = "id desc"
 
     name = fields.Char(string="Nom", required=True, default="Mon objectif")

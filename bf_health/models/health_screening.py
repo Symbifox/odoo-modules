@@ -4,6 +4,7 @@ from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
 from .parent_guard import au_nom_du_proprietaire
+from .health_dependent import mention_de_la_personne
 
 
 FREQUENCY_MONTHS = {
@@ -21,7 +22,7 @@ class HealthScreening(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Examen de santé"
-    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin", "bf.health.dependent.mixin"]
     _order = "next_due asc, name asc"
 
     name = fields.Char(string="Nom de l'examen", required=True)
@@ -155,6 +156,6 @@ class HealthScreening(models.Model):
                 # dans les résumés quotidiens par courriel. Le nom reste dans la note.
                 summary=fiche.env._("Healthy Fox : examen à planifier"),
                 # Le nom seul, ni clinique ni date.
-                note=Markup("<strong>%s</strong>") % scr.name,
+                note=Markup("<strong>%s</strong>%s") % (scr.name, mention_de_la_personne(scr)),
                 user_id=responsable,
             )

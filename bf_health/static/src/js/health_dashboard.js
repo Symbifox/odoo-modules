@@ -14,6 +14,8 @@ class HealthDashboard extends Component {
         this.state = useState({
             data: null,
             loading: true,
+            // False = mes fiches ; sinon, l'enfant dont je tiens les fiches.
+            dependentId: false,
         });
 
         onWillStart(async () => {
@@ -27,7 +29,8 @@ class HealthDashboard extends Component {
             const data = await this.orm.call(
                 "health.dashboard",
                 "get_dashboard_data",
-                []
+                [],
+                { dependent_id: this.state.dependentId }
             );
             this.state.data = data;
         } catch (e) {
@@ -40,6 +43,11 @@ class HealthDashboard extends Component {
     }
 
     async onRefresh() {
+        await this.loadData();
+    }
+
+    async onPersonChange(ev) {
+        this.state.dependentId = parseInt(ev.target.value) || false;
         await this.loadData();
     }
 
@@ -84,6 +92,7 @@ class HealthDashboard extends Component {
             res_model: "health.daily.log.wizard",
             views: [[false, "form"]],
             target: "new",
+            context: { default_dependent_id: this.state.dependentId },
         });
     }
 

@@ -4,6 +4,7 @@ from odoo import api, fields, models
 from datetime import timedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
 from .parent_guard import au_nom_du_proprietaire
+from .health_dependent import mention_de_la_personne
 
 
 FREQUENCY_MAP = {
@@ -23,7 +24,7 @@ class HealthMedication(models.Model):
     _gen_scope = PORTEE_SANTE
     _gen_scope_label = LIBELLE_SANTE
     _description = "Médicament"
-    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.health.note.only", "mail.thread", "mail.activity.mixin", "bf.health.dependent.mixin"]
     _order = "state asc, name asc"
 
     name = fields.Char(string="Nom du médicament", required=True)
@@ -154,7 +155,7 @@ class HealthMedication(models.Model):
                 summary=fiche.env._("Healthy Fox : renouvellement à prévoir"),
                 # Le nom seul. Le dosage et la pharmacie
                 # restent sur la fiche, pas dans les activités.
-                note=Markup("<strong>%s</strong>") % med.name,
+                note=Markup("<strong>%s</strong>%s") % (med.name, mention_de_la_personne(med)),
                 user_id=responsable,
             )
 

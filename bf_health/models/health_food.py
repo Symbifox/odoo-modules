@@ -20,6 +20,8 @@ class HealthFood(models.Model):
 
     name = fields.Char(string="Nom", required=True)
     brand = fields.Char(string="Marque")
+    # Lu par la règle du second parent : les aliments des repas de l'enfant.
+    bf_meal_log_ids = fields.One2many("health.meal.log", "food_id", string="Repas")
     serving_size = fields.Float(string="Portion", digits=(10, 2), default=100.0)
     serving_unit = fields.Char(string="Unité de portion", default="g")
     calories = fields.Float(string="Calories (kcal)", digits=(10, 2))
