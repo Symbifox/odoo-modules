@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf_task_unblock_notify</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="project.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='task_dependencies_setting']" position="after">
+                <setting id="bf_unblock_notify_manager" string="Unblock notices without assignee"
+                         help="When an unblocked task has nobody assigned, notify its project manager"
+                         invisible="not group_project_task_dependencies">
+                    <field name="unblock_notify_manager"/>
+                    <!-- Read by the next setting's `invisible`; kept out of it so that its
+                         own field stays the checkbox on the left. -->
+                    <field name="unblock_gen_available" invisible="1"/>
+                </setting>
+                <setting id="bf_unblock_gen_plan" string="Game plan by Gen"
+                         help="Unblock notices leave with Gen's « Situation » and « Next actions », read from the task as the recipient sees it"
+                         invisible="not group_project_task_dependencies or not unblock_gen_available">
+                    <field name="unblock_gen_plan"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

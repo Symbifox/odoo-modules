@@ -2,10 +2,10 @@
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
         <field name="title">Unblock notifications</field>
-        <field name="description">Choose who is notified when a blocking task is cleared, and the format of the messages.</field>
+        <field name="description">Choose whether the project manager hears about unassigned tasks and, where Gen offers it, whether a game plan comes with the notice.</field>
         <field name="button_text">Open Settings</field>
         <field name="done_text">Notifications on</field>
-        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="panel_step_open_action_name">action_open_bf_task_unblock_settings</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">

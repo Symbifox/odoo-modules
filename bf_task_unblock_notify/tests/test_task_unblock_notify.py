@@ -1,7 +1,7 @@
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged("bf_task_unblock_notify", "task_unblock")
+@tagged("bf_task_unblock_notify", "task_unblock", "post_install", "-at_install")
 class TestTaskUnblockNotify(TransactionCase):
 
     @classmethod

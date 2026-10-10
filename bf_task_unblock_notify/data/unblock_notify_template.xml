@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Rendu une fois PAR LANGUE de destinataire : chaque phrase est un terme
-         entier du catalogue, sans fragment qui ne se traduise pas seul. -->
+    <!-- Rendu une fois PAR DESTINATAIRE, dans sa langue et son fuseau : chaque
+         phrase est un terme entier du catalogue, sans fragment qui ne se
+         traduise pas seul. Le plan de match vient de Gen : il est rendu en
+         texte (t-out), jamais en balisage, et sans lien. -->
     <template id="task_unblocked_notification">
         <div>
             <p>Hello,</p>
             <p>
                 <span>The task</span>
-                <a t-att-href="access_link" style="font-weight: bold;">
-                    <t t-out="task.display_name"/>
-                </a>
+                <a t-att-href="access_link" style="font-weight: bold;"><t t-out="task.display_name"/></a>
                 <t t-if="task.project_id">
                     <span>in the project</span>
                     <strong><t t-out="task.project_id.display_name"/></strong>
@@ -21,27 +21,70 @@
                 </t>
                 <span>is now <strong>unblocked</strong> and ready to resume.</span>
             </p>
-            <t t-if="blocker_info">
+            <p t-if="deadline or planned or high_priority">
+                <t t-if="deadline">
+                    <span>Deadline:</span> <strong><t t-out="deadline"/></strong>
+                </t>
+                <t t-if="planned">
+                    <t t-if="deadline"> · </t>
+                    <span>Planned:</span> <t t-out="planned"/>
+                </t>
+                <t t-if="high_priority">
+                    <t t-if="deadline or planned"> · </t>
+                    <strong>High priority</strong>
+                </t>
+            </p>
+            <p t-if="to_manager">
+                <em>Nobody is assigned to this task: you receive this notice as the project manager.</em>
+            </p>
+            <t t-if="kind == 'blocker_closed' and other_info">
                 <p>
                     <strong><t t-out="closing_user"/></strong>
                     <span>completed the following blocking tasks on</span>
                     <strong><t t-out="closing_time"/></strong>:
                 </p>
-                <ul>
-                    <t t-foreach="blocker_info" t-as="blocker">
-                        <li>
-                            <t t-out="blocker['name']"/>
-                            (<t t-out="blocker['state_label']"/>)
-                            <t t-if="blocker['project_name']">
-                                <span>· project</span> <t t-out="blocker['project_name']"/>
-                                <t t-if="blocker['client_name']">
-                                    <span>· client</span> <t t-out="blocker['client_name']"/>
-                                </t>
-                            </t>
-                        </li>
-                    </t>
-                </ul>
             </t>
+            <t t-if="kind == 'dependency_removed' and other_info">
+                <p>
+                    <strong><t t-out="closing_user"/></strong>
+                    <span>removed the dependency on the following tasks on</span>
+                    <strong><t t-out="closing_time"/></strong>:
+                </p>
+            </t>
+            <ul t-if="other_info">
+                <t t-foreach="other_info" t-as="other">
+                    <li>
+                        <a t-att-href="other['url']"><t t-out="other['name']"/></a>
+                        (<t t-out="other['state_label']"/>)
+                        <t t-if="other['project_name']">
+                            <span>· project</span> <t t-out="other['project_name']"/>
+                        </t>
+                        <t t-if="other['client_name']">
+                            <span>· client</span> <t t-out="other['client_name']"/>
+                        </t>
+                    </li>
+                </t>
+            </ul>
+            <p t-if="hidden_count">
+                <span>Other tasks involved, which you cannot open:</span> <t t-out="hidden_count"/>
+            </p>
+            <div t-if="plan" style="margin: 16px 0; padding: 12px 16px; border-left: 3px solid #c9ced4; background-color: #f6f7f8;">
+                <p style="margin: 0 0 8px 0;"><strong>Game plan proposed by Gen</strong></p>
+                <t t-if="plan['situation']">
+                    <p style="margin: 0;"><strong>Situation</strong></p>
+                    <ul style="margin-top: 4px;">
+                        <li t-foreach="plan['situation']" t-as="line"><t t-out="line"/></li>
+                    </ul>
+                </t>
+                <t t-if="plan['next_actions']">
+                    <p style="margin: 0;"><strong>Next actions</strong></p>
+                    <ol style="margin-top: 4px;">
+                        <li t-foreach="plan['next_actions']" t-as="line"><t t-out="line"/></li>
+                    </ol>
+                </t>
+                <p style="margin: 8px 0 0 0; font-size: 12px; color: #6c757d;">Written by Gen from the task and its thread only. Check it before acting on it.</p>
+            </div>
+            <p t-elif="plan_missing" style="font-size: 12px; color: #6c757d;">Gen could not prepare a game plan this time.</p>
             <p>Over to you!</p>
         </div>
     </template>

@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_task_unblock_notify 18.0.1.8.0\n"
+"Project-Id-Version: bf_task_unblock_notify 18.0.2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:58+0000\n"
-"PO-Revision-Date: 2026-09-14 04:58+0000\n"
+"POT-Creation-Date: 2026-10-10 17:38+0000\n"
+"PO-Revision-Date: 2026-10-10 17:38+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -14,6 +14,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid ""
+"<em>Nobody is assigned to this task: you receive this notice as the project "
+"manager.</em>"
+msgstr ""
+"<em>Aucune personne n'est assignée à cette tâche : vous recevez cet avis à "
+"titre de responsable du projet.</em>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>Deadline:</span>"
+msgstr "<span>Échéance :</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>Other tasks involved, which you cannot open:</span>"
+msgstr "<span>Autres tâches en cause, que vous ne pouvez pas ouvrir :</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>Planned:</span>"
+msgstr "<span>Prévu :</span>"
 
 #. module: bf_task_unblock_notify
 #: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
@@ -44,6 +68,11 @@ msgstr ""
 
 #. module: bf_task_unblock_notify
 #: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>removed the dependency on the following tasks on</span>"
+msgstr "<span>a retiré la dépendance aux tâches suivantes le</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
 msgid "<span>· client</span>"
 msgstr "<span>· client</span>"
 
@@ -53,13 +82,121 @@ msgid "<span>· project</span>"
 msgstr "<span>· projet</span>"
 
 #. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<strong>Game plan proposed by Gen</strong>"
+msgstr "<strong>Plan de match proposé par Gen</strong>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<strong>High priority</strong>"
+msgstr "<strong>Priorité élevée</strong>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<strong>Next actions</strong>"
+msgstr "<strong>Prochaines actions</strong>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<strong>Situation</strong>"
+msgstr "<strong>Situation</strong>"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_res_company__unblock_gen_plan
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_res_config_settings__unblock_gen_plan
+msgid "Add Gen's game plan to unblock notices"
+msgstr "Joindre le plan de match de Gen aux avis de déblocage"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__kind__blocker_closed
+msgid "Blocking tasks closed"
+msgstr "Tâches bloquantes fermées"
+
+#. module: bf_task_unblock_notify
 #: model:onboarding.onboarding.step,description:bf_task_unblock_notify.bf_onb_step_settings
 msgid ""
-"Choose who is notified when a blocking task is cleared, and the format of "
-"the messages."
+"Choose whether the project manager hears about unassigned tasks and, where "
+"Gen offers it, whether a game plan comes with the notice."
 msgstr ""
-"Choisissez qui est notifié quand une tâche bloquante est débloquée et le "
-"format des messages."
+"Choisissez si la personne responsable du projet est avisée des tâches sans "
+"assignation et, là où Gen l'offre, si un plan de match accompagne l'avis."
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__claimed_at
+msgid "Claimed At"
+msgstr "Pris en charge le"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__kind__dependency_removed
+msgid "Dependency removed"
+msgstr "Dépendance retirée"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__state__failed
+msgid "Failed"
+msgstr "En échec"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_res_config_settings__unblock_gen_available
+msgid "Game plan available"
+msgstr "Plan de match offert"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.res_config_settings_view_form
+msgid "Game plan by Gen"
+msgstr "Plan de match par Gen"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__state__preparing
+msgid "Game plan in preparation"
+msgstr "Plan de match en préparation"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__plan_outcome
+msgid "Game plan outcome"
+msgstr "Issue du plan de match"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "Gen could not prepare a game plan this time."
+msgstr "Gen n'a pas pu préparer de plan de match cette fois-ci."
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,help:bf_task_unblock_notify.field_res_company__unblock_gen_plan
+#: model:ir.model.fields,help:bf_task_unblock_notify.field_res_config_settings__unblock_gen_plan
+msgid ""
+"Gen reads the task, its thread and the tasks that unblocked it, and the "
+"notice leaves with a « Situation » and « Next actions ». The notice waits "
+"for the plan for about three minutes, then leaves without it."
+msgstr ""
+"Gen lit la tâche, son fil et les tâches qui l'ont débloquée, et l'avis part "
+"avec une « Situation » et des « Prochaines actions ». L'avis attend le plan "
+"environ trois minutes, puis part sans lui."
 
 #. module: bf_task_unblock_notify
 #: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
@@ -67,14 +204,57 @@ msgid "Hello,"
 msgstr "Bonjour,"
 
 #. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__kind
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__attempts
+msgid "Late sending attempts"
+msgstr "Tentatives d'envoi tardif"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,help:bf_task_unblock_notify.field_bf_task_unblock_event__to_manager
+msgid "Nobody was assigned to the task: the project manager was told instead."
+msgstr ""
+"Aucune personne n'était assignée à la tâche : la personne responsable du "
+"projet a été avisée à sa place."
+
+#. module: bf_task_unblock_notify
 #: model:onboarding.onboarding.step,done_text:bf_task_unblock_notify.bf_onb_step_settings
 msgid "Notifications on"
 msgstr "Notifications actives"
 
 #. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_res_company__unblock_notify_manager
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_res_config_settings__unblock_notify_manager
+msgid "Notify the project manager of unassigned tasks"
+msgstr "Aviser la personne responsable du projet des tâches sans assignation"
+
+#. module: bf_task_unblock_notify
 #: model:ir.model,name:bf_task_unblock_notify.model_onboarding_onboarding
 msgid "Onboarding"
 msgstr "Parcours d'intégration"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_onboarding_onboarding_step
+msgid "Onboarding Step"
+msgstr "Étape du parcours d'intégration"
 
 #. module: bf_task_unblock_notify
 #: model:onboarding.onboarding.step,step_image_alt:bf_task_unblock_notify.bf_onb_step_settings
@@ -92,18 +272,115 @@ msgid "Over to you!"
 msgstr "À vous de jouer !"
 
 #. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__partner_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__state__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__sent_at
+msgid "Sent At"
+msgstr "Envoyé le"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__to_manager
+msgid "Sent to the project manager"
+msgstr "Envoyé à la personne responsable du projet"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_task_unblock_notify
 #: model:ir.model,name:bf_task_unblock_notify.model_project_task
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__task_id
 msgid "Task"
 msgstr "Tâche"
 
 #. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_bf_task_unblock_event
+msgid "Task unblock notice"
+msgstr "Avis de déblocage de tâche"
+
+#. module: bf_task_unblock_notify
 #. odoo-python
-#: code:addons/bf_task_unblock_notify/models/project_task.py:0
+#: code:addons/bf_task_unblock_notify/models/unblock_event.py:0
 msgid "Task unblocked: %s"
 msgstr "Tâche débloquée : %s"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__other_task_ids
+msgid "Tasks that unblocked it"
+msgstr "Tâches qui l'ont débloquée"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.res_config_settings_view_form
+msgid ""
+"Unblock notices leave with Gen's « Situation » and « Next actions », read "
+"from the task as the recipient sees it"
+msgstr ""
+"Les avis de déblocage partent avec la « Situation » et les « Prochaines "
+"actions » de Gen, lues dans la tâche telle que la personne destinataire la "
+"voit"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.res_config_settings_view_form
+msgid "Unblock notices without assignee"
+msgstr "Avis de déblocage sans assignation"
+
+#. module: bf_task_unblock_notify
+#: model:ir.actions.server,name:bf_task_unblock_notify.ir_cron_unblock_send_late_ir_actions_server
+msgid "Unblock notices: send what waited too long for the game plan"
+msgstr "Avis de déblocage : envoyer ce qui a trop attendu le plan de match"
 
 #. module: bf_task_unblock_notify
 #: model:onboarding.onboarding,name:bf_task_unblock_notify.bf_onboarding_panel
 #: model:onboarding.onboarding.step,title:bf_task_unblock_notify.bf_onb_step_settings
 msgid "Unblock notifications"
 msgstr "Notifications de déblocage"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__user_id
+msgid "Unblocked by"
+msgstr "Débloquée par"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields.selection,name:bf_task_unblock_notify.selection__bf_task_unblock_event__state__pending
+msgid "Waiting for the game plan"
+msgstr "En attente du plan de match"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,help:bf_task_unblock_notify.field_res_company__unblock_notify_manager
+#: model:ir.model.fields,help:bf_task_unblock_notify.field_res_config_settings__unblock_notify_manager
+msgid ""
+"When an unblocked task has nobody assigned, its project manager receives the"
+" notice instead of nobody."
+msgstr ""
+"Quand une tâche débloquée n'a aucune personne assignée, la personne "
+"responsable du projet reçoit l'avis plutôt que personne."
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.res_config_settings_view_form
+msgid "When an unblocked task has nobody assigned, notify its project manager"
+msgstr ""
+"Quand une tâche débloquée n'a aucune personne assignée, aviser la personne "
+"responsable du projet"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model.fields,field_description:bf_task_unblock_notify.field_bf_task_unblock_event__with_plan
+msgid "With a game plan"
+msgstr "Avec plan de match"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid ""
+"Written by Gen from the task and its thread only. Check it before acting on "
+"it."
+msgstr ""
+"Rédigé par Gen à partir de la tâche et de son fil seulement. À vérifier "
+"avant d'agir."

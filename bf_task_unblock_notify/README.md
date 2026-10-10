@@ -1,108 +1,114 @@
 # BF Task Unblock Notify
 
-An Odoo 18 module that automatically notifies task assignees when their blocked task becomes unblocked. Works with Odoo's native task dependency system (`depend_on_ids`) and sends notifications through the standard mail pipeline (email or inbox, depending on user preference).
+An Odoo 18 module that tells the people working on a task when it is no longer blocked. It works with Odoo's native task dependencies (`depend_on_ids`) and sends its notice through the standard mail pipeline (email or inbox, depending on each person's preference).
 
 ## License
 
-LGPL-3 — see [LICENSE](LICENSE).
+LGPL-3, see [LICENSE](LICENSE).
 
 ## Features
 
-### Automatic Unblock Detection
+### Unblock detection
 
-The module detects two scenarios that unblock a task:
+Two events unblock a task:
 
-1. **Blocker completion**: A blocking task is marked as Done or Cancelled (via direct state change or stage transition), and the dependent task transitions from `04_waiting_normal` to `01_in_progress`.
-2. **Dependency removal**: A `depend_on_ids` link is removed from a waiting task, causing it to transition to `01_in_progress`.
+1. **A blocking task closes**: marked Done or Cancelled (directly or through a stage), and the waiting task moves from `04_waiting_normal` to `01_in_progress`.
+2. **A dependency is removed**: a `depend_on_ids` link is taken off a waiting task, which then moves to `01_in_progress`.
 
-Both scenarios trigger an immediate notification to all assigned users of the newly unblocked task.
+### The notice
 
-### Rich Notification Content
+- Wears the company's mail layout when `bluefox_branding` is installed (banner, accent, font, footer), and Odoo's light layout otherwise. The layout signs for the company: the author's own signature is left out.
+- Rendered **once per recipient**, in their language and **their time zone** (the time of the unblock used to follow the time zone of whoever closed the blocker), without seconds.
+- Names the task, its project and client, its **deadline**, its **planned hours** and a **high priority** when set.
+- Lists the tasks that unblocked it, **each one a link**. Their project and client are named only when they differ from the unblocked task's.
+- Names **only the tasks the recipient can open**; the others are counted (« Other tasks involved, which you cannot open: 2 »). Version 1.8.0 named any blocker, private project and client included.
+- When a dependency is removed, says **who removed it, and which one**.
+- A task with **nobody assigned** notifies its **project manager** instead of nobody (setting, on by default).
 
-Each notification includes:
+### Game plan by Gen (optional)
 
-- **Task name** with a direct link to the task form
-- **Project name** and **client name** (from `project.partner_id`)
-- **Who** completed the blocking task(s) and **when** (locale-formatted datetime)
-- **List of resolved blockers** with their new state label (e.g. "Done", "Cancelled"), project, and client
-- Sign-off: "A vous de jouer!"
+When Gen (`bf_claude_chat`, `bf_ai_bridge`) is installed, the database is allowed to use the plan (system parameter `bf_task_unblock_notify.gen_plan_allowed` = `True`) and the company setting is on, the notice waits for a game plan in the shape of Gen's usual brief: **Situation** (three points at most) and **Next actions** (one to three).
 
-### Standard Mail Pipeline
-
-Notifications are sent via `message_notify()` — the same API Odoo core uses for task assignment notifications. This means:
-
-- **Email users** (`notification_type='email'`) receive an actual email, wrapped in Odoo's standard notification layout
-- **Inbox users** (`notification_type='inbox'`) receive an inbox notification with real-time bus updates
-- No manual `mail.notification` creation or bus signaling required
-
-The `mail_notify_author=True` context flag ensures that the user closing the blocker still receives the notification if they are also the assignee of the unblocked task (bypasses Odoo's default author-exclusion filter).
+- Odoo assembles what the plan is written from, **as the recipient sees it**: the task, its description, its last messages, its activities, the tasks that unblocked it and the ones it unblocks next. A record the recipient cannot open is left out.
+- The bridge writes the plan in a **locked pass** (route `/task-unblock-plan`): no shell, no file access, no tool but the one that hands the plan back. A message from outside in the task's thread can at worst skew the text of the plan.
+- The plan is shown as plain text: no markup, three lines at most per block, and **nothing a mail client would turn into a link**: after Unicode normalisation (NFKC) and removal of invisible characters and markup, schemes are replaced by « [...] », and every dot not followed by a space, a closing punctuation or the end of the line becomes « ․ » (U+2024), every @ becomes « ＠ » (U+FF20). A file name or a version stays readable (`server․py`, `6․6․1`), no domain, address or IP stays live. A line with a North American phone number is dropped. Cleaned to a fixed point, cut, cleaned again; the bridge does the same before sending it back. Authors outside the company are marked « (external) », incoming emails « (by email) ».
+- **One email**: the notice waits for the plan for about three minutes. Past that, or when anything fails (bridge down, route missing, tenant refused, invalid answer), it leaves without a plan and says so. A cron (every 2 minutes) sends whatever a lost thread left behind, a few minutes later.
+- The game plan is allowed per database, by the system parameter: a bridge may serve some databases only, and without the parameter the setting is not even shown.
 
 ## Requirements
 
 - Odoo 18.0 (Community or Enterprise)
-- Module: `project` (standard)
-- No custom module dependencies
+- Modules: `project`, `bf_onboarding_base`
+- Optional: `bluefox_branding` (layout), `bf_claude_chat` and `bf_ai_bridge` (game plan)
 
 ## Installation
 
 1. Copy the `bf_task_unblock_notify` directory into your Odoo addons path.
-
-2. Update the module list:
-   ```
-   Settings > Technical > Update Apps List
-   ```
-
+2. Update the module list (Settings > Technical > Update Apps List).
 3. Install the module:
    ```bash
    odoo -d YOUR_DATABASE -i bf_task_unblock_notify --stop-after-init
    ```
-
 4. Restart Odoo.
 
 ## Configuration
 
-No configuration is required. The module works out of the box for any project with task dependencies enabled.
+**Project > Configuration > Settings**, next to *Task Dependencies* (which must be on):
 
-To enable task dependencies on a project, go to **Project > Settings** and enable **Task Dependencies**.
+- **Unblock notices without assignee**: notify the project manager of an unblocked task that has nobody assigned. On by default.
+- **Game plan by Gen**: shown only when Gen is installed and the system parameter `bf_task_unblock_notify.gen_plan_allowed` is `True`. Off by default, per company.
 
 ## How It Works
 
 ### Detection (`write()` override)
 
-The module overrides `project.task.write()` to intercept state and stage transitions:
+1. **Before `super().write()`**: tasks about to close and their waiting dependents are noted, and so are the links of waiting tasks whose `depend_on_ids` change.
+2. **After `super().write()`**: `flush_all()` forces Odoo's recomputation chain, then the module keeps the waiting tasks that moved to `01_in_progress`.
+3. **Notice**: one `bf.task.unblock.event` per unblocked task.
 
-1. **Before `super().write()`**: Identifies tasks that are about to close (`1_done` / `1_canceled`) and snapshots their waiting dependents. Also identifies waiting tasks whose `depend_on_ids` are being modified.
+### Sending (`bf.task.unblock.event`)
 
-2. **After `super().write()`**: Calls `flush_all()` to force Odoo's full recomputation chain (stage change -> blocker state recomputed -> dependent state recomputed), then checks which previously-waiting tasks have transitioned to `01_in_progress`.
-
-3. **Notification**: Calls `_notify_tasks_unblocked()` for each effectively unblocked task.
-
-### Notification (`message_notify()`)
-
-For each unblocked task:
-
-1. Renders the QWeb template `bf_task_unblock_notify.task_unblocked_notification` with full context (task, blockers, closing user, timestamp).
-2. Calls `task.message_notify()` with `author_id=OdooBot` and `mail_notify_author=True`.
-3. The standard Odoo mail pipeline handles the rest: email delivery for email-preference users, inbox notifications for inbox-preference users, bus notifications for real-time badge updates.
+- **Without a game plan**: sent right away, in the transaction that unblocked the task.
+- **With a game plan**: recorded as *waiting*; after the commit, **one thread per transaction** takes the notices in turn: it claims each one, reads the context under each recipient's rights, asks the bridge with no database connection held, then sends. A notice is claimed and sent **once** (conditional updates), whoever gets there first: the thread, or the cron (every 2 minutes) for a notice waiting more than 4 minutes or claimed more than 6 minutes ago. A notice the cron fails to send 3 times is marked *Failed*.
+- The notice is recorded without the caller's `default_*` context keys: dragging a blocker to Done in a kanban grouped by status no longer reaches it.
+- Each recipient gets `message_notify()` with `mail_notify_author=True`, the author being OdooBot.
+- Sent and failed notices are purged after 60 days.
 
 ## File Structure
 
 ```
 bf_task_unblock_notify/
-├── __init__.py
 ├── __manifest__.py
-├── LICENSE
-├── README.md
 ├── data/
-│   └── unblock_notify_template.xml    # QWeb notification body template
+│   ├── unblock_notify_template.xml    # QWeb body of the notice
+│   ├── ir_cron.xml                    # sends what waited too long for the plan
+│   └── bf_onboarding.xml              # onboarding panel (noupdate)
 ├── models/
-│   ├── __init__.py
-│   └── project_task.py                # write() override + _notify_tasks_unblocked()
-└── docs/
-    └── SERVICE_NOTE_2026-02-14.md     # Technical note on notification delivery fix
+│   ├── project_task.py                # write() override: detection
+│   ├── unblock_event.py               # the notice: recording, plan, sending
+│   ├── res_company.py                 # company settings
+│   └── res_config_settings.py
+├── views/res_config_settings_views.xml
+├── security/ir.model.access.csv
+├── migrations/
+├── i18n/                              # English source, fr_CA.po
+├── tests/
 ```
 
 ## Changelog
+
+### 18.0.2.0.0
+- **The company's mail layout** (`bluefox_branding.bf_mail_layout`, else `mail.mail_notification_light`); no more « -- System » signature under the notice.
+- **The recipient's time zone**, without seconds. Dates and hours follow the recipient's language even when it is not active in the database (en_US where en_CA serves).
+- **Links to the blocking tasks**; their project and client only when they differ.
+- **Deadline, planned hours, high priority** in the notice.
+- **Who removed which dependency**, when that is what unblocked the task.
+- **Project manager notified** when nobody is assigned (setting, on by default).
+- **Only the tasks the recipient can open** are named in the notice; the others are counted.
+- **Game plan by Gen** (setting, off by default, shown only where the system parameter allows it): one email that waits for the plan about three minutes, written by a locked pass from what the recipient can see, cleaned of anything a mail client would turn into a link.
+- Notices are recorded without the caller's `default_*` context keys (a kanban grouped by status lost them).
+- **Real settings**: the onboarding panel promised « who is notified and the format of the messages » and opened the general Settings, where the module had nothing. It now opens the Project settings and says what is there. Its text, shipped as `noupdate` data, is switched on upgrade only where it still carries the shipped value.
+- The tests of the published copy are part of the module again, run after install.
 
 ### 18.0.1.8.0
 - **Each assignee reads the notification in their own language.** It used to be rendered once, in the language of whoever closed the blocking task, and sent as is to every assignee: an English-speaking colleague wrote to French-speaking assignees in English. It is now rendered once per language among the assignees.

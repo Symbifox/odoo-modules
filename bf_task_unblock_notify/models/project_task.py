@@ -1,7 +1,7 @@
 import logging
 
-from odoo import api, fields, models
-from odoo.tools import format_datetime
+from odoo import models
+from odoo.tools import clean_context
 
 _logger = logging.getLogger(__name__)
 
@@ -27,102 +27,61 @@ class ProjectTask(models.Model):
                     resolved_blockers[dep.id] = not_yet_closed & dep.depend_on_ids
 
         # --- Scenario 2: depend_on_ids link removed from a waiting task ---
+        # The links held before the write: the notice names the ones removed.
         waiting_self = self.env['project.task']
+        links_before = {}
         if 'depend_on_ids' in vals:
             waiting_self = self.filtered(lambda t: t.state == '04_waiting_normal')
+            links_before = {t.id: t.depend_on_ids for t in waiting_self}
 
         result = super().write(vals)
 
         # --- After super: detect effective transitions ---
         # flush_all() forces the full recomputation chain:
         # stage_id change → blocker state recomputed → dependent state recomputed
-        tasks_to_notify = self.env['project.task']
+        unblocked = {}
 
         if waiting_dependents or waiting_self:
             self.env.flush_all()
 
+        if waiting_self:
+            waiting_self.invalidate_recordset(fnames=['state', 'depend_on_ids'])
+            for task in waiting_self.filtered(lambda t: t.state == '01_in_progress'):
+                removed = links_before.get(task.id, self.env['project.task']) - task.depend_on_ids
+                unblocked[task.id] = ('dependency_removed', removed)
+
         if waiting_dependents:
             waiting_dependents.invalidate_recordset(fnames=['state'])
-            tasks_to_notify |= waiting_dependents.filtered(
-                lambda t: t.state == '01_in_progress'
-            )
+            # A blocker closing wins over a link removed in the same write: it
+            # is the event the assignee was waiting for.
+            for task in waiting_dependents.filtered(lambda t: t.state == '01_in_progress'):
+                unblocked[task.id] = ('blocker_closed', resolved_blockers.get(task.id))
 
-        if waiting_self:
-            waiting_self.invalidate_recordset(fnames=['state'])
-            tasks_to_notify |= waiting_self.filtered(
-                lambda t: t.state == '01_in_progress'
-            )
-
-        if tasks_to_notify:
-            self._notify_tasks_unblocked(tasks_to_notify, resolved_blockers)
+        if unblocked:
+            self._notify_tasks_unblocked(unblocked)
 
         return result
 
-    def _notify_tasks_unblocked(self, tasks, resolved_blockers):
-        """Send unblock notification via message_notify (same pattern as core task assignment).
+    def _notify_tasks_unblocked(self, unblocked):
+        """Record one notice per unblocked task, and send it.
 
-        🔴 One rendering PER LANGUAGE of the assignees. The notification used to be
-        rendered once, in the language of whoever closed the blocking task, and
-        sent as is to every assignee: an English-speaking colleague unblocking a
-        task wrote to French-speaking assignees in English, and the other way
-        round.
+        `unblocked` maps a task id to (kind, tasks that unblocked it). The
+        notice is a `bf.task.unblock.event`: sent right away, or, when the
+        company asked for Gen's game plan, once the plan is ready (see the
+        event model). A failure here never undoes the write that unblocked
+        the task.
         """
-        odoobot = self.env.ref('base.partner_root', raise_if_not_found=False)
-        odoobot_id = odoobot.id if odoobot else self.env.company.partner_id.id
-        closing_user = self.env.user.name
-        now = fields.Datetime.now()
-
-        for task in tasks:
+        # 🔴 Without the caller's `default_*` keys: dragging a blocker to Done in
+        # a kanban grouped by status saves it with `default_state`, which would
+        # land on the notice and lose it.
+        Event = self.env['bf.task.unblock.event'].sudo().with_context(
+            clean_context(self.env.context))
+        for task in self.browse(list(unblocked)):
+            kind, others = unblocked[task.id]
             try:
-                partners = task.user_ids.partner_id
-                if not partners:
-                    continue
-                blockers = resolved_blockers.get(task.id, self.env['project.task'])
-                for lang in set(partners.mapped('lang')):
-                    recipients = partners.filtered(lambda p, lang=lang: p.lang == lang)
-                    self.with_context(lang=lang or 'en_US')._notify_task_unblocked_in_lang(
-                        task, blockers, recipients, closing_user, now, odoobot_id)
+                Event._record(task, kind, others or self.env['project.task'])
             except Exception:
                 _logger.error(
                     "Failed to send unblock notification for task %s (id=%s)",
                     task.display_name, task.id, exc_info=True,
                 )
-
-    def _notify_task_unblocked_in_lang(self, task, blockers, recipients, closing_user,
-                                       now, odoobot_id):
-        """Render and send the notification in the language of the context."""
-        task = task.with_env(self.env)
-        blockers = blockers.with_env(self.env)
-        state_labels = dict(
-            self.env['project.task']._fields['state']._description_selection(self.env)
-        )
-        blocker_info = [
-            {
-                'name': b.display_name,
-                'state_label': state_labels.get(b.state, b.state),
-                'project_name': b.project_id.display_name or '',
-                'client_name': b.project_id.partner_id.name or '',
-            }
-            for b in blockers
-        ]
-        body = self.env['ir.qweb']._render(
-            'bf_task_unblock_notify.task_unblocked_notification',
-            {
-                'task': task,
-                'blocker_info': blocker_info,
-                'closing_user': closing_user,
-                'closing_time': format_datetime(self.env, now),
-                'access_link': task._notify_get_action_link('view'),
-            },
-            minimal_qcontext=True,
-        )
-        body = self.env['mail.render.mixin']._replace_local_links(body)
-        task.with_context(mail_notify_author=True).message_notify(
-            subject=self.env._("Task unblocked: %s", task.display_name),
-            body=body,
-            partner_ids=recipients.ids,
-            author_id=odoobot_id,
-            email_layout_xmlid='mail.mail_notification_layout',
-            model_description=self.env['ir.model']._get('project.task').display_name,
-            mail_auto_delete=False,
-        )
