@@ -375,7 +375,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.62.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
-| `personal_budget` | Personal Budget | 18.0.2.1.1 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |
+| `personal_budget` | Personal Budget | 18.0.2.1.2 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |
 | `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.0 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
 | `privacy_breach_notice_hosting` | Vie privée : avis de violation depuis l'hébergement | 18.0.1.0.0 | BUSL-1.1 | Qualifies a hosting security event for privacy and prepares one draft breach notice per affected organisation |
 | `privacy_breach_notice_mail_tracking` | Vie privée : avis de violation et suivi des courriels | 18.0.1.0.0 | BUSL-1.1 | Keeps the email tracking of breach notices and incident records to the privacy role, within the record's company |

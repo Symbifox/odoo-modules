@@ -84,6 +84,11 @@ dashboard amounts keep the "1 234,56 $" format in every language.
 
 ## Changelog
 
+### 18.0.2.1.2: wording
+
+- French: a shared budget now speaks of the "foyer" (household), the word the household
+  instance uses on every screen, instead of "ménage".
+
 ### 18.0.2.1.1 — security
 
 - The import and bulk-assignment wizards get global rules: each person sees only their own.

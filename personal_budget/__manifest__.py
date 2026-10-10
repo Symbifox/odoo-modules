@@ -1,6 +1,6 @@
 {
     'name': 'Personal Budget',
-    'version': '18.0.2.1.1',
+    'version': '18.0.2.1.2',
     'category': 'Productivity',
     'summary': "Household budget: personal or shared budgets, subscriptions and dashboard",
     'description': """
