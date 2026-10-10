@@ -27,7 +27,9 @@ class MailMail(models.Model):
 
     def write(self, vals):
         # Un courriel en file part ensuite par cron : le modifier, c'est choisir
-        # ce qui part (sous une cible administratrice, seule à y avoir accès).
+        # ce qui part (sous une cible administratrice, seule à y avoir accès),
+        # qu'on touche à son contenu, à son état ou au message dont il hérite.
+        # Le message lui-même est gardé dans mail_message.py.
         if imp.current() and not imp.in_dry():
             _logger.warning("bf_impersonate: modification d'un courriel en file refusée")
             raise UserError(_(

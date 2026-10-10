@@ -46,6 +46,35 @@ class MailMessage(models.Model):
                 vals.setdefault("bf_impersonate_session_id", payload["journal_id"])
         return super().create(vals_list)
 
+    # Ce qu'un courriel en file reprend de son message (par délégation).
+    _BF_OUTGOING_FIELDS = frozenset({
+        "attachment_ids", "body", "email_from", "mail_server_id", "message_id", "model",
+        "partner_ids", "record_alias_domain_id", "reply_to", "res_id", "subject",
+    })
+    # Des avis encore programmés (mail.message.schedule) relisent le message au
+    # départ : son sous-type, par exemple, décide qui les reçoit par courriel.
+    _BF_SCHEDULED_FIELDS = _BF_OUTGOING_FIELDS | {
+        "author_id", "email_add_signature", "email_layout_xmlid", "is_internal",
+        "message_type", "subtype_id",
+    }
+
+    def write(self, vals):
+        # Modifier le message d'un courriel encore en file, ou d'avis encore
+        # programmés, c'est choisir ce qui part, par le parent plutôt que par le
+        # courriel lui-même. Les messages publiés pendant l'incarnation n'ont ni
+        # l'un ni l'autre (courriels refusés, avis envoyés sur-le-champ).
+        names = set(vals)
+        if imp.current() and not imp.in_dry() and (
+                (self._BF_OUTGOING_FIELDS & names
+                 and self.sudo().mail_ids.filtered(lambda m: m.state == "outgoing"))
+                or (self._BF_SCHEDULED_FIELDS & names
+                    and self.env["mail.message.schedule"].sudo().search_count(
+                        [("mail_message_id", "in", self.ids)], limit=1))):
+            raise UserError(_(
+                "Nothing is sent while you see Symbifox as someone else: no "
+                "email, no text message. Go back to your own account to send it."))
+        return super().write(vals)
+
     @api.model
     def _bf_impersonate_check(self, vals, internal_subtypes):
         message_type = vals.get("message_type", "comment")

@@ -88,7 +88,8 @@ and are linked to the journal entry; their body is never modified.
 ## Never, in either mode
 
 - **Nothing is sent**: no email (`mail.mail`, direct SMTP; a queued email
-  cannot be changed either), no text message (`sms.sms`, refused even in read
+  cannot be changed either, nor the message it takes its subject, sender and
+  attachments from, nor a message whose notifications are still scheduled), no text message (`sms.sms`, refused even in read
   only since a text message leaves at once; `message_post` with SMS numbers), no
   method whose name says `send`, no "Send later" message
   (`mail.scheduled.message`, neither created nor changed), and no message other
@@ -168,7 +169,8 @@ to administrators only.
 - « Aviser la personne vue »: never (journal only), at the start of each session
   (default), or at the start and then a summary at the end. The notice arrives
   through the person's own notification preference (inbox or email) and links to the
-  journal entry.
+  journal entry. It leaves at once, never through the email queue or a delay: the
+  start notice before the session begins.
 - Default and maximum duration (30 and 120 minutes).
 - « Permettre de voir Symbifox en tant qu'une personne de l'administration » (off).
 
@@ -229,6 +231,7 @@ rules) are refused at the RPC entry point.
 
 ## Changelog
 
+- **18.0.1.0.4**: the notice to the person is always sent at once, in a context of its own: the browser can no longer delay it or leave it to a queue. The start notice goes out before the session switches; sent after the commit, it went out under the person and the sending checks refused it on databases without `mail_post_defer`. The message of an email still in the queue cannot be changed either.
 - **18.0.1.0.3**: the address and phones of the person's contact are protected
   where the ORM writes, whatever the path (user or employee record, portal page,
   nested command, superuser code), and so is the contact their user is linked

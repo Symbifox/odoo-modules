@@ -390,6 +390,31 @@ class TestImpersonateJourney(HttpCase):
         self.make_jsonrpc_request("/bf_impersonate/stop")
         self.assertFalse(self.env["mail.scheduled.message"].search([("body", "ilike", "Plus tard")]))
 
+    def test_start_notice_leaves_in_the_opening_request(self):
+        """L'avis de début part dans la requête qui ouvre la session, avant la
+        bascule : envoyé après la validation, il passait sous la personne et les
+        gardes d'envoi le refusaient. Le contexte du client ne le repousse pas
+        (file, mail_post_defer) : il est parti quand l'incarnation commence."""
+        self.env["ir.config_parameter"].sudo().set_param("bf_impersonate.notify", "start")
+        self.assertEqual(self.colleague.notification_type, "email")
+        self._login(self.helper)
+        wizard_id = self._kw("bf.impersonate.wizard", "create", [{
+            "target_user_id": self.colleague.id, "reason": "Essai de l'avis de début",
+            "mode": "read", "duration": 30}])
+        action = self._kw("bf.impersonate.wizard", "action_start", [[wizard_id]], {
+            "context": {"mail_notify_force_send": False, "mail_defer_seconds": 10 ** 9}},
+            button=True)
+        self.assertEqual(action["tag"], "bf_impersonate_switched")
+        journal = self._journal(self.helper, self.colleague)
+        messages = self.env["mail.message"].sudo().search(
+            [("model", "=", journal._name), ("res_id", "=", journal.id)])
+        notifications = self.env["mail.notification"].sudo().search([
+            ("mail_message_id", "in", messages.ids),
+            ("res_partner_id", "=", self.colleague.partner_id.id)])
+        self.assertEqual(notifications.mapped("notification_status"), ["sent"])
+        self.assertFalse(self.env["mail.message.schedule"].sudo().search(
+            [("mail_message_id", "in", messages.ids)]))
+
     def test_follower_notice_is_immediate_not_deferred(self):
         """mail_post_defer met les avis en file pour un cron : pendant une
         incarnation, ils restent immédiats (et donc gardés). Un abonné avisé dans
@@ -793,13 +818,37 @@ class TestOutsideRequest(TransactionCase):
     def test_queued_email_cannot_be_changed(self):
         """Un courriel en file part par cron : le modifier, c'est choisir ce qui part."""
         mail = self.env["mail.mail"].sudo().create({"subject": "File bfimp", "body_html": "x"})
+        autre = self.env["mail.message"].sudo().create({"subject": "Autre bfimp", "body": "y"})
+        programme = self.env["mail.message"].sudo().create({
+            "subject": "Programmé bfimp", "body": "z", "subtype_id": self.env.ref("mail.mt_note").id})
+        attente = self.env["mail.message.schedule"].sudo().create({
+            "mail_message_id": programme.id, "scheduled_datetime": "2030-01-01 00:00:00"})
         payload = {"mode": imp.MODE_WRITE, "journal_id": 0, "from_uid": self.env.uid}
         with patch.object(imp, "current", return_value=payload), \
                 patch.object(imp, "in_dry", return_value=False):
             with self.assertRaises(odoo.exceptions.UserError):
                 mail.write({"email_to": "ailleurs@example.com"})
+            # Son état non plus : le passer en échec, c'est l'empêcher de partir.
+            with self.assertRaises(odoo.exceptions.UserError):
+                mail.write({"state": "exception"})
+            # Ni le message dont il hérite sujet, expéditeur et pièces jointes.
+            with self.assertRaises(odoo.exceptions.UserError):
+                mail.write({"mail_message_id": autre.id})
+            # Ni ce message lui-même, tant que le courriel attend en file.
+            with self.assertRaises(odoo.exceptions.UserError):
+                mail.mail_message_id.write({"subject": "Changé bfimp"})
+            # Un message sans courriel en file se modifie comme avant.
+            autre.write({"subject": "Changé bfimp"})
+            # Des avis encore programmés relisent leur message au départ : ni son
+            # sous-type, ni la programmation elle-même ne se modifient.
+            with self.assertRaises(odoo.exceptions.UserError):
+                programme.write({"subtype_id": self.env.ref("mail.mt_comment").id})
+            with self.assertRaises(odoo.exceptions.UserError):
+                attente.write({"scheduled_datetime": "2030-01-01 00:00:00"})
+            programme.write({"starred_partner_ids": [(4, self.env.user.partner_id.id)]})
         mail.write({"email_to": "ici@example.com"})
         self.assertEqual(mail.email_to, "ici@example.com")
+        self.assertEqual(mail.subject, "File bfimp")
 
     def test_no_user_is_created_or_rearmed(self):
         """Créer, supprimer ou réarmer un usager, ou supprimer le contact de la

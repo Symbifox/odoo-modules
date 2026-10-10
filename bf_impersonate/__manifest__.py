@@ -42,7 +42,12 @@
     #   Sur un modèle sensible, seules les lectures et les méthodes get_… passent,
     #   même en lecture seule. L'adresse IP du journal est réservée à
     #   l'administration. Libellé « Début » pour une installation neuve.
-    "version": "18.0.1.0.3",
+    # 18.0.1.0.4 : l'avis de début part sur-le-champ, avant la bascule de
+    #   session : envoyé après la validation, il passait sous la personne et
+    #   les gardes d'envoi le refusaient (base sans mail_post_defer). L'avis
+    #   part toujours sur-le-champ, dans un contexte neuf : le client ne peut
+    #   plus le repousser. Le message d'un courriel en file ne se modifie pas.
+    "version": "18.0.1.0.4",
     "category": "Administration",
     "summary": "See Symbifox as one of your users, read-only by default, with a reason, "
                "a time limit, a notice to the person and a journal no access right can rewrite",

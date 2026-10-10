@@ -8,6 +8,7 @@
   requête, ils échapperaient à toute garde : on les envoie tout de suite, par la
   voie normale, et les gardes de ``mail.mail`` s'appliquent. Un avis dans la
   boîte Odoo passe ; un abonné avisé par courriel fait refuser la modification.
+  Ceux qui attendaient déjà ne se modifient pas.
 
 À blanc, tout est annulé avec la requête : rien à faire.
 """
@@ -54,3 +55,10 @@ class MailMessageSchedule(models.Model):
             _logger.info("bf_impersonate: avis différés envoyés sur-le-champ (%s)", schedules.ids)
             schedules._send_notifications()
         return schedules
+
+    def write(self, vals):
+        # Changer le message, les paramètres ou l'heure d'avis programmés par
+        # quelqu'un d'autre (seul chemin du cœur : la date d'envoi d'un message
+        # modifié), c'est choisir ce qui part et quand.
+        _refuse_if_impersonating(self._name)
+        return super().write(vals)

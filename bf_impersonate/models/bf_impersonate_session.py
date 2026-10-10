@@ -150,14 +150,25 @@ class BfImpersonateSession(models.Model):
         if moment == "end" and policy != NOTIFY_START_END:
             return
         target = self.target_user_id
-        journal = self.sudo().with_context(lang=target.lang or self.env.lang)
+        # Un contexte neuf, pas celui du client : le navigateur pourrait sinon
+        # repousser l'avis (mail_defer_seconds, mail_notify_force_send).
+        journal = self.sudo().with_context({"lang": target.lang or self.env.lang})
         subject, body = journal._bf_notification(moment)
+        # Envoyé sur-le-champ (force_send), jamais mis en file ni différé : la file
+        # des courriels peut être inactive, et mail_post_defer repousserait l'avis.
+        # L'avis de début part AVANT la validation : après elle, la session est déjà
+        # incarnée et les gardes d'envoi (à raison) le refuseraient. Vu au banc le
+        # 2026-10-09 sur une base sans mail_post_defer. L'avis de fin, lui, part
+        # après la restauration : il garde l'envoi après validation, pour qu'une
+        # panne du serveur de courriel ne bloque pas le retour au compte.
         journal.message_notify(
             partner_ids=target.partner_id.ids,
             author_id=self.user_id.partner_id.id,
             subject=subject,
             body=body,
             email_layout_xmlid="bf_onboarding_base.bf_mail_layout",
+            force_send=True,
+            send_after_commit=moment != "start",
         )
 
     def _bf_minutes(self, minutes):

@@ -221,7 +221,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.5.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.2 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
-| `bf_impersonate` | Impersonate a User | 18.0.1.0.3 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
+| `bf_impersonate` | Impersonate a User | 18.0.1.0.4 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
