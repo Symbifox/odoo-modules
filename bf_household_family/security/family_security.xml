@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le responsable du foyer : il gère des COMPTES, jamais des droits. Il n'a ni la gestion des droits ni
+         l'administration : le socle du foyer (bf_household_base) les lui refuse. Ses gestes passent
+         par les boutons gardés de la vue des membres. -->
+    <record id="group_household_manager" model="res.groups">
+        <field name="name">Household manager</field>
+        <field name="category_id" ref="bf_household_base.module_category_household"/>
+        <field name="implied_ids" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="comment">Invites members, resends their password link, removes a teen or an account never used. Never sets a password, changes an email or removes an adult.</field>
+    </record>
+
+    <!-- ====================================================== Enfants
+         Lecture : tout le foyer (aucune règle de lecture). Écriture, création,
+         suppression : ses parents. -->
+    <record id="rule_child_parents_write" model="ir.rule">
+        <field name="name">Child: only their parents edit</field>
+        <field name="model_id" ref="model_bf_household_child"/>
+        <field name="groups" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="domain_force">['|', ('primary_parent_id', '=', user.id), ('second_parent_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- ====================================================== Papiers
+         🔴 Classe privée. Aucune exception pour l'administration : la règle est
+         la même pour tous. -->
+    <record id="rule_document_owners" model="ir.rule">
+        <field name="name">Family paper: its holder, or the parents of the child who holds it</field>
+        <field name="model_id" ref="model_bf_household_document"/>
+        <field name="groups" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="domain_force">['|', '|', ('holder_user_id', '=', user.id),
+                                     ('child_id.primary_parent_id', '=', user.id),
+                                     ('child_id.second_parent_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_document_shared_read" model="ir.rule">
+        <field name="name">Family paper: shared on purpose, read only</field>
+        <field name="model_id" ref="model_bf_household_document"/>
+        <field name="groups" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="domain_force">[('share_user_ids', 'in', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <!-- Toute autre personne (un administrateur compris) : rien. Une règle globale,
+         pour qu'un groupe ajouté plus tard n'ouvre pas les papiers. -->
+    <record id="rule_document_global" model="ir.rule">
+        <field name="name">Family paper: nobody else</field>
+        <field name="model_id" ref="model_bf_household_document"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', '|', '|', ('holder_user_id', '=', user.id),
+                                     ('child_id.primary_parent_id', '=', user.id),
+                                     ('child_id.second_parent_id', '=', user.id),
+                                     ('share_user_ids', 'in', user.id)]</field>
+    </record>
+
+    <!-- ====================================================== Fiches d'urgence
+         Lecture : tout le foyer. Écriture : la personne, ou les parents de
+         l'enfant. -->
+    <record id="rule_card_writers" model="ir.rule">
+        <field name="name">Emergency card: kept by the person, or the child's parents</field>
+        <field name="model_id" ref="model_bf_household_emergency_card"/>
+        <field name="groups" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="domain_force">['|', '|', ('holder_user_id', '=', user.id),
+                                     ('child_id.primary_parent_id', '=', user.id),
+                                     ('child_id.second_parent_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_card_contact_writers" model="ir.rule">
+        <field name="name">Emergency contact: kept with its card</field>
+        <field name="model_id" ref="model_bf_household_emergency_contact"/>
+        <field name="groups" eval="[(4, ref('bf_household_base.group_household_user'))]"/>
+        <field name="domain_force">['|', '|', ('card_id.holder_user_id', '=', user.id),
+                                     ('card_id.child_id.primary_parent_id', '=', user.id),
+                                     ('card_id.child_id.second_parent_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Les liens et leur journal : ceux qui tiennent la fiche, et personne d'autre. -->
+    <record id="rule_link_writers" model="ir.rule">
+        <field name="name">Babysitter link: whoever keeps the card</field>
+        <field name="model_id" ref="model_bf_household_emergency_link"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', '|', ('card_id.holder_user_id', '=', user.id),
+                                     ('card_id.child_id.primary_parent_id', '=', user.id),
+                                     ('card_id.child_id.second_parent_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_link_open_writers" model="ir.rule">
+        <field name="name">Babysitter link opening: whoever keeps the card</field>
+        <field name="model_id" ref="model_bf_household_emergency_link_open"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', '|', ('link_id.card_id.holder_user_id', '=', user.id),
+                                     ('link_id.card_id.child_id.primary_parent_id', '=', user.id),
+                                     ('link_id.card_id.child_id.second_parent_id', '=', user.id)]</field>
+    </record>
+</odoo>

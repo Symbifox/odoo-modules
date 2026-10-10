@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_health_dependent_form_family" model="ir.ui.view">
+        <field name="name">health.dependent.form.family</field>
+        <field name="model">health.dependent</field>
+        <field name="inherit_id" ref="bf_health.health_dependent_view_form"/>
+        <field name="arch" type="xml">
+            <field name="consentement_parent" position="before">
+                <field name="household_child_id" readonly="id" options="{'no_create': True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

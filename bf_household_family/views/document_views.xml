@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_document_list" model="ir.ui.view">
+        <field name="name">bf.household.document.list</field>
+        <field name="model">bf.household.document</field>
+        <field name="arch" type="xml">
+            <list string="Family papers" decoration-danger="status == 'expired'" decoration-warning="status == 'soon'">
+                <field name="holder_name"/>
+                <field name="doc_type"/>
+                <field name="expiry_date"/>
+                <field name="status" widget="badge" decoration-success="status == 'valid'"
+                       decoration-warning="status == 'soon'" decoration-danger="status == 'expired'"/>
+                <field name="reminder_date" optional="hide"/>
+                <field name="share_user_ids" widget="many2many_tags" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_form" model="ir.ui.view">
+        <field name="name">bf.household.document.form</field>
+        <field name="model">bf.household.document</field>
+        <field name="arch" type="xml">
+            <form string="Family paper">
+                <field name="is_owner" invisible="1"/>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <field name="status" widget="badge" decoration-success="status == 'valid'"
+                               decoration-warning="status == 'soon'" decoration-danger="status == 'expired'"/>
+                    </div>
+                    <group>
+                        <group string="Whose paper">
+                            <field name="doc_type" readonly="id and not is_owner"/>
+                            <field name="holder_user_id" readonly="id and not is_owner" invisible="child_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="child_id" readonly="id and not is_owner"
+                                   options="{'no_create': True, 'no_open': True}"
+                                   domain="['|', ('primary_parent_id', '=', uid), ('second_parent_id', '=', uid)]"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="number" readonly="id and not is_owner"/>
+                            <field name="issuing_authority" readonly="id and not is_owner"/>
+                            <field name="issue_date" readonly="id and not is_owner"/>
+                            <field name="expiry_date" readonly="id and not is_owner"/>
+                            <field name="reminder_days" readonly="id and not is_owner"/>
+                            <field name="reminder_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Photos and scans" name="photos">
+                            <field name="attachment_ids" widget="many2many_binary" readonly="id and not is_owner"/>
+                        </page>
+                        <page string="Sharing" name="sharing">
+                            <field name="share_user_ids" widget="many2many_tags" readonly="id and not is_owner"
+                                   options="{'no_create': True}"/>
+                            <div class="text-muted">These members of the household read this paper; they cannot change it.</div>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" readonly="id and not is_owner"
+                                   placeholder="Where the original is kept, how to renew it..."/>
+                        </page>
+                    </notebook>
+                    <div class="text-muted">Symbifox does not keep social insurance numbers.</div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_search" model="ir.ui.view">
+        <field name="name">bf.household.document.search</field>
+        <field name="model">bf.household.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="doc_type"/>
+                <filter name="to_renew" string="To renew" domain="[('reminder_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="mine" string="Mine" domain="[('holder_user_id', '=', uid)]"/>
+                <filter name="children" string="My children's" domain="[('child_id', '!=', False)]"/>
+                <filter name="shared" string="Shared with me" domain="[('share_user_ids', 'in', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Type" context="{'group_by': 'doc_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document" model="ir.actions.act_window">
+        <field name="name">Family papers</field>
+        <field name="res_model">bf.household.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a passport, a health card, a licence...</p>
+            <p>Your papers are yours: you share each one on purpose. A reminder comes before it expires (six months for a passport).</p>
+        </field>
+    </record>
+</odoo>

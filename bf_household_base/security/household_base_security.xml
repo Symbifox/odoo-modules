@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_household" model="ir.module.category">
+        <field name="name">Household</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <!-- La personne du foyer : un compte interne. Les modules du foyer étendent ce groupe
+         avec les applis qu'ils ouvrent (le profil du foyer, par exemple).
+         ⛔ Jamais base.group_system ni base.group_erp_manager, ni ici ni par extension :
+         /web/become ferait de la personne un superutilisateur, au-dessus de toute règle
+         privée. La contrainte de res.users le refuse quel que soit le chemin. -->
+    <record id="group_household_user" model="res.groups">
+        <field name="name">Household user</field>
+        <field name="category_id" ref="module_category_household"/>
+        <field name="comment">A person of the household: an internal account. The household modules add the apps it opens.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

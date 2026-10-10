@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**71 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**75 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -223,6 +223,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.5.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.2 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
+| `bf_household_base` | Household Base | 18.0.1.0.0 | LGPL-3 | The household group of a Symbifox Personal instance: who belongs to the household, at most ten accounts, and never an administrator among them |
+| `bf_household_family` | Household Family | 18.0.1.1.0 | LGPL-3 | The family of a household instance: members and their roles, children, family papers and emergency cards |
+| `bf_household_family_celebrations` | Household Family: Celebrations | 18.0.1.0.1 | LGPL-3 | The birthdays of the household's children, in Celebrations and the calendar |
+| `bf_household_family_health` | Household Family: Healthy Fox | 18.0.1.0.1 | LGPL-3 | A child of the household is one record, in the family and in Healthy Fox |
 | `bf_impersonate` | Impersonate a User | 18.0.1.0.4 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
@@ -415,7 +419,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **71 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **75 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

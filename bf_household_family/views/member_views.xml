@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les membres : une liste en lecture seule, sans fiche à ouvrir. Chaque geste
+         est un bouton, gardé côté serveur. -->
+    <record id="view_member_list" model="ir.ui.view">
+        <field name="name">bf.household.member.list</field>
+        <field name="model">bf.household.member</field>
+        <field name="arch" type="xml">
+            <list string="Members" create="0" edit="0" delete="0" decoration-muted="state == 'left'">
+                <header>
+                    <button name="action_open_invite" type="object" string="Invite a member" class="btn-primary"
+                            display="always" groups="bf_household_family.group_household_manager,base.group_system"/>
+                </header>
+                <field name="is_me" column_invisible="1"/>
+                <field name="can_manage" column_invisible="1"/>
+                <field name="can_remove" column_invisible="1"/>
+                <field name="active" column_invisible="1"/>
+                <field name="name"/>
+                <field name="login"/>
+                <field name="role"/>
+                <field name="is_manager" widget="boolean"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'invited'" decoration-success="state == 'active'"
+                       decoration-warning="state == 'leaving'"/>
+                <field name="last_login" optional="show"/>
+                <button name="action_resend_invitation" type="object" string="Send the link"
+                        icon="fa-envelope" invisible="not can_manage"
+                        help="Sends the link that sets the password, to the member's own address."/>
+                <button name="action_grant_manager" type="object" string="Make manager" icon="fa-star-o"
+                        invisible="not can_manage or is_manager or role == 'teen'"/>
+                <button name="action_revoke_manager" type="object" string="Remove the manager role" icon="fa-star"
+                        invisible="not can_manage or not is_manager"/>
+                <button name="action_remove" type="object" string="Remove" icon="fa-user-times"
+                        invisible="not can_remove"
+                        confirm="This account closes now. Its private records stay closed until Blue Fox erases them. Continue?"/>
+                <button name="action_open_leave" type="object" string="Leave the household" icon="fa-sign-out"
+                        invisible="not is_me"/>
+                <button name="action_open_removal" type="object" string="Schedule a removal" icon="fa-calendar-times-o"
+                        invisible="not active" groups="base.group_system"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_member_search" model="ir.ui.view">
+        <field name="name">bf.household.member.search</field>
+        <field name="model">bf.household.member</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="managers" string="Managers" domain="[('is_manager', '=', True)]"/>
+                <filter name="teens" string="Teens" domain="[('role', '=', 'teen')]"/>
+                <separator/>
+                <filter name="left" string="Left" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_member" model="ir.actions.act_window">
+        <field name="name">Members</field>
+        <field name="res_model">bf.household.member</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">The members of the household appear here.</p>
+            <p>A household manager invites them. Blue Fox keeps the administration of the instance.</p>
+        </field>
+    </record>
+</odoo>

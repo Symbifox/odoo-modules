@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_member_invite_form" model="ir.ui.view">
+        <field name="name">bf.household.member.invite.form</field>
+        <field name="model">bf.household.member.invite</field>
+        <field name="arch" type="xml">
+            <form string="Invite a member">
+                <group>
+                    <field name="name"/>
+                    <field name="email" widget="email"/>
+                    <field name="role" widget="radio"/>
+                    <field name="birth_month" invisible="role != 'teen'" required="role == 'teen'"/>
+                    <field name="birth_year" options="{'enable_formatting': false}" invisible="role != 'teen'" required="role == 'teen'"/>
+                    <field name="make_manager" invisible="role == 'teen'"/>
+                    <field name="seats_left"/>
+                </group>
+                <div class="text-muted">
+                    The person receives an invitation at this address and chooses their own password. Under 14, a child does not get an account: a parent follows them.
+                </div>
+                <footer>
+                    <button name="action_invite" type="object" string="Send the invitation" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

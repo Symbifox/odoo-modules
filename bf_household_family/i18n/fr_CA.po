@@ -1,0 +1,1858 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"PO-Revision-Date: 2026-10-09 21:30-0400\n"
+"Last-Translator: Blue Fox Inc.\n"
+"Language-Team: Blue Fox Inc.\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid "%(name)s is invited: the invitation went to %(email)s."
+msgstr "%(name)s est invitée : l'invitation est partie à %(email)s."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "%s already holds this paper."
+msgstr "%s tient déjà ce papier."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid "%s has no email address: ask Blue Fox."
+msgstr "%s n'a pas d'adresse courriel : demandez à Blue Fox."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid ""
+"%s is an adult who has used their account: they leave the household by "
+"themselves, or Blue Fox removes them on request."
+msgstr ""
+"%s est une personne adulte qui s'est déjà servie de son compte : elle quitte"
+" le foyer elle-même, ou Blue Fox la retire sur demande."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid "%s is not an active member of this household."
+msgstr "%s n'est pas un membre actif de ce foyer."
+
+#. module: bf_household_family
+#: model:ir.actions.report,print_report_name:bf_household_family.action_report_emergency_card
+msgid "'Emergency card - %s' % (object.name or '')"
+msgstr "'Fiche d’urgence - %s' % (object.name or '')"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+msgid ""
+".\n"
+"                    Name a second parent first, or their records stay closed after you leave."
+msgstr ""
+".\n"
+"                    Nommez d'abord un second parent, sinon leurs fiches resteront fermées après votre départ."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_public_page
+msgid ". Please do not forward it."
+msgstr ". Merci de ne pas la transférer."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__age_band__teen
+msgid "14 to 17"
+msgstr "14 à 17 ans"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__age_band__adult
+msgid "18 or older"
+msgstr "18 ans ou plus"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link_wizard__duration__24
+msgid "24 hours"
+msgstr "24 heures"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link_wizard__duration__72
+msgid "3 days"
+msgstr "3 jours"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link_wizard__duration__4
+msgid "4 hours"
+msgstr "4 heures"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link_wizard__duration__168
+msgid "7 days"
+msgstr "7 jours"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "<strong>Blood type:</strong>"
+msgstr "<strong>Groupe sanguin :</strong>"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "<strong>In an emergency, call 911.</strong>"
+msgstr "<strong>En cas d'urgence, composez le 911.</strong>"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "A babysitter link lasts seven days at most."
+msgstr "Un lien de gardienne dure sept jours au plus."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "A card belongs either to a member of the household or to a child."
+msgstr "Une fiche appartient soit à un membre du foyer, soit à un enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "A card belongs to an active member of the household."
+msgstr "Une fiche appartient à un membre actif du foyer."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_document__child_id
+msgid "A child's papers are held by their parents."
+msgstr "Les papiers d'un enfant sont tenus par ses parents."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_departure
+msgid ""
+"A departed account's private records are erased by Blue Fox's procedure, by "
+"the date shown."
+msgstr ""
+"Les fiches privées d'un compte parti sont effacées par la procédure de Blue "
+"Fox, au plus tard à la date indiquée."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_member
+msgid ""
+"A household manager invites them. Blue Fox keeps the administration of the "
+"instance."
+msgstr ""
+"Un responsable du foyer les invite. Blue Fox garde l'administration de "
+"l'instance."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: code:addons/bf_household_family/models/res_users.py:0
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid "A household manager is an adult, not a teen."
+msgstr "Un responsable du foyer est une personne adulte, pas un ado."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "A link is not edited: withdraw it and create another one."
+msgstr "Un lien ne se modifie pas : retirez-le et créez-en un autre."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "A paper belongs either to a member of the household or to a child."
+msgstr "Un papier appartient soit à un membre du foyer, soit à un enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "A paper belongs to an active member of the household."
+msgstr "Un papier appartient à un membre actif du foyer."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "A paper cannot expire before it is issued."
+msgstr "Un papier ne peut pas expirer avant d'être délivré."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "A paper is shared only with members of the household."
+msgstr "Un papier ne se partage qu'avec des membres du foyer."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "A parent is an active member of the household."
+msgstr "Un parent est un membre actif du foyer."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "A parent is an adult member of the household."
+msgstr "Un parent est un membre adulte du foyer."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_document__reminder_days
+msgid ""
+"A passport: at least six months, many countries require that much validity "
+"at entry."
+msgstr ""
+"Un passeport : au moins six mois, plusieurs pays exigent cette validité à "
+"l'entrée."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid "A removal is already scheduled for %s."
+msgstr "Un retrait est déjà prévu pour %s."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid ""
+"A teen account is for 14 to 17 years old. Under 14, a child is followed by a"
+" parent; from 18, invite them as an adult."
+msgstr ""
+"Un compte d'ado est pour les 14 à 17 ans. Avant 14 ans, un parent suit "
+"l'enfant ; dès 18 ans, invitez la personne comme adulte."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid "A teen's account needs their birth month and year."
+msgstr "Le compte d'un ado demande son mois et son année de naissance."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__a_pos
+msgid "A+"
+msgstr "A+"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__a_neg
+msgid "A-"
+msgstr "A-"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__ab_pos
+msgid "AB+"
+msgstr "AB+"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__ab_neg
+msgid "AB-"
+msgstr "AB-"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__user_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__user_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__user_id
+msgid "Account"
+msgstr "Compte"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__effective_on
+msgid "Account closed on"
+msgstr "Compte fermé le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__effective_on
+msgid "Account closes on"
+msgstr "Le compte se ferme le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__seats_left
+msgid "Accounts left"
+msgstr "Comptes restants"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__active
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__active
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link__state__active
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__state__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_child
+msgid "Add a child of the household."
+msgstr "Ajoutez un enfant du foyer."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_document
+msgid "Add a passport, a health card, a licence..."
+msgstr "Ajoutez un passeport, une carte d'assurance maladie, un permis..."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__include_health
+msgid "Add the medications and conditions from Healthy Fox"
+msgstr "Ajouter les médicaments et les conditions de Healthy Fox"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__role__adult
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__role__adult
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_role__adult
+msgid "Adult"
+msgstr "Adulte"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__age_band
+msgid "Age"
+msgstr "Âge"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__allergies
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "Allergies"
+msgstr "Allergies"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid "An account already uses this address: ask Blue Fox."
+msgstr "Un compte utilise déjà cette adresse : demandez à Blue Fox."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__4
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__4
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__4
+msgid "April"
+msgstr "avril"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_public_not_found
+msgid "Ask the person who sent it for a new one."
+msgstr "Demandez-en un nouveau à la personne qui vous l'a envoyé."
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__8
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__8
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__8
+msgid "August"
+msgstr "août"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__b_pos
+msgid "B+"
+msgstr "B+"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__b_neg
+msgid "B-"
+msgstr "B-"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__link_ids
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Babysitter links"
+msgstr "Liens de gardienne"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid "Birth"
+msgstr "Naissance"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__birth_certificate
+msgid "Birth certificate"
+msgstr "Certificat de naissance"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__birth_day
+msgid "Birth day"
+msgstr "Jour de naissance"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__birth_month
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__birth_month
+#: model:ir.model.fields,field_description:bf_household_family.field_res_users__bf_household_birth_month
+msgid "Birth month"
+msgstr "Mois de naissance"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__birth_year
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__birth_year
+#: model:ir.model.fields,field_description:bf_household_family.field_res_users__bf_household_birth_year
+msgid "Birth year"
+msgstr "Année de naissance"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__birthday_label
+msgid "Birthday"
+msgstr "Anniversaire"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__blood_type
+msgid "Blood type"
+msgstr "Groupe sanguin"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__can_export
+msgid "Can Export"
+msgstr "Peut exporter"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__can_manage
+msgid "Can Manage"
+msgstr "Peut gérer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__can_remove
+msgid "Can Remove"
+msgstr "Peut retirer"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_departure_list
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_invite_form
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_removal_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_departure_form
+msgid "Cancel the removal"
+msgstr "Annuler le retrait"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__card_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__card_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__card_id
+msgid "Card"
+msgstr "Fiche"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__child_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__child_id
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid "Child"
+msgstr "Enfant"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_child
+msgid "Child of the household"
+msgstr "Enfant du foyer"
+
+#. module: bf_household_family
+#: model:ir.actions.act_window,name:bf_household_family.action_child
+#: model:ir.ui.menu,name:bf_household_family.menu_family_children
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_list
+msgid "Children"
+msgstr "Enfants"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__children_alone
+msgid "Children only you hold"
+msgstr "Enfants dont vous êtes le seul parent"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__citizenship
+msgid "Citizenship certificate"
+msgstr "Certificat de citoyenneté"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_emergency_link_wizard_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__conditions
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "Conditions"
+msgstr "Conditions"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_emergency_link_wizard_form
+msgid ""
+"Copy the link now: it is shown only once. You can withdraw it from the card "
+"at any time."
+msgstr ""
+"Copiez le lien maintenant : il ne s'affiche qu'une fois. Vous pouvez le "
+"retirer depuis la fiche en tout temps."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_document__issuing_authority
+msgid "Country, province or organisation."
+msgstr "Pays, province ou organisme."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_emergency_link_wizard_form
+msgid "Create the link"
+msgstr "Créer le lien"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Created"
+msgstr "Créé"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__create_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__link_id
+msgid "Created link"
+msgstr "Lien créé"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__create_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__12
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__12
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__12
+msgid "December"
+msgstr "décembre"
+
+#. module: bf_household_family
+#: model:ir.actions.act_window,name:bf_household_family.action_departure
+#: model:ir.ui.menu,name:bf_household_family.menu_family_departures
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_departure_list
+msgid "Departures"
+msgstr "Départs"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__display_name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__doctor_name
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Doctor"
+msgstr "Médecin"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__doctor_phone
+msgid "Doctor's phone"
+msgstr "Téléphone du médecin"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__state__done
+msgid "Done"
+msgstr "Fait"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__driver_licence
+msgid "Driver's licence"
+msgstr "Permis de conduire"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__login
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_household_family
+#: model:ir.actions.report,name:bf_household_family.action_report_emergency_card
+#: model:ir.model,name:bf_household_family.model_bf_household_emergency_card
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Emergency card"
+msgstr "Fiche d'urgence"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_emergency_link
+msgid "Emergency card link for a babysitter"
+msgstr "Lien de fiche d'urgence pour une gardienne"
+
+#. module: bf_household_family
+#: model:ir.actions.act_window,name:bf_household_family.action_card
+#: model:ir.ui.menu,name:bf_household_family.menu_family_cards
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_list
+msgid "Emergency cards"
+msgstr "Fiches d'urgence"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_emergency_contact
+msgid "Emergency contact"
+msgstr "Contact d'urgence"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__status__expired
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link__state__expired
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__expires_at
+msgid "Expires"
+msgstr "Expire le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__expiry_date
+msgid "Expires on"
+msgstr "Expire le"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+msgid "Export my records"
+msgstr "Exporter mes fiches"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+msgid ""
+"Export your records first: the file you keep brings them into another "
+"household."
+msgstr ""
+"Exportez d'abord vos fiches : le fichier que vous gardez les emmène dans un "
+"autre foyer."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_leave.py:0
+msgid "Exporting records is not available in this household."
+msgstr "L'export des fiches n'est pas offert dans ce foyer."
+
+#. module: bf_household_family
+#: model:ir.ui.menu,name:bf_household_family.menu_family_root
+msgid "Family"
+msgstr "Famille"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_document
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Family paper"
+msgstr "Papier de la famille"
+
+#. module: bf_household_family
+#: model:ir.actions.act_window,name:bf_household_family.action_document
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_list
+msgid "Family papers"
+msgstr "Papiers de la famille"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__2
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__2
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__2
+msgid "February"
+msgstr "février"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__name
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid "First name"
+msgstr "Prénom"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__label
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__label
+msgid "For"
+msgstr "Pour"
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_emergency_link_wizard__label
+msgid "For your own memory: « Babysitter, Saturday »."
+msgstr "Pour votre mémoire : « Gardienne, samedi »."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_child__user_id
+msgid "From 14, the teen's own account in the household."
+msgstr "Dès 14 ans, le propre compte de l'ado dans le foyer."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__health_summary
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "From Healthy Fox"
+msgstr "De Healthy Fox"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__health_available
+msgid "Health Available"
+msgstr "Santé offerte"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__health_card
+msgid "Health insurance card"
+msgstr "Carte d'assurance maladie"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Healthy Fox"
+msgstr "Healthy Fox"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__holder_user_id
+msgid "Holder"
+msgstr "Titulaire"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__holder_name
+msgid "Holder name"
+msgstr "Nom du titulaire"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_departure
+msgid "Household departure"
+msgstr "Départ du foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__is_manager
+#: model:res.groups,name:bf_household_family.group_household_manager
+msgid "Household manager"
+msgstr "Responsable du foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__make_manager
+msgid "Household manager too"
+msgstr "Aussi responsable du foyer"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_member
+msgid "Household member"
+msgstr "Membre du foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_res_users__bf_household_role
+msgid "Household role"
+msgstr "Rôle dans le foyer"
+
+#. module: bf_household_family
+#: model:ir.actions.server,name:bf_household_family.cron_apply_departures_ir_actions_server
+msgid "Household: close the accounts whose removal is due"
+msgstr "Foyer : fermer les comptes dont le retrait est dû"
+
+#. module: bf_household_family
+#: model:ir.actions.server,name:bf_household_family.cron_document_reminders_ir_actions_server
+msgid "Household: remind the holders of papers to renew"
+msgstr "Foyer : rappeler les papiers à renouveler à leurs titulaires"
+
+#. module: bf_household_family
+#: model:ir.actions.server,name:bf_household_family.cron_teens_turn_adult_ir_actions_server
+msgid "Household: teens become adults at 18"
+msgstr "Foyer : les ados deviennent adultes à 18 ans"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__kind
+msgid "How"
+msgstr "Comment"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__is_parent
+msgid "I am a parent"
+msgstr "Je suis parent"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__is_owner
+msgid "I hold this paper"
+msgstr "Je tiens ce papier"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__is_writer
+msgid "I keep this card"
+msgstr "Je tiens cette fiche"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__confirm
+msgid ""
+"I understand: my account closes now, and my records stay closed until Blue "
+"Fox erases them."
+msgstr ""
+"Je comprends : mon compte se ferme maintenant, et mes fiches restent fermées"
+" jusqu'à ce que Blue Fox les efface."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__insurance
+msgid "Insurance policy"
+msgstr "Police d'assurance"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_invite_form
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Invite a member"
+msgstr "Inviter un membre"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_member_invite
+msgid "Invite a member to the household"
+msgstr "Inviter un membre au foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__state__invited
+msgid "Invited"
+msgstr "Invité"
+
+#. module: bf_household_family
+#: model:res.groups,comment:bf_household_family.group_household_manager
+msgid ""
+"Invites members, resends their password link, removes a teen or an account "
+"never used. Never sets a password, changes an email or removes an adult."
+msgstr ""
+"Invite des membres, renvoie leur lien de mot de passe, retire un ado ou un "
+"compte jamais utilisé. Ne définit jamais un mot de passe, ne change jamais "
+"un courriel, ne retire jamais une personne adulte."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__is_me
+msgid "Is Me"
+msgstr "C'est moi"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__is_primary_parent
+msgid "Is Primary Parent"
+msgstr "Parent principal"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__issuing_authority
+msgid "Issued by"
+msgstr "Délivré par"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__issue_date
+msgid "Issued on"
+msgstr "Délivré le"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__1
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__1
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__1
+msgid "January"
+msgstr "janvier"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__7
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__7
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__7
+msgid "July"
+msgstr "juillet"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__6
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__6
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__6
+msgid "June"
+msgstr "juin"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__write_uid
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_leave__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__write_date
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__last_opened_at
+msgid "Last opened"
+msgstr "Dernière ouverture"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__last_login
+msgid "Last sign-in"
+msgstr "Dernière connexion"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: model:ir.model,name:bf_household_family.model_bf_household_leave
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Leave the household"
+msgstr "Quitter le foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__state__leaving
+msgid "Leaving"
+msgstr "Sur le départ"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+msgid "Leaving closes your account in this household now."
+msgstr "Quitter le foyer ferme votre compte dans ce foyer dès maintenant."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__state__left
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_search
+msgid "Left"
+msgstr "Parti"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__kind__left
+msgid "Left the household"
+msgstr "A quitté le foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__link_id
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__url
+msgid "Link"
+msgstr "Lien"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Make manager"
+msgstr "Nommer responsable"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_search
+msgid "Managers"
+msgstr "Responsables"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__3
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__3
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__3
+msgid "March"
+msgstr "mars"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__5
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__5
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__5
+msgid "May"
+msgstr "mai"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__medications
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+msgid "Medications"
+msgstr "Médicaments"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__holder_user_id
+msgid "Member"
+msgstr "Membre"
+
+#. module: bf_household_family
+#: model:ir.actions.act_window,name:bf_household_family.action_member
+#: model:ir.ui.menu,name:bf_household_family.menu_family_members
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Members"
+msgstr "Membres"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "Mine"
+msgstr "Les miens"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "My children's"
+msgstr "Ceux de mes enfants"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__name
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "Name a second parent first."
+msgstr "Nommez d'abord un second parent."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_departure
+msgid "No departure yet."
+msgstr "Aucun départ pour l'instant."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__status__none
+msgid "No expiry"
+msgstr "Sans échéance"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__notes
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__notes
+msgid "Notes for whoever helps"
+msgstr "Notes pour qui vient en aide"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__11
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__11
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__11
+msgid "November"
+msgstr "novembre"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__number
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__o_pos
+msgid "O+"
+msgstr "O+"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_card__blood_type__o_neg
+msgid "O-"
+msgstr "O-"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__10
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__10
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__10
+msgid "October"
+msgstr "octobre"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid "Only Blue Fox schedules the removal of an adult."
+msgstr "Seule Blue Fox prévoit le retrait d'une personne adulte."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/common.py:0
+msgid "Only a household manager can do this."
+msgstr "Seul un responsable du foyer peut faire ce geste."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "Only a member of the household adds a child."
+msgstr "Seul un membre du foyer ajoute un enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_leave.py:0
+msgid "Only a member of the household leaves it, by themselves."
+msgstr "Seul un membre du foyer le quitte, de lui-même."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/departure.py:0
+msgid "Only a scheduled removal can be cancelled."
+msgstr "Seul un retrait prévu peut être annulé."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "Only photos and scans added to this paper can be attached to it."
+msgstr ""
+"Seules les photos et numérisations déposées sur ce papier peuvent y être "
+"jointes."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "Only the parent who holds the child's records hands them over."
+msgstr "Seul le parent qui tient les fiches de l'enfant les passe à l'autre."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "Only the parent who holds the child's records names the second parent."
+msgstr ""
+"Seul le parent qui tient les fiches de l'enfant nomme le second parent."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid "Only the person themselves can leave the household."
+msgstr "Seule la personne elle-même peut quitter le foyer."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_emergency_card__include_health
+msgid ""
+"Only what is ticked here leaves Healthy Fox, and only onto this card: the "
+"household and the babysitter's links then see it."
+msgstr ""
+"Seul ce qui est coché ici sort de Healthy Fox, et seulement vers cette fiche"
+" : le foyer et les liens de gardienne le voient alors."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "Only whoever keeps the card withdraws its links."
+msgstr "Seule la personne qui tient la fiche en retire les liens."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__open_count
+msgid "Opened"
+msgstr "Ouvertures"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_open__opened_at
+msgid "Opened on"
+msgstr "Ouvert le"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_emergency_link_open
+msgid "Opening of a babysitter link"
+msgstr "Ouverture d'un lien de gardienne"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__open_ids
+msgid "Openings"
+msgstr "Ouvertures"
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_child__birth_day
+msgid "Optional. Needed for the birthday in the calendar and Celebrations."
+msgstr ""
+"Facultatif. Nécessaire pour l'anniversaire au calendrier et dans "
+"Célébrations."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__user_id
+msgid "Own account"
+msgstr "Propre compte"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__name
+msgid "Paper"
+msgstr "Papier"
+
+#. module: bf_household_family
+#: model:ir.ui.menu,name:bf_household_family.menu_family_documents
+msgid "Papers"
+msgstr "Papiers"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__primary_parent_id
+msgid "Parent"
+msgstr "Parent"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid "Parents"
+msgstr "Parents"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__passport
+msgid "Passport"
+msgstr "Passeport"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__pr_card
+msgid "Permanent resident card"
+msgstr "Carte de résident permanent"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__name
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Photos and scans"
+msgstr "Photos et numérisations"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Print"
+msgstr "Imprimer"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "Private link"
+msgstr "Lien privé"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "Private paper"
+msgstr "Papier privé"
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_document__share_user_ids
+msgid "Read-only access for these members of the household."
+msgstr "Lecture seule pour ces membres du foyer."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__erase_due
+msgid "Records to erase by"
+msgstr "Fiches à effacer au plus tard le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__relation
+msgid "Relation"
+msgstr "Lien"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__reminder_days
+msgid "Remind me (days before)"
+msgstr "Me le rappeler (jours avant)"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__reminder_task_id
+msgid "Reminder"
+msgstr "Rappel"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__reminder_date
+msgid "Reminder on"
+msgstr "Rappel le"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__kind__scheduled
+msgid "Removal requested from Blue Fox"
+msgstr "Retrait demandé à Blue Fox"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Remove the manager role"
+msgstr "Retirer le rôle de responsable"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__kind__removed
+msgid "Removed by a household manager"
+msgstr "Retiré par un responsable du foyer"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__status__soon
+msgid "Renew soon"
+msgstr "À renouveler bientôt"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "Renew: %(paper)s (%(person)s)"
+msgstr "Renouveler : %(paper)s (%(person)s)"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__requested_by_id
+msgid "Requested by"
+msgstr "Demandé par"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__requested_on
+msgid "Requested on"
+msgstr "Demandé le"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__role
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_invite__role
+msgid "Role"
+msgstr "Rôle"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_removal_form
+msgid "Schedule"
+msgstr "Prévoir"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_removal_form
+msgid "Schedule a removal"
+msgstr "Prévoir un retrait"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_member_removal
+msgid "Schedule the removal of a member"
+msgstr "Prévoir le retrait d'un membre"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_departure__state__scheduled
+msgid "Scheduled"
+msgstr "Prévu"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_child__second_parent_id
+msgid "Second parent"
+msgstr "Second parent"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_invite_form
+msgid "Send the invitation"
+msgstr "Envoyer l'invitation"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Send the link"
+msgstr "Envoyer le lien"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid "Sends the link that sets the password, to the member's own address."
+msgstr ""
+"Envoie le lien qui choisit le mot de passe, à l'adresse du membre lui-même."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__birth_month__9
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__birth_month__9
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_birth_month__9
+msgid "September"
+msgstr "septembre"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_contact__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_bf_household_emergency_link_wizard
+msgid "Share an emergency card with a babysitter"
+msgstr "Partager une fiche d'urgence avec une gardienne"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+#: code:addons/bf_household_family/wizards/emergency_link_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_emergency_link_wizard_form
+msgid "Share with a babysitter"
+msgstr "Partager avec une gardienne"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__share_user_ids
+msgid "Shared with"
+msgstr "Partagé avec"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "Shared with me"
+msgstr "Partagés avec moi"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Sharing"
+msgstr "Partage"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_departure__state
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__state
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid "Swap parents"
+msgstr "Échanger les parents"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Symbifox does not keep social insurance numbers."
+msgstr "Symbifox ne garde pas les numéros d'assurance sociale."
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member__role__teen
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_member_invite__role__teen
+#: model:ir.model.fields.selection,name:bf_household_family.selection__res_users__bf_household_role__teen
+msgid "Teen (14 to 17)"
+msgstr "Ado (14 à 17 ans)"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_search
+msgid "Teens"
+msgstr "Ados"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "The birth date cannot be in the future."
+msgstr "La date de naissance ne peut pas être dans le futur."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "The birth month and year cannot be in the future."
+msgstr "Le mois et l'année de naissance ne peuvent pas être dans le futur."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "The child's own account cannot be their parent."
+msgstr "Le propre compte de l'enfant ne peut pas être son parent."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "The child's own account is a teen account of the household."
+msgstr "Le propre compte de l'enfant est un compte d'ado du foyer."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid "The closing date cannot be in the past."
+msgstr "La date de fermeture ne peut pas être dans le passé."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_child__partner_id
+msgid ""
+"The contact used to invite the child to an event and for their birthday."
+msgstr ""
+"Le contact qui sert à inviter l'enfant à un événement et pour son "
+"anniversaire."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_departure__erase_due
+msgid ""
+"The departed account's private records are erased by Blue Fox's procedure."
+msgstr ""
+"Les fiches privées du compte parti sont effacées par la procédure de Blue "
+"Fox."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_card
+msgid ""
+"The household sees every card. Print one, or share it with a babysitter "
+"through a link that expires."
+msgstr ""
+"Le foyer voit toutes les fiches. Imprimez-en une, ou partagez-la avec une "
+"gardienne par un lien qui expire."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid "The link was sent to the member's own address."
+msgstr "Le lien est parti à l'adresse du membre lui-même."
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_member
+msgid "The members of the household appear here."
+msgstr "Les membres du foyer paraissent ici."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_child__primary_parent_id
+msgid ""
+"The parent who created this record. They hold the child's records in Healthy"
+" Fox."
+msgstr ""
+"Le parent qui a créé cette fiche. Il tient les fiches de l'enfant dans "
+"Healthy Fox."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_removal_form
+msgid ""
+"The person receives a notice at their own address and keeps their access "
+"until that date, to export their records."
+msgstr ""
+"La personne reçoit un avis à sa propre adresse et garde son accès jusqu'à "
+"cette date, pour exporter ses fiches."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_invite_form
+msgid ""
+"The person receives an invitation at this address and chooses their own "
+"password. Under 14, a child does not get an account: a parent follows them."
+msgstr ""
+"La personne reçoit une invitation à cette adresse et choisit elle-même son "
+"mot de passe. Avant 14 ans, un enfant n'a pas de compte : un parent le suit."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid ""
+"The second parent will hold the child's records, and you become the second "
+"parent. Continue?"
+msgstr ""
+"Le second parent tiendra les fiches de l'enfant, et vous deviendrez le "
+"second parent. Continuer?"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "The two parents must be two different people."
+msgstr "Les deux parents doivent être deux personnes différentes."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_child_form
+msgid ""
+"The whole household sees the first name and the birthday. The child's health"
+" and papers stay with the parents."
+msgstr ""
+"Tout le foyer voit le prénom et l'anniversaire. La santé et les papiers de "
+"l'enfant restent à ses parents."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "These members of the household read this paper; they cannot change it."
+msgstr ""
+"Ces membres du foyer lisent ce papier ; ils ne peuvent pas le modifier."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_member_list
+msgid ""
+"This account closes now. Its private records stay closed until Blue Fox "
+"erases them. Continue?"
+msgstr ""
+"Ce compte se ferme maintenant. Ses fiches privées restent fermées jusqu'à ce"
+" que Blue Fox les efface. Continuer?"
+
+#. module: bf_household_family
+#: model:ir.model.constraint,message:bf_household_family.constraint_bf_household_child_bf_household_child_user_unique
+msgid "This account is already linked to another child."
+msgstr "Ce compte est déjà lié à un autre enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "This birth day does not exist in that month."
+msgstr "Ce jour n'existe pas dans ce mois."
+
+#. module: bf_household_family
+#: model:ir.model.constraint,message:bf_household_family.constraint_bf_household_emergency_card_bf_household_card_child_unique
+msgid "This child already has an emergency card."
+msgstr "Cet enfant a déjà une fiche d'urgence."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_invite.py:0
+msgid "This email address does not look right."
+msgstr "Cette adresse courriel ne semble pas valide."
+
+#. module: bf_household_family
+#: model:ir.model.constraint,message:bf_household_family.constraint_bf_household_emergency_link_bf_household_link_token_unique
+msgid "This link already exists."
+msgstr "Ce lien existe déjà."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_public_not_found
+msgid "This link is not available"
+msgstr "Ce lien n'est pas disponible"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid ""
+"This looks like a social insurance number. Symbifox does not keep it: "
+"Service Canada advises keeping it locked away and giving it only when the "
+"law requires it."
+msgstr ""
+"Ceci ressemble à un numéro d'assurance sociale. Symbifox ne le garde pas : "
+"Service Canada conseille de le garder sous clé et de ne le donner que "
+"lorsque la loi l'exige."
+
+#. module: bf_household_family
+#: model:ir.model.constraint,message:bf_household_family.constraint_bf_household_emergency_card_bf_household_card_holder_unique
+msgid "This member already has an emergency card."
+msgstr "Ce membre a déjà une fiche d'urgence."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_public_page
+msgid "This page was shared with you and expires on"
+msgstr "Cette page vous a été partagée et expire le"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_leave.py:0
+msgid "Tick the box to confirm that you leave the household."
+msgstr "Cochez la case pour confirmer que vous quittez le foyer."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "To renew"
+msgstr "À renouveler"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__token_hash
+msgid "Token Hash"
+msgstr "Empreinte du jeton"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_document__doc_type
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_child__age_band__child
+msgid "Under 14"
+msgstr "Moins de 14 ans"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/child.py:0
+msgid "Use « Swap parents » to hand the child's records to the second parent."
+msgstr ""
+"Utilisez « Échanger les parents » pour passer les fiches de l'enfant au "
+"second parent."
+
+#. module: bf_household_family
+#: model:ir.model,name:bf_household_family.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__vaccination
+msgid "Vaccination record"
+msgstr "Carnet de vaccination"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__status__valid
+msgid "Valid"
+msgstr "Valide"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link_wizard__duration
+msgid "Valid for"
+msgstr "Valide pendant"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Validity"
+msgstr "Validité"
+
+#. module: bf_household_family
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_document__doc_type__visa
+msgid "Visa or permit"
+msgstr "Visa ou permis"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "What to know"
+msgstr "À savoir"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Where the original is kept, how to renew it..."
+msgstr "Où est l'original, comment le renouveler..."
+
+#. module: bf_household_family
+#: model:ir.model.fields,help:bf_household_family.field_bf_household_emergency_link__label
+msgid "Who received it, for your own memory: « Babysitter, Saturday »."
+msgstr "Qui l'a reçu, pour votre mémoire : « Gardienne, samedi »."
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_card__contact_ids
+#: model_terms:ir.ui.view,arch_db:bf_household_family.emergency_card_body
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Who to call"
+msgstr "Qui appeler"
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_card
+msgid "Who to call, what to know, for each person."
+msgstr "Qui appeler, quoi savoir, pour chaque personne."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid ""
+"Whoever has a link opens the card until it expires. Withdraw it once it is "
+"no longer needed."
+msgstr ""
+"Quiconque a un lien ouvre la fiche jusqu'à son expiration. Retirez-le dès "
+"qu'il ne sert plus."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_emergency_link_wizard_form
+msgid ""
+"Whoever receives the link opens the card until it expires, even if it is "
+"forwarded. It shows what is on the card, never a paper number."
+msgstr ""
+"Quiconque reçoit le lien ouvre la fiche jusqu'à son expiration, même "
+"transféré. Il montre ce qui est sur la fiche, jamais un numéro de papier."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Whose card"
+msgstr "Fiche de qui"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_document_form
+msgid "Whose paper"
+msgstr "Papier de qui"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_member_removal__note
+msgid "Why (for Blue Fox's records)"
+msgstr "Pourquoi (pour les dossiers de Blue Fox)"
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_card_form
+msgid "Withdraw"
+msgstr "Retirer"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__revoked
+#: model:ir.model.fields.selection,name:bf_household_family.selection__bf_household_emergency_link__state__revoked
+msgid "Withdrawn"
+msgstr "Retiré"
+
+#. module: bf_household_family
+#: model:ir.model.fields,field_description:bf_household_family.field_bf_household_emergency_link__revoked_at
+msgid "Withdrawn on"
+msgstr "Retiré le"
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid "You are the only household manager: name another one first."
+msgstr "Vous êtes le seul responsable du foyer : nommez-en d'abord un autre."
+
+#. module: bf_household_family
+#: model_terms:ir.ui.view,arch_db:bf_household_family.view_leave_form
+msgid "You are the only parent of:"
+msgstr "Vous êtes le seul parent de :"
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_child
+msgid ""
+"You become their parent, and you can name a second parent. The household "
+"sees the first name and the birthday."
+msgstr ""
+"Vous devenez son parent, et vous pouvez nommer un second parent. Le foyer "
+"voit le prénom et l'anniversaire."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/member.py:0
+msgid "You cannot do this to your own account."
+msgstr "Ce geste ne s'applique pas à votre propre compte."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/document.py:0
+msgid "You hold papers only for yourself or for your own child."
+msgstr "Vous ne tenez des papiers que pour vous-même ou pour votre enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/models/emergency.py:0
+msgid "You keep only your own card, or your own child's."
+msgstr "Vous ne tenez que votre propre fiche, ou celle de votre enfant."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid ""
+"Your account in this household closes on %(date)s. Until then, you can "
+"export your records: Family, Members, Leave the household, Export my "
+"records."
+msgstr ""
+"Votre compte dans ce foyer se ferme le %(date)s. D'ici là, vous pouvez "
+"exporter vos fiches : Famille, Membres, Quitter le foyer, Exporter mes "
+"fiches."
+
+#. module: bf_household_family
+#. odoo-python
+#: code:addons/bf_household_family/wizards/member_removal.py:0
+msgid "Your household account closes soon"
+msgstr "Votre compte du foyer se ferme bientôt"
+
+#. module: bf_household_family
+#: model_terms:ir.actions.act_window,help:bf_household_family.action_document
+msgid ""
+"Your papers are yours: you share each one on purpose. A reminder comes "
+"before it expires (six months for a passport)."
+msgstr ""
+"Vos papiers sont à vous : vous partagez chacun exprès. Un rappel arrive "
+"avant l'échéance (six mois pour un passeport)."

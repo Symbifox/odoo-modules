@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_emergency_link_wizard_form" model="ir.ui.view">
+        <field name="name">bf.household.emergency.link.wizard.form</field>
+        <field name="model">bf.household.emergency.link.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Share with a babysitter">
+                <group invisible="url">
+                    <field name="card_id"/>
+                    <field name="label"/>
+                    <field name="duration" widget="radio"/>
+                </group>
+                <div invisible="url" class="text-muted">
+                    Whoever receives the link opens the card until it expires, even if it is forwarded. It shows what is on the card, never a paper number.
+                </div>
+                <group invisible="not url">
+                    <field name="url" widget="CopyClipboardChar"/>
+                </group>
+                <div invisible="not url" class="alert alert-info" role="alert">
+                    Copy the link now: it is shown only once. You can withdraw it from the card at any time.
+                </div>
+                <footer>
+                    <button name="action_create" type="object" string="Create the link" class="btn-primary" invisible="url"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

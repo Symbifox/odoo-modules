@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_family_root" name="Family" sequence="45"
+              web_icon="bf_household_family,static/description/icon.png"
+              groups="bf_household_base.group_household_user,base.group_system"/>
+
+    <menuitem id="menu_family_members" name="Members" parent="menu_family_root" action="action_member" sequence="10"/>
+    <menuitem id="menu_family_children" name="Children" parent="menu_family_root" action="action_child" sequence="20"
+              groups="bf_household_base.group_household_user"/>
+    <menuitem id="menu_family_documents" name="Papers" parent="menu_family_root" action="action_document" sequence="30"
+              groups="bf_household_base.group_household_user"/>
+    <menuitem id="menu_family_cards" name="Emergency cards" parent="menu_family_root" action="action_card" sequence="40"
+              groups="bf_household_base.group_household_user"/>
+    <menuitem id="menu_family_departures" name="Departures" parent="menu_family_root" action="action_departure"
+              sequence="90" groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La page de la gardienne : autonome, sans gabarit du site (pas de menu, pas
+         de lien vers l'instance), en noindex. Le contrôleur ajoute les en-têtes
+         qui interdisent le cache, l'indexation et le référent. -->
+    <template id="emergency_public_page">
+        <html t-att-lang="lang">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="no-referrer"/>
+                <title>Emergency card</title>
+                <style>
+                    :root { --texte: #2E3132; --fond: #FFFFFF; --accent: #29ABE2; --doux: #F3F6F8; }
+                    @media (prefers-color-scheme: dark) {
+                        :root { --texte: #E8ECEF; --fond: #1E2122; --doux: #2A2E30; }
+                    }
+                    body { margin: 0; padding: 16px; background: var(--fond); color: var(--texte);
+                           font-family: Lexend, system-ui, sans-serif; line-height: 1.45; }
+                    .bf-urgence { max-width: 640px; margin: 0 auto; }
+                    .bf-urgence h1 { border-bottom: 3px solid var(--accent); padding-bottom: 6px; }
+                    .bf-urgence h3 { margin: 18px 0 6px; }
+                    .bf-texte { white-space: pre-line; background: var(--doux); padding: 8px 10px; border-radius: 6px; }
+                    .bf-contacts { border-collapse: collapse; width: 100%; }
+                    .bf-contacts td { padding: 6px 8px 6px 0; vertical-align: top; }
+                    .bf-contacts a, .bf-urgence a { color: var(--texte); font-weight: 600; }
+                    .bf-urgence-911 { margin-top: 28px; font-size: 1.25em; }
+                    .bf-fin { margin-top: 24px; font-size: 0.85em; opacity: 0.75; }
+                </style>
+            </head>
+            <body>
+                <t t-call="bf_household_family.emergency_card_body"/>
+                <p class="bf-fin">This page was shared with you and expires on <span t-esc="expires_label"/>. Please do not forward it.</p>
+            </body>
+        </html>
+    </template>
+
+    <template id="emergency_public_not_found">
+        <html t-att-lang="lang">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Link not available</title>
+                <style>
+                    body { margin: 0; padding: 16px; font-family: Lexend, system-ui, sans-serif; color: #2E3132; background: #FFFFFF; }
+                    @media (prefers-color-scheme: dark) { body { color: #E8ECEF; background: #1E2122; } }
+                    main { max-width: 640px; margin: 0 auto; }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <h1>This link is not available</h1>
+                    <p>Ask the person who sent it for a new one.</p>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

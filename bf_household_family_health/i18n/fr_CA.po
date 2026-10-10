@@ -1,0 +1,82 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"PO-Revision-Date: 2026-10-09 21:30-0400\n"
+"Last-Translator: Blue Fox Inc.\n"
+"Language-Team: Blue Fox Inc.\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_household_family_health
+#: model:ir.model,name:bf_household_family_health.model_bf_household_child
+#: model:ir.model.fields,field_description:bf_household_family_health.field_health_dependent__household_child_id
+msgid "Child of the household"
+msgstr "Enfant du foyer"
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Conditions: %s"
+msgstr "Conditions : %s"
+
+#. module: bf_household_family_health
+#: model:ir.model,name:bf_household_family_health.model_bf_household_emergency_card
+msgid "Emergency card"
+msgstr "Fiche d'urgence"
+
+#. module: bf_household_family_health
+#: model:ir.model.fields,help:bf_household_family_health.field_health_dependent__household_child_id
+msgid "Empty: the child of the household is created with this record."
+msgstr "Vide : l'enfant du foyer est créé avec cette fiche."
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/health_dependent.py:0
+msgid "First name, birth month and birth year are needed."
+msgstr "Le prénom, le mois et l'année de naissance sont nécessaires."
+
+#. module: bf_household_family_health
+#: model:ir.model.fields,field_description:bf_household_family_health.field_bf_household_child__health_dependent_ids
+msgid "Healthy Fox"
+msgstr "Healthy Fox"
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/household_child.py:0
+msgid ""
+"Healthy Fox follows this birth date to know when the child turns 14: only "
+"Blue Fox corrects it."
+msgstr ""
+"Healthy Fox suit cette date de naissance pour savoir quand l'enfant aura 14 "
+"ans : seule Blue Fox la corrige."
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Medications: %s"
+msgstr "Médicaments : %s"
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Nothing active in Healthy Fox."
+msgstr "Rien d'actif dans Healthy Fox."
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/health_dependent.py:0
+msgid ""
+"Only the child's parent who holds their records starts following their "
+"health."
+msgstr ""
+"Seul le parent qui tient les fiches de l'enfant commence le suivi de sa "
+"santé."
+
+#. module: bf_household_family_health
+#: model:ir.model.constraint,message:bf_household_family_health.constraint_health_dependent_bf_health_dependent_child_unique
+msgid "This child is already followed in Healthy Fox."
+msgstr "Cet enfant est déjà suivi dans Healthy Fox."

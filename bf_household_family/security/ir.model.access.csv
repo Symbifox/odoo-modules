@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_member_household,member household,model_bf_household_member,bf_household_base.group_household_user,1,0,0,0
+access_member_system,member system,model_bf_household_member,base.group_system,1,0,0,0
+access_departure_system,departure system,model_bf_household_departure,base.group_system,1,1,0,0
+access_child_household,child household,model_bf_household_child,bf_household_base.group_household_user,1,1,1,1
+access_document_household,document household,model_bf_household_document,bf_household_base.group_household_user,1,1,1,1
+access_card_household,card household,model_bf_household_emergency_card,bf_household_base.group_household_user,1,1,1,1
+access_contact_household,contact household,model_bf_household_emergency_contact,bf_household_base.group_household_user,1,1,1,1
+access_link_household,link household,model_bf_household_emergency_link,bf_household_base.group_household_user,1,1,0,0
+access_link_open_household,link open household,model_bf_household_emergency_link_open,bf_household_base.group_household_user,1,0,0,0
+access_invite_manager,invite manager,model_bf_household_member_invite,group_household_manager,1,1,1,0
+access_invite_system,invite system,model_bf_household_member_invite,base.group_system,1,1,1,0
+access_leave_household,leave household,model_bf_household_leave,bf_household_base.group_household_user,1,1,1,0
+access_removal_system,removal system,model_bf_household_member_removal,base.group_system,1,1,1,0
+access_link_wizard_household,link wizard household,model_bf_household_emergency_link_wizard,bf_household_base.group_household_user,1,1,1,0

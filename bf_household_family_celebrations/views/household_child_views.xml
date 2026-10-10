@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_child_form_celebrations" model="ir.ui.view">
+        <field name="name">bf.household.child.form.celebrations</field>
+        <field name="model">bf.household.child</field>
+        <field name="inherit_id" ref="bf_household_family.view_child_form"/>
+        <field name="arch" type="xml">
+            <field name="birth_day" position="after">
+                <field name="celebrate_birthday" readonly="id and not is_parent"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_apply_departures" model="ir.cron">
+        <field name="name">Household: close the accounts whose removal is due</field>
+        <field name="model_id" ref="model_bf_household_departure"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_apply_departures()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="cron_document_reminders" model="ir.cron">
+        <field name="name">Household: remind the holders of papers to renew</field>
+        <field name="model_id" ref="model_bf_household_document"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="cron_teens_turn_adult" model="ir.cron">
+        <field name="name">Household: teens become adults at 18</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_household_teens_turn_adult()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

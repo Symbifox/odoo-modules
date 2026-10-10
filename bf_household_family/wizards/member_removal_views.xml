@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_member_removal_form" model="ir.ui.view">
+        <field name="name">bf.household.member.removal.form</field>
+        <field name="model">bf.household.member.removal</field>
+        <field name="arch" type="xml">
+            <form string="Schedule a removal">
+                <group>
+                    <field name="user_id"/>
+                    <field name="effective_on"/>
+                    <field name="note"/>
+                </group>
+                <div class="text-muted">
+                    The person receives a notice at their own address and keeps their access until that date, to export their records.
+                </div>
+                <footer>
+                    <button name="action_schedule" type="object" string="Schedule" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

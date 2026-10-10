@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_emergency_card" model="ir.actions.report">
+        <field name="name">Emergency card</field>
+        <field name="model">bf.household.emergency.card</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_household_family.report_emergency_card</field>
+        <field name="report_file">bf_household_family.report_emergency_card</field>
+        <field name="print_report_name">'Emergency card - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_bf_household_emergency_card"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Le corps commun au PDF et à la page de la gardienne : l'urgence, rien
+         d'autre. Aucun numéro de papier n'y entre. -->
+    <template id="emergency_card_body">
+        <div class="bf-urgence">
+            <h1 t-esc="values['name']"/>
+            <p t-if="values['blood_type']"><strong>Blood type:</strong> <span t-esc="values['blood_type']"/></p>
+            <t t-if="values['allergies']">
+                <h3>Allergies</h3>
+                <p class="bf-texte" t-esc="values['allergies']"/>
+            </t>
+            <t t-if="values['medications']">
+                <h3>Medications</h3>
+                <p class="bf-texte" t-esc="values['medications']"/>
+            </t>
+            <t t-if="values['conditions']">
+                <h3>Conditions</h3>
+                <p class="bf-texte" t-esc="values['conditions']"/>
+            </t>
+            <t t-if="values['health_summary']">
+                <h3>From Healthy Fox</h3>
+                <p class="bf-texte" t-esc="values['health_summary']"/>
+            </t>
+            <t t-if="values['contacts']">
+                <h3>Who to call</h3>
+                <table class="bf-contacts">
+                    <tr t-foreach="values['contacts']" t-as="contact">
+                        <td><strong t-esc="contact.name"/><t t-if="contact.relation"> (<span t-esc="contact.relation"/>)</t></td>
+                        <td><a t-att-href="'tel:%s' % contact.phone" t-esc="contact.phone"/></td>
+                    </tr>
+                </table>
+            </t>
+            <t t-if="values['doctor_name'] or values['doctor_phone']">
+                <h3>Doctor</h3>
+                <p><span t-esc="values['doctor_name']"/>
+                    <t t-if="values['doctor_phone']"> · <a t-att-href="'tel:%s' % values['doctor_phone']" t-esc="values['doctor_phone']"/></t></p>
+            </t>
+            <t t-if="values['notes']">
+                <h3>Notes</h3>
+                <p class="bf-texte" t-esc="values['notes']"/>
+            </t>
+            <p class="bf-urgence-911"><strong>In an emergency, call 911.</strong></p>
+        </div>
+    </template>
+
+    <template id="report_emergency_card">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <style>
+                            .bf-urgence { font-family: Lexend, sans-serif; color: #2E3132; }
+                            .bf-urgence h1 { border-bottom: 3px solid #29ABE2; padding-bottom: 4px; }
+                            .bf-urgence h3 { margin-top: 14px; }
+                            .bf-texte { white-space: pre-line; }
+                            .bf-contacts td { padding: 2px 16px 2px 0; }
+                            .bf-urgence-911 { margin-top: 24px; font-size: 1.2em; }
+                        </style>
+                        <t t-set="values" t-value="doc._bf_public_values()"/>
+                        <t t-call="bf_household_family.emergency_card_body"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

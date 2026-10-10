@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_card_list" model="ir.ui.view">
+        <field name="name">bf.household.emergency.card.list</field>
+        <field name="model">bf.household.emergency.card</field>
+        <field name="arch" type="xml">
+            <list string="Emergency cards">
+                <field name="name"/>
+                <field name="blood_type"/>
+                <field name="allergies"/>
+                <field name="doctor_name" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_card_form" model="ir.ui.view">
+        <field name="name">bf.household.emergency.card.form</field>
+        <field name="model">bf.household.emergency.card</field>
+        <field name="arch" type="xml">
+            <form string="Emergency card">
+                <field name="is_writer" invisible="1"/>
+                <field name="health_available" invisible="1"/>
+                <header>
+                    <button name="action_print" type="object" string="Print" icon="fa-print" invisible="not id"/>
+                    <button name="action_share_link" type="object" string="Share with a babysitter" icon="fa-link"
+                            invisible="not id or not is_writer"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Whose card">
+                            <field name="holder_user_id" readonly="id" invisible="child_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="child_id" readonly="id" options="{'no_create': True, 'no_open': True}"
+                                   domain="['|', ('primary_parent_id', '=', uid), ('second_parent_id', '=', uid)]"/>
+                            <field name="blood_type" readonly="id and not is_writer"/>
+                        </group>
+                        <group string="Doctor">
+                            <field name="doctor_name" readonly="id and not is_writer"/>
+                            <field name="doctor_phone" widget="phone" readonly="id and not is_writer"/>
+                        </group>
+                    </group>
+                    <group string="What to know">
+                        <field name="allergies" readonly="id and not is_writer"/>
+                        <field name="medications" readonly="id and not is_writer"/>
+                        <field name="conditions" readonly="id and not is_writer"/>
+                        <field name="notes" readonly="id and not is_writer"/>
+                    </group>
+                    <group string="Healthy Fox" invisible="not health_available">
+                        <field name="include_health" readonly="id and not is_writer"/>
+                        <field name="health_summary" invisible="not include_health"/>
+                    </group>
+                    <notebook>
+                        <page string="Who to call" name="contacts">
+                            <field name="contact_ids" readonly="id and not is_writer">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="relation"/>
+                                    <field name="phone" widget="phone"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Babysitter links" name="links" invisible="not is_writer">
+                            <field name="link_ids" readonly="1">
+                                <list create="0" decoration-muted="state != 'active'">
+                                    <field name="label"/>
+                                    <field name="create_date" string="Created"/>
+                                    <field name="expires_at"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                                    <field name="open_count"/>
+                                    <field name="last_opened_at"/>
+                                    <button name="action_revoke" type="object" string="Withdraw" icon="fa-ban"
+                                            invisible="state != 'active'"/>
+                                </list>
+                            </field>
+                            <div class="text-muted">Whoever has a link opens the card until it expires. Withdraw it once it is no longer needed.</div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_card" model="ir.actions.act_window">
+        <field name="name">Emergency cards</field>
+        <field name="res_model">bf.household.emergency.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Who to call, what to know, for each person.</p>
+            <p>The household sees every card. Print one, or share it with a babysitter through a link that expires.</p>
+        </field>
+    </record>
+</odoo>

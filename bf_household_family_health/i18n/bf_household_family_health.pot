@@ -1,0 +1,87 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_household_family_health
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 01:24+0000\n"
+"PO-Revision-Date: 2026-10-10 01:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_household_family_health
+#: model:ir.model,name:bf_household_family_health.model_bf_household_child
+#: model:ir.model.fields,field_description:bf_household_family_health.field_health_dependent__household_child_id
+msgid "Child of the household"
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Conditions: %s"
+msgstr ""
+
+#. module: bf_household_family_health
+#: model:ir.model,name:bf_household_family_health.model_bf_household_emergency_card
+msgid "Emergency card"
+msgstr ""
+
+#. module: bf_household_family_health
+#: model:ir.model.fields,help:bf_household_family_health.field_health_dependent__household_child_id
+msgid "Empty: the child of the household is created with this record."
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/health_dependent.py:0
+msgid "First name, birth month and birth year are needed."
+msgstr ""
+
+#. module: bf_household_family_health
+#: model:ir.model.fields,field_description:bf_household_family_health.field_bf_household_child__health_dependent_ids
+msgid "Healthy Fox"
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/household_child.py:0
+msgid ""
+"Healthy Fox follows this birth date to know when the child turns 14: only "
+"Blue Fox corrects it."
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Medications: %s"
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/emergency_card.py:0
+msgid "Nothing active in Healthy Fox."
+msgstr ""
+
+#. module: bf_household_family_health
+#. odoo-python
+#: code:addons/bf_household_family_health/models/health_dependent.py:0
+msgid ""
+"Only the child's parent who holds their records starts following their "
+"health."
+msgstr ""
+
+#. module: bf_household_family_health
+#: model:ir.model,name:bf_household_family_health.model_health_dependent
+msgid "Personne à charge"
+msgstr ""
+
+#. module: bf_household_family_health
+#: model:ir.model.constraint,message:bf_household_family_health.constraint_health_dependent_bf_health_dependent_child_unique
+msgid "This child is already followed in Healthy Fox."
+msgstr ""

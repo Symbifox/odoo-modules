@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_departure_list" model="ir.ui.view">
+        <field name="name">bf.household.departure.list</field>
+        <field name="model">bf.household.departure</field>
+        <field name="arch" type="xml">
+            <list string="Departures" create="0" decoration-muted="state != 'scheduled'">
+                <field name="user_id"/>
+                <field name="kind"/>
+                <field name="requested_by_id"/>
+                <field name="requested_on"/>
+                <field name="effective_on"/>
+                <field name="erase_due"/>
+                <field name="state" widget="badge" decoration-warning="state == 'scheduled'"/>
+                <button name="action_cancel" type="object" string="Cancel" icon="fa-undo"
+                        invisible="state != 'scheduled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_departure_form" model="ir.ui.view">
+        <field name="name">bf.household.departure.form</field>
+        <field name="model">bf.household.departure</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel the removal" invisible="state != 'scheduled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="user_id" readonly="1"/>
+                        <field name="kind" readonly="1"/>
+                        <field name="requested_by_id" readonly="1"/>
+                        <field name="requested_on" readonly="1"/>
+                        <field name="effective_on" readonly="state != 'scheduled'"/>
+                        <field name="erase_due"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_departure" model="ir.actions.act_window">
+        <field name="name">Departures</field>
+        <field name="res_model">bf.household.departure</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No departure yet.</p>
+            <p>A departed account's private records are erased by Blue Fox's procedure, by the date shown.</p>
+        </field>
+    </record>
+</odoo>

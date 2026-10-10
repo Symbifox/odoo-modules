@@ -1,0 +1,54 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_household_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 21:52+0000\n"
+"PO-Revision-Date: 2026-10-10 21:52+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_household_base
+#. odoo-python
+#: code:addons/bf_household_base/models/res_users.py:0
+msgid ""
+"%(user)s is a household user and cannot hold an administration group, "
+"nor one that reads every message of the household."
+msgstr ""
+
+#. module: bf_household_base
+#: model:res.groups,comment:bf_household_base.group_household_user
+msgid ""
+"A person of the household: an internal account. The household modules add "
+"the apps it opens."
+msgstr ""
+
+#. module: bf_household_base
+#: model:ir.module.category,name:bf_household_base.module_category_household
+msgid "Household"
+msgstr ""
+
+#. module: bf_household_base
+#: model:res.groups,name:bf_household_base.group_household_user
+msgid "Household user"
+msgstr ""
+
+#. module: bf_household_base
+#. odoo-python
+#: code:addons/bf_household_base/models/res_users.py:0
+msgid ""
+"This household already has %(max)s accounts, the most its plan allows. "
+"Remove an account first, or ask Blue Fox."
+msgstr ""
+
+#. module: bf_household_base
+#: model:ir.model,name:bf_household_base.model_res_users
+msgid "User"
+msgstr ""
