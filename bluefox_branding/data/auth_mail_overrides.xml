@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- Account security emails (18.0.3.26.0)                               -->
+    <!-- English source, French in i18n/fr_CA.po. They render in the         -->
+    <!-- language of the person who made the change (security notice) or of -->
+    <!-- the recipient (password reset, new device), never through a         -->
+    <!-- mail.template: post_init_hook cannot reach them, these views do.    -->
+    <!-- priority 99: applied after auth_totp_mail's extension of the        -->
+    <!-- notice (2FA suggestion), whatever the install order, so the         -->
+    <!-- replacement below always has the last word.                         -->
+    <!-- ================================================================== -->
+
+    <!-- Security notice (login, password, email, 2FA, trusted devices).
+         Odoo's text said "Dear", pointed 2FA to odoo.com (link removed on send
+         by mail_debrand, leaving "Consider" alone) and "Contact your
+         administrator". Values from _notify_security_setting_update_prepare_values:
+         user, company, security_update_text, update_datetime,
+         suggest_password_reset, password_reset_url; suggest_2fa from auth_totp_mail.
+         The ul keeps its class: other modules may anchor on it. The 2FA link
+         takes the same base as the reset link (user.get_base_url()), not
+         web.base.url, which the encapsulation would give a relative link. -->
+    <template id="account_security_setting_update"
+              inherit_id="mail.account_security_setting_update"
+              priority="99"
+              name="Security notice: brand wording">
+        <xpath expr="." position="replace" mode="inner">
+            <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <p style="margin:0 0 16px 0;">Hello <t t-out="user.name"/>,</p>
+            <p style="margin:0 0 16px 0;"><t t-out="security_update_text"/> (<t t-out="update_datetime" t-options='{"widget": "datetime", "hide_seconds": True}'/>).</p>
+            <p style="margin:0 0 16px 0;">If this was you, there is nothing to do.</p>
+            <t t-if="suggest_password_reset">
+                <p style="margin:0 0 12px 0;">If this was not you, start by resetting your password:</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+                    <tbody>
+                        <tr>
+                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                <a t-att-href="password_reset_url" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Reset my password</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin:0 0 8px 0;">Then:</p>
+            </t>
+            <p t-else="" style="margin:0 0 8px 0;">If this was not you:</p>
+            <ul class="o_mail_account_security_suggestions" style="margin:0 0 16px 0;padding-left:20px;">
+                <li t-if="suggest_2fa" style="margin-bottom:6px;">turn on two-factor authentication from <a t-attf-href="{{ user.get_base_url() }}/my/security" t-attf-style="color:{{ brand_primary }};text-decoration:none;">your account</a></li>
+                <li t-if="company.email">write to us at <a t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/></li>
+                <li t-else="">contact your administrator</li>
+            </ul>
+        </xpath>
+    </template>
+
+    <!-- Password reset (auth_signup.reset_password_email, a QWeb view, not a
+         mail.template: the invitation, template set_password_email, is the
+         create-mode path only). Rendered by _render_template(engine='qweb_view')
+         in the recipient's language: object = res.users, user, is_html_empty. -->
+    <template id="reset_password_email"
+              inherit_id="auth_signup.reset_password_email"
+              priority="99"
+              name="Password reset: brand layout">
+        <xpath expr="." position="replace" mode="inner">
+            <t t-set="company" t-value="object.company_id"/>
+            <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <t t-set="validity_hours" t-value="user.env['ir.config_parameter'].sudo().get_param('auth_signup.reset_password.validity.hours', 4)"/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:32px 16px;">
+                            <t t-call="bluefox_branding.bf_mail_card">
+                                <p style="margin:0 0 16px 0;">Hello <t t-out="object.name or ''"/>,</p>
+                                <p style="margin:0 0 20px 0;">Someone asked to reset the password of the <t t-out="company.name or ''"/> account linked to this email address. Choose a new password with the button below. The link is valid for <t t-out="validity_hours"/> hours.</p>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                                <a t-att-href="object.partner_id._get_signup_url()" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Choose a new password</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="margin:0;">If you did not ask for this, ignore this email: your password stays the same.</p>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+    <!-- New device alert (auth_signup.alert_login_new_device), same path as the
+         password reset; login_date, location_address, useros, browser and
+         ip_address come from _prepare_new_device_notice_values. -->
+    <template id="alert_login_new_device"
+              inherit_id="auth_signup.alert_login_new_device"
+              priority="99"
+              name="New device alert: brand layout">
+        <xpath expr="." position="replace" mode="inner">
+            <t t-set="company" t-value="object.company_id"/>
+            <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:32px 16px;">
+                            <t t-call="bluefox_branding.bf_mail_card">
+                                <p style="margin:0 0 16px 0;">Hello <t t-out="object.name or ''"/>,</p>
+                                <p style="margin:0 0 12px 0;">A new device was used to sign in to your account:</p>
+                                <ul style="margin:0 0 16px 0;padding-left:20px;">
+                                    <li><strong>Date:</strong> <t t-out="format_datetime(login_date, dt_format='long')"/></li>
+                                    <li t-if="location_address"><strong>Location:</strong> <t t-out="location_address"/></li>
+                                    <li t-if="useros"><strong>Platform:</strong> <t t-out="useros"/></li>
+                                    <li t-if="browser"><strong>Browser:</strong> <t t-out="browser"/></li>
+                                    <li t-if="ip_address"><strong>IP address:</strong> <t t-out="ip_address"/></li>
+                                </ul>
+                                <p style="margin:0 0 16px 0;">If this was you, there is nothing to do.</p>
+                                <p style="margin:0 0 12px 0;">If you do not recognize this sign-in, change your password right away:</p>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                                <a t-attf-href="{{ object.get_base_url() }}/web/reset_password" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Reset my password</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p t-if="company.email" style="margin:0;">Questions? Write to us at <a t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>.</p>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+</odoo>

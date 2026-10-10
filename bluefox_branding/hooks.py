@@ -172,6 +172,34 @@ def _extract_templates_from_xml(filename='mail_template_overrides.xml'):
     return result
 
 
+def _guarded_xml_ids(filename='mail_template_overrides.xml'):
+    """XML IDs flagged ``bf_garde_retouche="1"`` in an overrides file.
+
+    These are Odoo's own templates that a tenant may have rewritten by hand
+    (one tenant reworded its sign-up welcome in the editor): such a template
+    is kept, see ``_retouched_by_tenant``.
+    """
+    xml_path = os.path.join(os.path.dirname(__file__), 'data', filename)
+    if not os.path.exists(xml_path):
+        return set()
+    tree = etree.parse(xml_path)
+    return {r.get('id') for r in tree.xpath('//record[@model="mail.template"][@bf_garde_retouche="1"]')}
+
+
+def _retouched_by_tenant(tmpl, langs):
+    """True when someone edited this template by hand since its module created it.
+
+    Untouched: written in the same minute it was created (module install).
+    Ours: carries ``brand_primary``, the colour variable every override sets,
+    so a replay of the hook keeps rewriting what the hook wrote.
+    """
+    if not tmpl.create_date or not tmpl.write_date:
+        return False
+    if (tmpl.write_date - tmpl.create_date).total_seconds() < 60:
+        return False
+    return not any('brand_primary' in (tmpl.with_context(lang=lang).body_html or '') for lang in langs)
+
+
 def _get_active_langs(env):
     """Return list of active language codes."""
     langs = env['res.lang'].search([]).mapped('code')
@@ -180,8 +208,12 @@ def _get_active_langs(env):
     return langs
 
 
-def post_init_hook(env):
+def post_init_hook(env, only=None):
     """Apply Blue Fox branding to all mail templates.
+
+    ``only``: XML IDs to rewrite, and nothing else (no late invoice notice). A
+    migration passes the templates its release changes: replaying every
+    override would wipe a tenant's later edit of the others (18.0.3.26.0).
 
     Handles two categories:
     1. Templates with XML IDs (noupdate=True) — read from mail_template_overrides.xml
@@ -202,12 +234,19 @@ def post_init_hook(env):
     # English one.
     templates_data = _extract_templates_from_xml()
     templates_en = _extract_templates_from_xml('mail_template_overrides_en.xml')
+    guarded = _guarded_xml_ids()
     updated = 0
 
     for xml_id, fields in templates_data.items():
+        if only is not None and xml_id not in only:
+            continue
         tmpl = env.ref(xml_id, raise_if_not_found=False)
         if not tmpl:
             _logger.warning("bluefox_branding: Template %s not found — skipping", xml_id)
+            continue
+        if xml_id in guarded and _retouched_by_tenant(tmpl, active_langs):
+            _logger.warning("bluefox_branding: Template %s (ID %s) was edited by hand on this "
+                            "database (%s) — kept as is", xml_id, tmpl.id, tmpl.write_date)
             continue
 
         for lang in active_langs:
@@ -219,6 +258,10 @@ def post_init_hook(env):
                       fields.get('name', '(no name change)'))
 
     _logger.info("bluefox_branding: Updated %d templates from XML overrides", updated)
+
+    if only is not None:
+        _logger.info("bluefox_branding: post_init_hook complete (%d named templates)", len(only))
+        return
 
     # ── Category 2: Template 141 — no XML ID, find by name + model ──
     late_templates = env['mail.template'].search([

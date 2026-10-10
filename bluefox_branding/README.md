@@ -149,6 +149,36 @@ The email tagline and the custom footer are translatable, and the layout reads
 the company in the language the email is rendered in, on both of Odoo's paths
 (a template's `send_mail` and the chatter notifications).
 
+### Odoo's system emails (v18.0.3.26.0)
+
+Part of what Odoo sends never goes through a `mail.template`, so no template
+override can reach it. These now wear the brand too:
+
+- **Odoo's "light" layout** (`mail.mail_notification_light`), named in Python by
+  the security notices, the two-factor code and invitation, the unregistered-users
+  reminder, the calendar's invitations and reminders, and some twenty modules
+  (project sharing, surveys, ratings, payment, helpdesk...). An extension view
+  replaces its body with a branded card (`bluefox_branding.bf_mail_card`: dark
+  header with the brand logo, accent bar, content, company footer). The card only
+  reads what every rendering path provides (`company`, `message`,
+  `has_button_access`, `button_access`); the light path renders with a minimal
+  context in which `bf_mail_layout` would fail. It keeps a leading
+  `table[@role='presentation']` for `hr_recruitment`'s extension, and Odoo's
+  `mail_unfollow` span, which Odoo personalises for followers and strips for
+  everyone else. The chatter layout stays Odoo's.
+- **The security notice** (login, password, email, two-factor, trusted devices):
+  "Hello" instead of "Dear", a reset button, the two-factor link pointing to
+  `/my/security` instead of Odoo's documentation (which `mail_debrand` strips
+  anyway, leaving an empty bullet), and "write to us at" the company address
+  instead of "contact your administrator".
+- **The password reset** (`auth_signup.reset_password_email`) and **the new device
+  alert** (`auth_signup.alert_login_new_device`): self-contained QWeb views in
+  Odoo 18, both rewritten inside the same card.
+
+Texts of these views are written in English; the French is in `i18n/fr_CA.po`.
+The body of the security notice is rendered in the language of the person who
+made the change, which is Odoo's behaviour and is left as is.
+
 ### Tenant-neutral standard templates
 
 Templates from `om_account_followup`, `contract`, `helpdesk_mgmt`, `survey` and
@@ -162,6 +192,13 @@ self-contained ones (followups, calendar, survey) and the late-invoice notice
 (stock template 141, no XML ID) read **all** identity from `res.company` — no
 hardcoded brand values — so they follow whichever company owns the record.
 
+Since v18.0.3.26.0 four access templates join them: the new user invitation
+(`auth_signup.set_password_email`), the sign-up welcome
+(`auth_signup.mail_template_user_signup_account_created`), the two-factor
+invitation and the two-factor code by email. A template that the tenant has
+edited by hand since its module created it is left as it is (flag
+`bf_garde_retouche` in the overrides file, logged when it applies).
+
 The **portal invitation** (`portal.mail_template_data_portal_welcome`) is also
 rewritten here since v18.0.3.9.0: the stock template embeds its own Odoo layout
 (grey table, purple button, "Powered by" footer), so it is replaced by a short
@@ -171,8 +208,11 @@ hook so the template is written in every active language.
 
 > Note: `mail.template.send_mail()` does apply the template's own
 > `email_layout_xmlid` (that is how the portal invitation gets its frame). The
-> followup / calendar / survey templates predate that and stay self-contained,
-> with their header and footer inlined, rather than reusing `bf_mail_layout`.
+> followup / survey templates and the calendar's update template predate that and
+> stay self-contained, with their header and footer inlined. The calendar's
+> invitation, date change and reminder are sent through the light layout, so since
+> v18.0.3.26.0 they carry their content only, under a grey eyebrow title: with
+> their own frame they came out as a card inside the card.
 
 ### Legacy Odoo purple sweep
 
@@ -215,6 +255,13 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.3.26.0
+
+- Odoo's system emails wear the brand: the light layout (security notices, two-factor code and invitation, calendar invitations and reminders, and the notifications of some twenty modules), the security notice text, the password reset and the new device alert. See "Odoo's system emails" above.
+- Four access templates join the overrides (new user invitation, sign-up welcome, two-factor invitation and code), except where the tenant edited them by hand.
+- The calendar's invitation, date change and reminder lose their own frame, which made a card inside the card under the light layout.
+- `post_init_hook(env, only=...)` rewrites the named templates only. Migration 18.0.3.26.0 writes the seven templates this release changes and nothing else: replaying every override would wipe a tenant's later edit of the others.
 
 ### 18.0.3.25.1
 

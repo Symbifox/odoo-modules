@@ -1,9 +1,17 @@
 {
     "name": "Symbifox Branding",
-    # 18.0.3.25.1: l'en-tête foncé des courriels (mise en page et gabarits surchargés)
-    #   prend le logo de marque, `report_brand_logo`, s'il existe (variante `brand` de
-    #   la route du logo) ; sinon le logo ordinaire, comme avant.
-    "version": "18.0.3.25.1",
+    # 18.0.3.26.0: les courriels système prennent la marque. Le gabarit
+    #   « light » d'Odoo (avis de sécurité, code et invitation 2FA, rappel des comptes non
+    #   activés, partage de projet, sondages, évaluations…) est habillé par une vue
+    #   d'extension, car aucun mail.template ne l'atteint ; l'avis de sécurité est réécrit
+    #   (« Bonjour », lien 2FA vers /my/security, courriel de la société), la
+    #   réinitialisation du mot de passe et l'alerte de nouvel appareil (vues QWeb
+    #   autoportées) aussi ; quatre gabarits d'accès rejoignent les surcharges, sauf
+    #   retouche à la main du locataire, et l'invitation, l'avis de changement et le rappel
+    #   du calendrier perdent leur coquille (ils passent par le gabarit light : carte dans
+    #   la carte). Textes des vues en anglais, français dans i18n/fr_CA.po. La migration
+    #   n'écrit que ces sept gabarits, jamais les autres surcharges.
+    "version": "18.0.3.26.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -19,6 +27,7 @@
 
         Also ships:
         - Branded transactional mail layout (bf_mail_layout) reading all of the above
+        - Odoo's light layout, security notice, password reset and new device alert in the brand
         - Branded payment followup, contract, helpdesk, survey, calendar templates (French)
         - Late invoice notice template branding (post_init_hook)
     """,
@@ -36,6 +45,7 @@
         "helpdesk_mgmt",
         "survey",
         "portal",  # for website_brand_css_variables.xml inheriting portal.frontend_layout
+        "auth_signup",  # data/auth_mail_overrides.xml (password reset, new device alert); portal needs it anyway
         "bf_lexend",  # provides the Lexend font assets + ("Lexend", "Lexend") selection_add on res.company.font
         "bf_onboarding_base",
         "l10n_ca",  # for views/report_layout_overrides.xml inheriting l10n_ca_external_layout_folder
@@ -43,6 +53,8 @@
     "data": [
         "data/mail_layout_override.xml",
         "data/mail_layout_relais.xml",
+        "data/mail_layout_light.xml",
+        "data/auth_mail_overrides.xml",
         "data/bf_onboarding.xml",
         "views/res_config_settings_views.xml",
         "views/webclient_brand_icon.xml",
