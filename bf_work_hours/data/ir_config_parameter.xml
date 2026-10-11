@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="param_gap_minutes" model="ir.config_parameter">
+        <field name="key">bf_work_hours.gap_minutes</field>
+        <field name="value">15</field>
+    </record>
+    <record id="param_signal_retention_days" model="ir.config_parameter">
+        <field name="key">bf_work_hours.signal_retention_days</field>
+        <field name="value">60</field>
+    </record>
+    <record id="param_day_retention_days" model="ir.config_parameter">
+        <field name="key">bf_work_hours.day_retention_days</field>
+        <field name="value">400</field>
+    </record>
+</odoo>

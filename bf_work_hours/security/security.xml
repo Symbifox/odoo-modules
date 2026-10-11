@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Global rules: they bind administrators too. Only code running as
+         superuser reads another person's working time. -->
+    <record id="rule_bf_work_consent_own" model="ir.rule">
+        <field name="name">Working time: own activations only</field>
+        <field name="model_id" ref="model_bf_work_consent"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="rule_bf_work_signal_own" model="ir.rule">
+        <field name="name">Working time: own traces only</field>
+        <field name="model_id" ref="model_bf_work_signal"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="rule_bf_work_day_own_or_shared" model="ir.rule">
+        <field name="name">Working time: own days, and days shared with me (read)</field>
+        <field name="model_id" ref="model_bf_work_day"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('user_id.bf_work_share_ids', 'any', [('viewer_id', '=', user.id), ('active', '=', True)])]</field>
+        <field name="global" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_bf_work_day_own_write" model="ir.rule">
+        <field name="name">Working time: only own days change</field>
+        <field name="model_id" ref="model_bf_work_day"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_bf_work_share_party" model="ir.rule">
+        <field name="name">Working time: shares I made or received</field>
+        <field name="model_id" ref="model_bf_work_share"/>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), ('viewer_id', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <!-- The two pages a person opens (My choices, the notice) are theirs alone:
+         a colleague reading someone's notice could tell they turned it on, and when. -->
+    <record id="rule_bf_work_choices_own" model="ir.rule">
+        <field name="name">Working time: own My choices pages only</field>
+        <field name="model_id" ref="model_bf_work_choices"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="rule_bf_work_activate_wizard_own" model="ir.rule">
+        <field name="name">Working time: own notices only</field>
+        <field name="model_id" ref="model_bf_work_activate_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="global" eval="True"/>
+    </record>
+</odoo>

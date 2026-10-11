@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_work_root" name="Working Time" sequence="95"
+              web_icon="bf_work_hours,static/description/icon.png"
+              groups="base.group_user"/>
+    <menuitem id="menu_bf_work_mine" name="My working time" parent="menu_bf_work_root"
+              action="action_bf_work_day_mine" sequence="10"/>
+    <menuitem id="menu_bf_work_shared" name="Shared with me" parent="menu_bf_work_root"
+              action="action_bf_work_day_shared" sequence="20"/>
+    <menuitem id="menu_bf_work_shares" name="My shares" parent="menu_bf_work_root"
+              action="action_bf_work_share_mine" sequence="30"/>
+    <menuitem id="menu_bf_work_choices" name="My choices" parent="menu_bf_work_root"
+              action="action_bf_work_choices" sequence="40"/>
+</odoo>

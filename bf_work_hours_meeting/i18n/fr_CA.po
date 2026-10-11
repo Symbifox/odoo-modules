@@ -1,0 +1,96 @@
+# Translation of BF Working Hours - Meetings - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_work_hours_meeting 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 21:44+0000\n"
+"PO-Revision-Date: 2026-10-10 21:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model,name:bf_work_hours_meeting.model_meeting_record
+msgid "Compte rendu de réunion"
+msgstr "Compte rendu de réunion"
+
+#. module: bf_work_hours_meeting
+#. odoo-python
+#: code:addons/bf_work_hours_meeting/models/work_collector.py:0
+msgid "Meeting reports"
+msgstr "Comptes rendus de rencontre"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields,field_description:bf_work_hours_meeting.field_meeting_attendance__bf_work_status_minutes
+msgid "Presence for (minutes)"
+msgstr "Présence pour (minutes)"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields,field_description:bf_work_hours_meeting.field_meeting_attendance__bf_work_status_start
+msgid "Presence for (start)"
+msgstr "Présence pour (début)"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields,field_description:bf_work_hours_meeting.field_meeting_attendance__bf_work_status_by
+msgid "Presence noted by"
+msgstr "Présence notée par"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields,field_description:bf_work_hours_meeting.field_meeting_attendance__bf_work_status_uid
+msgid "Presence noted by (account)"
+msgstr "Présence notée par (compte)"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model,name:bf_work_hours_meeting.model_meeting_attendance
+msgid "Présence à une réunion"
+msgstr "Présence à une réunion"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields.selection,name:bf_work_hours_meeting.selection__meeting_attendance__bf_work_status_by__other
+msgid "Someone else"
+msgstr "Quelqu'un d'autre"
+
+#. module: bf_work_hours_meeting
+#. odoo-python
+#: code:addons/bf_work_hours_meeting/models/work_collector.py:0
+msgid ""
+"Start and length of the meetings where you are marked present, by yourself "
+"or by the processing of the recording. Not what was said."
+msgstr ""
+"Début et durée des rencontres où votre présence est notée, par vous ou par "
+"le traitement de l'enregistrement. Pas ce qui s'est dit."
+
+#. module: bf_work_hours_meeting
+#: model:ir.model,name:bf_work_hours_meeting.model_ir_config_parameter
+msgid "System Parameter"
+msgstr "Paramètres système"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model.fields.selection,name:bf_work_hours_meeting.selection__meeting_attendance__bf_work_status_by__trusted
+msgid "The person, Odoo or the meeting processing"
+msgstr "La personne, Odoo ou le traitement des rencontres"
+
+#. module: bf_work_hours_meeting
+#: model:ir.model,name:bf_work_hours_meeting.model_bf_work_collector
+msgid "Working time: sources of traces"
+msgstr "Temps de travail : sources des traces"
+
+#. module: bf_work_hours_meeting
+#: model:ir.module.module,shortdesc:base.module_bf_work_hours_meeting
+msgid "BF Working Hours - Meetings"
+msgstr "BF Temps de travail - Rencontres"
+
+#. module: bf_work_hours_meeting
+#: model:ir.module.module,summary:base.module_bf_work_hours_meeting
+msgid ""
+"Meeting reports where a person was present count as meetings in their "
+"working time"
+msgstr ""
+"Les comptes rendus où une personne est présente comptent comme rencontres "
+"dans son temps de travail"

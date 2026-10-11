@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_work_day_list_timesheet" model="ir.ui.view">
+        <field name="name">bf.work.day.list.timesheet</field>
+        <field name="model">bf.work.day</field>
+        <field name="inherit_id" ref="bf_work_hours.view_bf_work_day_list"/>
+        <field name="arch" type="xml">
+            <field name="hours_high" position="after">
+                <field name="timesheet_hours" widget="float_time" sum="Total" optional="show"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_bf_work_day_form_timesheet" model="ir.ui.view">
+        <field name="name">bf.work.day.form.timesheet</field>
+        <field name="model">bf.work.day</field>
+        <field name="inherit_id" ref="bf_work_hours.view_bf_work_day_form"/>
+        <field name="arch" type="xml">
+            <field name="hours_high" position="after">
+                <field name="timesheet_hours" widget="float_time"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_bf_work_day_pivot_timesheet" model="ir.ui.view">
+        <field name="name">bf.work.day.pivot.timesheet</field>
+        <field name="model">bf.work.day</field>
+        <field name="inherit_id" ref="bf_work_hours.view_bf_work_day_pivot"/>
+        <field name="arch" type="xml">
+            <field name="hours_high" position="after">
+                <field name="timesheet_hours" type="measure"/>
+            </field>
+        </field>
+    </record>
+</odoo>

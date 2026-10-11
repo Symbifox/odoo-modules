@@ -1,0 +1,50 @@
+# Translation of BF Working Hours - Timesheets - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_work_hours_timesheet 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 21:44+0000\n"
+"PO-Revision-Date: 2026-10-10 21:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_work_hours_timesheet
+#: model:ir.model.fields,field_description:bf_work_hours_timesheet.field_bf_work_day__timesheet_hours
+msgid "Entered hours"
+msgstr "Heures saisies"
+
+#. module: bf_work_hours_timesheet
+#: model:ir.model.fields,help:bf_work_hours_timesheet.field_bf_work_day__timesheet_hours
+msgid "Timesheet lines of that day, as entered."
+msgstr "Lignes de temps de ce jour, telles que saisies."
+
+#. module: bf_work_hours_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_work_hours_timesheet.view_bf_work_day_list_timesheet
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_work_hours_timesheet
+#: model:ir.model,name:bf_work_hours_timesheet.model_bf_work_day
+msgid "Working time: one day"
+msgstr "Temps de travail : une journée"
+
+#. module: bf_work_hours_timesheet
+#: model:ir.module.module,shortdesc:base.module_bf_work_hours_timesheet
+msgid "BF Working Hours - Timesheets"
+msgstr "BF Temps de travail - Feuilles de temps"
+
+#. module: bf_work_hours_timesheet
+#: model:ir.module.module,summary:base.module_bf_work_hours_timesheet
+msgid ""
+"Entered timesheet hours beside the reconstructed hours: two numbers, never "
+"one replacing the other"
+msgstr ""
+"Les heures saisies à côté des heures reconstituées : deux nombres, jamais "
+"l'un à la place de l'autre"

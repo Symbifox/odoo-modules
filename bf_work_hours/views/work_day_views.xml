@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_work_day_list" model="ir.ui.view">
+        <field name="name">bf.work.day.list</field>
+        <field name="model">bf.work.day</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_bf_recompute" type="object" string="Recompute my last days"
+                            display="always"/>
+                </header>
+                <field name="date"/>
+                <field name="user_id" optional="hide"/>
+                <field name="hours" sum="Total" widget="float_time"/>
+                <field name="hours_low" widget="float_time" optional="show"/>
+                <field name="hours_high" widget="float_time" optional="show"/>
+                <field name="session_count" optional="hide"/>
+                <field name="span_hours" widget="float_time" invisible="not insights_included" optional="show"/>
+                <field name="longest_session_hours" widget="float_time" invisible="not insights_included" optional="show"/>
+                <field name="meeting_hours" widget="float_time" invisible="not insights_included" sum="Total" optional="show"/>
+                <field name="back_to_back_meetings" optional="hide" invisible="not insights_included"/>
+                <field name="insights_included" column_invisible="1"/>
+                <field name="outside_hours" widget="float_time" invisible="not insights_included" sum="Total" optional="show"/>
+                <field name="source_summary" optional="show"/>
+                <field name="gap_minutes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_work_day_form" model="ir.ui.view">
+        <field name="name">bf.work.day.form</field>
+        <field name="model">bf.work.day</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group string="Time">
+                            <field name="user_id"/>
+                            <field name="date"/>
+                            <field name="hours" widget="float_time"/>
+                            <field name="hours_low" widget="float_time"/>
+                            <field name="hours_high" widget="float_time"/>
+                            <field name="gap_minutes"/>
+                            <field name="session_count"/>
+                        </group>
+                        <group string="Indicators" invisible="not insights_included">
+                            <field name="insights_included" invisible="1"/>
+                            <field name="first_activity"/>
+                            <field name="last_activity"/>
+                            <field name="span_hours" widget="float_time"/>
+                            <field name="longest_session_hours" widget="float_time"/>
+                            <field name="meeting_hours" widget="float_time"/>
+                            <field name="back_to_back_meetings"/>
+                            <field name="schedule_known" invisible="1"/>
+                            <field name="outside_hours" widget="float_time" invisible="not schedule_known"/>
+                        </group>
+                    </group>
+                    <group string="What it rests on">
+                        <field name="source_summary" nolabel="1" colspan="2"/>
+                    </group>
+                    <p class="text-muted">
+                        An estimate from your traces: time away from the screen is not seen.
+                        Your timesheet remains the record of your hours.
+                    </p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_work_day_graph" model="ir.ui.view">
+        <field name="name">bf.work.day.graph</field>
+        <field name="model">bf.work.day</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="date" interval="day"/>
+                <field name="hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_work_day_pivot" model="ir.ui.view">
+        <field name="name">bf.work.day.pivot</field>
+        <field name="model">bf.work.day</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="date" interval="week" type="row"/>
+                <field name="hours" type="measure"/>
+                <field name="hours_low" type="measure"/>
+                <field name="hours_high" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_bf_work_day_search" model="ir.ui.view">
+        <field name="name">bf.work.day.search</field>
+        <field name="model">bf.work.day</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="date"/>
+                <filter name="this_week" string="This week"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                <filter name="last_30" string="Last 30 days"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_week" string="Week" context="{'group_by': 'date:week'}"/>
+                    <filter name="group_person" string="Person" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Shared with me: recomputing redoes the READER's own days, not the days shown. -->
+    <record id="view_bf_work_day_list_shared" model="ir.ui.view">
+        <field name="name">bf.work.day.list.shared</field>
+        <field name="model">bf.work.day</field>
+        <field name="inherit_id" ref="view_bf_work_day_list"/>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace"/>
+            <field name="user_id" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_bf_work_day_mine" model="ir.actions.act_window">
+        <field name="name">My working time</field>
+        <field name="res_model">bf.work.day</field>
+        <field name="view_mode">list,graph,pivot,form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'search_default_last_30': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing yet</p>
+            <p>Turn on “Propose my hours” in Working Time &gt; My choices. Your days appear within the hour.</p>
+        </field>
+    </record>
+
+    <record id="action_bf_work_day_shared" model="ir.actions.act_window">
+        <field name="name">Shared with me</field>
+        <field name="res_model">bf.work.day</field>
+        <field name="view_mode">list,graph,pivot,form</field>
+        <field name="domain">[('user_id', '!=', uid)]</field>
+        <field name="context">{'search_default_group_person': 1, 'search_default_last_30': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody shares their days with you</p>
+            <p>A colleague can share their days with you from “My shares”. They can revoke it at any time.</p>
+        </field>
+    </record>
+    <record id="action_bf_work_day_shared_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_bf_work_day_list_shared"/>
+        <field name="act_window_id" ref="action_bf_work_day_shared"/>
+    </record>
+</odoo>

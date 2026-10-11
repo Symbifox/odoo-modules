@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_simple_modif_bf_work" model="ir.ui.view">
+        <field name="name">res.users.preferences.bf_work_hours</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='page_account_security']" position="after">
+                <page string="Working time" name="bf_work_hours">
+                    <p class="text-muted">
+                        Off until you turn it on. Only you see it, unless you share your days with a colleague you name.
+                    </p>
+                    <group>
+                        <group string="Propose my hours">
+                            <field name="bf_work_hours_enabled" readonly="1"/>
+                            <div colspan="2">
+                                <button name="action_bf_work_activate" type="object" class="btn-primary"
+                                        string="Read the notice and turn on" context="{'bf_work_scope': 'hours'}"
+                                        invisible="bf_work_hours_enabled"/>
+                                <button name="action_bf_work_withdraw" type="object" class="btn-secondary"
+                                        string="Turn off and destroy my traces" context="{'bf_work_scope': 'hours'}"
+                                        invisible="not bf_work_hours_enabled"
+                                        confirm="Your traces and your days will be destroyed, and your shares ended. Continue?"/>
+                            </div>
+                        </group>
+                        <group string="My indicators">
+                            <field name="bf_work_insights_enabled" readonly="1"/>
+                            <div colspan="2">
+                                <button name="action_bf_work_activate" type="object" class="btn-primary"
+                                        string="Read the notice and turn on" context="{'bf_work_scope': 'insights'}"
+                                        invisible="bf_work_insights_enabled or not bf_work_hours_enabled"/>
+                                <button name="action_bf_work_withdraw" type="object" class="btn-secondary"
+                                        string="Turn off" context="{'bf_work_scope': 'insights'}"
+                                        invisible="not bf_work_insights_enabled"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

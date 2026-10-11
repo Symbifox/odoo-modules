@@ -1,0 +1,76 @@
+# Translation template for BF Working Hours - Timer.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_work_hours_timer 18.0.1.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 21:45+0000\n"
+"PO-Revision-Date: 2026-10-10 21:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_work_hours_timer
+#: model:ir.model.fields,field_description:bf_work_hours_timer.field_bf_timer__bf_work_untrusted
+msgid "Changed by someone else"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model.fields,help:bf_work_hours_timer.field_bf_timer__bf_work_untrusted
+msgid ""
+"Its timing was changed by someone other than its owner: it no longer counts "
+"as a trace."
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model.fields,field_description:bf_work_hours_timer.field_bf_work_signal__source
+msgid "Source"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#. odoo-python
+#: code:addons/bf_work_hours_timer/models/work_collector.py:0
+msgid ""
+"Start and end of each stretch your timer ran, once paused or stopped (a "
+"stretch of more than 12 hours is a forgotten timer: not kept). Not the task."
+msgstr ""
+
+#. module: bf_work_hours_timer
+#. odoo-python
+#: code:addons/bf_work_hours_timer/models/work_collector.py:0
+#: model:ir.model.fields.selection,name:bf_work_hours_timer.selection__bf_work_signal__source__timer
+msgid "Timer"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model.fields,field_description:bf_work_hours_timer.field_bf_work_signal__bf_timer_id
+msgid "Timer segment"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model,name:bf_work_hours_timer.model_bf_timer
+msgid "Timesheet timer"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model,name:bf_work_hours_timer.model_bf_work_collector
+msgid "Working time: sources of traces"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.model,name:bf_work_hours_timer.model_bf_work_signal
+msgid "Working time: trace"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.module.module,shortdesc:base.module_bf_work_hours_timer
+msgid "BF Working Hours - Timer"
+msgstr ""
+
+#. module: bf_work_hours_timer
+#: model:ir.module.module,summary:base.module_bf_work_hours_timer
+msgid "Timer segments count as traces of working time, start and end kept"
+msgstr ""

@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**75 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**79 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**233 modules are BUSL-1.1.** The source is published and auditable, and **you
+**237 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -375,6 +375,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_work_category_meeting` | BF Work Category - Meetings | 18.0.1.0.1 | BUSL-1.1 | Work category on meeting records, from their project |
 | `bf_work_category_notes` | BF Work Category - Notes | 18.0.1.0.1 | LGPL-3 | Work category on notes, from the record they are attached to |
 | `bf_work_category_timesheet` | BF Work Category - Timesheets | 18.0.1.0.2 | LGPL-3 | Work category on timesheet lines, from their task or their project |
+| `bf_work_hours` | BF Working Hours | 18.0.1.0.2 | LGPL-3 | Each person's real working time, reconstructed from their own traces with an uncertainty band, seen by the person and the colleagues they name; off until the person turns it on |
+| `bf_work_hours_claude_chat` | BF Working Hours - Gen | 18.0.1.0.1 | BUSL-1.1 | Prompts a person sends to Gen count as traces of their working time |
+| `bf_work_hours_email` | BF Working Hours - Email | 18.0.1.0.0 | BUSL-1.1 | Emails a person sends from their mail client count as traces of their working time |
+| `bf_work_hours_meeting` | BF Working Hours - Meetings | 18.0.1.0.0 | BUSL-1.1 | Meeting reports where a person was present count as meetings in their working time |
+| `bf_work_hours_notes` | BF Working Hours - Notes | 18.0.1.0.0 | LGPL-3 | Notes a person writes count as traces of their working time |
+| `bf_work_hours_privacy` | BF Working Hours - Privacy | 18.0.1.0.2 | BUSL-1.1 | Declares the two working time purposes and mirrors each activation as a consent in the privacy register |
+| `bf_work_hours_timer` | BF Working Hours - Timer | 18.0.1.0.1 | LGPL-3 | Timer segments count as traces of working time, start and end kept |
+| `bf_work_hours_timesheet` | BF Working Hours - Timesheets | 18.0.1.0.0 | LGPL-3 | Entered timesheet hours beside the reconstructed hours: two numbers, never one replacing the other |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.1.0 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.26.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.19.2 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
@@ -415,11 +423,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **233 modules: BUSL-1.1.** Production use for your own internal business
+- **237 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **75 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **79 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_work_activate_wizard_form" model="ir.ui.view">
+        <field name="name">bf.work.activate.wizard.form</field>
+        <field name="model">bf.work.activate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="scope" invisible="1"/>
+                <field name="notice" readonly="1" nolabel="1"/>
+                <group>
+                    <field name="understood"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Turn on" class="btn-primary"
+                            invisible="not understood"/>
+                    <button special="cancel" string="Not now" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_work_choices_form" model="ir.ui.view">
+        <field name="name">bf.work.choices.form</field>
+        <field name="model">bf.work.choices</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <sheet>
+                    <p class="text-muted">
+                        Off until you turn it on. Only you see it, unless you share your days with a colleague you name.
+                    </p>
+                    <group>
+                        <group string="Propose my hours">
+                            <field name="hours_enabled" readonly="1"/>
+                            <div colspan="2">
+                                <button name="action_activate_hours" type="object" class="btn-primary"
+                                        string="Read the notice and turn on" invisible="hours_enabled"/>
+                                <button name="action_withdraw_hours" type="object" class="btn-secondary"
+                                        string="Turn off and destroy my traces" invisible="not hours_enabled"
+                                        confirm="Your traces and your days will be destroyed, and your shares ended. Continue?"/>
+                            </div>
+                        </group>
+                        <group string="My indicators">
+                            <field name="insights_enabled" readonly="1"/>
+                            <div colspan="2">
+                                <button name="action_activate_insights" type="object" class="btn-primary"
+                                        string="Read the notice and turn on"
+                                        invisible="insights_enabled or not hours_enabled"/>
+                                <button name="action_withdraw_insights" type="object" class="btn-secondary"
+                                        string="Turn off" invisible="not insights_enabled"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_work_choices" model="ir.actions.act_window">
+        <field name="name">My choices</field>
+        <field name="res_model">bf.work.choices</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

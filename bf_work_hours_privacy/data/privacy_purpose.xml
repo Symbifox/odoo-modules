@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="purpose_work_hours" model="privacy.purpose">
+        <field name="code">bf_work_hours</field>
+        <field name="name">Working time reconstructed for the person</field>
+        <field name="plain_language_summary"><![CDATA[<p>Odoo reconstructs your working time from your own traces (browser activity, calendar, and the sources installed) and shows it to you, and to the colleagues you name if you share your days. Off until you turn it on; turning it off destroys your traces and your days, and ends your shares.</p>]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">0</field>
+        <field name="context_scope">general</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="purpose_work_insights" model="privacy.purpose">
+        <field name="code">bf_work_insights</field>
+        <field name="name">Working time indicators for the person</field>
+        <field name="plain_language_summary"><![CDATA[<p>From your reconstructed working time: the span of your day, your longest stretch, your meetings, your time outside working hours. For you, and for the colleagues you name if you share your days. No score, nothing decided from it.</p>]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">0</field>
+        <field name="context_scope">general</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
