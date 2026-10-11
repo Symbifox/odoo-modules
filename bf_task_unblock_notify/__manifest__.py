@@ -1,6 +1,8 @@
 {
     "name": "BF Notification de déblocage de tâche",
     "summary": "Notifie les assignés quand leur tâche est débloquée",
+    # 18.0.2.0.1: game plan cleaning, two dots in a row no longer cost the
+    #   line, phone numbers with wider separators go.
     # 18.0.2.0.0: the notice wears the company's mail layout,
     #   speaks the recipient's time zone, links the blocking tasks, tells
     #   the deadline, and names who removed a dependency. An unassigned task
@@ -11,7 +13,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.0.1",
     "category": "Project",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

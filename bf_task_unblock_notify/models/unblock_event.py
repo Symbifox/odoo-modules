@@ -35,7 +35,7 @@ import pytz
 from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.modules.registry import Registry
-from odoo.tools import clean_context, html2plaintext
+from odoo.tools import html2plaintext
 from odoo.tools.misc import babel_locale_parse, get_lang
 
 _logger = logging.getLogger(__name__)
@@ -87,8 +87,8 @@ _STATUS_WORDS = {
 # What the plan may not carry: nothing a mail client would make clickable.
 # Schemes go (`[...]`, ASCII: stable under NFKC). Domains, addresses and IPs are
 # NEUTRALISED instead of removed, so that a file name or a version stays
-# readable: a dot between two letters or digits becomes U+2024 (one dot
-# leader), an @ becomes U+FF20. No list of TLDs to keep up to date, and a domain
+# readable: every dot not followed by a space, a closing punctuation or the end
+# becomes U+2024 (one dot leader), an @ becomes U+FF20. No list of TLDs to keep up to date, and a domain
 # cut by the line limit is already neutralised.
 MARK = "[...]"
 LEADER = "\u2024"
@@ -104,10 +104,12 @@ _SCHEME = re.compile(
 # follows a dot in a host name can be a letter of any script, an emoji, or an
 # invisible mark that browsers drop (U+180B: "evil.\u180bcom" opens evil.com).
 # Listing what may follow a dot would only list what we knew of.
-_DOT = re.compile(r"[.\u3002](?![\s.,;:!?)\]}\u00bb\u201d\u2019\"'\u2026]|$)")
+_DOT = re.compile(r"[.\u3002](?![\s.,;:!?)\]}\u00bb\u201d\u2019\"'\u2026\u2024]|$)")
 # A North American phone number, which mobile clients make tappable: the line goes.
+# Up to three separator characters between the groups (« 514 - 234 - 5678 »).
+_PHONE_SEP = r"[\s.\-\u2010-\u2015\u2212/\u2024~\u00b7\u2022_\u30fc\[\]()]{0,3}"
 _PHONE = re.compile(
-    r"(?<!\d)(?:\+?1[\s.\-\u2010-\u2015\u2212/\u2024]?)?\(?\d{3}\)?[\s.\-\u2010-\u2015\u2212/\u2024]?\d{3}[\s.\-\u2010-\u2015\u2212/\u2024]?\d{4}(?!\d)")
+    r"(?<!\d)(?:\+?1_SEP_)?\(?\d{3}\)?_SEP_\d{3}_SEP_\d{4}(?!\d)".replace("_SEP_", _PHONE_SEP))
 _AT = re.compile(r"@")
 _EXTRA_INVISIBLE = {0x034F, 0x115F, 0x1160, 0x3164, 0xFFA0}
 
@@ -153,7 +155,8 @@ def clean_text(text):
 
 
 def is_clean(text):
-    """No scheme, no live dot before a letter or digit, no ASCII @, no phone number."""
+    """No scheme, no live dot (one not before a space, a closing punctuation or the end),
+    no ASCII @, no phone number."""
     return not (_SCHEME.search(text) or _DOT.search(text) or "@" in text
                 or _PHONE.search(text))
 

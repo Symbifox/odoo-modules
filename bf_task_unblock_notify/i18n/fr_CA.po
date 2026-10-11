@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_task_unblock_notify 18.0.2.0.0\n"
+"Project-Id-Version: bf_task_unblock_notify 18.0.2.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 17:38+0000\n"
-"PO-Revision-Date: 2026-10-10 17:38+0000\n"
+"POT-Creation-Date: 2026-10-10 23:35+0000\n"
+"PO-Revision-Date: 2026-10-10 23:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -23,6 +23,11 @@ msgid ""
 msgstr ""
 "<em>Aucune personne n'est assignée à cette tâche : vous recevez cet avis à "
 "titre de responsable du projet.</em>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>:</span>"
+msgstr "<span> :</span>"
 
 #. module: bf_task_unblock_notify
 #: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification

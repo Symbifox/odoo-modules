@@ -97,6 +97,10 @@ bf_task_unblock_notify/
 
 ## Changelog
 
+### 18.0.2.0.1
+- French typography: a space before the colon that ends « … le 11 oct., 12 h 17 : ».
+- Game plan cleaning: a line with two dots in a row (« Attendre…puis », « 1..3 ») is no longer dropped; phone numbers with up to three separator characters between the groups are.
+
 ### 18.0.2.0.0
 - **The company's mail layout** (`bluefox_branding.bf_mail_layout`, else `mail.mail_notification_light`); no more « -- System » signature under the notice.
 - **The recipient's time zone**, without seconds. Dates and hours follow the recipient's language even when it is not active in the database (en_US where en_CA serves).

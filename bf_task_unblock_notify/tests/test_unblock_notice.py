@@ -396,6 +396,10 @@ class TestUnblockNotice(TransactionCase):
         # A phone number costs the line; a date or a version does not.
         self.assertEqual(clean_text("Appeler le 1 888 555-0199 demain."), "")
         self.assertEqual(clean_text("Rappeler au (514) 555.0199"), "")
+        self.assertEqual(clean_text("Appeler le 514 - 234 - 5678."), "")
+        # Two dots in a row no longer cost the line.
+        self.assertTrue(clean_text("Pages 1..3 à revoir."))
+        self.assertTrue(clean_text("Attendre\u2026puis relancer."))
         self.assertTrue(clean_text("Version 18.0.2.0.0 du 2026-10-16, 1 263 factures."))
         # Words that end in a scheme name are words.
         self.assertEqual(clean_text("Profile:admin Metadata:x").replace(LEADER, "."), "Profile:admin Metadata:x")

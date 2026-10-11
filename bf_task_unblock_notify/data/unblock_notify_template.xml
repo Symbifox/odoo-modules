@@ -41,14 +41,14 @@
                 <p>
                     <strong><t t-out="closing_user"/></strong>
                     <span>completed the following blocking tasks on</span>
-                    <strong><t t-out="closing_time"/></strong>:
+                    <strong><t t-out="closing_time"/></strong><span>:</span>
                 </p>
             </t>
             <t t-if="kind == 'dependency_removed' and other_info">
                 <p>
                     <strong><t t-out="closing_user"/></strong>
                     <span>removed the dependency on the following tasks on</span>
-                    <strong><t t-out="closing_time"/></strong>:
+                    <strong><t t-out="closing_time"/></strong><span>:</span>
                 </p>
             </t>
             <ul t-if="other_info">
