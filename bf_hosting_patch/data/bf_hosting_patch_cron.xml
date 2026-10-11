@@ -14,7 +14,7 @@
              d'autre ne bronche. L'état de la MACHINE suit par dépendance
              (`system_ids.patch_state`), il n'y a rien à rejouer de ce côté. -->
         <record id="cron_refresh_patch_state" model="ir.cron">
-            <field name="name">Hébergement : rejouer l'état des mises à jour (machines muettes)</field>
+            <field name="name">Hosting: refresh update status (silent machines)</field>
             <field name="model_id" ref="model_bf_patch_system"/>
             <field name="state">code</field>
             <field name="code">model._cron_refresh_patch_state()</field>
@@ -24,7 +24,7 @@
         </record>
 
         <record id="cron_purge_patch_reports" model="ir.cron">
-            <field name="name">Hébergement : purger les relevés de mise à jour (90 j)</field>
+            <field name="name">Hosting: purge update reports (90 days)</field>
             <field name="model_id" ref="model_bf_patch_report"/>
             <field name="state">code</field>
             <field name="code">model._cron_purge()</field>
@@ -38,7 +38,7 @@
              rapporter laisserait sinon une ligne « pris en charge » pour
              toujours, et la file cesserait d'être lisible. -->
         <record id="cron_expire_patch_jobs" model="ir.cron">
-            <field name="name">Hébergement : périmer les ordres de mise à jour non exécutés (7 j)</field>
+            <field name="name">Hosting: expire update jobs not run (7 days)</field>
             <field name="model_id" ref="model_bf_patch_job"/>
             <field name="state">code</field>
             <field name="code">model._cron_expire_jobs()</field>

@@ -21,11 +21,28 @@
     // chargé sur toutes les pages publiques, y compris avant que le noyau web
     // ne soit disponible : on ne peut donc pas importer `_t` en dur, sous
     // peine de casser le script partout où le module n'est pas concerné.
-    function t(texte) {
+    function noyau() {
         try {
-            var noyau = window.odoo && window.odoo.loader
+            return window.odoo && window.odoo.loader
                 && window.odoo.loader.modules.get("@web/core/l10n/translation");
-            return noyau && noyau._t ? noyau._t(texte) : texte;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // Nommée `_t` pour que l'extracteur d'Odoo ramasse les textes de ce fichier :
+    // il ne reconnaît que les appels à `_t`, et une enveloppe nommée autrement
+    // laissait ces textes hors du catalogue.
+    // 🔴 Sur la page publique, ce script tourne AVANT que le site ait chargé les
+    // traductions : le `_t` d'Odoo rend alors une chaîne paresseuse qui lève à la
+    // première lecture (« translation error »). Lue par `setAttribute`, l'erreur
+    // sortait d'ici, et le bouton s'affichait sans écouteur de clic. On la lit
+    // donc ICI, dans le `try` : la traduction si elle est prête, sinon la source ;
+    // `start` repeint le bouton quand le catalogue arrive.
+    function _t(texte) {
+        try {
+            var n = noyau();
+            return n && n._t ? String(n._t(texte)) : texte;
         } catch (error) {
             return texte;
         }
@@ -83,7 +100,7 @@
         button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
         button.setAttribute(
             "aria-label",
-            theme === "dark" ? t("Passer au thème clair") : t("Passer au thème sombre")
+            theme === "dark" ? _t("Switch to the light theme") : _t("Switch to the dark theme")
         );
     }
 
@@ -107,6 +124,15 @@
         // bouton qui ne fait rien, ce qui est pire que pas de bouton.
         button.hidden = false;
         paintButton(button, effectiveTheme(root));
+
+        // Le libellé peint ci-dessus est celui de la source si le catalogue
+        // n'était pas encore chargé : le repeindre quand il l'est.
+        var n = noyau();
+        if (n && n.translationIsReady && n.translationIsReady.then) {
+            n.translationIsReady.then(function () {
+                paintButton(button, effectiveTheme(root));
+            });
+        }
 
         button.addEventListener("click", function () {
             var next = effectiveTheme(root) === "dark" ? "light" : "dark";

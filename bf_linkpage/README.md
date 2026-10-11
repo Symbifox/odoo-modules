@@ -273,6 +273,10 @@ signalling it.
 > indentation included, and the translation breaks the first time the template is
 > reformatted. Put the text in a block.
 
+### Interface language (v18.0.10.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version the back office read in French for every user, including users set to English. The expiry notice of an organization page and its activity, written by a scheduled action, are in the language of the person responsible for the page (the advisor, else its creator), with the date formatted in it. The dynamic link sources are labelled in the user's language. The theme button of the public page is labelled in the page's language: the module now declares itself to the website, which only loads the translations of the modules that do, and the button no longer stalls when it reads its label before the translations arrive (it was left without a click handler). The delivered templates (`data/bf_linkpage_templates.xml`) stay in French, a template's name and notes not being translatable; the English (Canada) of the organization template lines moves to `i18n_extra/en_CA.po`. On upgrade, the two scheduled actions are renamed unless their names were edited by hand.
+
 ## What the page counts
 
 Visits per page, clicks per link, shown in the **Statistics** tab. A marked gap

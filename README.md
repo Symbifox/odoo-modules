@@ -220,7 +220,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.2 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
 | `bf_helpdesk_merge` | Helpdesk — Doublons, fusion et incidents | 18.0.1.3.2 | AGPL-3 | Complete ticket merge (timesheets, attachments, followers, internal notes), duplicate suggestions at creation, parent incidents with a grouped reply |
 | `bf_home` | Accueil Symbifox | 18.0.2.1.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
-| `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.5.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
+| `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.6.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.2 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_household_base` | Household Base | 18.0.1.0.0 | LGPL-3 | The household group of a Symbifox Personal instance: who belongs to the household, at most ten accounts, and never an administrator among them |
@@ -234,7 +234,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
 | `bf_letter_writer` | Letter Writer | 18.0.2.1.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.1.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
-| `bf_linkpage` | Pages de liens | 18.0.10.0.2 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
+| `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
@@ -269,7 +269,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.2.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
-| `bf_otp` | Symbifox OTP | 18.0.12.2.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
+| `bf_otp` | Symbifox OTP | 18.0.12.3.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |

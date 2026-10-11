@@ -6,4 +6,5 @@ from . import (
     res_partner,
     linkpage_sync,
     res_config_settings,
+    ir_http,
 )

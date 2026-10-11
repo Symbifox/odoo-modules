@@ -1,0 +1,2170 @@
+# Translation of Pages de liens - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_linkpage 18.0.10.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 12:24+0000\n"
+"PO-Revision-Date: 2026-10-11 12:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"\"%s\" is a person, not an organization. An organization page is linked to "
+"the company record; for a person, choose \"Linked to a person\"."
+msgstr ""
+"« %s » est une personne, pas une organisation. Une page d'organisation se "
+"rattache à la fiche de l'entreprise ; pour une personne, choisissez « "
+"Rattachée à une personne »."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/res_partner.py:0
+msgid ""
+"\"%s\" is a person. An organization page is created from the company record."
+msgstr ""
+"« %s » est une personne. Une page d'organisation se crée depuis la fiche de "
+"l'entreprise."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__theme
+msgid ""
+"\"Device setting\" follows the visitor's system preference, and gives them a"
+" toggle on the page. The other two impose the theme; the toggle is still "
+"offered but only persists on their side."
+msgstr ""
+"« Selon l'appareil » suit la préférence système du visiteur, et lui laisse "
+"un bascule sur la page. Les deux autres imposent le thème, le bascule reste "
+"offert mais ne persiste que chez lui."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ", an archived page"
+msgstr ", une page archivée"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "/qr.png"
+msgstr "/qr.png"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "<span class=\"col-lg-3 o_light_label\">days before</span>"
+msgstr "<span class=\"col-lg-3 o_light_label\">jours avant</span>"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "<span class=\"col-lg-3 o_light_label\">days</span>"
+msgstr "<span class=\"col-lg-3 o_light_label\">jours</span>"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_partner_form_linkpage
+msgid ""
+"<span class=\"o_stat_text\">Organization</span>\n"
+"                        <span class=\"o_stat_text\">page</span>"
+msgstr ""
+"<span class=\"o_stat_text\">Page</span>\n"
+"                        <span class=\"o_stat_text\">d'organisation</span>"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"<span invisible=\"bf_linkpage_cron_active\" class=\"text-warning\">\n"
+"                                        The scheduled job is stopped. Nothing will happen on its own.\n"
+"                                    </span>"
+msgstr ""
+"<span invisible=\"bf_linkpage_cron_active\" class=\"text-warning\">\n"
+"                                        La tâche planifiée est arrêtée. Rien ne se fera tout seul.\n"
+"                                    </span>"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"A code lighter than its background cannot be read by most devices. Rendered "
+"in black on white."
+msgstr ""
+"Un code plus clair que son fond n'est pas lu par la plupart des appareils. "
+"Rendu en noir sur blanc."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "A few lines shown under the title."
+msgstr "Quelques lignes affichées sous le titre."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__from_template
+msgid ""
+"A link set by a template is replaced when the template is reapplied. A link "
+"added by hand never is."
+msgstr ""
+"Un lien posé par un gabarit est remplacé quand le gabarit est réappliqué. Un"
+" lien ajouté à la main ne l'est jamais."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"A link whose resolved address is empty is not shown on the public page. This"
+" is deliberate: a missing link is better than a dead link reached through a "
+"QR code already printed. <br/> Unchecking \"Shown\" removes a link from the "
+"page without deleting it: the row stays here, grayed out, and comes back on "
+"with one click. This is what to do for a number you no longer want to give "
+"out."
+msgstr ""
+"Un lien dont l'adresse résolue est vide ne\n"
+"                                s'affiche pas sur la page publique. C'est\n"
+"                                voulu : mieux vaut un lien absent qu'un lien\n"
+"                                mort atteint par un QR déjà imprimé.\n"
+"                                <br/>\n"
+"                                Décocher « Affiché » retire un lien de la page\n"
+"                                sans le supprimer : la ligne reste ici, en gris,\n"
+"                                et se rallume d'un clic. C'est le geste à faire\n"
+"                                pour un numéro qu'on ne veut plus donner."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__kind
+msgid ""
+"A linked page lives as long as the person. An organization page gathers a "
+"client company's access points: its address is opaque and it has an expiry "
+"date. A one-off page has no owner: it has an expiry."
+msgstr ""
+"Une page rattachée vit aussi longtemps que la personne. Une page "
+"d'organisation rassemble les accès d'une entreprise cliente : son adresse "
+"est opaque et elle porte une échéance. Une page ponctuelle n'a pas de "
+"propriétaire : elle porte une expiration."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_oneoff_expiry_days
+msgid ""
+"A one-off page has no owner: it is armed with an expiry at creation. A "
+"missing or zero value falls back to 90 days."
+msgstr ""
+"Une page ponctuelle n'a pas de propriétaire : elle est armée d'une "
+"expiration à la création. Une valeur absente ou nulle retombe sur 90 jours."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"A one-off page has no owner: it is armed with an expiry from creation, and "
+"closes on its own without any job having to run. An empty or zero value "
+"falls back to 90 days."
+msgstr ""
+"Une page ponctuelle n'a pas de propriétaire : elle est armée d'une "
+"expiration dès sa création, et se ferme d'elle-même sans qu'aucune tâche "
+"n'ait à tourner. Une valeur vide ou nulle retombe sur 90 jours."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"A one-off page that expires has done its job. An organization page that "
+"expires during an engagement returns a 404 to the client without warning "
+"anyone: this daily run warns the advisor before that happens."
+msgstr ""
+"Une page ponctuelle qui expire a fait son travail. Une page d'organisation "
+"qui expire pendant un mandat rend un 404 au client sans prévenir personne : "
+"cette passe quotidienne avertit le conseiller avant que ça arrive."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"A page linked to a person needs a contact. Without a contact, its dynamic "
+"sources have nothing to read."
+msgstr ""
+"Une page rattachée à une personne a besoin d'un contact. Sans contact, ses "
+"sources dynamiques n'ont rien à lire."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"A periodic run creates the missing page for active employees who have a "
+"contact or a user account. It also catches up those who arrived before "
+"activation."
+msgstr ""
+"Une passe périodique crée la page manquante des employés actifs qui ont un "
+"contact ou un compte utilisateur. Elle rattrape aussi ceux arrivés avant "
+"l'activation."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_autocreate
+msgid ""
+"A periodic run creates the missing page for active employees who have a "
+"contact or a user account. Without hr installed, the setting has no effect "
+"and says so in the log."
+msgstr ""
+"Une passe périodique crée la page manquante des employés actifs qui ont un "
+"contact ou un compte utilisateur. Sans hr installé, le réglage reste sans "
+"effet et le dit au journal."
+
+#. module: bf_linkpage
+#: model_terms:ir.actions.act_window,help:bf_linkpage.action_bf_linkpage
+msgid ""
+"A public page that gathers a person's links under a short address, and the "
+"QR code to put in an email signature. Appointment and secure upload links "
+"are resolved from the database: they follow the person instead of being "
+"copied."
+msgstr ""
+"Une page publique qui rassemble les liens d'une personne sous\n"
+"                une adresse courte, et le QR à poser dans une signature\n"
+"                courriel. Les liens de rendez-vous et de dépôt sécurisé sont\n"
+"                résolus depuis la base : ils suivent la personne au lieu d'être\n"
+"                recopiés."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"A published page exposes the person's work email and phone on a public URL."
+msgstr ""
+"Une page publiée expose le courriel et le téléphone\n"
+"                                    de travail de la personne sur une URL publique."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_autocreate_state
+msgid ""
+"A published page exposes the person's work email and phone on a public URL. "
+"As a draft, the page exists and is already filled in, but returns a 404 "
+"until someone publishes it."
+msgstr ""
+"Une page publiée expose le courriel et le téléphone de travail de la "
+"personne sur une URL publique. En brouillon, la page existe et est déjà "
+"garnie, mais rend 404 tant que personne ne la publie."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__is_social
+msgid ""
+"A social network link is shown in a row of icons under the main links, "
+"without a label."
+msgstr ""
+"Un lien de réseau s'affiche en rangée d'icônes sous les liens principaux, "
+"sans libellé."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__accent_color
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__accent_color
+msgid "Accent color"
+msgstr "Couleur d'accent"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__active
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__active
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__qr_preview
+msgid ""
+"Actual rendering, with the settings above. What you see here is exactly what"
+" will be downloaded."
+msgstr ""
+"Rendu réel, avec les réglages ci-dessus. Ce que vous voyez ici est "
+"exactement ce qui sera téléchargé."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.linkpage_public
+msgid "Add to my contacts"
+msgstr "Ajouter à mes contacts"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__url
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__url
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__advisor_user_id
+msgid "Advisor"
+msgstr "Conseiller"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Advisor's secure upload"
+msgstr "Dépôt sécurisé du conseiller"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__date_expiry
+msgid "After this date the page returns a 404. Empty = no expiry."
+msgstr "Passé cette date la page rend un 404. Vide = pas d'expiration."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__show_vcard
+msgid ""
+"An \"Add to my contacts\" button on the public page. No effect on a one-off "
+"page, which belongs to no one."
+msgstr ""
+"Un bouton « Ajouter à mes contacts » sur la page publique. Sans effet sur "
+"une page ponctuelle, qui ne porte personne."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"An organization page is created with an expiry date. It is the only "
+"safeguard against a welcome page left open three years after the engagement "
+"ends: its address is opaque, so no one will find it again to close it."
+msgstr ""
+"Une page d'organisation naît avec une échéance. C'est le seul garde-fou "
+"contre la page d'accueil restée ouverte trois ans après la fin du mandat : "
+"son adresse est opaque, donc personne ne la retrouvera pour la fermer."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_org_expiry_days
+msgid ""
+"An organization page is created with an expiry date: this is what prevents a"
+" client welcome page from staying open three years after the engagement "
+"ends. Zero = no expiry, at your own risk."
+msgstr ""
+"Une page d'organisation naît avec une échéance : c'est ce qui évite la page "
+"d'accueil client restée ouverte trois ans après la fin du mandat. Zéro = pas"
+" d'échéance, à ses risques."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"An organization page needs the organization's record. Without it, none of "
+"its sources knows which company it is about."
+msgstr ""
+"Une page d'organisation a besoin de la fiche de l'organisation. Sans elle, "
+"aucune de ses sources ne sait de quelle entreprise on parle."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__target
+msgid "Applies to"
+msgstr "S'applique à"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Appointment booking"
+msgstr "Prise de rendez-vous"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__booking_slug
+msgid "Appointment type"
+msgstr "Type de rendez-vous"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Appointment type offered"
+msgstr "Type de rendez-vous offert"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Appointment with the advisor"
+msgstr "Rendez-vous avec le conseiller"
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "Archived"
+msgstr "Archivées"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__res_config_settings__bf_linkpage_autocreate_state__draft
+msgid "As a draft"
+msgstr "En brouillon"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Automation for employees"
+msgstr "Automatisation pour les employés"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__layout__cards
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__layout__cards
+msgid "Cards"
+msgstr "Cartes"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__click_count
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Clicks"
+msgstr "Clics"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Clicks per link"
+msgstr "Clics par lien"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__state__closed
+msgid "Closed"
+msgstr "Fermée"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_back_color
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_logo_plate__back
+msgid "Code background"
+msgstr "Fond du code"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_fill_color
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_logo_plate__fill
+msgid "Code color"
+msgstr "Couleur du code"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__is_expired
+msgid ""
+"Computed: expiry is a DATE, not a state to maintain. No cron needs to run "
+"for a page to close."
+msgstr ""
+"Calculé : l'expiration est une DATE, pas un état à maintenir. Aucun cron n'a"
+" besoin de tourner pour qu'une page se ferme."
+
+#. module: bf_linkpage
+#: model:ir.ui.menu,name:bf_linkpage.menu_bf_linkpage_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_form
+msgid "Consulting team"
+msgstr "Équipe conseil"
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Contact email"
+msgstr "Courriel du contact"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Contact phone (mobile first)"
+msgstr "Téléphone du contact (mobile d'abord)"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Contact website"
+msgstr "Site web du contact"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"Could not draw a free address for this page. Try again, and report it if it "
+"happens again."
+msgstr ""
+"Impossible de tirer une adresse libre pour cette page. Réessayez, et "
+"signalez-le si ça se reproduit."
+
+#. module: bf_linkpage
+#: model_terms:ir.actions.act_window,help:bf_linkpage.action_bf_linkpage
+msgid "Create a link page"
+msgstr "Créer une page de liens"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_autocreate
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Create a page for each employee"
+msgstr "Créer une page pour chaque employé"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__create_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__create_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__create_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__create_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__create_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__create_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Creation and refresh go through the same scheduled job."
+msgstr ""
+"La création et le rafraîchissement passent par la même tâche planifiée."
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__theme__dark
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__theme__dark
+msgid "Dark"
+msgstr "Sombre"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Default lifetime"
+msgstr "Durée de vie par défaut"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__is_default
+msgid "Default template"
+msgstr "Gabarit par défaut"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__subtitle
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__subtitle
+msgid "Details"
+msgstr "Précision"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__theme__auto
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__theme__auto
+msgid "Device setting"
+msgstr "Selon l'appareil"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Direct address:"
+msgstr "Adresse directe :"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Direct line"
+msgstr "Ligne directe"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__display_name
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__display_name
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__display_name
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_list
+msgid "Displayed"
+msgstr "Affichés"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__visible_link_count
+msgid "Displayed links"
+msgstr "Liens affichés"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Download"
+msgstr "Télécharger"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_linkpage
+#: model:ir.model,name:bf_linkpage.model_bf_linkpage_source
+msgid "Dynamic link source registry"
+msgstr "Registre des sources de liens dynamiques"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Email the advisor"
+msgstr "Écrire au conseiller"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__is_expired
+msgid "Expired"
+msgstr "Expirée"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "Expired pages"
+msgstr "Expirées"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__date_expiry
+msgid "Expires on"
+msgstr "Expire le"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__expiry_warned_on
+msgid "Expiry announced on"
+msgstr "Échéance annoncée le"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "Expiry extended to %s."
+msgstr "Échéance repoussée au %s."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Extend expiry"
+msgstr "Repousser l'échéance"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Facebook"
+msgstr "Facebook"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__source_available
+msgid "False when the module providing this source is not installed."
+msgstr "Faux quand le module qui fournit cette source n'est pas installé."
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__icon
+msgid "Font Awesome class, for example \"fa-calendar\". Optional."
+msgstr "Classe Font Awesome, par exemple « fa-calendar ». Facultatif."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "GitHub"
+msgstr "GitHub"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__has_photo
+msgid "Has Photo"
+msgstr "A une photo"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__accent_color
+msgid "Hexadecimal. Used for the public page buttons and the branded QR code."
+msgstr ""
+"Hexadécimal. Sert aux boutons de la page publique et au QR à la marque."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_org_warn_days
+msgid ""
+"How many days before closing the page warns its advisor, in the chatter and "
+"with an activity. Without this warning, the expiry would show up as a 404 on"
+" the client's side."
+msgstr ""
+"Combien de jours avant la fermeture la page prévient son conseiller, au fil "
+"et par une activité. Sans cet avertissement, l'échéance se manifesterait par"
+" un 404 chez le client."
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__id
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__id
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__id
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__icon
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_has_error
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "If empty, the company logo is used."
+msgstr "Vide, c'est le logo de la société qui sert."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Instagram"
+msgstr "Instagram"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Instant meeting"
+msgstr "Rencontre instantanée"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__meet_url
+msgid "Instant meeting room"
+msgstr "Salle de rencontre instantanée"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"Insufficient contrast (%(r).1f:1, 4 is required). Rendered in black on "
+"white."
+msgstr ""
+"Contraste insuffisant (%(r).1f:1, il en faut 4). Rendu en noir sur blanc."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Invoices on the portal"
+msgstr "Factures au portail"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"It is the only way to know whether a signature's QR code is really used, "
+"rather than assuming it."
+msgstr ""
+"C'est la seule façon de savoir si le code QR\n"
+"                                    d'une signature sert vraiment, plutôt que de\n"
+"                                    le supposer."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Jane Doe"
+msgstr "Jane Doe"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__name
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__name
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_scale__l
+msgid "Large (print)"
+msgstr "Grand (impression)"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__write_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__write_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__write_uid
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__write_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__write_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__write_date
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__last_visit
+msgid "Last visit"
+msgstr "Dernière visite"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__layout
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__layout
+msgid "Layout"
+msgstr "Disposition"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Leads to"
+msgstr "Mène à"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__qr_logo
+msgid ""
+"Leave empty to use the company logo. A square image gives the best result: "
+"it is resized without being cropped."
+msgstr ""
+"Laisser vide pour le logo de la société. Une image carrée donne le meilleur "
+"résultat : elle est redimensionnée sans être rognée."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Lifecycle"
+msgstr "Cycle de vie"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__theme__light
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__theme__light
+msgid "Light"
+msgstr "Clair"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__link_count
+msgid "Link Count"
+msgstr "Nombre de liens"
+
+#. module: bf_linkpage
+#: model:ir.model,name:bf_linkpage.model_bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Link page"
+msgstr "Page de liens"
+
+#. module: bf_linkpage
+#: model:ir.model,name:bf_linkpage.model_bf_linkpage_link
+msgid "Link page link"
+msgstr "Lien d'une page de liens"
+
+#. module: bf_linkpage
+#: model:res.groups,name:bf_linkpage.group_bf_linkpage_manager
+msgid "Link page management"
+msgstr "Gestion des pages de liens"
+
+#. module: bf_linkpage
+#: model:ir.actions.act_window,name:bf_linkpage.action_bf_linkpage_settings
+msgid "Link page settings"
+msgstr "Réglages des pages de liens"
+
+#. module: bf_linkpage
+#: model:ir.model,name:bf_linkpage.model_bf_linkpage_template
+msgid "Link page template"
+msgstr "Gabarit de page de liens"
+
+#. module: bf_linkpage
+#: model:ir.model,name:bf_linkpage.model_bf_linkpage_template_line
+msgid "Link page template link"
+msgstr "Lien d'un gabarit de page de liens"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/res_partner.py:0
+#: model:ir.actions.act_window,name:bf_linkpage.action_bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_partner__linkpage_ids
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_users__linkpage_ids
+#: model:ir.module.category,name:bf_linkpage.module_category_linkpage
+#: model:ir.ui.menu,name:bf_linkpage.menu_bf_linkpage_root
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_list
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_partner_form_linkpage
+msgid "Link pages"
+msgstr "Pages de liens"
+
+#. module: bf_linkpage
+#: model:ir.actions.server,name:bf_linkpage.cron_sync_employees_ir_actions_server
+msgid "Link pages: create and refresh employee pages"
+msgstr "Pages de liens : créer et rafraîchir les pages des employés"
+
+#. module: bf_linkpage
+#: model:ir.actions.server,name:bf_linkpage.cron_warn_expiring_ir_actions_server
+msgid "Link pages: warn before an organization page closes"
+msgstr "Pages de liens : avertir avant la fermeture d'une page d'organisation"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__kind__owner
+msgid "Linked to a person"
+msgstr "Rattachée à une personne"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__kind__org
+msgid "Linked to an organization"
+msgstr "Rattachée à une organisation"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_partner__linkpage_count
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_users__linkpage_count
+msgid "Linkpage Count"
+msgstr "Nombre de pages de liens"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__link_ids
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_list
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_form
+msgid "Links"
+msgstr "Liens"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__is_live
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "Live"
+msgstr "En ligne"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_branded
+msgid "Logo in the center"
+msgstr "Logo au centre"
+
+#. module: bf_linkpage
+#: model:res.groups,comment:bf_linkpage.group_bf_linkpage_manager
+msgid ""
+"Maintains templates, creates one-off pages and edits anyone's page. "
+"Templates are reserved to this group: they are assigned by user group, so "
+"editing them amounts to changing several people's pages at once."
+msgstr ""
+"Tient les gabarits, crée les pages ponctuelles et modifie la page de "
+"n'importe qui. Les gabarits sont réservés à ce groupe : ils sont posés par "
+"groupe d'usagers, donc les modifier revient à changer la page de plusieurs "
+"personnes d'un coup."
+
+#. module: bf_linkpage
+#: model:res.groups,comment:bf_linkpage.group_bf_linkpage_user
+msgid ""
+"Maintains their own link page and downloads its QR code. Sees other people's"
+" pages without being able to edit them: a page is public anyway, hiding it "
+"in the back office would protect nothing and would prevent spotting a "
+"duplicate slug."
+msgstr ""
+"Tient sa propre page de liens et télécharge son QR. Voit les pages des "
+"autres sans pouvoir les modifier : une page est publique de toute façon, la "
+"cacher au back-office ne protégerait rien et empêcherait de repérer un "
+"doublon de slug."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Manual address"
+msgstr "Adresse saisie"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_scale__m
+msgid "Medium"
+msgstr "Moyen"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__layout__minimal
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__layout__minimal
+msgid "Minimal"
+msgstr "Épurée"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Mobile"
+msgstr "Mobile"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__user_id
+msgid ""
+"Needed to resolve the person's appointment page, which goes through their "
+"resource."
+msgstr ""
+"Nécessaire pour résoudre la page de rendez-vous de la personne, qui passe "
+"par sa ressource."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_cron_next
+msgid "Next run"
+msgstr "Prochaine passe"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Next run:"
+msgstr "Prochaine passe :"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "No duration is configured for organization pages: nothing to extend."
+msgstr ""
+"Aucune durée n'est configurée pour les pages d'organisation : rien à "
+"repousser."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "No logo is available: the code comes out unbranded."
+msgstr "Aucun logo n'est disponible : le code sort sans marque."
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_logo_plate__none
+msgid "None"
+msgstr "Aucune"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__note
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_form
+msgid "Notes"
+msgstr "Remarques"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_sync.py:0
+msgid "Nothing to do. Check that creation or refresh is enabled above."
+msgstr ""
+"Rien à faire. Vérifiez que la création ou le rafraîchissement est activé ci-"
+"dessus."
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__show_vcard
+msgid "Offer the business card"
+msgstr "Offrir la carte de visite"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__show_theme_toggle
+msgid "Offer the light/dark toggle"
+msgstr "Offrir le bascule clair/sombre"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Office phone"
+msgstr "Téléphone au bureau"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_autorefresh
+msgid ""
+"On each run, reapplies the template to pages that have one. Links added by "
+"hand on a page are kept; only those from the template are replaced."
+msgstr ""
+"À chaque passe, réapplique le gabarit sur les pages qui en ont un. Les liens"
+" ajoutés à la main sur une page sont conservés ; seuls ceux venus du gabarit"
+" sont remplacés."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "One line under the title"
+msgstr "Une ligne sous le titre"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__headline
+msgid "One line under the title. The role, the city, whatever you like."
+msgstr "Une ligne sous le titre. Le rôle, la ville, ce qu'on veut."
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__kind__oneoff
+msgid "One-off"
+msgstr "Ponctuelle"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_oneoff_expiry_days
+msgid "One-off page lifetime (days)"
+msgstr "Durée de vie d'une page ponctuelle (jours)"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "One-off pages"
+msgstr "Pages ponctuelles"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "One-offs"
+msgstr "Ponctuelles"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Organization"
+msgstr "Organisation"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_org_expiry_days
+msgid "Organization page lifetime (days)"
+msgstr "Durée de vie d'une page d'organisation (jours)"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "Organization page to renew or close"
+msgstr "Page d'organisation à reconduire ou à fermer"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__target__org
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Organization pages"
+msgstr "Pages d'organisations"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Organization portal"
+msgstr "Portail de l'organisation"
+
+#. module: bf_linkpage
+#: model:res.groups,name:bf_linkpage.group_bf_linkpage_user
+msgid "Own page"
+msgstr "Sa propre page"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__page_id
+msgid "Page"
+msgstr "Page"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__page_count
+msgid "Page Count"
+msgstr "Nombre de pages"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.linkpage_public
+msgid "Page language"
+msgstr "Langue de la page"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__kind
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "Page type"
+msgstr "Nature"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__page_ids
+#: model:ir.ui.menu,name:bf_linkpage.menu_bf_linkpage_pages
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_list
+msgid "Pages"
+msgstr "Pages"
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__target__person
+msgid "Person pages"
+msgstr "Pages de personnes"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__avatar
+msgid "Photo"
+msgstr "Photo"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_logo_plate
+msgid "Plate behind the logo"
+msgstr "Cartouche derrière le logo"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__bio
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Presentation"
+msgstr "Présentation"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_preview
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "Preview unavailable."
+msgstr "Aperçu indisponible."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Projects on the portal"
+msgstr "Projets au portail"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__public_url
+msgid "Public address"
+msgstr "Adresse publique"
+
+#. module: bf_linkpage
+#: model:ir.module.category,description:bf_linkpage.module_category_linkpage
+msgid "Public link pages and signature QR codes."
+msgstr "Pages publiques de liens et QR de signature."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Publish"
+msgstr "Publier"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__state__published
+msgid "Published"
+msgstr "Publiée"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__res_config_settings__bf_linkpage_autocreate_state__published
+msgid "Published right away"
+msgstr "Publiée tout de suite"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__is_live
+msgid "Published, not archived and not expired."
+msgstr "Publiée, non archivée et non expirée."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "QR code"
+msgstr "Code QR"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_logo
+msgid "QR code logo"
+msgstr "Logo du code QR"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_warning
+msgid "Qr Warning"
+msgstr "Avertissement QR"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__layout__soft
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__layout__soft
+msgid "Raised cards"
+msgstr "Cartes en relief"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"Reapplies the template on each run. Links added by hand on a page are kept: "
+"only those from the template are replaced."
+msgstr ""
+"Réapplique le gabarit à chaque passe. Les liens ajoutés à la main sur une "
+"page sont conservés : seuls ceux venus du gabarit sont remplacés."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Reapply template"
+msgstr "Réappliquer le gabarit"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_autorefresh
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Refresh pages that follow a template"
+msgstr "Rafraîchir les pages qui suivent un gabarit"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__resolved_url
+msgid "Resolved address"
+msgstr "Adresse résolue"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_sync.py:0
+msgid "Run complete: %s page(s) updated."
+msgstr "Passe terminée : %s page(s) touchée(s)."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Run now"
+msgstr "Exécuter maintenant"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Scheduled run"
+msgstr "Passe planifiée"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_cron_active
+msgid "Scheduled run active"
+msgstr "Passe planifiée active"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Secure upload"
+msgstr "Dépôt sécurisé"
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__sequence
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__sequence
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__from_template
+msgid "Set by a template"
+msgstr "Posé par un gabarit"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Set the frequency"
+msgstr "Régler la fréquence"
+
+#. module: bf_linkpage
+#: model:ir.ui.menu,name:bf_linkpage.menu_bf_linkpage_settings
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Settings"
+msgstr "Réglages"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__show_company_logo
+msgid "Show the company logo"
+msgstr "Afficher le logo de l'entreprise"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Shown"
+msgstr "Affiché"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__qr_scale
+msgid "Size"
+msgstr "Taille"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__qr_scale__s
+msgid "Small (screen)"
+msgstr "Petit (écran)"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__is_social
+msgid "Social network"
+msgstr "Réseau social"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.linkpage_public
+msgid "Social networks"
+msgstr "Réseaux sociaux"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__layout__pills
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__layout__pills
+msgid "Solid buttons"
+msgstr "Boutons pleins"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__source_code
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__source_code
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__source_available
+msgid "Source available"
+msgstr "Source disponible"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Specific to the person"
+msgstr "Propre à la personne"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__state
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_autocreate_state
+msgid "State at creation"
+msgstr "État à la création"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Statistics"
+msgstr "Statistiques"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__headline
+msgid "Subtitle"
+msgstr "Sous-titre"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.linkpage_public
+msgid "Switch between the light and dark theme"
+msgstr "Basculer entre le thème clair et sombre"
+
+#. module: bf_linkpage
+#. odoo-javascript
+#: code:addons/bf_linkpage/static/src/js/linkpage_theme.js:0
+msgid "Switch to the dark theme"
+msgstr "Passer au thème sombre"
+
+#. module: bf_linkpage
+#. odoo-javascript
+#: code:addons/bf_linkpage/static/src/js/linkpage_theme.js:0
+msgid "Switch to the light theme"
+msgstr "Passer au thème clair"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__group_ids
+msgid "Target groups"
+msgstr "Groupes visés"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__source_res_model
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__source_res_model
+msgid "Target model"
+msgstr "Modèle visé"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_link__source_res_id
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__source_res_id
+msgid "Target record"
+msgstr "Enregistrement visé"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__layout__mono
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__layout__mono
+msgid "Technical"
+msgstr "Technique"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__template_id
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template_line__template_id
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_search
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_form
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_linkpage
+#: model:ir.actions.act_window,name:bf_linkpage.action_bf_linkpage_template
+#: model:ir.ui.menu,name:bf_linkpage.menu_bf_linkpage_templates
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_list
+msgid "Templates"
+msgstr "Gabarits"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "The URL slug \"%(slug)s\" is already taken by \"%(name)s\"%(etat)s."
+msgstr ""
+"L'identifiant URL « %(slug)s » est déjà pris par « %(name)s »%(etat)s."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "The URL slug \"%s\" appears twice in the same submission."
+msgstr "L'identifiant URL « %s » apparaît deux fois dans le même envoi."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"The URL slug \"%s\" is not valid: lowercase letters, digits and hyphens, "
+"without starting or ending with a hyphen."
+msgstr ""
+"L'identifiant URL « %s » n'est pas valide : minuscules, chiffres et traits "
+"d'union, sans commencer ni finir par un trait d'union."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "The URL slug \"%s\" is reserved."
+msgstr "L'identifiant URL « %s » est réservé."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "The accent color must be a six-digit hexadecimal, for example #29ABE2."
+msgstr ""
+"La couleur d'accent doit être un hexadécimal à six chiffres, par exemple "
+"#29ABE2."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__meet_url
+msgid ""
+"The address of a permanent room (Talk, video conference). It is not derived "
+"from any other module: it is an address specific to the person, pasted here "
+"once."
+msgstr ""
+"L'adresse d'une salle permanente (Talk, visioconférence). Elle n'est déduite"
+" d'aucun autre module : c'est une adresse propre à la personne, qu'on colle "
+"ici une fois."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_link.py:0
+msgid "The address of the link \"%(name)s\" must start with %(schemes)s."
+msgstr "L'adresse du lien « %(name)s » doit commencer par %(schemes)s."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_res_config_settings__bf_linkpage_guide_url_fr
+msgid ""
+"The address served by the \"User guide\" source. Empty: the link is not "
+"shown, rather than pointing to a guessed address."
+msgstr ""
+"L'adresse que sert la source « Guide d'utilisation ». Vide : le lien ne "
+"s'affiche pas, plutôt que de pointer une adresse devinée."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid ""
+"The address served by the \"User guide\" source. Left empty, the source "
+"resolves nothing and the link disappears from the page: a missing link costs"
+" less than a link that lands on a login screen."
+msgstr ""
+"L'adresse servie par la source « Guide d'utilisation ». Laissée vide, la "
+"source ne résout rien et le lien disparaît de la page : un lien absent coûte"
+" moins cher qu'un lien qui tombe sur un écran de connexion."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The code is read by contrast. It must stay clearly darker than its "
+"background, otherwise most devices cannot read it, even when it looks sharp "
+"on screen. A setting that breaks this rule falls back to black and white and"
+" says so above, rather than delivering a nice code that never scans."
+msgstr ""
+"Le code se lit par contraste. Il doit rester\n"
+"                                    nettement plus sombre que son fond, sinon la\n"
+"                                    plupart des appareils ne le lisent pas, même\n"
+"                                    lorsqu'il paraît net à l'écran. Un réglage qui\n"
+"                                    ne tient pas cette règle retombe sur le noir et\n"
+"                                    blanc et le dit ci-dessus, plutôt que de livrer\n"
+"                                    un beau code qui ne scanne jamais."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__qr_fill_color
+msgid ""
+"The color of the modules. It must stay clearly DARKER than the background: a"
+" light code on a dark background cannot be read by most devices."
+msgstr ""
+"La couleur des modules. Elle doit rester nettement plus SOMBRE que le fond :"
+" un code clair sur fond foncé n'est pas lu par la plupart des appareils."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__expiry_warned_on
+msgid ""
+"The expiry date for which a warning has already been sent. The announced "
+"DATE is kept rather than a boolean: extending the expiry changes the date, "
+"so the next warning goes out on its own, with no action or reset."
+msgstr ""
+"L'échéance pour laquelle un avertissement est déjà parti. On retient la DATE"
+" annoncée et non un booléen : repousser l'échéance change la date, donc le "
+"prochain avertissement repart de lui-même, sans geste ni remise à zéro."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_template__group_ids
+msgid ""
+"The groups whose members receive this template by default. Empty = the "
+"template is only applied by hand."
+msgstr ""
+"Les groupes dont les membres reçoivent ce gabarit par défaut. Vide = le "
+"gabarit ne s'applique qu'à la main."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_link.py:0
+msgid "The link \"%s\" uses a manual address but has none."
+msgstr "Le lien « %s » utilise une adresse saisie mais n'en a pas."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The links placed by the template will be replaced. Links added by hand stay."
+msgstr ""
+"Les liens posés par le gabarit seront remplacés. Les liens ajoutés à la main"
+" restent."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__visible_link_count
+msgid ""
+"The links whose source actually resolves. A gap with the total count is the "
+"only way to see that a source is silent."
+msgstr ""
+"Les liens dont la source résout réellement. Un écart avec le nombre total "
+"est la seule façon de voir qu'une source est muette."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "The logo could not be read as an image. The code comes out unbranded."
+msgstr "Le logo n'a pas pu être lu comme une image. Le code sort sans marque."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__qr_branded
+msgid ""
+"The logo hides some of the code's modules. Error correction compensates, and"
+" the share covered is capped at what stays readable."
+msgstr ""
+"Le logo masque des modules du code. La correction d'erreur compense, et la "
+"part occupée est bornée à ce qui reste lisible."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The logo hides some of the code's modules. Error correction compensates, and"
+" the share it covers is capped at what stays readable once printed small in "
+"a signature."
+msgstr ""
+"Le logo masque des modules du code. La correction\n"
+"                                    d'erreur compense, et la part qu'il occupe est\n"
+"                                    bornée à ce qui reste lisible une fois imprimé\n"
+"                                    petit dans une signature."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"The logo is an SVG file, which the image generator cannot embed. Upload a "
+"PNG version in \"QR code logo\" next to it; the code comes out unbranded in "
+"the meantime."
+msgstr ""
+"Le logo est un fichier SVG, que le générateur d'images ne sait pas "
+"incruster. Téléversez une version PNG dans « Logo du code QR » ci-contre ; "
+"le code sort sans marque en attendant."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__layout
+msgid ""
+"The look of the links. Independent of the light/dark theme: all four layouts"
+" exist in both tones."
+msgstr ""
+"L'allure des liens. Indépendante du thème clair/sombre : les quatre "
+"dispositions existent dans les deux tons."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_template_form
+msgid ""
+"The most specific template wins: one whose user belongs to a group takes "
+"precedence over the default template. In case of a tie, the sequence "
+"decides, so that the choice does not depend on the order of insertion in the"
+" database."
+msgstr ""
+"Le gabarit le plus spécifique gagne : celui dont\n"
+"                        l'usager est membre d'un groupe passe avant le gabarit\n"
+"                        par défaut. À égalité, la séquence tranche, pour que\n"
+"                        le choix ne dépende pas de l'ordre d'insertion en base."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "The page"
+msgstr "La page"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__slug
+msgid ""
+"The part of the address after /l/. Lowercase letters, digits and hyphens."
+msgstr ""
+"La partie de l'adresse après /l/. Minuscules, chiffres et traits d'union."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__advisor_user_id
+msgid ""
+"The person on our side this organization contacts: their calendar, email and"
+" secure upload are what the page resolves. Suggested at creation from the "
+"record's salesperson, then frozen: the salesperson can change for billing "
+"reasons without the page having to follow."
+msgstr ""
+"La personne de chez nous que cette organisation joint : c'est son agenda, "
+"son courriel et son dépôt sécurisé que la page résout. Proposé à la création"
+" depuis le vendeur de la fiche, puis figé : le vendeur peut changer pour des"
+" raisons de facturation sans que la page ait à suivre."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The person on our side whose calendar, email and secure upload the page "
+"resolves."
+msgstr ""
+"La personne de chez nous dont la page résout l'agenda, le courriel et le "
+"dépôt sécurisé."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__partner_id
+msgid ""
+"The person whose links this page gathers. The dynamic sources (email, phone,"
+" website) are read from this record."
+msgstr ""
+"La personne dont cette page rassemble les liens. Les sources dynamiques "
+"(courriel, téléphone, site) sont lues sur cette fiche."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The preview is the ACTUAL rendering: what you see is exactly what gets "
+"downloaded."
+msgstr ""
+"L'aperçu est le rendu RÉEL : ce que vous voyez\n"
+"                                    est exactement ce qui se télécharge."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__template_id
+msgid ""
+"The set of links placed at creation. Applying a template OVERWRITES the "
+"inherited links but keeps the links added by hand."
+msgstr ""
+"Le jeu de liens posé à la création. Appliquer un gabarit ÉCRASE les liens "
+"hérités mais laisse les liens ajoutés à la main."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__booking_slug
+msgid ""
+"The slug of the appointment type to open, when you do not want the one the "
+"search would pick. Leave empty to take the first public type linked to the "
+"person's resource, which is not necessarily the one they put in their "
+"signature."
+msgstr ""
+"Le slug du type de rendez-vous à ouvrir, quand on ne veut pas celui que la "
+"recherche choisirait. Laisser vide pour prendre le premier type public "
+"rattaché à la ressource de la personne, ce qui n'est pas forcément celui "
+"qu'elle met dans sa signature."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"The slug of the type to open. Without it, the appointment link IS NOT SHOWN:"
+" the search would take the first public type, which is the discovery "
+"meeting, and offer it to an existing client."
+msgstr ""
+"Le slug du type à ouvrir. Sans lui, le lien de rendez-vous NE S'AFFICHE PAS "
+": la recherche prendrait le premier type public, qui est la rencontre "
+"exploratoire, et l'offrirait à un client existant."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__qr_logo_plate
+msgid ""
+"The small square placed under the logo. \"Code color\" is useful when the "
+"logo and the background share the same hue: a blue logo on a blue background"
+" disappears. \"None\" places the logo directly on the code."
+msgstr ""
+"Le petit carré posé sous le logo. « Couleur du code » sert quand le logo et "
+"le fond partagent la même teinte : un logo bleu sur un fond bleu disparaît. "
+"« Aucune » colle le logo directement sur le code."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__name
+msgid "The title shown at the top of the public page."
+msgstr "Le titre affiché en haut de la page publique."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__show_theme_toggle
+msgid ""
+"The visitor's choice is kept in THEIR browser only. Nothing is written here,"
+" and nothing follows them from one device to another."
+msgstr ""
+"Le choix du visiteur est gardé dans SON navigateur seulement. Rien n'est "
+"écrit ici, et rien ne le suit d'un appareil à l'autre."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__theme
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__theme
+msgid "Theme"
+msgstr "Thème"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_template.py:0
+msgid ""
+"There can be only one default template for \"%s\". Uncheck it on the other "
+"one before checking it here."
+msgstr ""
+"Il ne peut y avoir qu'un seul gabarit par défaut pour « %s ». Retirez la "
+"case sur l'autre avant de la poser ici."
+
+#. module: bf_linkpage
+#: model:ir.model.constraint,message:bf_linkpage.constraint_bf_linkpage_slug_uniq
+msgid "This URL slug is already taken."
+msgstr "Cet identifiant URL est déjà pris."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid ""
+"This page closes on %(date)s, in %(jours)s day(s). After that date, its "
+"address returns a 404 to whoever received it. Use \"Extend expiry\" if the "
+"engagement continues."
+msgstr ""
+"Cette page ferme le %(date)s, dans %(jours)s jour(s). Passé cette date, son "
+"adresse rend un 404 à qui l'a reçue. Utilisez « Repousser l'échéance » si le"
+" mandat continue."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"This page has expired: its address returns a 404. A QR code already printed "
+"that points here no longer leads anywhere."
+msgstr ""
+"Cette page est expirée : son adresse rend un 404. Un QR\n"
+"                        déjà imprimé qui pointe ici ne mène plus nulle part."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.linkpage_public
+msgid "This page has no links to show yet."
+msgstr "Cette page n'a encore aucun lien à afficher."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__name
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "Toll-free"
+msgstr "Sans frais"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__slug
+msgid "URL slug"
+msgstr "Identifiant URL"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "Unrecognized color: the code is rendered in black on white."
+msgstr "Couleur non reconnue : le code est rendu en noir sur blanc."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage.py:0
+msgid "Unsupported operator on \"Expired\"."
+msgstr "Opérateur non supporté sur « Expirée »."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "Used to resolve the appointment page."
+msgstr "Sert à résoudre la page de rendez-vous."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_template__is_default
+msgid "Used when no group template matches."
+msgstr "Utilisé quand aucun gabarit de groupe ne correspond."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__url
+msgid "Used when the source is \"Manual address\"."
+msgstr "Utilisée quand la source est « Adresse saisie »."
+
+#. module: bf_linkpage
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "User guide"
+msgstr "Guide d'utilisation"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_guide_url_en
+msgid "User guide (English)"
+msgstr "Guide d'utilisation (anglais)"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_guide_url_fr
+msgid "User guide (French)"
+msgstr "Guide d'utilisation (français)"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "View page"
+msgstr "Voir la page"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__visit_count
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_list
+msgid "Visits"
+msgstr "Visites"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid ""
+"Visits count page views, clicks count departures to a link. A marked gap "
+"between the two means people arrive and leave without opening anything."
+msgstr ""
+"Les visites comptent les affichages de la page,\n"
+"                                    les clics comptent les départs vers un lien.\n"
+"                                    Un écart marqué entre les deux dit que les gens\n"
+"                                    arrivent et repartent sans rien ouvrir."
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "Warn before closing"
+msgstr "Avertir avant la fermeture"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_res_config_settings__bf_linkpage_org_warn_days
+msgid "Warn before expiry (days)"
+msgstr "Avertir avant l'échéance (jours)"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_linkpage
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__resolved_url
+msgid ""
+"What the link actually points to. Empty = the link is not shown on the "
+"public page."
+msgstr ""
+"Ce vers quoi le lien pointe réellement. Vide = le lien ne s'affiche pas sur "
+"la page publique."
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_link__source_code
+msgid ""
+"Where the address comes from. \"Manual address\" uses the URL field; the "
+"others resolve it from the database on every display."
+msgstr ""
+"D'où vient l'adresse. « Adresse saisie » utilise le champ URL ; les autres "
+"la résolvent depuis la base à chaque affichage."
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "X"
+msgstr "X"
+
+#. module: bf_linkpage
+#. odoo-python
+#: code:addons/bf_linkpage/models/linkpage_source.py:0
+msgid "YouTube"
+msgstr "YouTube"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "flexible-meeting"
+msgstr "rencontre-flexible"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "https://example.com/guide/"
+msgstr "https://exemple.com/guide/"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.res_config_settings_view_form
+msgid "https://example.com/guide/en/"
+msgstr "https://exemple.com/guide/en/"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "https://…"
+msgstr "https://…"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "https://…/r/MyRoom"
+msgstr "https://…/r/MaSalle"
+
+#. module: bf_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
+msgid "jane-doe"
+msgstr "jane-doe"

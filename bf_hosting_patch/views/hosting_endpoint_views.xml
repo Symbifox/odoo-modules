@@ -31,7 +31,7 @@
                 <button name="action_view_systems" type="object"
                         class="oe_stat_button" icon="fa-desktop"
                         invisible="system_count == 0">
-                    <field name="system_count" widget="statinfo" string="Systèmes"/>
+                    <field name="system_count" widget="statinfo" string="Systems"/>
                 </button>
             </div>
 
@@ -39,19 +39,16 @@
                  d'héritage, et le formulaire parent porte deux `web_ribbon`
                  que le nom seul ne distingue pas. -->
             <xpath expr="//div[hasclass('oe_title')]" position="before">
-                <widget name="web_ribbon" title="Muet"
+                <widget name="web_ribbon" title="Silent"
                         bg_color="text-bg-danger"
                         invisible="patch_state != 'stale'"/>
             </xpath>
 
             <notebook position="inside">
-                <page string="Mises à jour" name="patch">
+                <page string="Updates" name="patch">
                     <div class="alert alert-info" role="status"
                          invisible="system_count != 0">
-                        Aucun système enrôlé sur cette machine. Le parc étant
-                        presque tout en double amorçage, il en faut un par côté :
-                        générer un code d'enrôlement, poser l'agent, recommencer
-                        pour l'autre système.
+                        No system is enrolled on this machine. Since the fleet is almost entirely dual-boot, one is needed per side: generate an enrollment code, install the agent, then repeat for the other system.
                     </div>
                     <group>
                         <group string="Machine">
@@ -63,7 +60,7 @@
                                    invisible="not server_id"/>
                             <button name="action_generate_enrol_code"
                                     type="object"
-                                    string="Générer un code d'enrôlement"
+                                    string="Generate an enrollment code"
                                     class="btn-secondary"/>
                         </group>
                     </group>
@@ -92,14 +89,14 @@
         <field name="arch" type="xml">
             <search position="inside">
                 <separator/>
-                <filter name="patch_stale" string="Machines muettes"
+                <filter name="patch_stale" string="Silent machines"
                         domain="[('patch_state', '=', 'stale')]"/>
-                <filter name="patch_security" string="Sécurité en attente"
+                <filter name="patch_security" string="Security updates pending"
                         domain="[('patch_state', '=', 'security')]"/>
-                <filter name="patch_unmanaged" string="Sans système suivi"
+                <filter name="patch_unmanaged" string="No tracked system"
                         domain="[('patch_state', '=', 'unmanaged')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="by_patch_state" string="État des mises à jour"
+                <group expand="0" string="Group by">
+                    <filter name="by_patch_state" string="Update status"
                             context="{'group_by': 'patch_state'}"/>
                 </group>
             </search>
@@ -107,7 +104,7 @@
     </record>
 
     <record id="hosting_endpoint_action_patch" model="ir.actions.act_window">
-        <field name="name">État des mises à jour</field>
+        <field name="name">Update status</field>
         <field name="res_model">hosting.endpoint</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('patch_managed', '=', True)]</field>

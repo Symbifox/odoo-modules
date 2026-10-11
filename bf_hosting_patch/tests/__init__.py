@@ -7,3 +7,4 @@ from . import test_patch_job
 from . import test_validation_terrain
 from . import test_dashboard_card
 from . import test_lecteurs_maintenance
+from . import test_langue

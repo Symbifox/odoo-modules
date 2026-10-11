@@ -30,6 +30,7 @@
  * d'itérations et son propre témoin.
  */
 
+import { _t } from "@web/core/l10n/translation";
 import {
     deriveKey, encryptText, decryptText, toB64, randomBytes,
 } from "./otp_crypto";
@@ -112,17 +113,17 @@ export class PhraseIncorrecte extends Error {}
 
 export async function lireExport(data, phrase) {
     if (!estUnExportSymbifox(data)) {
-        throw new Error("Ce fichier n'est pas un export Symbifox.");
+        throw new Error(_t("This file is not a Symbifox export."));
     }
     if (data.version > FORMAT_VERSION) {
         throw new Error(
-            `Cet export est en version ${data.version}, cette page lit jusqu'à ` +
-            `la ${FORMAT_VERSION}. Mettez le module à jour avant d'importer.`
+            _t("This export is version %(version)s; this page reads up to version %(max)s. Update the module before importing.",
+                { version: data.version, max: FORMAT_VERSION })
         );
     }
     const kdf = data.kdf || {};
     if ((kdf.name || "PBKDF2-SHA256") !== "PBKDF2-SHA256") {
-        throw new Error(`Dérivation inconnue : ${kdf.name}`);
+        throw new Error(_t("Unknown key derivation: %s", kdf.name));
     }
     const cle = await deriveKey(phrase, kdf.salt, kdf.iterations || 600000);
     try {
@@ -228,11 +229,8 @@ export function construireExportClair(tokens) {
         fichier: {
             format: FORMAT_CLAIR,
             version: FORMAT_VERSION,
-            AVERTISSEMENT:
-                "Ce fichier contient les graines de vos tokens EN CLAIR. " +
-                "Qui l'ouvre peut produire vos codes à usage unique, sans " +
-                "mot de passe et sans limite de temps. Rangez-le comme vous " +
-                "rangeriez vos mots de passe, ou effacez-le dès qu'il a servi.",
+            // Dans la langue de qui exporte : c'est elle ou lui qui ouvrira le fichier.
+            AVERTISSEMENT: _t("This file contains your token seeds IN PLAINTEXT. Whoever opens it can generate your one-time codes, with no password and no time limit. Store it as you would your passwords, or delete it as soon as it has served its purpose."),
             exported_at: new Date().toISOString(),
             tokens: lignes,
         },

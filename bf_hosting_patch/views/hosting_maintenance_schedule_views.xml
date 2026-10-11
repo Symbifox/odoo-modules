@@ -28,7 +28,7 @@
         <field name="inherit_id" ref="hosting_management.hosting_maintenance_schedule_view_tree"/>
         <field name="arch" type="xml">
             <field name="service_id" position="after">
-                <field name="target_label" string="Cible" optional="show"/>
+                <field name="target_label" string="Target" optional="show"/>
             </field>
         </field>
     </record>

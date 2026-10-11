@@ -24,7 +24,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     bf_otp_token_count = fields.Integer(
-        string='Tokens OTP', compute='_compute_bf_otp_token_count',
+        string="OTP tokens", compute='_compute_bf_otp_token_count',
     )
 
     def _compute_bf_otp_token_count(self):
@@ -42,7 +42,7 @@ class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     bf_otp_token_count = fields.Integer(
-        string='Tokens OTP', compute='_compute_bf_otp_token_count',
+        string="OTP tokens", compute='_compute_bf_otp_token_count',
     )
 
     def _compute_bf_otp_token_count(self):
@@ -84,7 +84,7 @@ class BfOtpTokenRattachement(models.Model):
         """Ouvre l'inventaire filtré sur ce client ou ce projet."""
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Tokens OTP : %s', titre),
+            'name': _("OTP tokens: %s", titre),
             'res_model': 'bf.otp.token',
             'view_mode': 'list,form',
             'domain': [(champ, '=', cible_id)],

@@ -25,13 +25,18 @@ Deux règles gouvernent tout ce fichier.
 import logging
 
 from odoo import api, models
+from odoo.tools import LazyTranslate
+
+# Les libellés du catalogue sont posés au chargement du module, sans langue :
+# paresseux ici, traduits dans la langue de l'usager par `_selection`.
+_lt = LazyTranslate(__name__)
 
 _logger = logging.getLogger(__name__)
 
 
 class BfLinkpageSource(models.AbstractModel):
     _name = "bf.linkpage.source"
-    _description = "Registre des sources de liens dynamiques"
+    _description = "Dynamic link source registry"
 
     # ── Le catalogue ─────────────────────────────────────────────────────────
 
@@ -49,187 +54,188 @@ class BfLinkpageSource(models.AbstractModel):
         return [
             {
                 "code": "manual",
-                "label": "Adresse saisie",
+                "label": _lt("Manual address"),
                 "provider": False,
-                "help": "L'URL est écrite à la main dans le lien.",
+                "help": "The URL is typed by hand in the link.",
             },
             {
                 "code": "appointment",
-                "label": "Prise de rendez-vous",
+                "label": _lt("Appointment booking"),
                 "provider": "resource.booking.type",
-                "help": "La page publique de rendez-vous de la personne. Suit "
-                        "son slug : si le slug change, le lien change avec lui.",
+                "help": "The person's public appointment page. Follows "
+                        "their slug: if the slug changes, the link "
+                        "changes with it.",
             },
             {
                 "code": "securetransfer",
-                "label": "Dépôt sécurisé",
+                "label": _lt("Secure upload"),
                 "provider": "secure.transfer.brand",
-                "help": "La page de dépôt de fichiers /to/<slug>, pour que "
-                        "quelqu'un envoie des documents sans pièce jointe.",
+                "help": "The /to/<slug> file upload page, so that someone "
+                        "can send documents without an attachment.",
             },
             {
                 "code": "advisor_booking",
-                "label": "Rendez-vous avec le conseiller",
+                "label": _lt("Appointment with the advisor"),
                 "provider": "resource.booking.type",
-                "help": "La page de rendez-vous du conseiller inscrit sur la "
-                        "page d'organisation. Rien à voir avec la source "
-                        "« Prise de rendez-vous », qui lit la personne DONT "
-                        "la page parle.",
+                "help": "The appointment page of the advisor set on the "
+                        "organization page. Unrelated to the "
+                        "\"Appointment booking\" source, which reads the "
+                        "person the page is ABOUT.",
             },
             {
                 "code": "advisor_email",
-                "label": "Écrire au conseiller",
+                "label": _lt("Email the advisor"),
                 "provider": False,
-                "help": "mailto: du conseiller inscrit sur la page "
-                        "d'organisation.",
+                "help": "mailto: of the advisor set on the organization page.",
             },
             {
                 "code": "advisor_transfer",
-                "label": "Dépôt sécurisé du conseiller",
+                "label": _lt("Advisor's secure upload"),
                 "provider": "secure.transfer.brand",
-                "help": "La page de dépôt /to/<slug> du conseiller, pour que "
-                        "l'organisation envoie des documents sans pièce "
-                        "jointe.",
+                "help": "The advisor's /to/<slug> upload page, so that "
+                        "the organization can send documents without an "
+                        "attachment.",
             },
             {
                 "code": "org_portal",
-                "label": "Portail de l'organisation",
+                "label": _lt("Organization portal"),
                 "provider": False,
-                "help": "Le portail client. ⚠️ Ne résout QUE si au moins une "
-                        "personne de l'organisation a un compte : sans "
-                        "compte, le lien n'ouvrirait qu'un écran de connexion.",
+                "help": "The client portal. ⚠️ Resolves ONLY if at least "
+                        "one person in the organization has an account: "
+                        "without an account, the link would only open a "
+                        "login screen.",
             },
             {
                 "code": "org_invoices",
-                "label": "Factures au portail",
+                "label": _lt("Invoices on the portal"),
                 "provider": "account.move",
-                "help": "Les factures de l'organisation au portail. Mêmes "
-                        "conditions que le portail, plus au moins une facture "
-                        "publiée.",
+                "help": "The organization's invoices on the portal. Same "
+                        "conditions as the portal, plus at least one "
+                        "posted invoice.",
             },
             {
                 "code": "org_projects",
-                "label": "Projets au portail",
+                "label": _lt("Projects on the portal"),
                 "provider": "project.project",
-                "help": "Les projets de l'organisation au portail. Mêmes "
-                        "conditions que le portail, plus au moins un projet "
-                        "actif dont la visibilité est « portail ».",
+                "help": "The organization's projects on the portal. Same "
+                        "conditions as the portal, plus at least one "
+                        "active project whose visibility is \"portal\".",
             },
             {
                 "code": "guide",
-                "label": "Guide d'utilisation",
+                "label": _lt("User guide"),
                 "provider": False,
-                "help": "Le guide d'utilisation, dans la langue de la page. "
-                        "L'adresse vient des réglages ; sans réglage, le lien "
-                        "ne s'affiche pas plutôt que de pointer une adresse "
-                        "devinée.",
+                "help": "The user guide, in the page's language. The "
+                        "address comes from the settings; without a "
+                        "setting, the link is not shown rather than "
+                        "pointing to a guessed address.",
             },
             {
                 "code": "partner_email",
-                "label": "Courriel du contact",
+                "label": _lt("Contact email"),
                 "provider": False,
-                "help": "mailto: tiré de la fiche du contact.",
+                "help": "mailto: taken from the contact record.",
             },
             {
                 "code": "partner_phone",
-                "label": "Téléphone du contact (mobile d'abord)",
+                "label": _lt("Contact phone (mobile first)"),
                 "provider": False,
-                "help": "Le mobile de la fiche contact, à défaut son téléphone. "
-                        "Conservé pour les pages existantes ; préférez une des "
-                        "sources ci-dessous, qui nomment le numéro qu'elles "
-                        "servent au lieu de le deviner.",
+                "help": "The mobile number from the contact record, "
+                        "otherwise its phone. Kept for existing pages; "
+                        "prefer one of the sources below, which name the "
+                        "number they serve instead of guessing it.",
             },
             {
                 "code": "phone_work",
-                "label": "Téléphone au bureau",
+                "label": _lt("Office phone"),
                 "provider": False,
-                "help": "Le téléphone de travail de la fiche employé, à défaut "
-                        "celui de la société. C'est le numéro qu'on met dans "
-                        "une signature.",
+                "help": "The work phone from the employee record, "
+                        "otherwise the company's. It is the number people "
+                        "put in a signature.",
             },
             {
                 "code": "phone_mobile",
-                "label": "Mobile",
+                "label": _lt("Mobile"),
                 "provider": False,
-                "help": "Le mobile de la fiche contact, à défaut celui de la "
-                        "fiche employé.",
+                "help": "The mobile number from the contact record, "
+                        "otherwise the one from the employee record.",
             },
             {
                 "code": "phone_direct",
-                "label": "Ligne directe",
+                "label": _lt("Direct line"),
                 "provider": False,
-                "help": "Le champ « téléphone » de la fiche contact, celui "
-                        "qu'on garde pour une ligne personnelle.",
+                "help": "The \"phone\" field of the contact record, the "
+                        "one kept for a personal line.",
             },
             {
                 "code": "phone_tollfree",
-                "label": "Sans frais",
+                "label": _lt("Toll-free"),
                 "provider": False,
-                "help": "Le numéro sans frais de la société. ⚠️ Il est rangé "
-                        "dans le champ « mobile » de la fiche société, faute "
-                        "d'un champ dédié dans Odoo.",
+                "help": "The company's toll-free number. ⚠️ It is stored "
+                        "in the \"mobile\" field of the company record, "
+                        "for lack of a dedicated field in Odoo.",
             },
             {
                 "code": "meet",
-                "label": "Rencontre instantanée",
-                "help": "La salle permanente saisie sur la page.",
+                "label": _lt("Instant meeting"),
+                "help": "The permanent room entered on the page.",
                 "provider": False,
             },
             {
                 "code": "social_linkedin",
-                "label": "LinkedIn",
+                "label": _lt("LinkedIn"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-linkedin",
-                "help": "Le profil de la personne s'il est saisi sur sa fiche, "
-                        "sinon la page de l'entreprise.",
+                "help": "The person's profile if entered on their record, "
+                        "otherwise the company page.",
             },
             {
                 "code": "social_github",
-                "label": "GitHub",
+                "label": _lt("GitHub"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-github",
-                "help": "Le compte GitHub de l'entreprise.",
+                "help": "The company's GitHub account.",
             },
             {
                 "code": "social_instagram",
-                "label": "Instagram",
+                "label": _lt("Instagram"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-instagram",
-                "help": "Le compte Instagram de l'entreprise.",
+                "help": "The company's Instagram account.",
             },
             {
                 "code": "social_facebook",
-                "label": "Facebook",
+                "label": _lt("Facebook"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-facebook",
-                "help": "La page Facebook de l'entreprise.",
+                "help": "The company's Facebook page.",
             },
             {
                 "code": "social_youtube",
-                "label": "YouTube",
+                "label": _lt("YouTube"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-youtube",
-                "help": "La chaîne YouTube de l'entreprise.",
+                "help": "The company's YouTube channel.",
             },
             {
                 "code": "social_twitter",
-                "label": "X",
+                "label": _lt("X"),
                 "provider": False,
                 "social": True,
                 "icon": "fa-brands fa-x-twitter",
-                "help": "Le compte X de l'entreprise. Le champ Odoo s'appelle "
-                        "encore `social_twitter`.",
+                "help": "The company's X account. The Odoo field is still "
+                        "called `social_twitter`.",
             },
             {
                 "code": "partner_website",
-                "label": "Site web du contact",
+                "label": _lt("Contact website"),
                 "provider": False,
-                "help": "Le champ « site web » de la fiche du contact.",
+                "help": "The \"website\" field of the contact record.",
             },
         ]
 
@@ -243,7 +249,11 @@ class BfLinkpageSource(models.AbstractModel):
         sans dire pourquoi. On préfère offrir l'option et la marquer
         indisponible à l'écran.
         """
-        return [(s["code"], s["label"]) for s in self._sources()]
+        # Le libellé est lu HORS de l'appel : l'extracteur d'Odoo prend toute chaîne
+        # écrite entre les parenthèses de `_()`, et `_(s["label"])` mettait « label »
+        # au catalogue.
+        sources = [(s["code"], s["label"]) for s in self._sources()]
+        return [(code, self.env._(libelle)) for code, libelle in sources]
 
     @api.model
     def _social_codes(self):

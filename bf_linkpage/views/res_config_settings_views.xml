@@ -10,15 +10,15 @@
                      pour compiler la page ; sans lui, `toStringExpression(null)`
                      fait tomber TOUTE la page des paramètres, pas seulement ce
                      bloc, et l'erreur n'apparaît qu'au navigateur. -->
-                <app string="Pages de liens" name="bf_linkpage"
+                <app string="Link pages" name="bf_linkpage"
                      logo="/bf_linkpage/static/description/icon.png">
 
-                    <block title="Automatisation pour les employés"
+                    <block title="Automation for employees"
                            name="bf_linkpage_auto_block">
 
                         <setting id="bf_linkpage_autocreate_setting"
-                                 string="Créer une page pour chaque employé"
-                                 help="Une passe périodique crée la page manquante des employés actifs qui ont un contact ou un compte utilisateur. Elle rattrape aussi ceux arrivés avant l'activation.">
+                                 string="Create a page for each employee"
+                                 help="A periodic run creates the missing page for active employees who have a contact or a user account. It also catches up those who arrived before activation.">
                             <field name="bf_linkpage_autocreate"/>
                             <div class="content-group mt16" invisible="not bf_linkpage_autocreate">
                                 <div class="row">
@@ -26,87 +26,86 @@
                                     <field name="bf_linkpage_autocreate_state"/>
                                 </div>
                                 <div class="text-muted mt8">
-                                    Une page publiée expose le courriel et le téléphone
-                                    de travail de la personne sur une URL publique.
+                                    A published page exposes the person's work email and phone on a public URL.
                                 </div>
                             </div>
                         </setting>
 
                         <setting id="bf_linkpage_autorefresh_setting"
-                                 string="Rafraîchir les pages qui suivent un gabarit"
-                                 help="Réapplique le gabarit à chaque passe. Les liens ajoutés à la main sur une page sont conservés : seuls ceux venus du gabarit sont remplacés.">
+                                 string="Refresh pages that follow a template"
+                                 help="Reapplies the template on each run. Links added by hand on a page are kept: only those from the template are replaced.">
                             <field name="bf_linkpage_autorefresh"/>
                         </setting>
 
                         <setting id="bf_linkpage_cron_setting"
-                                 string="Passe planifiée"
-                                 help="La création et le rafraîchissement passent par la même tâche planifiée.">
+                                 string="Scheduled run"
+                                 help="Creation and refresh go through the same scheduled job.">
                             <div class="content-group">
                                 <div class="text-muted">
                                     <field name="bf_linkpage_cron_active" invisible="1"/>
                                     <span invisible="not bf_linkpage_cron_active">
-                                        Prochaine passe :
+                                        Next run:
                                         <field name="bf_linkpage_cron_next" readonly="1" class="oe_inline"/>
                                     </span>
                                     <span invisible="bf_linkpage_cron_active" class="text-warning">
-                                        La tâche planifiée est arrêtée. Rien ne se fera tout seul.
+                                        The scheduled job is stopped. Nothing will happen on its own.
                                     </span>
                                 </div>
                                 <div class="mt8">
                                     <button type="object" name="action_bf_linkpage_sync_now"
-                                            string="Exécuter maintenant" class="btn-primary"/>
+                                            string="Run now" class="btn-primary"/>
                                     <button type="object" name="action_bf_linkpage_open_cron"
-                                            string="Régler la fréquence" class="btn-link"/>
+                                            string="Set the frequency" class="btn-link"/>
                                 </div>
                             </div>
                         </setting>
                     </block>
 
-                    <block title="Pages ponctuelles" name="bf_linkpage_oneoff_block">
+                    <block title="One-off pages" name="bf_linkpage_oneoff_block">
                         <setting id="bf_linkpage_expiry_setting"
-                                 string="Durée de vie par défaut"
-                                 help="Une page ponctuelle n'a pas de propriétaire : elle est armée d'une expiration dès sa création, et se ferme d'elle-même sans qu'aucune tâche n'ait à tourner. Une valeur vide ou nulle retombe sur 90 jours.">
+                                 string="Default lifetime"
+                                 help="A one-off page has no owner: it is armed with an expiry from creation, and closes on its own without any job having to run. An empty or zero value falls back to 90 days.">
                             <div class="content-group">
                                 <div class="row">
                                     <field name="bf_linkpage_oneoff_expiry_days" class="col-lg-3"/>
-                                    <span class="col-lg-3 o_light_label">jours</span>
+                                    <span class="col-lg-3 o_light_label">days</span>
                                 </div>
                             </div>
                         </setting>
                     </block>
 
-                    <block title="Pages d'organisations" name="bf_linkpage_org_block">
+                    <block title="Organization pages" name="bf_linkpage_org_block">
                         <setting id="bf_linkpage_org_expiry_setting"
-                                 string="Durée de vie par défaut"
-                                 help="Une page d'organisation naît avec une échéance. C'est le seul garde-fou contre la page d'accueil restée ouverte trois ans après la fin du mandat : son adresse est opaque, donc personne ne la retrouvera pour la fermer.">
+                                 string="Default lifetime"
+                                 help="An organization page is created with an expiry date. It is the only safeguard against a welcome page left open three years after the engagement ends: its address is opaque, so no one will find it again to close it.">
                             <div class="content-group">
                                 <div class="row">
                                     <field name="bf_linkpage_org_expiry_days" class="col-lg-3"/>
-                                    <span class="col-lg-3 o_light_label">jours</span>
+                                    <span class="col-lg-3 o_light_label">days</span>
                                 </div>
                             </div>
                         </setting>
                         <setting id="bf_linkpage_org_warn_setting"
-                                 string="Avertir avant la fermeture"
-                                 help="Une page ponctuelle qui expire a fait son travail. Une page d'organisation qui expire pendant un mandat rend un 404 au client sans prévenir personne : cette passe quotidienne avertit le conseiller avant que ça arrive.">
+                                 string="Warn before closing"
+                                 help="A one-off page that expires has done its job. An organization page that expires during an engagement returns a 404 to the client without warning anyone: this daily run warns the advisor before that happens.">
                             <div class="content-group">
                                 <div class="row">
                                     <field name="bf_linkpage_org_warn_days" class="col-lg-3"/>
-                                    <span class="col-lg-3 o_light_label">jours avant</span>
+                                    <span class="col-lg-3 o_light_label">days before</span>
                                 </div>
                             </div>
                         </setting>
                         <setting id="bf_linkpage_guide_setting"
-                                 string="Guide d'utilisation"
-                                 help="L'adresse servie par la source « Guide d'utilisation ». Laissée vide, la source ne résout rien et le lien disparaît de la page : un lien absent coûte moins cher qu'un lien qui tombe sur un écran de connexion.">
+                                 string="User guide"
+                                 help="The address served by the &quot;User guide&quot; source. Left empty, the source resolves nothing and the link disappears from the page: a missing link costs less than a link that lands on a login screen.">
                             <div class="content-group">
                                 <div class="row">
                                     <field name="bf_linkpage_guide_url_fr" class="col-lg-8"
-                                           placeholder="https://exemple.com/guide/"/>
+                                           placeholder="https://example.com/guide/"/>
                                 </div>
                                 <div class="row">
                                     <field name="bf_linkpage_guide_url_en" class="col-lg-8"
-                                           placeholder="https://exemple.com/guide/en/"/>
+                                           placeholder="https://example.com/guide/en/"/>
                                 </div>
                             </div>
                         </setting>
@@ -117,7 +116,7 @@
     </record>
 
     <record id="action_bf_linkpage_settings" model="ir.actions.act_window">
-        <field name="name">Réglages des pages de liens</field>
+        <field name="name">Link page settings</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>

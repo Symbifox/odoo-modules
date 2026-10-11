@@ -168,6 +168,12 @@ def _authentifie(fn):
         # téléphone s'annulaient l'un l'autre sous REPEATABLE READ.
         appareil._touch_last_seen()
         request.update_env(user=appareil.user_id.id)
+        # Le téléphone n'envoie ni cookie de session ni Accept-Language : sans ceci, les
+        # messages des modèles (`_()`) renvoyés à l'application, et qu'elle affiche tels
+        # quels, sortiraient dans la langue par défaut de la requête, pas dans la sienne.
+        installees = {code for code, _nom in request.env["res.lang"].get_installed()}
+        langue = appareil.user_id.lang
+        request.update_context(lang=langue if langue in installees else "en_US")
         try:
             # 🔴 Le point de reprise n'est PAS décoratif. Attraper une erreur
             # métier et rendre un JSON au lieu de la laisser remonter empêche
@@ -287,7 +293,7 @@ class BfOtpMobileApi(http.Controller):
         state = kw.get("state") or ""
         if not _redirection_permise(redirect):
             return request.make_response(
-                "Redirection non autorisée.", status=400,
+                request.env._("Redirect not allowed."), status=400,
                 headers=[("Content-Type", "text/plain; charset=utf-8")])
 
         separateur = "&" if "?" in redirect else "?"
@@ -383,8 +389,10 @@ class BfOtpMobileApi(http.Controller):
         _exiger_base64(d.get("prf_salt"), "prf_salt", 16, 64)
         _exiger_base64(d.get("wrapped_secret"), "wrapped_secret", 32, 256)
         _exiger_base64(d.get("wrapped_iv"), "wrapped_iv", 12, 16)
+        # Le nom par défaut se lit dans le coffre de la personne : dans sa langue, que
+        # `_authentifie` a posée sur la requête.
         request.env["bf.otp.vault"].add_credential(
-            (d.get("name") or "Téléphone").strip()[:120],
+            (d.get("name") or request.env._("Phone")).strip()[:120],
             d.get("credential_id"), d.get("prf_salt"),
             d.get("wrapped_secret"), d.get("wrapped_iv"))
         return _json({"ok": True, "vault": request.env["bf.otp.vault"].get_my_vault()})

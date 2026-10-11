@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="linkpage_public" name="Page de liens">
+    <template id="linkpage_public" name="Link page">
         <t t-call="web.frontend_layout">
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
@@ -45,7 +45,7 @@
                      s'indexer sous SA propre adresse. `hreflang` dit au
                      navigateur et aux moteurs ce que chaque lien vise. -->
                 <nav t-if="len(languages) > 1" class="bf-linkpage__langs"
-                     aria-label="Langue de la page">
+                     aria-label="Page language">
                     <!-- ⚠️ NE PAS nommer cette variable `lang`. Les valeurs
                          QWeb sont UN SEUL dictionnaire partagé avec le gabarit
                          appelant : une variable de boucle déborde vers le haut.
@@ -75,7 +75,7 @@
                         data-bf-theme-toggle="1"
                         hidden="hidden"
                         aria-pressed="false"
-                        aria-label="Basculer entre le thème clair et sombre">
+                        aria-label="Switch between the light and dark theme">
                     <i class="fa fa-moon-o" aria-hidden="true"/>
                 </button>
 
@@ -111,7 +111,7 @@
                              devenait « <i .../>\n   <span>Ajouter…</span> »,
                              indentation comprise, et la traduction cessait de
                              s'appliquer au premier reformatage du gabarit. -->
-                        <div class="bf-linkpage__vcard-label">Ajouter à mes contacts</div>
+                        <div class="bf-linkpage__vcard-label">Add to my contacts</div>
                     </a>
 
                     <nav class="bf-linkpage__links">
@@ -133,7 +133,7 @@
                     </nav>
 
                     <p t-if="not links and not socials" class="bf-linkpage__empty">
-                        Cette page n'a encore aucun lien à afficher.
+                        This page has no links to show yet.
                     </p>
 
                     <!-- Les réseaux : une rangée d'icônes, sans libellé. Le
@@ -144,7 +144,7 @@
                          préfixer `fa`, qui pointe une autre famille et
                          écraserait la police des icônes de marque. -->
                     <nav t-if="socials" class="bf-linkpage__socials"
-                         aria-label="Réseaux sociaux">
+                         aria-label="Social networks">
                         <a t-foreach="socials" t-as="social"
                            class="bf-linkpage__social"
                            t-attf-href="/l/#{page.slug}/go/#{social.id}"

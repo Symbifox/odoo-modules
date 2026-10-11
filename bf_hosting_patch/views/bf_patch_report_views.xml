@@ -13,7 +13,7 @@
                 <field name="endpoint_id" optional="hide"/>
                 <field name="package_manager"/>
                 <field name="pending_known" optional="show"/>
-                <field name="pending_count" sum="En attente"/>
+                <field name="pending_count" sum="Pending"/>
                 <field name="pending_security_count"/>
                 <field name="pending_delta"/>
                 <field name="auto_update_mode"/>
@@ -38,7 +38,7 @@
                         <h3><field name="report_date" readonly="1"/></h3>
                     </div>
                     <group>
-                        <group string="Système">
+                        <group string="System">
                             <field name="os_release"/>
                             <field name="kernel_running"/>
                             <field name="kernel_installed"/>
@@ -46,7 +46,7 @@
                             <field name="os_support_end"/>
                             <field name="os_support_state"/>
                         </group>
-                        <group string="Mises à jour">
+                        <group string="Updates">
                             <field name="package_manager"/>
                             <field name="pending_known"/>
                             <field name="pending_count"/>
@@ -55,18 +55,18 @@
                             <field name="auto_update_mode"/>
                             <field name="auto_update_detail"/>
                         </group>
-                        <group string="Redémarrage">
+                        <group string="Reboot">
                             <field name="reboot_required"/>
                             <field name="reboot_pending_since"/>
                             <field name="reboot_packages"/>
                         </group>
-                        <group string="Disque">
+                        <group string="Disk">
                             <field name="disk_root_pct"/>
                             <field name="disk_boot_pct"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Paquets en attente" name="packages">
+                        <page string="Pending packages" name="packages">
                             <field name="package_ids" readonly="1">
                                 <list>
                                     <field name="name"/>
@@ -77,7 +77,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Charge utile" name="payload">
+                        <page string="Payload" name="payload">
                             <field name="payload" readonly="1"/>
                         </page>
                     </notebook>
@@ -94,19 +94,19 @@
                 <field name="system_id"/>
                 <field name="endpoint_id"/>
                 <field name="os_release"/>
-                <filter name="has_security" string="Sécurité en attente"
+                <filter name="has_security" string="Security updates pending"
                         domain="[('pending_security_count', '&gt;', 0)]"/>
-                <filter name="needs_reboot" string="Redémarrage requis"
+                <filter name="needs_reboot" string="Reboot required"
                         domain="[('reboot_required', '=', True)]"/>
                 <separator/>
-                <filter name="last_week" string="7 derniers jours"
+                <filter name="last_week" string="Last 7 days"
                         domain="[('report_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="by_system" string="Système"
+                <group expand="0" string="Group by">
+                    <filter name="by_system" string="System"
                             context="{'group_by': 'system_id'}"/>
                     <filter name="by_endpoint" string="Machine"
                             context="{'group_by': 'endpoint_id'}"/>
-                    <filter name="by_manager" string="Gestionnaire de paquets"
+                    <filter name="by_manager" string="Package manager"
                             context="{'group_by': 'package_manager'}"/>
                     <filter name="by_date" string="Date"
                             context="{'group_by': 'report_date:day'}"/>
@@ -116,7 +116,7 @@
     </record>
 
     <record id="bf_patch_report_action" model="ir.actions.act_window">
-        <field name="name">Relevés de mise à jour</field>
+        <field name="name">Update reports</field>
         <field name="res_model">bf.patch.report</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="bf_patch_report_view_search"/>

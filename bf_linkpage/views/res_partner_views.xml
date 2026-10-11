@@ -13,7 +13,7 @@
                         name="action_view_linkpages"
                         groups="bf_linkpage.group_bf_linkpage_user"
                         invisible="linkpage_count == 0">
-                    <field name="linkpage_count" widget="statinfo" string="Pages de liens"/>
+                    <field name="linkpage_count" widget="statinfo" string="Link pages"/>
                 </button>
                 <!-- Le bouton de création ne s'offre qu'aux SOCIÉTÉS, et
                      seulement tant qu'aucune page n'existe : la page
@@ -25,8 +25,8 @@
                         groups="bf_linkpage.group_bf_linkpage_manager"
                         invisible="not is_company or linkpage_count &gt; 0">
                     <div class="o_stat_info">
-                        <span class="o_stat_text">Page</span>
-                        <span class="o_stat_text">d'organisation</span>
+                        <span class="o_stat_text">Organization</span>
+                        <span class="o_stat_text">page</span>
                     </div>
                 </button>
             </div>

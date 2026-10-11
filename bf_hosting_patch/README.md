@@ -248,6 +248,10 @@ On the readers' side: every reader of the base module, called directly, must
 count a machine schedule and leave out an archived or retired machine and a
 service that is not active.
 
+## Languages (v18.0.4.6.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The notes the module writes with nobody behind them are written for their readers: the enrolment note left by the agent, the note on a system gone silent and the expiry of a job no agent ran use the language of the company (the hosting team), else English; they used to take the language of OdooBot or of the agent's public request. The maintenance activity note is written in the language of the person it is assigned to; its type and frequency come from `hosting_management` and follow that module's own source. A job's stored name carries its scope in the language of whoever creates it. The agent's protocol messages (the JSON errors read by `symbifox-hostd`) are unchanged. On upgrade, the three scheduled actions are renamed unless their names were edited by hand.
+
 ## Licence
 
 LGPL-3.0-or-later. See `LICENSE`.

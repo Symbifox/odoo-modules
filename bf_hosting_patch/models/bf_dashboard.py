@@ -109,7 +109,8 @@ class BfDashboard(models.AbstractModel):
         non dans le gabarit, qui ne protège rien.
         """
         if not self._can_see_fleet():
-            raise AccessError(_("L'état du parc est réservé à l'hébergement."))
+            raise AccessError(_("The fleet status is reserved for hosting "
+                                "staff."))
         if state in STATE_FILTERS:
             action = self.env["ir.actions.act_window"]._for_xml_id(
                 "bf_hosting_patch.bf_patch_system_action")

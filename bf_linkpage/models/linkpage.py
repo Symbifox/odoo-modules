@@ -11,6 +11,7 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
+from odoo.tools import format_date
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ LOGO_MAX_RATIO = 0.30
 
 class BfLinkpage(models.Model):
     _name = "bf.linkpage"
-    _description = "Page de liens"
+    _description = "Link page"
     # `mail.activity.mixin` en plus du fil : la passe d'avertissement pose une
     # activité sur la page dont l'échéance approche. ⚠️ Créer une activité sur
     # un modèle qui n'a que `mail.thread` passe sans broncher à l'écriture, puis
@@ -56,36 +57,36 @@ class BfLinkpage(models.Model):
     _order = "name"
 
     name = fields.Char(
-        string="Titre",
+        string="Title",
         required=True,
         tracking=True,
-        help="Le titre affiché en haut de la page publique.",
+        help="The title shown at the top of the public page.",
     )
     slug = fields.Char(
-        string="Identifiant URL",
+        string="URL slug",
         required=True,
         copy=False,
         index=True,
         tracking=True,
-        help="La partie de l'adresse après %s/. Minuscules, chiffres et "
-             "traits d'union." % URL_PREFIX,
+        help=("The part of the address after %s/. Lowercase letters, "
+              "digits and hyphens.") % URL_PREFIX,
     )
     active = fields.Boolean(default=True)
 
     kind = fields.Selection(
         [
-            ("owner", "Rattachée à une personne"),
-            ("org", "Rattachée à une organisation"),
-            ("oneoff", "Ponctuelle"),
+            ("owner", "Linked to a person"),
+            ("org", "Linked to an organization"),
+            ("oneoff", "One-off"),
         ],
-        string="Nature",
+        string="Page type",
         default="owner",
         required=True,
         tracking=True,
-        help="Une page rattachée vit aussi longtemps que la personne. Une page "
-             "d'organisation rassemble les accès d'une entreprise cliente : "
-             "son adresse est opaque et elle porte une échéance. Une page "
-             "ponctuelle n'a pas de propriétaire : elle porte une expiration.",
+        help="A linked page lives as long as the person. An organization "
+             "page gathers a client company's access points: its address "
+             "is opaque and it has an expiry date. A one-off page has no "
+             "owner: it has an expiry.",
     )
 
     partner_id = fields.Many2one(
@@ -93,16 +94,16 @@ class BfLinkpage(models.Model):
         string="Contact",
         tracking=True,
         ondelete="cascade",
-        help="La personne dont cette page rassemble les liens. Les sources "
-             "dynamiques (courriel, téléphone, site) sont lues sur cette fiche.",
+        help="The person whose links this page gathers. The dynamic "
+             "sources (email, phone, website) are read from this record.",
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Utilisateur",
+        string="User",
         tracking=True,
         ondelete="set null",
-        help="Nécessaire pour résoudre la page de rendez-vous de la personne, "
-             "qui passe par sa ressource.",
+        help="Needed to resolve the person's appointment page, which goes "
+             "through their resource.",
     )
 
     # Le conseiller d'une page d'organisation. Il vit SUR LA PAGE, comme
@@ -117,120 +118,124 @@ class BfLinkpage(models.Model):
     # sert.
     advisor_user_id = fields.Many2one(
         "res.users",
-        string="Conseiller",
+        string="Advisor",
         tracking=True,
         ondelete="set null",
-        help="La personne de chez nous que cette organisation joint : c'est "
-             "son agenda, son courriel et son dépôt sécurisé que la page "
-             "résout. Proposé à la création depuis le vendeur de la fiche, "
-             "puis figé : le vendeur peut changer pour des raisons de "
-             "facturation sans que la page ait à suivre.",
+        help="The person on our side this organization contacts: their "
+             "calendar, email and secure upload are what the page "
+             "resolves. Suggested at creation from the record's "
+             "salesperson, then frozen: the salesperson can change for "
+             "billing reasons without the page having to follow.",
     )
 
     template_id = fields.Many2one(
         "bf.linkpage.template",
-        string="Gabarit",
+        string="Template",
         tracking=True,
         ondelete="set null",
-        help="Le jeu de liens posé à la création. Appliquer un gabarit ÉCRASE "
-             "les liens hérités mais laisse les liens ajoutés à la main.",
+        help="The set of links placed at creation. Applying a template "
+             "OVERWRITES the inherited links but keeps the links added by "
+             "hand.",
     )
 
     # -- présentation --------------------------------------------------------
     headline = fields.Char(
-        string="Sous-titre",
+        string="Subtitle",
         translate=True,
-        help="Une ligne sous le titre. Le rôle, la ville, ce qu'on veut.",
+        help="One line under the title. The role, the city, whatever you like.",
     )
-    bio = fields.Text(string="Présentation", translate=True)
+    bio = fields.Text(string="Presentation", translate=True)
     avatar = fields.Image(string="Photo", max_width=512, max_height=512)
     accent_color = fields.Char(
-        string="Couleur d'accent",
+        string="Accent color",
         default="#29ABE2",
-        help="Hexadécimal. Sert aux boutons de la page publique et au QR à la marque.",
+        help="Hexadecimal. Used for the public page buttons and the "
+             "branded QR code.",
     )
     layout = fields.Selection(
         [
-            ("cards", "Cartes"),
-            ("soft", "Cartes en relief"),
-            ("minimal", "Épurée"),
-            ("pills", "Boutons pleins"),
-            ("mono", "Technique"),
+            ("cards", "Cards"),
+            ("soft", "Raised cards"),
+            ("minimal", "Minimal"),
+            ("pills", "Solid buttons"),
+            ("mono", "Technical"),
         ],
-        string="Disposition",
+        string="Layout",
         default="cards",
         required=True,
-        help="L'allure des liens. Indépendante du thème clair/sombre : les "
-             "quatre dispositions existent dans les deux tons.",
+        help="The look of the links. Independent of the light/dark theme: "
+             "all four layouts exist in both tones.",
     )
     theme = fields.Selection(
         [
-            ("auto", "Selon l'appareil"),
-            ("light", "Clair"),
-            ("dark", "Sombre"),
+            ("auto", "Device setting"),
+            ("light", "Light"),
+            ("dark", "Dark"),
         ],
         default="auto",
         required=True,
-        string="Thème",
-        help="« Selon l'appareil » suit la préférence système du visiteur, et "
-             "lui laisse un bascule sur la page. Les deux autres imposent le "
-             "thème, le bascule reste offert mais ne persiste que chez lui.",
+        string="Theme",
+        help="\"Device setting\" follows the visitor's system preference, "
+             "and gives them a toggle on the page. The other two impose "
+             "the theme; the toggle is still offered but only persists on "
+             "their side.",
     )
     show_theme_toggle = fields.Boolean(
-        string="Offrir le bascule clair/sombre",
+        string="Offer the light/dark toggle",
         default=True,
-        help="Le choix du visiteur est gardé dans SON navigateur seulement. "
-             "Rien n'est écrit ici, et rien ne le suit d'un appareil à l'autre.",
+        help="The visitor's choice is kept in THEIR browser only. Nothing "
+             "is written here, and nothing follows them from one device "
+             "to another.",
     )
     show_vcard = fields.Boolean(
-        string="Offrir la carte de visite",
+        string="Offer the business card",
         default=True,
-        help="Un bouton « Ajouter à mes contacts » sur la page publique. "
-             "Sans effet sur une page ponctuelle, qui ne porte personne.",
+        help="An \"Add to my contacts\" button on the public page. No "
+             "effect on a one-off page, which belongs to no one.",
     )
     show_company_logo = fields.Boolean(
-        string="Afficher le logo de l'entreprise",
+        string="Show the company logo",
         default=True,
     )
 
     # -- cycle de vie --------------------------------------------------------
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("published", "Publiée"),
-            ("closed", "Fermée"),
+            ("draft", "Draft"),
+            ("published", "Published"),
+            ("closed", "Closed"),
         ],
         default="draft",
         required=True,
         tracking=True,
-        string="État",
+        string="State",
     )
     date_expiry = fields.Datetime(
-        string="Expire le",
+        string="Expires on",
         tracking=True,
         copy=False,
-        help="Passé cette date la page rend un 404. Vide = pas d'expiration.",
+        help="After this date the page returns a 404. Empty = no expiry.",
     )
     expiry_warned_on = fields.Date(
-        string="Échéance annoncée le",
+        string="Expiry announced on",
         readonly=True,
         copy=False,
-        help="L'échéance pour laquelle un avertissement est déjà parti. On "
-             "retient la DATE annoncée et non un booléen : repousser "
-             "l'échéance change la date, donc le prochain avertissement "
-             "repart de lui-même, sans geste ni remise à zéro.",
+        help="The expiry date for which a warning has already been sent. "
+             "The announced DATE is kept rather than a boolean: extending "
+             "the expiry changes the date, so the next warning goes out "
+             "on its own, with no action or reset.",
     )
     is_expired = fields.Boolean(
-        string="Expirée",
+        string="Expired",
         compute="_compute_is_expired",
         search="_search_is_expired",
-        help="Calculé : l'expiration est une DATE, pas un état à maintenir. "
-             "Aucun cron n'a besoin de tourner pour qu'une page se ferme.",
+        help="Computed: expiry is a DATE, not a state to maintain. No "
+             "cron needs to run for a page to close.",
     )
     is_live = fields.Boolean(
-        string="En ligne",
+        string="Live",
         compute="_compute_is_expired",
-        help="Publiée, non archivée et non expirée.",
+        help="Published, not archived and not expired.",
     )
 
     # Deux valeurs qui appartiennent à la PERSONNE, et qui vivent donc sur la
@@ -239,17 +244,17 @@ class BfLinkpage(models.Model):
     # survivrait pas au premier passage. Posées ici, elles survivent, et le
     # gabarit reste le même pour tout le monde.
     booking_slug = fields.Char(
-        string="Type de rendez-vous",
-        help="Le slug du type de rendez-vous à ouvrir, quand on ne veut pas "
-             "celui que la recherche choisirait. Laisser vide pour prendre le "
-             "premier type public rattaché à la ressource de la personne, ce "
-             "qui n'est pas forcément celui qu'elle met dans sa signature.",
+        string="Appointment type",
+        help="The slug of the appointment type to open, when you do not "
+             "want the one the search would pick. Leave empty to take the "
+             "first public type linked to the person's resource, which is "
+             "not necessarily the one they put in their signature.",
     )
     meet_url = fields.Char(
-        string="Salle de rencontre instantanée",
-        help="L'adresse d'une salle permanente (Talk, visioconférence). Elle "
-             "n'est déduite d'aucun autre module : c'est une adresse propre à "
-             "la personne, qu'on colle ici une fois.",
+        string="Instant meeting room",
+        help="The address of a permanent room (Talk, video conference). "
+             "It is not derived from any other module: it is an address "
+             "specific to the person, pasted here once.",
     )
 
     # La photo affichée n'est pas forcément CELLE de la page. On préfère une
@@ -260,73 +265,74 @@ class BfLinkpage(models.Model):
 
     # -- le code QR, réglable depuis la fiche --------------------------------
     qr_branded = fields.Boolean(
-        string="Logo au centre",
+        string="Logo in the center",
         default=True,
-        help="Le logo masque des modules du code. La correction d'erreur "
-             "compense, et la part occupée est bornée à ce qui reste lisible.",
+        help="The logo hides some of the code's modules. Error correction "
+             "compensates, and the share covered is capped at what stays "
+             "readable.",
     )
     qr_logo = fields.Image(
-        string="Logo du code QR",
+        string="QR code logo",
         max_width=512,
         max_height=512,
-        help="Laisser vide pour le logo de la société. Une image carrée donne "
-             "le meilleur résultat : elle est redimensionnée sans être rognée.",
+        help="Leave empty to use the company logo. A square image gives "
+             "the best result: it is resized without being cropped.",
     )
     qr_logo_plate = fields.Selection(
         [
-            ("back", "Fond du code"),
-            ("fill", "Couleur du code"),
-            ("none", "Aucune"),
+            ("back", "Code background"),
+            ("fill", "Code color"),
+            ("none", "None"),
         ],
-        string="Cartouche derrière le logo",
+        string="Plate behind the logo",
         default="back",
         required=True,
-        help="Le petit carré posé sous le logo. « Couleur du code » sert quand "
-             "le logo et le fond partagent la même teinte : un logo bleu sur "
-             "un fond bleu disparaît. « Aucune » colle le logo directement sur "
-             "le code.",
+        help="The small square placed under the logo. \"Code color\" is "
+             "useful when the logo and the background share the same hue: "
+             "a blue logo on a blue background disappears. \"None\" "
+             "places the logo directly on the code.",
     )
     qr_scale = fields.Selection(
-        [("s", "Petit (écran)"), ("m", "Moyen"), ("l", "Grand (impression)")],
-        string="Taille",
+        [("s", "Small (screen)"), ("m", "Medium"), ("l", "Large (print)")],
+        string="Size",
         default="m",
         required=True,
     )
     qr_fill_color = fields.Char(
-        string="Couleur du code",
+        string="Code color",
         default="#000000",
-        help="La couleur des modules. Elle doit rester nettement plus SOMBRE "
-             "que le fond : un code clair sur fond foncé n'est pas lu par la "
-             "plupart des appareils.",
+        help="The color of the modules. It must stay clearly DARKER than "
+             "the background: a light code on a dark background cannot be "
+             "read by most devices.",
     )
     qr_back_color = fields.Char(
-        string="Fond du code",
+        string="Code background",
         default="#FFFFFF",
     )
     qr_preview = fields.Image(
-        string="Aperçu",
+        string="Preview",
         compute="_compute_qr_preview",
-        help="Rendu réel, avec les réglages ci-dessus. Ce que vous voyez ici "
-             "est exactement ce qui sera téléchargé.",
+        help="Actual rendering, with the settings above. What you see "
+             "here is exactly what will be downloaded.",
     )
     qr_warning = fields.Char(compute="_compute_qr_preview")
 
-    link_ids = fields.One2many("bf.linkpage.link", "page_id", string="Liens")
+    link_ids = fields.One2many("bf.linkpage.link", "page_id", string="Links")
     link_count = fields.Integer(compute="_compute_link_count")
     visible_link_count = fields.Integer(
-        string="Liens affichés",
+        string="Displayed links",
         compute="_compute_link_count",
-        help="Les liens dont la source résout réellement. Un écart avec le "
-             "nombre total est la seule façon de voir qu'une source est muette.",
+        help="The links whose source actually resolves. A gap with the "
+             "total count is the only way to see that a source is silent.",
     )
 
-    visit_count = fields.Integer(string="Visites", default=0, readonly=True, copy=False)
-    last_visit = fields.Datetime(string="Dernière visite", readonly=True, copy=False)
+    visit_count = fields.Integer(string="Visits", default=0, readonly=True, copy=False)
+    last_visit = fields.Datetime(string="Last visit", readonly=True, copy=False)
 
-    public_url = fields.Char(string="Adresse publique", compute="_compute_public_url")
+    public_url = fields.Char(string="Public address", compute="_compute_public_url")
 
     _sql_constraints = [
-        ("slug_uniq", "unique(slug)", "Cet identifiant URL est déjà pris."),
+        ("slug_uniq", "unique(slug)", "This URL slug is already taken."),
     ]
 
     # ── calculs ──────────────────────────────────────────────────────────────
@@ -342,7 +348,7 @@ class BfLinkpage(models.Model):
 
     def _search_is_expired(self, operator, value):
         if operator not in ("=", "!="):
-            raise ValueError(_("Opérateur non supporté sur « Expirée »."))
+            raise ValueError(_("Unsupported operator on \"Expired\"."))
         expired = value if operator == "=" else not value
         now = fields.Datetime.now()
         if expired:
@@ -522,13 +528,13 @@ class BfLinkpage(models.Model):
                 continue
             if not _SLUG_RE.match(page.slug):
                 raise ValidationError(_(
-                    "L'identifiant URL « %s » n'est pas valide : minuscules, "
-                    "chiffres et traits d'union, sans commencer ni finir par "
-                    "un trait d'union.", page.slug,
+                    "The URL slug \"%s\" is not valid: lowercase letters, "
+                    "digits and hyphens, without starting or ending with "
+                    "a hyphen.", page.slug,
                 ))
             if page.slug in RESERVED_SLUGS:
                 raise ValidationError(_(
-                    "L'identifiant URL « %s » est réservé.", page.slug,
+                    "The URL slug \"%s\" is reserved.", page.slug,
                 ))
 
     @api.constrains("kind", "partner_id")
@@ -536,16 +542,16 @@ class BfLinkpage(models.Model):
         for page in self:
             if page.kind == "owner" and not page.partner_id:
                 raise ValidationError(_(
-                    "Une page rattachée à une personne a besoin d'un contact. "
-                    "Sans contact, ses sources dynamiques n'ont rien à lire."
+                    "A page linked to a person needs a contact. Without a "
+                    "contact, its dynamic sources have nothing to read."
                 ))
             if page.kind != "org":
                 continue
             if not page.partner_id:
                 raise ValidationError(_(
-                    "Une page d'organisation a besoin de la fiche de "
-                    "l'organisation. Sans elle, aucune de ses sources ne sait "
-                    "de quelle entreprise on parle."
+                    "An organization page needs the organization's "
+                    "record. Without it, none of its sources knows which "
+                    "company it is about."
                 ))
             # Une page d'organisation qui pointe une PERSONNE ne se distingue
             # d'une page personnelle que par une étiquette, et se met à
@@ -553,10 +559,9 @@ class BfLinkpage(models.Model):
             # de l'organisation, ses factures, ses projets. On refuse tôt.
             if not page.partner_id.is_company:
                 raise ValidationError(_(
-                    "« %s » est une personne, pas une organisation. Une page "
-                    "d'organisation se rattache à la fiche de l'entreprise ; "
-                    "pour une personne, choisissez « Rattachée à une "
-                    "personne ».", page.partner_id.display_name,
+                    "\"%s\" is a person, not an organization. An "
+                    "organization page is linked to the company record; "
+                    "for a person, choose \"Linked to a person\".", page.partner_id.display_name,
                 ))
 
     @api.constrains("accent_color")
@@ -564,8 +569,8 @@ class BfLinkpage(models.Model):
         for page in self:
             if page.accent_color and not re.match(r"^#[0-9A-Fa-f]{6}$", page.accent_color):
                 raise ValidationError(_(
-                    "La couleur d'accent doit être un hexadécimal à six chiffres, "
-                    "par exemple #29ABE2."
+                    "The accent color must be a six-digit hexadecimal, "
+                    "for example #29ABE2."
                 ))
 
     # ── création ─────────────────────────────────────────────────────────────
@@ -588,10 +593,11 @@ class BfLinkpage(models.Model):
         collision = self.with_context(active_test=False).sudo().search(domain, limit=1)
         if collision:
             raise ValidationError(_(
-                "L'identifiant URL « %(slug)s » est déjà pris par « %(name)s »%(etat)s.",
+                "The URL slug \"%(slug)s\" is already taken by "
+                "\"%(name)s\"%(etat)s.",
                 slug=slug,
                 name=collision.name,
-                etat="" if collision.active else _(", une page archivée"),
+                etat="" if collision.active else _(", an archived page"),
             ))
 
     @api.model_create_multi
@@ -629,8 +635,8 @@ class BfLinkpage(models.Model):
             if vals.get("slug"):
                 if vals["slug"] in vus:
                     raise ValidationError(_(
-                        "L'identifiant URL « %s » apparaît deux fois dans le "
-                        "même envoi.", vals["slug"],
+                        "The URL slug \"%s\" appears twice in the same "
+                        "submission.", vals["slug"],
                     ))
                 vus.add(vals["slug"])
                 self._check_slug_free(vals["slug"])
@@ -692,8 +698,8 @@ class BfLinkpage(models.Model):
         # panne. Lever plutôt que rendre un slug dont on ne sait pas s'il est
         # libre, ce qui donnerait une page servie à la place d'une autre.
         raise ValidationError(_(
-            "Impossible de tirer une adresse libre pour cette page. "
-            "Réessayez, et signalez-le si ça se reproduit."
+            "Could not draw a free address for this page. Try again, and "
+            "report it if it happens again."
         ))
 
     @api.model
@@ -804,16 +810,26 @@ class BfLinkpage(models.Model):
         echeance = self._default_org_expiry()
         if not echeance:
             raise ValidationError(_(
-                "Aucune durée n'est configurée pour les pages "
-                "d'organisation : rien à repousser."
+                "No duration is configured for organization pages: "
+                "nothing to extend."
             ))
         for page in self:
             page.date_expiry = echeance
             page.message_post(body=Markup("<p>%s</p>") % _(
-                "Échéance repoussée au %s.",
+                "Expiry extended to %s.",
                 fields.Datetime.to_string(echeance)[:10],
             ))
         return True
+
+    @api.model
+    def _bf_reader_lang(self, user):
+        """La langue d'une personne si elle est installée, sinon celle de la
+        société, sinon l'anglais (la langue de la source)."""
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        for lang in (user.lang if user else False, self.env.company.partner_id.lang):
+            if lang in installees:
+                return lang
+        return "en_US"
 
     @api.model
     def _cron_warn_expiring(self):
@@ -849,20 +865,24 @@ class BfLinkpage(models.Model):
             if page.expiry_warned_on == echeance:
                 continue
             reste = (page.date_expiry - maintenant).days
-            corps = Markup("<p>%s</p>") % _(
-                "Cette page ferme le %(date)s, dans %(jours)s jour(s). "
-                "Passé cette date, son adresse rend un 404 à qui l'a reçue. "
-                "Utilisez « Repousser l'échéance » si le mandat continue.",
-                date=fields.Date.to_string(echeance),
+            responsable = page.advisor_user_id or page.create_uid
+            # Le travail planifié n'a pas d'usager : l'avis est écrit pour qui le
+            # lira, la personne responsable de la page (avant : dans la langue
+            # d'OdooBot), la date formatée dans sa langue.
+            lu = page.with_context(lang=self._bf_reader_lang(responsable))
+            corps = Markup("<p>%s</p>") % lu.env._(
+                "This page closes on %(date)s, in %(jours)s day(s). After "
+                "that date, its address returns a 404 to whoever received "
+                "it. Use \"Extend expiry\" if the engagement continues.",
+                date=format_date(lu.env, echeance),
                 jours=reste,
             )
             page.message_post(body=corps)
-            responsable = page.advisor_user_id or page.create_uid
             if responsable:
                 page.activity_schedule(
                     "mail.mail_activity_data_todo",
                     date_deadline=echeance,
-                    summary=_("Page d'organisation à reconduire ou à fermer"),
+                    summary=lu.env._("Organization page to renew or close"),
                     note=corps,
                     user_id=responsable.id,
                 )
@@ -982,18 +1002,18 @@ class BfLinkpage(models.Model):
         l_back = self._luminance(back)
         if l_fill is None or l_back is None:
             return "#000000", "#FFFFFF", _(
-                "Couleur non reconnue : le code est rendu en noir sur blanc."
+                "Unrecognized color: the code is rendered in black on white."
             )
         if l_fill >= l_back:
             return "#000000", "#FFFFFF", _(
-                "Un code plus clair que son fond n'est pas lu par la plupart "
-                "des appareils. Rendu en noir sur blanc."
+                "A code lighter than its background cannot be read by "
+                "most devices. Rendered in black on white."
             )
         rapport = (l_back + 0.05) / (l_fill + 0.05)
         if rapport < 4.0:
             return "#000000", "#FFFFFF", _(
-                "Contraste insuffisant (%(r).1f:1, il en faut 4). Rendu en "
-                "noir sur blanc.", r=rapport,
+                "Insufficient contrast (%(r).1f:1, 4 is required). "
+                "Rendered in black on white.", r=rapport,
             )
         return fill, back, False
 
@@ -1019,7 +1039,7 @@ class BfLinkpage(models.Model):
                 # erreur ici rendrait le formulaire inaccessible, pour un
                 # champ purement décoratif.
                 _logger.warning("bf_linkpage: aperçu du QR impossible (%s)", echec)
-                page.qr_warning = _("Aperçu indisponible.")
+                page.qr_warning = _("Preview unavailable.")
 
     def action_download_qr(self):
         """Télécharger le code QR tel qu'il est réglé sur la fiche."""
@@ -1142,20 +1162,21 @@ class BfLinkpage(models.Model):
         self = self.with_context(bin_size=False)
         raw = self.qr_logo or self._company().with_context(bin_size=False).logo
         if not raw:
-            return None, _("Aucun logo n'est disponible : le code sort sans marque.")
+            return None, _("No logo is available: the code comes out "
+                           "unbranded.")
         octets = base64.b64decode(raw)
         entete = octets.lstrip()[:512]
         if entete[:5] == b"<?xml" or b"<svg" in entete:
             return None, _(
-                "Le logo est un fichier SVG, que le générateur d'images ne "
-                "sait pas incruster. Téléversez une version PNG dans « Logo "
-                "du code QR » ci-contre ; le code sort sans marque en attendant."
+                "The logo is an SVG file, which the image generator "
+                "cannot embed. Upload a PNG version in \"QR code logo\" "
+                "next to it; the code comes out unbranded in the meantime."
             )
         try:
             return Image.open(io.BytesIO(octets)).convert("RGBA"), None
         except Exception as echec:  # noqa: BLE001
             _logger.warning("bf_linkpage: logo illisible (%s), QR sans marque", echec)
             return None, _(
-                "Le logo n'a pas pu être lu comme une image. Le code sort "
-                "sans marque."
+                "The logo could not be read as an image. The code comes "
+                "out unbranded."
             )

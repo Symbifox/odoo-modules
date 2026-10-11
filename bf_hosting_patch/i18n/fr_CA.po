@@ -1,0 +1,1586 @@
+# Translation of Hébergement : Mises à jour du système - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_hosting_patch 18.0.4.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 12:24+0000\n"
+"PO-Revision-Date: 2026-10-11 12:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid ""
+"%(code)s: valid for %(minutes)s minutes, for ONE system. For the other side "
+"of a dual boot, generate a second one."
+msgstr ""
+"%(code)s — valide %(minutes)s minutes, pour UN système. Pour l'autre côté "
+"d'un double amorçage, en générer un second."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "%(machine)s / %(systeme)s"
+msgstr "%(machine)s / %(systeme)s"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid ""
+", after the last report: the counters below predate it. They will correct "
+"themselves at the machine's next report."
+msgstr ""
+", après le dernier relevé :\n"
+"                        les compteurs ci-dessous datent d'avant. Ils se\n"
+"                        corrigeront au prochain relevé de la machine."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__disk_root_pct
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__disk_root_pct
+msgid "/ used (%)"
+msgstr "/ occupé (%)"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__disk_boot_pct
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__disk_boot_pct
+msgid "/boot used (%)"
+msgstr "/boot occupé (%)"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__machine_id
+msgid ""
+"/etc/machine-id on Linux, MachineGuid on Windows. Identifies the installed "
+"system, never the physical machine."
+msgstr ""
+"/etc/machine-id sous Linux, MachineGuid sous Windows. Identifie le système "
+"installé, jamais la machine physique."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_job.py:0
+msgid "A \"named packages\" scope without any package would apply nothing."
+msgstr "Une portée « paquets nommés » sans aucun paquet n'appliquerait rien."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_job.py:0
+msgid ""
+"A \"reboot only\" job must say when to reboot: \"always\" or \"if the "
+"machine requires it\". With \"never\", it would do nothing."
+msgstr ""
+"Un ordre « redémarrer seulement » doit dire quand redémarrer : « toujours »,"
+" ou « si la machine le demande ». Avec « jamais », il ne ferait rien."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.actions.act_window,help:bf_hosting_patch.bf_patch_job_action
+msgid ""
+"A job is pulled, not pushed: Odoo drops it here, and the machine's agent "
+"picks it up at its next poll. A machine that is switched off does not miss "
+"it; it takes it when it wakes up."
+msgstr ""
+"Un ordre descend en étant demandé : Odoo le dépose ici, et\n"
+"                l'agent de la machine le ramasse à sa prochaine interrogation.\n"
+"                Une machine éteinte ne le rate pas, elle le prend au réveil."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "A job was applied on"
+msgstr "Un ordre a été appliqué le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.constraint,message:bf_hosting_patch.constraint_hosting_maintenance_schedule_cible_unique
+msgid ""
+"A maintenance schedule targets a service OR a fleet endpoint, never both and"
+" never neither."
+msgstr ""
+"Une planification de maintenance vise un service OU un poste du parc, jamais"
+" les deux ni aucun des deux."
+
+#. module: bf_hosting_patch
+#: model:ir.model.constraint,message:bf_hosting_patch.constraint_hosting_maintenance_schedule_systeme_implique_poste
+msgid "A target system requires the machine it runs on."
+msgstr "Un système visé suppose la machine qui le porte."
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Agent"
+msgstr "Agent"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__agent_version
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__agent_version
+msgid "Agent version"
+msgstr "Version de l'agent"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__auto_update_mode__all
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__auto_update_mode__all
+msgid "All"
+msgstr "Tout"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__scope__all
+msgid "All updates"
+msgstr "Toutes les mises à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__auto_update_detail
+msgid "Allowed origins, timer name, what the log says about it."
+msgstr "Origines autorisées, nom du minuteur, ce que le journal en dit."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__reboot_after__always
+msgid "Always"
+msgstr "Toujours"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__done
+msgid "Applied"
+msgstr "Appliqué"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__auto_update_detail
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__auto_update_detail
+msgid "Auto-updater details"
+msgstr "Détail de l'auto-updateur"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__auto_update_mode
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__auto_update_mode
+msgid "Automatic updates"
+msgstr "Mise à jour automatique"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__version_candidate
+msgid "Available version"
+msgstr "Version disponible"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__boot_time
+msgid "Boot time"
+msgstr "Démarrée le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__boot_time
+msgid "Booted on"
+msgstr "Démarré le"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_job.py:0
+msgid "Cancelled in Odoo by %s."
+msgstr "Annulé dans Odoo par %s."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__pending_delta
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__pending_delta
+msgid "Change since previous report"
+msgstr "Écart au relevé précédent"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__claimed
+msgid "Claimed"
+msgstr "Pris en charge"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__claimed_at
+msgid "Claimed on"
+msgstr "Pris en charge le"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_otp
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__partner_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__partner_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__partner_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_maintenance_schedule__partner_id
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Client: %s"
+msgstr "Client : %s"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__agent_enrol_expiry
+msgid "Code valid until"
+msgstr "Code valide jusqu'à"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Completed on %s"
+msgstr "Complété le %s"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__create_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__create_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__create_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__create_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__create_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__create_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_endpoint__machine_uuid
+msgid ""
+"DMI UUID of the motherboard, read as root at enrollment. Identifies the "
+"physical machine, whichever system is booted."
+msgstr ""
+"UUID DMI de la carte mère, relevé en root à l'enrôlement. Identifie la "
+"machine physique, quel que soit le système démarré."
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "Data not available"
+msgstr "Données non disponibles"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__applied_after_report
+msgid ""
+"Date of the last job applied after the last report. As long as it is set, "
+"the counters shown predate that application."
+msgstr ""
+"Date du dernier ordre appliqué après le dernier relevé. Tant qu'elle est "
+"remplie, les compteurs affichés datent d'avant cette application."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__reboot_pending_days
+msgid "Days pending"
+msgstr "Jours d'attente"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Disk"
+msgstr "Disque"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__display_name
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__display_name
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__display_name
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__auto_update_mode__download
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__auto_update_mode__download
+msgid "Download only"
+msgstr "Téléchargement seul"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__os_support_end
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__os_support_end
+msgid "End of support"
+msgstr "Fin de support"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__os_support_state__ending_soon
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_support_state__ending_soon
+msgid "End of support soon"
+msgstr "Fin de support proche"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__endpoint_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__endpoint_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__endpoint_id
+msgid "Endpoint"
+msgstr "Poste"
+
+#. module: bf_hosting_patch
+#: model:ir.model,name:bf_hosting_patch.model_bf_patch_report
+msgid "Endpoint update report"
+msgstr "Relevé de mise à jour d'un poste"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Endpoint: %s"
+msgstr "Poste : %s"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__agent_enrol_code
+msgid "Enrollment code"
+msgstr "Code d'enrôlement"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__exit_code
+msgid "Exit code"
+msgstr "Code de sortie"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__expired
+msgid "Expired"
+msgstr "Périmé"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_job.py:0
+msgid "Expired: no agent ran it within %s days."
+msgstr "Périmé : aucun agent ne l'a exécuté en %s jours."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__failed
+msgid "Failed"
+msgstr "Échoué"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+msgid "Failed jobs"
+msgstr "Échoués"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__pending_known
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__pending_known
+msgid ""
+"False when the package manager did not respond. An unknown count is NOT a "
+"zero count."
+msgstr ""
+"Faux quand le gestionnaire de paquets n'a pas répondu. Un compte inconnu "
+"n'est PAS un compte à zéro."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__finished_at
+msgid "Finished on"
+msgstr "Terminé le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_maintenance_schedule__endpoint_id
+msgid "Fleet endpoint"
+msgstr "Poste du parc"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Frequency: %s"
+msgstr "Fréquence : %s"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid "Generate an enrollment code"
+msgstr "Générer un code d'enrôlement"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_search_patch
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__machine_uuid
+msgid "Hardware UUID"
+msgstr "UUID matériel"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__hosted_service_count
+msgid "Hosted services"
+msgstr "Services portés"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__server_id
+msgid "Hosting server"
+msgstr "Serveur d'hébergement"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.server,name:bf_hosting_patch.cron_expire_patch_jobs_ir_actions_server
+msgid "Hosting: expire update jobs not run (7 days)"
+msgstr "Hébergement : périmer les ordres de mise à jour non exécutés (7 j)"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.server,name:bf_hosting_patch.cron_purge_patch_reports_ir_actions_server
+msgid "Hosting: purge update reports (90 days)"
+msgstr "Hébergement : purger les relevés de mise à jour (90 j)"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.server,name:bf_hosting_patch.cron_refresh_patch_state_ir_actions_server
+msgid "Hosting: refresh update status (silent machines)"
+msgstr "Hébergement : rejouer l'état des mises à jour (machines muettes)"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__hostname
+msgid "Hostname"
+msgstr "Nom d'hôte"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "IT fleet"
+msgstr "Parc informatique"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_has_error
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__reboot_after__if_required
+msgid "If the machine requires it"
+msgstr "Si la machine le demande"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__running
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__kernel_installed
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__kernel_installed
+msgid "Installed kernel"
+msgstr "Noyau installé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__system_ids
+msgid "Installed systems"
+msgstr "Systèmes installés"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__version_installed
+msgid "Installed version"
+msgstr "Version installée"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Instructions:"
+msgstr "Instructions :"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__applied_after_report
+msgid "Job applied since the report"
+msgstr "Ordre appliqué depuis le relevé"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_system.py:0
+msgid "Jobs for %s"
+msgstr "Ordres de %s"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Kernel and reboot"
+msgstr "Noyau et redémarrage"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+msgid "Last 7 days"
+msgstr "7 derniers jours"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__write_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__write_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__write_uid
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__write_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__write_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__write_date
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__agent_last_poll
+msgid "Last poll"
+msgstr "Dernière interrogation"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__agent_last_report
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__agent_last_report
+msgid "Last report"
+msgstr "Dernier relevé"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "Last report on"
+msgstr "Dernier relevé le"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_family__linux
+msgid "Linux"
+msgstr "Linux"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__disk_tight
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "Low disk space"
+msgstr "Disque serré"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Low disk space: an update may fail halfway through."
+msgstr "Disque serré : une mise à jour peut échouer à mi-chemin."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__endpoint_id
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid "Machine"
+msgstr "Machine"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Machine and system"
+msgstr "Machine et système"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+msgid "Machine output"
+msgstr "Sortie de la machine"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Maintenance completed: %(nom)s (endpoint: %(cible)s)"
+msgstr "Maintenance complétée : %(nom)s (poste : %(cible)s)"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Maintenance task completed on %s"
+msgstr "Tâche de maintenance complétée le %s"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "Missing enrollment code or machine-id."
+msgstr "Code d'enrôlement ou machine-id manquant."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "N/A"
+msgstr "N/D"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__name
+msgid ""
+"Name of the installation, not of the machine: \"laptop-linux\" and \"laptop-"
+"windows\" are two systems on the same laptop."
+msgstr ""
+"Nom de l'installation, pas de la machine : « poste-linux » et « poste-"
+"windows » sont deux systèmes du même portable."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__scope__named
+msgid "Named packages"
+msgstr "Paquets nommés"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__reboot_after__never
+msgid "Never"
+msgstr "Jamais"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.actions.act_window,help:bf_hosting_patch.bf_patch_job_action
+msgid "No job in the queue."
+msgstr "Aucun ordre en file."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid ""
+"No recent report. A system that has gone silent is the most dangerous case, "
+"not the quietest."
+msgstr ""
+"Aucun relevé récent. Un système qui ne parle plus est le\n"
+"                        cas le plus dangereux, pas le plus tranquille."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_system.py:0
+msgid "No report for more than %s hours: this system has gone silent."
+msgstr "Aucun relevé depuis plus de %s heures : ce système ne parle plus."
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "No report: these figures mean nothing"
+msgstr "Aucun relevé : ces chiffres ne disent rien"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid ""
+"No system is enrolled on this machine. Since the fleet is almost entirely "
+"dual-boot, one is needed per side: generate an enrollment code, install the "
+"agent, then repeat for the other system."
+msgstr ""
+"Aucun système enrôlé sur cette machine. Le parc étant\n"
+"                        presque tout en double amorçage, il en faut un par côté :\n"
+"                        générer un code d'enrôlement, poser l'agent, recommencer\n"
+"                        pour l'autre système."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_search_patch
+msgid "No tracked system"
+msgstr "Sans système suivi"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__window_start
+msgid "Not before"
+msgstr "Pas avant"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__unmanaged
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__unmanaged
+msgid "Not tracked"
+msgstr "Non suivi"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.actions.act_window,help:bf_hosting_patch.bf_patch_job_action
+msgid ""
+"Nothing is sent to a machine where the file <code>/etc/symbifox/apply-"
+"allowed</code> is missing."
+msgstr ""
+"Rien ne part vers une machine dont le fichier\n"
+"                <code>/etc/symbifox/apply-allowed</code> est absent."
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_endpoint__hosted_service_count
+msgid "Number of hosting services that go down if the machine reboots."
+msgstr "Nombre de services d'hébergement qui tombent si la machine redémarre."
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__os_family
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "OS family"
+msgstr "Famille"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__auto_update_mode__off
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__auto_update_mode__off
+msgid "Off"
+msgstr "Aucun"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "Only a hosting manager can install or revoke an update agent."
+msgstr ""
+"Seul un gestionnaire d'hébergement peut poser ou révoquer un agent de mise à"
+" jour."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_maintenance_schedule__system_id
+msgid ""
+"Optional: on a dual-boot machine, target only one side. Left empty, the "
+"maintenance targets the whole machine."
+msgstr ""
+"Optionnel : sur une machine en double amorçage, viser un seul côté. Laissé "
+"vide, la maintenance vise la machine entière."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__origin
+msgid "Origin"
+msgstr "Origine"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__other
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_family__other
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__os_support_state__ended
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_support_state__ended
+msgid "Out of support"
+msgstr "Hors support"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+msgid "Outcome"
+msgstr "Issue"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__output
+msgid "Output"
+msgstr "Sortie"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__name
+msgid "Package"
+msgstr "Paquet"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__package_manager
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__package_manager
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+msgid "Package manager"
+msgstr "Gestionnaire de paquets"
+
+#. module: bf_hosting_patch
+#: model:ir.model,name:bf_hosting_patch.model_bf_patch_package
+msgid "Package pending at report time"
+msgstr "Paquet en attente au relevé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__package_names
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_list
+msgid "Packages"
+msgstr "Paquets"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__packages_changed
+msgid "Packages changed"
+msgstr "Paquets touchés"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+msgid "Payload"
+msgstr "Charge utile"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_list
+msgid "Pending"
+msgstr "En attente"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__package_ids
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__pending_count
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__pending_count
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+msgid "Pending packages"
+msgstr "Paquets en attente"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__pending_security_count
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__pending_security_count
+msgid "Pending security packages"
+msgstr "Dont sécurité"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__reboot_pending_since
+msgid "Pending since"
+msgstr "En attente depuis"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__pending_delta
+msgid "Positive: the backlog has grown since the previous report."
+msgstr "Positif : le retard a grandi depuis le relevé d'avant."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__state__queued
+msgid "Queued"
+msgstr "En file"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__job_pending_count
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Queued jobs"
+msgstr "Ordres en file"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__payload
+msgid "Raw payload"
+msgstr "Charge utile brute"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__os_support_end
+msgid "Read on the machine: SUPPORT_END from os-release, or distro-info."
+msgstr "Lue sur la machine : SUPPORT_END d'os-release, ou distro-info."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+msgid "Reboot"
+msgstr "Redémarrage"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__reboot_after
+msgid "Reboot afterwards"
+msgstr "Redémarrer ensuite"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__scope__reboot
+msgid "Reboot only"
+msgstr "Redémarrer seulement"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__reboot_pending_since
+msgid "Reboot pending since"
+msgstr "Redémarrage en attente depuis"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__reboot_required
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__reboot_required
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__reboot
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__reboot
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "Reboot required"
+msgstr "Redémarrage requis"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__reboot_packages
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__reboot_packages
+msgid "Reboot required by"
+msgstr "Redémarrage dû à"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__pending_known
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__pending_known
+msgid "Reliable count"
+msgstr "Compte fiable"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Remote apply"
+msgstr "Application à distance"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__apply_allowed
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__apply_allowed
+msgid "Remote apply allowed"
+msgstr "Application autorisée"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid ""
+"Remote apply is ALLOWED on this machine. Consent is the file "
+"<code>/etc/symbifox/apply-allowed</code>: it is withdrawn on the machine, "
+"not here."
+msgstr ""
+"Application à distance AUTORISÉE sur cette machine.\n"
+"                        Le consentement est le fichier\n"
+"                        <code>/etc/symbifox/apply-allowed</code> : il se retire\n"
+"                        sur la machine, pas ici."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+msgid "Remove from queue"
+msgstr "Retirer de la file"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+msgid "Remove this job from the queue?"
+msgstr "Retirer cet ordre de la file ?"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__report_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__display_label
+msgid "Report"
+msgstr "Relevé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__report_date
+msgid "Report date"
+msgstr "Date du relevé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__os_release
+msgid "Reported system"
+msgstr "Système relevé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__report_count
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__report_ids
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Reports"
+msgstr "Relevés"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "Reports for %s"
+msgstr "Relevés de %s"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__requested_by
+msgid "Requested by"
+msgstr "Demandé par"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_list
+msgid "Requested on"
+msgstr "Demandé le"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Revoke agent"
+msgstr "Révoquer l'agent"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__os_support_state__rolling
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_support_state__rolling
+msgid "Rolling release"
+msgstr "Roulement continu"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__kernel_running
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__kernel_running
+msgid "Running kernel"
+msgstr "Noyau chargé"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__scope
+msgid "Scope"
+msgstr "Portée"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__is_security
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+msgid "Security"
+msgstr "Sécurité"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_job__scope__security
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__auto_update_mode__security
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__auto_update_mode__security
+msgid "Security only"
+msgstr "Sécurité seulement"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__security
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__security
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_search_patch
+msgid "Security updates pending"
+msgstr "Sécurité en attente"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_job__package_names
+msgid "Separated by spaces or commas. \"Named packages\" scope only."
+msgstr "Séparés par des espaces ou des virgules. Portée « nommés » seulement."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_maintenance_schedule__service_id
+msgid "Service"
+msgstr "Service"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__stale
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__stale
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid "Silent"
+msgstr "Muet"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "Silent (48 h)"
+msgstr "Muets (48 h)"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_search_patch
+msgid "Silent machines"
+msgstr "Machines muettes"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "Silent systems"
+msgstr "Muets"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__state
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_search
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "Support"
+msgstr "Support"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "Support ending"
+msgstr "Support qui finit"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__os_support_state
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__os_support_state
+msgid "Support status"
+msgstr "État du support"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__os_support_state__supported
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_support_state__supported
+msgid "Supported"
+msgstr "Supporté"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_job__system_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_package__system_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__os_release
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_report__system_id
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__name
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_search
+msgid "System"
+msgstr "Système"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "System \"%(name)s\" enrolled (machine-id %(mid)s, %(fam)s)."
+msgstr "Système « %(name)s » enrôlé (machine-id %(mid)s, %(fam)s)."
+
+#. module: bf_hosting_patch
+#: model:ir.model,name:bf_hosting_patch.model_bf_patch_system
+msgid "System installed on a fleet endpoint"
+msgstr "Système installé sur un poste du parc"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__system_count
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid "Systems"
+msgstr "Systèmes"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "Systems on %s"
+msgstr "Systèmes de %s"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.act_window,name:bf_hosting_patch.bf_patch_system_action_attention
+#: model:ir.ui.menu,name:bf_hosting_patch.hosting_menu_patch_attention
+msgid "Systems to check"
+msgstr "Systèmes à regarder"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_maintenance_schedule__target_label
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_maintenance_schedule_view_list_patch
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_maintenance_schedule__endpoint_id
+msgid ""
+"Target a machine rather than a service. This is what makes the \"Security "
+"patches\" type usable."
+msgstr ""
+"Viser une machine plutôt qu'un service. C'est ce qui rend le type « "
+"Correctifs de sécurité » utilisable."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_maintenance_schedule__system_id
+msgid "Target system"
+msgstr "Système visé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__apply_allowed
+msgid ""
+"The file /etc/symbifox/apply-allowed existed on the machine at report time. "
+"Kept in history here so we can tell WHEN consent was given or withdrawn."
+msgstr ""
+"Le fichier /etc/symbifox/apply-allowed existait sur la machine au moment du "
+"relevé. Historisé ici pour qu'on puisse dire QUAND le consentement a été "
+"donné ou retiré."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__apply_allowed
+msgid ""
+"The file /etc/symbifox/apply-allowed exists on the machine. The machine "
+"itself declares it with each report: consent is LOCAL, set by hand, and "
+"withdrawn without going through Odoo."
+msgstr ""
+"Le fichier /etc/symbifox/apply-allowed existe sur la machine. C'est la "
+"machine qui le déclare à chaque relevé : le consentement est LOCAL, posé à "
+"la main, et se retire sans passer par Odoo."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_dashboard.py:0
+msgid "The fleet status is reserved for hosting staff."
+msgstr "L'état du parc est réservé à l'hébergement."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_job.py:0
+msgid "The job \"%s\" is no longer queued: it has already been sent."
+msgstr "L'ordre « %s » n'est plus en file : il est déjà parti."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_job__window_start
+msgid ""
+"The job is not handed to the agent before this date. Empty = right away."
+msgstr ""
+"L'ordre n'est pas remis à l'agent avant cette date. Vide = tout de suite."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid ""
+"The last report could not count the packages. The zero shown is an artifact,"
+" not a measurement."
+msgstr ""
+"Le dernier relevé n'a pas pu compter les paquets. Le zéro\n"
+"                        affiché est un artefact, pas une mesure."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_endpoint__agent_last_report
+msgid "The most recent among the machine's systems."
+msgstr "Le plus récent parmi les systèmes de la machine."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "The next report from this agent will be refused. Continue?"
+msgstr "Le prochain relevé de cet agent sera refusé. Continuer ?"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_endpoint__patch_state
+msgid "The worst status among the systems installed on the machine."
+msgstr "Le pire état parmi les systèmes installés sur la machine."
+
+#. module: bf_hosting_patch
+#: model:ir.model.constraint,message:bf_hosting_patch.constraint_hosting_endpoint_machine_uuid_uniq
+msgid ""
+"This hardware UUID is already used by another fleet record: it is the same "
+"machine, seen twice."
+msgstr ""
+"Cet UUID matériel est déjà porté par une autre fiche du parc : c'est la même"
+" machine, vue deux fois."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid ""
+"This machine is already in the fleet as \"%(name)s\" (%(code)s): same "
+"hardware UUID. Enrolling it here would create a duplicate."
+msgstr ""
+"Cette machine est déjà au parc sous « %(name)s » (%(code)s) : même UUID "
+"matériel. L'enrôler ici créerait un doublon."
+
+#. module: bf_hosting_patch
+#: model:ir.model.constraint,message:bf_hosting_patch.constraint_bf_patch_system_machine_id_uniq
+msgid ""
+"This machine-id is already used by another system: it is the same "
+"installation, seen twice."
+msgstr ""
+"Ce machine-id est déjà porté par un autre système : c'est la même "
+"installation, vue deux fois."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid ""
+"This system is already registered on \"%(name)s\" (%(code)s). Enrolling it "
+"here would create a duplicate."
+msgstr ""
+"Ce système est déjà enregistré sur « %(name)s » (%(code)s). L'enrôler ici "
+"créerait un doublon."
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_otp
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__agent_token_hash
+msgid "Token hash"
+msgstr "Empreinte du jeton"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__patch_managed
+msgid "Tracked"
+msgstr "Suivi"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.act_window,name:bf_hosting_patch.bf_patch_system_action
+#: model:ir.ui.menu,name:bf_hosting_patch.hosting_menu_patch_systems
+msgid "Tracked systems"
+msgstr "Systèmes suivis"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "Type: %s"
+msgstr "Type : %s"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__auto_update_mode__unknown
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__os_support_state__unknown
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__auto_update_mode__unknown
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_support_state__unknown
+msgid "Unknown"
+msgstr "Inconnu"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__blind
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__blind
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_search
+msgid "Unknown count"
+msgstr "Compte inconnu"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_endpoint.py:0
+msgid "Unknown or expired enrollment code."
+msgstr "Code d'enrôlement inconnu ou expiré."
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_report.py:0
+msgid "Unknown system"
+msgstr "Système inconnu"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__ok
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__ok
+msgid "Up to date"
+msgstr "À jour"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/bf_patch_system.py:0
+msgid "Update agent revoked."
+msgstr "Agent de mise à jour révoqué."
+
+#. module: bf_hosting_patch
+#: model:ir.model,name:bf_hosting_patch.model_bf_patch_job
+msgid "Update job"
+msgstr "Ordre de mise à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.act_window,name:bf_hosting_patch.bf_patch_job_action
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__job_ids
+#: model:ir.ui.menu,name:bf_hosting_patch.hosting_menu_patch_jobs
+msgid "Update jobs"
+msgstr "Ordres de mise à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.act_window,name:bf_hosting_patch.bf_patch_report_action
+#: model:ir.ui.menu,name:bf_hosting_patch.hosting_menu_patch_reports
+msgid "Update reports"
+msgstr "Relevés de mise à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.actions.act_window,name:bf_hosting_patch.hosting_endpoint_action_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__patch_state
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__patch_state
+#: model:ir.ui.menu,name:bf_hosting_patch.hosting_menu_patch_state
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_search_patch
+msgid "Update status"
+msgstr "État des mises à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_hosting_endpoint__patch_managed
+msgid "Update tracking"
+msgstr "Suivi des mises à jour"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_report_view_form
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.hosting_endpoint_view_form_patch
+msgid "Updates"
+msgstr "Mises à jour"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__patch_state__updates
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__hosting_endpoint__patch_state__updates
+msgid "Updates pending"
+msgstr "Mises à jour en attente"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_hosting_patch
+#. modules: bf_hosting_patch, bf_linkpage
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_report__payload
+msgid ""
+"What the agent sent, to replay a case without asking the machine again."
+msgstr ""
+"Ce que l'agent a envoyé, pour rejouer un cas sans redemander à la machine."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_maintenance_schedule__target_label
+msgid "What the maintenance targets, whatever it is attached to."
+msgstr "Ce que la maintenance vise, quel que soit le porteur."
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_job_view_form
+msgid "What will be applied"
+msgstr "Ce qui sera appliqué"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_bf_patch_system__agent_last_poll
+msgid ""
+"When the agent last asked whether it had a job. Separate from the report: "
+"the two timers do not run at the same pace."
+msgstr ""
+"Quand l'agent a demandé pour la dernière fois s'il avait un ordre. Distinct "
+"du relevé : les deux minuteurs n'ont pas la même cadence."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,help:bf_hosting_patch.field_hosting_endpoint__server_id
+msgid ""
+"When this endpoint IS a fleet server, linking it here gives the blast radius"
+" of a reboot."
+msgstr ""
+"Quand ce poste EST un serveur du parc, le rattacher ici donne le rayon de "
+"souffle d'un redémarrage."
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_family__windows
+msgid "Windows"
+msgstr "Windows"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__apk
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__apk
+msgid "apk"
+msgstr "apk"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__apt
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__apt
+msgid "apt"
+msgstr "apt"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__bootc
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__bootc
+msgid "bootc / rpm-ostree"
+msgstr "bootc / rpm-ostree"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__dnf
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__dnf
+msgid "dnf"
+msgstr "dnf"
+
+#. module: bf_hosting_patch
+#: model_terms:ir.ui.view,arch_db:bf_hosting_patch.bf_patch_system_view_form
+msgid "laptop-linux"
+msgstr "poste-linux"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__os_family__macos
+msgid "macOS"
+msgstr "macOS"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields,field_description:bf_hosting_patch.field_bf_patch_system__machine_id
+msgid "machine-id"
+msgstr "machine-id"
+
+#. module: bf_hosting_patch
+#. odoo-python
+#: code:addons/bf_hosting_patch/models/hosting_maintenance_schedule.py:0
+msgid "not specified"
+msgstr "non précisé"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__pacman
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__pacman
+msgid "pacman"
+msgstr "pacman"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "tracked system"
+msgstr "système suivi"
+
+#. module: bf_hosting_patch
+#. odoo-javascript
+#: code:addons/bf_hosting_patch/static/src/xml/patch_card.xml:0
+msgid "tracked systems"
+msgstr "systèmes suivis"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__winget
+msgid "winget"
+msgstr "winget"
+
+#. module: bf_hosting_patch
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_report__package_manager__zypper
+#: model:ir.model.fields.selection,name:bf_hosting_patch.selection__bf_patch_system__package_manager__zypper
+msgid "zypper"
+msgstr "zypper"

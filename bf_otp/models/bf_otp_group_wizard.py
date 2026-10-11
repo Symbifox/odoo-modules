@@ -41,16 +41,16 @@ _COURRIEL = re.compile(r'[^@\s]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})')
 
 class BfOtpGroupWizard(models.TransientModel):
     _name = 'bf.otp.group.wizard'
-    _description = "Proposer un regroupement des tokens"
+    _description = "Token grouping suggestion"
 
     line_ids = fields.One2many(
-        'bf.otp.group.wizard.line', 'wizard_id', string='Propositions')
-    total = fields.Integer(string='Tokens examinés', readonly=True)
-    deja_range = fields.Integer(string='Déjà rangés', readonly=True)
+        'bf.otp.group.wizard.line', 'wizard_id', string="Suggestions")
+    total = fields.Integer(string="Tokens examined", readonly=True)
+    deja_range = fields.Integer(string="Already filed", readonly=True)
     sans_proposition = fields.Integer(
-        string='Sans proposition', readonly=True,
-        help="Ni adresse dans le nom du compte, ni émetteur partagé avec un "
-             "autre token. Aucune devinette n'est meilleure que rien ici.")
+        string="No suggestion", readonly=True,
+        help="Neither an address in the account name nor an issuer shared "
+             "with another token. Here, no guess is better than none.")
 
     # -------------------------------------------------------------------------
     # La proposition
@@ -144,13 +144,13 @@ class BfOtpGroupWizard(models.TransientModel):
         retenues = self.line_ids.filtered(lambda l: l.retenu)
         if not retenues:
             raise UserError(_(
-                "Aucun paquet retenu : il n'y a rien à écrire."))
+                "No batch selected: there is nothing to write."))
         touches = 0
         for ligne in retenues:
             nom = (ligne.nom or '').strip()
             if not nom:
                 raise UserError(_(
-                    "Un paquet retenu n'a pas de nom. Nommez-le ou décochez-le."))
+                    "A selected batch has no name. Name it or uncheck it."))
             # ⚠️ Re-borner à la personne connectée au moment d'écrire, et pas
             # seulement au moment de proposer : l'assistant est un modèle
             # transitoire, ses lignes sont modifiables par son propriétaire, et
@@ -166,7 +166,7 @@ class BfOtpGroupWizard(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'type': 'success',
-                'message': _("%s token(s) rangés.", touches),
+                'message': _("%s token(s) filed.", touches),
                 'next': {'type': 'ir.actions.act_window_close'},
             },
         }
@@ -174,12 +174,12 @@ class BfOtpGroupWizard(models.TransientModel):
 
 class BfOtpGroupWizardLine(models.TransientModel):
     _name = 'bf.otp.group.wizard.line'
-    _description = "Paquet proposé"
+    _description = "Suggested batch"
     _order = 'nombre desc, nom'
 
     wizard_id = fields.Many2one(
         'bf.otp.group.wizard', required=True, ondelete='cascade')
-    nom = fields.Char(string='Regroupement', required=True)
+    nom = fields.Char(string="Grouping", required=True)
     nombre = fields.Integer(string='Tokens', readonly=True)
-    retenu = fields.Boolean(string='Appliquer', default=True)
-    token_ids = fields.Many2many('bf.otp.token', string='Tokens visés')
+    retenu = fields.Boolean(string="Apply", default=True)
+    token_ids = fields.Many2many('bf.otp.token', string="Target tokens")

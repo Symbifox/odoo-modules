@@ -7,7 +7,7 @@
             <!-- La décoration ne peint que ce qui appelle un geste : une page
                  expirée ou fermée. Une page en ligne est le cas normal et ne
                  se colore pas. -->
-            <list string="Pages de liens"
+            <list string="Link pages"
                   decoration-muted="not is_live"
                   decoration-warning="is_expired">
                 <field name="name"/>
@@ -16,9 +16,9 @@
                 <field name="partner_id" optional="show"/>
                 <field name="template_id" optional="hide"/>
                 <field name="advisor_user_id" optional="hide"/>
-                <field name="link_count" string="Liens"/>
-                <field name="visible_link_count" string="Affichés"/>
-                <field name="visit_count" string="Visites" sum="Visites"/>
+                <field name="link_count" string="Links"/>
+                <field name="visible_link_count" string="Displayed"/>
+                <field name="visit_count" string="Visits" sum="Visits"/>
                 <field name="date_expiry" optional="show"/>
                 <field name="state"/>
                 <field name="is_live" column_invisible="1"/>
@@ -31,21 +31,21 @@
         <field name="name">bf.linkpage.form</field>
         <field name="model">bf.linkpage</field>
         <field name="arch" type="xml">
-            <form string="Page de liens">
+            <form string="Link page">
                 <header>
-                    <button name="action_publish" type="object" string="Publier"
+                    <button name="action_publish" type="object" string="Publish"
                             class="btn-primary" invisible="state == 'published'"/>
-                    <button name="action_close" type="object" string="Fermer"
+                    <button name="action_close" type="object" string="Close"
                             invisible="state != 'published'"/>
                     <button name="action_renew" type="object"
-                            string="Repousser l'échéance"
+                            string="Extend expiry"
                             invisible="kind != 'org'"/>
                     <button name="action_apply_template" type="object"
-                            string="Réappliquer le gabarit"
+                            string="Reapply template"
                             invisible="not template_id"
-                            confirm="Les liens posés par le gabarit seront remplacés. Les liens ajoutés à la main restent."/>
+                            confirm="The links placed by the template will be replaced. Links added by hand stay."/>
                     <button name="action_open_public" type="object"
-                            string="Voir la page" icon="fa-external-link"
+                            string="View page" icon="fa-external-link"
                             invisible="state != 'published'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,published,closed"/>
@@ -54,48 +54,47 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" icon="fa-eye" type="object"
                                 name="action_open_public" invisible="state != 'published'">
-                            <field name="visit_count" widget="statinfo" string="Visites"/>
+                            <field name="visit_count" widget="statinfo" string="Visits"/>
                         </button>
                     </div>
                     <field name="avatar" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="Jane Doe"/></h1>
-                        <field name="headline" placeholder="Une ligne sous le titre"/>
+                        <field name="headline" placeholder="One line under the title"/>
                     </div>
                     <div class="alert alert-warning" role="alert" invisible="not is_expired">
-                        Cette page est expirée : son adresse rend un 404. Un QR
-                        déjà imprimé qui pointe ici ne mène plus nulle part.
+                        This page has expired: its address returns a 404. A QR code already printed that points here no longer leads anywhere.
                     </div>
                     <group>
-                        <group string="Adresse">
+                        <group string="Address">
                             <field name="slug" placeholder="jane-doe"/>
                             <field name="public_url" widget="url" readonly="1"/>
                             <field name="kind"/>
                             <field name="active" invisible="1"/>
                         </group>
-                        <group string="Personne" invisible="kind == 'org'">
+                        <group string="Person" invisible="kind == 'org'">
                             <field name="partner_id"
                                    required="kind == 'owner'"
                                    invisible="kind != 'owner'"/>
                             <field name="user_id" invisible="kind != 'owner'"
-                                   help="Sert à résoudre la page de rendez-vous."/>
+                                   help="Used to resolve the appointment page."/>
                             <field name="template_id"/>
                         </group>
-                        <group string="Organisation" invisible="kind != 'org'">
-                            <field name="partner_id" string="Organisation"
+                        <group string="Organization" invisible="kind != 'org'">
+                            <field name="partner_id" string="Organization"
                                    required="kind == 'org'"
                                    domain="[('is_company', '=', True)]"
                                    context="{'default_is_company': True}"/>
                             <field name="advisor_user_id"
-                                   help="La personne de chez nous dont la page résout l'agenda, le courriel et le dépôt sécurisé."/>
-                            <field name="template_id" string="Gabarit"/>
+                                   help="The person on our side whose calendar, email and secure upload the page resolves."/>
+                            <field name="template_id" string="Template"/>
                             <field name="booking_slug"
-                                   string="Type de rendez-vous offert"
-                                   placeholder="rencontre-flexible"
-                                   help="Le slug du type à ouvrir. Sans lui, le lien de rendez-vous NE S'AFFICHE PAS : la recherche prendrait le premier type public, qui est la rencontre exploratoire, et l'offrirait à un client existant."/>
+                                   string="Appointment type offered"
+                                   placeholder="flexible-meeting"
+                                   help="The slug of the type to open. Without it, the appointment link IS NOT SHOWN: the search would take the first public type, which is the discovery meeting, and offer it to an existing client."/>
                         </group>
-                        <group string="Cycle de vie">
+                        <group string="Lifecycle">
                             <field name="date_expiry"
                                    required="kind in ('oneoff', 'org')"/>
                             <field name="expiry_warned_on" readonly="1"
@@ -104,23 +103,23 @@
                             <field name="is_live" invisible="1"/>
                             <field name="last_visit" readonly="1"/>
                         </group>
-                        <group string="Présentation">
+                        <group string="Presentation">
                             <field name="layout"/>
                             <field name="theme"/>
                             <field name="show_vcard"/>
                             <field name="accent_color" widget="color"/>
                         </group>
-                        <group string="Propre à la personne"
+                        <group string="Specific to the person"
                                invisible="kind == 'org'">
                             <field name="booking_slug"
-                                   placeholder="rencontre-flexible"/>
+                                   placeholder="flexible-meeting"/>
                             <field name="meet_url"
-                                   placeholder="https://…/r/MaSalle"
+                                   placeholder="https://…/r/MyRoom"
                                    widget="url"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Liens" name="links">
+                        <page string="Links" name="links">
                             <!-- ⚠️ `active_test: False` est OBLIGATOIRE ici.
                                  Un `one2many` filtre les enregistrements
                                  archivés par défaut : sans ce contexte, cocher
@@ -140,7 +139,7 @@
                                            placeholder="https://…"/>
                                     <field name="resolved_url" optional="show" readonly="1"/>
                                     <field name="icon" optional="hide"/>
-                                    <field name="click_count" string="Clics" optional="show" readonly="1"/>
+                                    <field name="click_count" string="Clicks" optional="show" readonly="1"/>
                                     <field name="from_template" optional="hide" readonly="1"/>
                                     <field name="source_available" column_invisible="1"/>
                                     <!-- Afficher/masquer VISIBLE : masquer un lien
@@ -149,34 +148,26 @@
                                          dépôt fermé pour la saison). Caché dans
                                          une colonne facultative, personne ne le
                                          trouvait et les gens supprimaient. -->
-                                    <field name="active" string="Affiché" widget="boolean_toggle"/>
+                                    <field name="active" string="Shown" widget="boolean_toggle"/>
                                 </list>
                             </field>
                             <div class="text-muted mt-2">
-                                Un lien dont l'adresse résolue est vide ne
-                                s'affiche pas sur la page publique. C'est
-                                voulu : mieux vaut un lien absent qu'un lien
-                                mort atteint par un QR déjà imprimé.
-                                <br/>
-                                Décocher « Affiché » retire un lien de la page
-                                sans le supprimer : la ligne reste ici, en gris,
-                                et se rallume d'un clic. C'est le geste à faire
-                                pour un numéro qu'on ne veut plus donner.
+                                A link whose resolved address is empty is not shown on the public page. This is deliberate: a missing link is better than a dead link reached through a QR code already printed. <br/> Unchecking "Shown" removes a link from the page without deleting it: the row stays here, grayed out, and comes back on with one click. This is what to do for a number you no longer want to give out.
                             </div>
                         </page>
-                        <page string="Présentation" name="bio">
-                            <field name="bio" placeholder="Quelques lignes affichées sous le titre."/>
+                        <page string="Presentation" name="bio">
+                            <field name="bio" placeholder="A few lines shown under the title."/>
                         </page>
-                        <page string="Statistiques" name="stats">
+                        <page string="Statistics" name="stats">
                             <group>
-                                <group string="La page">
+                                <group string="The page">
                                     <field name="visit_count" readonly="1"/>
                                     <field name="last_visit" readonly="1"/>
                                     <field name="link_count" readonly="1"/>
                                     <field name="visible_link_count" readonly="1"/>
                                 </group>
                             </group>
-                            <separator string="Clics par lien"/>
+                            <separator string="Clicks per link"/>
                             <field name="link_ids" readonly="1" nolabel="1"
                                    context="{'active_test': False}">
                                 <list create="false" delete="false" edit="false"
@@ -184,35 +175,30 @@
                                       default_order="click_count desc">
                                     <field name="name"/>
                                     <field name="source_code"/>
-                                    <field name="click_count" string="Clics"/>
-                                    <field name="resolved_url" string="Mène à"/>
-                                    <field name="active" string="Affiché" widget="boolean_toggle" readonly="1"/>
+                                    <field name="click_count" string="Clicks"/>
+                                    <field name="resolved_url" string="Leads to"/>
+                                    <field name="active" string="Shown" widget="boolean_toggle" readonly="1"/>
                                 </list>
                             </field>
                             <div class="text-muted mt-3">
                                 <p>
-                                    Les visites comptent les affichages de la page,
-                                    les clics comptent les départs vers un lien.
-                                    Un écart marqué entre les deux dit que les gens
-                                    arrivent et repartent sans rien ouvrir.
+                                    Visits count page views, clicks count departures to a link. A marked gap between the two means people arrive and leave without opening anything.
                                 </p>
                                 <p>
-                                    C'est la seule façon de savoir si le code QR
-                                    d'une signature sert vraiment, plutôt que de
-                                    le supposer.
+                                    It is the only way to know whether a signature's QR code is really used, rather than assuming it.
                                 </p>
                             </div>
                         </page>
-                        <page string="Code QR" name="qr">
+                        <page string="QR code" name="qr">
                             <group>
-                                <group string="Réglages">
+                                <group string="Settings">
                                     <field name="qr_branded"/>
                                     <field name="qr_logo" widget="image"
                                            class="oe_avatar"
                                            invisible="not qr_branded"/>
                                     <div class="text-muted" colspan="2"
                                          invisible="not qr_branded">
-                                        Vide, c'est le logo de la société qui sert.
+                                        If empty, the company logo is used.
                                     </div>
                                     <field name="qr_logo_plate"
                                            invisible="not qr_branded"/>
@@ -220,7 +206,7 @@
                                     <field name="qr_fill_color" widget="color"/>
                                     <field name="qr_back_color" widget="color"/>
                                 </group>
-                                <group string="Aperçu">
+                                <group string="Preview">
                                     <field name="qr_warning" invisible="1"/>
                                     <div colspan="2" class="alert alert-warning"
                                          role="alert" invisible="not qr_warning">
@@ -231,7 +217,7 @@
                                            options="{'size': [220, 220]}"/>
                                     <div colspan="2" class="mt-2">
                                         <button name="action_download_qr" type="object"
-                                                string="Télécharger" class="btn-primary"
+                                                string="Download" class="btn-primary"
                                                 icon="fa-download"
                                                 invisible="not qr_preview"/>
                                     </div>
@@ -239,26 +225,16 @@
                             </group>
                             <div class="text-muted mt-3">
                                 <p>
-                                    L'aperçu est le rendu RÉEL : ce que vous voyez
-                                    est exactement ce qui se télécharge.
+                                    The preview is the ACTUAL rendering: what you see is exactly what gets downloaded.
                                 </p>
                                 <p>
-                                    Le code se lit par contraste. Il doit rester
-                                    nettement plus sombre que son fond, sinon la
-                                    plupart des appareils ne le lisent pas, même
-                                    lorsqu'il paraît net à l'écran. Un réglage qui
-                                    ne tient pas cette règle retombe sur le noir et
-                                    blanc et le dit ci-dessus, plutôt que de livrer
-                                    un beau code qui ne scanne jamais.
+                                    The code is read by contrast. It must stay clearly darker than its background, otherwise most devices cannot read it, even when it looks sharp on screen. A setting that breaks this rule falls back to black and white and says so above, rather than delivering a nice code that never scans.
                                 </p>
                                 <p>
-                                    Le logo masque des modules du code. La correction
-                                    d'erreur compense, et la part qu'il occupe est
-                                    bornée à ce qui reste lisible une fois imprimé
-                                    petit dans une signature.
+                                    The logo hides some of the code's modules. Error correction compensates, and the share it covers is capped at what stays readable once printed small in a signature.
                                 </p>
                                 <p>
-                                    Adresse directe :
+                                    Direct address:
                                     <code><field name="public_url" readonly="1" nolabel="1" class="d-inline"/>/qr.png</code>
                                 </p>
                             </div>
@@ -274,38 +250,34 @@
         <field name="name">bf.linkpage.search</field>
         <field name="model">bf.linkpage</field>
         <field name="arch" type="xml">
-            <search string="Pages de liens">
+            <search string="Link pages">
                 <field name="name"/>
                 <field name="slug"/>
                 <field name="partner_id"/>
-                <filter name="live" string="En ligne"
+                <filter name="live" string="Live"
                         domain="[('state', '=', 'published'), ('is_expired', '=', False)]"/>
-                <filter name="expired" string="Expirées" domain="[('is_expired', '=', True)]"/>
-                <filter name="oneoff" string="Ponctuelles" domain="[('kind', '=', 'oneoff')]"/>
+                <filter name="expired" string="Expired pages" domain="[('is_expired', '=', True)]"/>
+                <filter name="oneoff" string="One-offs" domain="[('kind', '=', 'oneoff')]"/>
                 <separator/>
-                <filter name="archived" string="Archivées" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="group_template" string="Gabarit" context="{'group_by': 'template_id'}"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_kind" string="Page type" context="{'group_by': 'kind'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_template" string="Template" context="{'group_by': 'template_id'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_linkpage" model="ir.actions.act_window">
-        <field name="name">Pages de liens</field>
+        <field name="name">Link pages</field>
         <field name="res_model">bf.linkpage</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_live': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créer une page de liens</p>
+            <p class="o_view_nocontent_smiling_face">Create a link page</p>
             <p>
-                Une page publique qui rassemble les liens d'une personne sous
-                une adresse courte, et le QR à poser dans une signature
-                courriel. Les liens de rendez-vous et de dépôt sécurisé sont
-                résolus depuis la base : ils suivent la personne au lieu d'être
-                recopiés.
+                A public page that gathers a person's links under a short address, and the QR code to put in an email signature. Appointment and secure upload links are resolved from the database: they follow the person instead of being copied.
             </p>
         </field>
     </record>

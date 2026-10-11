@@ -32,41 +32,42 @@ from odoo.exceptions import ValidationError
 
 class BfOtpCredential(models.Model):
     _name = 'bf.otp.credential'
-    _description = "Clé d'accès d'un coffre OTP"
+    _description = "OTP vault passkey"
     _order = 'create_date desc'
 
     vault_id = fields.Many2one(
-        'bf.otp.vault', string='Coffre', required=True,
+        'bf.otp.vault', string="Vault", required=True,
         ondelete='cascade', index=True,
     )
     user_id = fields.Many2one(
         'res.users', related='vault_id.user_id', store=True, index=True,
     )
     name = fields.Char(
-        string='Nom', required=True,
-        help="Ce que la personne reconnaîtra : « MacBook », « clé jaune ».",
+        string="Name", required=True,
+        help="What the person will recognize: \"MacBook\", \"yellow key\".",
     )
     credential_id = fields.Char(
-        string="Identifiant de la clé d'accès", required=True,
-        help="Rendu par l'authentificateur, en base64url. Public par nature : "
-             "il sert à demander LA bonne clé, il n'ouvre rien.",
+        string="Passkey ID", required=True,
+        help="Returned by the authenticator, in base64url. Public by "
+             "nature: it is used to request THE right key, it unlocks "
+             "nothing.",
     )
     prf_salt = fields.Char(
-        string='Sel PRF', required=True,
-        help="Entrée fixe de la dérivation PRF. Public : deux coffres qui "
-             "partageraient une clé d'accès en tirent des secrets différents.",
+        string="PRF salt", required=True,
+        help="Fixed input of the PRF derivation. Public: two vaults "
+             "sharing a passkey derive different secrets from it.",
     )
     wrapped_secret = fields.Char(
-        string='Clé du coffre, scellée', required=True,
-        help="Les octets de la clé du coffre, chiffrés par le secret PRF. "
-             "Le serveur ne peut pas l'ouvrir.",
+        string="Vault key, sealed", required=True,
+        help="The vault key bytes, encrypted with the PRF secret. The "
+             "server cannot open it.",
     )
-    wrapped_iv = fields.Char(string='Vecteur', required=True)
-    last_used = fields.Datetime(string='Dernière ouverture')
+    wrapped_iv = fields.Char(string="IV", required=True)
+    last_used = fields.Datetime(string="Last unlock")
 
     _sql_constraints = [
         ('credential_uniq', 'unique(vault_id, credential_id)',
-         "Cette clé d'accès est déjà enregistrée sur ce coffre."),
+         "This passkey is already registered on this vault."),
     ]
 
 
@@ -87,6 +88,6 @@ class BfOtpCredential(models.Model):
             v = (cred.wrapped_secret or '').strip()
             if _URI_OTPAUTH.search(v) or _BASE32_NU.match(v):
                 raise ValidationError(_(
-                    "La clé du coffre est arrivée en clair au serveur. "
-                    "Le scellement se fait dans le navigateur, avant l'envoi."
+                    "The vault key reached the server in plaintext. "
+                    "Sealing happens in the browser, before sending."
                 ))

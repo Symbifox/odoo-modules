@@ -30,20 +30,20 @@ class HostingMaintenanceSchedule(models.Model):
 
     endpoint_id = fields.Many2one(
         comodel_name="hosting.endpoint",
-        string="Poste du parc",
+        string="Fleet endpoint",
         ondelete="cascade",
         tracking=True,
         index=True,
-        help="Viser une machine plutôt qu'un service. C'est ce qui rend le "
-             "type « Correctifs de sécurité » utilisable.",
+        help="Target a machine rather than a service. This is what makes "
+             "the \"Security patches\" type usable.",
     )
     system_id = fields.Many2one(
         comodel_name="bf.patch.system",
-        string="Système visé",
+        string="Target system",
         ondelete="cascade",
         tracking=True,
-        help="Optionnel : sur une machine en double amorçage, viser un seul "
-             "côté. Laissé vide, la maintenance vise la machine entière.",
+        help="Optional: on a dual-boot machine, target only one side. "
+             "Left empty, the maintenance targets the whole machine.",
     )
 
     # ⚠️ Le champ de base est un `related` sur `service_id.partner_id`, stocké.
@@ -64,8 +64,8 @@ class HostingMaintenanceSchedule(models.Model):
     )
 
     target_label = fields.Char(
-        string="Cible", compute="_compute_target_label",
-        help="Ce que la maintenance vise, quel que soit le porteur.",
+        string="Target", compute="_compute_target_label",
+        help="What the maintenance targets, whatever it is attached to.",
     )
 
     @api.depends("service_id.partner_id", "endpoint_id.partner_id",
@@ -109,13 +109,13 @@ class HostingMaintenanceSchedule(models.Model):
         (
             "cible_unique",
             "CHECK ((service_id IS NULL) <> (endpoint_id IS NULL))",
-            "Une planification de maintenance vise un service OU un poste du "
-            "parc, jamais les deux ni aucun des deux.",
+            "A maintenance schedule targets a service OR a fleet "
+            "endpoint, never both and never neither.",
         ),
         (
             "systeme_implique_poste",
             "CHECK (system_id IS NULL OR endpoint_id IS NOT NULL)",
-            "Un système visé suppose la machine qui le porte.",
+            "A target system requires the machine it runs on.",
         ),
     ]
 
@@ -181,22 +181,32 @@ class HostingMaintenanceSchedule(models.Model):
         if not activity_type:
             return
 
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
         for record in sans_service:
             if not record.next_due or not record.active:
                 continue
             record.activity_ids.filtered(
                 lambda a: a.activity_type_id == activity_type
             ).unlink()
+            # La note est lue par la personne assignée, pas par qui a cliqué ni
+            # par OdooBot : dans sa langue si elle est installée, sinon l'anglais.
+            # Le type et la fréquence viennent des méthodes du parent
+            # (`hosting_management`), qui rendent la valeur de SA source : ils
+            # suivront quand le parent basculera.
+            lecteur = record.user_id or self.env.user
+            lang = lecteur.lang if lecteur.lang in installees else "en_US"
+            rl = record.with_context(lang=lang)
             parts = [
                 f"<strong>{record.name}</strong>",
-                _("Poste : %s", record.target_label or _("non précisé")),
-                _("Client : %s", record.partner_id.name or _("N/D")),
-                _("Type : %s", record._get_type_display()),
-                _("Fréquence : %s", record._get_frequency_display()),
+                rl.env._("Endpoint: %s", record.target_label or rl.env._("not specified")),
+                rl.env._("Client: %s", record.partner_id.name or rl.env._("N/A")),
+                rl.env._("Type: %s", rl._get_type_display()),
+                rl.env._("Frequency: %s", rl._get_frequency_display()),
             ]
             if record.instructions:
                 instructions = record.instructions.replace(chr(10), "<br/>")
-                parts.append(f"<br/><strong>Instructions :</strong><br/>{instructions}")
+                titre = rl.env._("Instructions:")
+                parts.append(f"<br/><strong>{titre}</strong><br/>{instructions}")
             record.activity_schedule(
                 "hosting_management.mail_activity_type_hosting_maintenance",
                 date_deadline=record.next_due,
@@ -225,7 +235,7 @@ class HostingMaintenanceSchedule(models.Model):
                 action_type="maintenance",
                 category="ops",
                 description=_(
-                    "Maintenance complétée : %(nom)s (poste : %(cible)s)",
+                    "Maintenance completed: %(nom)s (endpoint: %(cible)s)",
                     nom=record.name, cible=record.target_label or "?",
                 ),
                 res_model=self._name,
@@ -238,9 +248,9 @@ class HostingMaintenanceSchedule(models.Model):
             if activity_type:
                 record.activity_ids.filtered(
                     lambda a: a.activity_type_id == activity_type
-                ).action_feedback(feedback=_("Complété le %s", today))
+                ).action_feedback(feedback=_("Completed on %s", today))
             record.message_post(
-                body=_("Tâche de maintenance complétée le %s", today),
+                body=_("Maintenance task completed on %s", today),
                 message_type="notification",
             )
         sans_service._create_maintenance_activity()

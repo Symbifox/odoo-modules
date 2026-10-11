@@ -1,6 +1,10 @@
 {
     "name": "Pages de liens",
-    "version": "18.0.10.0.2",
+    # 18.0.10.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.10.1.0",
     "category": "Website",
     "summary": "Page publique de liens rattachée à une personne, à une organisation cliente ou ponctuelle, avec QR à la marque pour signature courriel",
     "description": """

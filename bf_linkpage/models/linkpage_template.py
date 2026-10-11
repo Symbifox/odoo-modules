@@ -11,10 +11,10 @@ from odoo.exceptions import ValidationError
 
 class BfLinkpageTemplate(models.Model):
     _name = "bf.linkpage.template"
-    _description = "Gabarit de page de liens"
+    _description = "Link page template"
     _order = "sequence, name"
 
-    name = fields.Char(string="Nom", required=True)
+    name = fields.Char(string="Name", required=True)
     sequence = fields.Integer(default=10)
 
     # Un gabarit de personne et un gabarit d'organisation ne se mélangent pas :
@@ -24,25 +24,25 @@ class BfLinkpageTemplate(models.Model):
     # l'entreprise cliente comme si c'était le nôtre.
     target = fields.Selection(
         [
-            ("person", "Pages de personnes"),
-            ("org", "Pages d'organisations"),
+            ("person", "Person pages"),
+            ("org", "Organization pages"),
         ],
-        string="S'applique à",
+        string="Applies to",
         default="person",
         required=True,
     )
     active = fields.Boolean(default=True)
-    note = fields.Text(string="Remarques")
+    note = fields.Text(string="Notes")
 
     group_ids = fields.Many2many(
         "res.groups",
-        string="Groupes visés",
-        help="Les groupes dont les membres reçoivent ce gabarit par défaut. "
-             "Vide = le gabarit ne s'applique qu'à la main.",
+        string="Target groups",
+        help="The groups whose members receive this template by default. "
+             "Empty = the template is only applied by hand.",
     )
     is_default = fields.Boolean(
-        string="Gabarit par défaut",
-        help="Utilisé quand aucun gabarit de groupe ne correspond.",
+        string="Default template",
+        help="Used when no group template matches.",
     )
 
     # Le VISUEL du gabarit. Posé sur la page au premier rattachement seulement
@@ -51,30 +51,30 @@ class BfLinkpageTemplate(models.Model):
     # propre page, sans que rien ne le lui dise.
     layout = fields.Selection(
         [
-            ("cards", "Cartes"),
-            ("soft", "Cartes en relief"),
-            ("minimal", "Épurée"),
-            ("pills", "Boutons pleins"),
-            ("mono", "Technique"),
+            ("cards", "Cards"),
+            ("soft", "Raised cards"),
+            ("minimal", "Minimal"),
+            ("pills", "Solid buttons"),
+            ("mono", "Technical"),
         ],
-        string="Disposition",
+        string="Layout",
         default="cards",
         required=True,
     )
     theme = fields.Selection(
         [
-            ("auto", "Selon l'appareil"),
-            ("light", "Clair"),
-            ("dark", "Sombre"),
+            ("auto", "Device setting"),
+            ("light", "Light"),
+            ("dark", "Dark"),
         ],
-        string="Thème",
+        string="Theme",
         default="auto",
         required=True,
     )
-    accent_color = fields.Char(string="Couleur d'accent", default="#29ABE2")
+    accent_color = fields.Char(string="Accent color", default="#29ABE2")
 
     line_ids = fields.One2many(
-        "bf.linkpage.template.line", "template_id", string="Liens",
+        "bf.linkpage.template.line", "template_id", string="Links",
     )
     page_ids = fields.One2many("bf.linkpage", "template_id", string="Pages")
     page_count = fields.Integer(compute="_compute_page_count")
@@ -108,10 +108,10 @@ class BfLinkpageTemplate(models.Model):
             ])
             if other:
                 raise ValidationError(_(
-                    "Il ne peut y avoir qu'un seul gabarit par défaut pour "
-                    "« %s ». Retirez la case sur l'autre avant de la poser "
-                    "ici.",
-                    dict(self._fields["target"].selection).get(template.target),
+                    "There can be only one default template for \"%s\". "
+                    "Uncheck it on the other one before checking it here.",
+                    dict(self._fields["target"]._description_selection(self.env)).get(
+                        template.target),
                 ))
 
     @api.model
@@ -150,31 +150,31 @@ class BfLinkpageTemplate(models.Model):
 
 class BfLinkpageTemplateLine(models.Model):
     _name = "bf.linkpage.template.line"
-    _description = "Lien d'un gabarit de page de liens"
+    _description = "Link page template link"
     _order = "sequence, id"
 
     template_id = fields.Many2one(
         "bf.linkpage.template", required=True, ondelete="cascade", index=True,
     )
     sequence = fields.Integer(default=10)
-    name = fields.Char(string="Libellé", required=True, translate=True)
-    subtitle = fields.Char(string="Précision", translate=True)
-    icon = fields.Char(string="Icône")
+    name = fields.Char(string="Label", required=True, translate=True)
+    subtitle = fields.Char(string="Details", translate=True)
+    icon = fields.Char(string="Icon")
     source_code = fields.Selection(
         selection=lambda self: self.env["bf.linkpage.source"]._selection(),
         string="Source",
         default="manual",
         required=True,
     )
-    url = fields.Char(string="Adresse")
+    url = fields.Char(string="Address")
 
     # La même référence douce que sur le lien. Sans elle, un gabarit ne peut
     # que laisser le résolveur DEVINER, et deviner se voit mal : sur une base
     # qui compte dix-sept types de rendez-vous publics, la recherche prend le
     # premier par séquence, qui n'est pas forcément celui qu'on met dans sa
     # signature.
-    source_res_model = fields.Char(string="Modèle visé")
-    source_res_id = fields.Integer(string="Enregistrement visé")
+    source_res_model = fields.Char(string="Target model")
+    source_res_id = fields.Integer(string="Target record")
 
     def _copy_translations_to(self, link):
         """Reporter les traductions de la ligne sur le lien créé.

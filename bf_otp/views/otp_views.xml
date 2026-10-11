@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_otp_app" model="ir.actions.client">
-        <field name="name">Tokens OTP</field>
+        <field name="name">OTP tokens</field>
         <field name="tag">bf_otp.app</field>
     </record>
 
@@ -27,7 +27,7 @@
             <!-- `create="0"` : un token neuf exige une graine chiffrée dans le
                  navigateur, donc il ne peut naître que dans l'application.
                  `delete="0"` : la corbeille est le chemin, et elle est là-bas. -->
-            <list string="Tokens OTP" create="0" delete="0"
+            <list string="OTP tokens" create="0" delete="0"
                   multi_edit="1" editable="bottom" sample="1"
                   decoration-muted="archived">
                 <field name="favorite" widget="boolean_favorite" string=" "/>
@@ -53,24 +53,20 @@
         <field name="name">bf.otp.token.form</field>
         <field name="model">bf.otp.token</field>
         <field name="arch" type="xml">
-            <form string="Token OTP" create="0" duplicate="0">
+            <form string="OTP token" create="0" duplicate="0">
                 <sheet>
                     <div class="alert alert-info" role="status">
-                        La graine de ce token n'est pas lisible ici, et elle ne
-                        l'est nulle part sur le serveur. Le code se calcule dans
-                        <em>Mon coffre</em>, une fois la phrase de passe entrée.
-                        Cet écran sert au rangement : à qui ce token appartient,
-                        et sur quel mandat.
+                        This token's seed cannot be read here, nor anywhere on the server. The code is computed in <em>My vault</em>, once the passphrase is entered. This screen is for filing: who this token belongs to, and for which engagement.
                     </div>
-                    <widget name="web_ribbon" title="À la corbeille" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="In the trash" bg_color="text-bg-danger"
                             invisible="active"/>
                     <!-- ⚠️ Deux rubans, jamais ensemble : la corbeille l'emporte
                          à l'affichage parce que c'est l'état qui a des
                          conséquences. -->
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-secondary"
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary"
                             invisible="not archived or not active"/>
                     <group>
-                        <group string="Le compte">
+                        <group string="The account">
                             <field name="issuer" readonly="1"/>
                             <field name="name" readonly="1"/>
                             <field name="otp_type" readonly="1"/>
@@ -81,7 +77,7 @@
                             <field name="counter" readonly="1"
                                    invisible="otp_type != 'hotp'"/>
                         </group>
-                        <group string="Le rangement">
+                        <group string="Filing">
                             <field name="partner_id" options="{'no_create': True}"/>
                             <field name="project_id" options="{'no_create': True}"/>
                             <field name="group_name"/>
@@ -103,49 +99,49 @@
         <field name="name">bf.otp.token.search</field>
         <field name="model">bf.otp.token</field>
         <field name="arch" type="xml">
-            <search string="Tokens OTP">
-                <field name="name" string="Compte ou émetteur"
+            <search string="OTP tokens">
+                <field name="name" string="Account or issuer"
                        filter_domain="['|', ('name', 'ilike', self), ('issuer', 'ilike', self)]"/>
                 <field name="partner_id"/>
                 <field name="project_id"/>
                 <field name="group_name"/>
-                <filter name="favoris" string="Favoris" domain="[('favorite', '=', True)]"/>
-                <filter name="sensibles" string="Sensibles" domain="[('sensitive', '=', True)]"/>
+                <filter name="favoris" string="Favorites" domain="[('favorite', '=', True)]"/>
+                <filter name="sensibles" string="Sensitive tokens" domain="[('sensitive', '=', True)]"/>
                 <separator/>
                 <!-- La vraie liste de départ avant un départ, une fin de mandat
                      ou un ménage : ce qu'on détient sans savoir pour qui. -->
-                <filter name="sans_rattachement" string="Sans client ni projet"
+                <filter name="sans_rattachement" string="No client or project"
                         domain="[('partner_id', '=', False), ('project_id', '=', False)]"/>
-                <filter name="jamais_utilise" string="Jamais utilisé"
+                <filter name="jamais_utilise" string="Never used"
                         domain="[('last_used', '=', False)]"/>
                 <separator/>
                 <!-- ⚠️ L'archive n'est PAS la corbeille, et les deux filtres se
                      suivent exprès pour que la différence se lise : au-dessus,
                      ce qui est rangé et vivant ; en dessous, ce qui attend
                      d'être détruit. -->
-                <filter name="hors_archive" string="Hors archive"
+                <filter name="hors_archive" string="Not archived"
                         domain="[('archived', '=', False)]"/>
-                <filter name="archives" string="Archivés"
+                <filter name="archives" string="Archived tokens"
                         domain="[('archived', '=', True)]"/>
                 <separator/>
                 <!-- ⚠️ Un domaine qui nomme `active` désactive de lui-même le
                      filtre implicite des archivés : pas besoin de contexte. -->
-                <filter name="corbeille" string="À la corbeille"
+                <filter name="corbeille" string="In the trash"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="par_client" string="Client" context="{'group_by': 'partner_id'}"/>
-                    <filter name="par_projet" string="Projet" context="{'group_by': 'project_id'}"/>
-                    <filter name="par_groupe" string="Regroupement" context="{'group_by': 'group_name'}"/>
-                    <filter name="par_emetteur" string="Émetteur" context="{'group_by': 'issuer'}"/>
+                    <filter name="par_projet" string="Project" context="{'group_by': 'project_id'}"/>
+                    <filter name="par_groupe" string="Grouping" context="{'group_by': 'group_name'}"/>
+                    <filter name="par_emetteur" string="Issuer" context="{'group_by': 'issuer'}"/>
                     <filter name="par_type" string="Type" context="{'group_by': 'otp_type'}"/>
-                    <filter name="par_archive" string="Archive" context="{'group_by': 'archived'}"/>
+                    <filter name="par_archive" string="Token archive" context="{'group_by': 'archived'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_otp_tokens" model="ir.actions.act_window">
-        <field name="name">Inventaire</field>
+        <field name="name">Inventory</field>
         <field name="res_model">bf.otp.token</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_otp_token_search"/>
@@ -156,12 +152,9 @@
              autre module. -->
         <field name="context">{'search_default_hors_archive': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun token dans votre coffre</p>
+            <p class="o_view_nocontent_smiling_face">No token in your vault</p>
             <p>
-                Les tokens s'ajoutent depuis <em>Mon coffre</em>, où la graine est
-                chiffrée dans le navigateur avant de partir. Cet inventaire sert
-                ensuite à les ranger : rattacher un token à un client, à un
-                mandat, ou retrouver ce qu'on détient pour quelqu'un.
+                Tokens are added from <em>My vault</em>, where the seed is encrypted in the browser before it leaves. This inventory is then used to file them: link a token to a client or an engagement, or find what you hold for someone.
             </p>
         </field>
     </record>
@@ -184,7 +177,7 @@
                         class="oe_stat_button" icon="fa-key"
                         groups="bf_otp.group_otp_user"
                         invisible="bf_otp_token_count == 0">
-                    <field name="bf_otp_token_count" widget="statinfo" string="Tokens OTP"/>
+                    <field name="bf_otp_token_count" widget="statinfo" string="OTP tokens"/>
                 </button>
             </div>
         </field>
@@ -200,7 +193,7 @@
                         class="oe_stat_button" icon="fa-key"
                         groups="bf_otp.group_otp_user"
                         invisible="bf_otp_token_count == 0">
-                    <field name="bf_otp_token_count" widget="statinfo" string="Tokens OTP"/>
+                    <field name="bf_otp_token_count" widget="statinfo" string="OTP tokens"/>
                 </button>
             </div>
         </field>
@@ -211,20 +204,20 @@
          qu'il est. Il porte aussi l'icône de token, donc il s'installe en PWA
          sous son propre nom. -->
     <menuitem id="menu_otp_root"
-              name="Tokens OTP"
+              name="OTP tokens"
               web_icon="bf_otp,static/description/icon.png"
               groups="group_otp_user"
               sequence="52"/>
 
     <menuitem id="menu_otp_app"
-              name="Mon coffre"
+              name="My vault"
               parent="menu_otp_root"
               action="action_otp_app"
               groups="group_otp_user"
               sequence="10"/>
 
     <menuitem id="menu_otp_inventaire"
-              name="Inventaire"
+              name="Inventory"
               parent="menu_otp_root"
               action="action_otp_tokens"
               groups="group_otp_user"

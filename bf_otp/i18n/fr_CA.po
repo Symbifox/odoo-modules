@@ -1,0 +1,2589 @@
+# Translation of Symbifox OTP - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_otp 18.0.12.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 12:24+0000\n"
+"PO-Revision-Date: 2026-10-11 12:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"\"%s\" will be destroyed. No passphrase, no recovery code and no backup will"
+" bring it back."
+msgstr ""
+"« %s » sera détruit. Aucune phrase de passe, aucun code de relève et aucune "
+"sauvegarde ne le rendra."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"\"%s\" will be removed from this vault. If you do not have the seed "
+"elsewhere, the second factor of this account becomes unrecoverable."
+msgstr ""
+"« %s » sera supprimé de ce coffre. Si vous n'avez pas la graine ailleurs, le"
+" deuxième facteur de ce compte devient irrécupérable."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"\"%s\" will no longer unlock this vault. The envelope or record that holds "
+"it becomes useless, and it will need to be destroyed."
+msgstr ""
+"« %s » n'ouvrira plus ce coffre. L'enveloppe ou la fiche qui le porte "
+"devient inutile, et il faudra la détruire."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%(nombre)s token(s) exported to %(fichier)s."
+msgstr "%(nombre)s token(s) exporté(s) dans %(fichier)s."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%(nombre)s token(s) written IN PLAINTEXT to %(fichier)s."
+msgstr "%(nombre)s token(s) écrits EN CLAIR dans %(fichier)s."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s already present, skipped."
+msgstr "%s déjà présent(s), ignoré(s)."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s client or project link(s) restored."
+msgstr "%s rattachement(s) rétabli(s)."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s token(s) destroyed."
+msgstr "%s token(s) détruit(s)."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_group_wizard.py:0
+msgid "%s token(s) filed."
+msgstr "%s token(s) rangés."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s token(s) imported."
+msgstr "%s token(s) importé(s)."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"%s token(s) will be destroyed. Nothing will bring them back. If you are not "
+"sure, export your vault first."
+msgstr ""
+"%s token(s) seront détruits. Rien ne les rendra. Si vous n'en êtes pas "
+"certain, exportez d'abord votre coffre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s unreadable in this vault, not exported."
+msgstr "%s illisible(s) dans ce coffre, non exporté(s)."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "%s unreadable: %s."
+msgstr "%s illisible(s) : %s."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "(YubiKey and similar), the"
+msgstr "(YubiKey et semblables), le"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "(keep it in your password manager before confirming)."
+msgstr ""
+":\n"
+"                    rangez-la dans votre gestionnaire de mots de passe avant de valider."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "(the"
+msgstr ": l'adresse"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+", and that is deliberate: the file goes elsewhere and outlives a session. "
+"Without it, no one can read the export again, not us and not anyone else."
+msgstr ""
+", et c'est\n"
+"                            voulu : le fichier part ailleurs et vit plus longtemps qu'une session.\n"
+"                            Sans elle, personne ne pourra relire l'export, nous pas plus qu'un autre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ", in JSON, encrypted or not."
+msgstr ""
+", en JSON,\n"
+"                                chiffré ou non."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ", the one the \"Export\" button produces;"
+msgstr ""
+", celui que produit le bouton\n"
+"                                « Exporter » ;"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+": a passkey is tied to this device and this domain, and the passphrase is "
+"what saves you if you lose either one."
+msgstr ""
+": une clé d'accès est\n"
+"                            liée à cet appareil et à ce domaine, et c'est la phrase qui vous sauve\n"
+"                            si vous perdez l'un ou l'autre."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "A TOTP period must be at least one second."
+msgstr "La période d'un TOTP doit être d'au moins une seconde."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_device.py:0
+msgid "A device can only be created by pairing from the app."
+msgstr "Un appareil ne se crée qu'en s'appariant depuis l'application."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_device.py:0
+msgid "A device's token and user cannot be changed by hand."
+msgstr "Le jeton et l'usager d'un appareil ne se modifient pas à la main."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_vault__verifier
+msgid ""
+"A known text, encrypted with the key. Lets the browser say \"wrong "
+"passphrase\" before trying to decrypt the tokens."
+msgstr ""
+"Un texte connu, chiffré avec la clé. Sert au navigateur à dire « mauvaise "
+"phrase » avant de tenter de déchiffrer les tokens."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"A passkey is tied to a device and a domain: it makes unlocking quick, it "
+"does not replace the passphrase. A recovery code, on the other hand, fits in"
+" an envelope and outlives the laptop."
+msgstr ""
+"Une clé d'accès est liée à un appareil et à un domaine : elle rend\n"
+"                                l'ouverture rapide, elle ne remplace pas la phrase. Un code de relève,\n"
+"                                lui, tient dans une enveloppe et survit au portable."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"A passkey unlocks this vault with a touch of a sensor, without typing the "
+"passphrase. It seals a copy of the vault key; the server still cannot read "
+"anything."
+msgstr ""
+"Une clé d'accès ouvre ce coffre en touchant un capteur, sans taper\n"
+"                            la phrase. Elle scelle une copie de la clé du coffre ; le serveur\n"
+"                            ne peut toujours rien lire."
+
+#. module: bf_otp
+#: model:ir.model.constraint,message:bf_otp.constraint_bf_otp_vault_user_uniq
+msgid "A person has only one token vault."
+msgstr "Une personne n'a qu'un seul coffre de tokens."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_group_wizard.py:0
+msgid "A selected batch has no name. Name it or uncheck it."
+msgstr "Un paquet retenu n'a pas de nom. Nommez-le ou décochez-le."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"A token removed from the vault lands here and stays here. Nothing destroys "
+"it on its own: destruction has to be requested, and it is permanent."
+msgstr ""
+"Un token retiré du coffre atterrit ici et y reste. Rien ne le\n"
+"                                détruit tout seul : la destruction se demande, et elle est\n"
+"                                définitive."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "A useless passkey has just been created"
+msgstr "Une clé d'accès inutile vient d'être créée"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid "A vault cannot be given to someone else."
+msgstr "Un coffre ne se donne pas à quelqu'un d'autre."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__secret_cipher
+msgid ""
+"AES-GCM ciphertext produced by the browser. The server cannot read it and "
+"does not try."
+msgstr ""
+"Chiffré AES-GCM produit par le navigateur. Le serveur ne peut pas le lire et"
+" n'essaie pas."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__name
+msgid "Account"
+msgstr "Compte"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Account or issuer"
+msgstr "Compte ou émetteur"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__active
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Add"
+msgstr "Ajouter"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Add a token"
+msgstr "Ajouter un token"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Add a token, or import the export from your OTP manager."
+msgstr "Ajoutez un token, ou importez l'export de votre gestionnaire OTP."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Add this passkey"
+msgstr "Ajouter cette clé d'accès"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Add to favorites"
+msgstr "Mettre en favori"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Address read."
+msgstr "Adresse lue."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__algorithm
+msgid "Algorithm"
+msgstr "Algorithme"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__deja_range
+msgid "Already filed"
+msgstr "Déjà rangés"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "An OTP code has 6, 7 or 8 digits."
+msgstr "Un code OTP fait 6, 7 ou 8 chiffres."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_device.py:0
+msgid "Android device"
+msgstr "Appareil Android"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__app_version
+msgid "App version"
+msgstr "Version de l'application"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__retenu
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Archive: put away, alive, and still usable"
+msgstr "Archive : rangé, vivant, et toujours utilisable"
+
+#. module: bf_otp
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__archived
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__archived_at
+msgid "Archived on"
+msgstr "Archivé le"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Archived tokens"
+msgstr "Archivés"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Asked again on purpose to add a way to unlock."
+msgstr "Redemandée exprès pour ajouter un moyen d'ouvrir."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Asked for on purpose: adding a way in is confirmed by what you know, not by "
+"the fact that this screen is open."
+msgstr ""
+"Demandée exprès : ajouter une porte se confirme par ce\n"
+"                                            que vous savez, pas par le fait que cet écran soit ouvert."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Back to the passphrase"
+msgstr "Revenir à la phrase de passe"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__device_token
+msgid "Bearer token"
+msgstr "Token porteur"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Bring back"
+msgstr "Ressortir"
+
+#. module: bf_otp
+#: model:res.groups,comment:bf_otp.group_otp_user
+msgid "Can keep their own OTP token vault."
+msgstr "Peut tenir son propre coffre de jetons OTP."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Card view"
+msgstr "Vue cartes"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Choose a passphrase of at least twelve characters for this file."
+msgstr "Choisissez une phrase d'au moins douze caractères pour ce fichier."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Choose a passphrase of at least twelve characters."
+msgstr "Choisissez une phrase d'au moins douze caractères."
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Code copied."
+msgstr "Code copié."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Code copied. Paste it now where it belongs: it will not be shown again."
+msgstr ""
+"Code copié. Collez-le maintenant à l'endroit prévu : il ne se réaffichera "
+"pas."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Compact view"
+msgstr "Vue compacte"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Copy"
+msgstr "Copier"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__counter
+msgid "Counter"
+msgstr "Compteur"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Create a code"
+msgstr "Créer un code"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Create the vault"
+msgstr "Créer le coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Create your token vault"
+msgstr "Créer votre coffre de tokens"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__create_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__create_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Creation failed."
+msgstr "Création impossible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Dashes, spaces and letter case do not matter."
+msgstr "Les tirets, les espaces et la casse n'ont pas d'importance."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Decryption and re-encryption happen in this page: the server only sees "
+"encrypted data."
+msgstr ""
+"Le déchiffrement et le rechiffrement se font dans cette page : le\n"
+"                            serveur ne voit que du chiffré."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Delete"
+msgstr "Supprimer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Delete this token"
+msgstr "Supprimer ce token"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_recovery__salt
+msgid ""
+"Derivation salt for the code, drawn at random by the browser. Public by "
+"nature."
+msgstr ""
+"Sel de dérivation du code, tiré au sort par le navigateur. Public par "
+"nature."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_vault__salt
+msgid ""
+"Derivation salt, drawn at random by the browser. Public by nature: it "
+"protects nothing on its own, it prevents preparing an attack before seeing "
+"this particular vault."
+msgstr ""
+"Sel de dérivation, tiré au sort par le navigateur. Public par nature : il ne"
+" protège rien à lui seul, il empêche de préparer une attaque avant d'avoir "
+"vu ce coffre-ci."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Destroy"
+msgstr "Détruire"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Destroy all"
+msgstr "Tout détruire"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Destroy this token"
+msgstr "Détruire ce token"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Detach"
+msgstr "Détacher"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__name
+msgid "Device"
+msgstr "Appareil"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Device name"
+msgstr "Nom de l'appareil"
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_device
+msgid "Device paired with the token vault"
+msgstr "Appareil apparié au coffre de tokens"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__display_name
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Download in plaintext"
+msgstr "Télécharger en clair"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid ""
+"Each batch below becomes a <em>Grouping</em> label. The name comes from the "
+"domain of the account's address when there is one, otherwise from the issuer"
+" when it has more than one token. Rename what you like, uncheck what you do "
+"not want."
+msgstr ""
+"Chaque paquet ci-dessous devient une étiquette de\n"
+"                    <em>Regroupement</em>. Le nom vient du domaine de l'adresse\n"
+"                    du compte quand il y en a une, sinon de l'émetteur quand il\n"
+"                    porte plus d'un token. Renommez ce que vous voulez, décochez\n"
+"                    ce que vous ne voulez pas."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Edit"
+msgstr "Modifier"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Edit token"
+msgstr "Modifier le token"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Empty the trash"
+msgstr "Vider la corbeille"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__secret_cipher
+msgid "Encrypted seed"
+msgstr "Graine chiffrée"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Encryption unavailable"
+msgstr "Chiffrement indisponible"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_webauthn.js:0
+msgid "Enrollment cancelled."
+msgstr "Enrôlement annulé."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Enrollment failed."
+msgstr "Enrôlement impossible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Enter key"
+msgstr "Entrée"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Enter your passphrase to confirm."
+msgstr "Entrez votre phrase de passe pour confirmer."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Esc key"
+msgstr "Échap"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Export"
+msgstr "Exporter"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Export failed."
+msgstr "Export impossible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Export in plaintext, without encryption"
+msgstr "Exporter en clair, sans chiffrement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Export passphrase"
+msgstr "Phrase de l'export"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Export the vault"
+msgstr "Exporter le coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "FIDO2 hardware key"
+msgstr "clé matérielle FIDO2"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__favorite
+msgid "Favorite"
+msgstr "Favori"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Favorites"
+msgstr "Favoris"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid "File tokens"
+msgstr "Ranger"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+msgid "Filing"
+msgstr "Le rangement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Fills in the fields below in one go."
+msgstr "Remplit les champs ci-dessous d'un coup."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_credential__prf_salt
+msgid ""
+"Fixed input of the PRF derivation. Public: two vaults sharing a passkey "
+"derive different secrets from it."
+msgstr ""
+"Entrée fixe de la dérivation PRF. Public : deux coffres qui partageraient "
+"une clé d'accès en tirent des secrets différents."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__counter
+msgid "For HOTP only. Advanced by the browser with each code generated."
+msgstr ""
+"Pour un HOTP seulement. Avancé par le navigateur à chaque code produit."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__group_name
+msgid "Free label to file tokens: a client, an environment, a team."
+msgstr ""
+"Étiquette libre pour ranger les tokens : un client, un environnement, une "
+"équipe."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Google Authenticator export"
+msgstr "export Google Authenticator"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__nom
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__group_name
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Grouping"
+msgstr "Regroupement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "HOTP"
+msgstr "HOTP"
+
+#. module: bf_otp
+#: model:ir.model.fields.selection,name:bf_otp.selection__bf_otp_token__otp_type__hotp
+msgid "HOTP (counter-based)"
+msgstr "HOTP (par compteur)"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "I have put it somewhere safe"
+msgstr "Je l'ai mis à l'abri"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__wrapped_iv
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__wrapped_iv
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__secret_iv
+msgid "IV"
+msgstr "Vecteur"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Import"
+msgstr "Importer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Import failed."
+msgstr "Import impossible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Import from an OTP manager"
+msgstr "Importer depuis un gestionnaire OTP"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "In the archive"
+msgstr "Dans l'archive"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "In the trash"
+msgstr "À la corbeille"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Incorrect passphrase."
+msgstr "Phrase de passe incorrecte."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Incorrect vault passphrase."
+msgstr "Phrase de passe du coffre incorrecte."
+
+#. module: bf_otp
+#: model:ir.actions.act_window,name:bf_otp.action_otp_tokens
+#: model:ir.ui.menu,name:bf_otp.menu_otp_inventaire
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__issuer
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Issuer"
+msgstr "Émetteur"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"It was not sent to the server, and nothing anywhere can recover it. Put it "
+"somewhere safe before closing this screen."
+msgstr ""
+"Il n'a pas été envoyé au serveur, et rien nulle part ne permet\n"
+"                                de le retrouver. Mettez-le à l'abri avant de fermer cet écran."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__iterations
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__iterations
+msgid "Iterations"
+msgstr "Itérations"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Keep your passphrase"
+msgstr "Conservez votre phrase de passe"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__write_uid
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__write_date
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__last_seen
+msgid "Last seen"
+msgstr "Vu la dernière fois"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__last_used
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__last_used
+msgid "Last unlock"
+msgstr "Dernière ouverture"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__last_used
+msgid "Last used"
+msgstr "Dernière utilisation"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Leave empty to keep it unchanged"
+msgstr "Laisser vide pour ne pas la changer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Lock the vault (Esc)"
+msgstr "Refermer le coffre (Échap)"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Lock vault"
+msgstr "Verrouiller"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Lost passphrase, lost tokens"
+msgstr "Phrase perdue, tokens perdus"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Lost passphrase? Use a recovery code"
+msgstr "Phrase perdue ? Utiliser un code de relève"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "MacBook, yellow key…"
+msgstr "MacBook, clé jaune…"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "Model not allowed: %s"
+msgstr "Modèle non autorisé : %s"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Move to the archive"
+msgstr "Ranger dans l'archive"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Moved to the archive. It still generates its codes there."
+msgstr "Rangé dans l'archive. Il y produit encore ses codes."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__deleted_at
+msgid "Moved to trash"
+msgstr "Mis à la corbeille"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__favorite
+msgid "Moves to the top, above the groupings."
+msgstr "Remonte en tête, au-dessus des regroupements."
+
+#. module: bf_otp
+#: model:ir.ui.menu,name:bf_otp.menu_otp_app
+msgid "My vault"
+msgstr "Mon coffre"
+
+#. module: bf_otp
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Needed only if the file is encrypted: the passphrase chosen at export time "
+"for a Symbifox export, the original vault's passphrase for an"
+msgstr ""
+"Nécessaire seulement si le fichier est chiffré : la phrase choisie\n"
+"                                à l'export pour un export Symbifox, celle du coffre d'origine pour\n"
+"                                un"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_group_wizard__sans_proposition
+msgid ""
+"Neither an address in the account name nor an issuer shared with another "
+"token. Here, no guess is better than none."
+msgstr ""
+"Ni adresse dans le nom du compte, ni émetteur partagé avec un autre token. "
+"Aucune devinette n'est meilleure que rien ici."
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Never used"
+msgstr "Jamais utilisé"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Nextcloud OTP manager export"
+msgstr "export du gestionnaire OTP de Nextcloud"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_group_wizard.py:0
+msgid "No batch selected: there is nothing to write."
+msgstr "Aucun paquet retenu : il n'y a rien à écrire."
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "No client or project"
+msgstr "Sans client ni projet"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "No code yet: the passphrase is the only way into this vault."
+msgstr ""
+"Aucun code pour l'instant : la phrase de passe est la seule porte\n"
+"                                de ce coffre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "No passkey registered."
+msgstr "Aucune clé d'accès enregistrée."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "No readable token in there."
+msgstr "Aucun token lisible là-dedans."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "No readable token to export."
+msgstr "Aucun token lisible à exporter."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__sans_proposition
+msgid "No suggestion"
+msgstr "Sans proposition"
+
+#. module: bf_otp
+#: model_terms:ir.actions.act_window,help:bf_otp.action_otp_tokens
+msgid "No token in your vault"
+msgstr "Aucun token dans votre coffre"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "No vault."
+msgstr "Aucun coffre."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "No vault: you must create one before importing."
+msgstr "Aucun coffre : il faut en créer un avant d'importer."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid "No vault: you must create one first."
+msgstr "Aucun coffre : il faut en créer un d'abord."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "No."
+msgstr "n°"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"None of the registered passkeys responded on this device. Use your "
+"passphrase."
+msgstr ""
+"Aucune clé d'accès enregistrée n'a répondu sur cet appareil. Utilisez votre "
+"phrase de passe."
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Not archived"
+msgstr "Hors archive"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_vault__iterations
+msgid ""
+"Number of PBKDF2 iterations. Stored per vault so it can be raised later "
+"without making existing data unreadable."
+msgstr ""
+"Nombre d'itérations PBKDF2. Enregistré par coffre pour pouvoir le monter "
+"plus tard sans rendre illisible ce qui existe."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__digits
+msgid "Number of digits"
+msgstr "Chiffres"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__token_count
+msgid "Number of tokens"
+msgstr "Nombre de tokens"
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_token
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+msgid "OTP token"
+msgstr "Token OTP"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: model:ir.model,name:bf_otp.model_bf_otp_vault
+msgid "OTP token vault"
+msgstr "Coffre de tokens OTP"
+
+#. module: bf_otp
+#: model:ir.actions.client,name:bf_otp.action_otp_app
+#: model:ir.model.fields,field_description:bf_otp.field_project_project__bf_otp_token_count
+#: model:ir.model.fields,field_description:bf_otp.field_res_partner__bf_otp_token_count
+#: model:ir.model.fields,field_description:bf_otp.field_res_users__bf_otp_token_count
+#: model:ir.module.category,name:bf_otp.module_category_otp
+#: model:ir.ui.menu,name:bf_otp.menu_otp_root
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_list
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_partner_form_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_project_form_otp
+msgid "OTP tokens"
+msgstr "Tokens OTP"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_rattachement.py:0
+msgid "OTP tokens: %s"
+msgstr "Tokens OTP : %s"
+
+#. module: bf_otp
+#: model:ir.actions.server,name:bf_otp.cron_purger_appariements_ir_actions_server
+msgid "OTP tokens: remove abandoned pairings"
+msgstr "Tokens OTP : retirer les appariements abandonnés"
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_credential
+msgid "OTP vault passkey"
+msgstr "Clé d'accès d'un coffre OTP"
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_recovery
+msgid "OTP vault recovery code"
+msgstr "Code de relève d'un coffre OTP"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__user_id
+msgid "Owner"
+msgstr "Propriétaire"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__pkce_challenge
+msgid "PKCE challenge"
+msgstr "Défi PKCE"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "PLAINTEXT"
+msgstr "EN CLAIR"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__prf_salt
+msgid "PRF salt"
+msgstr "Sel PRF"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__pending_code
+msgid "Pairing code"
+msgstr "Code d'appariement"
+
+#. module: bf_otp
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Passkey"
+msgstr "Clé d'accès"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__credential_id
+msgid "Passkey ID"
+msgstr "Identifiant de la clé d'accès"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid "Passkey not found."
+msgstr "Clé d'accès introuvable."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Passkey registered. Keep your passphrase: it remains the only fallback if "
+"you lose this device."
+msgstr ""
+"Clé d'accès enregistrée. Conservez votre phrase : elle reste le seul recours"
+" si vous perdez cet appareil."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Passkey removed."
+msgstr "Clé d'accès retirée."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__credential_ids
+msgid "Passkeys"
+msgstr "Clés d'accès"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Passphrase"
+msgstr "Phrase de passe"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Passphrase for this file"
+msgstr "Phrase de ce fichier"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Paste an otpauth:// address"
+msgstr "Coller une adresse otpauth://"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Paste the content of your export first."
+msgstr "Collez d'abord le contenu de votre export."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Paste what you have. Three sources are recognized from the content, with "
+"nothing to choose:"
+msgstr ""
+"Collez ce que vous avez. Trois provenances sont reconnues au contenu,\n"
+"                            sans rien choisir :"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__pending_code_expiry
+msgid "Pending Code Expiry"
+msgstr "Expiration du code d'appariement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__period
+msgid "Period (s)"
+msgstr "Période (s)"
+
+#. module: bf_otp
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__user_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/controllers/mobile_api.py:0
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__platform
+msgid "Platform"
+msgstr "Plateforme"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Print"
+msgstr "Imprimer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__project_id
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Put away on"
+msgstr "Rangé le"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Read this before continuing."
+msgstr "À lire avant de continuer."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Recently used"
+msgstr "Récents"
+
+#. module: bf_otp
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Recovery code"
+msgstr "Code de relève"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid "Recovery code not found."
+msgstr "Code de relève introuvable."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Recovery code revoked."
+msgstr "Code de relève révoqué."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__recovery_ids
+msgid "Recovery codes"
+msgstr "Codes de relève"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/controllers/mobile_api.py:0
+msgid "Redirect not allowed."
+msgstr "Redirection non autorisée."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Remove from favorites"
+msgstr "Retirer des favoris"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Remove passkey"
+msgstr "Retirer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Removed on"
+msgstr "Retiré le"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Repeat it"
+msgstr "Répétez-la"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Restore token"
+msgstr "Restaurer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Return"
+msgstr "Revenir"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_credential__credential_id
+msgid ""
+"Returned by the authenticator, in base64url. Public by nature: it is used to"
+" request THE right key, it unlocks nothing."
+msgstr ""
+"Rendu par l'authentificateur, en base64url. Public par nature : il sert à "
+"demander LA bonne clé, il n'ouvre rien."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Revoke"
+msgstr "Révoquer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Revoke this recovery code"
+msgstr "Révoquer ce code de relève"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields.selection,name:bf_otp.selection__bf_otp_token__algorithm__sha1
+msgid "SHA-1"
+msgstr "SHA-1"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields.selection,name:bf_otp.selection__bf_otp_token__algorithm__sha256
+msgid "SHA-256"
+msgstr "SHA-256"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields.selection,name:bf_otp.selection__bf_otp_token__algorithm__sha512
+msgid "SHA-512"
+msgstr "SHA-512"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__salt
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__salt
+msgid "Salt"
+msgstr "Sel"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Search for an account, an issuer, a grouping"
+msgstr "Chercher un compte, un émetteur, un regroupement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Seed (base32)"
+msgstr "Graine (base32)"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Seeds are encrypted here, in your browser, with a key derived from this "
+"passphrase. The server never receives it and cannot recover it."
+msgstr ""
+"Les graines sont chiffrées ici, dans votre navigateur, par une clé\n"
+"                    tirée de cette phrase. Le serveur ne la reçoit jamais et ne peut\n"
+"                    pas la retrouver."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__sensitive
+msgid "Sensitive"
+msgstr "Sensible"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Sensitive (code hidden)"
+msgstr "Sensible (code masqué)"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Sensitive tokens"
+msgstr "Sensibles"
+
+#. module: bf_otp
+#. modules: bf_linkpage, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__last_used
+msgid ""
+"Set each time a code is copied. In a vault where only a dozen tokens are "
+"really used, this is what brings them to the top without any filing."
+msgstr ""
+"Posée à chaque code copié. Sur un coffre où l'on n'utilise vraiment qu'une "
+"dizaine de tokens, c'est ce qui les fait remonter sans qu'on ait rien à "
+"ranger."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__archived_at
+msgid ""
+"Set when moved to the archive. Says since when, nothing more: nothing here "
+"purges on its own."
+msgstr ""
+"Posé au passage à l'archive. Dit depuis quand, rien de plus : rien ici ne "
+"purge tout seul."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__deleted_at
+msgid ""
+"Set when moved to the trash. Used to tell since when, not to purge "
+"automatically: nothing here destroys a seed unless asked."
+msgstr ""
+"Posé au passage à la corbeille. Sert à dire depuis quand, pas à purger tout "
+"seul : rien ici ne détruit une graine sans qu'on le demande."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Show"
+msgstr "Afficher"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Sorted by last use, click to sort by name"
+msgstr "Trié par dernière utilisation, cliquer pour trier par nom"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Sorted by name, click to sort by use"
+msgstr "Trié par nom, cliquer pour trier par usage"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_recovery__iterations
+msgid ""
+"Stored per code, so it can be raised later without making codes already "
+"handed out unreadable."
+msgstr ""
+"Enregistré par code, pour pouvoir le monter plus tard sans rendre illisibles"
+" les codes déjà distribués."
+
+#. module: bf_otp
+#: model:ir.actions.act_window,name:bf_otp.action_otp_group_wizard
+#: model:ir.ui.menu,name:bf_otp.menu_otp_group_wizard
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid "Suggest a grouping"
+msgstr "Proposer un regroupement"
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_group_wizard_line
+msgid "Suggested batch"
+msgstr "Paquet proposé"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid "Suggested batches"
+msgstr "Paquets proposés"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__line_ids
+msgid "Suggestions"
+msgstr "Propositions"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Symbifox export"
+msgstr "export Symbifox"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "TOTP"
+msgstr "TOTP"
+
+#. module: bf_otp
+#: model:ir.model.fields.selection,name:bf_otp.selection__bf_otp_token__otp_type__totp
+msgid "TOTP (time-based)"
+msgstr "TOTP (par le temps)"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Take out of the archive"
+msgstr "Ressortir de l'archive"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Taken out of the archive."
+msgstr "Ressorti de l'archive."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__archived
+msgid ""
+"Takes the token out of the everyday list without destroying anything. It "
+"keeps its seed, still generates its codes from the archive, and comes back "
+"in one click."
+msgstr ""
+"Sort le token de la liste de tous les jours sans rien détruire. Il garde sa "
+"graine, produit encore ses codes depuis l'archive, et revient d'un geste."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__token_ids
+msgid "Target tokens"
+msgstr "Tokens visés"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+msgid "The account"
+msgstr "Le compte"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "The account is required."
+msgstr "Le compte est obligatoire."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "The archive is empty. The"
+msgstr "L'archive est vide. Le bouton"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_token__sensitive
+msgid ""
+"The code stays hidden until requested, and is not copied to the clipboard by"
+" mistake."
+msgstr ""
+"Le code reste masqué jusqu'à ce qu'on le demande, et n'est pas copié au "
+"presse-papiers par mégarde."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "The content of this address cannot be read."
+msgstr "Le contenu de cette adresse n'est pas lisible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "The file holds your"
+msgstr "Le fichier porte vos"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"The one that unlocks this vault, asked again here: a screen left open is not"
+" a decision."
+msgstr ""
+"Celle qui ouvre ce coffre, redemandée ici : un écran resté\n"
+"                                        ouvert ne vaut pas une décision."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "The passkey did not respond."
+msgstr "La clé d'accès n'a pas répondu."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "The same one, to confirm"
+msgstr "La même, pour confirmer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "The seed is required for a new token."
+msgstr "La graine est obligatoire pour un token neuf."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid ""
+"The seed reached the server in plaintext.\n"
+"\n"
+"This vault holds no readable seed: encryption happens in the browser, before sending. Refusing here is deliberate, because a seed accepted in plaintext would never be noticed again."
+msgstr ""
+"La graine est arrivée en clair au serveur.\n"
+"\n"
+"Ce coffre ne détient aucune graine lisible : le chiffrement se fait dans le navigateur, avant l'envoi. Refuser ici est volontaire, parce qu'une graine acceptée en clair ne se remarquerait plus jamais."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "The trash is empty."
+msgstr "La corbeille est vide."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "The two passphrases do not match."
+msgstr "Les deux phrases ne correspondent pas."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_credential__wrapped_secret
+msgid ""
+"The vault key bytes, encrypted with the PRF secret. The server cannot open "
+"it."
+msgstr ""
+"Les octets de la clé du coffre, chiffrés par le secret PRF. Le serveur ne "
+"peut pas l'ouvrir."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_recovery__wrapped_secret
+msgid ""
+"The vault key bytes, encrypted with the recovery code. The server cannot "
+"open it."
+msgstr ""
+"Les octets de la clé du coffre, chiffrés par le code de relève. Le serveur "
+"ne peut pas l'ouvrir."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_credential.py:0
+#: code:addons/bf_otp/models/bf_otp_recovery.py:0
+msgid ""
+"The vault key reached the server in plaintext. Sealing happens in the "
+"browser, before sending."
+msgstr ""
+"La clé du coffre est arrivée en clair au serveur. Le scellement se fait dans"
+" le navigateur, avant l'envoi."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"These tokens are put away, not deleted. They generate their codes here, and "
+"the vault search finds them."
+msgstr ""
+"Ces tokens sont rangés, pas supprimés. Ils produisent leurs\n"
+"                                codes ici, et la recherche du coffre les retrouve."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"This Symbifox export is encrypted: enter the passphrase chosen at export "
+"time."
+msgstr ""
+"Cet export Symbifox est chiffré : entrez la phrase choisie au moment de "
+"l'export."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "This address carries no data."
+msgstr "Cette adresse ne porte aucune donnée."
+
+#. module: bf_otp
+#: model:ir.model.constraint,message:bf_otp.constraint_bf_otp_device_device_token_uniq
+msgid "This bearer token already exists."
+msgstr "Ce jeton porteur existe déjà."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_webauthn.js:0
+msgid "This browser does not support passkeys."
+msgstr "Ce navigateur ne gère pas les clés d'accès."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This code does not unlock this vault."
+msgstr "Ce code n'ouvre pas ce coffre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"This code unlocks the entire vault, exactly like your passphrase. It belongs"
+" in a sealed envelope, a safe, or a password manager other than the one "
+"these tokens protect."
+msgstr ""
+"Ce code ouvre le coffre entier, exactement comme votre phrase de\n"
+"                                passe. Sa place est une enveloppe scellée, un coffre-fort, ou un\n"
+"                                gestionnaire de mots de passe qui n'est pas celui que ces tokens\n"
+"                                protègent."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This code will never be shown again."
+msgstr "Ce code ne se réaffichera jamais."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This device"
+msgstr "Cet appareil"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"This export is encrypted: it needs the passphrase of the original Nextcloud "
+"vault."
+msgstr ""
+"Cet export est chiffré : il faut la phrase de passe du coffre Nextcloud "
+"d'origine."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"This export is split: this is code %(index)s of a series of %(taille)s. "
+"Import the others too, or you will be missing tokens."
+msgstr ""
+"Cet export est découpé : c'est le code %(index)s d'une série de %(taille)s. "
+"Importez aussi les autres, sinon il vous manquera des tokens."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_export.js:0
+msgid ""
+"This export is version %(version)s; this page reads up to version %(max)s. "
+"Update the module before importing."
+msgstr ""
+"Cet export est en version %(version)s, cette page lit jusqu'à la %(max)s. "
+"Mettez le module à jour avant d'importer."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This file contains no \"accounts\" list, and it is not a Symbifox export."
+msgstr ""
+"Ce fichier ne contient pas de liste « accounts », et ce n'est pas un export "
+"Symbifox."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_export.js:0
+msgid ""
+"This file contains your token seeds IN PLAINTEXT. Whoever opens it can "
+"generate your one-time codes, with no password and no time limit. Store it "
+"as you would your passwords, or delete it as soon as it has served its "
+"purpose."
+msgstr ""
+"Ce fichier contient les graines de vos tokens EN CLAIR. Qui l'ouvre peut "
+"produire vos codes à usage unique, sans mot de passe et sans limite de "
+"temps. Rangez-le comme vous rangeriez vos mots de passe, ou effacez-le dès "
+"qu'il a servi."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_export.js:0
+msgid "This file is not a Symbifox export."
+msgstr "Ce fichier n'est pas un export Symbifox."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This file will contain your seeds in readable form."
+msgstr "Ce fichier contiendra vos graines lisibles."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This is neither valid JSON nor an otpauth-migration:// address."
+msgstr "Ce n'est ni du JSON valide ni une adresse otpauth-migration://."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "This is not an otpauth-migration:// address."
+msgstr "Ce n'est pas une adresse otpauth-migration://."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This is not the passphrase for this export."
+msgstr "Ce n'est pas la phrase de cet export."
+
+#. module: bf_otp
+#: model:ir.model.constraint,message:bf_otp.constraint_bf_otp_credential_credential_uniq
+msgid "This passkey is already registered on this vault."
+msgstr "Cette clé d'accès est déjà enregistrée sur ce coffre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "This passkey no longer unlocks this vault. Use your passphrase."
+msgstr ""
+"Cette clé d'accès n'ouvre plus ce coffre. Utilisez votre phrase de passe."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This passkey provider does not support the PRF extension."
+msgstr "Ce fournisseur de clés d'accès ne gère pas l'extension PRF."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This passphrase is not the vault's"
+msgstr "Cette phrase n'est pas celle du coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This token cannot be decrypted with this passphrase."
+msgstr "Ce token ne se déchiffre pas avec cette phrase."
+
+#. module: bf_otp
+#: model:ir.model.constraint,message:bf_otp.constraint_bf_otp_device_token_hash_uniq
+msgid "This token hash already exists."
+msgstr "Cette empreinte de jeton existe déjà."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid ""
+"This token is not in the trash. Move it there first: destruction is "
+"irreversible."
+msgstr ""
+"Ce token n'est pas à la corbeille. Mettez-l'y d'abord : la destruction est "
+"irréversible."
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_form
+msgid ""
+"This token's seed cannot be read here, nor anywhere on the server. The code "
+"is computed in <em>My vault</em>, once the passphrase is entered. This "
+"screen is for filing: who this token belongs to, and for which engagement."
+msgstr ""
+"La graine de ce token n'est pas lisible ici, et elle ne\n"
+"                        l'est nulle part sur le serveur. Le code se calcule dans\n"
+"                        <em>Mon coffre</em>, une fois la phrase de passe entrée.\n"
+"                        Cet écran sert au rangement : à qui ce token appartient,\n"
+"                        et sur quel mandat."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid ""
+"This vault already exists. Changing its passphrase requires re-encrypting "
+"the tokens, which is done from the unlocked vault."
+msgstr ""
+"Ce coffre existe déjà. Pour en changer la phrase de passe, il faut "
+"rechiffrer les tokens, ce qui se fait depuis le coffre ouvert."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid ""
+"This vault already has %(nombre)s recovery codes. Remove one before creating"
+" another: each code is one more way in, and one more item to keep track of."
+msgstr ""
+"Ce coffre porte déjà %(nombre)s codes de relève. Retirez-en un avant d'en "
+"créer un autre : chaque code est une porte de plus, et un inventaire qu'il "
+"faut tenir."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"This vault can also be unlocked by touching a sensor. Unlock it, then click "
+"\"Passkey\" in the top bar."
+msgstr ""
+"Ce coffre peut aussi s'ouvrir en touchant un capteur.\n"
+"                    Ouvrez-le, puis « Clé d'accès » dans la barre du haut."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"This vault encrypts seeds in the browser, which requires a secure "
+"connection. This page is served without HTTPS, so"
+msgstr ""
+"Ce coffre chiffre les graines dans le navigateur, ce qui exige une\n"
+"                connexion sécurisée. Cette page est servie sans HTTPS, donc"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_vault.py:0
+msgid ""
+"This vault holds %(nombre)s token(s). Empty it before deleting it: once it "
+"is gone, no passphrase will bring them back."
+msgstr ""
+"Ce coffre porte %(nombre)s token(s). Videz-le avant de le supprimer : une "
+"fois parti, aucune phrase de passe ne les rendra."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "This vault is empty."
+msgstr "Ce coffre est vide."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Token archive"
+msgstr "Archive"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Token destroyed."
+msgstr "Token détruit."
+
+#. module: bf_otp
+#: model:ir.model,name:bf_otp.model_bf_otp_group_wizard
+msgid "Token grouping suggestion"
+msgstr "Proposer un regroupement des tokens"
+
+#. module: bf_otp
+#. modules: bf_hosting_patch, bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_device__token_hash
+msgid "Token hash"
+msgstr "Empreinte du jeton"
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+msgid "Token not found."
+msgstr "Token introuvable."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Token restored to the vault."
+msgstr "Token remis dans le coffre."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__nombre
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__token_ids
+msgid "Tokens"
+msgstr "Tokens"
+
+#. module: bf_otp
+#: model_terms:ir.actions.act_window,help:bf_otp.action_otp_tokens
+msgid ""
+"Tokens are added from <em>My vault</em>, where the seed is encrypted in the "
+"browser before it leaves. This inventory is then used to file them: link a "
+"token to a client or an engagement, or find what you hold for someone."
+msgstr ""
+"Les tokens s'ajoutent depuis <em>Mon coffre</em>, où la graine est\n"
+"                chiffrée dans le navigateur avant de partir. Cet inventaire sert\n"
+"                ensuite à les ranger : rattacher un token à un client, à un\n"
+"                mandat, ou retrouver ce qu'on détient pour quelqu'un."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard__total
+msgid "Tokens examined"
+msgstr "Tokens examinés"
+
+#. module: bf_otp
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_group_wizard_form
+msgid ""
+"Tokens that already have a grouping are not touched, even if they fall into "
+"a selected batch."
+msgstr ""
+"Les tokens qui portent déjà un regroupement ne sont pas\n"
+"                    touchés, même s'ils tombent dans un paquet retenu."
+
+#. module: bf_otp
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_device.py:0
+msgid "Too many paired devices (%s). Remove one from the website."
+msgstr "Trop d'appareils appariés (%s). Retirez-en un depuis le site."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Trash"
+msgstr "Corbeille"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "Truncated export."
+msgstr "Export tronqué."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__otp_type
+#: model_terms:ir.ui.view,arch_db:bf_otp.view_otp_token_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Type \"%s\" to confirm that this file will contain your seeds in readable "
+"form."
+msgstr ""
+"Écrivez « %s » pour confirmer que ce fichier contiendra vos graines "
+"lisibles."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Type the word"
+msgstr "Écrivez"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Type to search ·"
+msgstr "Tapez pour chercher ·"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "Unexpected protobuf field of type %s."
+msgstr "Champ protobuf de type %s inattendu."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Ungrouped"
+msgstr "Sans regroupement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_export.js:0
+msgid "Unknown key derivation: %s"
+msgstr "Dérivation inconnue : %s"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Unlock"
+msgstr "Ouvrir"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Unlock failed."
+msgstr "Ouverture impossible."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Unlock with a passkey"
+msgstr "Ouvrir avec une clé d'accès"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Unlock with this code"
+msgstr "Ouvrir avec ce code"
+
+#. module: bf_otp
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_otp/models/bf_otp_token.py:0
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "Unnamed"
+msgstr "Sans nom"
+
+#. module: bf_otp
+#. modules: bf_linkpage, bf_otp
+#: model:res.groups,name:bf_otp.group_otp_user
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_migration.js:0
+msgid "Varint too long: this is not a valid export."
+msgstr "Varint trop long : ce n'est pas un export valide."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__vault_id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__vault_id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_token__vault_id
+msgid "Vault"
+msgstr "Coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Vault created. Write your passphrase down elsewhere: no one can recover it, "
+"and without it the tokens are lost."
+msgstr ""
+"Coffre créé. Notez votre phrase ailleurs : personne ne peut la retrouver, et"
+" sans elle les tokens sont perdus."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__wrapped_secret
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__wrapped_secret
+msgid "Vault key, sealed"
+msgstr "Clé du coffre, scellée"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Vault locked"
+msgstr "Coffre verrouillé"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Vault locked after five minutes of inactivity."
+msgstr "Coffre refermé après cinq minutes sans activité."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_credential__user_id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__user_id
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__user_id
+msgid "Vault owner"
+msgstr "Usager"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Vault passphrase"
+msgstr "Phrase de passe du coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Vault unlocked with a recovery code. This code has been used: if that was "
+"not planned, revoke it."
+msgstr ""
+"Coffre ouvert par un code de relève. Ce code a servi : si ce n'était pas "
+"prévu, révoquez-le."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__verifier
+msgid "Verifier"
+msgstr "Témoin"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_vault__verifier_iv
+msgid "Verifier IV"
+msgstr "Vecteur du témoin"
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_credential__name
+msgid "What the person will recognize: \"MacBook\", \"yellow key\"."
+msgstr "Ce que la personne reconnaîtra : « MacBook », « clé jaune »."
+
+#. module: bf_otp
+#: model:ir.model.fields,help:bf_otp.field_bf_otp_recovery__name
+msgid ""
+"What will help find it, or know which one to revoke: \"envelope in the "
+"safe\", \"successors' Vaultwarden\"."
+msgstr ""
+"Ce qui permettra de le retrouver, ou de savoir lequel révoquer : « enveloppe"
+" au coffre-fort », « Vaultwarden de la relève »."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "What works: a"
+msgstr "Ce qui fonctionne : une"
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_recovery__name
+msgid "Where it is stored"
+msgstr "Où il est rangé"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Where it will be stored"
+msgstr "Où il sera rangé"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Whoever opens it can generate your codes, with no password and no time "
+"limit. It does not expire, it cannot be revoked, and an automatic backup can"
+" copy it elsewhere without telling you. Use it to move to another manager, "
+"then delete it."
+msgstr ""
+"Qui l'ouvre peut produire vos codes, sans mot de passe et sans\n"
+"                                limite de temps. Il ne se périme pas, il ne se révoque pas, et\n"
+"                                une sauvegarde automatique peut le recopier ailleurs sans vous\n"
+"                                le dire. Servez-vous-en pour déménager vers un autre\n"
+"                                gestionnaire, puis effacez-le."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid ""
+"Whoever opens this file can generate your codes. Store it like a password, "
+"or delete it as soon as it has served its purpose."
+msgstr ""
+"Qui ouvre ce fichier peut produire vos codes. Rangez-le comme un mot de "
+"passe, ou effacez-le dès qu'il a servi."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"Without it, a passkey proves who you are but returns no secret: there is "
+"nothing to seal the vault key with."
+msgstr ""
+"Sans elle, une clé d'accès prouve qui vous êtes mais ne rend aucun\n"
+"                                secret : il n'y a rien avec quoi sceller la clé du coffre."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "Without this file's passphrase, no one can read it again."
+msgstr "Sans la phrase de ce fichier, personne ne pourra le relire."
+
+#. module: bf_otp
+#: model:ir.model.fields,field_description:bf_otp.field_bf_otp_group_wizard_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Write the vault to an encrypted file"
+msgstr "Écrire le coffre dans un fichier chiffré"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+msgstr "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "Your passphrase"
+msgstr "Votre phrase de passe"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "a"
+msgstr "un"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "accounts_encrypted_secret.json"
+msgstr "accounts_encrypted_secret.json"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "address contained in its QR code);"
+msgstr "que contient son code QR ;"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "at least twelve characters"
+msgstr "douze caractères au moins"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"button on a token puts it here: it leaves the everyday list, keeps its seed,"
+" and keeps generating its codes from this screen."
+msgstr ""
+"d'un token le range ici :\n"
+"                            il sort de la liste de tous les jours, garde sa graine,\n"
+"                            et continue de produire ses codes depuis cet écran."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "clears, then locks"
+msgstr "efface puis verrouille"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "copies the first one ·"
+msgstr "copie le premier ·"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "crypto.subtle"
+msgstr "crypto.subtle"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "envelope in the safe"
+msgstr "enveloppe au coffre-fort"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "is not available. Open Odoo over HTTPS."
+msgstr "n'existe pas. Ouvrez Odoo en HTTPS."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "leave empty: the client serves as the grouping"
+msgstr "laissez vide : le client sert de regroupement"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "or"
+msgstr "ou"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "otpauth-migration://"
+msgstr "otpauth-migration://"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "otpauth://totp/…"
+msgstr "otpauth://totp/…"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "password manager on your phone"
+msgstr ""
+"gestionnaire de votre\n"
+"                                téléphone"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "to confirm"
+msgstr "pour confirmer"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "token(s) inside."
+msgstr "token(s) à l'intérieur."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"token(s), encrypted with the passphrase you choose here. It is built in this"
+" page: the server takes no part in it and keeps nothing of it."
+msgstr ""
+"token(s), chiffrés par la phrase\n"
+"                            que vous choisissez ici. Il se fabrique dans cette page : le serveur\n"
+"                            n'y participe pas et n'en garde rien."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "two letters are enough"
+msgstr "deux lettres suffisent"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/js/otp_app.js:0
+msgid "vault"
+msgstr "coffre"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "via the QR code, or the device's built-in manager when it has one."
+msgstr ""
+"en passant par le code QR, ou le gestionnaire\n"
+"                                intégré de l'appareil quand il y en a un."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"with your provider, under the name \"Symbifox Tokens\". Remove it, it will "
+"never work."
+msgstr ""
+"chez votre fournisseur, sous le nom « Symbifox Tokens ». Retirez-la, elle ne"
+" servira jamais."
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "{\"accounts\": [ … ]}   ·   otpauth-migration://offline?data=…"
+msgstr "{\"accounts\": [ … ]}   ·   otpauth-migration://offline?data=…"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid "· used on"
+msgstr "· a servi le"
+
+#. module: bf_otp
+#. odoo-javascript
+#: code:addons/bf_otp/static/src/xml/otp_app.xml:0
+msgid ""
+"⚠️ Bitwarden is in this situation: its extension does create the key, but "
+"does not return PRF."
+msgstr ""
+"⚠️ Bitwarden est dans ce cas : son extension crée bien la\n"
+"                                    clé, mais ne rend pas PRF."

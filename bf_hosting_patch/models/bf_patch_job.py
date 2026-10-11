@@ -47,12 +47,12 @@ EXPIRE_AFTER_DAYS = 7
 STALE_ORDER_HOURS = 24
 
 JOB_STATES = [
-    ("queued", "En file"),
-    ("claimed", "Pris en charge"),
-    ("running", "En cours"),
-    ("done", "Appliqué"),
-    ("failed", "Échoué"),
-    ("expired", "Périmé"),
+    ("queued", "Queued"),
+    ("claimed", "Claimed"),
+    ("running", "In progress"),
+    ("done", "Applied"),
+    ("failed", "Failed"),
+    ("expired", "Expired"),
 ]
 
 # Un état terminal ne se rouvre pas : l'agent qui rapporte deux fois le même
@@ -67,14 +67,14 @@ LOCAL_CONSENT_REFUSED = 77
 
 class BfPatchJob(models.Model):
     _name = "bf.patch.job"
-    _description = "Ordre de mise à jour"
+    _description = "Update job"
     _order = "create_date desc, id desc"
 
     name = fields.Char(
-        string="Référence", compute="_compute_name", store=True, readonly=True,
+        string="Reference", compute="_compute_name", store=True, readonly=True,
     )
     system_id = fields.Many2one(
-        comodel_name="bf.patch.system", string="Système", required=True,
+        comodel_name="bf.patch.system", string="System", required=True,
         ondelete="cascade", index=True,
     )
     # Stocké et non pas simplement lié : c'est ce qui permet de grouper la file
@@ -88,55 +88,56 @@ class BfPatchJob(models.Model):
         readonly=True,
     )
     requested_by = fields.Many2one(
-        comodel_name="res.users", string="Demandé par", readonly=True,
+        comodel_name="res.users", string="Requested by", readonly=True,
         default=lambda self: self.env.user, required=True,
     )
 
     scope = fields.Selection(
         selection=[
-            ("security", "Sécurité seulement"),
-            ("all", "Toutes les mises à jour"),
-            ("named", "Paquets nommés"),
-            ("reboot", "Redémarrer seulement"),
+            ("security", "Security only"),
+            ("all", "All updates"),
+            ("named", "Named packages"),
+            ("reboot", "Reboot only"),
         ],
-        string="Portée", required=True, default="security",
+        string="Scope", required=True, default="security",
     )
     package_names = fields.Char(
-        string="Paquets",
-        help="Séparés par des espaces ou des virgules. Portée « nommés » "
-             "seulement.",
+        string="Packages",
+        help="Separated by spaces or commas. \"Named packages\" scope only.",
     )
     reboot_after = fields.Selection(
         selection=[
-            ("never", "Jamais"),
-            ("if_required", "Si la machine le demande"),
-            ("always", "Toujours"),
+            ("never", "Never"),
+            ("if_required", "If the machine requires it"),
+            ("always", "Always"),
         ],
-        string="Redémarrer ensuite", required=True, default="never",
+        string="Reboot afterwards", required=True, default="never",
     )
     window_start = fields.Datetime(
-        string="Pas avant",
-        help="L'ordre n'est pas remis à l'agent avant cette date. Vide = tout "
-             "de suite.",
+        string="Not before",
+        help="The job is not handed to the agent before this date. Empty "
+             "= right away.",
     )
 
     state = fields.Selection(
-        selection=JOB_STATES, string="État", default="queued", required=True,
+        selection=JOB_STATES, string="State", default="queued", required=True,
         index=True, readonly=True, copy=False,
     )
-    claimed_at = fields.Datetime(string="Pris en charge le", readonly=True,
+    claimed_at = fields.Datetime(string="Claimed on", readonly=True,
                                  copy=False)
-    finished_at = fields.Datetime(string="Terminé le", readonly=True, copy=False)
-    exit_code = fields.Integer(string="Code de sortie", readonly=True,
+    finished_at = fields.Datetime(string="Finished on", readonly=True, copy=False)
+    exit_code = fields.Integer(string="Exit code", readonly=True,
                                copy=False)
-    output = fields.Text(string="Sortie", readonly=True, copy=False)
-    packages_changed = fields.Integer(string="Paquets touchés", readonly=True,
+    output = fields.Text(string="Output", readonly=True, copy=False)
+    packages_changed = fields.Integer(string="Packages changed", readonly=True,
                                       copy=False)
 
     # ------------------------------------------------------------------
     @api.depends("system_id", "scope", "create_date")
     def _compute_name(self):
-        labels = dict(self._fields["scope"].selection)
+        # Le libellé dans la langue de qui crée l'ordre : `selection` donnerait celui de
+        # la source pour tout le monde, et le nom est stocké.
+        labels = dict(self._fields["scope"]._description_selection(self.env))
         for job in self:
             system = job.system_id.name or "?"
             job.name = f"{system} — {labels.get(job.scope, job.scope)}"
@@ -146,8 +147,8 @@ class BfPatchJob(models.Model):
         for job in self:
             if job.scope == "named" and not (job.package_names or "").strip():
                 raise ValidationError(
-                    _("Une portée « paquets nommés » sans aucun paquet "
-                      "n'appliquerait rien.")
+                    _("A \"named packages\" scope without any package "
+                      "would apply nothing.")
                 )
 
     @api.constrains("scope", "reboot_after")
@@ -162,9 +163,9 @@ class BfPatchJob(models.Model):
         for job in self:
             if job.scope == "reboot" and job.reboot_after == "never":
                 raise ValidationError(
-                    _("Un ordre « redémarrer seulement » doit dire quand "
-                      "redémarrer : « toujours », ou « si la machine le "
-                      "demande ». Avec « jamais », il ne ferait rien.")
+                    _("A \"reboot only\" job must say when to reboot: "
+                      "\"always\" or \"if the machine requires it\". With "
+                      "\"never\", it would do nothing.")
                 )
 
     def package_list(self):
@@ -192,12 +193,13 @@ class BfPatchJob(models.Model):
             job.system_id.endpoint_id._check_patch_manager()
             if job.state not in ("queued", "claimed"):
                 raise UserError(
-                    _("L'ordre « %s » n'est plus en file : il est déjà parti.",
+                    _("The job \"%s\" is no longer queued: it has already "
+                      "been sent.",
                       job.name)
                 )
             job.write({"state": "expired",
                        "finished_at": fields.Datetime.now(),
-                       "output": _("Annulé dans Odoo par %s.",
+                       "output": _("Cancelled in Odoo by %s.",
                                    self.env.user.name)})
 
     # ------------------------------------------------------------------
@@ -301,11 +303,12 @@ class BfPatchJob(models.Model):
         ])
         if not stale:
             return 0
+        lu = self.with_context(lang=self.env["bf.patch.system"]._bf_reader_lang())
         stale.write({
             "state": "expired",
             "finished_at": fields.Datetime.now(),
-            "output": _("Périmé : aucun agent ne l'a exécuté en %s jours.",
-                        EXPIRE_AFTER_DAYS),
+            "output": lu.env._("Expired: no agent ran it within %s days.",
+                               EXPIRE_AFTER_DAYS),
         })
         _logger.info("bf_hosting_patch : %d ordre(s) périmé(s)", len(stale))
         return len(stale)

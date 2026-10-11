@@ -18,6 +18,7 @@
  * phrase de passe reste donc le chemin de secours, toujours.
  */
 
+import { _t } from "@web/core/l10n/translation";
 import { fromB64, toB64, randomBytes } from "./otp_crypto";
 
 /** base64url sans remplissage, la forme qu'attend et rend WebAuthn. */
@@ -109,7 +110,7 @@ function prfResult(cred) {
  */
 export async function enrollPasskey(userName, displayName, vaultKeyBytes) {
     if (!webauthnAvailable()) {
-        throw new Error("Ce navigateur ne gère pas les clés d'accès.");
+        throw new Error(_t("This browser does not support passkeys."));
     }
     const salt = randomBytes(32);
     const challenge = randomBytes(32);
@@ -134,7 +135,7 @@ export async function enrollPasskey(userName, displayName, vaultKeyBytes) {
         },
     });
     if (!cred) {
-        throw new Error("Enrôlement annulé.");
+        throw new Error(_t("Enrollment cancelled."));
     }
     const credentialId = toB64Url(new Uint8Array(cred.rawId));
 

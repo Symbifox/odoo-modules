@@ -46,6 +46,26 @@ export class BfOtpApp extends Component {
         this.dialog = useService("dialog");
         this.passphraseRef = useRef("passphrase");
         this.confirmRef = useRef("confirm");
+        // Les textes que le gabarit choisit selon l'état : une chaîne écrite dans une
+        // expression OWL (t-esc, t-att-*) ne passe jamais par le catalogue.
+        this.txt = {
+            revenirPhrase: _t("Back to the passphrase"),
+            phrasePerdue: _t("Lost passphrase? Use a recovery code"),
+            trieRecent: _t("Sorted by last use, click to sort by name"),
+            trieNom: _t("Sorted by name, click to sort by use"),
+            recents: _t("Recently used"),
+            vueCartes: _t("Card view"),
+            vueCompacte: _t("Compact view"),
+            retirerFavori: _t("Remove from favorites"),
+            mettreFavori: _t("Add to favorites"),
+            ressortir: _t("Take out of the archive"),
+            ranger: _t("Move to the archive"),
+            copier: _t("Copy"),
+            afficher: _t("Show"),
+            modifierToken: _t("Edit token"),
+            ajouterToken: _t("Add a token"),
+            laisserVide: _t("Leave empty to keep it unchanged"),
+        };
 
         this.state = useState({
             ready: false,
@@ -299,7 +319,7 @@ export class BfOtpApp extends Component {
         this.state.trash = [];
         if (automatique) {
             this.notification.add(
-                _t("Coffre refermé après cinq minutes sans activité."),
+                _t("Vault locked after five minutes of inactivity."),
                 { type: "info" }
             );
         }
@@ -318,7 +338,7 @@ export class BfOtpApp extends Component {
         try {
             const key = await unlockVault(phrase, this.state.vault);
             if (!key) {
-                this.state.error = _t("Phrase de passe incorrecte.");
+                this.state.error = _t("Incorrect passphrase.");
                 return;
             }
             this._key = key;
@@ -350,9 +370,7 @@ export class BfOtpApp extends Component {
         try {
             const res = await unlockWithPasskey(this.credentials);
             if (!res) {
-                this.state.error = _t(
-                    "Aucune clé d'accès enregistrée n'a répondu sur cet appareil. " +
-                    "Utilisez votre phrase de passe."
+                this.state.error = _t("None of the registered passkeys responded on this device. Use your passphrase."
                 );
                 return;
             }
@@ -364,15 +382,14 @@ export class BfOtpApp extends Component {
             if (this.state.tokens.length && this.state.tokens.every((t) => t.broken)) {
                 this._key = null;
                 this.state.tokens = [];
-                this.state.error = _t(
-                    "Cette clé d'accès n'ouvre plus ce coffre. Utilisez votre phrase de passe."
+                this.state.error = _t("This passkey no longer unlocks this vault. Use your passphrase."
                 );
                 return;
             }
             this._ouvrir();
             this.orm.call("bf.otp.vault", "touch_credential", [res.row_id]).catch(() => {});
         } catch (e) {
-            this.state.error = e.message || _t("La clé d'accès n'a pas répondu.");
+            this.state.error = e.message || _t("The passkey did not respond.");
         } finally {
             wipe(octets);
             this.state.busy = false;
@@ -397,7 +414,7 @@ export class BfOtpApp extends Component {
         // l'avertissement survit à sa propre réfutation.
         this.state.prfRefus = false;
         if (!this.state.enrolPass) {
-            this.state.error = _t("Entrez votre phrase de passe pour confirmer.");
+            this.state.error = _t("Enter your passphrase to confirm.");
             return;
         }
         this.state.busy = true;
@@ -409,16 +426,16 @@ export class BfOtpApp extends Component {
             try {
                 await decryptText(controle, v.verifier, v.verifier_iv);
             } catch {
-                this.state.error = _t("Phrase de passe incorrecte.");
+                this.state.error = _t("Incorrect passphrase.");
                 return;
             }
             const scelle = await enrollPasskey(
-                this.env.services.user?.name || "coffre",
-                _t("Coffre de tokens OTP"),
+                this.env.services.user?.name || _t("vault"),
+                _t("OTP token vault"),
                 octets
             );
             await this.orm.call("bf.otp.vault", "add_credential", [
-                this.state.enrolName || _t("Cet appareil"),
+                this.state.enrolName || _t("This device"),
                 scelle.credential_id, scelle.prf_salt,
                 scelle.wrapped_secret, scelle.wrapped_iv,
             ]);
@@ -426,7 +443,7 @@ export class BfOtpApp extends Component {
             this.state.enrolPass = "";
             this.state.enrolName = "";
             this.notification.add(
-                _t("Clé d'accès enregistrée. Conservez votre phrase : elle reste le seul recours si vous perdez cet appareil."),
+                _t("Passkey registered. Keep your passphrase: it remains the only fallback if you lose this device."),
                 { type: "success", sticky: true }
             );
         } catch (e) {
@@ -438,7 +455,7 @@ export class BfOtpApp extends Component {
             if (e instanceof PrfNonRendu) {
                 this.state.prfRefus = true;
             } else {
-                this.state.error = e.message || _t("Enrôlement impossible.");
+                this.state.error = e.message || _t("Enrollment failed.");
             }
         } finally {
             wipe(octets);
@@ -456,7 +473,7 @@ export class BfOtpApp extends Component {
     async onRemovePasskey(c) {
         await this.orm.call("bf.otp.vault", "remove_credential", [c.id]);
         this.state.vault = await this.orm.call("bf.otp.vault", "get_my_vault", []);
-        this.notification.add(_t("Clé d'accès retirée."), { type: "info" });
+        this.notification.add(_t("Passkey removed."), { type: "info" });
     }
 
     async onCreateVault(ev) {
@@ -464,11 +481,11 @@ export class BfOtpApp extends Component {
         const phrase = this.passphraseRef.el?.value || "";
         const confirm = this.confirmRef.el?.value || "";
         if (phrase.length < 12) {
-            this.state.error = _t("Choisissez une phrase d'au moins douze caractères.");
+            this.state.error = _t("Choose a passphrase of at least twelve characters.");
             return;
         }
         if (phrase !== confirm) {
-            this.state.error = _t("Les deux phrases ne correspondent pas.");
+            this.state.error = _t("The two passphrases do not match.");
             return;
         }
         this.state.busy = true;
@@ -483,7 +500,7 @@ export class BfOtpApp extends Component {
             this.state.tokens = [];
             this._ouvrir();
             this.notification.add(
-                _t("Coffre créé. Notez votre phrase ailleurs : personne ne peut la retrouver, et sans elle les tokens sont perdus."),
+                _t("Vault created. Write your passphrase down elsewhere: no one can recover it, and without it the tokens are lost."),
                 { type: "warning", sticky: true }
             );
         } finally {
@@ -635,7 +652,7 @@ export class BfOtpApp extends Component {
                 || (t.partner_id && t.partner_id[1])
                 || (t.project_id && t.project_id[1])
                 || (multiples.has(emetteur) ? emetteur : "")
-                || _t("Sans regroupement");
+                || _t("Ungrouped");
             if (!m.has(g)) {
                 m.set(g, []);
             }
@@ -643,7 +660,7 @@ export class BfOtpApp extends Component {
         }
         const reste = [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
         const groupes = favoris.length
-            ? [[_t("Favoris"), favoris], ...reste]
+            ? [[_t("Favorites"), favoris], ...reste]
             : reste;
         // ⚠️ L'archive trouvée par la recherche ferme la liste, dans son propre
         // groupe et sous son propre nom. Elle ne se mêle jamais aux autres :
@@ -651,7 +668,7 @@ export class BfOtpApp extends Component {
         // le croit revenu de lui-même.
         const archivee = this.archiveTrouvee;
         return archivee.length
-            ? [...groupes, [_t("Dans l'archive"), archivee]]
+            ? [...groupes, [_t("In the archive"), archivee]]
             : groupes;
     }
 
@@ -690,8 +707,8 @@ export class BfOtpApp extends Component {
         t.archived = !t.archived;
         this.notification.add(
             t.archived
-                ? _t("Rangé dans l'archive. Il y produit encore ses codes.")
-                : _t("Ressorti de l'archive."),
+                ? _t("Moved to the archive. It still generates its codes there.")
+                : _t("Taken out of the archive."),
             { type: "success" }
         );
     }
@@ -775,7 +792,7 @@ export class BfOtpApp extends Component {
             return;
         }
         await browser.navigator.clipboard.writeText(t.code);
-        this.notification.add(_t("Code copié."), { type: "success" });
+        this.notification.add(_t("Code copied."), { type: "success" });
         // La date d'usage se pose au serveur, mais on la met tout de suite en
         // mémoire : sans ça le tri « les plus récents » ne bougerait qu'au
         // prochain chargement, et le geste paraîtrait sans effet.
@@ -813,7 +830,7 @@ export class BfOtpApp extends Component {
         try {
             const p = parseOtpauth(uri);
             Object.assign(this.state.form, p, { uri: "" });
-            this.notification.add(_t("Adresse lue."), { type: "success" });
+            this.notification.add(_t("Address read."), { type: "success" });
         } catch (e) {
             this.state.error = e.message;
         }
@@ -824,7 +841,7 @@ export class BfOtpApp extends Component {
         const f = this.state.form;
         this.state.error = "";
         if (!f.name) {
-            this.state.error = _t("Le compte est obligatoire.");
+            this.state.error = _t("The account is required.");
             return;
         }
         const values = {
@@ -846,7 +863,7 @@ export class BfOtpApp extends Component {
             values.secret_cipher = cipher;
             values.secret_iv = iv;
         } else if (!f.id) {
-            this.state.error = _t("La graine est obligatoire pour un token neuf.");
+            this.state.error = _t("The seed is required for a new token.");
             return;
         }
         this.state.busy = true;
@@ -863,12 +880,11 @@ export class BfOtpApp extends Component {
         this.dialog.add(
             ConfirmationDialog,
             {
-                title: _t("Supprimer ce token"),
-                body: _t(
-                    "« %s » sera supprimé de ce coffre. Si vous n'avez pas la graine ailleurs, le deuxième facteur de ce compte devient irrécupérable.",
+                title: _t("Delete this token"),
+                body: _t("\"%s\" will be removed from this vault. If you do not have the seed elsewhere, the second factor of this account becomes unrecoverable.",
                     `${t.issuer ? t.issuer + " · " : ""}${t.name}`
                 ),
-                confirmLabel: _t("Supprimer"),
+                confirmLabel: _t("Delete"),
                 confirm: async () => {
                     await this.orm.call("bf.otp.token", "delete_token", [t.id]);
                     await this._chargerJetons();
@@ -901,7 +917,7 @@ export class BfOtpApp extends Component {
         this.state.importNote = "";
         const texte = (this.state.importText || "").trim();
         if (!texte) {
-            this.state.error = _t("Collez d'abord le contenu de votre export.");
+            this.state.error = _t("Paste the content of your export first.");
             return;
         }
         this.state.busy = true;
@@ -915,8 +931,7 @@ export class BfOtpApp extends Component {
                 brutes = r.comptes;
                 refuses = r.refuses;
                 if (r.lot) {
-                    note = _t(
-                        "Cet export est découpé : c'est le code %(index)s d'une série de %(taille)s. Importez aussi les autres, sinon il vous manquera des tokens.",
+                    note = _t("This export is split: this is code %(index)s of a series of %(taille)s. Import the others too, or you will be missing tokens.",
                         { index: r.lot.index, taille: r.lot.taille }
                     );
                 }
@@ -925,15 +940,13 @@ export class BfOtpApp extends Component {
                 try {
                     data = JSON.parse(texte);
                 } catch {
-                    this.state.error = _t(
-                        "Ce n'est ni du JSON valide ni une adresse otpauth-migration://."
+                    this.state.error = _t("This is neither valid JSON nor an otpauth-migration:// address."
                     );
                     return;
                 }
                 if (estUnExportSymbifox(data)) {
                     if (!this.state.importPassword) {
-                        this.state.error = _t(
-                            "Cet export Symbifox est chiffré : entrez la phrase choisie au moment de l'export."
+                        this.state.error = _t("This Symbifox export is encrypted: enter the passphrase chosen at export time."
                         );
                         return;
                     }
@@ -942,7 +955,7 @@ export class BfOtpApp extends Component {
                         lu = await lireExport(data, this.state.importPassword);
                     } catch (e) {
                         this.state.error = e instanceof PhraseIncorrecte
-                            ? _t("Ce n'est pas la phrase de cet export.")
+                            ? _t("This is not the passphrase for this export.")
                             : e.message;
                         return;
                     }
@@ -969,7 +982,7 @@ export class BfOtpApp extends Component {
                 }
                 const { cipher, iv } = await encryptText(this._key, graine);
                 entries.push({
-                    name: c.name || _t("Sans nom"),
+                    name: c.name || _t("Unnamed"),
                     issuer: c.issuer || "",
                     otp_type: (c.otp_type || "totp").toLowerCase() === "hotp" ? "hotp" : "totp",
                     algorithm: (c.algorithm || "SHA1").toUpperCase(),
@@ -986,7 +999,7 @@ export class BfOtpApp extends Component {
                 });
             }
             if (!entries.length) {
-                this.state.error = _t("Aucun token lisible là-dedans.");
+                this.state.error = _t("No readable token in there.");
                 return;
             }
             const rattaches = await this._resoudreRattachements(entries);
@@ -996,15 +1009,15 @@ export class BfOtpApp extends Component {
             this.state.importPassword = "";
             await this._chargerJetons();
 
-            let msg = _t("%s token(s) importé(s).", res.created);
+            let msg = _t("%s token(s) imported.", res.created);
             if (res.skipped) {
-                msg += " " + _t("%s déjà présent(s), ignoré(s).", res.skipped);
+                msg += " " + _t("%s already present, skipped.", res.skipped);
             }
             if (rattaches) {
-                msg += " " + _t("%s rattachement(s) rétabli(s).", rattaches);
+                msg += " " + _t("%s client or project link(s) restored.", rattaches);
             }
             if (refuses.length) {
-                msg += " " + _t("%s illisible(s) : %s.", refuses.length, refuses.slice(0, 5).join(", "));
+                msg += " " + _t("%s unreadable: %s.", refuses.length, refuses.slice(0, 5).join(", "));
             }
             if (note) {
                 msg += " " + note;
@@ -1014,7 +1027,7 @@ export class BfOtpApp extends Component {
                 sticky: !!(refuses.length || note),
             });
         } catch (e) {
-            this.state.error = e.message || _t("Import impossible.");
+            this.state.error = e.message || _t("Import failed.");
         } finally {
             this.state.busy = false;
         }
@@ -1027,8 +1040,7 @@ export class BfOtpApp extends Component {
     async _lireExportNextcloud(data) {
         const comptes = data.accounts || data;
         if (!Array.isArray(comptes)) {
-            this.state.error = _t(
-                "Ce fichier ne contient pas de liste « accounts », et ce n'est pas un export Symbifox."
+            this.state.error = _t("This file contains no \"accounts\" list, and it is not a Symbifox export."
             );
             return null;
         }
@@ -1036,8 +1048,7 @@ export class BfOtpApp extends Component {
         let cleSource = null;
         if (chiffreALaSource) {
             if (!this.state.importPassword) {
-                this.state.error = _t(
-                    "Cet export est chiffré : il faut la phrase de passe du coffre Nextcloud d'origine."
+                this.state.error = _t("This export is encrypted: it needs the passphrase of the original Nextcloud vault."
                 );
                 return null;
             }
@@ -1124,11 +1135,11 @@ export class BfOtpApp extends Component {
         this.state.error = "";
         const phrase = this.state.exportPass || "";
         if (phrase.length < 12) {
-            this.state.error = _t("Choisissez une phrase d'au moins douze caractères pour ce fichier.");
+            this.state.error = _t("Choose a passphrase of at least twelve characters for this file.");
             return;
         }
         if (phrase !== this.state.exportConfirm) {
-            this.state.error = _t("Les deux phrases ne correspondent pas.");
+            this.state.error = _t("The two passphrases do not match.");
             return;
         }
         this.state.busy = true;
@@ -1137,7 +1148,7 @@ export class BfOtpApp extends Component {
                 this.state.tokens, phrase, ITERATIONS
             );
             if (!exportes) {
-                this.state.error = _t("Aucun token lisible à exporter.");
+                this.state.error = _t("No readable token to export.");
                 return;
             }
             const nom = `symbifox-tokens-${new Date().toISOString().slice(0, 10)}.json`;
@@ -1153,15 +1164,15 @@ export class BfOtpApp extends Component {
             this.state.showExport = false;
             this.state.exportPass = "";
             this.state.exportConfirm = "";
-            let msg = _t("%(nombre)s token(s) exporté(s) dans %(fichier)s.",
+            let msg = _t("%(nombre)s token(s) exported to %(fichier)s.",
                          { nombre: exportes, fichier: nom });
             if (ignores) {
-                msg += " " + _t("%s illisible(s) dans ce coffre, non exporté(s).", ignores);
+                msg += " " + _t("%s unreadable in this vault, not exported.", ignores);
             }
-            msg += " " + _t("Sans la phrase de ce fichier, personne ne pourra le relire.");
+            msg += " " + _t("Without this file's passphrase, no one can read it again.");
             this.notification.add(msg, { type: "success", sticky: true });
         } catch (e) {
-            this.state.error = e.message || _t("Export impossible.");
+            this.state.error = e.message || _t("Export failed.");
         } finally {
             this.state.busy = false;
         }
@@ -1169,7 +1180,7 @@ export class BfOtpApp extends Component {
 
     /** Le mot qu'il faut écrire pour ouvrir la porte de l'export en clair. */
     get motDeGarde() {
-        return _t("EN CLAIR");
+        return _t("PLAINTEXT");
     }
 
     /**
@@ -1213,8 +1224,7 @@ export class BfOtpApp extends Component {
         this.state.error = "";
         if ((this.state.clairMot || "").trim().toUpperCase()
             !== this.motDeGarde.toUpperCase()) {
-            this.state.error = _t(
-                "Écrivez « %s » pour confirmer que ce fichier contiendra vos graines lisibles.",
+            this.state.error = _t("Type \"%s\" to confirm that this file will contain your seeds in readable form.",
                 this.motDeGarde
             );
             return;
@@ -1223,15 +1233,17 @@ export class BfOtpApp extends Component {
         try {
             const cle = await unlockVault(this.state.clairPass || "", this.state.vault);
             if (!cle) {
-                this.state.error = _t("Phrase de passe du coffre incorrecte.");
+                this.state.error = _t("Incorrect vault passphrase.");
                 return;
             }
             const { fichier, exportes, ignores } = construireExportClair(this.state.tokens);
             if (!exportes) {
-                this.state.error = _t("Aucun token lisible à exporter.");
+                this.state.error = _t("No readable token to export.");
                 return;
             }
-            const nom = `symbifox-tokens-EN-CLAIR-${new Date().toISOString().slice(0, 10)}.json`;
+            // La marque du nom de fichier est le mot de garde lui-même (« EN CLAIR » en
+            // français, « PLAINTEXT » en anglais), sans espace dans un nom de fichier.
+            const nom = `symbifox-tokens-${this.motDeGarde.replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.json`;
             const blob = new Blob([JSON.stringify(fichier, null, 2)],
                                   { type: "application/json" });
             const url = URL.createObjectURL(blob);
@@ -1245,19 +1257,17 @@ export class BfOtpApp extends Component {
             this.state.clairOuvert = false;
             this.state.clairPass = "";
             this.state.clairMot = "";
-            let msg = _t(
-                "%(nombre)s token(s) écrits EN CLAIR dans %(fichier)s.",
+            let msg = _t("%(nombre)s token(s) written IN PLAINTEXT to %(fichier)s.",
                 { nombre: exportes, fichier: nom }
             );
             if (ignores) {
-                msg += " " + _t("%s illisible(s) dans ce coffre, non exporté(s).", ignores);
+                msg += " " + _t("%s unreadable in this vault, not exported.", ignores);
             }
-            msg += " " + _t(
-                "Qui ouvre ce fichier peut produire vos codes. Rangez-le comme un mot de passe, ou effacez-le dès qu'il a servi."
+            msg += " " + _t("Whoever opens this file can generate your codes. Store it like a password, or delete it as soon as it has served its purpose."
             );
             this.notification.add(msg, { type: "warning", sticky: true });
         } catch (e) {
-            this.state.error = e.message || _t("Export impossible.");
+            this.state.error = e.message || _t("Export failed.");
         } finally {
             this.state.busy = false;
         }
@@ -1286,7 +1296,7 @@ export class BfOtpApp extends Component {
         ev.preventDefault();
         this.state.error = "";
         if (!this.state.recovPass) {
-            this.state.error = _t("Entrez votre phrase de passe pour confirmer.");
+            this.state.error = _t("Enter your passphrase to confirm.");
             return;
         }
         this.state.busy = true;
@@ -1298,13 +1308,13 @@ export class BfOtpApp extends Component {
             try {
                 await decryptText(controle, v.verifier, v.verifier_iv);
             } catch {
-                this.state.error = _t("Phrase de passe incorrecte.");
+                this.state.error = _t("Incorrect passphrase.");
                 return;
             }
             const code = genererCode();
             const scelle = await scellerPourCode(code, octets, v.iterations);
             await this.orm.call("bf.otp.vault", "add_recovery", [
-                this.state.recovName || _t("Code de relève"),
+                this.state.recovName || _t("Recovery code"),
                 scelle.salt, scelle.iterations,
                 scelle.wrapped_secret, scelle.wrapped_iv,
             ]);
@@ -1315,7 +1325,7 @@ export class BfOtpApp extends Component {
             // envoyé, il n'est pas relisible, et fermer cet écran le perd.
             this.state.recovCode = code;
         } catch (e) {
-            this.state.error = e.message || _t("Création impossible.");
+            this.state.error = e.message || _t("Creation failed.");
         } finally {
             wipe(octets);
             this.state.busy = false;
@@ -1325,7 +1335,7 @@ export class BfOtpApp extends Component {
     async onCopyRecoveryCode() {
         await browser.navigator.clipboard.writeText(this.state.recovCode);
         this.notification.add(
-            _t("Code copié. Collez-le maintenant à l'endroit prévu : il ne se réaffichera pas."),
+            _t("Code copied. Paste it now where it belongs: it will not be shown again."),
             { type: "warning", sticky: true }
         );
     }
@@ -1338,16 +1348,15 @@ export class BfOtpApp extends Component {
         this.dialog.add(
             ConfirmationDialog,
             {
-                title: _t("Révoquer ce code de relève"),
-                body: _t(
-                    "« %s » n'ouvrira plus ce coffre. L'enveloppe ou la fiche qui le porte devient inutile, et il faudra la détruire.",
+                title: _t("Revoke this recovery code"),
+                body: _t("\"%s\" will no longer unlock this vault. The envelope or record that holds it becomes useless, and it will need to be destroyed.",
                     r.name
                 ),
-                confirmLabel: _t("Révoquer"),
+                confirmLabel: _t("Revoke"),
                 confirm: async () => {
                     await this.orm.call("bf.otp.vault", "remove_recovery", [r.id]);
                     this.state.vault = await this.orm.call("bf.otp.vault", "get_my_vault", []);
-                    this.notification.add(_t("Code de relève révoqué."), { type: "info" });
+                    this.notification.add(_t("Recovery code revoked."), { type: "info" });
                 },
                 cancel: () => {},
             }
@@ -1363,7 +1372,7 @@ export class BfOtpApp extends Component {
         try {
             const res = await ouvrirAvecCode(this.state.recovInput, this.recoveries);
             if (!res) {
-                this.state.error = _t("Ce code n'ouvre pas ce coffre.");
+                this.state.error = _t("This code does not unlock this vault.");
                 return;
             }
             octets = res.keyBytes;
@@ -1373,11 +1382,11 @@ export class BfOtpApp extends Component {
             this._ouvrir();
             this.orm.call("bf.otp.vault", "touch_recovery", [res.row_id]).catch(() => {});
             this.notification.add(
-                _t("Coffre ouvert par un code de relève. Ce code a servi : si ce n'était pas prévu, révoquez-le."),
+                _t("Vault unlocked with a recovery code. This code has been used: if that was not planned, revoke it."),
                 { type: "warning", sticky: true }
             );
         } catch (e) {
-            this.state.error = e.message || _t("Ouverture impossible.");
+            this.state.error = e.message || _t("Unlock failed.");
         } finally {
             wipe(octets);
             this.state.busy = false;
@@ -1396,7 +1405,7 @@ export class BfOtpApp extends Component {
         await this.orm.call("bf.otp.token", "restore_token", [t.id]);
         this.state.trash = await this.orm.call("bf.otp.token", "load_my_trash", []);
         await this._chargerJetons();
-        this.notification.add(_t("Token remis dans le coffre."), { type: "success" });
+        this.notification.add(_t("Token restored to the vault."), { type: "success" });
     }
 
     /**
@@ -1411,16 +1420,15 @@ export class BfOtpApp extends Component {
         this.dialog.add(
             ConfirmationDialog,
             {
-                title: _t("Détruire ce token"),
-                body: _t(
-                    "« %s » sera détruit. Aucune phrase de passe, aucun code de relève et aucune sauvegarde ne le rendra.",
+                title: _t("Destroy this token"),
+                body: _t("\"%s\" will be destroyed. No passphrase, no recovery code and no backup will bring it back.",
                     `${t.issuer ? t.issuer + " · " : ""}${t.name}`
                 ),
-                confirmLabel: _t("Détruire"),
+                confirmLabel: _t("Destroy"),
                 confirm: async () => {
                     await this.orm.call("bf.otp.token", "purge_token", [t.id]);
                     this.state.trash = await this.orm.call("bf.otp.token", "load_my_trash", []);
-                    this.notification.add(_t("Token détruit."), { type: "info" });
+                    this.notification.add(_t("Token destroyed."), { type: "info" });
                 },
                 cancel: () => {},
             }
@@ -1432,16 +1440,15 @@ export class BfOtpApp extends Component {
         this.dialog.add(
             ConfirmationDialog,
             {
-                title: _t("Vider la corbeille"),
-                body: _t(
-                    "%s token(s) seront détruits. Rien ne les rendra. Si vous n'en êtes pas certain, exportez d'abord votre coffre.",
+                title: _t("Empty the trash"),
+                body: _t("%s token(s) will be destroyed. Nothing will bring them back. If you are not sure, export your vault first.",
                     combien
                 ),
-                confirmLabel: _t("Tout détruire"),
+                confirmLabel: _t("Destroy all"),
                 confirm: async () => {
                     const n = await this.orm.call("bf.otp.token", "empty_trash", []);
                     this.state.trash = [];
-                    this.notification.add(_t("%s token(s) détruit(s).", n), { type: "info" });
+                    this.notification.add(_t("%s token(s) destroyed.", n), { type: "info" });
                 },
                 cancel: () => {},
             }

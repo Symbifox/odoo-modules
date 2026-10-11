@@ -7,7 +7,7 @@
 <odoo noupdate="1">
 
     <record id="cron_sync_employees" model="ir.cron">
-        <field name="name">Pages de liens : créer et rafraîchir les pages des employés</field>
+        <field name="name">Link pages: create and refresh employee pages</field>
         <field name="model_id" ref="model_bf_linkpage"/>
         <field name="state">code</field>
         <field name="code">model._cron_sync_employees()</field>
@@ -42,7 +42,7 @@
          tomberait en 404 au milieu d'un mandat et personne chez nous ne
          l'apprendrait avant que le client le dise. -->
     <record id="cron_warn_expiring" model="ir.cron">
-        <field name="name">Pages de liens : avertir avant la fermeture d'une page d'organisation</field>
+        <field name="name">Link pages: warn before an organization page closes</field>
         <field name="model_id" ref="model_bf_linkpage"/>
         <field name="state">code</field>
         <field name="code">model._cron_warn_expiring()</field>

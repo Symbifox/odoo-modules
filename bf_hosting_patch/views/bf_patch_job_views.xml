@@ -9,7 +9,7 @@
                   decoration-danger="state == 'failed'"
                   decoration-success="state == 'done'"
                   decoration-info="state in ('claimed', 'running')">
-                <field name="create_date" string="Demandé le"/>
+                <field name="create_date" string="Requested on"/>
                 <field name="endpoint_id"/>
                 <field name="system_id"/>
                 <field name="scope"/>
@@ -18,7 +18,7 @@
                 <field name="requested_by" widget="many2one_avatar_user"/>
                 <field name="claimed_at" optional="hide"/>
                 <field name="finished_at" optional="show"/>
-                <field name="packages_changed" sum="Paquets"/>
+                <field name="packages_changed" sum="Packages"/>
                 <field name="exit_code" optional="hide"/>
                 <field name="state" widget="badge"/>
             </list>
@@ -32,9 +32,9 @@
             <form>
                 <header>
                     <button name="action_cancel" type="object"
-                            string="Retirer de la file" class="btn-secondary"
+                            string="Remove from queue" class="btn-secondary"
                             invisible="state not in ('queued', 'claimed')"
-                            confirm="Retirer cet ordre de la file ?"/>
+                            confirm="Remove this job from the queue?"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="queued,claimed,running,done"/>
                 </header>
@@ -43,14 +43,14 @@
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
                     <group>
-                        <group string="Cible">
+                        <group string="Target">
                             <field name="system_id"
                                    readonly="state != 'queued'"
                                    options="{'no_create': True}"/>
                             <field name="endpoint_id"/>
                             <field name="partner_id" optional="hide"/>
                         </group>
-                        <group string="Ce qui sera appliqué">
+                        <group string="What will be applied">
                             <field name="scope" readonly="state != 'queued'"/>
                             <field name="package_names"
                                    invisible="scope != 'named'"
@@ -62,7 +62,7 @@
                                    readonly="state != 'queued'"/>
                         </group>
                     </group>
-                    <group string="Issue"
+                    <group string="Outcome"
                            invisible="state in ('queued', 'claimed')">
                         <group>
                             <field name="requested_by"/>
@@ -75,7 +75,7 @@
                         </group>
                     </group>
                     <notebook invisible="not output">
-                        <page string="Sortie de la machine" name="output">
+                        <page string="Machine output" name="output">
                             <field name="output" widget="text" readonly="1"/>
                         </page>
                     </notebook>
@@ -92,17 +92,17 @@
                 <field name="system_id"/>
                 <field name="endpoint_id"/>
                 <field name="requested_by"/>
-                <filter name="open" string="En cours"
+                <filter name="open" string="In progress"
                         domain="[('state', 'in', ('queued', 'claimed', 'running'))]"/>
-                <filter name="failed" string="Échoués"
+                <filter name="failed" string="Failed jobs"
                         domain="[('state', '=', 'failed')]"/>
                 <separator/>
-                <filter name="security" string="Sécurité"
+                <filter name="security" string="Security"
                         domain="[('scope', '=', 'security')]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="by_machine" string="Machine"
                             context="{'group_by': 'endpoint_id'}"/>
-                    <filter name="by_state" string="État"
+                    <filter name="by_state" string="State"
                             context="{'group_by': 'state'}"/>
                 </group>
             </search>
@@ -110,20 +110,17 @@
     </record>
 
     <record id="bf_patch_job_action" model="ir.actions.act_window">
-        <field name="name">Ordres de mise à jour</field>
+        <field name="name">Update jobs</field>
         <field name="res_model">bf.patch.job</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_open': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun ordre en file.</p>
+            <p class="o_view_nocontent_smiling_face">No job in the queue.</p>
             <p>
-                Un ordre descend en étant demandé : Odoo le dépose ici, et
-                l'agent de la machine le ramasse à sa prochaine interrogation.
-                Une machine éteinte ne le rate pas, elle le prend au réveil.
+                A job is pulled, not pushed: Odoo drops it here, and the machine's agent picks it up at its next poll. A machine that is switched off does not miss it; it takes it when it wakes up.
             </p>
             <p>
-                Rien ne part vers une machine dont le fichier
-                <code>/etc/symbifox/apply-allowed</code> est absent.
+                Nothing is sent to a machine where the file <code>/etc/symbifox/apply-allowed</code> is missing.
             </p>
         </field>
     </record>

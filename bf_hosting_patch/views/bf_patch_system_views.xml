@@ -37,54 +37,47 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_revoke_agent" type="object"
                                 class="oe_stat_button" icon="fa-ban"
-                                confirm="Le prochain relevé de cet agent sera refusé. Continuer ?"
+                                confirm="The next report from this agent will be refused. Continue?"
                                 invisible="not patch_managed"
-                                string="Révoquer l'agent"/>
+                                string="Revoke agent"/>
                         <button name="action_view_jobs" type="object"
                                 class="oe_stat_button" icon="fa-tasks"
                                 invisible="not patch_managed">
                             <field name="job_pending_count" widget="statinfo"
-                                   string="Ordres en file"/>
+                                   string="Queued jobs"/>
                         </button>
                     </div>
                     <div class="alert alert-info" role="status"
                          invisible="not apply_allowed">
-                        Application à distance AUTORISÉE sur cette machine.
-                        Le consentement est le fichier
-                        <code>/etc/symbifox/apply-allowed</code> : il se retire
-                        sur la machine, pas ici.
+                        Remote apply is ALLOWED on this machine. Consent is the file <code>/etc/symbifox/apply-allowed</code>: it is withdrawn on the machine, not here.
                     </div>
                     <div class="alert alert-warning" role="status"
                          invisible="patch_state != 'stale'">
-                        Aucun relevé récent. Un système qui ne parle plus est le
-                        cas le plus dangereux, pas le plus tranquille.
+                        No recent report. A system that has gone silent is the most dangerous case, not the quietest.
                     </div>
                     <div class="alert alert-danger" role="status"
                          invisible="patch_state != 'blind'">
-                        Le dernier relevé n'a pas pu compter les paquets. Le zéro
-                        affiché est un artefact, pas une mesure.
+                        The last report could not count the packages. The zero shown is an artifact, not a measurement.
                     </div>
                     <div class="alert alert-warning" role="status"
                          invisible="not applied_after_report">
-                        Un ordre a été appliqué le
+                        A job was applied on
                         <field name="applied_after_report" readonly="1"
-                               class="oe_inline"/>, après le dernier relevé :
-                        les compteurs ci-dessous datent d'avant. Ils se
-                        corrigeront au prochain relevé de la machine.
+                               class="oe_inline"/>, after the last report: the counters below predate it. They will correct themselves at the machine's next report.
                     </div>
                     <div class="alert alert-danger" role="status"
                          invisible="not disk_tight">
-                        Disque serré : une mise à jour peut échouer à mi-chemin.
+                        Low disk space: an update may fail halfway through.
                     </div>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="poste-linux"/></h1>
+                        <h1><field name="name" placeholder="laptop-linux"/></h1>
                     </div>
                     <group>
-                        <group string="Application à distance">
+                        <group string="Remote apply">
                             <field name="apply_allowed"/>
                             <field name="agent_last_poll"/>
                         </group>
-                        <group string="Machine et système">
+                        <group string="Machine and system">
                             <field name="endpoint_id"/>
                             <field name="os_family"/>
                             <field name="os_release"/>
@@ -97,7 +90,7 @@
                             <field name="agent_version"/>
                             <field name="patch_state"/>
                         </group>
-                        <group string="Mises à jour">
+                        <group string="Updates">
                             <field name="package_manager"/>
                             <field name="pending_known"/>
                             <field name="pending_count"/>
@@ -106,7 +99,7 @@
                             <field name="auto_update_mode"/>
                             <field name="auto_update_detail"/>
                         </group>
-                        <group string="Noyau et redémarrage">
+                        <group string="Kernel and reboot">
                             <field name="kernel_running"/>
                             <field name="kernel_installed"/>
                             <field name="boot_time"/>
@@ -118,7 +111,7 @@
                             <field name="reboot_packages"
                                    invisible="not reboot_required"/>
                         </group>
-                        <group string="Disque">
+                        <group string="Disk">
                             <field name="disk_root_pct"/>
                             <field name="disk_boot_pct"/>
                             <field name="disk_tight" readonly="1"/>
@@ -129,7 +122,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Relevés" name="reports">
+                        <page string="Reports" name="reports">
                             <field name="report_ids" readonly="1">
                                 <list>
                                     <field name="report_date"/>
@@ -156,24 +149,24 @@
                 <field name="name"/>
                 <field name="endpoint_id"/>
                 <field name="os_release"/>
-                <filter name="stale" string="Muets"
+                <filter name="stale" string="Silent systems"
                         domain="[('patch_state', '=', 'stale')]"/>
-                <filter name="blind" string="Compte inconnu"
+                <filter name="blind" string="Unknown count"
                         domain="[('patch_state', '=', 'blind')]"/>
-                <filter name="security" string="Sécurité en attente"
+                <filter name="security" string="Security updates pending"
                         domain="[('patch_state', '=', 'security')]"/>
-                <filter name="reboot" string="Redémarrage requis"
+                <filter name="reboot" string="Reboot required"
                         domain="[('reboot_required', '=', True)]"/>
-                <filter name="disk" string="Disque serré"
+                <filter name="disk" string="Low disk space"
                         domain="[('disk_tight', '=', True)]"/>
-                <filter name="eol" string="Support qui finit"
+                <filter name="eol" string="Support ending"
                         domain="[('os_support_state', 'in', ('ending_soon', 'ended'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="by_state" string="État"
+                <group expand="0" string="Group by">
+                    <filter name="by_state" string="State"
                             context="{'group_by': 'patch_state'}"/>
                     <filter name="by_endpoint" string="Machine"
                             context="{'group_by': 'endpoint_id'}"/>
-                    <filter name="by_family" string="Famille"
+                    <filter name="by_family" string="OS family"
                             context="{'group_by': 'os_family'}"/>
                 </group>
             </search>
@@ -181,7 +174,7 @@
     </record>
 
     <record id="bf_patch_system_action" model="ir.actions.act_window">
-        <field name="name">Systèmes suivis</field>
+        <field name="name">Tracked systems</field>
         <field name="res_model">bf.patch.system</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="bf_patch_system_view_search"/>
@@ -189,7 +182,7 @@
     </record>
 
     <record id="bf_patch_system_action_attention" model="ir.actions.act_window">
-        <field name="name">Systèmes à regarder</field>
+        <field name="name">Systems to check</field>
         <field name="res_model">bf.patch.system</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('patch_state', 'in', ('stale', 'blind', 'security', 'reboot'))]</field>

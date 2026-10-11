@@ -45,13 +45,13 @@ MIRRORED_FIELDS = (
 
 class BfPatchReport(models.Model):
     _name = "bf.patch.report"
-    _description = "Relevé de mise à jour d'un poste"
+    _description = "Endpoint update report"
     _order = "report_date desc, id desc"
     _rec_name = "display_label"
 
     system_id = fields.Many2one(
         comodel_name="bf.patch.system",
-        string="Système",
+        string="System",
         required=True,
         ondelete="cascade",
         index=True,
@@ -59,33 +59,33 @@ class BfPatchReport(models.Model):
     # Le relevé appartient au SYSTÈME ; la machine se déduit. Garder les deux
     # évite de traverser deux relations dans chaque vue et chaque règle.
     endpoint_id = fields.Many2one(
-        related="system_id.endpoint_id", string="Poste", store=True, index=True
+        related="system_id.endpoint_id", string="Endpoint", store=True, index=True
     )
     partner_id = fields.Many2one(
         related="system_id.partner_id", string="Client", store=True, index=True
     )
     report_date = fields.Datetime(
-        string="Date du relevé", required=True, index=True
+        string="Report date", required=True, index=True
     )
     display_label = fields.Char(
-        string="Relevé", compute="_compute_display_label"
+        string="Report", compute="_compute_display_label"
     )
 
-    agent_version = fields.Char(string="Version de l'agent")
-    os_release = fields.Char(string="Système")
-    kernel_running = fields.Char(string="Noyau chargé")
-    kernel_installed = fields.Char(string="Noyau installé")
-    boot_time = fields.Datetime(string="Démarrée le")
+    agent_version = fields.Char(string="Agent version")
+    os_release = fields.Char(string="System")
+    kernel_running = fields.Char(string="Running kernel")
+    kernel_installed = fields.Char(string="Installed kernel")
+    boot_time = fields.Datetime(string="Boot time")
 
     apply_allowed = fields.Boolean(
-        string="Application autorisée",
-        help="Le fichier /etc/symbifox/apply-allowed existait sur la machine au "
-             "moment du relevé. Historisé ici pour qu'on puisse dire QUAND le "
-             "consentement a été donné ou retiré.",
+        string="Remote apply allowed",
+        help="The file /etc/symbifox/apply-allowed existed on the machine "
+             "at report time. Kept in history here so we can tell WHEN "
+             "consent was given or withdrawn.",
     )
-    reboot_required = fields.Boolean(string="Redémarrage requis")
-    reboot_pending_since = fields.Datetime(string="En attente depuis")
-    reboot_packages = fields.Char(string="Redémarrage dû à")
+    reboot_required = fields.Boolean(string="Reboot required")
+    reboot_pending_since = fields.Datetime(string="Pending since")
+    reboot_packages = fields.Char(string="Reboot required by")
 
     package_manager = fields.Selection(
         selection=[
@@ -95,73 +95,74 @@ class BfPatchReport(models.Model):
             ("zypper", "zypper"),
             ("apk", "apk"),
             ("bootc", "bootc / rpm-ostree"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
-        string="Gestionnaire de paquets",
+        string="Package manager",
     )
     pending_known = fields.Boolean(
-        string="Compte fiable",
+        string="Reliable count",
         default=True,
-        help="Faux quand le gestionnaire de paquets n'a pas répondu. Un compte "
-             "inconnu n'est PAS un compte à zéro.",
+        help="False when the package manager did not respond. An unknown "
+             "count is NOT a zero count.",
     )
-    pending_count = fields.Integer(string="Paquets en attente")
-    pending_security_count = fields.Integer(string="Dont sécurité")
+    pending_count = fields.Integer(string="Pending packages")
+    pending_security_count = fields.Integer(string="Pending security packages")
     pending_delta = fields.Integer(
-        string="Écart au relevé précédent",
-        help="Positif : le retard a grandi depuis le relevé d'avant.",
+        string="Change since previous report",
+        help="Positive: the backlog has grown since the previous report.",
     )
 
     # On relève le MODE, jamais la présence : trois machines du parc BF ont un
     # auto-updateur configuré et aucune des trois n'applique ce qui attend.
     auto_update_mode = fields.Selection(
         selection=[
-            ("unknown", "Inconnu"),
-            ("off", "Aucun"),
-            ("download", "Téléchargement seul"),
-            ("security", "Sécurité seulement"),
-            ("all", "Tout"),
+            ("unknown", "Unknown"),
+            ("off", "Off"),
+            ("download", "Download only"),
+            ("security", "Security only"),
+            ("all", "All"),
         ],
-        string="Mise à jour automatique",
+        string="Automatic updates",
     )
     auto_update_detail = fields.Char(
-        string="Détail de l'auto-updateur",
-        help="Origines autorisées, nom du minuteur, ce que le journal en dit.",
+        string="Auto-updater details",
+        help="Allowed origins, timer name, what the log says about it.",
     )
 
-    disk_root_pct = fields.Integer(string="/ occupé (%)")
-    disk_boot_pct = fields.Integer(string="/boot occupé (%)")
+    disk_root_pct = fields.Integer(string="/ used (%)")
+    disk_boot_pct = fields.Integer(string="/boot used (%)")
 
     os_support_end = fields.Date(
-        string="Fin de support",
-        help="Lue sur la machine : SUPPORT_END d'os-release, ou distro-info.",
+        string="End of support",
+        help="Read on the machine: SUPPORT_END from os-release, or "
+             "distro-info.",
     )
     os_support_state = fields.Selection(
         selection=[
-            ("supported", "Supporté"),
-            ("ending_soon", "Fin de support proche"),
-            ("ended", "Hors support"),
-            ("rolling", "Roulement continu"),
-            ("unknown", "Inconnu"),
+            ("supported", "Supported"),
+            ("ending_soon", "End of support soon"),
+            ("ended", "Out of support"),
+            ("rolling", "Rolling release"),
+            ("unknown", "Unknown"),
         ],
-        string="État du support",
+        string="Support status",
     )
 
     payload = fields.Text(
-        string="Charge utile brute",
-        help="Ce que l'agent a envoyé, pour rejouer un cas sans redemander à "
-             "la machine.",
+        string="Raw payload",
+        help="What the agent sent, to replay a case without asking the "
+             "machine again.",
     )
     package_ids = fields.One2many(
         comodel_name="bf.patch.package",
         inverse_name="report_id",
-        string="Paquets en attente",
+        string="Pending packages",
     )
 
     @api.depends("system_id.name", "report_date")
     def _compute_display_label(self):
         for report in self:
-            name = report.system_id.name or _("Système inconnu")
+            name = report.system_id.name or _("Unknown system")
             when = fields.Datetime.to_string(report.report_date) or ""
             report.display_label = f"{name} — {when}"
 

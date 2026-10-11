@@ -7,7 +7,7 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    linkpage_ids = fields.One2many("bf.linkpage", "partner_id", string="Pages de liens")
+    linkpage_ids = fields.One2many("bf.linkpage", "partner_id", string="Link pages")
     linkpage_count = fields.Integer(compute="_compute_linkpage_count")
 
     @api.depends("linkpage_ids")
@@ -28,7 +28,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Pages de liens"),
+            "name": _("Link pages"),
             "res_model": "bf.linkpage",
             "view_mode": "list,form",
             "domain": [("partner_id", "=", self.id)],
@@ -51,8 +51,8 @@ class ResPartner(models.Model):
         self.ensure_one()
         if not self.is_company:
             raise UserError(_(
-                "« %s » est une personne. Une page d'organisation se crée "
-                "depuis la fiche de l'entreprise.", self.display_name,
+                "\"%s\" is a person. An organization page is created from "
+                "the company record.", self.display_name,
             ))
         existante = self.env["bf.linkpage"].search(
             [("partner_id", "=", self.id), ("kind", "=", "org")], limit=1

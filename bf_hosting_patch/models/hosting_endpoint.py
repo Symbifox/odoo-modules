@@ -39,59 +39,58 @@ class HostingEndpoint(models.Model):
     # (`/sys/class/dmi/id/product_uuid`) ne sont pas lisibles autrement, et
     # l'agent quotidien tourne sans privilège.
     machine_uuid = fields.Char(
-        string="UUID matériel", index=True, copy=False,
-        help="UUID DMI de la carte mère, relevé en root à l'enrôlement. "
-             "Identifie la machine physique, quel que soit le système démarré.",
+        string="Hardware UUID", index=True, copy=False,
+        help="DMI UUID of the motherboard, read as root at enrollment. "
+             "Identifies the physical machine, whichever system is booted.",
     )
     system_ids = fields.One2many(
         comodel_name="bf.patch.system", inverse_name="endpoint_id",
-        string="Systèmes installés",
+        string="Installed systems",
     )
     system_count = fields.Integer(
-        string="Systèmes", compute="_compute_system_count"
+        string="Systems", compute="_compute_system_count"
     )
     server_id = fields.Many2one(
-        comodel_name="hosting.server", string="Serveur d'hébergement",
+        comodel_name="hosting.server", string="Hosting server",
         ondelete="set null",
-        help="Quand ce poste EST un serveur du parc, le rattacher ici donne le "
-             "rayon de souffle d'un redémarrage.",
+        help="When this endpoint IS a fleet server, linking it here gives "
+             "the blast radius of a reboot.",
     )
     hosted_service_count = fields.Integer(
-        string="Services portés", compute="_compute_hosted_service_count",
-        help="Nombre de services d'hébergement qui tombent si la machine "
-             "redémarre.",
+        string="Hosted services", compute="_compute_hosted_service_count",
+        help="Number of hosting services that go down if the machine reboots.",
     )
 
     # ------------------------------------------------------------------
     # Enrôlement : un humain choisit la MACHINE, l'agent déclare son système
     # ------------------------------------------------------------------
     agent_enrol_code = fields.Char(
-        string="Code d'enrôlement", copy=False,
+        string="Enrollment code", copy=False,
         groups="hosting_management.group_hosting_manager",
     )
     agent_enrol_expiry = fields.Datetime(
-        string="Code valide jusqu'à", copy=False,
+        string="Code valid until", copy=False,
         groups="hosting_management.group_hosting_manager",
     )
 
     patch_state = fields.Selection(
-        selection=PATCH_STATES, string="État des mises à jour",
+        selection=PATCH_STATES, string="Update status",
         compute="_compute_patch_state", store=True, index=True,
-        help="Le pire état parmi les systèmes installés sur la machine.",
+        help="The worst status among the systems installed on the machine.",
     )
     patch_managed = fields.Boolean(
-        string="Suivi des mises à jour", compute="_compute_patch_state",
+        string="Update tracking", compute="_compute_patch_state",
         store=True,
     )
     agent_last_report = fields.Datetime(
-        string="Dernier relevé", compute="_compute_patch_state", store=True,
-        help="Le plus récent parmi les systèmes de la machine.",
+        string="Last report", compute="_compute_patch_state", store=True,
+        help="The most recent among the machine's systems.",
     )
 
     _sql_constraints = [
         ("machine_uuid_uniq", "unique(machine_uuid)",
-         "Cet UUID matériel est déjà porté par une autre fiche du parc : "
-         "c'est la même machine, vue deux fois."),
+         "This hardware UUID is already used by another fleet record: it "
+         "is the same machine, seen twice."),
     ]
 
     # ------------------------------------------------------------------
@@ -135,8 +134,8 @@ class HostingEndpoint(models.Model):
             "hosting_management.group_hosting_manager"
         ):
             raise AccessError(
-                _("Seul un gestionnaire d'hébergement peut poser ou révoquer "
-                  "un agent de mise à jour.")
+                _("Only a hosting manager can install or revoke an update "
+                  "agent.")
             )
 
     def action_generate_enrol_code(self):
@@ -158,11 +157,11 @@ class HostingEndpoint(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Code d'enrôlement"),
+                "title": _("Enrollment code"),
                 "message": _(
-                    "%(code)s — valide %(minutes)s minutes, pour UN système. "
-                    "Pour l'autre côté d'un double amorçage, en générer un "
-                    "second.", code=code, minutes=ENROL_CODE_MINUTES,
+                    "%(code)s: valid for %(minutes)s minutes, for ONE "
+                    "system. For the other side of a dual boot, generate "
+                    "a second one.", code=code, minutes=ENROL_CODE_MINUTES,
                 ),
                 "type": "success",
                 "sticky": True,
@@ -178,21 +177,21 @@ class HostingEndpoint(models.Model):
         il ne fait que déclarer un système sur celle qu'un humain a créée.
         """
         if not code or not machine_id:
-            raise UserError(_("Code d'enrôlement ou machine-id manquant."))
+            raise UserError(_("Missing enrollment code or machine-id."))
         now = fields.Datetime.now()
         endpoint = self.sudo().search(
             [("agent_enrol_code", "=", code), ("agent_enrol_expiry", ">=", now)],
             limit=1,
         )
         if not endpoint:
-            raise UserError(_("Code d'enrôlement inconnu ou expiré."))
+            raise UserError(_("Unknown or expired enrollment code."))
 
         system_model = self.env["bf.patch.system"].sudo()
         system = system_model.search([("machine_id", "=", machine_id)], limit=1)
         if system and system.endpoint_id != endpoint:
             raise UserError(
-                _("Ce système est déjà enregistré sur « %(name)s » (%(code)s). "
-                  "L'enrôler ici créerait un doublon.",
+                _("This system is already registered on \"%(name)s\" "
+                  "(%(code)s). Enrolling it here would create a duplicate.",
                   name=system.endpoint_id.name, code=system.endpoint_id.code)
             )
 
@@ -213,9 +212,9 @@ class HostingEndpoint(models.Model):
             )
             if twin:
                 raise UserError(
-                    _("Cette machine est déjà au parc sous « %(name)s » "
-                      "(%(code)s) : même UUID matériel. L'enrôler ici "
-                      "créerait un doublon.",
+                    _("This machine is already in the fleet as "
+                      "\"%(name)s\" (%(code)s): same hardware UUID. "
+                      "Enrolling it here would create a duplicate.",
                       name=twin.name, code=twin.code)
                 )
 
@@ -244,8 +243,10 @@ class HostingEndpoint(models.Model):
             endpoint_values["machine_uuid"] = machine_uuid
         endpoint.write(endpoint_values)
 
-        endpoint.message_post(body=_(
-            "Système « %(name)s » enrôlé (machine-id %(mid)s, %(fam)s).",
+        # Appelé par l'agent (requête publique) : la note suit l'équipe qui la lira.
+        lu = endpoint.with_context(lang=self.env["bf.patch.system"]._bf_reader_lang())
+        endpoint.message_post(body=lu.env._(
+            "System \"%(name)s\" enrolled (machine-id %(mid)s, %(fam)s).",
             name=_esc(system.name), mid=_esc(machine_id), fam=os_family,
         ))
         return system, token
@@ -255,7 +256,7 @@ class HostingEndpoint(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Relevés de %s", self.name),
+            "name": _("Reports for %s", self.name),
             "res_model": "bf.patch.report",
             "view_mode": "list,form",
             "domain": [("endpoint_id", "=", self.id)],
@@ -265,7 +266,7 @@ class HostingEndpoint(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Systèmes de %s", self.name),
+            "name": _("Systems on %s", self.name),
             "res_model": "bf.patch.system",
             "view_mode": "list,form",
             "domain": [("endpoint_id", "=", self.id)],

@@ -29,51 +29,51 @@ class BfOtpVault(models.Model):
     """Le coffre personnel d'un usager. Un seul par personne."""
 
     _name = 'bf.otp.vault'
-    _description = 'Coffre de tokens OTP'
+    _description = "OTP token vault"
     _rec_name = 'user_id'
 
     user_id = fields.Many2one(
         'res.users',
-        string='Usager',
+        string="Vault owner",
         required=True,
         ondelete='cascade',
         index=True,
         default=lambda self: self.env.user,
     )
     salt = fields.Char(
-        string='Sel',
+        string="Salt",
         required=True,
-        help="Sel de dérivation, tiré au sort par le navigateur. Public par "
-             "nature : il ne protège rien à lui seul, il empêche de préparer "
-             "une attaque avant d'avoir vu ce coffre-ci.",
+        help="Derivation salt, drawn at random by the browser. Public by "
+             "nature: it protects nothing on its own, it prevents "
+             "preparing an attack before seeing this particular vault.",
     )
     iterations = fields.Integer(
-        string="Itérations",
+        string="Iterations",
         required=True,
         default=600000,
-        help="Nombre d'itérations PBKDF2. Enregistré par coffre pour pouvoir "
-             "le monter plus tard sans rendre illisible ce qui existe.",
+        help="Number of PBKDF2 iterations. Stored per vault so it can be "
+             "raised later without making existing data unreadable.",
     )
     verifier = fields.Char(
-        string='Témoin',
+        string="Verifier",
         required=True,
-        help="Un texte connu, chiffré avec la clé. Sert au navigateur à dire "
-             "« mauvaise phrase » avant de tenter de déchiffrer les tokens.",
+        help="A known text, encrypted with the key. Lets the browser say "
+             "\"wrong passphrase\" before trying to decrypt the tokens.",
     )
-    verifier_iv = fields.Char(string='Vecteur du témoin', required=True)
+    verifier_iv = fields.Char(string="Verifier IV", required=True)
 
     credential_ids = fields.One2many(
-        'bf.otp.credential', 'vault_id', string="Clés d'accès")
+        'bf.otp.credential', 'vault_id', string="Passkeys")
     recovery_ids = fields.One2many(
-        'bf.otp.recovery', 'vault_id', string='Codes de relève')
+        'bf.otp.recovery', 'vault_id', string="Recovery codes")
 
     token_ids = fields.One2many('bf.otp.token', 'vault_id', string='Tokens')
     token_count = fields.Integer(
-        string='Nombre de tokens', compute='_compute_token_count')
+        string="Number of tokens", compute='_compute_token_count')
 
     _sql_constraints = [
         ('user_uniq', 'unique(user_id)',
-         "Une personne n'a qu'un seul coffre de tokens."),
+         "A person has only one token vault."),
     ]
 
 
@@ -84,7 +84,7 @@ class BfOtpVault(models.Model):
         coffre pourrait être donné à une personne qui en a déjà un, ou qui
         n'en veut pas."""
         if not self.env.su and 'user_id' in vals and vals['user_id'] != self.env.uid:
-            raise AccessError(_("Un coffre ne se donne pas à quelqu'un d'autre."))
+            raise AccessError(_("A vault cannot be given to someone else."))
         return super().write(vals)
 
     @api.depends('token_ids')
@@ -161,9 +161,9 @@ class BfOtpVault(models.Model):
         """
         if self.search_count([('user_id', '=', self.env.uid)]):
             raise UserError(_(
-                "Ce coffre existe déjà. Pour en changer la phrase de passe, "
-                "il faut rechiffrer les tokens, ce qui se fait depuis le coffre "
-                "ouvert."
+                "This vault already exists. Changing its passphrase "
+                "requires re-encrypting the tokens, which is done from "
+                "the unlocked vault."
             ))
         vault = self.create({
             'user_id': self.env.uid,
@@ -190,10 +190,10 @@ class BfOtpVault(models.Model):
         """
         vault = self.search([('user_id', '=', self.env.uid)], limit=1)
         if not vault:
-            raise UserError(_("Aucun coffre : il faut en créer un d'abord."))
+            raise UserError(_("No vault: you must create one first."))
         cred = self.env['bf.otp.credential'].create({
             'vault_id': vault.id,
-            'name': name or _("Clé d'accès"),
+            'name': name or _("Passkey"),
             'credential_id': credential_id,
             'prf_salt': prf_salt,
             'wrapped_secret': wrapped_secret,
@@ -209,7 +209,7 @@ class BfOtpVault(models.Model):
             ('user_id', '=', self.env.uid),
         ])
         if not cred:
-            raise UserError(_("Clé d'accès introuvable."))
+            raise UserError(_("Passkey not found."))
         cred.unlink()
         return True
 
@@ -239,17 +239,17 @@ class BfOtpVault(models.Model):
         from .bf_otp_recovery import PLAFOND_RELEVES
         vault = self.search([('user_id', '=', self.env.uid)], limit=1)
         if not vault:
-            raise UserError(_("Aucun coffre : il faut en créer un d'abord."))
+            raise UserError(_("No vault: you must create one first."))
         if len(vault.recovery_ids) >= PLAFOND_RELEVES:
             raise UserError(_(
-                "Ce coffre porte déjà %(nombre)s codes de relève. Retirez-en un "
-                "avant d'en créer un autre : chaque code est une porte de plus, "
-                "et un inventaire qu'il faut tenir.",
+                "This vault already has %(nombre)s recovery codes. Remove "
+                "one before creating another: each code is one more way "
+                "in, and one more item to keep track of.",
                 nombre=PLAFOND_RELEVES,
             ))
         releve = self.env['bf.otp.recovery'].create({
             'vault_id': vault.id,
-            'name': name or _('Code de relève'),
+            'name': name or _("Recovery code"),
             'salt': salt,
             'iterations': int(iterations),
             'wrapped_secret': wrapped_secret,
@@ -265,7 +265,7 @@ class BfOtpVault(models.Model):
             ('user_id', '=', self.env.uid),
         ])
         if not releve:
-            raise UserError(_("Code de relève introuvable."))
+            raise UserError(_("Recovery code not found."))
         releve.unlink()
         return True
 
@@ -289,8 +289,8 @@ class BfOtpVault(models.Model):
         for vault in self:
             if vault.token_count:
                 raise UserError(_(
-                    "Ce coffre porte %(nombre)s token(s). Videz-le avant de le "
-                    "supprimer : une fois parti, aucune phrase de passe ne les "
-                    "rendra.", nombre=vault.token_count,
+                    "This vault holds %(nombre)s token(s). Empty it "
+                    "before deleting it: once it is gone, no passphrase "
+                    "will bring them back.", nombre=vault.token_count,
                 ))
         return super().unlink()

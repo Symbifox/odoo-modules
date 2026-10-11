@@ -14,71 +14,72 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_linkpage_autocreate = fields.Boolean(
-        string="Créer une page pour chaque employé",
-        help="Une passe périodique crée la page manquante des employés actifs "
-             "qui ont un contact ou un compte utilisateur. Sans hr installé, "
-             "le réglage reste sans effet et le dit au journal.",
+        string="Create a page for each employee",
+        help="A periodic run creates the missing page for active "
+             "employees who have a contact or a user account. Without hr "
+             "installed, the setting has no effect and says so in the log.",
         config_parameter="bf_linkpage.autocreate",
     )
     bf_linkpage_autocreate_state = fields.Selection(
-        [("draft", "En brouillon"), ("published", "Publiée tout de suite")],
-        string="État à la création",
+        [("draft", "As a draft"), ("published", "Published right away")],
+        string="State at creation",
         default="published",
-        help="Une page publiée expose le courriel et le téléphone de travail "
-             "de la personne sur une URL publique. En brouillon, la page existe "
-             "et est déjà garnie, mais rend 404 tant que personne ne la publie.",
+        help="A published page exposes the person's work email and phone "
+             "on a public URL. As a draft, the page exists and is already "
+             "filled in, but returns a 404 until someone publishes it.",
         config_parameter="bf_linkpage.autocreate_state",
     )
     bf_linkpage_autorefresh = fields.Boolean(
-        string="Rafraîchir les pages qui suivent un gabarit",
-        help="À chaque passe, réapplique le gabarit sur les pages qui en ont "
-             "un. Les liens ajoutés à la main sur une page sont conservés ; "
-             "seuls ceux venus du gabarit sont remplacés.",
+        string="Refresh pages that follow a template",
+        help="On each run, reapplies the template to pages that have one. "
+             "Links added by hand on a page are kept; only those from the "
+             "template are replaced.",
         config_parameter="bf_linkpage.autorefresh",
     )
     bf_linkpage_oneoff_expiry_days = fields.Integer(
-        string="Durée de vie d'une page ponctuelle (jours)",
+        string="One-off page lifetime (days)",
         default=90,
-        help="Une page ponctuelle n'a pas de propriétaire : elle est armée "
-             "d'une expiration à la création. Une valeur absente ou nulle "
-             "retombe sur 90 jours.",
+        help="A one-off page has no owner: it is armed with an expiry at "
+             "creation. A missing or zero value falls back to 90 days.",
         config_parameter="bf_linkpage.oneoff_expiry_days",
     )
 
     bf_linkpage_org_expiry_days = fields.Integer(
-        string="Durée de vie d'une page d'organisation (jours)",
+        string="Organization page lifetime (days)",
         default=365,
-        help="Une page d'organisation naît avec une échéance : c'est ce qui "
-             "évite la page d'accueil client restée ouverte trois ans après "
-             "la fin du mandat. Zéro = pas d'échéance, à ses risques.",
+        help="An organization page is created with an expiry date: this "
+             "is what prevents a client welcome page from staying open "
+             "three years after the engagement ends. Zero = no expiry, at "
+             "your own risk.",
         config_parameter="bf_linkpage.org_expiry_days",
     )
     bf_linkpage_org_warn_days = fields.Integer(
-        string="Avertir avant l'échéance (jours)",
+        string="Warn before expiry (days)",
         default=30,
-        help="Combien de jours avant la fermeture la page prévient son "
-             "conseiller, au fil et par une activité. Sans cet avertissement, "
-             "l'échéance se manifesterait par un 404 chez le client.",
+        help="How many days before closing the page warns its advisor, in "
+             "the chatter and with an activity. Without this warning, the "
+             "expiry would show up as a 404 on the client's side.",
         config_parameter="bf_linkpage.org_warn_days",
     )
     bf_linkpage_guide_url_fr = fields.Char(
-        string="Guide d'utilisation (français)",
-        help="L'adresse que sert la source « Guide d'utilisation ». Vide : le "
-             "lien ne s'affiche pas, plutôt que de pointer une adresse devinée.",
+        string="User guide (French)",
+        help="The address served by the \"User guide\" source. Empty: the "
+             "link is not shown, rather than pointing to a guessed "
+             "address.",
         config_parameter="bf_linkpage.guide_url_fr",
     )
     bf_linkpage_guide_url_en = fields.Char(
-        string="Guide d'utilisation (anglais)",
+        string="User guide (English)",
         config_parameter="bf_linkpage.guide_url_en",
     )
 
     # Lecture seule, pour répondre sur place à « est-ce que ça tourne ? »
     bf_linkpage_cron_next = fields.Datetime(
-        string="Prochaine passe",
+        string="Next run",
         compute="_compute_bf_linkpage_cron",
     )
     bf_linkpage_cron_active = fields.Boolean(
-        string="Passe planifiée active",
+        string="Scheduled run active",
         compute="_compute_bf_linkpage_cron",
     )
 

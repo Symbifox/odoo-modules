@@ -3,35 +3,35 @@
 
     <menuitem
         id="hosting_menu_patch_state"
-        name="État des mises à jour"
+        name="Update status"
         parent="hosting_management.hosting_menu_endpoints_root"
         action="hosting_endpoint_action_patch"
         sequence="40"/>
 
     <menuitem
         id="hosting_menu_patch_systems"
-        name="Systèmes suivis"
+        name="Tracked systems"
         parent="hosting_management.hosting_menu_endpoints_root"
         action="bf_patch_system_action"
         sequence="45"/>
 
     <menuitem
         id="hosting_menu_patch_attention"
-        name="Systèmes à regarder"
+        name="Systems to check"
         parent="hosting_management.hosting_menu_endpoints_root"
         action="bf_patch_system_action_attention"
         sequence="50"/>
 
     <menuitem
         id="hosting_menu_patch_reports"
-        name="Relevés de mise à jour"
+        name="Update reports"
         parent="hosting_management.hosting_menu_endpoints_root"
         action="bf_patch_report_action"
         sequence="55"/>
 
     <menuitem
         id="hosting_menu_patch_jobs"
-        name="Ordres de mise à jour"
+        name="Update jobs"
         parent="hosting_management.hosting_menu_endpoints_root"
         action="bf_patch_job_action"
         sequence="60"/>

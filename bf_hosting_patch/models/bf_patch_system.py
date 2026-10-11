@@ -36,33 +36,34 @@ STATE_SEVERITY = (
 PACKAGE_MANAGERS = [
     ("apt", "apt"), ("dnf", "dnf"), ("pacman", "pacman"), ("zypper", "zypper"),
     ("apk", "apk"), ("bootc", "bootc / rpm-ostree"), ("winget", "winget"),
-    ("other", "Autre"),
+    ("other", "Other"),
 ]
 
 PATCH_STATES = [
-    ("unmanaged", "Non suivi"),
-    ("stale", "Muet"),
-    ("security", "Sécurité en attente"),
-    ("reboot", "Redémarrage requis"),
-    ("blind", "Compte inconnu"),
-    ("updates", "Mises à jour en attente"),
-    ("ok", "À jour"),
+    ("unmanaged", "Not tracked"),
+    ("stale", "Silent"),
+    ("security", "Security updates pending"),
+    ("reboot", "Reboot required"),
+    ("blind", "Unknown count"),
+    ("updates", "Updates pending"),
+    ("ok", "Up to date"),
 ]
 
 
 class BfPatchSystem(models.Model):
     _name = "bf.patch.system"
-    _description = "Système installé sur un poste du parc"
+    _description = "System installed on a fleet endpoint"
     _order = "endpoint_id, name"
     _inherit = ["mail.thread"]
 
     name = fields.Char(
-        string="Système", required=True,
-        help="Nom de l'installation, pas de la machine : « poste-linux » "
-             "et « poste-windows » sont deux systèmes du même portable.",
+        string="System", required=True,
+        help="Name of the installation, not of the machine: "
+             "\"laptop-linux\" and \"laptop-windows\" are two systems "
+             "on the same laptop.",
     )
     endpoint_id = fields.Many2one(
-        comodel_name="hosting.endpoint", string="Poste",
+        comodel_name="hosting.endpoint", string="Endpoint",
         required=True, ondelete="cascade", index=True,
     )
     partner_id = fields.Many2one(
@@ -73,101 +74,101 @@ class BfPatchSystem(models.Model):
     # ⚠️ Identité de l'INSTALLATION. Une réinstallation en tire un nouveau.
     machine_id = fields.Char(
         string="machine-id", index=True, copy=False,
-        help="/etc/machine-id sous Linux, MachineGuid sous Windows. Identifie "
-             "le système installé, jamais la machine physique.",
+        help="/etc/machine-id on Linux, MachineGuid on Windows. "
+             "Identifies the installed system, never the physical machine.",
     )
-    hostname = fields.Char(string="Nom d'hôte")
+    hostname = fields.Char(string="Hostname")
     os_family = fields.Selection(
         selection=[("linux", "Linux"), ("windows", "Windows"),
-                   ("macos", "macOS"), ("other", "Autre")],
-        string="Famille", default="linux", required=True,
+                   ("macos", "macOS"), ("other", "Other")],
+        string="OS family", default="linux", required=True,
     )
-    os_release = fields.Char(string="Système relevé", readonly=True)
+    os_release = fields.Char(string="Reported system", readonly=True)
 
     # --- Agent ---
-    patch_managed = fields.Boolean(string="Suivi", copy=False)
+    patch_managed = fields.Boolean(string="Tracked", copy=False)
     agent_token_hash = fields.Char(
-        string="Empreinte du jeton", index=True, copy=False,
+        string="Token hash", index=True, copy=False,
         groups="hosting_management.group_hosting_manager",
     )
     agent_last_report = fields.Datetime(
-        string="Dernier relevé", copy=False, readonly=True, index=True
+        string="Last report", copy=False, readonly=True, index=True
     )
     agent_last_poll = fields.Datetime(
-        string="Dernière interrogation", readonly=True, copy=False,
-        help="Quand l'agent a demandé pour la dernière fois s'il avait un "
-             "ordre. Distinct du relevé : les deux minuteurs n'ont pas la "
-             "même cadence.",
+        string="Last poll", readonly=True, copy=False,
+        help="When the agent last asked whether it had a job. Separate "
+             "from the report: the two timers do not run at the same pace.",
     )
-    agent_version = fields.Char(string="Version de l'agent", readonly=True)
+    agent_version = fields.Char(string="Agent version", readonly=True)
 
     # --- Ce que le relevé rapporte ---
-    kernel_running = fields.Char(string="Noyau chargé", readonly=True)
-    kernel_installed = fields.Char(string="Noyau installé", readonly=True)
-    boot_time = fields.Datetime(string="Démarré le", readonly=True)
+    kernel_running = fields.Char(string="Running kernel", readonly=True)
+    kernel_installed = fields.Char(string="Installed kernel", readonly=True)
+    boot_time = fields.Datetime(string="Booted on", readonly=True)
 
-    reboot_required = fields.Boolean(string="Redémarrage requis", readonly=True)
+    reboot_required = fields.Boolean(string="Reboot required", readonly=True)
     reboot_pending_since = fields.Datetime(
-        string="Redémarrage en attente depuis", readonly=True
+        string="Reboot pending since", readonly=True
     )
     reboot_pending_days = fields.Integer(
-        string="Jours d'attente", compute="_compute_reboot_pending_days"
+        string="Days pending", compute="_compute_reboot_pending_days"
     )
-    reboot_packages = fields.Char(string="Redémarrage dû à", readonly=True)
+    reboot_packages = fields.Char(string="Reboot required by", readonly=True)
 
     package_manager = fields.Selection(
-        selection=PACKAGE_MANAGERS, string="Gestionnaire de paquets",
+        selection=PACKAGE_MANAGERS, string="Package manager",
         readonly=True,
     )
     pending_known = fields.Boolean(
-        string="Compte fiable", readonly=True, default=True,
-        help="Faux quand le gestionnaire de paquets n'a pas répondu. Un compte "
-             "inconnu n'est PAS un compte à zéro.",
+        string="Reliable count", readonly=True, default=True,
+        help="False when the package manager did not respond. An unknown "
+             "count is NOT a zero count.",
     )
-    pending_count = fields.Integer(string="Paquets en attente", readonly=True)
-    pending_security_count = fields.Integer(string="Dont sécurité", readonly=True)
+    pending_count = fields.Integer(string="Pending packages", readonly=True)
+    pending_security_count = fields.Integer(string="Pending security packages", readonly=True)
     pending_delta = fields.Integer(
-        string="Écart au relevé précédent", readonly=True
+        string="Change since previous report", readonly=True
     )
 
     auto_update_mode = fields.Selection(
-        selection=[("unknown", "Inconnu"), ("off", "Aucun"),
-                   ("download", "Téléchargement seul"),
-                   ("security", "Sécurité seulement"), ("all", "Tout")],
-        string="Mise à jour automatique", readonly=True,
+        selection=[("unknown", "Unknown"), ("off", "Off"),
+                   ("download", "Download only"),
+                   ("security", "Security only"), ("all", "All")],
+        string="Automatic updates", readonly=True,
     )
     auto_update_detail = fields.Char(
-        string="Détail de l'auto-updateur", readonly=True
+        string="Auto-updater details", readonly=True
     )
 
-    disk_root_pct = fields.Integer(string="/ occupé (%)", readonly=True)
-    disk_boot_pct = fields.Integer(string="/boot occupé (%)", readonly=True)
+    disk_root_pct = fields.Integer(string="/ used (%)", readonly=True)
+    disk_boot_pct = fields.Integer(string="/boot used (%)", readonly=True)
     disk_tight = fields.Boolean(
-        string="Disque serré", compute="_compute_disk_tight", store=True
+        string="Low disk space", compute="_compute_disk_tight", store=True
     )
 
-    os_support_end = fields.Date(string="Fin de support", readonly=True)
+    os_support_end = fields.Date(string="End of support", readonly=True)
     os_support_state = fields.Selection(
-        selection=[("supported", "Supporté"),
-                   ("ending_soon", "Fin de support proche"),
-                   ("ended", "Hors support"),
-                   ("rolling", "Roulement continu"),
-                   ("unknown", "Inconnu")],
-        string="État du support", readonly=True,
+        selection=[("supported", "Supported"),
+                   ("ending_soon", "End of support soon"),
+                   ("ended", "Out of support"),
+                   ("rolling", "Rolling release"),
+                   ("unknown", "Unknown")],
+        string="Support status", readonly=True,
     )
 
     apply_allowed = fields.Boolean(
-        string="Application autorisée", readonly=True,
-        help="Le fichier /etc/symbifox/apply-allowed existe sur la machine. "
-             "C'est la machine qui le déclare à chaque relevé : le consentement "
-             "est LOCAL, posé à la main, et se retire sans passer par Odoo.",
+        string="Remote apply allowed", readonly=True,
+        help="The file /etc/symbifox/apply-allowed exists on the machine. "
+             "The machine itself declares it with each report: consent is "
+             "LOCAL, set by hand, and withdrawn without going through "
+             "Odoo.",
     )
     job_ids = fields.One2many(
         comodel_name="bf.patch.job", inverse_name="system_id",
-        string="Ordres de mise à jour",
+        string="Update jobs",
     )
     job_pending_count = fields.Integer(
-        string="Ordres en file", compute="_compute_job_pending_count",
+        string="Queued jobs", compute="_compute_job_pending_count",
     )
     # 🔴 Un ordre appliqué ne rajeunit PAS les compteurs. L'agent rapporte
     # l'issue de l'ordre, pas un relevé : « 50 paquets en attente » reste à
@@ -176,30 +177,29 @@ class BfPatchSystem(models.Model):
     # exactement le mensonge qu'il combat) ; il DIT donc que les compteurs
     # sont antérieurs.
     applied_after_report = fields.Datetime(
-        string="Ordre appliqué depuis le relevé",
+        string="Job applied since the report",
         compute="_compute_applied_after_report",
-        help="Date du dernier ordre appliqué après le dernier relevé. Tant "
-             "qu'elle est remplie, les compteurs affichés datent d'avant "
-             "cette application.",
+        help="Date of the last job applied after the last report. As long "
+             "as it is set, the counters shown predate that application.",
     )
 
     report_ids = fields.One2many(
         comodel_name="bf.patch.report", inverse_name="system_id",
-        string="Relevés",
+        string="Reports",
     )
     report_count = fields.Integer(
-        string="Relevés", compute="_compute_report_count"
+        string="Reports", compute="_compute_report_count"
     )
 
     patch_state = fields.Selection(
-        selection=PATCH_STATES, string="État des mises à jour",
+        selection=PATCH_STATES, string="Update status",
         compute="_compute_patch_state", store=True, index=True,
     )
 
     _sql_constraints = [
         ("machine_id_uniq", "unique(machine_id)",
-         "Ce machine-id est déjà porté par un autre système : c'est la même "
-         "installation, vue deux fois."),
+         "This machine-id is already used by another system: it is the "
+         "same installation, seen twice."),
     ]
 
     # ------------------------------------------------------------------
@@ -286,7 +286,7 @@ class BfPatchSystem(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Ordres de {self.name}",
+            "name": _("Jobs for %s", self.name),
             "res_model": "bf.patch.job",
             "view_mode": "list,form",
             "domain": [("system_id", "=", self.id)],
@@ -297,7 +297,7 @@ class BfPatchSystem(models.Model):
         self.ensure_one()
         self.endpoint_id._check_patch_manager()
         self.sudo().write({"agent_token_hash": False, "patch_managed": False})
-        self.message_post(body=_("Agent de mise à jour révoqué."))
+        self.message_post(body=_("Update agent revoked."))
         return True
 
     # ------------------------------------------------------------------
@@ -376,6 +376,19 @@ class BfPatchSystem(models.Model):
 
     # ------------------------------------------------------------------
     @api.model
+    def _bf_reader_lang(self):
+        """La langue des notes que le module écrit sans personne derrière.
+
+        Un enrôlement par l'agent, un travail planifié : personne n'agit, et
+        les lecteurs sont l'équipe d'hébergement de la société. Sa langue si
+        elle est installée, sinon l'anglais, la langue de la source (avant, ces
+        notes prenaient celle d'OdooBot ou de la requête publique de l'agent).
+        """
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        lang = self.env.company.partner_id.lang
+        return lang if lang in installees else "en_US"
+
+    @api.model
     def _cron_refresh_patch_state(self):
         """Rejouer `patch_state` pour que « muet » finisse par arriver."""
         managed = self.sudo().search([("patch_managed", "=", True)])
@@ -385,10 +398,11 @@ class BfPatchSystem(models.Model):
         gone_quiet = managed.filtered(
             lambda s: s.patch_state == "stale" and before.get(s.id) != "stale"
         )
+        lu = self.with_context(lang=self._bf_reader_lang())
         for system in gone_quiet:
             system.message_post(
-                body=_("Aucun relevé depuis plus de %s heures : ce système ne "
-                       "parle plus.", STALE_AFTER_HOURS)
+                body=lu.env._("No report for more than %s hours: this system has "
+                              "gone silent.", STALE_AFTER_HOURS)
             )
         if gone_quiet:
             _logger.warning(

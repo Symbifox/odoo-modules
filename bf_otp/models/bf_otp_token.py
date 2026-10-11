@@ -25,16 +25,16 @@ _URI_OTPAUTH = re.compile(r'\botpauth(-migration)?://', re.IGNORECASE)
 
 class BfOtpToken(models.Model):
     _name = 'bf.otp.token'
-    _description = 'Token OTP'
+    _description = "OTP token"
     _order = 'favorite desc, sequence, issuer, name, id'
 
     # -- rattachement --------------------------------------------------------
     vault_id = fields.Many2one(
-        'bf.otp.vault', string='Coffre', required=True,
+        'bf.otp.vault', string="Vault", required=True,
         ondelete='cascade', index=True,
     )
     user_id = fields.Many2one(
-        'res.users', string='Propriétaire',
+        'res.users', string="Owner",
         related='vault_id.user_id', store=True, index=True,
     )
 
@@ -42,25 +42,24 @@ class BfOtpToken(models.Model):
     # Elles ne sont pas secrètes : elles disent QUEL compte, pas comment y
     # entrer. Les garder lisibles est ce qui permet de chercher, de trier et de
     # savoir ce que le coffre contient sans l'ouvrir.
-    name = fields.Char(string='Compte', required=True)
-    issuer = fields.Char(string='Émetteur', index=True)
-    sequence = fields.Integer(string='Séquence', default=10)
+    name = fields.Char(string="Account", required=True)
+    issuer = fields.Char(string="Issuer", index=True)
+    sequence = fields.Integer(string="Sequence", default=10)
 
     otp_type = fields.Selection([
-        ('totp', 'TOTP (par le temps)'),
-        ('hotp', 'HOTP (par compteur)'),
+        ('totp', "TOTP (time-based)"),
+        ('hotp', "HOTP (counter-based)"),
     ], string='Type', required=True, default='totp')
     algorithm = fields.Selection([
         ('SHA1', 'SHA-1'),
         ('SHA256', 'SHA-256'),
         ('SHA512', 'SHA-512'),
-    ], string='Algorithme', required=True, default='SHA1')
-    digits = fields.Integer(string='Chiffres', required=True, default=6)
-    period = fields.Integer(string='Période (s)', required=True, default=30)
+    ], string="Algorithm", required=True, default='SHA1')
+    digits = fields.Integer(string="Number of digits", required=True, default=6)
+    period = fields.Integer(string="Period (s)", required=True, default=30)
     counter = fields.Integer(
-        string='Compteur', default=0,
-        help="Pour un HOTP seulement. Avancé par le navigateur à chaque code "
-             "produit.",
+        string="Counter", default=0,
+        help="For HOTP only. Advanced by the browser with each code generated.",
     )
 
     # -- à qui ça appartient -------------------------------------------------
@@ -77,41 +76,40 @@ class BfOtpToken(models.Model):
         'res.partner', string='Client', index=True, ondelete='set null',
     )
     project_id = fields.Many2one(
-        'project.project', string='Projet', index=True, ondelete='set null',
+        'project.project', string="Project", index=True, ondelete='set null',
     )
 
     # -- confort ---------------------------------------------------------------
     favorite = fields.Boolean(
-        string='Favori', default=False, index=True,
-        help="Remonte en tête, au-dessus des regroupements.",
+        string="Favorite", default=False, index=True,
+        help="Moves to the top, above the groupings.",
     )
     last_used = fields.Datetime(
-        string='Dernière utilisation',
-        help="Posée à chaque code copié. Sur un coffre où l'on n'utilise "
-             "vraiment qu'une dizaine de tokens, c'est ce qui les fait "
-             "remonter sans qu'on ait rien à ranger.",
+        string="Last used",
+        help="Set each time a code is copied. In a vault where only a "
+             "dozen tokens are really used, this is what brings them to "
+             "the top without any filing.",
     )
 
     # -- sensibilité ---------------------------------------------------------
     group_name = fields.Char(
-        string='Regroupement',
-        help="Étiquette libre pour ranger les tokens : un client, un "
-             "environnement, une équipe.",
+        string="Grouping",
+        help="Free label to file tokens: a client, an environment, a team.",
     )
     sensitive = fields.Boolean(
-        string='Sensible',
+        string="Sensitive",
         default=False,
-        help="Le code reste masqué jusqu'à ce qu'on le demande, et n'est pas "
-             "copié au presse-papiers par mégarde.",
+        help="The code stays hidden until requested, and is not copied to "
+             "the clipboard by mistake.",
     )
 
     # -- la graine, chiffrée ailleurs ----------------------------------------
     secret_cipher = fields.Char(
-        string='Graine chiffrée', required=True,
-        help="Chiffré AES-GCM produit par le navigateur. Le serveur ne peut "
-             "pas le lire et n'essaie pas.",
+        string="Encrypted seed", required=True,
+        help="AES-GCM ciphertext produced by the browser. The server "
+             "cannot read it and does not try.",
     )
-    secret_iv = fields.Char(string='Vecteur', required=True)
+    secret_iv = fields.Char(string="IV", required=True)
 
     # ⚠️ `active` EST la corbeille. Un token retiré passe ici à False au lieu
     # d'être détruit : le geste qui coûte cher (perdre un deuxième facteur pour
@@ -127,7 +125,7 @@ class BfOtpToken(models.Model):
     # rien). Sans ça, « Archiver » depuis l'Inventaire envoyait le token à la
     # CORBEILLE, sans même poser `deleted_at`, sous un mot qui promettait le
     # contraire. L'archivage, le vrai, est le champ `archived` juste en dessous.
-    active = fields.Boolean(string='Actif', default=True, readonly=True)
+    active = fields.Boolean(string="Active", default=True, readonly=True)
 
     # -- l'archive, qui n'est PAS la corbeille --------------------------------
     # ⚠️ Deux états distincts, parce que ce sont deux gestes qui ne se
@@ -142,21 +140,21 @@ class BfOtpToken(models.Model):
     # restée vide. Le rangement manquant n'était pas « supprimer », c'était
     # « ranger ».
     archived = fields.Boolean(
-        string='Archivé', default=False, index=True,
-        help="Sort le token de la liste de tous les jours sans rien détruire. "
-             "Il garde sa graine, produit encore ses codes depuis l'archive, "
-             "et revient d'un geste.",
+        string="Archived", default=False, index=True,
+        help="Takes the token out of the everyday list without destroying "
+             "anything. It keeps its seed, still generates its codes from "
+             "the archive, and comes back in one click.",
     )
     archived_at = fields.Datetime(
-        string='Archivé le',
-        help="Posé au passage à l'archive. Dit depuis quand, rien de plus : "
-             "rien ici ne purge tout seul.",
+        string="Archived on",
+        help="Set when moved to the archive. Says since when, nothing "
+             "more: nothing here purges on its own.",
     )
     deleted_at = fields.Datetime(
-        string='Mis à la corbeille',
-        help="Posé au passage à la corbeille. Sert à dire depuis quand, pas à "
-             "purger tout seul : rien ici ne détruit une graine sans qu'on le "
-             "demande.",
+        string="Moved to trash",
+        help="Set when moved to the trash. Used to tell since when, not "
+             "to purge automatically: nothing here destroys a seed unless "
+             "asked.",
     )
 
     def write(self, vals):
@@ -185,11 +183,11 @@ class BfOtpToken(models.Model):
             valeur = (token.secret_cipher or '').strip()
             if _URI_OTPAUTH.search(valeur) or _BASE32_NU.match(valeur):
                 raise ValidationError(_(
-                    "La graine est arrivée en clair au serveur.\n\n"
-                    "Ce coffre ne détient aucune graine lisible : le "
-                    "chiffrement se fait dans le navigateur, avant l'envoi. "
-                    "Refuser ici est volontaire, parce qu'une graine acceptée "
-                    "en clair ne se remarquerait plus jamais."
+                    "The seed reached the server in plaintext.\n\nThis "
+                    "vault holds no readable seed: encryption happens in "
+                    "the browser, before sending. Refusing here is "
+                    "deliberate, because a seed accepted in plaintext "
+                    "would never be noticed again."
                 ))
 
     @api.constrains('digits', 'period')
@@ -197,10 +195,10 @@ class BfOtpToken(models.Model):
         for token in self:
             if token.digits not in (6, 7, 8):
                 raise ValidationError(_(
-                    "Un code OTP fait 6, 7 ou 8 chiffres."))
+                    "An OTP code has 6, 7 or 8 digits."))
             if token.otp_type == 'totp' and token.period < 1:
                 raise ValidationError(_(
-                    "La période d'un TOTP doit être d'au moins une seconde."))
+                    "A TOTP period must be at least one second."))
 
     # -------------------------------------------------------------------------
     # Façade pour le navigateur
@@ -246,7 +244,7 @@ class BfOtpToken(models.Model):
             [('user_id', '=', self.env.uid)], limit=1)
         if not vault:
             raise ValidationError(_(
-                "Aucun coffre : il faut en créer un avant d'importer."))
+                "No vault: you must create one before importing."))
 
         # 🔴 `active_test=False` : sans lui, un token à la corbeille ne compte
         # pas comme connu, l'import en recrée un jumeau, et la restauration
@@ -268,7 +266,7 @@ class BfOtpToken(models.Model):
             connus.add(cle)
             a_creer.append({
                 'vault_id': vault.id,
-                'name': e.get('name') or _('Sans nom'),
+                'name': e.get('name') or _("Unnamed"),
                 'issuer': e.get('issuer') or False,
                 'otp_type': e.get('otp_type') or 'totp',
                 'algorithm': (e.get('algorithm') or 'SHA1').upper(),
@@ -301,7 +299,7 @@ class BfOtpToken(models.Model):
         vault = self.env['bf.otp.vault'].search(
             [('user_id', '=', self.env.uid)], limit=1)
         if not vault:
-            raise ValidationError(_("Aucun coffre."))
+            raise ValidationError(_("No vault."))
         permis = {
             k: v for k, v in (values or {}).items() if k in self._CHAMPS_LUS
         }
@@ -309,7 +307,7 @@ class BfOtpToken(models.Model):
             token = self.search(
                 [('id', '=', int(token_id)), ('user_id', '=', self.env.uid)])
             if not token:
-                raise ValidationError(_("Token introuvable."))
+                raise ValidationError(_("Token not found."))
             token.write(permis)
             return token.id
         permis['vault_id'] = vault.id
@@ -331,7 +329,7 @@ class BfOtpToken(models.Model):
         token = cible.search(
             [('id', '=', int(token_id)), ('user_id', '=', self.env.uid)])
         if not token:
-            raise ValidationError(_("Token introuvable."))
+            raise ValidationError(_("Token not found."))
         return token
 
     @api.model
@@ -362,7 +360,7 @@ class BfOtpToken(models.Model):
         n'importe quel modèle, sous l'identité de qui appelle.
         """
         if model not in ('res.partner', 'project.project'):
-            raise ValidationError(_("Modèle non autorisé : %s", model))
+            raise ValidationError(_("Model not allowed: %s", model))
         return self.env[model].name_search(name=term or '', limit=int(limit))
 
     @api.model
@@ -464,8 +462,8 @@ class BfOtpToken(models.Model):
         token = self._mine(token_id, corbeille=True)
         if token.active:
             raise ValidationError(_(
-                "Ce token n'est pas à la corbeille. Mettez-l'y d'abord : "
-                "la destruction est irréversible."
+                "This token is not in the trash. Move it there first: "
+                "destruction is irreversible."
             ))
         token.unlink()
         return True

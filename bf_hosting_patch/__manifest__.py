@@ -2,7 +2,11 @@
 {
     "name": "Hébergement — Mises à jour du système",
     "summary": "Relevé des paquets, du noyau et des redémarrages, par système installé",
-    "version": "18.0.4.5.0",
+    # 18.0.4.6.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.4.6.0",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

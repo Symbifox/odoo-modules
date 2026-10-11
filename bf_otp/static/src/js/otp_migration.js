@@ -23,6 +23,7 @@
  * champs à longueur préfixée, et saute proprement ce qu'il ne connaît pas.
  */
 
+import { _t } from "@web/core/l10n/translation";
 import { base32Encode } from "./otp_totp";
 
 /** Ce que Google écrit dans son champ `algorithm`. 4 est MD5, qu'on refuse. */
@@ -47,10 +48,10 @@ function varint(buf, i) {
         }
         decalage += 7n;
         if (decalage > 70n) {
-            throw new Error("Varint trop long : ce n'est pas un export valide.");
+            throw new Error(_t("Varint too long: this is not a valid export."));
         }
     }
-    throw new Error("Export tronqué.");
+    throw new Error(_t("Truncated export."));
 }
 
 /**
@@ -77,7 +78,7 @@ function* champs(buf) {
             [n, i] = varint(buf, i);
             const longueur = Number(n);
             if (i + longueur > buf.length) {
-                throw new Error("Export tronqué.");
+                throw new Error(_t("Truncated export."));
             }
             yield { numero, type, octets: buf.subarray(i, i + longueur) };
             i += longueur;
@@ -86,7 +87,7 @@ function* champs(buf) {
         } else if (type === 1) {
             i += 8;
         } else {
-            throw new Error(`Champ protobuf de type ${type} inattendu.`);
+            throw new Error(_t("Unexpected protobuf field of type %s.", type));
         }
     }
 }
@@ -113,6 +114,9 @@ function lireParametres(buf) {
     return p;
 }
 
+/** Une adresse sans donnée : son message passe tel quel, les autres erreurs non. */
+class AdresseVide extends Error {}
+
 /**
  * Lit une adresse `otpauth-migration://` et rend les comptes qu'elle porte.
  *
@@ -123,14 +127,14 @@ function lireParametres(buf) {
 export function lireMigration(uri) {
     const texte = (uri || "").trim();
     if (!estUneMigration(texte)) {
-        throw new Error("Ce n'est pas une adresse otpauth-migration://.");
+        throw new Error(_t("This is not an otpauth-migration:// address."));
     }
     let brut;
     try {
         const params = new URLSearchParams(texte.slice(texte.indexOf("?") + 1));
         let data = params.get("data");
         if (!data) {
-            throw new Error("Cette adresse ne porte aucune donnée.");
+            throw new AdresseVide(_t("This address carries no data."));
         }
         // 🔴 Le piège du « + ». La donnée est du base64 STANDARD, qui contient
         // des « + ». `URLSearchParams` applique les règles des FORMULAIRES et
@@ -149,8 +153,9 @@ export function lireMigration(uri) {
         brut = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
     } catch (e) {
         throw new Error(
-            e.message.startsWith("Cette adresse") ? e.message
-                : "Le contenu de cette adresse n'est pas lisible."
+            // Par sa classe et non par son texte : traduit, le texte ne se reconnaît plus.
+            e instanceof AdresseVide ? e.message
+                : _t("The content of this address cannot be read.")
         );
     }
 
@@ -182,7 +187,7 @@ export function lireMigration(uri) {
                 nom = nom.slice(coupe + 1).trim();
             }
             comptes.push({
-                name: nom || "Sans nom",
+                name: nom || _t("Unnamed"),
                 issuer: emetteur,
                 otp_type: p.otp_type,
                 algorithm: p.algorithm,

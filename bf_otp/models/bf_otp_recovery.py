@@ -40,38 +40,38 @@ PLAFOND_RELEVES = 5
 
 class BfOtpRecovery(models.Model):
     _name = 'bf.otp.recovery'
-    _description = "Code de relève d'un coffre OTP"
+    _description = "OTP vault recovery code"
     _order = 'create_date desc, id desc'
 
     vault_id = fields.Many2one(
-        'bf.otp.vault', string='Coffre', required=True,
+        'bf.otp.vault', string="Vault", required=True,
         ondelete='cascade', index=True,
     )
     user_id = fields.Many2one(
         'res.users', related='vault_id.user_id', store=True, index=True,
     )
     name = fields.Char(
-        string='Où il est rangé', required=True,
-        help="Ce qui permettra de le retrouver, ou de savoir lequel révoquer : "
-             "« enveloppe au coffre-fort », « Vaultwarden de la relève ».",
+        string="Where it is stored", required=True,
+        help="What will help find it, or know which one to revoke: "
+             "\"envelope in the safe\", \"successors' Vaultwarden\".",
     )
     salt = fields.Char(
-        string='Sel', required=True,
-        help="Sel de dérivation du code, tiré au sort par le navigateur. "
-             "Public par nature.",
+        string="Salt", required=True,
+        help="Derivation salt for the code, drawn at random by the "
+             "browser. Public by nature.",
     )
     iterations = fields.Integer(
-        string='Itérations', required=True, default=600000,
-        help="Enregistré par code, pour pouvoir le monter plus tard sans rendre "
-             "illisibles les codes déjà distribués.",
+        string="Iterations", required=True, default=600000,
+        help="Stored per code, so it can be raised later without making "
+             "codes already handed out unreadable.",
     )
     wrapped_secret = fields.Char(
-        string='Clé du coffre, scellée', required=True,
-        help="Les octets de la clé du coffre, chiffrés par le code de relève. "
-             "Le serveur ne peut pas l'ouvrir.",
+        string="Vault key, sealed", required=True,
+        help="The vault key bytes, encrypted with the recovery code. The "
+             "server cannot open it.",
     )
-    wrapped_iv = fields.Char(string='Vecteur', required=True)
-    last_used = fields.Datetime(string='Dernière ouverture')
+    wrapped_iv = fields.Char(string="IV", required=True)
+    last_used = fields.Datetime(string="Last unlock")
 
 
     def write(self, vals):
@@ -95,6 +95,6 @@ class BfOtpRecovery(models.Model):
             v = (releve.wrapped_secret or '').strip()
             if _URI_OTPAUTH.search(v) or _BASE32_NU.match(v):
                 raise ValidationError(_(
-                    "La clé du coffre est arrivée en clair au serveur. "
-                    "Le scellement se fait dans le navigateur, avant l'envoi."
+                    "The vault key reached the server in plaintext. "
+                    "Sealing happens in the browser, before sending."
                 ))

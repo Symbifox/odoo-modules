@@ -24,7 +24,7 @@ from datetime import timedelta
 
 from psycopg2 import OperationalError
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
@@ -45,16 +45,17 @@ HEARTBEAT_SECONDS = 60
 
 class BfOtpDevice(models.Model):
     _name = "bf.otp.device"
-    _description = "Appareil apparié au coffre de tokens"
+    _description = "Device paired with the token vault"
     _rec_name = "name"
     _order = "last_seen desc, id desc"
 
     user_id = fields.Many2one(
-        "res.users", string="Personne", required=True, ondelete="cascade",
+        "res.users", string="Person", required=True, ondelete="cascade",
         index=True)
-    name = fields.Char(string="Appareil", default="Appareil Android")
+    name = fields.Char(string="Device", default=lambda self: self.env._("Android "
+                                                                          "device"))
     platform = fields.Char(default="android")
-    app_version = fields.Char(string="Version de l'application")
+    app_version = fields.Char(string="App version")
 
     # ⚠️ `groups` interdit la lecture du jeton par l'interface, y compris à son
     # propriétaire : rien dans l'application web n'a besoin de le voir, et un
@@ -63,11 +64,11 @@ class BfOtpDevice(models.Model):
     # le porte que le temps de le remettre à l'application (``_seal`` l'efface
     # aussitôt après la réponse) ; c'est ``token_hash`` qui reconnaît
     # l'appareil. Un dump de base ne livre donc plus de jeton utilisable.
-    device_token = fields.Char(string="Token porteur", copy=False, index=True,
+    device_token = fields.Char(string="Bearer token", copy=False, index=True,
                                groups="base.group_system")
-    token_hash = fields.Char(string="Empreinte du jeton", copy=False, index=True,
+    token_hash = fields.Char(string="Token hash", copy=False, index=True,
                              groups="base.group_system")
-    pending_code = fields.Char(string="Code d'appariement", copy=False,
+    pending_code = fields.Char(string="Pairing code", copy=False,
                                index=True, groups="base.group_system")
     pending_code_expiry = fields.Datetime(copy=False,
                                           groups="base.group_system")
@@ -79,17 +80,17 @@ class BfOtpDevice(models.Model):
     # Avec, le code intercepté ne vaut rien : l'échange exige un vérificateur
     # que seule l'application qui a lancé l'appariement possède, et qui n'est
     # jamais sorti d'elle.
-    pkce_challenge = fields.Char(string="Défi PKCE", copy=False,
+    pkce_challenge = fields.Char(string="PKCE challenge", copy=False,
                                  groups="base.group_system")
 
     active = fields.Boolean(default=True)
-    last_seen = fields.Datetime(string="Vu la dernière fois")
+    last_seen = fields.Datetime(string="Last seen")
 
     _sql_constraints = [
         ("device_token_uniq", "unique(device_token)",
-         "Ce jeton porteur existe déjà."),
+         "This bearer token already exists."),
         ("token_hash_uniq", "unique(token_hash)",
-         "Cette empreinte de jeton existe déjà."),
+         "This token hash already exists."),
     ]
 
     # Champs qu'aucune écriture hors ``sudo`` ne peut poser. Un usager du coffre
@@ -104,14 +105,14 @@ class BfOtpDevice(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if not self.env.su:
-            raise AccessError(
-                "Un appareil ne se crée qu'en s'appariant depuis l'application.")
+            raise AccessError(_(
+                "A device can only be created by pairing from the app."))
         return super().create(vals_list)
 
     def write(self, vals):
         if not self.env.su and any(f in vals for f in self._PROTECTED_FIELDS):
-            raise AccessError(
-                "Le jeton et l'usager d'un appareil ne se modifient pas à la main.")
+            raise AccessError(_(
+                "A device's token and user cannot be changed by hand."))
         return super().write(vals)
 
     @api.model
@@ -128,13 +129,13 @@ class BfOtpDevice(models.Model):
             ("user_id", "=", user_id), ("active", "=", True),
             ("token_hash", "!=", False)])
         if actifs >= PLAFOND_APPAREILS:
-            raise UserError(
-                "Trop d'appareils appariés (%d). Retirez-en un depuis le site."
-                % actifs)
+            raise UserError(_(
+                "Too many paired devices (%s). Remove one from the website.",
+                actifs))
         code = secrets.token_urlsafe(24)
         self.sudo().create({
             "user_id": user_id,
-            "name": name or "Appareil Android",
+            "name": name or self.env._("Android device"),
             "platform": platform,
             "pkce_challenge": challenge or False,
             "pending_code": code,

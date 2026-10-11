@@ -13,13 +13,9 @@
         <field name="name">bf.otp.group.wizard.form</field>
         <field name="model">bf.otp.group.wizard</field>
         <field name="arch" type="xml">
-            <form string="Proposer un regroupement">
+            <form string="Suggest a grouping">
                 <div class="alert alert-info" role="status">
-                    Chaque paquet ci-dessous devient une étiquette de
-                    <em>Regroupement</em>. Le nom vient du domaine de l'adresse
-                    du compte quand il y en a une, sinon de l'émetteur quand il
-                    porte plus d'un token. Renommez ce que vous voulez, décochez
-                    ce que vous ne voulez pas.
+                    Each batch below becomes a <em>Grouping</em> label. The name comes from the domain of the account's address when there is one, otherwise from the issuer when it has more than one token. Rename what you like, uncheck what you do not want.
                 </div>
                 <group>
                     <group>
@@ -31,7 +27,7 @@
                     </group>
                 </group>
                 <field name="line_ids" nolabel="1">
-                    <list string="Paquets proposés" editable="bottom"
+                    <list string="Suggested batches" editable="bottom"
                           create="0" delete="0">
                         <field name="retenu" widget="boolean_toggle"/>
                         <field name="nom"/>
@@ -40,13 +36,12 @@
                     </list>
                 </field>
                 <div class="text-muted mt-2">
-                    Les tokens qui portent déjà un regroupement ne sont pas
-                    touchés, même s'ils tombent dans un paquet retenu.
+                    Tokens that already have a grouping are not touched, even if they fall into a selected batch.
                 </div>
                 <footer>
-                    <button name="action_appliquer" type="object" string="Ranger"
+                    <button name="action_appliquer" type="object" string="File tokens"
                             class="btn-primary" data-hotkey="q"/>
-                    <button string="Annuler" class="btn-secondary"
+                    <button string="Cancel" class="btn-secondary"
                             special="cancel" data-hotkey="x"/>
                 </footer>
             </form>
@@ -57,7 +52,7 @@
          de l'Inventaire, sur la sélection. Sans sélection il travaille sur tout
          le coffre, ce que l'assistant affiche avant d'écrire quoi que ce soit. -->
     <record id="action_otp_group_wizard" model="ir.actions.act_window">
-        <field name="name">Proposer un regroupement</field>
+        <field name="name">Suggest a grouping</field>
         <field name="res_model">bf.otp.group.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -67,7 +62,7 @@
     </record>
 
     <menuitem id="menu_otp_group_wizard"
-              name="Proposer un regroupement"
+              name="Suggest a grouping"
               parent="menu_otp_root"
               action="action_otp_group_wizard"
               groups="group_otp_user"

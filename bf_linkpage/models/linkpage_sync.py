@@ -152,10 +152,10 @@ class BfLinkpageSync(models.Model):
                 "type": "success" if total else "warning",
                 "sticky": False,
                 "message": _(
-                    "Passe terminée : %s page(s) touchée(s).", total
+                    "Run complete: %s page(s) updated.", total
                 ) if total else _(
-                    "Rien à faire. Vérifiez que la création ou le "
-                    "rafraîchissement est activé ci-dessus."
+                    "Nothing to do. Check that creation or refresh is "
+                    "enabled above."
                 ),
             },
         }

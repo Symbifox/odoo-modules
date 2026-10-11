@@ -10,7 +10,7 @@
 
 
         <record id="bf_patch_system_rule_user" model="ir.rule">
-            <field name="name">Systèmes : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="name">Systems: users see those on their clients' endpoints</field>
             <field name="model_id" ref="model_bf_patch_system"/>
             <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
@@ -21,14 +21,14 @@
         </record>
 
         <record id="bf_patch_system_rule_manager" model="ir.rule">
-            <field name="name">Systèmes : le gestionnaire voit tout</field>
+            <field name="name">Systems: managers see everything</field>
             <field name="model_id" ref="model_bf_patch_system"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
         </record>
 
         <record id="bf_patch_report_rule_user" model="ir.rule">
-            <field name="name">Relevés : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="name">Reports: users see those on their clients' endpoints</field>
             <field name="model_id" ref="model_bf_patch_report"/>
             <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
@@ -39,14 +39,14 @@
         </record>
 
         <record id="bf_patch_report_rule_manager" model="ir.rule">
-            <field name="name">Relevés : le gestionnaire voit tout</field>
+            <field name="name">Reports: managers see everything</field>
             <field name="model_id" ref="model_bf_patch_report"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
         </record>
 
         <record id="bf_patch_package_rule_user" model="ir.rule">
-            <field name="name">Paquets : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="name">Packages: users see those on their clients' endpoints</field>
             <field name="model_id" ref="model_bf_patch_package"/>
             <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
@@ -57,7 +57,7 @@
         </record>
 
         <record id="bf_patch_package_rule_manager" model="ir.rule">
-            <field name="name">Paquets : le gestionnaire voit tout</field>
+            <field name="name">Packages: managers see everything</field>
             <field name="model_id" ref="model_bf_patch_package"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
@@ -69,7 +69,7 @@
              il lui faut donc la même règle. -->
 
         <record id="bf_patch_job_rule_user" model="ir.rule">
-            <field name="name">Ordres : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="name">Jobs: users see those on their clients' endpoints</field>
             <field name="model_id" ref="model_bf_patch_job"/>
             <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
@@ -80,7 +80,7 @@
         </record>
 
         <record id="bf_patch_job_rule_manager" model="ir.rule">
-            <field name="name">Ordres : le gestionnaire voit tout</field>
+            <field name="name">Jobs: managers see everything</field>
             <field name="model_id" ref="model_bf_patch_job"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>

@@ -8,4 +8,5 @@ from . import (
     test_qr,
     test_providers,
     test_org_page,
+    test_langue,
 )

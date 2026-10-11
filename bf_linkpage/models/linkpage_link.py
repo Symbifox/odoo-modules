@@ -39,7 +39,7 @@ def _safe_url(url):
 
 class BfLinkpageLink(models.Model):
     _name = "bf.linkpage.link"
-    _description = "Lien d'une page de liens"
+    _description = "Link page link"
     _order = "sequence, id"
 
     page_id = fields.Many2one(
@@ -48,11 +48,11 @@ class BfLinkpageLink(models.Model):
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
 
-    name = fields.Char(string="Libellé", required=True, translate=True)
-    subtitle = fields.Char(string="Précision", translate=True)
+    name = fields.Char(string="Label", required=True, translate=True)
+    subtitle = fields.Char(string="Details", translate=True)
     icon = fields.Char(
-        string="Icône",
-        help="Classe Font Awesome, par exemple « fa-calendar ». Facultatif.",
+        string="Icon",
+        help="Font Awesome class, for example \"fa-calendar\". Optional.",
     )
 
     source_code = fields.Selection(
@@ -60,49 +60,50 @@ class BfLinkpageLink(models.Model):
         string="Source",
         default="manual",
         required=True,
-        help="D'où vient l'adresse. « Adresse saisie » utilise le champ URL ; "
-             "les autres la résolvent depuis la base à chaque affichage.",
+        help="Where the address comes from. \"Manual address\" uses the "
+             "URL field; the others resolve it from the database on every "
+             "display.",
     )
     source_available = fields.Boolean(
-        string="Source disponible",
+        string="Source available",
         compute="_compute_source_available",
-        help="Faux quand le module qui fournit cette source n'est pas installé.",
+        help="False when the module providing this source is not installed.",
     )
 
     url = fields.Char(
-        string="Adresse",
-        help="Utilisée quand la source est « Adresse saisie ».",
+        string="Address",
+        help="Used when the source is \"Manual address\".",
     )
     resolved_url = fields.Char(
-        string="Adresse résolue",
+        string="Resolved address",
         compute="_compute_resolved_url",
-        help="Ce vers quoi le lien pointe réellement. Vide = le lien ne "
-             "s'affiche pas sur la page publique.",
+        help="What the link actually points to. Empty = the link is not "
+             "shown on the public page.",
     )
 
     # Référence douce vers l'enregistrement visé par une source. Douce parce
     # que la cible vit dans un module OPTIONNEL : un Many2one obligerait ce
     # module à en dépendre, et l'installation échouerait là où le fournisseur
     # est absent.
-    source_res_model = fields.Char(string="Modèle visé", readonly=True)
-    source_res_id = fields.Integer(string="Enregistrement visé", readonly=True)
+    source_res_model = fields.Char(string="Target model", readonly=True)
+    source_res_id = fields.Integer(string="Target record", readonly=True)
 
     is_social = fields.Boolean(
-        string="Réseau social",
+        string="Social network",
         compute="_compute_is_social",
         store=True,
-        help="Un lien de réseau s'affiche en rangée d'icônes sous les liens "
-             "principaux, sans libellé.",
+        help="A social network link is shown in a row of icons under the "
+             "main links, without a label.",
     )
 
     from_template = fields.Boolean(
-        string="Posé par un gabarit",
+        string="Set by a template",
         readonly=True,
-        help="Un lien posé par un gabarit est remplacé quand le gabarit est "
-             "réappliqué. Un lien ajouté à la main ne l'est jamais.",
+        help="A link set by a template is replaced when the template is "
+             "reapplied. A link added by hand never is.",
     )
 
-    click_count = fields.Integer(string="Clics", default=0, readonly=True, copy=False)
+    click_count = fields.Integer(string="Clicks", default=0, readonly=True, copy=False)
 
     # ── calculs ──────────────────────────────────────────────────────────────
 
@@ -168,12 +169,13 @@ class BfLinkpageLink(models.Model):
                 continue
             if not link.url:
                 raise ValidationError(_(
-                    "Le lien « %s » utilise une adresse saisie mais n'en a pas.",
+                    "The link \"%s\" uses a manual address but has none.",
                     link.name,
                 ))
             if not link.url.lower().startswith(ALLOWED_SCHEMES):
                 raise ValidationError(_(
-                    "L'adresse du lien « %(name)s » doit commencer par %(schemes)s.",
+                    "The address of the link \"%(name)s\" must start with "
+                    "%(schemes)s.",
                     name=link.name,
                     schemes=", ".join(ALLOWED_SCHEMES),
                 ))

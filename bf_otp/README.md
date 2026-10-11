@@ -174,6 +174,10 @@ des tokens au mauvais client sans que personne ne le voie.
 | Déplacer une fiche dans le coffre d'autrui | **Non** depuis 18.0.12.2.0. |
 | Garder le coffre sur le téléphone d'une personne partie | **Non** depuis 18.0.12.0.0 : compte archivé, jeton refusé. |
 
+## Langues (v18.0.12.3.0)
+
+Les libellés et les messages sont écrits en anglais dans la source ; le français est livré dans `i18n/fr_CA.po`. Avant cette version, ils se lisaient en français pour tout le monde, y compris pour un usager réglé en anglais. Les erreurs que l'application Android affiche telles quelles sortent maintenant dans la langue de la personne : le téléphone n'envoie ni cookie de session ni langue, et l'API la pose d'après le compte. Le nom par défaut d'un appareil, et celui d'une clé d'accès posée depuis le téléphone, suivent aussi sa langue. Dans l'application du coffre, les erreurs de lecture d'un export et les textes que l'écran choisit selon l'état (tri, vue, archive, favoris) se traduisent. `otp_crypto.js`, `otp_totp.js` et les fonctions WebAuthn que l'extension de navigateur copie à l'identique restent tels quels : leurs messages restent en français jusqu'à une bascule commune avec l'extension. À la montée, le travail planifié des appariements abandonnés est renommé, sauf s'il a été retouché.
+
 ## Historique
 
 ### 18.0.12.2.0

@@ -4,7 +4,7 @@
         <field name="name">bf.linkpage.template.list</field>
         <field name="model">bf.linkpage.template</field>
         <field name="arch" type="xml">
-            <list string="Gabarits">
+            <list string="Templates">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="target"/>
@@ -22,11 +22,11 @@
         <field name="name">bf.linkpage.template.form</field>
         <field name="model">bf.linkpage.template</field>
         <field name="arch" type="xml">
-            <form string="Gabarit">
+            <form string="Template">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Équipe conseil"/></h1>
+                        <h1><field name="name" placeholder="Consulting team"/></h1>
                     </div>
                     <group>
                         <group>
@@ -42,13 +42,10 @@
                         </group>
                     </group>
                     <div class="text-muted">
-                        Le gabarit le plus spécifique gagne : celui dont
-                        l'usager est membre d'un groupe passe avant le gabarit
-                        par défaut. À égalité, la séquence tranche, pour que
-                        le choix ne dépende pas de l'ordre d'insertion en base.
+                        The most specific template wins: one whose user belongs to a group takes precedence over the default template. In case of a tie, the sequence decides, so that the choice does not depend on the order of insertion in the database.
                     </div>
                     <notebook>
-                        <page string="Liens" name="lines">
+                        <page string="Links" name="lines">
                             <field name="line_ids">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
@@ -60,7 +57,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Remarques" name="note">
+                        <page string="Notes" name="note">
                             <field name="note"/>
                         </page>
                     </notebook>
@@ -70,7 +67,7 @@
     </record>
 
     <record id="action_bf_linkpage_template" model="ir.actions.act_window">
-        <field name="name">Gabarits</field>
+        <field name="name">Templates</field>
         <field name="res_model">bf.linkpage.template</field>
         <field name="view_mode">list,form</field>
     </record>

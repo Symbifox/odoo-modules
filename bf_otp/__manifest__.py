@@ -1,6 +1,10 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.12.2.0',
+    # 18.0.12.3.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    'version': '18.0.12.3.0',
     'category': 'Productivity',
     'summary': "Coffre de tokens OTP dont le serveur ne peut lire aucune graine",
     'description': """
