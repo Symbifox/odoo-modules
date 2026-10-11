@@ -14,7 +14,10 @@
                             <field name="bf_route_position_mode" widget="radio"/>
                         </setting>
                         <setting string="Keep positions" help="Then they are erased from the stops.">
-                            <field name="bf_route_position_days"/> days
+                            <div class="d-flex align-items-baseline gap-2">
+                                <field name="bf_route_position_days" class="oe_inline"/>
+                                <span>days</span>
+                            </div>
                         </setting>
                         <setting string="Notice to the workers" invisible="bf_route_position_mode != 'stops'"
                                  help="Leave empty for the standard notice. A new text asks everyone to read it again.">
@@ -24,7 +27,10 @@
                     <block title="Alerts" name="bf_route_alerts">
                         <setting string="Route not started"
                                  help="Minutes after the planned start before the person responsible is told.">
-                            <field name="bf_route_late_minutes"/> min
+                            <div class="d-flex align-items-baseline gap-2">
+                                <field name="bf_route_late_minutes" class="oe_inline"/>
+                                <span>min</span>
+                            </div>
                         </setting>
                     </block>
                     <block title="Routing engine" name="bf_route_engine">

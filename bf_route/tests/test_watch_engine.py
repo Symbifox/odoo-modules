@@ -138,6 +138,31 @@ class TestEngine(RouteCase):
         self.assertIn("-73.567300,45.501700;-73.550000,45.490000;-73.580000,45.520000;", distance_url,
                       "the distance is computed in the NEW order")
 
+    def test_optimized_note_says_what_the_form_says(self):
+        # VROOM's distance is an estimate; the form shows OSRM's, measured after. The note
+        # must carry OSRM's, written the way the reader writes numbers.
+        vroom = {"code": 0, "summary": {"distance": 26900, "duration": 3600},
+                 "routes": [{"steps": [{"type": "job", "id": 1}, {"type": "job", "id": 2},
+                                       {"type": "job", "id": 3}]}]}
+        osrm = {"code": "Ok", "routes": [{"distance": 27200.0, "duration": 3660.0, "legs": []}]}
+        with patch(REQUEST, side_effect=[answer(vroom), answer(osrm)]):
+            self.route.with_user(self.manager).action_optimize()
+        self.assertAlmostEqual(self.route.distance_km, 27.2)
+        self.assertIn("27.2 km, 61 min", self.route.message_ids[0].body)
+        if not self.env["res.lang"]._lang_get("fr_CA"):
+            return
+        with patch(REQUEST, side_effect=[answer(vroom), answer(osrm)]):
+            self.route.with_user(self.manager).with_context(lang="fr_CA").action_optimize()
+        self.assertIn("27,2", self.route.message_ids[0].body)
+
+    def test_the_day_list_shows_local_times_without_the_date(self):
+        day = self.make_day()
+        alice = day.stop_ids.sorted("sequence")[0]
+        # 13:00 UTC is 9:00 in Toronto, the time zone of the person responsible.
+        alice.planned_time = fields.Datetime.to_datetime("2026-10-12 13:00:00")
+        self.assertEqual(alice.planned_clock, "09:00")
+        self.assertFalse(alice.done_clock)
+
     def test_people_without_email_can_do_everything(self):
         # Odoo refuses a note outside sudo when its author has no email address: a route
         # manager or a worker may have none.

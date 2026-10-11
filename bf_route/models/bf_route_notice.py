@@ -79,10 +79,14 @@ class BfRouteNoticeAck(models.Model):
             "after it ends.</p>"
             "<p><b>Why:</b> to prove the visit to the customer and settle a disagreement about a "
             "delivery. <b>Who sees it:</b> the people who manage the routes. <b>How long:</b> "
-            "%(days)s days, then it is erased.</p>"
+            "%(how_long)s, then it is erased.</p>"
             "<p>Your phone asks for your permission the first time. If you refuse, the stops "
             "are marked without a position.</p>",
-            days=company.bf_route_position_days or 90))
+            how_long=self._retention_text(company.bf_route_position_days or 90)))
+
+    @api.model
+    def _retention_text(self, days):
+        return _("1 day") if days == 1 else _("%s days", days)
 
     @api.model
     def _notice_text(self, company):

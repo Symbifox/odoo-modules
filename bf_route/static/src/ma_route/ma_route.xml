@@ -79,16 +79,17 @@
                                         <div class="small text-muted" t-if="stop.address"><t t-esc="stop.address"/></div>
                                         <div class="small" t-if="stop.window or stop.planned_time">
                                             <t t-if="stop.window"><i class="fa fa-clock-o"/> <t t-esc="stop.window"/></t>
-                                            <t t-if="stop.planned_time"> · planned <t t-esc="stop.planned_time"/></t>
+                                            <t t-if="stop.window and stop.planned_time"> · </t>
+                                            <t t-if="stop.planned_time">planned <t t-esc="stop.planned_time"/></t>
                                         </div>
                                         <div class="small fst-italic mt-1" t-if="stop.instructions"><t t-esc="stop.instructions"/></div>
                                     </div>
-                                    <span t-if="stop.state !== 'todo'" class="badge o_bf_state_badge">
+                                    <span t-if="stop.state !== 'todo'" class="badge o_bf_state_badge flex-shrink-0">
                                         <t t-esc="stateLabel(stop)"/>
                                         <i t-if="stop.pending" class="fa fa-cloud-upload ms-1" title="Waiting for the network"/>
                                     </span>
                                 </div>
-                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
                                     <a class="btn btn-light btn-sm" t-att-href="mapUrl(stop)"><i class="fa fa-map-signs"/> Directions</a>
                                     <a t-if="stop.phone" class="btn btn-light btn-sm" t-attf-href="tel:{{stop.phone}}"><i class="fa fa-phone"/> Call</a>
                                     <button class="btn btn-light btn-sm" t-on-click="() => this.toggleNote(stop)"><i class="fa fa-pencil"/> Note</button>

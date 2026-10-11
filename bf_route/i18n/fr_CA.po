@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_route 18.0.1.0.0\n"
+"Project-Id-Version: bf_route 18.0.1.0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 19:40+0000\n"
-"PO-Revision-Date: 2026-10-10 19:40+0000\n"
+"POT-Creation-Date: 2026-10-11 00:11+0000\n"
+"PO-Revision-Date: 2026-10-11 00:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -51,6 +51,12 @@ msgstr "%s (nom envoyé par le téléphone, arrêt supprimé)"
 
 #. module: bf_route
 #. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "%s days"
+msgstr "%s jours"
+
+#. module: bf_route
+#. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
 msgid "%s is a heavy vehicle: do the pre-trip inspection before leaving."
 msgstr ""
@@ -78,6 +84,12 @@ msgstr ""
 #. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "1 day"
+msgstr "1 jour"
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
 msgid ""
 "<p><b>Your position at the stops</b></p><p>When you mark a stop (done, "
 "customer absent, postponed), the application reads your phone's position "
@@ -85,9 +97,9 @@ msgid ""
 "visit. It never follows you between stops, before the day starts or after it"
 " ends.</p><p><b>Why:</b> to prove the visit to the customer and settle a "
 "disagreement about a delivery. <b>Who sees it:</b> the people who manage the"
-" routes. <b>How long:</b> %(days)s days, then it is erased.</p><p>Your phone"
-" asks for your permission the first time. If you refuse, the stops are "
-"marked without a position.</p>"
+" routes. <b>How long:</b> %(how_long)s, then it is erased.</p><p>Your phone "
+"asks for your permission the first time. If you refuse, the stops are marked"
+" without a position.</p>"
 msgstr ""
 "<p><b>Votre position aux arrêts</b></p><p>Quand vous marquez un arrêt (fait,"
 " client absent, reporté), l'application lit la position de votre téléphone "
@@ -95,9 +107,19 @@ msgstr ""
 " de la visite. Elle ne vous suit jamais entre les arrêts, avant le début de "
 "la journée ni après la fin.</p><p><b>Pourquoi :</b> prouver la visite au "
 "client et régler un désaccord sur une livraison. <b>Qui la voit :</b> les "
-"personnes qui gèrent les routes. <b>Combien de temps :</b> %(days)s jours, "
+"personnes qui gèrent les routes. <b>Combien de temps :</b> %(how_long)s, "
 "puis elle est effacée.</p><p>Votre téléphone vous demande la permission la "
 "première fois. Si vous refusez, les arrêts sont marqués sans position.</p>"
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "<span>days</span>"
+msgstr "<span>jours</span>"
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "<span>min</span>"
+msgstr "<span>min</span>"
 
 #. module: bf_route
 #. odoo-python
@@ -698,6 +720,12 @@ msgid "Local time of the person responsible."
 msgstr "Heure locale de la personne responsable."
 
 #. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__done_clock
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__planned_clock
+msgid "Local time, in the route's time zone."
+msgstr "Heure locale, dans le fuseau de la route."
+
+#. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_end
 #: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_start
 msgid "Local time. Empty = any time."
@@ -723,6 +751,11 @@ msgstr "Marqué à"
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__done_by
 msgid "Marked by"
 msgstr "Marqué par"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__done_clock
+msgid "Marked time"
+msgstr "Heure marquée"
 
 #. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__sent_later
@@ -1080,8 +1113,8 @@ msgstr "Optimiser l'ordre"
 #. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_engine.py:0
-msgid "Order optimized: %(km).1f km, %(min)s min of driving."
-msgstr "Ordre optimisé : %(km).1f km, %(min)s min de conduite."
+msgid "Order optimized: %(km)s km, %(min)s min of driving."
+msgstr "Ordre optimisé : %(km)s km, %(min)s min de conduite."
 
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__origin
@@ -1130,6 +1163,11 @@ msgstr "Temps de conduite prévu (min)"
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date_planned_start
 msgid "Planned start"
 msgstr "Départ prévu"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__planned_clock
+msgid "Planned time"
+msgstr "Heure prévue"
 
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__position_erased
@@ -1885,11 +1923,6 @@ msgid "Worker position"
 msgstr "Position de la personne"
 
 #. module: bf_route
-#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
-msgid "days"
-msgstr "jours"
-
-#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
 msgid "e.g. Monday, north shore"
 msgstr "p. ex. Lundi, Rive-Nord"
@@ -1911,9 +1944,10 @@ msgid "http://vroom:3000"
 msgstr "http://vroom:3000"
 
 #. module: bf_route
-#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
-msgid "min"
-msgstr "min"
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "planned"
+msgstr "prévu"
 
 #. module: bf_route
 #. odoo-python
@@ -1926,9 +1960,3 @@ msgstr "jusqu'à %s"
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "waiting"
 msgstr "en attente"
-
-#. module: bf_route
-#. odoo-javascript
-#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
-msgid "· planned"
-msgstr "· prévu"

@@ -158,6 +158,13 @@ class TestPosition(RouteCase):
         data = day.stop_ids.sorted("sequence")[0].with_user(self.worker).app_mark("done", position=HERE)
         self.assertFalse(data["_notice"]["may_read_position"])
 
+    def test_the_notice_says_one_day_not_one_days(self):
+        Ack = self.env["bf.route.notice.ack"]
+        self.company.bf_route_position_days = 1
+        self.assertIn("1 day, then", Ack._default_notice(self.company))
+        self.company.bf_route_position_days = 30
+        self.assertIn("30 days, then", Ack._default_notice(self.company))
+
     def test_absurd_position_is_ignored(self):
         self.company.bf_route_position_mode = "stops"
         self.env["bf.route.notice.ack"].with_user(self.worker).app_acknowledge(

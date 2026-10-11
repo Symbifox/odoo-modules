@@ -84,8 +84,8 @@
                                     <field name="sequence" widget="handle"/>
                                     <field name="partner_id"/>
                                     <field name="address" optional="show"/>
-                                    <field name="window_start" widget="float_time" optional="show"/>
-                                    <field name="window_end" widget="float_time" optional="show"/>
+                                    <field name="window_start" widget="bf_window_time" optional="show"/>
+                                    <field name="window_end" widget="bf_window_time" optional="show"/>
                                     <field name="service_minutes" optional="show"/>
                                     <field name="instructions" optional="hide"/>
                                     <field name="latitude" optional="hide"/>

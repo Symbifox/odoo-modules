@@ -31,7 +31,7 @@
                     <div t-if="sf.mode and sf.mode !== 'account'" class="d-flex gap-2">
                         <label class="flex-grow-1 small">Amount received
                             <input type="number" inputmode="decimal" min="0" step="0.01" class="form-control"
-                                   t-model="sf.amount" t-att-placeholder="estimate(stop).toFixed(2)"/>
+                                   t-model="sf.amount" t-att-placeholder="money(Math.max(estimate(stop), 0))"/>
                         </label>
                         <label t-if="sf.mode !== 'cash'" class="flex-grow-1 small">
                             <t t-if="sf.mode === 'card'">Authorization no.</t>

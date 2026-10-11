@@ -28,8 +28,8 @@
                         <field name="instructions"/>
                     </group>
                     <group>
-                        <field name="window_start" widget="float_time"/>
-                        <field name="window_end" widget="float_time"/>
+                        <field name="window_start" widget="bf_window_time"/>
+                        <field name="window_end" widget="bf_window_time"/>
                         <field name="service_minutes"/>
                     </group>
                 </group>
@@ -118,12 +118,12 @@
                     <group>
                         <field name="partner_id"/>
                         <field name="state"/>
-                        <field name="done_at"/>
+                        <field name="done_at" options="{'show_seconds': false}"/>
                         <field name="note"/>
                     </group>
                     <group>
-                        <field name="window_start" widget="float_time"/>
-                        <field name="window_end" widget="float_time"/>
+                        <field name="window_start" widget="bf_window_time"/>
+                        <field name="window_end" widget="bf_window_time"/>
                         <field name="instructions"/>
                         <field name="invoice_id" groups="account.group_account_invoice"/>
                         <field name="payment_mode"/>

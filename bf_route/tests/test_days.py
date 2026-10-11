@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from unittest.mock import patch
 
 from odoo.addons.bf_route.models.bf_route_day import clean_env
+from odoo.addons.bf_route.models.tools import local_today
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
@@ -272,8 +273,13 @@ class TestDays(RouteCase):
         with self.assertRaises(UserError):
             day.with_user(self.worker).app_finish(odometer=400)
 
+    def today(self):
+        # The worker's day, as the phone sees it: in UTC it is already tomorrow from 20:00 in
+        # Toronto, and a day made for the UTC date is not "today" for app_load.
+        return local_today(self.env["bf.route"]._tz_for(self.worker))
+
     def test_phone_time_kept_when_sent_later(self):
-        day = self.make_day(day=date.today())
+        day = self.make_day(day=self.today())
         self.start(day, client_time=(datetime.utcnow() - timedelta(hours=2)).isoformat() + "Z")
         alice = day.stop_ids.sorted("sequence")[0]
         made = datetime.utcnow() - timedelta(minutes=30)
@@ -287,7 +293,7 @@ class TestDays(RouteCase):
         self.assertFalse(bob.sent_later)
 
     def test_app_load_shows_my_day_only(self):
-        today = date.today()
+        today = self.today()
         self.route.write({"date_start": today - timedelta(days=today.weekday())})
         mine = self.make_day(day=today)
         data = self.env["bf.route.day"].with_user(self.worker).app_load()

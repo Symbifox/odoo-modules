@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Work Routes: Sales on the Road",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Services/Field Service",
     "summary": "Sell from the truck at each stop: truck stock, invoice at the customer's price, "
                "container deposits, payment recorded on the phone",

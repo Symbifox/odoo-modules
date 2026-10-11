@@ -317,7 +317,7 @@ class BfRouteDay(models.Model):
                 if stop.window_start:
                     opens = local_to_utc(route._tz(), day.date, stop.window_start)
                     clock = max(clock, opens)
-                stop.with_context(bf_route_auto=True).planned_time = clock
+                stop.with_context(bf_route_auto=True).planned_time = clock.replace(second=0, microsecond=0)
                 clock += timedelta(minutes=stop.service_minutes)
             day.with_context(bf_route_auto=True).write({
                 "distance_planned_km": plan["distance"] / 1000.0,
@@ -326,6 +326,7 @@ class BfRouteDay(models.Model):
 
     def action_optimize(self):
         self._check_manager()
+        unassigned = {}
         for day in self:
             stops = day._remaining()
             if len(stops) < 2:
@@ -339,8 +340,12 @@ class BfRouteDay(models.Model):
             first = min(stops.mapped("sequence"))
             for rank, stop in enumerate(order["ordered"]):
                 stop.sequence = first + rank
-            day.sudo().message_post(body=order["summary"])
-        return self.action_compute_plan()
+            unassigned[day.id] = order["unassigned"]
+        self.action_compute_plan()
+        for day in self:
+            day.sudo().message_post(body=self.env["bf.route.engine"]._optimized_note(
+                day.distance_planned_km, day.duration_planned_minutes, unassigned[day.id]))
+        return True
 
     # ------------------------------------------------------------------
     # Alerts
@@ -523,9 +528,13 @@ class BfRouteDayStop(models.Model):
     service_minutes = fields.Integer(string="Time on site (min)", default=10)
     instructions = fields.Text(string="Access instructions")
     planned_time = fields.Datetime(string="Planned at", copy=False)
+    planned_clock = fields.Char(string="Planned time", compute="_compute_clocks",
+                                help="Local time, in the route's time zone.")
     state = fields.Selection(STOP_STATES, default="todo", required=True, index=True, copy=False)
     done_at = fields.Datetime(string="Marked at", readonly=True, copy=False)
     done_by = fields.Many2one("res.users", string="Marked by", readonly=True, copy=False)
+    done_clock = fields.Char(string="Marked time", compute="_compute_clocks",
+                             help="Local time, in the route's time zone.")
     note = fields.Text(copy=False)
     sent_later = fields.Boolean(string="Sent later", readonly=True, copy=False,
                                 help="Marked without network and sent when it came back.")
@@ -617,6 +626,17 @@ class BfRouteDayStop(models.Model):
     def _app_local(self):
         tz = self.day_id.route_id.sudo()._tz()
         return lambda value: value and utc_to_local(tz, value).strftime("%H:%M")
+
+    @api.depends("planned_time", "done_at", "day_id.route_id")
+    def _compute_clocks(self):
+        """The time alone, as the day's list shows it: the date is the day's."""
+        for stop in self:
+            route = stop.day_id.route_id.sudo()
+            tz = route._tz() if route else pytz.utc
+            stop.planned_clock = utc_to_local(tz, stop.planned_time).strftime("%H:%M") \
+                if stop.planned_time else False
+            stop.done_clock = utc_to_local(tz, stop.done_at).strftime("%H:%M") \
+                if stop.done_at else False
 
     def _is_resend(self, app_key):
         self.ensure_one()

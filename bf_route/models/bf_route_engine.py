@@ -12,6 +12,7 @@ import requests
 from markupsafe import Markup
 
 from odoo import _, api, models
+from odoo.tools.misc import formatLang
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -93,7 +94,9 @@ class BfRouteEngine(models.AbstractModel):
         """The stops in VROOM's order. Time windows are seconds since local midnight.
 
         Returns {"ordered": stops in the new order, "unassigned": stops VROOM could not
-        fit (kept at the end, never dropped), "summary": a line for the chatter}.
+        fit (kept at the end, never dropped)}. The note for the chatter is written by the
+        caller once OSRM has measured the new order (`_optimized_note`): VROOM's own
+        distance is an estimate, and the chatter must say what the form says.
         """
         base = self._url(VROOM_PARAM)
         if not base:
@@ -127,15 +130,17 @@ class BfRouteEngine(models.AbstractModel):
             unassigned = stops.browse()
             for item in data.get("unassigned", []):
                 unassigned |= by_index[item["id"]]
-            summary = data.get("summary") or {}
-            km = self._number(summary.get("distance") or 0) / 1000.0
-            minutes = round(self._number(summary.get("duration") or 0) / 60)
         except (KeyError, TypeError, ValueError, IndexError, AttributeError):
             raise UserError(_("The optimizer could not order the stops (%s).", "?"))
         unassigned |= stops - ordered - unassigned
-        line = _("Order optimized: %(km).1f km, %(min)s min of driving.", km=km, min=minutes)
+        return {"ordered": ordered | unassigned, "unassigned": unassigned}
+
+    @api.model
+    def _optimized_note(self, km, minutes, unassigned):
+        """The chatter line after an optimization, numbers in the reader's language."""
+        line = _("Order optimized: %(km)s km, %(min)s min of driving.",
+                 km=formatLang(self.env, km, digits=1), min=minutes)
         if unassigned:
             line += " " + _("Could not fit in their time window, left at the end: %s.",
                             ", ".join(unassigned.mapped("partner_id.display_name")))
-        return {"ordered": ordered | unassigned, "unassigned": unassigned,
-                "summary": Markup("<p>%s</p>") % line}
+        return Markup("<p>%s</p>") % line

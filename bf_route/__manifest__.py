@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Work Routes",
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.0.4",
     "category": "Services/Field Service",
     "summary": "Recurring routes for people on the road: stops in order, proof at each stop, "
                "mileage, alerts, and a phone screen for the worker",
@@ -50,6 +50,7 @@ technicians, sales representatives.
     ],
     "assets": {
         "web.assets_backend": [
+            "bf_route/static/src/window_time/window_time_field.js",
             "bf_route/static/src/ma_route/ma_route.js",
             "bf_route/static/src/ma_route/ma_route.xml",
             "bf_route/static/src/ma_route/ma_route.scss",

@@ -9,7 +9,7 @@
                 <field name="route_id"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
                 <field name="vehicle_id" optional="show"/>
-                <field name="date_planned_start" optional="hide"/>
+                <field name="date_planned_start" optional="hide" options="{'show_seconds': false}"/>
                 <field name="progress" string="Stops marked"/>
                 <field name="distance_actual_km" sum="Total" optional="show"/>
                 <field name="distance_planned_km" sum="Total" optional="hide"/>
@@ -62,10 +62,10 @@
                             <field name="heavy_vehicle" invisible="not heavy_vehicle"/>
                         </group>
                         <group>
-                            <field name="date_planned_start"/>
-                            <field name="date_started"/>
-                            <field name="date_finished"/>
-                            <field name="safety_check_at" invisible="not safety_check_at"/>
+                            <field name="date_planned_start" options="{'show_seconds': false}"/>
+                            <field name="date_started" options="{'show_seconds': false}"/>
+                            <field name="date_finished" options="{'show_seconds': false}"/>
+                            <field name="safety_check_at" invisible="not safety_check_at" options="{'show_seconds': false}"/>
                             <field name="safety_check_by" invisible="not safety_check_by"/>
                         </group>
                         <group string="Mileage">
@@ -88,11 +88,13 @@
                                     <field name="sequence" widget="handle"/>
                                     <field name="partner_id"/>
                                     <field name="address" optional="hide"/>
-                                    <field name="window_start" widget="float_time" optional="show"/>
-                                    <field name="window_end" widget="float_time" optional="show"/>
-                                    <field name="planned_time" optional="show"/>
+                                    <field name="window_start" widget="bf_window_time" optional="show"/>
+                                    <field name="window_end" widget="bf_window_time" optional="show"/>
+                                    <field name="planned_clock" optional="show"/>
+                                    <field name="planned_time" optional="hide" options="{'show_seconds': false}"/>
                                     <field name="state" widget="badge"/>
-                                    <field name="done_at" optional="show"/>
+                                    <field name="done_clock" optional="show"/>
+                                    <field name="done_at" optional="hide" options="{'show_seconds': false}"/>
                                     <field name="sent_later" optional="hide"/>
                                     <field name="note" optional="show"/>
                                     <field name="latitude" optional="hide" groups="bf_route.group_route_manager"/>
@@ -149,7 +151,7 @@
                 <field name="partner_id"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
                 <field name="state" widget="badge"/>
-                <field name="done_at"/>
+                <field name="done_at" options="{'show_seconds': false}"/>
                 <field name="note" optional="show"/>
             </list>
         </field>

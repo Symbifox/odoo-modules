@@ -270,21 +270,27 @@ class BfRoute(models.Model):
     def action_optimize(self):
         """Reorder the template's stops with VROOM. Time windows are seconds of the day."""
         self._check_manager()
+        Engine = self.env["bf.route.engine"]
+        unassigned = {}
         for route in self:
             if len(route.stop_ids) < 2:
                 raise UserError(_("There is nothing to reorder with fewer than two stops."))
             start = route.start_partner_id or route.company_id.partner_id
             end = route.end_partner_id or start
-            order = self.env["bf.route.engine"]._optimize(
+            order = Engine._optimize(
                 start, end, route.stop_ids.sorted("sequence"),
                 start_seconds=int(route.start_hour * 3600))
             for rank, stop in enumerate(order["ordered"], 1):
                 stop.sequence = rank * 10
-            # ⚠️ sudo: outside sudo, Odoo refuses a note whose author has no email address
-            # (mail_thread._message_compute_author), and a route manager may have none.
-            route.sudo().message_post(body=order["summary"])
+            unassigned[route.id] = order["unassigned"]
         self._refresh_upcoming_days()
         self.action_compute_distance()
+        for route in self:
+            # The distance OSRM just measured, the one the form shows.
+            # ⚠️ sudo: outside sudo, Odoo refuses a note whose author has no email address
+            # (mail_thread._message_compute_author), and a route manager may have none.
+            route.sudo().message_post(body=Engine._optimized_note(
+                route.distance_km, route.duration_minutes, unassigned[route.id]))
 
     # ------------------------------------------------------------------
     # Watcher

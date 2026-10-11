@@ -26,7 +26,15 @@
         min-width: 1.8rem;
     }
 
+    // Big enough for a thumb. Centred the same way for every button: an <a> keeps its
+    // text at the top of the taller box where a <button> centres it, and a row of both
+    // came out uneven.
     .btn {
         min-height: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        // As a flex box, the space between the icon and the label is dropped.
+        gap: 0.35rem;
     }
 }
