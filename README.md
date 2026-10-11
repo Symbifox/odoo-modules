@@ -311,7 +311,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.8.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
 | `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.4.0 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
-| `bf_route` | Symbifox Work Routes | 18.0.1.0.4 | BUSL-1.1 | Recurring routes for people on the road: stops in order, proof at each stop, mileage, alerts, and a phone screen for the worker |
+| `bf_route` | Symbifox Work Routes | 18.0.1.0.5 | BUSL-1.1 | Recurring routes for people on the road: stops in order, proof at each stop, mileage, alerts, and a phone screen for the worker |
 | `bf_route_sale` | Symbifox Work Routes: Sales on the Road | 18.0.1.0.3 | BUSL-1.1 | Sell from the truck at each stop: truck stock, invoice at the customer's price, container deposits, payment recorded on the phone |
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.3.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.7 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |

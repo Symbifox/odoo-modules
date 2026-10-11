@@ -5,7 +5,9 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='license_plate']" position="after">
+            <!-- In the Vehicle group, where each value gets its label. After the license plate
+                 it landed inside the plate's heading, unlabelled. -->
+            <xpath expr="//field[@name='vin_sn']" position="after">
                 <field name="bf_route_heavy"/>
             </xpath>
         </field>
