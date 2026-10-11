@@ -1,6 +1,6 @@
 {
     "name": "AI Bridge (socket transport)",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Technical",
     "summary": "The single transport to the AI bridge service, and the single "
                "parameter saying which tenant is calling",

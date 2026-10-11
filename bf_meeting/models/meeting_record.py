@@ -7,8 +7,9 @@ from datetime import timedelta
 
 from markupsafe import Markup, escape
 
-from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo import SUPERUSER_ID, api, fields, models
+from odoo.exceptions import AccessError, UserError
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
@@ -93,9 +94,15 @@ _MAX_REFINE_MESSAGE = 500
 
 # Au-delà de ce délai sans signal, une passe « en cours » est réputée perdue
 # (voir `_compute_refine_in_progress`). Défaut aligné sur le plafond du pont
-# (REFINE_TIMEOUT = 900 s) plus une marge ; surchargeable par le paramètre
-# système `bf_meeting.refine_stale_minutes`.
-_REFINE_STALE_MINUTES = 20
+# (REFINE_TIMEOUT = 1 800 s) plus une marge ; surchargeable par le paramètre
+# système `bf_meeting.refine_stale_minutes`. L'ancien défaut de 20 min datait
+# d'un plafond de 900 s : les passes mesurées vont jusqu'à 24 min, et le bouton
+# revenait avant la fin de la passe.
+_REFINE_STALE_MINUTES = 35
+
+_REFINE_AUTO_REFUS = "Le drapeau de passe automatique ne s'écrit pas à la main."
+_REFINE_ETAT_REFUS = ("L'état du raffinage s'écrit par le pont de Gen, le "
+                      "meeting-processor ou un gestionnaire des rencontres.")
 
 
 def _format_meeting_date_display(record):
@@ -446,6 +453,14 @@ class MeetingRecord(models.Model):
         help="Vrai seulement pendant la fenêtre où la passe peut encore "
              "aboutir.",
     )
+    refine_auto = fields.Boolean(
+        string='Raffinage automatique en attente de résultat',
+        readonly=True,
+        copy=False,
+        help="Vrai entre le lancement d'une passe automatique et son dernier "
+             "signal. C'est ce qui dit, à la fin de la passe, qu'il faut "
+             "aviser l'organisateur.",
+    )
 
     @api.depends('refine_state', 'refine_date')
     def _compute_refine_in_progress(self):
@@ -473,12 +488,12 @@ class MeetingRecord(models.Model):
     def set_refine_state(self, state, message=''):
         """Journaliser l'avancement du raffinage.
 
-        Méthode publique et sans garde de groupe : les appelants sont des
-        services (pont Claude, meeting-processor) qui écrivent par XML-RPC avec
-        leur propre compte technique — les droits du modèle s'appliquent
-        normalement. Renvoie False au lieu de lever sur un état inconnu : un
-        appelant distant ne doit jamais faire échouer sa passe sur un souci
-        d'affichage.
+        Méthode publique : les appelants sont des services (pont de Gen,
+        meeting-processor) qui écrivent par XML-RPC avec leur propre compte.
+        L'écriture de l'état est réservée aux gestionnaires des rencontres et
+        au sudo (`_bf_check_refine_fields`). Renvoie False au lieu de lever sur
+        un état inconnu : un appelant distant ne doit jamais faire échouer sa
+        passe sur un souci d'affichage.
         """
         if state not in dict(self._fields['refine_state'].selection):
             _logger.warning("set_refine_state : état inconnu %r", state)
@@ -488,7 +503,114 @@ class MeetingRecord(models.Model):
             'refine_date': fields.Datetime.now(),
             'refine_message': (message or '').strip()[:_MAX_REFINE_MESSAGE] or False,
         })
+        # L'avis part au nom du compte système. Seul un appelant de confiance
+        # arrive ici : l'écriture ci-dessus est réservée aux gestionnaires et
+        # au sudo (`_bf_check_refine_fields`), et le pont, le processeur et le
+        # fil d'Odoo sont gestionnaires, le cron en sudo.
+        if state in ('done', 'error'):
+            self.filtered('refine_auto')._bf_notify_auto_refine_outcome()
         return True
+
+    def _bf_notify_auto_refine_outcome(self):
+        """Aviser l'organisateur qu'une passe automatique est finie.
+
+        🔴 On lit le COMPTE RENDU, pas le signal du lanceur. Le pont écrit
+        « done » dès que le CLI sort avec le code 0, et une passe qui n'a rien
+        fait sort aussi avec 0 : trois semaines durant, la passe du processeur
+        s'est dite « terminée en 2 s » sur des comptes rendus qu'elle n'avait
+        jamais lus. Le skill fait passer le compte rendu à
+        « Révisé » en dernier : c'est la seule preuve qu'il est allé au bout.
+
+        L'activité est assignée par le compte système (OdooBot), et c'est
+        Odoo qui avise l'organisateur. Assignée
+        sous le compte de l'appelant, elle n'aviserait personne quand
+        l'appelant EST l'organisateur (Odoo n'avise pas ce qu'on s'assigne), et
+        le pont écrit souvent sous le compte de l'organisateur. Le contexte
+        `mail_notify_author` ne suffit pas : `mail_post_defer` met l'avis en
+        file pour 30 s, et le contexte se perd dans la file.
+
+        Jamais levé : un échec d'avis ne doit pas faire échouer l'appel du pont
+        qui écrit l'état. Il laisse une note au fil et un avertissement.
+        """
+        activity_type = self.env.ref('bf_meeting.mail_act_meeting_review',
+                                     raise_if_not_found=False)
+        for rec in self:
+            rec.sudo().refine_auto = False
+            if rec.report_state == 'sent':
+                continue
+            ready = rec.refine_state == 'done' and rec.report_state == 'reviewed'
+            if ready:
+                summary = "Réviser le compte rendu"
+                note = Markup(
+                    "<p>Gen a raffiné ce compte rendu. Il est prêt à être "
+                    "révisé, puis envoyé.</p>")
+            elif rec.report_state == 'reviewed':
+                # La passe a passé le compte rendu à « Révisé », puis le pont
+                # est mort avant d'écrire la fin (le cron la déclare perdue) :
+                # le travail est fait, seule sa confirmation manque.
+                summary = "Réviser le compte rendu : fin de passe non confirmée"
+                note = Markup(
+                    "<p>Le compte rendu est passé à « Révisé », mais le pont "
+                    "n'a pas confirmé la fin de la passe (%s). Le relire avant "
+                    "de l'envoyer.</p>") % (rec.refine_message or "sans détail")
+            elif rec.refine_state == 'done':
+                # Le skill bloque lui-même « Révisé » sur un point qu'il ne
+                # peut pas trancher (sigle non prouvé, langue incohérente) :
+                # ce n'est pas forcément un échec, mais ce n'est pas « prêt ».
+                summary = "Réviser le compte rendu : Gen ne l'a pas passé à « Révisé »"
+                note = Markup(
+                    "<p>La passe automatique de Gen s'est terminée sans faire "
+                    "passer le compte rendu à « Révisé ». Soit elle n'est pas "
+                    "allée au bout, soit elle a bloqué la révision sur un point "
+                    "à trancher : sa note au fil le dit, si elle en a laissé "
+                    "une.</p>")
+            else:
+                summary = "Raffinage Gen en échec : réviser à la main"
+                note = Markup("<p>La passe automatique de Gen n'a pas abouti. "
+                              "Cause : %s</p><p>Relancer avec le bouton "
+                              "« Raffiner avec Gen », ou réviser à la main.</p>"
+                              ) % (rec.refine_message or "erreur sans détail.")
+            organizer = rec.organizer_id
+            if not activity_type or not organizer or not organizer.active \
+                    or organizer.share:
+                rec._bf_note_de_repli(Markup("<p><b>%s</b></p>") % summary + note)
+                continue
+            try:
+                # Sous savepoint : un échec de l'avis ne doit pas avorter la
+                # transaction de l'appelant, sinon la note de repli ci-dessous
+                # échouerait à son tour et l'état écrit par le pont serait
+                # perdu avec elle. Les erreurs de la base (sérialisation) sont
+                # relancées : Odoo rejoue alors l'appel en entier.
+                with self.env.cr.savepoint():
+                    rec.activity_unlink(['bf_meeting.mail_act_meeting_review'])
+                    deadline = fields.Date.context_today(
+                        rec.with_context(tz=organizer.tz or 'UTC'))
+                    rec.with_user(SUPERUSER_ID).activity_schedule(
+                        'bf_meeting.mail_act_meeting_review',
+                        date_deadline=deadline, summary=summary, note=note,
+                        user_id=organizer.id)
+            except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                raise
+            except Exception as exc:
+                _logger.warning(
+                    "Avis de fin de raffinage non posé sur le compte rendu %s : %s",
+                    rec.id, exc)
+                rec._bf_note_de_repli(
+                    Markup("<p><b>%s</b></p>") % summary + note
+                    + Markup("<p>⚠️ L'organisateur n'a pas pu être avisé "
+                             "(%s).</p>") % type(exc).__name__)
+
+    def _bf_note_de_repli(self, body):
+        """Note au fil quand l'activité ne peut pas être posée. Jamais levée :
+        elle ne doit pas faire échouer l'écriture de l'état qui l'a appelée."""
+        try:
+            with self.env.cr.savepoint():
+                self.message_post(body=body, subtype_xmlid="mail.mt_note")
+        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+            raise
+        except Exception as exc:
+            _logger.warning("Note de raffinage non posée sur le compte rendu %s : %s",
+                            self.id, exc)
 
     # Source
     source_filename = fields.Char(
@@ -793,7 +915,36 @@ class MeetingRecord(models.Model):
             company = self.env['res.company'].browse(vals['company_id']) \
                 if vals.get('company_id') else self.env.company
             vals['exchange_include_json'] = bool(company.meeting_exchange_default)
-        return super().create(vals_list)
+        for vals in vals_list:
+            self._bf_check_refine_fields(vals)
+        records = super().create(vals_list)
+        if not self.env.su:
+            # Rattrape ce que les valeurs ne montrent pas : défaut de contexte
+            # (`default_refine_auto`), `copy(default=...)`.
+            if records.filtered('refine_auto'):
+                raise AccessError(_REFINE_AUTO_REFUS)
+            if not self.env.user.has_group("bf_meeting.group_meeting_manager") \
+                    and records.filtered(lambda r: r.refine_state != 'none'
+                                         or r.refine_date or r.refine_message):
+                raise AccessError(_REFINE_ETAT_REFUS)
+        return records
+
+    def _bf_check_refine_fields(self, vals):
+        """Réserver l'état du raffinage à ceux qui le produisent.
+
+        `readonly` ne protège que l'interface. Par RPC, `refine_auto` ferait
+        aviser l'organisateur au nom du compte système, et un `refine_date`
+        reculé ferait déclarer perdue une passe vivante. Le drapeau ne
+        s'écrit qu'en sudo (le lanceur) ; l'état, par un gestionnaire (le
+        pont, le processeur, le fil d'Odoo) ou en sudo (le cron).
+        """
+        if self.env.su:
+            return
+        if 'refine_auto' in vals:
+            raise AccessError(_REFINE_AUTO_REFUS)
+        if any(f in vals for f in ('refine_state', 'refine_date', 'refine_message')) \
+                and not self.env.user.has_group("bf_meeting.group_meeting_manager"):
+            raise AccessError(_REFINE_ETAT_REFUS)
 
     def write(self, vals):
         """Cascade `project_id` change to linked action-item tasks.
@@ -802,6 +953,7 @@ class MeetingRecord(models.Model):
         action items that came out of that meeting should follow. Users can
         still re-route individual tasks afterwards if needed.
         """
+        self._bf_check_refine_fields(vals)
         cascade = 'project_id' in vals
         if cascade:
             old_by_record = {rec.id: rec.project_id.id for rec in self}
@@ -838,6 +990,23 @@ class MeetingRecord(models.Model):
                 ) if old_pid else rec.task_ids
                 if to_move and new_pid:
                     to_move.write({'project_id': new_pid})
+        if vals.get('report_state') == 'sent':
+            # L'activité « Réviser le compte rendu » n'a plus
+            # d'objet une fois le compte rendu parti. Fermée, pas supprimée :
+            # le fil garde qu'elle a été faite. Jamais bloquant pour l'envoi.
+            # Écritures en attente vidées AVANT le savepoint : une erreur de
+            # l'écriture principale ne doit pas passer pour une activité non
+            # fermée.
+            self.env.flush_all()
+            try:
+                with self.env.cr.savepoint():
+                    self.activity_feedback(['bf_meeting.mail_act_meeting_review'],
+                                           feedback="Compte rendu envoyé.")
+            except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                raise
+            except Exception as exc:
+                _logger.warning("Activité de révision non fermée (%s) : %s",
+                                self.ids, exc)
         return res
 
     def action_view_tasks(self):
@@ -1070,6 +1239,7 @@ class MeetingRecord(models.Model):
         """
         self.ensure_one()
         self._check_refine_access()
+        self._bf_check_no_refine_in_progress()
         return {
             "type": "ir.actions.act_window",
             "name": "Raffiner avec Gen",
@@ -1085,18 +1255,36 @@ class MeetingRecord(models.Model):
         Le module tourne sur plusieurs bases et le pont n'accepte qu'une
         liste fermée de locataires ; l'ancien littéral « bf » faisait donc
         passer les demandes d'un autre locataire pour des demandes BF dans les
-        journaux du pont. Le paramètre système `bf_meeting.bridge_tenant`
-        porte la valeur réelle par base.
+        journaux du pont.
+
+        🔴 Ce n'était pas qu'une affaire de journaux. Le paramètre
+        `bf_meeting.bridge_tenant`, avec « bf » par défaut, n'a jamais été posé
+        nulle part : les autres bases s'annonçaient « bf », et le pont
+        écrivait l'état de leur passe sur le compte rendu de MÊME NUMÉRO de la
+        base « bf ». Le locataire vient désormais de `bf.ai.bridge.tenant()`, qui n'a pas de
+        défaut et lève si rien n'est déclaré. L'ancien paramètre
+        n'est plus lu : `bf_ai_bridge.tenant` est posé sur chaque base.
         """
-        return (self.env['ir.config_parameter'].sudo()
-                .get_param('bf_meeting.bridge_tenant', 'bf') or 'bf').strip()
+        return self.env['bf.ai.bridge'].tenant()
+
+    def _bf_check_no_refine_in_progress(self):
+        """Jamais deux passes sur un même compte rendu.
+
+        Le bouton se cache pendant une passe, mais un formulaire ouvert avant
+        le lancement automatique le montre encore : deux passes doublaient
+        tâche-mère et feuille de temps.
+        """
+        if self.refine_in_progress:
+            raise UserError(
+                "Une passe Gen est déjà en cours sur ce compte rendu. Attendre "
+                "sa fin (le résultat arrive au fil), puis relancer au besoin.")
 
     def _check_refine_access(self):
         """Garde-fou commun à l'assistant et au lancement.
 
-        Réservé aux gestionnaires (`bf_meeting.group_meeting_manager`) car le
-        bridge spawn `claude -p --dangerously-skip-permissions`, qui contourne
-        toute vérification de permissions côté Claude.
+        Réservé aux gestionnaires (`bf_meeting.group_meeting_manager`) : la
+        passe agit sur le compte rendu, ses tâches et ses liens au nom de
+        l'instance.
         """
         if not self.env.user.has_group("bf_meeting.group_meeting_manager"):
             raise UserError(
@@ -1117,6 +1305,7 @@ class MeetingRecord(models.Model):
         """
         self.ensure_one()
         self._check_refine_access()
+        self._bf_check_no_refine_in_progress()
 
         instructions = (instructions or "").strip()[:_MAX_REFINE_INSTRUCTIONS]
         if instructions:
@@ -1140,11 +1329,156 @@ class MeetingRecord(models.Model):
                 subtype_xmlid="mail.mt_note",
             )
 
-        ICP = self.env["ir.config_parameter"].sudo()
-        timeout = int(ICP.get_param("bf_meeting.bridge_timeout", "480"))
-
         # Lève un UserError nommant le paramètre à corriger si la socket manque.
         self.env["bf.ai.bridge"].check_available()
+        self._bf_launch_refine(
+            instructions, f"Lancement demandé par {self.env.user.name}")
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "info",
+                "title": "Raffinement lancé",
+                "message": (
+                    "Le skill /refine-meeting est en cours d'exécution"
+                    + (" avec vos consignes" if instructions else "")
+                    + ". Le résultat apparaîtra au chatter dans quelques "
+                    "minutes."
+                ),
+                "sticky": False,
+            },
+        }
+
+    def action_auto_refine(self):
+        """Passe Gen automatique sur un brouillon que le processeur vient de finir.
+
+        Appelée par le meeting-processor à la FIN de son brouillon,
+        pas à la création : les tâches, les tâches discutées et la note de
+        rapprochement sont posées après le `create`, et la passe les relit.
+
+        Rend True si Odoo a pris le compte rendu en charge, False sinon ; les
+        refus prévus ne lèvent pas, et le processeur rattrape le reste. À
+        False, il garde son chemin d'avant. Odoo le prend en charge si :
+
+        * l'appelant est gestionnaire des rencontres et peut écrire le compte
+          rendu (même garde que le bouton) ;
+        * Gen est en service sur l'instance (installé et allumé) ;
+        * la société du compte rendu a coché `meeting_auto_refine` ;
+        * le compte rendu est un brouillon jamais raffiné : UNE passe
+          automatique par compte rendu, jamais de relance en boucle.
+
+        Il lance alors la passe ; si elle ne peut pas partir (pont injoignable,
+        locataire non déclaré), il avise l'organisateur de l'échec plutôt que de
+        se taire. À la fin de la passe, `set_refine_state` l'avise du résultat,
+        et le cron des passes perdues couvre le pont qui ne revient jamais.
+        """
+        if len(self) != 1:
+            return False
+        if not self.env.user.has_group("bf_meeting.group_meeting_manager"):
+            return False
+        try:
+            self.check_access('write')
+        except AccessError:
+            return False
+        if not self._bf_gen_actif():
+            return False
+        # Lu en sudo : le compte du processeur n'est pas forcément membre de
+        # la société du compte rendu, et cet appel ne doit jamais lever.
+        company = (self.company_id or self.env.company).sudo()
+        if not company.meeting_auto_refine:
+            return False
+        if self.report_state != 'draft' or self.refine_state != 'none':
+            return False
+        if not self.env["bf.ai.bridge"].available():
+            self._bf_auto_refine_impossible(
+                "le pont de Gen est injoignable (socket absente).")
+            return True
+        try:
+            self._bf_launch_refine(
+                "", "Passe automatique : brouillon prêt.", auto=True)
+        except UserError as exc:
+            # Locataire non déclaré : un appel qui échoue vaut mieux qu'un
+            # appel qui part sous le nom d'un autre client.
+            self._bf_auto_refine_impossible(str(exc))
+            return True
+        return True
+
+    def _bf_gen_actif(self):
+        """Gen est-il en service sur cette instance ?
+
+        Installé (`bf_claude_chat`) ET allumé dans ses réglages
+        (`bf_claude_chat.enabled`, vrai par défaut). La case de la société ne
+        s'affiche que si Gen est installé ; cette garde vaut aussi pour une
+        case cochée par RPC, et pour une instance où Gen a été éteint.
+        """
+        if 'claude.chat.session' not in self.env:
+            return False
+        return self.env['ir.config_parameter'].sudo().get_param(
+            'bf_claude_chat.enabled', 'True') == 'True'
+
+    def _bf_auto_refine_impossible(self, cause):
+        """La passe automatique n'a pas pu partir : le dire à l'organisateur.
+
+        Le repli du processeur (son activité de suivi) n'a jamais fonctionné
+        en production : se taire ici, c'était laisser le brouillon sans personne.
+        """
+        _logger.warning("Passe automatique du compte rendu %s non lancée : %s",
+                        self.id, cause)
+        self.sudo().write({'refine_auto': True})
+        self.set_refine_state('error', f"Passe automatique non lancée : {cause}")
+
+    @api.model
+    def _cron_bf_auto_refine_lost(self):
+        """Aviser des passes automatiques dont le pont n'a jamais rendu la fin.
+
+        Un pont tué en vol, un Odoo
+        redémarré au moment où le pont écrit « Terminé », une file d'attente
+        perdue au redémarrage du pont : le compte rendu restait « En cours »,
+        puis plus rien, et personne n'était avisé. Passé la borne de
+        péremption, la passe est déclarée perdue et l'organisateur est avisé.
+        """
+        try:
+            ceiling = int(self.env['ir.config_parameter'].sudo().get_param(
+                'bf_meeting.refine_stale_minutes', _REFINE_STALE_MINUTES))
+        except (TypeError, ValueError):
+            ceiling = _REFINE_STALE_MINUTES
+        cutoff = fields.Datetime.now() - timedelta(minutes=ceiling)
+        lost = self.sudo().search([
+            ('refine_auto', '=', True),
+            ('refine_state', '=', 'queued'),
+            ('refine_date', '<', cutoff),
+        ])
+        for rec in lost:
+            # Une fiche à la fois : une panne sur l'une ne bloque pas les
+            # autres passes perdues du même passage.
+            try:
+                with self.env.cr.savepoint():
+                    rec.set_refine_state(
+                        'error', f"Aucun signal du pont depuis {ceiling} min : la "
+                                 "passe est perdue (pont ou Odoo redémarré pendant "
+                                 "la passe ?).")
+            except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                raise
+            except Exception as exc:
+                _logger.warning("Passe perdue non signalée sur le compte rendu %s : %s",
+                                rec.id, exc)
+        return len(lost)
+
+    def _bf_launch_refine(self, instructions, queued_message, auto=False):
+        """Lancer /refine-meeting par le pont, sans attendre la passe.
+
+        Commun au bouton et à la passe automatique. Le pont rend la main dès
+        le lancement ; c'est lui qui écrira `done` ou `error` en finissant.
+
+        Le fil part APRÈS la validation de la transaction (postcommit). Parti
+        avant, une réponse rapide du pont tombait sur la ligne encore
+        verrouillée par la requête : Odoo tourne en REPEATABLE READ, et
+        l'écriture du fil échouait sur un accès concurrent, en laissant le
+        compte rendu « en cours » jusqu'à la borne de péremption.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        timeout = int(ICP.get_param("bf_meeting.bridge_timeout", "480"))
         # Capturé ici : le fil détaché ci-dessous survit à ce curseur, il ne
         # peut donc plus relire la configuration.
         socket_path = self.env["bf.ai.bridge"].socket_path()
@@ -1152,14 +1486,28 @@ class MeetingRecord(models.Model):
         record_id = self.id
         db_name = self.env.cr.dbname
         uid = self.env.user.id
-        triggered_by = self.env.user.login
+        triggered_by = self.env.user.login + (" (passe automatique)" if auto else "")
         tenant = self._bridge_tenant()
 
         # Marqué « en cours » avant le lancement : le formulaire montre
         # l'indicateur dès le retour du clic, et le bouton se retire le temps
-        # de la passe. La transaction de la requête commite pour nous.
-        self.set_refine_state(
-            'queued', f"Lancement demandé par {self.env.user.name}")
+        # de la passe. `refine_auto` dit à la fin de la passe s'il faut aviser.
+        self.sudo().write({'refine_auto': bool(auto)})
+        if not auto:
+            # Relancer à la main, c'est prendre la suite : l'activité laissée
+            # par une passe automatique est fermée (le fil garde qu'elle a été
+            # prise en main), pas supprimée.
+            self.env.flush_all()
+            try:
+                with self.env.cr.savepoint():
+                    self.activity_feedback(['bf_meeting.mail_act_meeting_review'],
+                                           feedback="Relancé à la main avec Gen.")
+            except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                raise
+            except Exception as exc:
+                _logger.warning("Activité de révision non fermée (%s) : %s",
+                                self.ids, exc)
+        self.set_refine_state('queued', queued_message)
 
         def _run():
             from odoo import api as _api, registry as _registry
@@ -1183,41 +1531,31 @@ class MeetingRecord(models.Model):
                 new_env = _api.Environment(new_cr, uid, {})
                 rec = new_env["meeting.record"].browse(record_id).exists()
                 if rec:
-                    # `ok` ne veut dire QUE « le pont a pris la demande » : la
-                    # passe elle-même dure plusieurs minutes et c'est le pont
-                    # qui écrira `done`/`error` en la terminant. On garde donc
-                    # « en cours » ici, et on n'écrase jamais un état terminal
-                    # déjà posé (course théorique sur une passe très courte).
-                    if status == "ok":
-                        if rec.refine_state == 'queued':
-                            rec.set_refine_state('queued', msg)
-                    else:
-                        rec.set_refine_state('error', msg or status)
-                    body = (
-                        f"<p><b>Raffinement /refine-meeting</b> — statut : "
-                        f"<code>{escape(status)}</code></p>"
-                    )
-                    if msg:
-                        body += f"<p>{escape(msg)}</p>"
-                    rec.message_post(body=Markup(body), message_type="comment")
+                    rec._bf_refine_bridge_reply(status, msg)
 
-        threading.Thread(target=_run, daemon=True).start()
+        self.env.cr.postcommit.add(
+            lambda: threading.Thread(target=_run, daemon=True).start())
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "type": "info",
-                "title": "Raffinement lancé",
-                "message": (
-                    "Le skill /refine-meeting est en cours d'exécution"
-                    + (" avec vos consignes" if instructions else "")
-                    + ". Le résultat apparaîtra au chatter dans quelques "
-                    "minutes."
-                ),
-                "sticky": False,
-            },
-        }
+    def _bf_refine_bridge_reply(self, status, msg):
+        """Consigner la réponse du pont à une demande de raffinage."""
+        self.ensure_one()
+        # `ok` ne veut dire QUE « le pont a pris la demande » : la passe
+        # elle-même dure plusieurs minutes et c'est le pont qui écrira
+        # `done`/`error` en la terminant. On garde donc « en cours » ici, et on
+        # n'écrase jamais un état terminal déjà posé (course théorique sur une
+        # passe très courte).
+        if status == "ok":
+            if self.refine_state == 'queued':
+                self.set_refine_state('queued', msg)
+        else:
+            self.set_refine_state('error', msg or status)
+        body = (
+            f"<p><b>Raffinement /refine-meeting</b> — statut : "
+            f"<code>{escape(status)}</code></p>"
+        )
+        if msg:
+            body += f"<p>{escape(msg)}</p>"
+        self.message_post(body=Markup(body), message_type="comment")
 
     def action_import_attendance(self):
         """Importer les invités de l'événement calendrier comme présences."""

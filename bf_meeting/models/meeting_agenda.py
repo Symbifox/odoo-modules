@@ -1007,7 +1007,10 @@ class MeetingAgenda(models.Model):
         records.filtered('calendar_event_id')._bf_follow_event()
         ICP = self.env["ir.config_parameter"].sudo()
         auto = ICP.get_param("bf_meeting.agenda_auto_refine", "1") in ("1", "true", "True")
-        if not auto or not self.env["bf.ai.bridge"].available():
+        # Comme la passe automatique des comptes rendus : rien ne part si Gen
+        # n'est pas en service sur l'instance.
+        if not auto or not self.env["bf.ai.bridge"].available() \
+                or not self.env["meeting.record"]._bf_gen_actif():
             return records
         for rec in records:
             if rec.state == 'draft' and rec.project_id and not self.env.context.get('skip_auto_refine'):
@@ -1097,12 +1100,10 @@ class MeetingAgenda(models.Model):
     def _bridge_tenant(self):
         """Locataire annoncé au pont Claude.
 
-        Voir `meeting.record._bridge_tenant` : même paramètre système
-        (`bf_meeting.bridge_tenant`), même raison — le module tourne sur
-        plusieurs bases et le littéral « bf » les faisait toutes passer pour BF.
+        Voir `meeting.record._bridge_tenant` : même source,
+        `bf.ai.bridge.tenant()`, sans défaut.
         """
-        return (self.env['ir.config_parameter'].sudo()
-                .get_param('bf_meeting.bridge_tenant', 'bf') or 'bf').strip()
+        return self.env['bf.ai.bridge'].tenant()
 
     def _set_refine_state(self, state, message=''):
         """Journaliser l'avancement du pré-remplissage.
@@ -1124,9 +1125,9 @@ class MeetingAgenda(models.Model):
     def action_refine_agenda(self):
         """Lancer le skill /refine-agenda via le bridge Claude.
 
-        Réservé aux gestionnaires (`bf_meeting.group_meeting_manager`) car le
-        bridge spawn `claude -p --dangerously-skip-permissions`, qui contourne
-        toute vérification de permissions côté Claude.
+        Réservé aux gestionnaires (`bf_meeting.group_meeting_manager`) : la
+        passe agit sur le compte rendu, ses tâches et ses liens au nom de
+        l'instance.
         """
         self.ensure_one()
         if not self.env.user.has_group("bf_meeting.group_meeting_manager"):

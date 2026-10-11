@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Posée à l'organisateur à la fin d'une passe Gen
+             automatique, fermée quand le compte rendu passe à « Envoyé ». -->
+        <record id="mail_act_meeting_review" model="mail.activity.type">
+            <field name="name">Réviser le compte rendu</field>
+            <field name="summary">Réviser le compte rendu</field>
+            <field name="res_model">meeting.record</field>
+            <field name="category">default</field>
+            <field name="delay_count">0</field>
+            <field name="icon">fa-file-text-o</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Une passe automatique dont le pont n'a jamais rendu
+             la fin (pont tué en vol, Odoo redémarré) est déclarée perdue au
+             bout de la borne de péremption, et l'organisateur est avisé. -->
+        <record id="ir_cron_auto_refine_lost" model="ir.cron">
+            <field name="name">Rencontres : passes Gen automatiques perdues</field>
+            <field name="model_id" ref="model_meeting_record"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_bf_auto_refine_lost()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

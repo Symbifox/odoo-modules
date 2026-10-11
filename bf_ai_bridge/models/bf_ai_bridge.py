@@ -108,6 +108,11 @@ class BfAiBridge(models.AbstractModel):
 
     # ── Appels ────────────────────────────────────────────────────────────
 
+    # `call` et `stream` sont PRIVÉES (`@api.private`) : publiques, tout compte
+    # connecté, portail compris, pouvait les appeler par RPC
+    # (/web/dataset/call_kw, XML-RPC) et choisir ce qu'Odoo poste au pont. Les
+    # appelants légitimes sont du code serveur ; le RPC n'en a jamais eu besoin.
+    @api.private
     @api.model
     def call(self, endpoint, payload, timeout=100, headers=None):
         """POST JSON sur le bridge, rend la réponse décodée.
@@ -120,6 +125,7 @@ class BfAiBridge(models.AbstractModel):
             self.socket_path(), endpoint, payload, timeout, headers=headers
         )
 
+    @api.private
     @api.model
     def stream(self, endpoint, payload, timeout, headers=None):
         """Générateur des octets de la réponse, au fil de l'eau.

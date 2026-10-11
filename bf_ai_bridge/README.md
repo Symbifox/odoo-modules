@@ -32,6 +32,11 @@ Abstract model `bf.ai.bridge`, for any caller holding an environment:
 | `env["bf.ai.bridge"].available()` | whether the socket exists |
 | `env["bf.ai.bridge"].check_available()` | raises a `UserError` naming the parameter to fix |
 
+`call` and `stream` are **private** (`@api.private`, since 18.0.1.1.1): they
+cannot be reached through XML-RPC or `/web/dataset/call_kw`, by any account.
+Every legitimate caller is server-side code; a remote caller has no business
+choosing what Odoo posts to the bridge.
+
 Environment-free functions, `bf_ai_bridge.tools.transport.post` and `.stream`,
 serve callers whose cursor is already closed: a chat stream consumed after the
 response has returned, or a detached worker thread. Those capture
@@ -98,7 +103,8 @@ Two measured reasons, not theoretical ones.
 odoo -d <database> -u bf_ai_bridge --test-enable --test-tags /bf_ai_bridge
 ```
 
-18 tests: the HTTP frame against a real throwaway `AF_UNIX` socket (JSON round
+28 tests: the HTTP frame against a real throwaway `AF_UNIX` socket (JSON round
 trip, chunked encoding, error status, missing socket), refusal of header
 injection (CR/LF in both name and value), the stream yielded chunk by chunk
-whatever the network fragmentation, and the carry-over of the older parameters.
+whatever the network fragmentation, the carry-over of the older parameters, and
+`call`/`stream` refused by the RPC filter.

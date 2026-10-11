@@ -31,6 +31,17 @@ class ResCompany(models.Model):
              "réassignation faite plus tard avise toujours. À réserver aux "
              "sociétés où Gen assure le suivi des comptes rendus.",
     )
+    meeting_auto_refine = fields.Boolean(
+        string="Raffiner automatiquement les comptes rendus avec Gen",
+        default=False,
+        help="Coché, Gen raffine chaque compte rendu dès que le Meeting "
+             "Processor a fini son brouillon (la même passe que le bouton "
+             "« Raffiner avec Gen »), puis avise l'organisateur par une "
+             "activité « Réviser le compte rendu ». Une seule passe "
+             "automatique par compte rendu ; pour donner des consignes, "
+             "relancer avec le bouton. Sans effet si Gen n'est pas installé "
+             "et allumé sur l'instance.",
+    )
     meeting_gen_installed = fields.Boolean(
         string="Gen installé",
         compute='_compute_meeting_gen_installed',
