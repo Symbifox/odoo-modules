@@ -208,6 +208,12 @@ configuration from *Knowledge → Configuration → Nextcloud Documents*.
 - **Other addresses of the same Nextcloud** go in *Autres adresses de ce
   Nextcloud* on the configuration, so links written with them are recognised.
 
+## Page load (18.0.4.1.2)
+
+The systray button no longer holds the web client back: its group check and
+its configuration call run without being awaited in `onWillStart`. The button
+stays hidden until the answer arrives, then appears.
+
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).

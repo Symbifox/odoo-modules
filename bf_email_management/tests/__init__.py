@@ -63,3 +63,4 @@ from . import test_perf_boite
 from . import test_contact_historique
 from . import test_bulle_courriel_classe
 from . import test_avis
+from . import test_filigrane_sans_signal

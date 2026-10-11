@@ -11,7 +11,10 @@ export const softphoneClickToCall = {
     dependencies: ["bf_softphone"],
     start(env, { bf_softphone }) {
         document.addEventListener("click", (ev) => {
-            if (!bf_softphone.state.available) return;
+            // L'écran s'affiche désormais avant la fin du démarrage SIP.
+            // Tant que l'agent n'est pas construit (statut « off »), le lien tel:
+            // garde son comportement normal au lieu d'être avalé sans effet.
+            if (!bf_softphone.state.available || bf_softphone.state.status === "off") return;
             const a = ev.target.closest && ev.target.closest('a[href^="tel:"]');
             if (!a) return;
             const number = decodeURIComponent(a.getAttribute("href").slice(4)).trim();

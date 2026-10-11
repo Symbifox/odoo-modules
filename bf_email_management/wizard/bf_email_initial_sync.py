@@ -3,6 +3,8 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
+from ..models.bf_email import _read_watermark, _write_watermark
+
 _logger = logging.getLogger(__name__)
 
 
@@ -120,11 +122,12 @@ class BfEmailInitialSync(models.TransientModel):
             self.env.cr.commit()
 
         # Update last_sync_date to cover the imported range
-        ICP = self.env["ir.config_parameter"].sudo()
-        current_last = ICP.get_param("bf_email.last_sync_date", "2000-01-01 00:00:00")
+        # Lu et écrit hors du cache de get_param, comme la tâche.
+        current_last = (_read_watermark(self.env, "bf_email.last_sync_date")
+                        or "2000-01-01 00:00:00")
         end_date = str(self.date_to) + " 23:59:59"
         if end_date > current_last:
-            ICP.set_param("bf_email.last_sync_date", end_date)
+            _write_watermark(self.env, "bf_email.last_sync_date", end_date)
 
         self.write({
             "state": "done",

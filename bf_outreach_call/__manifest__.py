@@ -5,7 +5,10 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: le filigrane de la tâche ne passe plus par set_param, qui vidait
+    #   le cache de tous les processus à chaque passage, aux 30 minutes, même
+    #   sans rien de neuf.
+    "version": "18.0.1.1.1",
     "category": "Sales/CRM",
     "summary": "Rapproche les appels réellement passés avec les cibles de démarchage",
     "description": """

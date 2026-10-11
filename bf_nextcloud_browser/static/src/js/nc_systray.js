@@ -29,23 +29,31 @@ export class NcPanelSystray extends Component {
         this.state = useState({ show: false, open: false, widthPct: 80, heightPct: 80 });
         this.removePanel = null;
 
-        onWillStart(async () => {
-            if (!(await user.hasGroup("bf_nextcloud_browser.group_nc_browser_user"))) {
-                return;
-            }
-            try {
-                const cfg = await this.orm.call("bf.nc.browser", "get_panel_config", []);
-                if (cfg && cfg.available) {
-                    this.state.widthPct = cfg.width_pct || 80;
-                    this.state.heightPct = cfg.height_pct || 80;
-                    this.state.show = true;
-                }
-            } catch {
-                // pas de configuration, pas d'acces : on reste cache
-            }
+        // Rien n'est attendu ici. Le client web n'affiche rien tant que
+        // tous ses composants n'ont pas fini leur onWillStart ; ces deux appels en
+        // chaine retardaient tout l'ecran. Le bouton reste cache (show: false)
+        // jusqu'a la reponse, puis apparait.
+        onWillStart(() => {
+            this._loadPanelConfig();
         });
 
         onWillUnmount(() => this.close());
+    }
+
+    async _loadPanelConfig() {
+        if (!(await user.hasGroup("bf_nextcloud_browser.group_nc_browser_user"))) {
+            return;
+        }
+        try {
+            const cfg = await this.orm.call("bf.nc.browser", "get_panel_config", []);
+            if (cfg && cfg.available) {
+                this.state.widthPct = cfg.width_pct || 80;
+                this.state.heightPct = cfg.height_pct || 80;
+                this.state.show = true;
+            }
+        } catch {
+            // pas de configuration, pas d'acces : on reste cache
+        }
     }
 
     toggle() {

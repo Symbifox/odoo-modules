@@ -33,20 +33,12 @@ class SoftphoneLauncher extends Component {
         this.state = useState(this.phone.state);
         this.ui = useState({ visible: false, open: false });
 
-        onWillStart(async () => {
-            this.ui.visible = await user.hasGroup("bf_softphone.group_softphone_user");
-            if (this.ui.visible) {
-                // Démarre l'enregistrement SIP dès le chargement du backend, pour
-                // recevoir les appels même panneau fermé.
-                await this.phone.init();
-                // Demandée une seule fois, à froid : au moment où le téléphone
-                // sonne, il est trop tard pour quémander une permission.
-                try {
-                    if (window.Notification && Notification.permission === "default") {
-                        Notification.requestPermission();
-                    }
-                } catch (e) { /* navigateur sans notifications : tant pis */ }
-            }
+        // Rien n'est attendu ici. Ce composant vit dans main_components,
+        // à la racine du client web, qui n'affiche rien tant qu'il n'a pas fini son
+        // onWillStart : le droit, la configuration SIP puis JsSIP, en chaîne,
+        // retardaient tout l'écran. La bulle apparaît quand le droit est confirmé.
+        onWillStart(() => {
+            this._start();
         });
 
         // ⚠️ Un appel entrant OUVRE le panneau. Sans ça, il n'existait qu'un
@@ -59,6 +51,27 @@ class SoftphoneLauncher extends Component {
             },
             () => [this.state.ringing],
         );
+    }
+
+    async _start() {
+        this.ui.visible = await user.hasGroup("bf_softphone.group_softphone_user");
+        if (!this.ui.visible) {
+            return;
+        }
+        try {
+            // Démarre l'enregistrement SIP dès le chargement du backend, pour
+            // recevoir les appels même panneau fermé.
+            await this.phone.init();
+        } catch (e) {
+            console.warn("bf_softphone: démarrage SIP impossible", e);
+        }
+        // Demandée une seule fois, à froid : au moment où le téléphone
+        // sonne, il est trop tard pour quémander une permission.
+        try {
+            if (window.Notification && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        } catch (e) { /* navigateur sans notifications : tant pis */ }
     }
 
     togglePanel() {

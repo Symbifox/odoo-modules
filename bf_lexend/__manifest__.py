@@ -13,7 +13,10 @@
     """,
     # 18.0.3.1.0: fr_CA.po traduit le nom et le résumé du module dans
     #   Apps (ir.module.module, identifiant base.module_bf_lexend).
-    "version": "18.0.3.1.0",
+    # 18.0.3.1.1: le backend et le site lisent Lexend en WOFF2 (environ 40 Ko par
+    #   graisse au lieu de 100 Ko), le TTF reste en repli et pour les rapports PDF
+    #  .
+    "version": "18.0.3.1.1",
     "category": "Theme/Backend",
     "license": "LGPL-3",
     "author": "Les services de consultation Blue Fox, Inc.",

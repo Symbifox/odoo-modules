@@ -20,6 +20,12 @@ white-label settings.
   when `res.company.font = 'Lexend'`
 - `web.report_assets_common` + `web.report_assets_pdf` — same for PDF reports
 
+### WOFF2 (18.0.3.1.1)
+
+The backend and the website load Lexend as WOFF2 (about 37 KB per weight
+instead of 100 KB), with the TTF as fallback in the same `@font-face`. PDF
+reports keep the TTF.
+
 ## Standalone use
 
 This module is useful on its own if you simply want the Lexend font

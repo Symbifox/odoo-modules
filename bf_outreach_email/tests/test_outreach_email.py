@@ -88,3 +88,24 @@ class TestOutreachEmailBridge(TransactionCase):
         self.assertEqual(created, 0)
         param = self.env["ir.config_parameter"].sudo().get_param(PARAM_WATERMARK)
         self.assertTrue(param)
+
+    def test_scan_does_not_clear_every_process_cache(self):
+        """Le filigrane s'écrit sans signaler d'invalidation de cache.
+
+        Avec set_param, chaque passage (aux 30 minutes, même à vide) vidait le
+        cache de tous les workers, dont la page suivante coûtait 1,7 s de plus.
+        """
+        registry = self.env.registry
+        registry.cache_invalidated.clear()
+        self._inbound("repondante@example.com")
+        Target = self.env["bf.outreach.target"]
+        self.assertEqual(Target._cron_match_inbound_emails(), 1)  # une réponse
+        self.assertEqual(Target._cron_match_inbound_emails(), 0)  # rien de neuf
+        self.assertNotIn("default", registry.cache_invalidated)
+        self.env.cr.execute(
+            "SELECT value FROM ir_config_parameter WHERE key = %s", [PARAM_WATERMARK]
+        )
+        self.assertGreater(
+            fields.Datetime.to_datetime(self.env.cr.fetchone()[0]),
+            self.now - timedelta(minutes=5),
+        )

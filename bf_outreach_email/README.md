@@ -24,6 +24,13 @@ and shows up under the "replied" filter.
 - Only targets whose campaign is running or draft, and whose stage is not `won` or
   `lost`, are considered.
 
+## Scan watermark (v18.0.1.1.1)
+
+The scheduled scan stores the date of its last pass in `ir.config_parameter`.
+It used `set_param`, which invalidates the ORM cache of every Odoo process
+through the database, on every pass (every 30 minutes, even with nothing new).
+The watermark is now read and written with plain SQL; nothing else reads it.
+
 ## Languages (v18.0.1.1.0)
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The English wording keeps the one of the former `en_CA.po`, which is no longer shipped.

@@ -13,7 +13,7 @@ identically on every device, with no request to a third-party font service.
 
 | Typeface | Files | Licence |
 |---|---|---|
-| Lexend | `Lexend-Regular.ttf`, `Lexend-SemiBold.ttf` | SIL Open Font License 1.1 — [`Lexend.OFL.txt`](static/fonts/Lexend.OFL.txt) |
+| Lexend | `Lexend-Regular.ttf`, `Lexend-SemiBold.ttf`, `Lexend-Regular.woff2`, `Lexend-SemiBold.woff2` | SIL Open Font License 1.1 — [`Lexend.OFL.txt`](static/fonts/Lexend.OFL.txt) |
 
 Copyright notice, as stated by the upstream project:
 
@@ -27,7 +27,9 @@ Copyright notice, as stated by the upstream project:
 - The Reserved Font Name is **“RevReading Lexend”**, not “Lexend”. Files named
   `Lexend-*` are therefore fine to redistribute under that name. If you produce
   a modified version, do not call it “RevReading Lexend”.
-- These are the upstream static instances (version 1.008), shipped unmodified.
+- The `.ttf` files are the upstream static instances (version 1.008), shipped
+  unmodified. The `.woff2` files are lossless WOFF2 conversions of them (same
+  glyphs, same version), made with fontTools, under the same licence and notice.
   TrueType rather than WOFF2 because wkhtmltopdf renders TTF reliably and WOFF2
   inconsistently, and the same files serve both the web bundles and PDF reports.
 - The fonts must not be sold on their own, per OFL clause 2. Bundling them

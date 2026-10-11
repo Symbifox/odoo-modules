@@ -1,7 +1,10 @@
 {
     "name": "Boîte de réception bf.email — barre Odoo",
     "summary": "Bouton systray ouvrant la Boîte de réception bf.email avec compteur (lus + non lus)",
-    "version": "18.0.2.2.0",
+    # 18.0.2.2.1: le bouton Courriels du systray ne retient plus l'affichage du client web : ses appels
+    #   partent sans être attendus dans onWillStart. Loin du serveur,
+    #   chaque aller-retour en chaîne retardait l'écran demandé.
+    "version": "18.0.2.2.1",
     "category": "Tools",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**79 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**80 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -179,8 +179,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.1.0 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.2.0 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.6.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.60.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
-| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
+| `bf_email_management` | Gestion des courriels | 18.0.11.60.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.1 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.2 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
@@ -233,7 +233,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
 | `bf_letter_writer` | Letter Writer | 18.0.2.1.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
-| `bf_lexend` | Lexend Typeface | 18.0.3.1.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
+| `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
@@ -251,7 +251,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_membership_assembly_governance` | Membres : AGA et registre corporatif | 18.0.1.0.2 | BUSL-1.1 | A proposal adopted at a members' meeting is entered in the corporate governance resolution register, frozen as voted |
 | `bf_membership_portal` | Membres : portail, adhésion en ligne et répertoire | 18.0.1.2.1 | BUSL-1.1 | The member's portal: membership, renewal and online payment, membership card; a public application form and an opt-in member directory |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.3.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
-| `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.1.1 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
+| `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.1.2 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.4 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
 | `bf_nfc_event` | Pastilles NFC : la présence à une séance | 18.0.1.0.1 | BUSL-1.1 | Tap the room's tag to record attendance at the session in progress, registration created if missing |
 | `bf_nfc_gen` | Pastilles NFC : les skills de Gen | 18.0.1.0.1 | BUSL-1.1 | A tag that asks Gen to prepare a meeting's agenda or refine its minutes, from a list the administrator ticks |
@@ -272,8 +272,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_otp` | Symbifox OTP | 18.0.12.3.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
-| `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
-| `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
+| `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.1 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
+| `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.1 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |
 | `bf_persona` | Persona des contacts | 18.0.3.2.1 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
@@ -342,8 +342,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.2.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.2.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.26.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
-| `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.0 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.26.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.1 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.3.0 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.6.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
@@ -368,6 +368,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
+| `bf_warm_start` | Warm Start | 18.0.1.0.0 | LGPL-3 | Load web client translations once, before the workers fork, so the first page after a restart is fast |
 | `bf_work_category` | BF Work Category | 18.0.1.0.3 | LGPL-3 | Work categories on project labels, resolved and stored on projects, tasks and every bridged record, so work can be filtered, grouped and exported by category |
 | `bf_work_category_claude_chat` | BF Work Category - Gen | 18.0.1.0.1 | BUSL-1.1 | Work category on Gen conversations, from the record they are attached to |
 | `bf_work_category_claude_chat_cockpit` | BF Work Category - Gen cockpit | 18.0.1.0.1 | BUSL-1.1 | Work category column, filter and grouping in the Gen conversation cockpit |
@@ -427,7 +428,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **79 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **80 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

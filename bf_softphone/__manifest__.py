@@ -2,7 +2,10 @@
 {
     "name": "Symbifox — Téléphone SIP",
     "summary": "Softphone WebRTC (JsSIP) dans le client web, adossé à un PBX Asterisk",
-    "version": "18.0.2.10.0",
+    # 18.0.2.10.1: la bulle du téléphone ne retient plus l'affichage du client web : ses appels
+    #   partent sans être attendus dans onWillStart. Loin du serveur,
+    #   chaque aller-retour en chaîne retardait l'écran demandé.
+    "version": "18.0.2.10.1",
     "category": "Tools",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

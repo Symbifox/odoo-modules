@@ -13,7 +13,10 @@
     #   co-usager forgeait un SMS « reçu » dans le fil de la propriétaire), et
     #   `push_subscribe` dit au client qu'il a été refusé. 18.0.5.25.0 n'a
     #   jamais été publiée.
-    "version": "18.0.5.26.0",
+    # 18.0.5.26.1: le bouton SMS du systray ne retient plus l'affichage du client web : ses appels
+    #   partent sans être attendus dans onWillStart. Loin du serveur,
+    #   chaque aller-retour en chaîne retardait l'écran demandé.
+    "version": "18.0.5.26.1",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

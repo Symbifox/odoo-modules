@@ -1,7 +1,10 @@
 {
     "name": "Nextcloud File Browser",
     "summary": "Navigateur WebDAV Nextcloud embarque dans les fiches Odoo (projets, taches) + application autonome",
-    "version": "18.0.4.1.1",
+    # 18.0.4.1.2: le bouton du systray ne retient plus l'affichage du client web : ses appels
+    #   partent sans être attendus dans onWillStart. Loin du serveur,
+    #   chaque aller-retour en chaîne retardait l'écran demandé.
+    "version": "18.0.4.1.2",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -13,14 +13,49 @@ DEFAULT_LOOKBACK_DAYS = 7
 PARAM_WATERMARK = "bf_outreach_email.last_scan"
 
 
+def _read_watermark(env, key):
+    """Filigrane lu en SQL, hors du cache de get_param."""
+    env["ir.config_parameter"].flush_model(["key", "value"])
+    env.cr.execute("SELECT value FROM ir_config_parameter WHERE key = %s", [key])
+    row = env.cr.fetchone()
+    return row[0] if row else False
+
+
+def _write_watermark(env, key, value):
+    """Filigrane écrit SANS vider le cache de tous les processus.
+
+    ``set_param`` appelle ``registry.clear_cache()`` : chaque écriture refroidissait
+    tous les workers, dont la page suivante coûtait alors 1,7 s de plus. Ce
+    filigrane n'est lu que par sa tâche, en SQL : aucun cache ne peut le servir
+    périmé.
+    """
+    env["ir.config_parameter"].flush_model(["key", "value"])
+    env.cr.execute(
+        """
+        INSERT INTO ir_config_parameter (key, value, create_uid, create_date, write_uid, write_date)
+        VALUES (%(key)s, %(value)s, %(uid)s, now() AT TIME ZONE 'UTC',
+                %(uid)s, now() AT TIME ZONE 'UTC')
+        ON CONFLICT (key) DO UPDATE
+           SET value = EXCLUDED.value,
+               write_uid = EXCLUDED.write_uid,
+               write_date = EXCLUDED.write_date
+        """,
+        {"key": key, "value": value, "uid": env.uid},
+    )
+    env["ir.config_parameter"].invalidate_model(["value"])
+
+
+def _now_string():
+    return fields.Datetime.to_string(fields.Datetime.now())
+
+
 class BfOutreachTarget(models.Model):
     _inherit = "bf.outreach.target"
 
     @api.model
     def _cron_match_inbound_emails(self):
         """Transforme en interactions les courriels reçus des cibles actives."""
-        params = self.env["ir.config_parameter"].sudo()
-        watermark = params.get_param(PARAM_WATERMARK)
+        watermark = _read_watermark(self.env, PARAM_WATERMARK)
         since = (
             fields.Datetime.to_datetime(watermark)
             if watermark
@@ -31,7 +66,7 @@ class BfOutreachTarget(models.Model):
             [("direction", "=", "in"), ("date", ">=", since)], order="date asc"
         )
         if not emails:
-            params.set_param(PARAM_WATERMARK, fields.Datetime.to_string(fields.Datetime.now()))
+            _write_watermark(self.env, PARAM_WATERMARK, _now_string())
             return 0
 
         # Une seule requête pour toutes les adresses vues dans le lot.
@@ -42,7 +77,7 @@ class BfOutreachTarget(models.Model):
             if normalized:
                 senders.setdefault(normalized, []).append(mail)
         if not senders:
-            params.set_param(PARAM_WATERMARK, fields.Datetime.to_string(fields.Datetime.now()))
+            _write_watermark(self.env, PARAM_WATERMARK, _now_string())
             return 0
 
         targets = self.search(
@@ -72,9 +107,7 @@ class BfOutreachTarget(models.Model):
                     }
                 )
                 created += 1
-        params.set_param(
-            PARAM_WATERMARK, fields.Datetime.to_string(fields.Datetime.now())
-        )
+        _write_watermark(self.env, PARAM_WATERMARK, _now_string())
         if created:
             _logger.info("bf_outreach_email : %s réponse(s) rapprochée(s)", created)
         return created

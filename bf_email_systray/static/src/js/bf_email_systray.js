@@ -90,25 +90,16 @@ export class BfEmailSystray extends Component {
             this.openPanel(detail.contact);
         });
 
-        onWillStart(async () => {
-            // Un seul aller-retour, au montage : le mode et la taille ne
-            // changent pas en cours de session. Si l'appel échoue (module
-            // plus vieux côté serveur, droits inattendus), on garde les
-            // valeurs par défaut plutôt que de cacher le bouton.
-            try {
-                const cfg = await this.orm.call("bf.email", "systray_config", []);
-                if (cfg) {
-                    this.state.mode = MODES.includes(cfg.mode) ? cfg.mode : "panneau";
-                    this.state.widthPct = cfg.width_pct || 85;
-                    this.state.heightPct = cfg.height_pct || 85;
-                }
-            } catch {
-                // réglages inaccessibles : le bouton marche quand même
-            }
+        // Rien n'est attendu ici. Le client web n'affiche rien tant que
+        // tous ses composants n'ont pas fini leur onWillStart. Le mode mémorisé
+        // par ce navigateur s'applique tout de suite ; la configuration de la base
+        // arrive ensuite, et le mode mémorisé garde le dernier mot, comme avant.
+        onWillStart(() => {
             const saved = this._storedMode();
             if (saved) {
                 this.state.mode = saved;
             }
+            this._loadConfig();
         });
 
         onMounted(async () => {
@@ -178,6 +169,26 @@ export class BfEmailSystray extends Component {
 
     get countLabel() {
         return this.state.count > 99 ? "99+" : String(this.state.count);
+    }
+
+    // Un seul aller-retour, sans le faire attendre au montage : le mode et la
+    // taille ne changent pas en cours de session. Si l'appel échoue (module plus
+    // vieux côté serveur, droits inattendus), on garde les valeurs par défaut.
+    async _loadConfig() {
+        try {
+            const cfg = await this.orm.call("bf.email", "systray_config", []);
+            if (cfg) {
+                this.state.mode = MODES.includes(cfg.mode) ? cfg.mode : "panneau";
+                this.state.widthPct = cfg.width_pct || 85;
+                this.state.heightPct = cfg.height_pct || 85;
+            }
+        } catch {
+            // réglages inaccessibles : le bouton marche quand même
+        }
+        const saved = this._storedMode();
+        if (saved) {
+            this.state.mode = saved;
+        }
     }
 
     get isPanelMode() {

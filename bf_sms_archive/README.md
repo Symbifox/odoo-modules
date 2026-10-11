@@ -497,6 +497,13 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.26.1
+
+- The SMS button of the systray no longer holds the web client back: the
+  group check and the unread count run after the first paint instead of inside
+  `onWillStart`, and the bus subscriptions are released in `onWillDestroy`,
+  also when the component is destroyed before being mounted.
+
 ### Version 18.0.5.26.0
 
 - **SECURITY:** an archived SMS no longer changes outside the superuser. The
@@ -881,7 +888,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-11, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---

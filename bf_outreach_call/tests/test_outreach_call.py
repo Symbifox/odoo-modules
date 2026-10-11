@@ -94,3 +94,13 @@ class TestOutreachCallBridge(TransactionCase):
     def test_unknown_number_is_ignored(self):
         self._ingest("outgoing", duration=30, number="5145559999")
         self.assertEqual(self._run(), 0)
+
+    def test_scan_does_not_clear_every_process_cache(self):
+        """Le filigrane s'écrit sans signaler d'invalidation de cache."""
+        registry = self.env.registry
+        registry.cache_invalidated.clear()
+        self._ingest("outgoing", duration=60)
+        self.assertEqual(self._run(), 1)  # un appel rapproché
+        self.assertEqual(self._run(), 0)  # rien de neuf
+        self.assertNotIn("default", registry.cache_invalidated)
+        self.assertEqual(self.target.touch_count, 1)

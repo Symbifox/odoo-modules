@@ -165,6 +165,13 @@ makes an hourly cadence safe.
 - Hanging up is scoped: a channel name arriving from a client is refused unless
   it is proven to belong to the caller.
 
+## Page load (18.0.2.10.1)
+
+The floating bubble no longer holds the web client back: the group check, the
+SIP configuration and the JsSIP load run after the first paint instead of
+inside `onWillStart`. Until the SIP agent is built, a click on a `tel:` link
+keeps the browser's default behaviour instead of being swallowed.
+
 ## Configuration
 
 1. Settings → Phone: PBX host, and the TURN key (id + token).

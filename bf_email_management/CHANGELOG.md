@@ -4,6 +4,19 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.1] - 2026-10-11
+
+### Changed
+
+- **The sync watermark no longer flushes every worker's cache.**
+  `bf_email.last_sync_date` was written with `ir.config_parameter.set_param`,
+  which invalidates the ORM cache of every Odoo process through the database.
+  The incremental sync did it each time a new email arrived, and the next page
+  served by each worker paid for it (about 1.7 s on a database with a few
+  hundred modules). The watermark is now read and written with plain SQL.
+  "Sync now" and the initial import wizard read the same fresh value, so the
+  button still loops until the backlog is drained.
+
 ## [18.0.11.60.0] - 2026-10-09
 
 ### Fixed

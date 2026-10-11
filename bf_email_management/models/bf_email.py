@@ -26,6 +26,39 @@ from . import bf_email_imap
 from . import imip
 from .subject_utils import dedup_subject_prefix
 
+
+def _read_watermark(env, key):
+    """Filigrane lu en SQL, hors du cache de get_param."""
+    env["ir.config_parameter"].flush_model(["key", "value"])
+    env.cr.execute("SELECT value FROM ir_config_parameter WHERE key = %s", [key])
+    row = env.cr.fetchone()
+    return row[0] if row else False
+
+
+def _write_watermark(env, key, value):
+    """Filigrane écrit SANS vider le cache de tous les processus.
+
+    ``set_param`` appelle ``registry.clear_cache()`` : chaque écriture refroidissait
+    tous les workers, dont la page suivante coûtait alors 1,7 s de plus. Ce
+    filigrane n'est lu que par sa tâche, en SQL : aucun cache ne peut le servir
+    périmé.
+    """
+    env["ir.config_parameter"].flush_model(["key", "value"])
+    env.cr.execute(
+        """
+        INSERT INTO ir_config_parameter (key, value, create_uid, create_date, write_uid, write_date)
+        VALUES (%(key)s, %(value)s, %(uid)s, now() AT TIME ZONE 'UTC',
+                %(uid)s, now() AT TIME ZONE 'UTC')
+        ON CONFLICT (key) DO UPDATE
+           SET value = EXCLUDED.value,
+               write_uid = EXCLUDED.write_uid,
+               write_date = EXCLUDED.write_date
+        """,
+        {"key": key, "value": value, "uid": env.uid},
+    )
+    env["ir.config_parameter"].invalidate_model(["value"])
+
+
 _logger = logging.getLogger(__name__)
 
 # Objets que les clients d'agenda posent sur une invitation ou sa réponse, en
@@ -4001,7 +4034,8 @@ class BfEmail(models.Model):
         user fall back to the cron user (nothing is lost).
         """
         ICP = self.env["ir.config_parameter"].sudo()
-        last_sync = ICP.get_param("bf_email.last_sync_date", "2000-01-01 00:00:00")
+        last_sync = (_read_watermark(self.env, "bf_email.last_sync_date")
+                     or "2000-01-01 00:00:00")
         batch_size = int(ICP.get_param("bf_email.sync_batch_size", "200"))
 
         # ``>=`` (not ``>``): create_date is not unique. A bulk import can
@@ -4077,7 +4111,8 @@ class BfEmail(models.Model):
                     )
                     skipped += 1
 
-        ICP.set_param("bf_email.last_sync_date", latest_date)
+        if latest_date != last_sync:
+            _write_watermark(self.env, "bf_email.last_sync_date", latest_date)
         _logger.info(
             "bf.email sync: %d created, %d skipped (from %d messages)",
             created,
@@ -5953,19 +5988,17 @@ class BfEmail(models.Model):
         Iterates until no new messages remain (or a safety cap is reached),
         so a single click covers any backlog that exceeds the batch size.
         """
-        ICP = self.env["ir.config_parameter"].sudo()
-        before = ICP.get_param("bf_email.last_sync_date", "2000-01-01 00:00:00")
+        before = (_read_watermark(self.env, "bf_email.last_sync_date")
+                  or "2000-01-01 00:00:00")
         before_count = self.search_count([])
 
         max_iterations = 50
         for _ in range(max_iterations):
-            last_before = ICP.get_param(
-                "bf_email.last_sync_date", "2000-01-01 00:00:00"
-            )
+            last_before = (_read_watermark(self.env, "bf_email.last_sync_date")
+                           or "2000-01-01 00:00:00")
             self._cron_sync_emails()
-            last_after = ICP.get_param(
-                "bf_email.last_sync_date", "2000-01-01 00:00:00"
-            )
+            last_after = (_read_watermark(self.env, "bf_email.last_sync_date")
+                          or "2000-01-01 00:00:00")
             if last_after == last_before:
                 break
 
@@ -5976,7 +6009,7 @@ class BfEmail(models.Model):
 
         after_count = self.search_count([])
         created = after_count - before_count
-        after = ICP.get_param("bf_email.last_sync_date", before)
+        after = _read_watermark(self.env, "bf_email.last_sync_date") or before
 
         return {
             "type": "ir.actions.client",
