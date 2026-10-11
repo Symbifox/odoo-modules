@@ -175,7 +175,9 @@ class TestEchange(BaseCase):
         # ses flux et le PNG est une image, donc on ne peut y chercher un mot.
         # On y contrôle ce qui est contrôlable : le rendu sort, et il diffère de
         # celui d'un échéancier non plafonné.
-        self.assertIn("plage ramenée", gen_svg.rendre(loin).decode("utf-8"))
+        # Sans `labels` dans le payload, le rendu parle anglais, la langue de
+        # la source (le français arrive par `bf.gantt.source`, voir test_langue).
+        self.assertIn("range capped", gen_svg.rendre(loin).decode("utf-8"))
         # ⚠️ Un XLSX est une archive : le texte n'est pas dans les octets bruts.
         # On rouvre le classeur et on lit les cellules, comme un lecteur le ferait.
         from openpyxl import load_workbook
@@ -188,7 +190,7 @@ class TestEchange(BaseCase):
         self.assertTrue(gen_png.rendre(loin))
 
     def test_un_echeancier_normal_ne_parle_pas_de_plafonnement(self):
-        self.assertNotIn("plage ramenée", gen_svg.rendre(COMPLET).decode("utf-8"))
+        self.assertNotIn("range capped", gen_svg.rendre(COMPLET).decode("utf-8"))
 
     # -------------------------------------------------------------- la marque
 

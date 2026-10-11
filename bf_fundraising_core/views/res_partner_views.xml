@@ -9,19 +9,19 @@
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page
-                    string="Philanthropie"
+                    string="Philanthropy"
                     name="fundraising"
                     invisible="not is_constituent"
                 >
                     <group>
-                        <group string="Sommaire des dons">
+                        <group string="Giving summary">
                             <field name="donation_amount_total" />
                             <field name="donation_largest" />
                             <field name="donation_first_date" />
                             <field name="donation_last_date" />
                             <field name="fundraising_currency_id" invisible="1" />
                         </group>
-                        <group string="Prospection / don majeur">
+                        <group string="Prospecting / major gift">
                             <field name="wealth_rating" />
                             <field name="giving_capacity" />
                             <field name="is_major_prospect" />
@@ -36,7 +36,7 @@
                                 invisible="is_household"
                             />
                         </group>
-                        <group string="Sollicitation">
+                        <group string="Solicitation">
                             <field
                                 name="solicit_code_ids"
                                 widget="many2many_tags"
@@ -74,43 +74,43 @@
                 <separator />
                 <filter
                     name="constituents"
-                    string="Constituants"
+                    string="Constituents"
                     domain="[('is_constituent', '=', True)]"
                 />
                 <filter
                     name="donors"
-                    string="Donateurs"
+                    string="Donors"
                     domain="[('donation_amount_total', '>', 0)]"
                 />
                 <filter
                     name="gave_this_year"
-                    string="A donné cette année"
+                    string="Gave this year"
                     domain="[('donation_last_date', '>=', (context_today() + relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"
                 />
                 <filter
                     name="lapsed_lybunt"
-                    string="Inactifs (LYBUNT)"
+                    string="Lapsed (LYBUNT)"
                     domain="[('donation_last_date', '>=', (context_today() + relativedelta(years=-1, month=1, day=1)).strftime('%Y-%m-%d')), ('donation_last_date', '&lt;', (context_today() + relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"
                 />
                 <filter
                     name="major_prospects"
-                    string="Prospects don majeur"
+                    string="Major gift prospects"
                     domain="[('is_major_prospect', '=', True)]"
                 />
                 <filter
                     name="do_not_solicit"
-                    string="Ne pas solliciter"
+                    string="Do not solicit"
                     domain="[('do_not_solicit', '=', True)]"
                 />
-                <group expand="0" string="Grouper par (philanthropie)">
+                <group expand="0" string="Group by (philanthropy)">
                     <filter
                         name="group_wealth_rating"
-                        string="Cote de richesse"
+                        string="Wealth rating"
                         context="{'group_by': 'wealth_rating'}"
                     />
                     <filter
                         name="group_constituent_type"
-                        string="Type de constituant"
+                        string="Constituent type"
                         context="{'group_by': 'constituent_type'}"
                     />
                 </group>
@@ -119,15 +119,14 @@
     </record>
 
     <record id="action_bf_constituents" model="ir.actions.act_window">
-        <field name="name">Constituants</field>
+        <field name="name">Constituents</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('is_constituent', '=', True)]</field>
         <field name="context">{'default_is_constituent': True, 'search_default_constituents': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun constituant</p>
-            <p>Les constituants sont vos donateurs, membres et prospects. Cochez
-            « Constituant » sur une fiche contact pour l'ajouter ici.</p>
+            <p class="o_view_nocontent_smiling_face">No constituents yet</p>
+            <p>Constituents are your donors, members and prospects. Check "Constituent" on a contact record to add it here.</p>
         </field>
     </record>
 </odoo>

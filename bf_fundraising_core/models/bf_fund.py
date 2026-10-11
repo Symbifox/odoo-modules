@@ -7,58 +7,59 @@ class BfFund(models.Model):
     analytic (GL) distribution of donation lines. This is the RE « Fund »."""
 
     _name = "bf.fund"
-    _description = "Fonds de collecte"
+    _description = "Fund"
     _order = "code, name"
     _check_company_auto = True
 
-    name = fields.Char(string="Nom du fonds", required=True, translate=True)
+    name = fields.Char(string="Fund name", required=True, translate=True)
     code = fields.Char(string="Code")
     active = fields.Boolean(default=True)
     fund_type = fields.Selection(
         [
-            ("unrestricted", "Non affecté"),
-            ("restricted", "Affecté"),
-            ("endowment", "Fonds de dotation"),
+            ("unrestricted", "Unrestricted"),
+            ("restricted", "Restricted"),
+            ("endowment", "Endowment fund"),
         ],
-        string="Type de fonds",
+        string="Fund type",
         default="unrestricted",
         required=True,
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         default=lambda self: self.env.company,
     )
     analytic_account_id = fields.Many2one(
         "account.analytic.account",
-        string="Compte analytique",
+        string="Analytic account",
         check_company=True,
-        help="Compte analytique vers lequel les dons de ce fonds sont ventilés. "
-        "Renseigne automatiquement la distribution analytique des lignes de don.",
+        help="Analytic account this fund's donations are distributed to. "
+             "Automatically fills in the analytic distribution of "
+             "donation lines.",
     )
     description = fields.Text(string="Description")
 
     # --- Amounts raised ------------------------------------------------------
     donation_line_ids = fields.One2many(
-        "donation.line", "fund_id", string="Lignes de don"
+        "donation.line", "fund_id", string="Donation lines"
     )
     amount_raised = fields.Monetary(
-        string="Montant amassé",
+        string="Amount raised",
         compute="_compute_amount_raised",
         currency_field="currency_id",
     )
     donation_count = fields.Integer(
-        string="Nombre de dons", compute="_compute_amount_raised"
+        string="Number of donations", compute="_compute_amount_raised"
     )
     currency_id = fields.Many2one(
-        related="company_id.currency_id", string="Devise", readonly=True
+        related="company_id.currency_id", string="Currency", readonly=True
     )
 
     _sql_constraints = [
         (
             "code_company_uniq",
             "unique(code, company_id)",
-            "Un fonds avec ce code existe déjà pour cette société.",
+            "A fund with this code already exists for this company.",
         ),
     ]
 
@@ -81,7 +82,7 @@ class BfFund(models.Model):
         donations = self.donation_line_ids.mapped("donation_id")
         return {
             "type": "ir.actions.act_window",
-            "name": _("Dons — %s", self.name),
+            "name": _("Donations: %s", self.name),
             "res_model": "donation.donation",
             "view_mode": "list,form",
             "domain": [("id", "in", donations.ids)],

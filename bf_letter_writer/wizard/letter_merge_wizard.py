@@ -4,29 +4,29 @@ from odoo.exceptions import UserError
 
 class LetterMergeWizard(models.TransientModel):
     _name = "letter.merge.wizard"
-    _description = "Fusion de lettres en lot"
+    _description = "Bulk letter merge"
 
     template_id = fields.Many2one(
-        "letter.template", string="Modèle", required=True,
+        "letter.template", string="Template", required=True,
     )
     recipient_ids = fields.Many2many(
-        "res.partner", string="Destinataires", required=True,
+        "res.partner", string="Recipients", required=True,
     )
     letter_date = fields.Date(
         string="Date", default=fields.Date.context_today, required=True,
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Expéditeur",
+        string="Sender",
         required=True,
         default=lambda self: self.env.company,
     )
     auto_finalize = fields.Boolean(
-        string="Finaliser automatiquement",
-        help="Passe chaque lettre créée à l'état « Finalisée ».",
+        string="Finalize automatically",
+        help="Moves each created letter to the \"Finalized\" state.",
     )
     created_letter_ids = fields.Many2many(
-        "letter.document", string="Lettres créées", readonly=True,
+        "letter.document", string="Created letters", readonly=True,
     )
 
     @api.model
@@ -41,7 +41,7 @@ class LetterMergeWizard(models.TransientModel):
     def action_create_letters(self):
         self.ensure_one()
         if not self.recipient_ids:
-            raise UserError(_("Sélectionnez au moins un destinataire."))
+            raise UserError(_("Select at least one recipient."))
         Letter = self.env["letter.document"]
         letters = Letter.browse()
         for partner in self.recipient_ids:
@@ -63,7 +63,7 @@ class LetterMergeWizard(models.TransientModel):
         self.created_letter_ids = letters
         return {
             "type": "ir.actions.act_window",
-            "name": _("Lettres créées"),
+            "name": _("Created letters"),
             "res_model": "letter.document",
             "view_mode": "list,form",
             "domain": [("id", "in", letters.ids)],

@@ -131,7 +131,11 @@ the records.
 * Odoo 18 Community
 * Additional Odoo module dependencies (manifest `depends`): `mail`
 
+## Languages (v18.0.1.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The deadline activity the scheduled action leaves for each user carries its note in that user's language, with the due date formatted in it (English when the user's language is not installed). The reference tariffs delivered with the module keep their French names. On upgrade, the scheduled action is renamed unless its name was edited by hand.
+
 ## Licence
 
-Business Source License 1.1, converting to LGPL-3.0-or-later on 2030-08-30. See
+Business Source License 1.1, converting to LGPL-3.0-or-later on 2030-10-11. See
 `LICENSE`.

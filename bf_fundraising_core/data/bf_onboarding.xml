@@ -2,31 +2,31 @@
 <!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo noupdate="1">
     <record id="bf_onb_step_funds" model="onboarding.onboarding.step">
-        <field name="title">Configurer vos fonds</field>
-        <field name="description">[action:bf_fundraising_core.action_bf_fund] Créez vos fonds (désignations) et reliez chacun à un compte analytique pour la ventilation comptable.</field>
-        <field name="button_text">Ouvrir les fonds</field>
-        <field name="done_text">Fonds configurés</field>
+        <field name="title">Set up your funds</field>
+        <field name="description">[action:bf_fundraising_core.action_bf_fund] Create your funds (designations) and link each one to an analytic account for the accounting distribution.</field>
+        <field name="button_text">Open funds</field>
+        <field name="done_text">Funds set up</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_campaign" model="onboarding.onboarding.step">
-        <field name="title">Lancer une campagne</field>
-        <field name="description">[action:donation.donation_campaign_action] Créez une campagne avec un objectif, puis ajoutez-y des sollicitations et des trousses.</field>
-        <field name="button_text">Ouvrir les campagnes</field>
-        <field name="done_text">Campagne créée</field>
+        <field name="title">Launch a campaign</field>
+        <field name="description">[action:donation.donation_campaign_action] Create a campaign with a goal, then add appeals and packages to it.</field>
+        <field name="button_text">Open campaigns</field>
+        <field name="done_text">Campaign created</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onb_step_gift" model="onboarding.onboarding.step">
-        <field name="title">Enregistrer un premier don</field>
-        <field name="description">[action:donation.donation_action] Saisissez un don, affectez-le à un fonds et à une campagne, puis validez-le.</field>
-        <field name="button_text">Ouvrir les dons</field>
-        <field name="done_text">Don enregistré</field>
+        <field name="title">Record a first donation</field>
+        <field name="description">[action:donation.donation_action] Enter a donation, allocate it to a fund and a campaign, then validate it.</field>
+        <field name="button_text">Open donations</field>
+        <field name="done_text">Donation recorded</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">3</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Levée de fonds</field>
+        <field name="name">Fundraising</field>
         <field name="route_name">bf_fundraising_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_fundraising</field>
         <field name="step_ids" eval="[

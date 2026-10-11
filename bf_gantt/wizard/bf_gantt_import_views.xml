@@ -5,21 +5,18 @@
         <field name="name">bf.gantt.import.form</field>
         <field name="model">bf.gantt.import</field>
         <field name="arch" type="xml">
-            <form string="Importer un échéancier">
+            <form string="Import a timeline">
                 <field name="state" invisible="1"/>
                 <group invisible="state != 'choix'">
                     <field name="fichier" filename="nom_fichier"
-                           string="Fichier (.xml MS Project ou .xlsx)"/>
+                           string="File (MS Project .xml or .xlsx)"/>
                     <field name="nom_fichier" invisible="1"/>
                     <field name="plan_id"
                            options="{'no_create': True}"/>
                     <field name="remplacer" invisible="not plan_id"/>
                 </group>
                 <div class="alert alert-info" role="status" invisible="state != 'choix'">
-                    Deux formats sont lus : le <b>.xml</b> de Microsoft Project (MSPDI),
-                    que produit aussi OpenProject, et le <b>classeur</b> exporté d'ici.
-                    Le <b>.mpp</b> binaire n'est pas lu : dans Project, faites
-                    « Enregistrer sous » puis « XML ».
+                    Two formats are read: the Microsoft Project <b>.xml</b> (MSPDI), which OpenProject also produces, and the <b>workbook</b> exported from here. The binary <b>.mpp</b> is not read: in Project, use "Save As" then "XML".
                 </div>
 
                 <div invisible="state != 'apercu'">
@@ -41,24 +38,24 @@
                 </div>
 
                 <footer>
-                    <button name="action_lire" type="object" string="Lire le fichier"
+                    <button name="action_lire" type="object" string="Read the file"
                             class="btn-primary" invisible="state != 'choix'"/>
-                    <button name="action_ecrire" type="object" string="Importer"
+                    <button name="action_ecrire" type="object" string="Import"
                             class="btn-primary" invisible="state != 'apercu'"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_gantt_import" model="ir.actions.act_window">
-        <field name="name">Importer un échéancier</field>
+        <field name="name">Import a timeline</field>
         <field name="res_model">bf.gantt.import</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_bf_gantt_import" name="Importer"
+    <menuitem id="menu_bf_gantt_import" name="Import"
               parent="bf_gantt.menu_bf_gantt_root"
               action="action_bf_gantt_import" sequence="20"
               groups="bf_gantt.group_bf_gantt_manager"/>

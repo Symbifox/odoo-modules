@@ -14,11 +14,11 @@ class BfBudgetPosition(models.Model):
     """
 
     _name = "bf.budget.position"
-    _description = "Poste budgétaire"
+    _description = "Budget item"
     _order = "budget_type, code, name"
 
-    name = fields.Char(string="Nom", required=True, translate=True)
-    code = fields.Char(help="Code court, utilisé pour l'ordre d'affichage et les rapports.")
+    name = fields.Char(string="Name", required=True, translate=True)
+    code = fields.Char(help="Short code, used for display order and reports.")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company",
@@ -27,7 +27,7 @@ class BfBudgetPosition(models.Model):
         index=True,
     )
     budget_type = fields.Selection(
-        [("expense", "Charges"), ("revenue", "Produits")],
+        [("expense", "Expenses"), ("revenue", "Revenue")],
         required=True,
         default="expense",
     )
@@ -36,18 +36,20 @@ class BfBudgetPosition(models.Model):
         "bf_budget_position_account_rel",
         "position_id",
         "account_id",
-        string="Comptes",
+        string="Accounts",
         required=True,
-        help="Les comptes du grand livre dont les écritures alimentent ce poste.",
+        help="The general ledger accounts whose entries feed this budget item.",
     )
     account_count = fields.Integer(compute="_compute_account_count")
-    note = fields.Text(string="Raisonnement", help="Pourquoi ce poste existe, et ce qu'il ne couvre pas.")
+    note = fields.Text(string="Rationale", help="Why this budget item "
+                                                   "exists, and what it "
+                                                   "does not cover.")
 
     _sql_constraints = [
         (
             "code_company_uniq",
             "unique(code, company_id)",
-            "Un code de poste budgétaire doit être unique par société.",
+            "A budget item code must be unique per company.",
         ),
     ]
 
@@ -71,7 +73,8 @@ class BfBudgetPosition(models.Model):
             if foreign:
                 raise ValidationError(
                     _(
-                        "Ces comptes n'appartiennent pas à la société « %(company)s » : %(accounts)s",
+                        "These accounts do not belong to the company "
+                        "\"%(company)s\": %(accounts)s",
                         company=position.company_id.display_name,
                         accounts=", ".join(foreign.mapped("display_name")),
                     )
@@ -91,10 +94,11 @@ class BfBudgetPosition(models.Model):
             if wrong:
                 raise ValidationError(
                     _(
-                        "Le poste « %(name)s » est un poste de %(kind)s, mais ces comptes "
-                        "n'en sont pas : %(accounts)s",
+                        "The budget item \"%(name)s\" is of type "
+                        "%(kind)s, but these accounts are not: "
+                        "%(accounts)s",
                         name=position.display_name,
-                        kind=_("charges") if position.budget_type == "expense" else _("produits"),
+                        kind=_("expense") if position.budget_type == "expense" else _("revenue"),
                         accounts=", ".join(
                             "%s (%s)" % (a.display_name, a.account_type) for a in wrong
                         ),
@@ -115,7 +119,7 @@ class BfBudgetPosition(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Comptes du poste"),
+            "name": _("Budget item accounts"),
             "res_model": "account.account",
             "view_mode": "list,form",
             "domain": [("id", "in", self.account_ids.ids)],

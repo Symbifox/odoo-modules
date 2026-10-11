@@ -7,9 +7,9 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Lettres" name="letter_writer">
+                <page string="Letters" name="letter_writer">
                     <group>
-                        <group string="En-tête par défaut">
+                        <group string="Default letterhead">
                             <field name="letter_default_mode"/>
                             <field name="letter_body_top_margin"
                                    invisible="letter_default_mode in ('banner', 'classic')"/>
@@ -24,21 +24,21 @@
                         </group>
                     </group>
                     <group>
-                        <group string="En-tête image (PNG/JPG)">
+                        <group string="Image letterhead (PNG/JPG)">
                             <field name="letterhead_image" widget="image"
                                    filename="letterhead_image_filename"/>
                             <field name="letterhead_image_filename" invisible="1"/>
                         </group>
-                        <group string="En-tête PDF (superposition)">
+                        <group string="PDF letterhead (overlay)">
                             <field name="letterhead_pdf"
                                    filename="letterhead_pdf_filename"/>
                             <field name="letterhead_pdf_filename" invisible="1"/>
                         </group>
                     </group>
-                    <group string="Mention d'en-tête (modes générés)">
+                    <group string="Letterhead note (generated modes)">
                         <field name="letter_header_note" nolabel="1"/>
                     </group>
-                    <separator string="Pied de page des lettres (modes générés)"/>
+                    <separator string="Letter footer (generated modes)"/>
                     <field name="letter_footer_html" widget="html" nolabel="1"/>
                 </page>
             </xpath>

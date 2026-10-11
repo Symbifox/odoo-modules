@@ -15,7 +15,7 @@
             </field>
             <xpath expr="//group[@name='main']" position="after">
                 <notebook>
-                    <page string="Sollicitations" name="appeals">
+                    <page string="Appeals" name="appeals">
                         <field name="appeal_ids" context="{'default_campaign_id': id}">
                             <list editable="bottom">
                                 <field name="sequence" widget="handle" />

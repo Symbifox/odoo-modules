@@ -52,10 +52,13 @@ class TestBfBudgetPosition(BfBudgetCommon):
         """L'assistant part du plan comptable, pas d'un catalogue semé."""
         self.position_software.unlink()
         self.position_telecom.unlink()
-        wizard = self.env["bf.budget.position.wizard"].create(
+        # Le texte s'attend en anglais, la source : épinglé, parce qu'un contexte sans
+        # langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
+        wizard = self.env["bf.budget.position.wizard"].with_context(lang="en_US").create(
             {"company_id": self.company.id, "budget_type": "expense"}
         )
-        self.assertIn("compte", wizard.preview)
+        self.assertIn("account", wizard.preview)
         wizard.action_create()
         created = self.env["bf.budget.position"].search(
             [("company_id", "=", self.company.id), ("budget_type", "=", "expense")]

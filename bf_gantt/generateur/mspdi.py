@@ -15,6 +15,8 @@ from datetime import date, datetime, timedelta
 
 from lxml import etree
 
+from . import geometrie as geo
+
 NS = "http://schemas.microsoft.com/project"
 HEURES_PAR_JOUR = 8
 # 7 = jours dans l'énumération DurationFormat de MSPDI.
@@ -24,6 +26,21 @@ LIEN_FIN_DEBUT = 1
 
 DEBUT_JOURNEE = "T08:00:00"
 FIN_JOURNEE = "T17:00:00"
+
+
+class MspdiRefuse(ValueError):
+    """Un fichier que `lire` refuse, et pourquoi.
+
+    Le message, en anglais, sert au journal et aux essais. L'usager, lui, lit
+    celui que l'assistant d'import reformule dans SA langue à partir de `motif`
+    (« xml » : illisible ; « racine » : pas un MSPDI) et de `detail` : ce module
+    tourne hors d'Odoo et n'a pas de langue à qui parler.
+    """
+
+    def __init__(self, motif, detail, message):
+        super().__init__(message)
+        self.motif = motif
+        self.detail = detail
 
 
 # ------------------------------------------------------------------- export
@@ -41,7 +58,8 @@ def rendre(payload):
     fin = date.fromisoformat(payload["range"]["max"])
 
     T(racine, "SaveVersion", 14)
-    T(racine, "Name", (payload.get("title") or "Echeancier")[:255])
+    T(racine, "Name",
+      (payload.get("title") or geo.libelles(payload)["untitled"])[:255])
     T(racine, "Title", (payload.get("title") or "")[:255])
     T(racine, "Company", payload.get("company", {}).get("name", "")[:255])
     T(racine, "Author", payload.get("company", {}).get("name", "")[:255])
@@ -183,12 +201,14 @@ def lire(contenu):
     try:
         racine = etree.fromstring(contenu, parser=analyseur)
     except etree.XMLSyntaxError as erreur:
-        raise ValueError("Fichier XML illisible : %s" % erreur) from erreur
+        raise MspdiRefuse(
+            "xml", str(erreur), "Unreadable XML file: %s" % erreur) from erreur
 
     if _nom_local(racine) != "Project":
-        raise ValueError(
-            "Ce fichier n'est pas un MSPDI : la racine est « %s » et non "
-            "« Project »." % _nom_local(racine))
+        raise MspdiRefuse(
+            "racine", _nom_local(racine),
+            ("This file is not an MSPDI file: the root is \"%s\", not "
+             "\"Project\".") % _nom_local(racine))
 
     titre = _texte(racine, "Title") or _texte(racine, "Name") or ""
 

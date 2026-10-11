@@ -40,17 +40,19 @@ def epurer(nom, defaut="echeancier"):
 
 class BfGanttExport(models.AbstractModel):
     _name = "bf.gantt.export"
-    _description = "Sorties de fichiers d'un échéancier"
+    _description = "Timeline file outputs"
 
     @api.model
     def formats(self):
         return [
-            {"key": "pdf", "label": _("PDF"), "hint": _("Vectoriel, pour imprimer")},
-            {"key": "png", "label": _("PNG"), "hint": _("Image, pour un courriel")},
-            {"key": "svg", "label": _("SVG"), "hint": _("Vectoriel, pour retoucher")},
-            {"key": "xlsx", "label": _("Excel"), "hint": _("Tableau, réimportable")},
+            {"key": "pdf", "label": _("PDF"), "hint": _("Vector, for printing")},
+            {"key": "png", "label": _("PNG"), "hint": _("Image, for an email")},
+            {"key": "svg", "label": _("SVG"), "hint": _("Vector, for editing")},
+            {"key": "xlsx", "label": _("Excel"), "hint": _("Spreadsheet, "
+                                                           "can be "
+                                                           "re-imported")},
             {"key": "mspdi", "label": _("MS Project"),
-             "hint": _("MSPDI, aussi lu par OpenProject")},
+             "hint": _("MSPDI, also read by OpenProject")},
         ]
 
     def _rendre(self, payload, format_, echelle="week", zoom=1.0):
@@ -69,7 +71,7 @@ class BfGanttExport(models.AbstractModel):
         façon.
         """
         if format_ not in FORMATS:
-            raise UserError(_("Format inconnu : %s", format_))
+            raise UserError(_("Unknown format: %s", format_))
         mime, extension = FORMATS[format_]
 
         if format_ == "pdf":
@@ -135,7 +137,7 @@ class BfGanttExport(models.AbstractModel):
             # message ; la poser seulement par `res_id` la laisse invisible dans
             # le fil.
             enregistrement.message_post(
-                body=_("Échéancier exporté : %s", nom),
+                body=_("Timeline exported: %s", nom),
                 attachment_ids=[piece.id],
             )
         return {"attachment_id": piece.id, "name": nom}

@@ -4,7 +4,7 @@
     <!-- Rebrand the Donation app as « Levée de fonds » with the BF icon -->
     <menuitem
         id="donation.donation_top_menu"
-        name="Levée de fonds"
+        name="Fundraising"
         web_icon="bf_fundraising_core,static/description/icon.png"
         sequence="38"
         groups="donation.group_donation_viewer"
@@ -13,7 +13,7 @@
     <!-- Constituents (donors / members / prospects) -->
     <menuitem
         id="menu_bf_constituents"
-        name="Constituants"
+        name="Constituents"
         parent="donation.donation_top_menu"
         action="action_bf_constituents"
         sequence="4"
@@ -23,7 +23,7 @@
     <!-- Funds (top-level: central to attribution) -->
     <menuitem
         id="menu_bf_fund"
-        name="Fonds"
+        name="Funds"
         parent="donation.donation_top_menu"
         action="action_bf_fund"
         sequence="20"
@@ -33,7 +33,7 @@
     <!-- Collection structure under Configuration -->
     <menuitem
         id="menu_bf_appeal"
-        name="Sollicitations"
+        name="Appeals"
         parent="donation.donation_config_donation_menu"
         action="action_bf_appeal"
         sequence="32"
@@ -41,7 +41,7 @@
     />
     <menuitem
         id="menu_bf_package"
-        name="Trousses"
+        name="Packages"
         parent="donation.donation_config_donation_menu"
         action="action_bf_package"
         sequence="34"
@@ -49,7 +49,7 @@
     />
     <menuitem
         id="menu_bf_solicit_code"
-        name="Codes de sollicitation"
+        name="Solicit codes"
         parent="donation.donation_config_donation_menu"
         action="action_bf_solicit_code"
         sequence="36"

@@ -169,8 +169,12 @@ class TestMusicLicensing(TransactionCase):
     def test_consumer_streaming_raises_a_finding(self):
         """La provenance grand public est le constat le moins cher du diagnostic."""
         self.assertFalse(self.establishment.source_warning)
-        self.establishment.music_source = "consumer_streaming"
-        self.assertIn("personnel", self.establishment.source_warning)
+        # Expected in English, the source: pinned (OdooBot reads fr_CA on a French base).
+        self.env["res.lang"]._activate_lang("en_US")
+        establishment = self.establishment.with_context(lang="en_US")
+        establishment.music_source = "consumer_streaming"
+        establishment.invalidate_recordset(["source_warning"])
+        self.assertIn("personal", establishment.source_warning)
 
     # ------------------------------------------------------------------
     # Le calcul

@@ -20,11 +20,11 @@ class BfBudget(models.Model):
     """
 
     _name = "bf.budget"
-    _description = "Budget d'exploitation"
+    _description = "Operating budget"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, id desc"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company",
         required=True,
@@ -32,87 +32,91 @@ class BfBudget(models.Model):
         tracking=True,
         index=True,
     )
-    currency_id = fields.Many2one(related="company_id.currency_id", string="Devise")
-    date_start = fields.Date(string="Début de l'exercice", required=True, tracking=True)
-    date_end = fields.Date(string="Fin de l'exercice", required=True, tracking=True)
+    currency_id = fields.Many2one(related="company_id.currency_id", string="Currency")
+    date_start = fields.Date(string="Fiscal year start", required=True, tracking=True)
+    date_end = fields.Date(string="Fiscal year end", required=True, tracking=True)
     budget_type = fields.Selection(
-        [("expense", "Charges"), ("revenue", "Produits")],
+        [("expense", "Expenses"), ("revenue", "Revenue")],
         required=True,
         default="expense",
         tracking=True,
     )
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("open", "Ouvert"),
-            ("revised", "Révisé"),
-            ("closed", "Clôturé"),
-            ("cancelled", "Annulé"),
+            ("draft", "Draft"),
+            ("open", "Open"),
+            ("revised", "Revised"),
+            ("closed", "Closed"),
+            ("cancelled", "Cancelled"),
         ],
         default="draft",
         required=True,
         tracking=True,
-        help="Un budget ouvert ne se modifie plus : il se révise.",
+        help="An open budget can no longer be edited: it is revised.",
     )
     line_ids = fields.One2many(
-        "bf.budget.line", "budget_id", string="Lignes", copy=True
+        "bf.budget.line", "budget_id", string="Lines", copy=True
     )  # copy=True : une révision sans ses lignes ne révise rien
     line_count = fields.Integer(compute="_compute_line_count")
 
     revision_of_id = fields.Many2one(
         "bf.budget",
-        string="Révision de",
+        string="Revision of",
         readonly=True,
         ondelete="set null",
-        help="Le budget que celui-ci remplace.",
+        help="The budget this one replaces.",
     )
-    revision = fields.Integer(default=0, readonly=True, help="0 pour l'original.")
-    revision_ids = fields.One2many("bf.budget", "revision_of_id", string="Révisions")
+    revision = fields.Integer(default=0, readonly=True, help="0 for the "
+                                                             "original.")
+    revision_ids = fields.One2many("bf.budget", "revision_of_id", string="Revisions")
 
     alert_threshold_pct = fields.Float(
-        string="Seuil d'alerte (%)",
+        string="Alert threshold (%)",
         default=10.0,
-        help="Écart au-delà duquel une ligne est signalée. Aucune pratique de "
-        "place ne fixe ce chiffre : c'est un choix, pas une vérité.",
+        help="Variance beyond which a line is flagged. No market practice "
+             "sets this figure: it is a choice, not a truth.",
     )
     alert_threshold_amount = fields.Monetary(
-        string="Plancher d'alerte",
+        string="Alert floor",
         default=250.0,
         currency_field="currency_id",
-        help="Sous ce montant, un écart n'est pas signalé, même en pourcentage. "
-        "Évite qu'un dépassement de 40 % sur un poste de 50 $ réveille quelqu'un.",
+        help="Below this amount, a variance is not flagged, even as a "
+             "percentage. Keeps a 40% overrun on a $50 budget item from "
+             "waking someone up.",
     )
 
     amount_planned = fields.Monetary(
-        compute="_compute_amounts", currency_field="currency_id", string="Prévu"
+        compute="_compute_amounts", currency_field="currency_id", string="Planned"
     )
     amount_actual = fields.Monetary(
-        compute="_compute_amounts", currency_field="currency_id", string="Réalisé"
+        compute="_compute_amounts", currency_field="currency_id", string="Actual"
     )
     amount_committed = fields.Monetary(
-        compute="_compute_amounts", currency_field="currency_id", string="Engagé"
+        compute="_compute_amounts", currency_field="currency_id", string="Committed"
     )
     amount_theoretical = fields.Monetary(
-        compute="_compute_amounts", currency_field="currency_id", string="Théorique"
+        compute="_compute_amounts", currency_field="currency_id", string="Theoretical"
     )
     amount_variance = fields.Monetary(
-        compute="_compute_amounts", currency_field="currency_id", string="Écart"
+        compute="_compute_amounts", currency_field="currency_id", string="Variance"
     )
-    alert_line_count = fields.Integer(compute="_compute_amounts", string="Lignes en alerte")
+    alert_line_count = fields.Integer(compute="_compute_amounts", string="Flagged "
+                                                                         "lines")
 
     uncovered_account_ids = fields.Many2many(
         "account.account",
         compute="_compute_coverage",
-        string="Comptes non couverts",
-        help="Comptes d'exploitation du bon sens qu'aucun poste de ce budget ne "
-        "couvre. Un budget peut paraître respecté simplement parce qu'un poste manque.",
+        string="Uncovered accounts",
+        help="Operating accounts of the right type that no budget item of "
+             "this budget covers. A budget can look on track simply "
+             "because a budget item is missing.",
     )
     duplicated_account_ids = fields.Many2many(
         "account.account",
         compute="_compute_coverage",
-        string="Comptes comptés deux fois",
-        help="Comptes couverts par plus d'un poste de ce budget : leurs écritures "
-        "sont comptées autant de fois.",
+        string="Accounts counted twice",
+        help="Accounts covered by more than one budget item of this "
+             "budget: their entries are counted that many times.",
     )
     coverage_warning = fields.Boolean(compute="_compute_coverage")
 
@@ -169,7 +173,7 @@ class BfBudget(models.Model):
         for budget in self:
             if budget.date_end < budget.date_start:
                 raise ValidationError(
-                    _("La fin de l'exercice ne peut pas précéder son début.")
+                    _("The fiscal year end cannot come before its start.")
                 )
 
     # ------------------------------------------------------------------
@@ -187,8 +191,9 @@ class BfBudget(models.Model):
             if locked:
                 raise UserError(
                     _(
-                        "« %(name)s » n'est plus au brouillon : son plan ne se modifie "
-                        "plus. Tirez-en une révision, ou remettez-le au brouillon.",
+                        "\"%(name)s\" is no longer a draft: its plan can "
+                        "no longer be edited. Create a revision from it, "
+                        "or reset it to draft.",
                         name=locked[0].display_name,
                     )
                 )
@@ -199,8 +204,9 @@ class BfBudget(models.Model):
         if opened:
             raise UserError(
                 _(
-                    "Un budget qui a été ouvert ne se supprime pas : il s'annule, "
-                    "pour que la trace reste. En cause : %(names)s",
+                    "A budget that has been opened cannot be deleted: it "
+                    "is cancelled, so that the record remains. Affected: "
+                    "%(names)s",
                     names=", ".join(opened.mapped("display_name")),
                 )
             )
@@ -212,42 +218,43 @@ class BfBudget(models.Model):
     def action_open(self):
         for budget in self:
             if budget.state != "draft":
-                raise UserError(_("Seul un budget au brouillon peut être ouvert."))
+                raise UserError(_("Only a draft budget can be opened."))
             if not budget.line_ids:
                 raise UserError(
-                    _("« %(name)s » n'a aucune ligne : il n'y a rien à ouvrir.",
+                    _("\"%(name)s\" has no lines: there is nothing to open.",
                       name=budget.display_name)
                 )
             budget.state = "open"
-            budget.message_post(body=_("Budget ouvert."))
+            budget.message_post(body=_("Budget opened."))
         return True
 
     def action_reset_draft(self):
         for budget in self:
             if budget.state not in ("open", "cancelled"):
                 raise UserError(
-                    _("Seul un budget ouvert ou annulé peut revenir au brouillon.")
+                    _("Only an open or cancelled budget can be reset to draft.")
                 )
             budget.state = "draft"
-            budget.message_post(body=_("Budget remis au brouillon."))
+            budget.message_post(body=_("Budget reset to draft."))
         return True
 
     def action_close(self):
         for budget in self:
             if budget.state != "open":
-                raise UserError(_("Seul un budget ouvert peut être clôturé."))
+                raise UserError(_("Only an open budget can be closed."))
             budget.state = "closed"
-            budget.message_post(body=_("Budget clôturé."))
+            budget.message_post(body=_("Budget closed."))
         return True
 
     def action_cancel(self):
         for budget in self:
             if budget.state == "revised":
                 raise UserError(
-                    _("Un budget déjà révisé ne s'annule pas : c'est sa révision qui vit.")
+                    _("A budget that has already been revised cannot be "
+                      "cancelled: its revision is the live one.")
                 )
             budget.state = "cancelled"
-            budget.message_post(body=_("Budget annulé."))
+            budget.message_post(body=_("Budget cancelled."))
         return True
 
     def action_create_revision(self):
@@ -260,11 +267,12 @@ class BfBudget(models.Model):
         self.ensure_one()
         if self.state not in ("open", "closed"):
             raise UserError(
-                _("Une révision se tire d'un budget ouvert ou clôturé, pas d'un brouillon.")
+                _("A revision is drawn from an open or closed budget, not "
+                  "from a draft.")
             )
         revision = self.copy(
             {
-                "name": _("%(name)s (rév. %(n)s)", name=self.name, n=self.revision + 1),
+                "name": _("%(name)s (rev. %(n)s)", name=self.name, n=self.revision + 1),
                 "state": "draft",
                 "revision_of_id": self.id,
                 "revision": self.revision + 1,
@@ -272,10 +280,10 @@ class BfBudget(models.Model):
         )
         self.state = "revised"
         self.message_post(
-            body=_("Révisé par « %(name)s ».", name=revision.display_name)
+            body=_("Revised by \"%(name)s\".", name=revision.display_name)
         )
         revision.message_post(
-            body=_("Révision de « %(name)s ».", name=self.display_name)
+            body=_("Revision of \"%(name)s\".", name=self.display_name)
         )
         return {
             "type": "ir.actions.act_window",
@@ -288,7 +296,7 @@ class BfBudget(models.Model):
     def copy_data(self, default=None):
         vals_list = super().copy_data(default=default)
         for budget, vals in zip(self, vals_list):
-            vals.setdefault("name", _("%(name)s (copie)", name=budget.name))
+            vals.setdefault("name", _("%(name)s (copy)", name=budget.name))
             vals.setdefault("state", "draft")
         return vals_list
 
@@ -299,7 +307,7 @@ class BfBudget(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Lignes budgétaires"),
+            "name": _("Budget lines"),
             "res_model": "bf.budget.line",
             "view_mode": "list,pivot,graph,form",
             "domain": [("budget_id", "=", self.id)],
@@ -310,7 +318,7 @@ class BfBudget(models.Model):
         """Crée une ligne par poste du bon sens qui n'en a pas encore."""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Les lignes ne se génèrent que sur un budget au brouillon."))
+            raise UserError(_("Lines can only be generated on a draft budget."))
         positions = self.env["bf.budget.position"].search(
             [
                 ("budget_type", "=", self.budget_type),
@@ -325,7 +333,8 @@ class BfBudget(models.Model):
             )
         if not created:
             raise UserError(
-                _("Tous les postes de ce sens ont déjà leur ligne dans ce budget.")
+                _("All budget items of this type already have their line "
+                  "in this budget.")
             )
         return True
 
@@ -373,7 +382,7 @@ class BfBudget(models.Model):
                 {
                     "line": line,
                     "label": line.name,
-                    "source": dict(line._fields["source"].selection).get(line.source),
+                    "source": dict(line._fields["source"]._description_selection(line.env)).get(line.source),
                     "month_label": current[:1].name or "",
                     "month_planned": sum(current.mapped("amount_planned")),
                     "planned": line.amount_planned,

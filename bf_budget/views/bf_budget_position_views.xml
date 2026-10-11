@@ -4,11 +4,11 @@
         <field name="name">bf.budget.position.list</field>
         <field name="model">bf.budget.position</field>
         <field name="arch" type="xml">
-            <list string="Postes budgétaires">
+            <list string="Budget items">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="budget_type"/>
-                <field name="account_count" string="Comptes"/>
+                <field name="account_count" string="Accounts"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </list>
         </field>
@@ -18,11 +18,11 @@
         <field name="name">bf.budget.position.form</field>
         <field name="model">bf.budget.position</field>
         <field name="arch" type="xml">
-            <form string="Poste budgétaire">
+            <form string="Budget item">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Licences logicielles"/></h1>
+                        <h1><field name="name" placeholder="Software licenses"/></h1>
                     </div>
                     <group>
                         <group>
@@ -36,14 +36,14 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Comptes" name="accounts">
+                        <page string="Accounts" name="accounts">
                             <field name="account_ids"
                                    widget="many2many_tags"
                                    options="{'no_create': True}"
                                    domain="[('company_ids', 'in', company_id), ('deprecated', '=', False)]"/>
                         </page>
-                        <page string="Raisonnement" name="note">
-                            <field name="note" placeholder="Pourquoi ce poste existe, et ce qu'il ne couvre pas."/>
+                        <page string="Rationale" name="note">
+                            <field name="note" placeholder="Why this budget item exists, and what it does not cover."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -55,31 +55,29 @@
         <field name="name">bf.budget.position.search</field>
         <field name="model">bf.budget.position</field>
         <field name="arch" type="xml">
-            <search string="Postes budgétaires">
+            <search string="Budget items">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="account_ids"/>
-                <filter name="expense" string="Charges" domain="[('budget_type', '=', 'expense')]"/>
-                <filter name="revenue" string="Produits" domain="[('budget_type', '=', 'revenue')]"/>
+                <filter name="expense" string="Expenses" domain="[('budget_type', '=', 'expense')]"/>
+                <filter name="revenue" string="Revenue" domain="[('budget_type', '=', 'revenue')]"/>
                 <separator/>
-                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_type" string="Sens" context="{'group_by': 'budget_type'}"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_type" string="Budget type" context="{'group_by': 'budget_type'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="bf_budget_position_action" model="ir.actions.act_window">
-        <field name="name">Postes budgétaires</field>
+        <field name="name">Budget items</field>
         <field name="res_model">bf.budget.position</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez votre premier poste budgétaire</p>
+            <p class="o_view_nocontent_smiling_face">Create your first budget item</p>
             <p>
-                Un poste regroupe des comptes du grand livre. Visez trois à cinq postes :
-                au-delà, le budget devient un tableau que plus personne ne consulte.
-                L'assistant de proposition part de votre plan comptable réel.
+                A budget item groups general ledger accounts. Aim for three to five budget items: beyond that, the budget becomes a table nobody looks at anymore. The suggestion wizard starts from your actual chart of accounts.
             </p>
         </field>
     </record>

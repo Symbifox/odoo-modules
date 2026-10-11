@@ -19,8 +19,13 @@ import re
 from datetime import date, datetime, timedelta
 
 from odoo import _, api, fields, models
+from odoo.tools import LazyTranslate
 
 _logger = logging.getLogger(__name__)
+# Les libellés posés au chargement du module : `_()` n'a pas encore de langue à
+# ce moment-là, et `_(variable)` n'est jamais ramassé par l'extraction. `_lt`
+# marque le terme ici ; `self.env._()` le traduit à l'usage, pour le lecteur.
+_lt = LazyTranslate(__name__)
 
 # Durée de repli (jours) d'une barre dont on ne connaît qu'un bout.
 DUREE_DEFAUT = 5
@@ -38,20 +43,20 @@ COULEUR = re.compile(r"^#[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{2})?)?$")
 # Les regroupements d'un projet. `step` n'apparaît que si
 # `bf_stepbystep_clients` est installé : on l'offre, on n'en dépend pas.
 REGROUPEMENTS_PROJET = [
-    ("stage", "Étape du projet"),
-    ("milestone", "Jalon"),
-    ("assignee", "Responsable"),
-    ("company", "Société"),
-    ("step", "Étape de progression"),
-    ("none", "Aucun"),
+    ("stage", _lt("Project stage")),
+    ("milestone", _lt("Milestone")),
+    ("assignee", _lt("Assignee")),
+    ("company", _lt("Company")),
+    ("step", _lt("Progression step")),
+    ("none", _lt("None")),
 ]
 
 # Un plan autonome n'a ni étape ni jalon de projet : ses couloirs sont les
 # siens. Lui proposer « Étape du projet » afficherait un menu qui ne fait rien.
 REGROUPEMENTS_PLAN = [
-    ("lane", "Couloir"),
-    ("assignee", "Responsable"),
-    ("none", "Aucun"),
+    ("lane", _lt("Lane")),
+    ("assignee", _lt("Assignee")),
+    ("none", _lt("None")),
 ]
 
 
@@ -97,7 +102,7 @@ def _jour(valeur):
 
 class BfGanttSource(models.AbstractModel):
     _name = "bf.gantt.source"
-    _description = "Source de données d'un échéancier"
+    _description = "Timeline data source"
 
     # `AbstractModel` : ni champ ni table, seulement le point d'entrée RPC du
     # composant OWL et des générateurs. Déclaré `models.Model` + `_auto = False`,
@@ -137,11 +142,11 @@ class BfGanttSource(models.AbstractModel):
             ],
             "groupings": {
                 "project": [
-                    {"key": k, "label": _(lbl)}
+                    {"key": k, "label": self.env._(lbl)}
                     for k, lbl in REGROUPEMENTS_PROJET
                     if k != "step" or self._etapes_de_progression_disponibles()
                 ],
-                "plan": [{"key": k, "label": _(lbl)}
+                "plan": [{"key": k, "label": self.env._(lbl)}
                          for k, lbl in REGROUPEMENTS_PLAN],
             },
         }
@@ -259,7 +264,7 @@ class BfGanttSource(models.AbstractModel):
         return {
             "ref": "task-%s" % tache.id,
             "id": tache.id,
-            "name": tache.name or _("Tâche"),
+            "name": tache.name or _("Task"),
             "lane": cle,
             "lane_name": nom,
             "lane_seq": seq,
@@ -300,9 +305,9 @@ class BfGanttSource(models.AbstractModel):
             sortie.append({
                 "ref": "milestone-%s" % j.id,
                 "id": j.id,
-                "name": j.name or _("Jalon"),
+                "name": j.name or _("Milestone"),
                 "lane": "milestone" if grouping != "milestone" else "milestone-%s" % j.id,
-                "lane_name": _("Jalons"),
+                "lane_name": _("Milestones"),
                 "lane_seq": 9998,
                 "start": str(quand),
                 "end": str(quand),
@@ -338,7 +343,7 @@ class BfGanttSource(models.AbstractModel):
                 "id": item.id,
                 "name": item.name,
                 "lane": self._cle_couloir_plan(item, grouping),
-                "lane_name": item.lane or _("Sans regroupement"),
+                "lane_name": item.lane or _("Ungrouped"),
                 "lane_seq": item.sequence,
                 "start": str(debut),
                 "end": str(fin),
@@ -392,18 +397,18 @@ class BfGanttSource(models.AbstractModel):
     def _couloir_de_tache(self, tache, grouping):
         """Rend (clé, nom, rang) du couloir d'une tâche selon le regroupement."""
         if grouping == "none":
-            return "all", _("Toutes les tâches"), 0
+            return "all", _("All tasks"), 0
         if grouping == "milestone":
             if tache.milestone_id:
                 return ("milestone-%s" % tache.milestone_id.id,
                         tache.milestone_id.name, tache.milestone_id.id)
-            return "milestone-none", _("Sans jalon"), 9999
+            return "milestone-none", _("No milestone"), 9999
         if grouping == "assignee":
             if tache.user_ids:
                 premier = tache.user_ids[0]
                 return ("assignee-%s" % premier.id,
                         abreger(premier.display_name), premier.id)
-            return "assignee-none", _("Sans responsable"), 9999
+            return "assignee-none", _("Unassigned"), 9999
         if grouping == "project":
             projet = tache.project_id
             return ("project-%s" % projet.id, projet.display_name or "", projet.id)
@@ -416,12 +421,12 @@ class BfGanttSource(models.AbstractModel):
             if numero:
                 nom = etape.progression_step_name or etape.name or ""
                 return "step-%s" % numero, nom, numero
-            return "step-0", _("Hors étape"), 9999
+            return "step-0", _("Outside the steps"), 9999
         # Défaut : l'étape du projet.
         if tache.stage_id:
             return ("stage-%s" % tache.stage_id.id, tache.stage_id.name,
                     tache.stage_id.sequence or tache.stage_id.id)
-        return "stage-none", _("Sans étape"), 9999
+        return "stage-none", _("No stage"), 9999
 
     # ------------------------------------------------------------------
     # Assemblage
@@ -484,6 +489,31 @@ class BfGanttSource(models.AbstractModel):
             },
             "truncated": tronque,
             "limit": PLAFOND_BARRES,
+            # La langue du lecteur, et les textes du dessin traduits pour lui.
+            # Les générateurs n'ont pas d'env : ils lisent ces deux clés, et
+            # retombent sur l'anglais quand elles manquent.
+            "lang": self.env.lang or "en_US",
+            "labels": self._libelles(),
+        }
+
+    def _libelles(self):
+        """Les textes que le PDF, le PNG et le SVG écrivent sur le dessin.
+
+        ⚠️ Des gabarits, pas des phrases finies : les nombres et les dates ne
+        sont connus qu'au tracé. Les espaces réservés sont nommés, pour qu'une
+        langue puisse les déplacer. Les clés sont celles de `geometrie.LIBELLES`,
+        qui garde le repli anglais.
+        """
+        return {
+            "untitled": _("Timeline"),
+            "summary": _("%(count)s lines · %(start)s to %(end)s"),
+            "period": _("%(start)s to %(end)s"),
+            "today": _("today"),
+            "scaled": _("scaled to %(percent)s %%"),
+            "truncated": _("truncated list"),
+            "range_capped": _("range capped at %(years)s years, chevron = "
+                              "bar that runs past it"),
+            "approximate": _("dotted line = approximate start"),
         }
 
     def _marque(self, societe):

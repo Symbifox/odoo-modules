@@ -22,24 +22,26 @@
                                 </t>
                                 <span t-out="payload['company']['name']"/>
                                 ·
-                                <span t-out="payload['range']['min']"/> au
+                                <span t-out="payload['range']['min']"/> to
                                 <span t-out="payload['range']['max']"/>
                             </p>
                         </div>
                         <div class="text-end">
+                            <!-- Un lien par échelle, au texte littéral : un libellé
+                                 tiré d'une expression QWeb n'est jamais traduit. -->
                             <div class="btn-group btn-group-sm mb-2" role="group"
-                                 aria-label="Échelle de temps">
-                                <t t-foreach="[('day', 'Jour'), ('week', 'Semaine'), ('month', 'Mois')]"
-                                   t-as="ech">
-                                    <a t-attf-class="btn #{echelle == ech[0] and 'btn-primary' or 'btn-outline-secondary'}"
-                                       t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=#{ech[0]}&amp;zoom=#{zoom}"
-                                       t-out="ech[1]"/>
-                                </t>
+                                 aria-label="Time scale">
+                                <a t-attf-class="btn #{echelle == 'day' and 'btn-primary' or 'btn-outline-secondary'}"
+                                   t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=day&amp;zoom=#{zoom}">Day</a>
+                                <a t-attf-class="btn #{echelle == 'week' and 'btn-primary' or 'btn-outline-secondary'}"
+                                   t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=week&amp;zoom=#{zoom}">Week</a>
+                                <a t-attf-class="btn #{echelle == 'month' and 'btn-primary' or 'btn-outline-secondary'}"
+                                   t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=month&amp;zoom=#{zoom}">Month</a>
                             </div>
                             <!-- La taille d'affichage voyage dans l'adresse : le
                                  lien partagé s'ouvre réglé comme on l'a laissé. -->
                             <div class="btn-group btn-group-sm mb-2 ms-2" role="group"
-                                 aria-label="Taille d'affichage">
+                                 aria-label="Display size">
                                 <t t-foreach="zooms" t-as="z">
                                     <a t-attf-class="btn #{zoom == z[0] and 'btn-primary' or 'btn-outline-secondary'}"
                                        t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=#{echelle}&amp;zoom=#{z[0]}"
@@ -47,7 +49,7 @@
                                 </t>
                             </div>
                             <div class="btn-group btn-group-sm d-block" role="group"
-                                 aria-label="Téléchargements">
+                                 aria-label="Downloads">
                                 <t t-foreach="formats" t-as="fmt">
                                     <a class="btn btn-outline-secondary"
                                        t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}/#{fmt[0]}?access_token=#{access_token}&amp;echelle=#{echelle}&amp;zoom=#{zoom}"
@@ -58,8 +60,7 @@
                     </div>
 
                     <div t-if="payload.get('truncated')" class="alert alert-warning py-2">
-                        Cet échéancier dépasse <span t-out="payload.get('limit')"/> lignes.
-                        Seules les premières sont affichées.
+                        This timeline exceeds <span t-out="payload.get('limit')"/> lines. Only the first ones are shown.
                     </div>
 
                     <div class="o_bf_gantt_dessin">
@@ -69,19 +70,18 @@
                     <!-- La légende dit ce que les couleurs veulent dire. Sans elle,
                          un lecteur qui n'est pas du métier lit un dégradé de gris. -->
                     <div class="o_bf_gantt_legende mt-3 d-flex flex-wrap gap-3 small text-muted">
-                        <span><i class="o_pastille" style="background:#4C9A4C"/> Terminé</span>
-                        <span><i class="o_pastille" style="background:#1F7CB4"/> En cours</span>
-                        <span><i class="o_pastille" style="background:#C0392B"/> En retard</span>
-                        <span><i class="o_pastille" style="background:#7A868F"/> À venir</span>
-                        <span><i class="o_pastille" style="background:#9A9A9A"/> Annulé</span>
-                        <span>◆ Jalon</span>
-                        <span>Trait pointillé au bord d'une barre : début approximatif.</span>
+                        <span><i class="o_pastille" style="background:#4C9A4C"/> Done</span>
+                        <span><i class="o_pastille" style="background:#1F7CB4"/> In progress</span>
+                        <span><i class="o_pastille" style="background:#C0392B"/> Overdue</span>
+                        <span><i class="o_pastille" style="background:#7A868F"/> Upcoming</span>
+                        <span><i class="o_pastille" style="background:#9A9A9A"/> Cancelled</span>
+                        <span>◆ Milestone</span>
+                        <span>Dotted line at the edge of a bar: approximate start.</span>
                     </div>
 
                     <p class="text-muted small mt-4 mb-0">
-                        Page en lecture seule, servie par
-                        <span t-out="payload['company']['name']"/>.
-                        Elle reflète l'état au moment de l'affichage.
+                        Read-only page, served by
+                        <span t-out="payload['company']['name']"/>. It reflects the state at the time of display.
                     </p>
                 </div>
             </div>

@@ -10,7 +10,7 @@
                 <field name="name" />
                 <field name="fund_type" />
                 <field name="analytic_account_id" />
-                <field name="amount_raised" sum="Total amassé" />
+                <field name="amount_raised" sum="Total raised" />
                 <field name="donation_count" />
                 <field name="company_id" groups="base.group_multi_company" />
             </list>
@@ -33,13 +33,13 @@
                             <field
                                 name="donation_count"
                                 widget="statinfo"
-                                string="Dons"
+                                string="Donations"
                             />
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="name" />
-                        <h1><field name="name" placeholder="Nom du fonds" /></h1>
+                        <h1><field name="name" placeholder="Fund name" /></h1>
                     </div>
                     <group>
                         <group>
@@ -75,23 +75,23 @@
                 <field name="analytic_account_id" />
                 <filter
                     name="unrestricted"
-                    string="Non affecté"
+                    string="Unrestricted"
                     domain="[('fund_type', '=', 'unrestricted')]"
                 />
                 <filter
                     name="restricted"
-                    string="Affecté"
+                    string="Restricted"
                     domain="[('fund_type', '=', 'restricted')]"
                 />
                 <filter
                     name="endowment"
-                    string="Dotation"
+                    string="Endowment"
                     domain="[('fund_type', '=', 'endowment')]"
                 />
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter
                         name="group_type"
-                        string="Type de fonds"
+                        string="Fund type"
                         context="{'group_by': 'fund_type'}"
                     />
                 </group>
@@ -100,13 +100,12 @@
     </record>
 
     <record id="action_bf_fund" model="ir.actions.act_window">
-        <field name="name">Fonds</field>
+        <field name="name">Funds</field>
         <field name="res_model">bf.fund</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez votre premier fonds</p>
-            <p>Un fonds est une désignation (« où va l'argent ») reliée à un
-            compte analytique pour la ventilation comptable des dons.</p>
+            <p class="o_view_nocontent_smiling_face">Create your first fund</p>
+            <p>A fund is a designation ("where the money goes") linked to an analytic account for the accounting distribution of donations.</p>
         </field>
     </record>
 </odoo>

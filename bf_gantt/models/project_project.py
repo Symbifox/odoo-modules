@@ -18,23 +18,23 @@ class ProjectProject(models.Model):
     _inherit = "project.project"
 
     bf_gantt_published = fields.Boolean(
-        string="Échéancier publié",
+        string="Timeline published",
         copy=False,
-        help="Ouvre l'adresse à token en lecture seule. Décochée, l'adresse "
-             "répond « accès refusé » même avec le bon token.",
+        help="Opens the token address in read-only mode. Unchecked, the "
+             "address answers \"access denied\" even with the right token.",
     )
     bf_gantt_grouping = fields.Selection(
         selection=[
-            ("stage", "Étape du projet"),
-            ("milestone", "Jalon"),
-            ("assignee", "Responsable"),
-            ("company", "Société"),
-            ("step", "Étape de progression"),
-            ("none", "Aucun"),
+            ("stage", "Project stage"),
+            ("milestone", "Milestone"),
+            ("assignee", "Assignee"),
+            ("company", "Company"),
+            ("step", "Progression step"),
+            ("none", "None"),
         ],
-        string="Regroupement de l'échéancier",
+        string="Timeline grouping",
         default="stage",
-        help="Le regroupement retenu à l'ouverture, ici comme au portail.",
+        help="The grouping used on opening, here and on the portal.",
     )
 
     # ------------------------------------------------------------------
@@ -54,8 +54,9 @@ class ProjectProject(models.Model):
         # protéger de plus (qui peut écrire une action serveur est déjà admin).
         if not self.env.su and not self.env.user.has_group(GROUPE_GESTION):
             raise AccessError(_(
-                "Publier un échéancier le rend lisible sans compte. Ce geste "
-                "demande le groupe « Échéancier : gestion et publication »."))
+                "Publishing a timeline makes it readable without an "
+                "account. This action requires the \"Timeline: management "
+                "and publishing\" group."))
 
     def write(self, valeurs):
         # ⚠️ Uniquement NOTRE champ. `access_token` appartient à `portal.mixin` et
@@ -128,7 +129,7 @@ class ProjectProject(models.Model):
             "params": {
                 "type": "info",
                 "sticky": True,
-                "title": _("Adresse de l'échéancier"),
+                "title": _("Timeline address"),
                 "message": lien,
             },
         }

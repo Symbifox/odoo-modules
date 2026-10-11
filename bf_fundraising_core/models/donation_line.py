@@ -10,10 +10,10 @@ class DonationLine(models.Model):
 
     fund_id = fields.Many2one(
         "bf.fund",
-        string="Fonds",
+        string="Fund",
         ondelete="restrict",
-        help="Fonds (désignation) auquel ce don est affecté. Détermine la "
-        "ventilation analytique de la ligne.",
+        help="Fund (designation) this donation is allocated to. "
+             "Determines the analytic distribution of the line.",
     )
 
     @api.depends("product_id", "fund_id")

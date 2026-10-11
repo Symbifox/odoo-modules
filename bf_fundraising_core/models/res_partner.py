@@ -9,31 +9,32 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     is_constituent = fields.Boolean(
-        string="Constituant", help="Cette fiche est un constituant (donateur, "
-        "membre, prospect) suivi par la levée de fonds."
+        string="Constituent", help="This record is a constituent (donor, "
+                                   "member, prospect) tracked by "
+                                   "fundraising."
     )
     constituent_type = fields.Selection(
         [
-            ("individual", "Individu"),
-            ("household", "Foyer"),
-            ("organization", "Organisation"),
-            ("foundation", "Fondation"),
-            ("other", "Autre"),
+            ("individual", "Individual"),
+            ("household", "Household"),
+            ("organization", "Organization"),
+            ("foundation", "Foundation"),
+            ("other", "Other"),
         ],
-        string="Type de constituant",
+        string="Constituent type",
     )
     is_household = fields.Boolean(
-        string="Est un foyer",
-        help="Fiche représentant un foyer regroupant plusieurs individus.",
+        string="Is a household",
+        help="Record representing a household that groups several individuals.",
     )
     household_id = fields.Many2one(
         "res.partner",
-        string="Foyer",
+        string="Household",
         domain="[('is_household', '=', True)]",
-        help="Foyer auquel appartient ce constituant.",
+        help="Household this constituent belongs to.",
     )
     household_member_ids = fields.One2many(
-        "res.partner", "household_id", string="Membres du foyer"
+        "res.partner", "household_id", string="Household members"
     )
 
     # --- Solicit codes -------------------------------------------------------
@@ -42,56 +43,56 @@ class ResPartner(models.Model):
         "res_partner_solicit_code_rel",
         "partner_id",
         "solicit_code_id",
-        string="Codes de sollicitation",
+        string="Solicit codes",
     )
     do_not_solicit = fields.Boolean(
-        string="Ne pas solliciter",
+        string="Do not solicit",
         compute="_compute_do_not_solicit",
         store=True,
     )
 
     # --- Giving summary (stored → sortable/filterable, incl. LYBUNT) ---------
     donation_amount_total = fields.Monetary(
-        string="Total des dons",
+        string="Total donations",
         compute="_compute_giving_summary",
         store=True,
         currency_field="fundraising_currency_id",
     )
     donation_largest = fields.Monetary(
-        string="Plus grand don",
+        string="Largest donation",
         compute="_compute_giving_summary",
         store=True,
         currency_field="fundraising_currency_id",
     )
     donation_first_date = fields.Date(
-        string="Premier don", compute="_compute_giving_summary", store=True
+        string="First donation", compute="_compute_giving_summary", store=True
     )
     donation_last_date = fields.Date(
-        string="Dernier don", compute="_compute_giving_summary", store=True
+        string="Last donation", compute="_compute_giving_summary", store=True
     )
     fundraising_currency_id = fields.Many2one(
         "res.currency",
-        string="Devise (levée de fonds)",
+        string="Currency (fundraising)",
         compute="_compute_fundraising_currency",
     )
 
     # --- Prospect / major-gift ratings --------------------------------------
     giving_capacity = fields.Monetary(
-        string="Capacité de don estimée",
+        string="Estimated giving capacity",
         currency_field="fundraising_currency_id",
     )
     wealth_rating = fields.Selection(
         [
-            ("unknown", "Inconnue"),
-            ("low", "Faible"),
-            ("medium", "Moyenne"),
-            ("high", "Élevée"),
-            ("major", "Don majeur"),
+            ("unknown", "Unknown"),
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+            ("major", "Major gift"),
         ],
-        string="Cote de richesse",
+        string="Wealth rating",
         default="unknown",
     )
-    is_major_prospect = fields.Boolean(string="Prospect don majeur")
+    is_major_prospect = fields.Boolean(string="Major gift prospect")
 
     def _compute_fundraising_currency(self):
         currency = self.env.company.currency_id
@@ -124,7 +125,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Dons — %s", self.display_name),
+            "name": _("Donations: %s", self.display_name),
             "res_model": "donation.donation",
             "view_mode": "list,form",
             "domain": [("partner_id", "=", self.id)],

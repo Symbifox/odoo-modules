@@ -22,7 +22,7 @@ class BfBudgetLine(models.Model):
     """
 
     _name = "bf.budget.line"
-    _description = "Ligne budgétaire"
+    _description = "Budget line"
     _order = "budget_id, sequence, id"
 
     budget_id = fields.Many2one(
@@ -38,34 +38,35 @@ class BfBudgetLine(models.Model):
 
     source = fields.Selection(
         [
-            ("accounting", "Comptabilité"),
-            ("internal_cost", "Coût interne (hors comptabilité)"),
+            ("accounting", "Accounting"),
+            ("internal_cost", "Internal cost (outside accounting)"),
         ],
         required=True,
         default="accounting",
-        help="Comptabilité : les écritures comptabilisées sur les comptes du poste.\n"
-        "Coût interne : les lignes analytiques sans pièce comptable, c'est-à-dire "
-        "les feuilles de temps et les saisies analytiques manuelles. Les deux "
-        "sources sont disjointes : aucun montant ne peut être compté deux fois.",
+        help="Accounting: entries posted on the budget item's "
+             "accounts.\nInternal cost: analytic lines without a journal "
+             "entry, that is timesheets and manual analytic entries. The "
+             "two sources are separate: no amount can be counted twice.",
     )
     position_id = fields.Many2one(
         "bf.budget.position",
-        string="Poste",
+        string="Budget item",
         ondelete="restrict",
         index=True,
         domain="[('budget_type', '=', budget_type), ('company_id', '=', company_id)]",
     )
     analytic_account_ids = fields.Many2many(
         "account.analytic.account",
-        string="Comptes analytiques",
-        help="Facultatif en comptabilité : restreint la lecture aux écritures dont "
-        "la distribution analytique nomme un de ces comptes. Obligatoire pour une "
-        "ligne de coût interne, où c'est le seul axe disponible.",
+        string="Analytic accounts",
+        help="Optional for accounting: restricts reading to entries whose "
+             "analytic distribution names one of these accounts. Required "
+             "for an internal cost line, where it is the only available "
+             "axis.",
     )
-    name = fields.Char(string="Poste", compute="_compute_name", store=True)
+    name = fields.Char(string="Budget item", compute="_compute_name", store=True)
 
     amount_planned = fields.Monetary(
-        string="Prévu",
+        string="Planned",
         compute="_compute_amount_planned",
         inverse="_inverse_amount_planned",
         store=True,
@@ -73,62 +74,67 @@ class BfBudgetLine(models.Model):
         currency_field="currency_id",
     )
     period_ids = fields.One2many(
-        "bf.budget.line.period", "line_id", string="Répartition", copy=True
+        "bf.budget.line.period", "line_id", string="Breakdown", copy=True
     )
 
     amount_actual = fields.Monetary(
-        string="Réalisé", compute="_compute_amounts", currency_field="currency_id"
+        string="Actual", compute="_compute_amounts", currency_field="currency_id"
     )
     amount_committed = fields.Monetary(
-        string="Engagé", compute="_compute_amounts", currency_field="currency_id"
+        string="Committed", compute="_compute_amounts", currency_field="currency_id"
     )
     amount_theoretical = fields.Monetary(
-        string="Théorique", compute="_compute_amounts", currency_field="currency_id"
+        string="Theoretical", compute="_compute_amounts", currency_field="currency_id"
     )
     theoretical_basis = fields.Selection(
-        [("calendar", "Calendrier des engagements"), ("prorata", "Prorata de la répartition")],
-        string="Base du théorique",
+        [("calendar", "Commitment calendar"), ("prorata", "Prorated "
+                                                                 "from "
+                                                                 "the "
+                                                                 "breakdown")],
+        string="Theoretical basis",
         compute="_compute_amounts",
-        help="Le module dit sur quoi il s'appuie. Un prorata sur une dépense "
-        "annuelle crierait au dépassement chaque mois de renouvellement.",
+        help="The module states what it relies on. A pro rata on an "
+             "annual expense would cry overrun every renewal month.",
     )
     amount_variance = fields.Monetary(
-        string="Écart au plan",
+        string="Variance from plan",
         compute="_compute_amounts",
         currency_field="currency_id",
-        help="Prévu moins engagé. Positif : il reste du budget.",
+        help="Planned minus committed. Positive: budget remains.",
     )
     amount_drift = fields.Monetary(
-        string="Écart au théorique",
+        string="Variance from theoretical",
         compute="_compute_amounts",
         currency_field="currency_id",
-        help="Engagé moins théorique. Positif sur une charge : on dépense plus vite "
-        "que prévu à ce stade de l'exercice.",
+        help="Committed minus theoretical. Positive on an expense: "
+             "spending is running faster than planned at this point of "
+             "the fiscal year.",
     )
-    drift_pct = fields.Float(string="Écart au théorique (%)", compute="_compute_amounts")
-    is_alert = fields.Boolean(string="En alerte", compute="_compute_amounts", search="_search_is_alert")
+    drift_pct = fields.Float(string="Variance from theoretical (%)", compute="_compute_amounts")
+    is_alert = fields.Boolean(string="Flagged", compute="_compute_amounts", search="_search_is_alert")
 
     unvalued_hours = fields.Float(
-        string="Heures non valorisées",
+        string="Uncosted hours",
         compute="_compute_unvalued_hours",
-        help="Heures saisies dont le coût est nul. Odoo valorise le temps à partir "
-        "du coût horaire de l'employé : quand ce taux manque, la ligne lit zéro et "
-        "a l'air parfaitement normale.",
+        help="Logged hours whose cost is zero. Odoo costs time from the "
+             "employee's hourly cost: when that rate is missing, the line "
+             "reads zero and looks perfectly normal.",
     )
     has_unvalued_time = fields.Boolean(compute="_compute_unvalued_hours")
 
     overrun_accepted = fields.Boolean(
-        string="Dépassement assumé",
-        help="Le dépassement est connu et accepté : la ligne cesse d'être signalée.",
+        string="Accepted overrun",
+        help="The overrun is known and accepted: the line is no longer "
+             "flagged.",
     )
-    overrun_reason = fields.Text(string="Motif du dépassement")
+    overrun_reason = fields.Text(string="Overrun reason")
 
     _sql_constraints = [
         (
             "planned_positive",
             "CHECK(amount_planned >= 0)",
-            "Un montant prévu ne peut pas être négatif : c'est le sens du poste "
-            "(charges ou produits) qui porte la direction, pas le signe.",
+            "A planned amount cannot be negative: the budget item's type "
+            "(expenses or revenue) carries the direction, not the sign.",
         ),
     ]
 
@@ -140,13 +146,13 @@ class BfBudgetLine(models.Model):
         for line in self:
             if line.source == "accounting" and not line.position_id:
                 raise ValidationError(
-                    _("Une ligne lue en comptabilité a besoin d'un poste budgétaire.")
+                    _("A line read from accounting needs a budget item.")
                 )
             if line.source == "internal_cost" and not line.analytic_account_ids:
                 raise ValidationError(
                     _(
-                        "Une ligne de coût interne a besoin d'au moins un compte "
-                        "analytique : c'est son seul axe."
+                        "An internal cost line needs at least one "
+                        "analytic account: it is its only axis."
                     )
                 )
 
@@ -157,12 +163,11 @@ class BfBudgetLine(models.Model):
             if position and position.budget_type != line.budget_id.budget_type:
                 raise ValidationError(
                     _(
-                        "Le poste « %(position)s » ne va pas dans un budget de "
-                        "%(kind)s.",
+                        "The budget item \"%(position)s\" does not fit a "
+                        "budget of type %(kind)s.",
                         position=position.display_name,
-                        kind=dict(line.budget_id._fields["budget_type"].selection).get(
-                            line.budget_id.budget_type
-                        ),
+                        kind=dict(line.budget_id._fields["budget_type"]._description_selection(
+                            line.env)).get(line.budget_id.budget_type),
                     )
                 )
 
@@ -172,7 +177,7 @@ class BfBudgetLine(models.Model):
             if line.position_id:
                 label = line.position_id.display_name
             else:
-                label = _("Coût interne")
+                label = _("Internal cost")
             if line.analytic_account_ids:
                 label = "%s — %s" % (
                     label,
@@ -270,7 +275,7 @@ class BfBudgetLine(models.Model):
         for line in self:
             if line.state != "draft":
                 raise UserError(
-                    _("La répartition ne se refait que sur un budget au brouillon.")
+                    _("The breakdown can only be redone on a draft budget.")
                 )
             total = line.amount_planned
             line._generate_periods()
@@ -480,7 +485,7 @@ class BfBudgetLine(models.Model):
         code ne le laisse voir à la lecture.
         """
         if operator not in ("=", "!="):
-            raise UserError(_("Filtre non pris en charge sur « En alerte »."))
+            raise UserError(_("Unsupported filter on \"Flagged\"."))
         wanted = bool(value) if operator == "=" else not bool(value)
         candidates = self.search([("state", "in", ("open", "closed"))])
         matching = candidates.filtered(lambda line: line.is_alert == wanted)

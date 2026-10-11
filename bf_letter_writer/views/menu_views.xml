@@ -2,18 +2,18 @@
 <odoo>
 
     <menuitem id="menu_letter_root"
-              name="Lettres"
+              name="Letters"
               web_icon="bf_letter_writer,static/description/icon.png"
               sequence="55"/>
 
     <menuitem id="menu_letter_documents"
-              name="Lettres"
+              name="Letters"
               parent="menu_letter_root"
               action="action_letter_document"
               sequence="10"/>
 
     <menuitem id="menu_letter_merge"
-              name="Fusion en lot"
+              name="Bulk merge"
               parent="menu_letter_root"
               action="action_letter_merge_wizard"
               sequence="20"/>
@@ -25,13 +25,13 @@
               sequence="90"/>
 
     <menuitem id="menu_letter_templates"
-              name="Modèles de lettres"
+              name="Letter templates"
               parent="menu_letter_config"
               action="action_letter_template"
               sequence="10"/>
 
     <menuitem id="menu_letter_quicktexts"
-              name="Blocs de texte"
+              name="Text blocks"
               parent="menu_letter_config"
               action="action_letter_quicktext"
               sequence="20"/>

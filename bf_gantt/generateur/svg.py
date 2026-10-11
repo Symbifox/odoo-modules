@@ -82,9 +82,13 @@ def rendre(payload, echelle="week", zoom=1.0):
              logo["largeur"], logo["hauteur"],
              quoteattr("data:%s;base64,%s" % (logo["mime"], logo["b64"]))))
         y_repere = geo.MARGE_PAGE + 6 + logo["hauteur"] + 9
-    a('<text x="%.1f" y="%.1f" font-size="8" text-anchor="end" fill="%s">'
-      '%s lignes · %s au %s</text>'
-      % (droite, y_repere, geo.GRIS, g["compte"], g["debut"], g["fin"]))
+    # Les textes du dessin viennent de la source, traduits pour le lecteur. Une
+    # traduction est un texte comme un autre : elle passe par `escape`.
+    textes = g["libelles"]
+    a('<text x="%.1f" y="%.1f" font-size="8" text-anchor="end" fill="%s">%s</text>'
+      % (droite, y_repere, geo.GRIS,
+         escape(geo.formater(textes, "summary", count=g["compte"],
+                             start=g["debut"], end=g["fin"]))))
 
     # Graduations.
     for haut in g["graduations"]["haut"]:
@@ -168,8 +172,11 @@ def rendre(payload, echelle="week", zoom=1.0):
               'stroke-width="0.8" stroke-dasharray="1.5 1.5"/>'
               % (ligne["bar_x"], ligne["bar_y"], ligne["bar_x"],
                  ligne["bar_y"] + ligne["bar_h"], geo.GRIS))
-        a('<title>%s</title>' % escape("%s · %s au %s · %s %%" % (
-            ligne["name"], ligne["start"], ligne["end"], ligne["progress"])))
+        a('<title>%s</title>' % escape("%s · %s · %s %%" % (
+            ligne["name"],
+            geo.formater(textes, "period", start=ligne["start"],
+                         end=ligne["end"]),
+            ligne["progress"])))
 
     # Ligne d'aujourd'hui.
     if g.get("x_aujourdhui") is not None:
@@ -178,8 +185,9 @@ def rendre(payload, echelle="week", zoom=1.0):
           'stroke-width="0.9" stroke-dasharray="3 2"/>'
           % (x, g["y_lignes"], x, g["y_fin_lignes"], geo.LIGNE_AUJOURDHUI))
         # Au-dessus de l'axe : sous les graduations, il chevauchait la date.
-        a('<text x="%.1f" y="%.1f" font-size="6.5" fill="%s">aujourd\'hui</text>'
-          % (x + 2, g["y_axe"] - 3, geo.LIGNE_AUJOURDHUI))
+        a('<text x="%.1f" y="%.1f" font-size="6.5" fill="%s">%s</text>'
+          % (x + 2, g["y_axe"] - 3, geo.LIGNE_AUJOURDHUI,
+             escape(textes["today"])))
 
     # Pied.
     y = g["hauteur"] - geo.MARGE_PAGE - 10
@@ -192,11 +200,11 @@ def rendre(payload, echelle="week", zoom=1.0):
       % (geo.MARGE_PAGE, y + 4, geo.GRIS, escape(pied)))
     notes = []
     if g["tronque"]:
-        notes.append("liste tronquée")
+        notes.append(textes["truncated"])
     if g.get("plage_reduite"):
-        notes.append("plage ramenée à %d ans, chevron = barre qui dépasse"
-                     % (geo.PLAGE_MAX_JOURS // 366))
-    notes.append("trait pointillé = début approximatif")
+        notes.append(geo.formater(textes, "range_capped",
+                                  years=geo.PLAGE_MAX_JOURS // 366))
+    notes.append(textes["approximate"])
     a('<text x="%.1f" y="%.1f" font-size="7" text-anchor="end" fill="%s">%s</text>'
       % (g["largeur"] - geo.MARGE_PAGE, y + 4, geo.GRIS, escape(" · ".join(notes))))
 

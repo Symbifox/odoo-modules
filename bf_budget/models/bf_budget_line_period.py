@@ -12,7 +12,7 @@ class BfBudgetLinePeriod(models.Model):
     """
 
     _name = "bf.budget.line.period"
-    _description = "Répartition mensuelle d'une ligne budgétaire"
+    _description = "Monthly breakdown of a budget line"
     _order = "line_id, sequence, date_start"
 
     line_id = fields.Many2one(
@@ -23,7 +23,7 @@ class BfBudgetLinePeriod(models.Model):
     sequence = fields.Integer(default=0)
     date_start = fields.Date(required=True)
     date_end = fields.Date(required=True)
-    amount_planned = fields.Monetary(string="Prévu", currency_field="currency_id")
+    amount_planned = fields.Monetary(string="Planned", currency_field="currency_id")
     name = fields.Char(compute="_compute_name", store=True)
 
     @api.depends("date_start")
@@ -36,5 +36,5 @@ class BfBudgetLinePeriod(models.Model):
         for period in self:
             if period.date_end < period.date_start:
                 raise ValidationError(
-                    _("Une période ne peut pas finir avant d'avoir commencé.")
+                    _("A period cannot end before it starts.")
                 )

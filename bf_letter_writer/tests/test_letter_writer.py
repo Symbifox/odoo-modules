@@ -254,7 +254,11 @@ class TestLetterWriter(TransactionCase):
         letter = self._make_letter()
         letter.body_html = "<p>Corps.</p>"
         letter.action_finalize()
-        wizard = self.env["letter.send.wizard"].create({"letter_id": letter.id})
+        # The chatter note is expected in English, the source: pinned, since a context
+        # without a language falls back to OdooBot's (fr_CA on a French database).
+        self.env["res.lang"]._activate_lang("en_US")
+        wizard = self.env["letter.send.wizard"].with_context(lang="en_US").create(
+            {"letter_id": letter.id})
         # onchange prefill (triggered by create override)
         self.assertIn(self.partner, wizard.recipient_ids)
         self.assertEqual(wizard.subject, letter.name)
@@ -274,7 +278,7 @@ class TestLetterWriter(TransactionCase):
             wizard.action_send()
         self.assertEqual(letter.state, "sent", "Lettre marquée envoyée")
         self.assertTrue(
-            letter.message_ids.filtered(lambda m: "courriel" in (m.body or "")),
+            letter.message_ids.filtered(lambda m: "emailed" in (m.body or "")),
             "Note de chatter publiée",
         )
         # no-email recipient guard
@@ -468,16 +472,45 @@ class TestLetterWriter(TransactionCase):
 
     # -- 26. Auto-title from recipient --------------------------------
     def test_26_auto_title(self):
+        # The title is also the email subject: in the letter's language, which
+        # follows the recipient's.
+        Lang = self.env["res.lang"]
+        Lang._activate_lang("fr_CA")
+        Lang._activate_lang("en_US")
+        self.partner.lang = "fr_CA"
         letter = self.env["letter.document"].create(
             {"partner_id": self.partner.id}
         )
         self.assertEqual(letter.name, "Lettre à %s" % self.partner.name,
                          "Titre auto depuis le destinataire")
+        english = self.partner.copy({"name": "QA Recipient Ltd.", "lang": "en_US"})
+        letter_en = self.env["letter.document"].create({"partner_id": english.id})
+        self.assertEqual(letter_en.name, "Letter to QA Recipient Ltd.")
+        # On a database without French (English only), the French titles given before
+        # the labels went English are still automatic.
+        with patch.object(type(self.env["res.lang"]), "get_installed",
+                          return_value=[("en_US", "English (US)")]):
+            names = letter_en._bf_auto_names(english)
+        self.assertIn("Lettre à %s" % english.name, names)
+        self.assertIn("Nouvelle lettre", names)
         # user-typed title is preserved
         letter2 = self.env["letter.document"].create(
             {"partner_id": self.partner.id, "name": "Mon titre à moi"}
         )
         self.assertEqual(letter2.name, "Mon titre à moi", "Titre saisi conservé")
+
+    def test_26b_send_body_in_the_letter_language(self):
+        # The recipient reads the email: in the letter's language, whoever sends it.
+        Lang = self.env["res.lang"]
+        Lang._activate_lang("fr_CA")
+        Lang._activate_lang("en_US")
+        for lang, greeting in (("fr_CA", "Bonjour"), ("en_US", "Hello")):
+            partner = self.partner.copy({"name": "QA %s" % lang, "lang": lang})
+            letter = self.env["letter.document"].create({"partner_id": partner.id})
+            self.assertEqual(letter.lang, lang)
+            wizard = self.env["letter.send.wizard"].with_context(lang="en_US").create(
+                {"letter_id": letter.id})
+            self.assertIn(greeting, str(wizard.body))
 
     # -- 27. Download-PDF action --------------------------------------
     def test_27_download_pdf(self):

@@ -144,7 +144,11 @@ Brand colours come from `bf_lexend`.
 - `image` mode: full-page background (known limitation — it covers the first
   page; prefer `pdf_overlay` for multi-page letters).
 - Optional modules are detected through `ir.module.module` (`installed` state).
-- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-10-08.
+- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-10-11.
+
+## Languages (v18.0.2.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A new letter's default title and the automatic title *Letter to <recipient>* are written in the reader's language: the letter's own language, else the recipient's, else the writer's, among the installed languages, else English. A title still holding an automatic name, in any installed language or in the French of earlier versions, follows a change of recipient; a title typed by hand is kept. The body of the email that sends a letter follows the same rule. The sample template and quick texts delivered with the module stay in French. On upgrade, the onboarding texts still carrying the delivered French switch to English; edited ones are kept.
 
 ## Tests
 

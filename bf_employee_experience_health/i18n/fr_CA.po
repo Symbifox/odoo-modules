@@ -1,0 +1,358 @@
+# Translation of Expérience employé : allergies - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_employee_experience_health 18.0.1.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 00:01+0000\n"
+"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_employee_experience_health
+#. odoo-python
+#: code:addons/bf_employee_experience_health/models/health.py:0
+msgid "%(allergen)s: %(people)s person(s), highest severity %(severity)s"
+msgstr "%(allergen)s : %(people)s personne(s), gravité maximale %(severity)s"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_employee_experience_health
+#: model:ir.model,name:bf_employee_experience_health.model_bf_ex_allergen
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__allergen_id
+msgid "Allergen"
+msgstr "Allergène"
+
+#. module: bf_employee_experience_health
+#: model:ir.actions.act_window,name:bf_employee_experience_health.action_allergen
+#: model:ir.ui.menu,name:bf_employee_experience_health.menu_allergen
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_allergen_list
+msgid "Allergens"
+msgstr "Allergènes"
+
+#. module: bf_employee_experience_health
+#: model:ir.actions.act_window,name:bf_employee_experience_health.action_allergy
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_hr_employee__ex_allergy_ids
+#: model:ir.ui.menu,name:bf_employee_experience_health.menu_allergy
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_allergy_list
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_hr_employee_form_allergy
+msgid "Allergies"
+msgstr "Allergies"
+
+#. module: bf_employee_experience_health
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_allergy_form
+msgid "Allergy"
+msgstr "Allergie"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields.selection,name:bf_employee_experience_health.selection__bf_ex_allergy__severity__anaphylaxis
+msgid "Anaphylaxis"
+msgstr "Anaphylaxie"
+
+#. module: bf_employee_experience_health
+#: model:ir.actions.server,name:bf_employee_experience_health.action_catering
+#: model:ir.ui.menu,name:bf_employee_experience_health.menu_catering
+msgid "Catering list (without names)"
+msgstr "Liste de service (sans les noms)"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__create_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__create_date
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_shellfish
+msgid "Crustaceans and molluscs"
+msgstr "Crustacés et mollusques"
+
+#. module: bf_employee_experience_health
+#: model:ir.model,name:bf_employee_experience_health.model_bf_ex_allergy
+msgid "Declared allergy"
+msgstr "Allergie déclarée"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_hr_employee__ex_has_anaphylaxis
+msgid "Declared anaphylaxis"
+msgstr "Anaphylaxie déclarée"
+
+#. module: bf_employee_experience_health
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_my_allergy_form
+msgid ""
+"Declaring an allergy is voluntary. What you enter here can be read by you "
+"and by administration, never by your manager or by the rest of the company. "
+"You can withdraw a declaration at any time."
+msgstr ""
+"Déclarer une allergie est volontaire. Ce que vous inscrivez ici est\n"
+"                        lisible par vous et par l'administration, jamais par votre\n"
+"                        gestionnaire ni par le reste de l'entreprise. Vous pouvez retirer\n"
+"                        une déclaration à tout moment."
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__note
+msgid "Details"
+msgstr "Précision"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__display_name
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields,help:bf_employee_experience_health.field_bf_ex_allergen__is_food
+#: model:ir.model.fields,help:bf_employee_experience_health.field_bf_ex_allergy__is_food
+msgid ""
+"Distinguishes a food allergy from an environmental or drug allergy. Only "
+"food allergies go to the catering list."
+msgstr ""
+"Distingue une allergie alimentaire d'une allergie environnementale ou "
+"médicamenteuse. Seules les alimentaires vont à la liste de service."
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_egg
+msgid "Eggs"
+msgstr "Œufs"
+
+#. module: bf_employee_experience_health
+#: model:ir.model,name:bf_employee_experience_health.model_hr_employee
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__employee_id
+msgid "Employee"
+msgstr "Employé"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_fish
+msgid "Fish"
+msgstr "Poisson"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__is_food
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__is_food
+msgid "Food"
+msgstr "Alimentaire"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_fragrance
+msgid "Fragrances and scented products"
+msgstr "Parfums et produits parfumés"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_gluten
+msgid "Gluten"
+msgstr "Gluten"
+
+#. module: bf_employee_experience_health
+#: model:ir.ui.menu,name:bf_employee_experience_health.menu_health
+msgid "Health and safety"
+msgstr "Santé et sécurité"
+
+#. module: bf_employee_experience_health
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_allergy_form
+msgid ""
+"Health information, and therefore sensitive under Law 25. Readable by the "
+"person concerned and by administration, no one else."
+msgstr ""
+"Renseignement de santé, donc sensible au sens de la Loi 25. Lisible\n"
+"                        par la personne concernée et par l'administration, personne d'autre."
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__id
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_bee
+msgid "Insect stings"
+msgstr "Piqûres d'insectes"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields.selection,name:bf_employee_experience_health.selection__bf_ex_allergy__severity__intolerance
+msgid "Intolerance"
+msgstr "Intolérance"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__write_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__write_date
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_latex
+msgid "Latex"
+msgstr "Latex"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields.selection,name:bf_employee_experience_health.selection__bf_ex_allergy__severity__mild
+msgid "Mild reaction"
+msgstr "Réaction légère"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_milk
+msgid "Milk"
+msgstr "Lait"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_mustard
+msgid "Mustard"
+msgstr "Moutarde"
+
+#. module: bf_employee_experience_health
+#. odoo-python
+#: code:addons/bf_employee_experience_health/models/health.py:0
+#: model:ir.actions.server,name:bf_employee_experience_health.action_my_allergy
+#: model:ir.ui.menu,name:bf_employee_experience_health.menu_my_allergy
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_my_allergy_list
+msgid "My allergies"
+msgstr "Mes allergies"
+
+#. module: bf_employee_experience_health
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_my_allergy_form
+msgid "My allergy"
+msgstr "Mon allergie"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
+#. bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_employee_experience_health
+#. odoo-python
+#: code:addons/bf_employee_experience_health/models/health.py:0
+msgid "No dietary restriction declared."
+msgstr "Aucune contrainte alimentaire déclarée."
+
+#. module: bf_employee_experience_health
+#. odoo-python
+#: code:addons/bf_employee_experience_health/models/health.py:0
+msgid ""
+"No employee record is linked to your account, so there is no one to attach a"
+" declaration to. The administration can create one."
+msgstr ""
+"Aucune fiche employé n'est rattachée à votre compte, alors il n'y a personne"
+" à qui rattacher une déclaration. L'administration peut en créer une."
+
+#. module: bf_employee_experience_health
+#. modules: bf_employee_experience_health, bf_fundraising_core, bf_gantt
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__note
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_allergy_form
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_my_allergy_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_peanut
+msgid "Peanuts"
+msgstr "Arachides"
+
+#. module: bf_employee_experience_health
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergen__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_sesame
+msgid "Sesame seeds"
+msgstr "Graines de sésame"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields.selection,name:bf_employee_experience_health.selection__bf_ex_allergy__severity__severe
+msgid "Severe reaction"
+msgstr "Réaction sévère"
+
+#. module: bf_employee_experience_health
+#: model:ir.model.fields,field_description:bf_employee_experience_health.field_bf_ex_allergy__severity
+msgid "Severity"
+msgstr "Gravité"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_soy
+msgid "Soy"
+msgstr "Soja"
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_sulphites
+msgid "Sulphites"
+msgstr "Sulfites"
+
+#. module: bf_employee_experience_health
+#. odoo-python
+#: code:addons/bf_employee_experience_health/models/health.py:0
+msgid ""
+"The catering list is reserved for administration. Your own declaration stays"
+" readable on your record."
+msgstr ""
+"La liste de service est réservée à l'administration. Votre propre "
+"déclaration reste lisible sur votre fiche."
+
+#. module: bf_employee_experience_health
+#: model:ir.model.constraint,message:bf_employee_experience_health.constraint_bf_ex_allergen_name_uniq
+msgid "This allergen already exists."
+msgstr "Cet allergène existe déjà."
+
+#. module: bf_employee_experience_health
+#: model:ir.model.constraint,message:bf_employee_experience_health.constraint_bf_ex_allergy_employee_allergen_uniq
+msgid "This allergy is already declared for this person."
+msgstr "Cette allergie est déjà déclarée pour cette personne."
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_tree_nut
+msgid "Tree nuts"
+msgstr "Noix"
+
+#. module: bf_employee_experience_health
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_health.view_my_allergy_form
+msgid "What is useful to know: threshold, form, what to do."
+msgstr "Ce qu'il est utile de savoir : seuil, forme, quoi faire."
+
+#. module: bf_employee_experience_health
+#: model:bf.ex.allergen,name:bf_employee_experience_health.allergen_wheat
+msgid "Wheat and triticale"
+msgstr "Blé et triticale"

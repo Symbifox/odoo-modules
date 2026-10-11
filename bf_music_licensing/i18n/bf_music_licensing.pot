@@ -1,0 +1,1299 @@
+# Translation template for Licences musicales : conformité en établissement.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_music_licensing 18.0.1.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 00:01+0000\n"
+"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_licence.py:0
+msgid "%s day(s) left"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_licence.py:0
+msgid ""
+"<p><strong>Music licence (%(label)s)</strong></p><p>%(name)s, due on "
+"%(due)s</p>"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+msgid ""
+"A background music supplier normally holds the supply licences. Check what "
+"the subscription covers before billing a duplicate royalty."
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_tariff.py:0
+msgid ""
+"A certified tariff carries its certification date. Without it, there is no "
+"way to know from when the adjustment is due (%s)."
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+msgid ""
+"A consumer streaming service used in a business adds to the royalties: its "
+"terms of use restrict listening to personal use. Check the service agreement"
+" before making a written finding."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid ""
+"A licence period will be created for each missing year since 2020, with its "
+"tariff lines. Continue?"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.constraint,message:bf_music_licensing.constraint_bf_music_tariff_period_unique
+msgid ""
+"A period can carry only one line per tariff: the proposed rate and the "
+"certified rate live on the same line."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Account number"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_needaction
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_needaction
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__active
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_state
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_type_icon
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__adjustment_total
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__adjustment
+msgid "Adjustment"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__rate_base_proposed
+msgid ""
+"Amount due for the first unit, when the tariff is worded \"so much for the "
+"first, so much for each additional unit\"."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_establishment
+msgid ""
+"An establishment is a place where music is played. Its area and its uses "
+"form the basis of the royalties."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__line_ids
+msgid "Applicable tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__area_value
+msgid "Area"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__area_sqft
+msgid "Area (ft²)"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__area_sqm
+msgid "Area (m²)"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Assess exposure"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__amount_certified
+msgid "At certified rate"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid ""
+"At least one tariff for this period is not certified. What was paid remains "
+"subject to revision, retroactively, until the Board's decision."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__amount_proposed
+msgid "At proposed rate"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_attachment_count
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__usage_background
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__usage__background
+msgid "Background music"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__supplier
+msgid "Background music supplier"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_base_in_force
+msgid "Base amount in force"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__base_quantity
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__basis
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Basis"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__business_streaming
+msgid "Business streaming service"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__certification_date
+msgid "Certification date"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__is_certified
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__state__certified
+msgid "Certified"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_base_certified
+msgid "Certified base amount"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__minimum_certified
+msgid "Certified minimum"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_certified
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Certified rate"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Certified tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_gantt, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__partner_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Client"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__society
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__society
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Collective society"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__radio
+msgid "Commercial radio"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__company_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__company_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__consumer_streaming
+msgid "Consumer streaming service"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__create_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__create_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__create_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__create_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__create_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__create_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_fundraising_core, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__currency_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__currency_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__currency_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__display_name
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__display_name
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__display_name
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Downtown branch"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_licence__status__due_soon
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Due soon"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_gantt, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__date_end
+msgid "End"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__entandem_account
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__entandem_account
+msgid "Entandem account"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__establishment_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__establishment_id
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Establishment"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model,name:bf_music_licensing.model_bf_music_establishment
+msgid "Establishment playing music"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__own
+msgid "Establishment's own recordings"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.actions.act_window,name:bf_music_licensing.action_music_establishment
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_establishment
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_list
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+msgid "Establishments"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Exposure"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence_line__rate_confirmed
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__rate_confirmed
+msgid ""
+"False until the rate has been read in the text of the tariff itself. An "
+"unverified rate must not be used as a commercial promise."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__flat
+msgid "Flat amount"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_follower_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_partner_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__activity_type_icon
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_fundraising_core, bf_gantt, bf_letter_writer,
+#. bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__has_message
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__has_message
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__activity_exception_icon
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Identification"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__message_needaction
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__message_needaction
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__message_has_error
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__message_has_error
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__usage
+msgid "Intended use"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_is_follower
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_is_follower
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__write_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__write_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__write_uid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__write_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__write_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__write_date
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__licence_id
+msgid "Licence"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__licence_count
+msgid "Licence Count"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Licence period"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+#: model:ir.actions.act_window,name:bf_music_licensing.action_music_licence
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__licence_ids
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_licence
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_list
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Licence periods"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__live
+msgid "Live music"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Load applicable tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:res.groups,comment:bf_music_licensing.group_music_manager
+msgid ""
+"Maintains the tariff register and compliance files. Receives due date "
+"reminders."
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:res.groups,name:bf_music_licensing.group_music_manager
+msgid "Manager"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Mark as certified"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Mark as settled"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid ""
+"Marking this tariff as certified recalculates the adjustment of every period"
+" linked to it. Continue?"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_content
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_content
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_has_error
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_has_error
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__message_content
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__message_content
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_ids
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__minimum_proposed
+msgid "Minimum annual royalty, when the tariff provides for one."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__minimum_in_force
+msgid "Minimum in force"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model,name:bf_music_licensing.model_bf_music_licence
+msgid "Music licence period"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.module.category,name:bf_music_licensing.module_category_music
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_root
+msgid "Music licensing"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.actions.server,name:bf_music_licensing.cron_music_licence_deadlines_ir_actions_server
+msgid "Music licensing: due date reminders"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__usage_on_hold
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__usage__on_hold
+msgid "Music on hold"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model,name:bf_music_licensing.model_bf_music_licence_line
+msgid "Music royalty line"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model,name:bf_music_licensing.model_bf_music_tariff
+msgid "Music royalty tariff"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__music_source
+msgid "Music source"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__source_warning
+msgid "Music source finding"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+msgid ""
+"Music source not established. It is the first question of the assessment: "
+"without it, no conclusion holds."
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
+#. bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__name
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__name
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_summary
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_type_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_establishment
+msgid "No establishment"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+msgid "No use is checked on %s: nothing to assess."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_list
+msgid "Not certified"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_fundraising_core, bf_gantt, bf_letter_writer,
+#. bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__notes
+msgid "Notes"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_licence_uncertified
+msgid "Nothing under an uncertified tariff"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__days_of_operation
+msgid ""
+"Number of days on which music is played. Ré:Sonne Tariff 3.B multiplies the "
+"area by this number."
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__message_needaction_counter
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__message_needaction_counter
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__message_has_error_counter
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__message_has_error_counter
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_licence.py:0
+msgid "OVERDUE"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_tariff
+msgid ""
+"One line per collective society, tariff and period. Each line carries the "
+"proposed rate and the certified rate: the difference between the two makes "
+"the retroactive adjustment."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__seasonal
+msgid ""
+"Operated less than six months a year. Some tariffs then provide for half the"
+" rate."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__days_of_operation
+msgid "Operating days per year"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+msgid "Origin"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_licence__status__overdue
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Overdue"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__amount_paid
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__amount_paid
+msgid "Paid"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__amount_at_risk
+msgid "Paid under uncertified tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__payment_reference
+msgid "Payment reference"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__line
+msgid "Per phone line"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__area_sqft
+msgid "Per square foot"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__area_sqft_day
+msgid "Per square foot per operating day"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__area_sqm
+msgid "Per square metre"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__basis__area_sqm_day
+msgid "Per square metre per operating day"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Period"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__date_end
+msgid "Period end"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__date_start
+msgid "Period start"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Periods"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__on_hold_lines
+msgid "Phone lines"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__state__proposed
+msgid "Proposed"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_base_proposed
+msgid "Proposed base amount"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__minimum_proposed
+msgid "Proposed minimum"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_proposed
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Proposed rate"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__publication_date
+msgid "Proposed tariff publication date"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Proposed tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence_line__tariff_state
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__state
+msgid ""
+"Proposed: published by the Board but not yet certified. What the client pays"
+" under a proposed tariff remains subject to revision."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_in_force
+msgid "Rate in force"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Rate not verified"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__rate_proposed
+msgid ""
+"Rate per basis unit. On a per-phone-line basis, it applies only to "
+"ADDITIONAL lines: the first one is billed at the base amount."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Rate verified"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__rate_confirmed
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__rate_confirmed
+msgid "Rate verified at source"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Receipt or invoice number"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__adjustment_total
+msgid "Recorded adjustment"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__amount_reference
+msgid "Reference"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__amount_reference
+msgid "Reference royalties"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__amount_reference
+msgid "Reference royalty"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__reminder_sent
+msgid "Reminder sent"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Renewal and proof"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__due_date
+msgid "Renewal due date"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Reopen"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__activity_user_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__society__resound
+msgid "Ré:Sonne"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_tariff__society__socan
+msgid "SOCAN"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__seasonal
+msgid "Seasonal establishment"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__seasonal_half
+msgid "Seasonal half rate"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_licence__status__completed
+msgid "Settled"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__completed_date
+msgid "Settled on"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__source_url
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Source"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_gantt, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__date_start
+msgid "Start"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__tariff_state
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__state
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "State"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_gantt, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__status
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Status"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__activity_state
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence_line__base_quantity
+msgid ""
+"Taken from the establishment according to the tariff basis. Editable when "
+"the tariff counts differently."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__tariff_id
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__code
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "Tariff"
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_licence.py:0
+msgid "Tariff %(tariff)s does not cover the %(licence)s period."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__basis
+msgid "Tariff basis"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_tariff
+msgid "Tariff register"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+msgid "Tariff state"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.actions.act_window,name:bf_music_licensing.action_music_tariff
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_list
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Tariffs"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__adjustment_total
+msgid ""
+"The actual difference between what was paid and what the certified tariff "
+"requires, for periods already certified."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__code
+msgid "The number as the Board designates it: 15.A, 15.B, 3.B."
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_tariff.py:0
+msgid "The period end comes before its start on %s."
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_tariff.py:0
+msgid "The period of %(new)s overlaps that of %(old)s."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__payment_reference
+msgid "The receipt or invoice number that proves the payment."
+msgstr ""
+
+#. module: bf_music_licensing
+#. odoo-python
+#: code:addons/bf_music_licensing/models/music_establishment.py:0
+msgid "The start year comes after the end year."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_tariff__seasonal_half
+msgid ""
+"The tariff provides for half the rate for an establishment operated less "
+"than six months a year."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_tariff
+msgid "The tariff register"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_tariff__label
+msgid "Title"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_list
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_form
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_list
+msgid "Total"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__activity_exception_decoration
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__has_uncertified
+msgid "Uncertified period"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__uncertified_period_count
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_list
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+msgid "Uncertified periods"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Uncertified tariff"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.actions.act_window,name:bf_music_licensing.action_music_licence_uncertified
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence__amount_at_risk
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_licence_line__amount_at_risk
+#: model:ir.ui.menu,name:bf_music_licensing.menu_music_uncertified
+msgid "Under uncertified tariff"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,field_description:bf_music_licensing.field_bf_music_establishment__area_uom
+msgid "Unit"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_fundraising_core, bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__music_source__unknown
+msgid "Unknown"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+msgid "Unknown music source"
+msgstr ""
+
+#. module: bf_music_licensing
+#. modules: bf_gantt, bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_licence__status__upcoming
+msgid "Upcoming"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_search
+msgid "Use"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:res.groups,name:bf_music_licensing.group_music_user
+msgid "User"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_form
+msgid "Uses"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_list
+msgid "Verified"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:res.groups,comment:bf_music_licensing.group_music_user
+msgid "Views establishments, licence periods and the tariff register."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_tariff_form
+msgid "What remains to be verified against the tariff text."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.actions.act_window,help:bf_music_licensing.action_music_licence_uncertified
+msgid ""
+"What the client paid for these periods remains subject to revision until the"
+" Board certifies the tariff."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_establishment__amount_at_risk
+msgid ""
+"What the establishment paid for periods the Board has not yet certified. "
+"This amount remains subject to revision."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields,help:bf_music_licensing.field_bf_music_licence__amount_reference
+msgid ""
+"What was paid if the amount is known, otherwise what the tariff requires."
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_search
+msgid "Without an Entandem account"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_licence_search
+msgid "Without proof of payment"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__area_uom__sqft
+msgid "ft²"
+msgstr ""
+
+#. module: bf_music_licensing
+#: model:ir.model.fields.selection,name:bf_music_licensing.selection__bf_music_establishment__area_uom__sqm
+#: model_terms:ir.ui.view,arch_db:bf_music_licensing.view_music_establishment_list
+msgid "m²"
+msgstr ""

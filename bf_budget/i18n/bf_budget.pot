@@ -1,0 +1,1440 @@
+# Translation template for Budgets opérationnels.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 00:01+0000\n"
+"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "\"%(name)s\" has no lines: there is nothing to open."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"\"%(name)s\" is no longer a draft: its plan can no longer be edited. Create "
+"a revision from it, or reset it to draft."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "%(code)s - %(name)s: %(n)s account(s)"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "%(name)s (copy)"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "%(name)s (rev. %(n)s)"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "(accepted overrun)"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__revision
+msgid "0 for the original."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "<span> · </span> <strong>State:</strong>"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "<strong>Budget type:</strong>"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "<strong>Fiscal year:</strong>"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_action
+msgid ""
+"A budget compares a plan with actuals, budget item by budget item. Actuals "
+"are never copied: they are read from accounting on every display."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.constraint,message:bf_budget.constraint_bf_budget_position_code_company_uniq
+msgid "A budget item code must be unique per company."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_position_action
+msgid ""
+"A budget item groups general ledger accounts. Aim for three to five budget "
+"items: beyond that, the budget becomes a table nobody looks at anymore. The "
+"suggestion wizard starts from your actual chart of accounts."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"A budget that has already been revised cannot be cancelled: its revision is "
+"the live one."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"A budget that has been opened cannot be deleted: it is cancelled, so that "
+"the record remains. Affected: %(names)s"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_line_alert_action
+msgid ""
+"A line is flagged when its drift exceeds both the budget's percentage and "
+"its dollar floor. Both, never just one: a percentage alone screams on small "
+"budget items, an amount alone stays silent on large ones."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "A line read from accounting needs a budget item."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line_period.py:0
+msgid "A period cannot end before it starts."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.constraint,message:bf_budget.constraint_bf_budget_line_planned_positive
+msgid ""
+"A planned amount cannot be negative: the budget item's type (expenses or "
+"revenue) carries the direction, not the sign."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "A revision is drawn from an open or closed budget, not from a draft."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__overrun_accepted
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Accepted overrun"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__account_count
+msgid "Account Count"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_line__source__accounting
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Accounting"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__source
+msgid ""
+"Accounting: entries posted on the budget item's accounts.\n"
+"Internal cost: analytic lines without a journal entry, that is timesheets and manual analytic entries. The two sources are separate: no amount can be counted twice."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__account_ids
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_list
+msgid "Accounts"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__duplicated_account_ids
+msgid "Accounts counted twice"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__duplicated_account_ids
+msgid ""
+"Accounts covered by more than one budget item of this budget: their entries "
+"are counted that many times."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid ""
+"Accounts covered by more than one budget item: their entries are counted "
+"several times."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_actual
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_actual
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Actual"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Actuals"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid ""
+"Actuals are not copied: they are read from accounting at print time. The "
+"theoretical amount relies on the monthly breakdown entered, never on a "
+"simple pro rata of elapsed time."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_threshold_amount
+msgid "Alert floor"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_threshold_pct
+msgid "Alert threshold (%)"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+msgid "Alerts"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "All budget items of this type already have their line in this budget."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"An internal cost line needs at least one analytic account: it is its only "
+"axis."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__state
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__state
+msgid "An open budget can no longer be edited: it is revised."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__analytic_account_ids
+msgid "Analytic accounts"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_threshold_amount
+msgid ""
+"Below this amount, a variance is not flagged, even as a percentage. Keeps a "
+"40% overrun on a $50 budget item from waking someone up."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__period_ids
+msgid "Breakdown"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__budget_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__budget_id
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Budget"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__budget_type
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__budget_type
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__budget_type
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__budget_type
+msgid "Budget Type"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Budget cancelled."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Budget closed."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model,name:bf_budget.model_bf_budget_position
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__position_id
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Budget item"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid "Budget item accounts"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model,name:bf_budget.model_bf_budget_position_wizard
+msgid "Budget item suggestion"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+#: model:ir.actions.act_window,name:bf_budget.bf_budget_position_action
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_positions
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+msgid "Budget items"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model,name:bf_budget.model_bf_budget_line
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+msgid "Budget line"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Budget lines"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Budget opened."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Budget reset to draft."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.actions.act_window,name:bf_budget.bf_budget_line_action
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_lines
+msgid "Budget tracking"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Budget type"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.actions.report,name:bf_budget.action_report_bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_pivot
+msgid "Budget vs. actual"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.actions.act_window,name:bf_budget.bf_budget_action
+#: model:ir.module.category,name:bf_budget.module_category_bf_budget
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_list
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_main
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_root
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid "Budgets"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__closed
+msgid "Closed"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_fundraising_core
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_line__theoretical_basis__calendar
+msgid "Commitment calendar"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_committed
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_committed
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Committed"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__amount_drift
+msgid ""
+"Committed minus theoretical. Positive on an expense: spending is running "
+"faster than planned at this point of the fiscal year."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__company_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__company_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__company_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid "Competing menus"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "Cost of sales"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Coverage"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__coverage_warning
+msgid "Coverage Warning"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_wizard_view_form
+msgid "Create budget items"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_action
+msgid "Create your first budget"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_position_action
+msgid "Create your first budget item"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__create_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__create_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__create_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__create_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__create_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__create_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__create_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__create_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_budget
+#: model:res.groups,comment:bf_budget.group_bf_budget_manager
+msgid "Creates budget items and budgets, opens, revises and closes them."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_fundraising_core, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__currency_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__currency_id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__date_end
+msgid "Date End"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__date_start
+msgid "Date Start"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "Depreciation"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__display_name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__display_name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__display_name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__display_name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Drafts"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__budget_type__expense
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_position__budget_type__expense
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_position_wizard__budget_type__expense
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Expenses"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__date_end
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__date_end
+msgid "Fiscal year end"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__date_start
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__date_start
+msgid "Fiscal year start"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__is_alert
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Flagged"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.actions.act_window,name:bf_budget.bf_budget_line_alert_action
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_line_count
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_alerts
+msgid "Flagged lines"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_fundraising_core, bf_gantt, bf_letter_writer,
+#. bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__has_unvalued_time
+msgid "Has Unvalued Time"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_res_config_settings__bf_budget_hide_thirdparty_menus
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid "Hide budget menus from third-party modules"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+msgid ""
+"Hours are logged on this line but costed at zero: the hourly cost of the "
+"people involved is not set. The line would read \"nothing spent\" when a "
+"setting is missing."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__id
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_error
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "In progress"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Internal cost"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_line__source__internal_cost
+msgid "Internal cost (outside accounting)"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__write_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__write_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__write_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__write_uid
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__write_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__write_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__write_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__write_date
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__line_id
+msgid "Line"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__line_count
+msgid "Line Count"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Lines"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Lines can only be generated on a draft budget."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__unvalued_hours
+msgid ""
+"Logged hours whose cost is zero. Odoo costs time from the employee's hourly "
+"cost: when that rate is missing, the line reads zero and looks perfectly "
+"normal."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:res.groups,name:bf_budget.group_bf_budget_manager
+msgid "Manager"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+msgid "Monthly breakdown"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model,name:bf_budget.model_bf_budget_line_period
+msgid "Monthly breakdown of a budget line"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
+#. bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__name
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.actions.act_window,help:bf_budget.bf_budget_line_alert_action
+msgid "No flagged line"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "No operating account of this type in this company."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid ""
+"Nothing to create: these budget items already exist, or no account matches."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "One line per budget item"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Only a draft budget can be opened."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Only an open budget can be closed."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Only an open or cancelled budget can be reset to draft."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__open
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Open budget"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Open budgets"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid ""
+"Operating accounts of the right type that no budget item of this budget "
+"covers."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__uncovered_account_ids
+msgid ""
+"Operating accounts of the right type that no budget item of this budget "
+"covers. A budget can look on track simply because a budget item is missing."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model,name:bf_budget.model_bf_budget
+msgid "Operating budget"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.module.category,description:bf_budget.module_category_bf_budget
+msgid "Operating budgets"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "Operating expenses"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "Operating revenue"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Operations 2026"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__analytic_account_ids
+msgid ""
+"Optional for accounting: restricts reading to entries whose analytic "
+"distribution names one of these accounts. Required for an internal cost "
+"line, where it is the only available axis."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid "Other income"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+msgid "Overrun"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__overrun_reason
+msgid "Overrun reason"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_planned
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_planned
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__amount_planned
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Planned"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__amount_variance
+msgid "Planned minus committed. Positive: budget remains."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Planned this month"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_line__theoretical_basis__prorata
+msgid "Prorated from the breakdown"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__note
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
+msgid "Rationale"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:res.groups,name:bf_budget.group_bf_budget_user
+msgid "Read-only"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Reset to draft"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__budget_type__revenue
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_position__budget_type__revenue
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget_position_wizard__budget_type__revenue
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Revenue"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Revise"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__revised
+msgid "Revised"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Revised by \"%(name)s\"."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__revision
+msgid "Revision"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__revision_of_id
+msgid "Revision of"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Revision of \"%(name)s\"."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__revision_ids
+msgid "Revisions"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__sequence
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid ""
+"Several accounting add-ons ship their own \"Budgets\" menu, usually empty. "
+"Nothing is deleted: unchecking turns them back on."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_res_config_settings__bf_budget_hide_thirdparty_menus
+msgid ""
+"Several accounting add-ons ship their own \"Budgets\" menu, usually empty. "
+"This setting hides them in favor of this one. Nothing is deleted: unchecking"
+" turns them back on."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_position__code
+msgid "Short code, used for display order and reports."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
+msgid "Software licenses"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid ""
+"Some operating accounts are covered by no budget item of this budget, or by "
+"two budget items. A budget can look on track simply because a budget item is"
+" missing. See the \"Coverage\" tab."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__source
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
+msgid "Source"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_form
+msgid "Spread evenly"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__state
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__state
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "State"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.actions.act_window,name:bf_budget.bf_budget_position_wizard_action
+#: model:ir.ui.menu,name:bf_budget.menu_bf_budget_position_wizard
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_wizard_view_form
+msgid "Suggest budget items"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
+msgid ""
+"Suggested from the chart of accounts on %(date)s. Split it if a budget item "
+"grows too heavy to read."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "The breakdown can only be redone on a draft budget."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid ""
+"The budget item \"%(name)s\" is of type %(kind)s, but these accounts are "
+"not: %(accounts)s"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "The budget item \"%(position)s\" does not fit a budget of type %(kind)s."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_wizard_view_form
+msgid ""
+"The budget items below are inferred from your chart of accounts, by account "
+"type. Nothing is hard-coded: a fixed catalogue would be wrong from the first"
+" company that does not have the same chart."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__revision_of_id
+msgid "The budget this one replaces."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "The fiscal year end cannot come before its start."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_position__account_ids
+msgid "The general ledger accounts whose entries feed this budget item."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__theoretical_basis
+msgid ""
+"The module states what it relies on. A pro rata on an annual expense would "
+"cry overrun every renewal month."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__overrun_accepted
+msgid "The overrun is known and accepted: the line is no longer flagged."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "The plan"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_theoretical
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_theoretical
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Theoretical"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__theoretical_basis
+msgid "Theoretical basis"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid "These accounts do not belong to the company \"%(company)s\": %(accounts)s"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "This budget is a revision. The original can still be viewed:"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Total"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid "Totals"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__unvalued_hours
+msgid "Uncosted hours"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__uncovered_account_ids
+msgid "Uncovered accounts"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "Unsupported filter on \"Flagged\"."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_variance
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+msgid "Variance"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_threshold_pct
+msgid ""
+"Variance beyond which a line is flagged. No market practice sets this "
+"figure: it is a choice, not a truth."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_variance
+msgid "Variance from plan"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__amount_drift
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "Variance from theoretical"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__drift_pct
+msgid "Variance from theoretical (%)"
+msgstr ""
+
+#. module: bf_budget
+#: model:res.groups,comment:bf_budget.group_bf_budget_user
+msgid "Views budgets and their variances, without changing anything."
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__preview
+msgid "What will be created"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_position__note
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
+msgid "Why this budget item exists, and what it does not cover."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid "expense"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid "revenue"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt
+#: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
+msgid "to"
+msgstr ""

@@ -24,7 +24,7 @@
                 <field name="planned_date_begin"/>
             </xpath>
             <field name="date_assign" position="after">
-                <field name="bf_gantt_start_origin" string="Début affiché"
+                <field name="bf_gantt_start_origin" string="Displayed start"
                        groups="base.group_no_one"/>
             </field>
         </field>
@@ -48,7 +48,7 @@
         <field name="arch" type="xml">
             <filter name="my_tasks" position="after">
                 <separator/>
-                <filter name="bf_gantt_sans_debut" string="Sans début planifié"
+                <filter name="bf_gantt_sans_debut" string="No planned start"
                         domain="[('planned_date_begin', '=', False)]"/>
             </filter>
         </field>

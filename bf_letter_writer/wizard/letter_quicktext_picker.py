@@ -5,28 +5,29 @@ from odoo import _, fields, models
 
 class LetterQuicktextPicker(models.TransientModel):
     _name = "letter.quicktext.picker"
-    _description = "Insertion d'un bloc de texte"
+    _description = "Text block insertion"
 
     letter_id = fields.Many2one(
-        "letter.document", string="Lettre", required=True,
+        "letter.document", string="Letter", required=True,
     )
     company_id = fields.Many2one(
         "res.company", related="letter_id.company_id",
     )
     quicktext_id = fields.Many2one(
         "letter.quicktext",
-        string="Bloc de texte",
+        string="Text block",
         required=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
     )
     position = fields.Selection(
-        [("append", "À la fin du corps"), ("prepend", "Au début du corps")],
+        [("append", "At the end of the body"), ("prepend", "At the start of "
+                                                      "the body")],
         string="Position",
         default="append",
         required=True,
     )
     preview_html = fields.Html(
-        string="Aperçu du bloc",
+        string="Block preview",
         related="quicktext_id.body_html",
         readonly=True,
         sanitize=False,

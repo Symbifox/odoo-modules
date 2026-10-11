@@ -1,24 +1,24 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 
 
 class Allergen(models.Model):
     _name = "bf.ex.allergen"
-    _description = "Allergène"
+    _description = "Allergen"
     _order = "sequence, name"
 
-    name = fields.Char(string="Nom", required=True, translate=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True, translate=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     is_food = fields.Boolean(
-        string="Alimentaire", default=True,
-        help="Distingue une allergie alimentaire d'une allergie environnementale "
-             "ou médicamenteuse. Seules les alimentaires vont à la liste de service.",
+        string="Food", default=True,
+        help="Distinguishes a food allergy from an environmental or drug "
+             "allergy. Only food allergies go to the catering list.",
     )
-    note = fields.Char(string="Précision")
+    note = fields.Char(string="Details")
 
     _sql_constraints = [
-        ("name_uniq", "unique(name)", "Cet allergène existe déjà."),
+        ("name_uniq", "unique(name)", "This allergen already exists."),
     ]
 
 
@@ -32,26 +32,26 @@ class Allergy(models.Model):
     """
 
     _name = "bf.ex.allergy"
-    _description = "Allergie déclarée"
+    _description = "Declared allergy"
     _order = "employee_id, severity desc"
 
     employee_id = fields.Many2one(
-        "hr.employee", string="Employé", required=True, ondelete="cascade", index=True,
+        "hr.employee", string="Employee", required=True, ondelete="cascade", index=True,
     )
     allergen_id = fields.Many2one(
-        "bf.ex.allergen", string="Allergène", required=True, ondelete="restrict",
+        "bf.ex.allergen", string="Allergen", required=True, ondelete="restrict",
     )
     company_id = fields.Many2one(
         "res.company", related="employee_id.company_id", store=True, readonly=True,
     )
     severity = fields.Selection(
         [
-            ("intolerance", "Intolérance"),
-            ("mild", "Réaction légère"),
-            ("severe", "Réaction sévère"),
-            ("anaphylaxis", "Anaphylaxie"),
+            ("intolerance", "Intolerance"),
+            ("mild", "Mild reaction"),
+            ("severe", "Severe reaction"),
+            ("anaphylaxis", "Anaphylaxis"),
         ],
-        string="Gravité", required=True, default="mild",
+        string="Severity", required=True, default="mild",
     )
     is_food = fields.Boolean(related="allergen_id.is_food", store=True, readonly=True)
     note = fields.Text(string="Note")
@@ -60,7 +60,7 @@ class Allergy(models.Model):
         (
             "employee_allergen_uniq",
             "unique(employee_id, allergen_id)",
-            "Cette allergie est déjà déclarée pour cette personne.",
+            "This allergy is already declared for this person.",
         ),
     ]
 
@@ -85,8 +85,8 @@ class Allergy(models.Model):
         """
         if not self.env.su and not self.env.user.has_group("hr.group_hr_user"):
             raise AccessError(_(
-                "La liste de service est réservée à l'administration. Votre "
-                "propre déclaration reste lisible sur votre fiche."
+                "The catering list is reserved for administration. Your "
+                "own declaration stays readable on your record."
             ))
         domain = [("is_food", "=", True)]
         if employee_ids:
@@ -109,16 +109,43 @@ class Allergy(models.Model):
         return sorted(summary.values(), key=lambda r: (-r["people"], r["allergen"]))
 
     @api.model
+    def action_open_my_allergies(self):
+        """Ouvrir les déclarations de l'usager, ou dire pourquoi c'est impossible.
+
+        Écrit ici plutôt que dans le code de l'action serveur : un texte posé dans
+        ce code n'est jamais extrait pour la traduction.
+        """
+        employee = self.env.user.employee_id
+        if not employee:
+            raise UserError(_(
+                "No employee record is linked to your account, so there is no one to "
+                "attach a declaration to. The administration can create one."
+            ))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("My allergies"),
+            "res_model": "bf.ex.allergy",
+            "view_mode": "list,form",
+            "views": [
+                (self.env.ref("bf_employee_experience_health.view_my_allergy_list").id, "list"),
+                (self.env.ref("bf_employee_experience_health.view_my_allergy_form").id, "form"),
+            ],
+            "domain": [("employee_id", "=", employee.id)],
+            "context": {"default_employee_id": employee.id},
+        }
+
+    @api.model
     def action_catering_list(self):
         """Afficher la liste de service, en clair, sans les noms."""
         rows = self.catering_constraints(company=self.env.company)
         if not rows:
-            body = _("Aucune contrainte alimentaire déclarée.")
+            body = _("No dietary restriction declared.")
         else:
-            labels = dict(self._fields["severity"].selection)
+            labels = dict(self._fields["severity"]._description_selection(self.env))
             body = "\n".join(
-                "%s : %s personne(s), gravité maximale %s"
-                % (row["allergen"], row["people"], labels[row["severity"]])
+                self.env._("%(allergen)s: %(people)s person(s), highest severity %(severity)s",
+                  allergen=row["allergen"], people=row["people"],
+                  severity=labels[row["severity"]])
                 for row in rows
             )
         return {
@@ -136,7 +163,7 @@ class HrEmployee(models.Model):
         groups="hr.group_hr_user",
     )
     ex_has_anaphylaxis = fields.Boolean(
-        string="Anaphylaxie déclarée", compute="_compute_ex_has_anaphylaxis",
+        string="Declared anaphylaxis", compute="_compute_ex_has_anaphylaxis",
         groups="hr.group_hr_user",
     )
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_report_bf_budget" model="ir.actions.report">
-        <field name="name">Budget contre réel</field>
+        <field name="name">Budget vs. actual</field>
         <field name="model">bf.budget</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_budget.report_bf_budget</field>
@@ -20,14 +20,13 @@
                         <h2><span t-field="doc.name"/></h2>
                         <div class="row mb-3">
                             <div class="col-6">
-                                <strong>Exercice :</strong>
-                                <span t-field="doc.date_start"/> au <span t-field="doc.date_end"/>
+                                <strong>Fiscal year:</strong>
+                                <span t-field="doc.date_start"/> to <span t-field="doc.date_end"/>
                             </div>
                             <div class="col-6">
-                                <strong>Sens :</strong>
+                                <strong>Budget type:</strong>
                                 <span t-field="doc.budget_type"/>
-                                <span> — </span>
-                                <strong>État :</strong>
+                                <span> · </span> <strong>State:</strong>
                                 <span t-field="doc.state"/>
                             </div>
                         </div>
@@ -35,20 +34,20 @@
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Poste</th>
-                                    <th class="text-end">Prévu du mois</th>
-                                    <th class="text-end">Prévu</th>
-                                    <th class="text-end">Théorique</th>
-                                    <th class="text-end">Réalisé</th>
-                                    <th class="text-end">Engagé</th>
-                                    <th class="text-end">Écart au théorique</th>
+                                    <th>Budget item</th>
+                                    <th class="text-end">Planned this month</th>
+                                    <th class="text-end">Planned</th>
+                                    <th class="text-end">Theoretical</th>
+                                    <th class="text-end">Actual</th>
+                                    <th class="text-end">Committed</th>
+                                    <th class="text-end">Variance from theoretical</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="rows" t-as="row">
                                     <td>
                                         <span t-out="row['label']"/>
-                                        <span t-if="row['accepted']" class="text-muted"> (dépassement assumé)</span>
+                                        <span t-if="row['accepted']" class="text-muted"> (accepted overrun)</span>
                                     </td>
                                     <td class="text-end">
                                         <span t-out="row['month_planned']"
@@ -108,9 +107,7 @@
                         </table>
 
                         <p class="text-muted mt-3" style="font-size: 9pt;">
-                            Le réalisé n'est pas recopié : il est relu dans la comptabilité au
-                            moment de l'impression. Le théorique s'appuie sur la répartition
-                            mensuelle saisie, jamais sur un simple prorata du temps écoulé.
+                            Actuals are not copied: they are read from accounting at print time. The theoretical amount relies on the monthly breakdown entered, never on a simple pro rata of elapsed time.
                         </p>
                     </div>
                 </t>

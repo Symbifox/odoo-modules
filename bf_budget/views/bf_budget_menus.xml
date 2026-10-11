@@ -18,13 +18,13 @@
               sequence="10"/>
 
     <menuitem id="menu_bf_budget_lines"
-              name="Suivi budgétaire"
+              name="Budget tracking"
               parent="menu_bf_budget_main"
               action="bf_budget_line_action"
               sequence="20"/>
 
     <menuitem id="menu_bf_budget_alerts"
-              name="Lignes en alerte"
+              name="Flagged lines"
               parent="menu_bf_budget_main"
               action="bf_budget_line_alert_action"
               sequence="30"/>
@@ -36,13 +36,13 @@
               groups="group_bf_budget_manager"/>
 
     <menuitem id="menu_bf_budget_positions"
-              name="Postes budgétaires"
+              name="Budget items"
               parent="menu_bf_budget_config"
               action="bf_budget_position_action"
               sequence="10"/>
 
     <menuitem id="menu_bf_budget_position_wizard"
-              name="Proposer des postes"
+              name="Suggest budget items"
               parent="menu_bf_budget_config"
               action="bf_budget_position_wizard_action"
               sequence="20"/>

@@ -5,7 +5,7 @@
         <field name="name">bf.music.tariff.list</field>
         <field name="model">bf.music.tariff</field>
         <field name="arch" type="xml">
-            <list string="Tarifs" decoration-warning="state == 'proposed'"
+            <list string="Tariffs" decoration-warning="state == 'proposed'"
                   decoration-muted="not rate_confirmed">
                 <field name="society"/>
                 <field name="code"/>
@@ -19,7 +19,7 @@
                 <field name="state" widget="badge"
                        decoration-success="state == 'certified'"
                        decoration-warning="state == 'proposed'"/>
-                <field name="rate_confirmed" string="Relevé"/>
+                <field name="rate_confirmed" string="Verified"/>
                 <field name="currency_id" column_invisible="True"/>
             </list>
         </field>
@@ -29,16 +29,16 @@
         <field name="name">bf.music.tariff.form</field>
         <field name="model">bf.music.tariff</field>
         <field name="arch" type="xml">
-            <form string="Tarif">
+            <form string="Tariff">
                 <header>
                     <button name="action_mark_certified" type="object"
-                            string="Marquer homologué" class="oe_highlight"
+                            string="Mark as certified" class="oe_highlight"
                             invisible="state == 'certified'"
-                            confirm="Marquer ce tarif homologué recalcule le rajustement de toutes les périodes qui s'y rattachent. Continuer?"/>
+                            confirm="Marking this tariff as certified recalculates the adjustment of every period linked to it. Continue?"/>
                     <field name="state" widget="statusbar" statusbar_visible="proposed,certified"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Taux non relevé" bg_color="text-bg-warning"
+                    <widget name="web_ribbon" title="Rate not verified" bg_color="text-bg-warning"
                             invisible="rate_confirmed"/>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
@@ -52,7 +52,7 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" widget="boolean_toggle"/>
                         </group>
-                        <group string="Période">
+                        <group string="Period">
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="publication_date"/>
@@ -61,14 +61,14 @@
                         </group>
                     </group>
                     <group>
-                        <group string="Taux proposé">
+                        <group string="Proposed rate">
                             <field name="basis"/>
                             <field name="rate_base_proposed"/>
                             <field name="rate_proposed"/>
                             <field name="minimum_proposed"/>
                             <field name="seasonal_half"/>
                         </group>
-                        <group string="Taux homologué">
+                        <group string="Certified rate">
                             <field name="rate_base_certified"/>
                             <field name="rate_certified"/>
                             <field name="minimum_certified"/>
@@ -79,7 +79,7 @@
                     <group string="Source">
                         <field name="rate_confirmed"/>
                         <field name="source_url" widget="url"/>
-                        <field name="notes" placeholder="Ce qui reste à relever au texte du tarif."/>
+                        <field name="notes" placeholder="What remains to be verified against the tariff text."/>
                     </group>
                 </sheet>
                 <chatter/>
@@ -91,32 +91,30 @@
         <field name="name">bf.music.tariff.search</field>
         <field name="model">bf.music.tariff</field>
         <field name="arch" type="xml">
-            <search string="Tarifs">
+            <search string="Tariffs">
                 <field name="code"/>
                 <field name="label"/>
-                <filter name="proposed" string="Proposés" domain="[('state', '=', 'proposed')]"/>
-                <filter name="certified" string="Homologués" domain="[('state', '=', 'certified')]"/>
+                <filter name="proposed" string="Proposed tariffs" domain="[('state', '=', 'proposed')]"/>
+                <filter name="certified" string="Certified tariffs" domain="[('state', '=', 'certified')]"/>
                 <separator/>
-                <filter name="unconfirmed" string="Taux non relevé"
+                <filter name="unconfirmed" string="Rate not verified"
                         domain="[('rate_confirmed', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_society" string="Société" context="{'group_by': 'society'}"/>
-                    <filter name="group_usage" string="Usage" context="{'group_by': 'usage'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_society" string="Collective society" context="{'group_by': 'society'}"/>
+                    <filter name="group_usage" string="Use" context="{'group_by': 'usage'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_music_tariff" model="ir.actions.act_window">
-        <field name="name">Tarifs</field>
+        <field name="name">Tariffs</field>
         <field name="res_model">bf.music.tariff</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Le référentiel des tarifs</p>
-            <p>Une ligne par société, par tarif et par période. Chaque ligne porte
-               le taux proposé et le taux homologué : c'est l'écart entre les deux
-               qui fait le rajustement rétroactif.</p>
+            <p class="o_view_nocontent_smiling_face">The tariff register</p>
+            <p>One line per collective society, tariff and period. Each line carries the proposed rate and the certified rate: the difference between the two makes the retroactive adjustment.</p>
         </field>
     </record>
 

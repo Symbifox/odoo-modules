@@ -219,13 +219,16 @@ class TestBfBudgetAmounts(BfBudgetCommon):
         budget = self._make_budget(planned=1200.0, state="open")
         self._post_bill(self.account_software, 300.0)
         budget.invalidate_recordset()
-        report = self.env["ir.actions.report"]._render_qweb_html(
+        # Le texte s'attend en anglais, la source : épinglé, parce qu'un contexte sans
+        # langue retombe sur celle d'OdooBot (fr_CA sur une base francophone).
+        self.env["res.lang"]._activate_lang("en_US")
+        report = self.env["ir.actions.report"].with_context(lang="en_US")._render_qweb_html(
             "bf_budget.report_bf_budget", budget.ids
         )
         html = report[0].decode() if isinstance(report[0], bytes) else report[0]
         self.assertIn("Exercice test", html)
         self.assertIn("Licences logicielles", html)
-        self.assertIn("Théorique", html)
+        self.assertIn("Theoretical", html)
 
     def test_alert_filter_is_searchable(self):
         """⚠️ Un filtre de vue sur un champ calculé NON stocké fait échouer

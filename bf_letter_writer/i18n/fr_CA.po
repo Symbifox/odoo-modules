@@ -1,0 +1,1364 @@
+# Translation of Letter Writer - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_letter_writer 18.0.2.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 00:01+0000\n"
+"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_letter_writer
+#: model:ir.actions.report,print_report_name:bf_letter_writer.action_report_letter_document
+msgid "'%s_%s' % (object.reference, (object.name or '').replace(' ', '_'))"
+msgstr "'%s_%s' % (object.reference, (object.name or '').replace(' ', '_'))"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
+msgid "::shortcut"
+msgstr "::raccourci"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.company_id.name }}</code>: sender name"
+msgstr "<code>{{ object.company_id.name }}</code> — Nom de l'expéditeur"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.letter_date }}</code>: letter date"
+msgstr "<code>{{ object.letter_date }}</code> — Date de la lettre"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.partner_id.name }}</code>: recipient name"
+msgstr "<code>{{ object.partner_id.name }}</code> — Nom du destinataire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"<code>{{ object.partner_id.parent_id.name }}</code>: recipient organization"
+msgstr ""
+"<code>{{ object.partner_id.parent_id.name }}</code> — Organisation du "
+"destinataire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"<code>{{ object.recipient_name }}</code>: recipient name (frozen on the "
+"letter)"
+msgstr ""
+"<code>{{ object.recipient_name }}</code> — Nom du destinataire (figé sur la "
+"lettre)"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.reference }}</code>: reference (LET-YYYY-NNN)"
+msgstr "<code>{{ object.reference }}</code> — Référence (LET-AAAA-NNN)"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.signatory_function }}</code>: signatory title"
+msgstr "<code>{{ object.signatory_function }}</code> — Fonction du signataire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "<code>{{ object.signatory_id.name }}</code>: signatory name"
+msgstr "<code>{{ object.signatory_id.name }}</code> — Nom du signataire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
+msgid ""
+"<i class=\"fa fa-check-circle\"/>\n"
+"                        Preview generated. Click the link to open it:"
+msgstr ""
+"<i class=\"fa fa-check-circle\"/>\n"
+"                        Aperçu généré — cliquez le lien pour l'ouvrir :"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/wizard/letter_send_wizard.py:0
+msgid ""
+"<p>Hello,</p><p>Please find attached the letter "
+"<strong>%s</strong>.</p><p>Best regards,<br/>%s</p>"
+msgstr ""
+"<p>Bonjour,</p><p>Veuillez trouver ci-joint la lettre "
+"<strong>%s</strong>.</p><p>Cordialement,<br/>%s</p>"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__active
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__active
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Apply template"
+msgstr "Appliquer le modèle"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Archived letters"
+msgstr "Archivées"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext_picker__position__append
+msgid "At the end of the body"
+msgstr "À la fin du corps"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext_picker__position__prepend
+msgid "At the start of the body"
+msgstr "Au début du corps"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__attach_pdf
+msgid "Attach PDF"
+msgstr "Joindre le PDF"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
+msgid "Block name..."
+msgstr "Nom du bloc..."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__preview_html
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_picker_form
+msgid "Block preview"
+msgstr "Aperçu du bloc"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__body_html
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__body_html
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Body"
+msgstr "Corps"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_body_bottom_margin
+msgid "Body bottom margin (mm)"
+msgstr "Marge basse du corps (mm)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_body_top_margin
+msgid ""
+"Body offset from the top of the page for modes without a generated "
+"letterhead (image, PDF, pre-printed paper)."
+msgstr ""
+"Décalage du corps depuis le haut de la page pour les modes sans en-tête "
+"généré (image, PDF, papier pré-imprimé)."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_body_top_margin
+msgid "Body top margin (mm)"
+msgstr "Marge haute du corps (mm)"
+
+#. module: bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_letter_merge_wizard
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_merge_wizard_form
+msgid "Bulk letter merge"
+msgstr "Fusion de lettres en lot"
+
+#. module: bf_letter_writer
+#: model:ir.actions.act_window,name:bf_letter_writer.action_letter_merge_wizard
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_merge
+msgid "Bulk merge"
+msgstr "Fusion en lot"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext__body_html
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext_picker__preview_html
+msgid "Can contain merge fields, e.g. {{ object.partner_id.name }}."
+msgstr "Peut contenir des champs de fusion, ex. {{ object.partner_id.name }}."
+
+#. module: bf_letter_writer
+#: model:res.groups,comment:bf_letter_writer.group_letter_manager
+msgid "Can create and edit letter templates, text blocks and the letterhead."
+msgstr ""
+"Peut créer et modifier les modèles de lettres, les blocs de texte et l'en-"
+"tête."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_merge_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_picker_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__category
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__claude_available
+msgid "Claude Available"
+msgstr "Claude disponible"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__closing
+msgid "Complimentary close"
+msgstr "Salutation finale"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__body_html
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
+msgid "Content"
+msgstr "Contenu"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,title:bf_letter_writer.bf_onb_step_templates
+msgid "Create letter templates"
+msgstr "Créer des modèles de lettres"
+
+#. module: bf_letter_writer
+#: model:ir.actions.act_window,name:bf_letter_writer.action_letter_merge_from_partners
+msgid "Create letters"
+msgstr "Créer des lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_merge_wizard_form
+msgid "Create the letters"
+msgstr "Créer les lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.actions.act_window,help:bf_letter_writer.action_letter_template
+msgid "Create your first letter template"
+msgstr "Créer votre premier modèle de lettre"
+
+#. module: bf_letter_writer
+#: model_terms:ir.actions.act_window,help:bf_letter_writer.action_letter_quicktext
+msgid "Create your first reusable text block"
+msgstr "Créer votre premier bloc de texte réutilisable"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__create_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__create_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__create_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/wizard/letter_merge_wizard.py:0
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__created_letter_ids
+msgid "Created letters"
+msgstr "Lettres créées"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__create_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__create_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__create_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__create_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__create_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_merge_wizard_form
+msgid ""
+"Creates one letter per recipient from the chosen template. Merge fields are "
+"filled in for each recipient."
+msgstr ""
+"Crée une lettre par destinataire à partir du modèle choisi.\n"
+"                    Les champs de fusion sont remplis pour chaque destinataire."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__letterhead_style__banner
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__letterhead_style__banner
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__res_company__letter_default_mode__banner
+msgid "Dark banner (generated)"
+msgstr "Bannière foncée (générée)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__letter_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__letter_date
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__subject
+msgid "Default letter title. Can contain merge fields."
+msgstr "Titre par défaut de la lettre. Peut contenir des champs de fusion."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_default_mode
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Default letterhead"
+msgstr "En-tête par défaut"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_signatory_id
+msgid "Default signatory"
+msgstr "Signataire par défaut"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__display_name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__display_name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__display_name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__display_name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__display_name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Download PDF"
+msgstr "Télécharger le PDF"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__salutation
+msgid "E.g.: Dear Sir or Madam,"
+msgstr "Ex. : Madame, Monsieur,"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__closing
+msgid "E.g.: Yours faithfully,"
+msgstr "Ex. : Veuillez agréer, Madame, mes salutations distinguées."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__subject
+msgid "Email subject"
+msgstr "Sujet"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Finalize"
+msgstr "Finaliser"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__auto_finalize
+msgid "Finalize automatically"
+msgstr "Finaliser automatiquement"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__state__finalized
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Finalized"
+msgstr "Finalisée"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,done_text:bf_letter_writer.bf_onb_step_first_letter
+msgid "First letter written"
+msgstr "Première lettre rédigée"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_footer_html
+msgid "Footer content. If empty, the company name and address are used."
+msgstr ""
+"Contenu du pied de page. Si vide, le nom et l'adresse de l'entreprise sont "
+"utilisés."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"For advanced cases, QWeb syntax is also accepted, e.g. <code>&lt;t "
+"t-out=\"object.partner_id.name\"/&gt;</code>."
+msgstr ""
+"Pour des cas avancés, la syntaxe QWeb est aussi acceptée,\n"
+"                                ex. <code>&lt;t t-out=\"object.partner_id.name\"/&gt;</code>."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__letterhead_image_preview
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letterhead_image
+msgid "Full-page image used as the background in \"Uploaded image\" mode."
+msgstr "Image pleine page utilisée comme fond en mode « Image téléversée »."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_fundraising_core, bf_gantt, bf_letter_writer,
+#. bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Image letterhead (PNG/JPG)"
+msgstr "En-tête image (PNG/JPG)"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_picker_form
+msgid "Insert"
+msgstr "Insérer"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_picker_form
+msgid "Insert a text block"
+msgstr "Insérer un bloc de texte"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"Insert these tokens in the subject or the body. They are replaced when the "
+"template is applied to a letter."
+msgstr ""
+"Insérez ces jetons dans l'objet ou le corps. Ils sont\n"
+"                                remplacés à l'application du modèle sur une lettre."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__note
+msgid "Internal description"
+msgstr "Description interne"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Internal description of the template..."
+msgstr "Description interne du modèle..."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__lang
+msgid "Language"
+msgstr "Langue"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__write_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__write_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__write_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__write_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__write_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__write_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__write_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__write_date
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__pdf_attachment_id
+msgid "Latest PDF"
+msgstr "Dernier PDF"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext__company_id
+msgid "Leave empty to share the block across all companies."
+msgstr "Laisser vide pour partager le bloc entre toutes les sociétés."
+
+#. module: bf_letter_writer
+#: model:ir.actions.report,name:bf_letter_writer.action_report_letter_document
+#: model:ir.model,name:bf_letter_writer.model_letter_document
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__letter_id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__letter_id
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Letter"
+msgstr "Lettre"
+
+#. module: bf_letter_writer
+#: model:ir.module.category,name:bf_letter_writer.module_category_letter_writer
+#: model:onboarding.onboarding,name:bf_letter_writer.bf_onboarding_panel
+msgid "Letter Writer"
+msgstr "Rédacteur de lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Letter body"
+msgstr "Corps de la lettre"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/wizard/letter_send_wizard.py:0
+msgid "Letter emailed to %s."
+msgstr "Lettre envoyée par courriel à %s."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_footer_html
+msgid "Letter footer"
+msgstr "Pied de page des lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Letter footer (generated modes)"
+msgstr "Pied de page des lettres (modes générés)"
+
+#. module: bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_letter_template
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Letter template"
+msgstr "Modèle de lettre"
+
+#. module: bf_letter_writer
+#: model:ir.actions.act_window,name:bf_letter_writer.action_letter_template
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_templates
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_list
+msgid "Letter templates"
+msgstr "Modèles de lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Letter title..."
+msgstr "Titre de la lettre..."
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "Letter to %s"
+msgstr "Lettre à %s"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__letterhead_style
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__letterhead_style
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.report_letter_document
+msgid "Letterhead"
+msgstr "En-tête"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letterhead_image_filename
+msgid "Letterhead Image Filename"
+msgstr "Nom du fichier de l'image d'en-tête"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letterhead_pdf
+msgid "Letterhead PDF"
+msgstr "PDF d'en-tête"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letterhead_pdf
+msgid ""
+"Letterhead PDF onto which the letter body is overlaid in \"Uploaded PDF\" "
+"mode."
+msgstr ""
+"PDF d'en-tête sur lequel le corps de la lettre est superposé en mode « PDF "
+"téléversé »."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letterhead_pdf_filename
+msgid "Letterhead Pdf Filename"
+msgstr "Nom du fichier PDF d'en-tête"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letterhead_image
+msgid "Letterhead image (PNG/JPG)"
+msgstr "Image d'en-tête (PNG/JPG)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_header_note
+msgid "Letterhead note"
+msgstr "Mention d'en-tête"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Letterhead note (generated modes)"
+msgstr "Mention d'en-tête (modes générés)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__letterhead_image_preview
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Letterhead preview"
+msgstr "Aperçu de l'en-tête"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,done_text:bf_letter_writer.bf_onb_step_letterhead
+msgid "Letterhead set up"
+msgstr "En-tête configuré"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_default_mode
+msgid "Letterhead style applied by default to new letters."
+msgstr "Style d'en-tête appliqué par défaut aux nouvelles lettres."
+
+#. module: bf_letter_writer
+#: model:ir.actions.act_window,name:bf_letter_writer.action_letter_document
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_documents
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_root
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_list
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Letters"
+msgstr "Lettres"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.report_letter_document
+msgid "Logo"
+msgstr "Logo"
+
+#. module: bf_letter_writer
+#: model:ir.module.category,description:bf_letter_writer.module_category_letter_writer
+msgid "Management of letter templates, text blocks and the letterhead."
+msgstr "Gestion des modèles de lettres, des blocs de texte et de l'en-tête."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:res.groups,name:bf_letter_writer.group_letter_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Mark as sent"
+msgstr "Marquer envoyée"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__merge_warning
+msgid "Merge Warning"
+msgstr "Avertissement de fusion"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Merge fields"
+msgstr "Champs de fusion"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__body
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_merge_wizard__auto_finalize
+msgid "Moves each created letter to the \"Finalized\" state."
+msgstr "Passe chaque lettre créée à l'état « Finalisée »."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "My letters"
+msgstr "Mes lettres"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
+#. bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__name
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "New letter"
+msgstr "Nouvelle lettre"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__letterhead_style__plain
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__letterhead_style__plain
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__res_company__letter_default_mode__plain
+msgid "No letterhead (pre-printed paper)"
+msgstr "Sans en-tête (papier pré-imprimé)"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/wizard/letter_send_wizard.py:0
+msgid "None of the selected recipients has an email address."
+msgstr "Aucun destinataire sélectionné n'a d'adresse courriel."
+
+#. module: bf_letter_writer
+#. modules: bf_fundraising_core, bf_gantt, bf_letter_writer,
+#. bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_letter_writer
+#. modules: bf_fundraising_core, bf_letter_writer
+#: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_first_letter
+#: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_letterhead
+#: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_templates
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,button_text:bf_letter_writer.bf_onb_step_letterhead
+msgid "Open the company"
+msgstr "Ouvrir la société"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__lang
+msgid ""
+"Optional translation language (ISO code) to select when sending out an "
+"email. If not set, the english version will be used. This should usually be "
+"a placeholder expression that provides the appropriate language, e.g. {{ "
+"object.partner_id.lang }}."
+msgstr ""
+"Langue de traduction facultative (code ISO) à sélectionner lors de l'envoi "
+"d'un e-mail. Si aucune langue n'est définie, la version anglaise sera "
+"utilisée. Il doit généralement s'agir d'une expression d'espace réservé qui "
+"fournit le langage approprié, par ex. {{ object.partner_id.lang }}."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "PDF letterhead (overlay)"
+msgstr "En-tête PDF (superposition)"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "PDF preview"
+msgstr "Aperçu PDF"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_signatory_id
+msgid "Person whose name and title appear in the signature block of letters."
+msgstr ""
+"Personne dont le nom et la fonction apparaissent dans le bloc de signature "
+"des lettres."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__persona_available
+msgid "Persona Available"
+msgstr "Persona disponible"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__position
+msgid "Position"
+msgstr "Position"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
+msgid "Preview PDF"
+msgstr "Prévisualiser PDF"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__preview_url
+msgid "Preview Url"
+msgstr "URL de l'aperçu"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "Preview_%s.pdf"
+msgstr "Apercu_%s.pdf"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Print"
+msgstr "Imprimer"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Recipient"
+msgstr "Destinataire"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__recipient_address
+msgid "Recipient address"
+msgstr "Adresse du destinataire"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__recipient_name
+msgid "Recipient name"
+msgstr "Nom du destinataire"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__recipient_ids
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_send_wizard__recipient_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: bf_letter_writer
+#. modules: bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__render_model
+msgid "Rendering Model"
+msgstr "Modèle de rendu"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Reset to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_letter_quicktext
+msgid "Reusable text block"
+msgstr "Bloc de texte réutilisable"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Review with Claude"
+msgstr "Réviser avec Claude"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "Review with Claude requires the bf_persona / bf_claude_chat module."
+msgstr "La revue par Claude requiert le module bf_persona / bf_claude_chat."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__salutation
+msgid "Salutation"
+msgstr "Appel"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_signature_image
+msgid "Scanned signature inserted above the signatory's name."
+msgstr "Signature numérisée insérée au-dessus du nom du signataire."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Search letters"
+msgstr "Rechercher des lettres"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "Select a letter template first."
+msgstr "Sélectionnez d'abord un modèle de lettre."
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/wizard/letter_merge_wizard.py:0
+#: code:addons/bf_letter_writer/wizard/letter_send_wizard.py:0
+msgid "Select at least one recipient."
+msgstr "Sélectionnez au moins un destinataire."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
+msgid "Send by email"
+msgstr "Envoyer par courriel"
+
+#. module: bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_letter_send_wizard
+msgid "Send letter by email"
+msgstr "Envoi d'une lettre par courriel"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+#: code:addons/bf_letter_writer/wizard/letter_send_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
+msgid "Send the letter"
+msgstr "Envoyer la lettre"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__company_id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__company_id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__company_id
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Sender"
+msgstr "Expéditeur"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__state__sent
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Sent"
+msgstr "Envoyée"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
+#. bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,title:bf_letter_writer.bf_onb_step_letterhead
+msgid "Set up the letterhead"
+msgstr "Configurer l'en-tête de lettre"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext__shortcut
+msgid "Short code (e.g. ::followup) to find the block quickly."
+msgstr "Code court (ex. ::relance) pour retrouver rapidement le bloc."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_header_note
+msgid ""
+"Short note shown under the company name in the letterhead (e.g. tagline, "
+"business number)."
+msgstr ""
+"Courte mention affichée sous le nom de l'entreprise dans l'en-tête (ex. "
+"slogan, numéro d'entreprise)."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__shortcut
+msgid "Shortcut"
+msgstr "Raccourci"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__signatory_id
+msgid "Signatory"
+msgstr "Signataire"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__signatory_function
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_signatory_function
+msgid "Signatory title"
+msgstr "Fonction du signataire"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.report_letter_document
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.view_company_form_letter_writer
+msgid "Signature"
+msgstr "Signature"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_res_company__letter_signature_image
+msgid "Signature image"
+msgstr "Image de signature"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid ""
+"Some merge fields seem to be unfilled. Apply the template or fix the body "
+"before finalizing."
+msgstr ""
+"Des champs de fusion semblent non remplis. Appliquez le modèle ou corrigez "
+"le corps avant de finaliser."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_body_bottom_margin
+msgid ""
+"Space kept at the bottom of the page for modes without a generated "
+"letterhead."
+msgstr "Espace réservé en bas de page pour les modes sans en-tête généré."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__state
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__subject
+msgid "Subject"
+msgstr "Objet"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__quicktext_ids
+msgid "Suggested text blocks"
+msgstr "Blocs de texte suggérés"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__template_id
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__template_id
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
+msgid "Template"
+msgstr "Modèle"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__body_html
+msgid ""
+"Template body. Merge fields: {{ object.field }} or QWeb <t "
+"t-out=\"object.field\"/>."
+msgstr ""
+"Corps du modèle. Champs de fusion : {{ object.champ }} ou QWeb <t "
+"t-out=\"object.champ\"/>."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid "Template name..."
+msgstr "Nom du modèle..."
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,done_text:bf_letter_writer.bf_onb_step_templates
+msgid "Templates ready"
+msgstr "Modèles prêts"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__quicktext_id
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
+msgid "Text block"
+msgstr "Bloc de texte"
+
+#. module: bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_letter_quicktext_picker
+msgid "Text block insertion"
+msgstr "Insertion d'un bloc de texte"
+
+#. module: bf_letter_writer
+#: model:ir.actions.act_window,name:bf_letter_writer.action_letter_quicktext
+#: model:ir.ui.menu,name:bf_letter_writer.menu_letter_quicktexts
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_list
+msgid "Text blocks"
+msgstr "Blocs de texte"
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "The body of letter %s is empty."
+msgstr "Le corps de la lettre %s est vide."
+
+#. module: bf_letter_writer
+#. modules: bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__name
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_signatory_function
+msgid ""
+"Title shown under the signatory's name. If empty, the contact's job position"
+" is used."
+msgstr ""
+"Titre affiché sous le nom du signataire. Si vide, la fonction du contact est"
+" utilisée."
+
+#. module: bf_letter_writer
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__letterhead_style__classic
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__letterhead_style__classic
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__res_company__letter_default_mode__classic
+msgid "Understated classic (generated)"
+msgstr "Classique sobre (générée)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__letterhead_style__pdf_overlay
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__letterhead_style__pdf_overlay
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__res_company__letter_default_mode__pdf_overlay
+msgid "Uploaded PDF (overlay)"
+msgstr "PDF téléversé (superposition)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__letterhead_style__image
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__letterhead_style__image
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__res_company__letter_default_mode__image
+msgid "Uploaded image (PNG/JPG)"
+msgstr "Image téléversée (PNG/JPG)"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,button_text:bf_letter_writer.bf_onb_step_templates
+msgid "View templates"
+msgstr "Voir les modèles"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_list
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,button_text:bf_letter_writer.bf_onb_step_first_letter
+msgid "Write a letter"
+msgstr "Rédiger une lettre"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,title:bf_letter_writer.bf_onb_step_first_letter
+#: model_terms:ir.actions.act_window,help:bf_letter_writer.action_letter_document
+msgid "Write your first letter"
+msgstr "Rédiger votre première lettre"
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,description:bf_letter_writer.bf_onb_step_letterhead
+msgid ""
+"[action:base.action_res_company_form] Open your company record, \"Letters\" "
+"tab: signatory, signature image, letterhead note and footer."
+msgstr ""
+"[action:base.action_res_company_form] Ouvrez la fiche de votre société, "
+"onglet « Lettres » : signataire, image de signature, mention d'en-tête et "
+"pied de page."
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,description:bf_letter_writer.bf_onb_step_first_letter
+msgid ""
+"[action:bf_letter_writer.action_letter_document] Create a letter, apply a "
+"template and generate the branded PDF."
+msgstr ""
+"[action:bf_letter_writer.action_letter_document] Créez une lettre, appliquez"
+" un modèle et générez le PDF brandé."
+
+#. module: bf_letter_writer
+#: model:onboarding.onboarding.step,description:bf_letter_writer.bf_onb_step_templates
+msgid ""
+"[action:bf_letter_writer.action_letter_template] Prepare your reusable "
+"templates with merge fields."
+msgstr ""
+"[action:bf_letter_writer.action_letter_template] Préparez vos modèles "
+"réutilisables avec champs de fusion."
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid "letter"
+msgstr "lettre"

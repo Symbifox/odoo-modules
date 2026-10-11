@@ -3,7 +3,7 @@
 
     <!-- Report action — auto-binds to the Print menu on letter.document -->
     <record id="action_report_letter_document" model="ir.actions.report">
-        <field name="name">Lettre</field>
+        <field name="name">Letter</field>
         <field name="model">letter.document</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_letter_writer.report_letter_document</field>
@@ -236,7 +236,7 @@
                         <t t-if="mode == 'image' and company.letterhead_image">
                             <img class="letter-bg"
                                  t-att-src="image_data_uri(company.letterhead_image)"
-                                 alt="En-tête"/>
+                                 alt="Letterhead"/>
                         </t>
 
                         <!-- Generated header — locked branded chrome -->

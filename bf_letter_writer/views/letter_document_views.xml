@@ -5,7 +5,7 @@
         <field name="name">letter.document.list</field>
         <field name="model">letter.document</field>
         <field name="arch" type="xml">
-            <list string="Lettres"
+            <list string="Letters"
                   decoration-success="state == 'sent'"
                   decoration-info="state == 'finalized'"
                   decoration-muted="state == 'draft'"
@@ -18,7 +18,7 @@
                 <field name="template_id" optional="show"/>
                 <field name="letterhead_style" optional="hide"/>
                 <field name="company_id" optional="hide" groups="base.group_multi_company"/>
-                <field name="merge_warning" string="Avertissement" optional="hide"/>
+                <field name="merge_warning" string="Warning" optional="hide"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'sent'"
                        decoration-info="state == 'finalized'"
@@ -31,46 +31,46 @@
         <field name="name">letter.document.form</field>
         <field name="model">letter.document</field>
         <field name="arch" type="xml">
-            <form string="Lettre">
+            <form string="Letter">
                 <header>
                     <button name="action_apply_template" type="object"
-                            string="Appliquer le modèle" class="btn-secondary"
+                            string="Apply template" class="btn-secondary"
                             icon="fa-download"
                             invisible="not template_id or state != 'draft'"/>
                     <button name="action_finalize" type="object"
-                            string="Finaliser" class="btn-primary"
+                            string="Finalize" class="btn-primary"
                             invisible="state != 'draft'"/>
                     <button name="action_mark_sent" type="object"
-                            string="Marquer envoyée"
+                            string="Mark as sent"
                             invisible="state != 'finalized'"/>
                     <button name="action_reset_draft" type="object"
-                            string="Remettre en brouillon"
+                            string="Reset to draft"
                             invisible="state == 'draft'"/>
                     <button name="action_preview_pdf" type="object"
-                            string="Aperçu PDF" class="btn-secondary"
+                            string="PDF preview" class="btn-secondary"
                             icon="fa-file-pdf-o"/>
                     <button name="action_download_pdf" type="object"
-                            string="Télécharger le PDF" class="btn-secondary"
+                            string="Download PDF" class="btn-secondary"
                             icon="fa-download"/>
                     <button name="%(action_report_letter_document)d" type="action"
-                            string="Imprimer" icon="fa-print"/>
+                            string="Print" icon="fa-print"/>
                     <button name="action_open_send_wizard" type="object"
-                            string="Envoyer par courriel" icon="fa-paper-plane"/>
+                            string="Send by email" icon="fa-paper-plane"/>
                     <button name="action_review_with_claude" type="object"
-                            string="Réviser avec Claude" icon="fa-magic"
+                            string="Review with Claude" icon="fa-magic"
                             invisible="not claude_available"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,finalized,sent"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Archivée"
+                    <widget name="web_ribbon" title="Archived"
                             bg_color="text-bg-danger" invisible="active"/>
                     <field name="active" invisible="1"/>
                     <div class="oe_title">
                         <label for="reference"/>
                         <h1><field name="reference" readonly="1"/></h1>
                         <label for="name"/>
-                        <h2><field name="name" placeholder="Titre de la lettre..."/></h2>
+                        <h2><field name="name" placeholder="Letter title..."/></h2>
                     </div>
                     <group>
                         <group>
@@ -89,12 +89,12 @@
                             <field name="persona_available" invisible="1"/>
                         </group>
                     </group>
-                    <group string="Aperçu de l'en-tête"
+                    <group string="Letterhead preview"
                            invisible="letterhead_style != 'image' or not letterhead_image_preview">
                         <field name="letterhead_image_preview" widget="image"
                                nolabel="1" readonly="1"/>
                     </group>
-                    <group string="Destinataire">
+                    <group string="Recipient">
                         <field name="recipient_name" nolabel="1"/>
                         <field name="recipient_address" nolabel="1"/>
                     </group>
@@ -105,9 +105,9 @@
                     <group>
                         <field name="salutation"/>
                     </group>
-                    <separator string="Corps de la lettre"/>
+                    <separator string="Letter body"/>
                     <button name="action_open_quicktext_picker" type="object"
-                            string="Insérer un bloc de texte" class="btn-link"
+                            string="Insert a text block" class="btn-link"
                             icon="fa-puzzle-piece"/>
                     <field name="body_html" widget="html" nolabel="1"/>
                     <group>
@@ -123,33 +123,33 @@
         <field name="name">letter.document.search</field>
         <field name="model">letter.document</field>
         <field name="arch" type="xml">
-            <search string="Rechercher des lettres">
+            <search string="Search letters">
                 <field name="name"/>
                 <field name="reference"/>
                 <field name="partner_id"/>
                 <field name="template_id"/>
                 <separator/>
-                <filter string="Brouillon" name="draft"
+                <filter string="Draft" name="draft"
                         domain="[('state', '=', 'draft')]"/>
-                <filter string="Finalisée" name="finalized"
+                <filter string="Finalized" name="finalized"
                         domain="[('state', '=', 'finalized')]"/>
-                <filter string="Envoyée" name="sent"
+                <filter string="Sent" name="sent"
                         domain="[('state', '=', 'sent')]"/>
                 <separator/>
-                <filter string="Mes lettres" name="my_letters"
+                <filter string="My letters" name="my_letters"
                         domain="[('create_uid', '=', uid)]"/>
-                <filter string="Archivées" name="inactive"
+                <filter string="Archived letters" name="inactive"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter string="État" name="group_state"
+                <group expand="0" string="Group by">
+                    <filter string="State" name="group_state"
                             context="{'group_by': 'state'}"/>
-                    <filter string="Destinataire" name="group_partner"
+                    <filter string="Recipient" name="group_partner"
                             context="{'group_by': 'partner_id'}"/>
-                    <filter string="Modèle" name="group_template"
+                    <filter string="Template" name="group_template"
                             context="{'group_by': 'template_id'}"/>
-                    <filter string="En-tête" name="group_style"
+                    <filter string="Letterhead" name="group_style"
                             context="{'group_by': 'letterhead_style'}"/>
-                    <filter string="Expéditeur" name="group_company"
+                    <filter string="Sender" name="group_company"
                             context="{'group_by': 'company_id'}"/>
                     <filter string="Date" name="group_date"
                             context="{'group_by': 'letter_date:month'}"/>
@@ -159,13 +159,13 @@
     </record>
 
     <record id="action_letter_document" model="ir.actions.act_window">
-        <field name="name">Lettres</field>
+        <field name="name">Letters</field>
         <field name="res_model">letter.document</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="letter_document_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Rédiger votre première lettre
+                Write your first letter
             </p>
         </field>
     </record>

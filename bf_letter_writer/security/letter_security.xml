@@ -2,8 +2,8 @@
 <odoo>
 
     <record id="module_category_letter_writer" model="ir.module.category">
-        <field name="name">Rédacteur de lettres</field>
-        <field name="description">Gestion des modèles de lettres, des blocs de texte et de l'en-tête.</field>
+        <field name="name">Letter Writer</field>
+        <field name="description">Management of letter templates, text blocks and the letterhead.</field>
         <field name="sequence">90</field>
     </record>
 
@@ -11,9 +11,9 @@
          base.group_user). This group adds management of templates, quicktext
          blocks and the company letterhead configuration. -->
     <record id="group_letter_manager" model="res.groups">
-        <field name="name">Gestionnaire</field>
+        <field name="name">Manager</field>
         <field name="category_id" ref="module_category_letter_writer"/>
-        <field name="comment">Peut créer et modifier les modèles de lettres, les blocs de texte et l'en-tête.</field>
+        <field name="comment">Can create and edit letter templates, text blocks and the letterhead.</field>
         <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
@@ -21,7 +21,7 @@
 
         <!-- Multi-company scoping on letters -->
         <record id="rule_letter_document_company" model="ir.rule">
-            <field name="name">Lettre : règle multi-société</field>
+            <field name="name">Letter: multi-company rule</field>
             <field name="model_id" ref="model_letter_document"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
             <field name="global" eval="True"/>
@@ -29,7 +29,7 @@
 
         <!-- Multi-company scoping on quicktext blocks (blank = shared) -->
         <record id="rule_letter_quicktext_company" model="ir.rule">
-            <field name="name">Bloc de texte : règle multi-société</field>
+            <field name="name">Text block: multi-company rule</field>
             <field name="model_id" ref="model_letter_quicktext"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
             <field name="global" eval="True"/>

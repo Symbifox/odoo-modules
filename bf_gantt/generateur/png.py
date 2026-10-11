@@ -124,7 +124,10 @@ def rendre(payload, echelle="week", echelle_image=SUR_ECHANTILLON, zoom=1.0):
         d.text((X(droite), X(geo.MARGE_PAGE + 6)), g["societe"]["name"],
                font=polices["marque"], fill=accent, anchor="ra")
         y_repere = geo.MARGE_PAGE + 26
-    repere = "%s lignes · %s au %s" % (g["compte"], g["debut"], g["fin"])
+    # Les textes du dessin viennent de la source, traduits pour le lecteur.
+    textes = g["libelles"]
+    repere = geo.formater(textes, "summary", count=g["compte"],
+                          start=g["debut"], end=g["fin"])
     d.text((X(droite), X(y_repere)), repere,
            font=polices["sous"], fill=_rgb(geo.GRIS), anchor="ra")
 
@@ -216,7 +219,7 @@ def rendre(payload, echelle="week", echelle_image=SUR_ECHANTILLON, zoom=1.0):
         _pointille(d, x, X(g["y_lignes"]), X(g["y_fin_lignes"]),
                    _rgb(geo.LIGNE_AUJOURDHUI), facteur, pas=int(5 * facteur))
         # Au-dessus de l'axe : sous les graduations, il chevauchait la date.
-        d.text((x + X(2), X(g["y_axe"] - 10)), "aujourd'hui",
+        d.text((x + X(2), X(g["y_axe"] - 10)), textes["today"],
                font=polices["grad"], fill=_rgb(geo.LIGNE_AUJOURDHUI))
 
     # Pied.
@@ -228,11 +231,11 @@ def rendre(payload, echelle="week", echelle_image=SUR_ECHANTILLON, zoom=1.0):
         pied = "%s · %s" % (pied, g["societe"]["tagline"])
     d.text((X(geo.MARGE_PAGE), X(y - 3)), pied,
            font=polices["petit"], fill=_rgb(geo.GRIS))
-    notes = (["liste tronquée"] if g["tronque"] else [])
+    notes = ([textes["truncated"]] if g["tronque"] else [])
     if g.get("plage_reduite"):
-        notes.append("plage ramenée à %d ans, chevron = barre qui dépasse"
-                     % (geo.PLAGE_MAX_JOURS // 366))
-    notes.append("trait pointillé = début approximatif")
+        notes.append(geo.formater(textes, "range_capped",
+                                  years=geo.PLAGE_MAX_JOURS // 366))
+    notes.append(textes["approximate"])
     d.text((X(g["largeur"] - geo.MARGE_PAGE), X(y - 3)), " · ".join(notes),
            font=polices["petit"], fill=_rgb(geo.GRIS), anchor="ra")
 

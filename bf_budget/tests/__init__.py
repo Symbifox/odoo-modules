@@ -5,3 +5,4 @@ from . import test_amounts
 from . import test_periods
 from . import test_security
 from . import test_menu_hook
+from . import test_langue

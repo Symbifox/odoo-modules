@@ -12,31 +12,35 @@ from .letter_template import LETTERHEAD_MODES
 # Flags un-rendered merge syntax left over in a letter body.
 _RESIDUAL_TOKEN_RE = re.compile(r"{{|t-out=|t-field=|t-esc=")
 
-_DEFAULT_NAME = "Nouvelle lettre"
+_DEFAULT_NAME = "New letter"
+# Titles given before the labels went English: still recognised as automatic.
+_LEGACY_DEFAULT_NAME = "Nouvelle lettre"
+_LEGACY_AUTO_NAME = "Lettre à %s"
 
 
 class LetterDocument(models.Model):
     _name = "letter.document"
-    _description = "Lettre"
+    _description = "Letter"
     # mail.render.mixin provides `lang` + `_render_template` (the mail-merge
     # engine shared with mail.template).
     _inherit = ["mail.thread", "mail.activity.mixin", "mail.render.mixin"]
     _order = "create_date desc, id desc"
 
     name = fields.Char(
-        string="Titre", required=True, default=_DEFAULT_NAME, tracking=True,
+        string="Title", required=True, default=lambda self: self.env._("New letter"),
+        tracking=True,
     )
     active = fields.Boolean(default=True)
     reference = fields.Char(
-        string="Référence", readonly=True, copy=False, default="New",
+        string="Reference", readonly=True, copy=False, default="New",
     )
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("finalized", "Finalisée"),
-            ("sent", "Envoyée"),
+            ("draft", "Draft"),
+            ("finalized", "Finalized"),
+            ("sent", "Sent"),
         ],
-        string="État",
+        string="State",
         default="draft",
         required=True,
         tracking=True,
@@ -44,44 +48,44 @@ class LetterDocument(models.Model):
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Expéditeur",
+        string="Sender",
         required=True,
         default=lambda self: self.env.company,
     )
     partner_id = fields.Many2one(
-        "res.partner", string="Destinataire", required=True, tracking=True,
+        "res.partner", string="Recipient", required=True, tracking=True,
     )
-    recipient_name = fields.Char(string="Nom du destinataire")
-    recipient_address = fields.Text(string="Adresse du destinataire")
+    recipient_name = fields.Char(string="Recipient name")
+    recipient_address = fields.Text(string="Recipient address")
     letter_date = fields.Date(
         string="Date", default=fields.Date.context_today, tracking=True,
     )
-    salutation = fields.Char(string="Appel", help="Ex. : Madame, Monsieur,")
+    salutation = fields.Char(string="Salutation", help="E.g.: Dear Sir or Madam,")
     # Corps saisi par tout usager interne et relu par les autres (écran, PDF,
     # courriel) : on le nettoie, en gardant les styles en ligne permis.
     body_html = fields.Html(
-        string="Corps", sanitize=True, sanitize_style=True, tracking=True,
+        string="Body", sanitize=True, sanitize_style=True, tracking=True,
     )
     closing = fields.Char(
-        string="Salutation finale",
-        help="Ex. : Veuillez agréer, Madame, mes salutations distinguées.",
+        string="Complimentary close",
+        help="E.g.: Yours faithfully,",
     )
-    template_id = fields.Many2one("letter.template", string="Modèle")
+    template_id = fields.Many2one("letter.template", string="Template")
     letterhead_style = fields.Selection(
         LETTERHEAD_MODES,
-        string="En-tête",
+        string="Letterhead",
         default="banner",
         required=True,
     )
     letterhead_image_preview = fields.Binary(
         related="company_id.letterhead_image",
-        string="Aperçu de l'en-tête",
+        string="Letterhead preview",
         readonly=True,
     )
-    signatory_id = fields.Many2one("res.partner", string="Signataire")
-    signatory_function = fields.Char(string="Fonction du signataire")
+    signatory_id = fields.Many2one("res.partner", string="Signatory")
+    signatory_function = fields.Char(string="Signatory title")
     pdf_attachment_id = fields.Many2one(
-        "ir.attachment", string="Dernier PDF", readonly=True, copy=False,
+        "ir.attachment", string="Latest PDF", readonly=True, copy=False,
     )
     claude_available = fields.Boolean(compute="_compute_integrations")
     persona_available = fields.Boolean(compute="_compute_integrations")
@@ -129,10 +133,11 @@ class LetterDocument(models.Model):
                 vals.setdefault(
                     "recipient_address", self._format_partner_address(partner)
                 )
-                vals.setdefault("lang", partner.lang or self.env.lang)
-                # Auto-title from the recipient when no title was given.
-                if vals.get("name", _DEFAULT_NAME) == _DEFAULT_NAME:
-                    vals["name"] = _("Lettre à %s") % partner.name
+                vals.setdefault("lang", self._bf_reader_lang(partner))
+                # Auto-title from the recipient when no title was given, in the
+                # letter's language: the title is also the email subject.
+                if (vals.get("name") or False) in self._bf_auto_names():
+                    vals["name"] = self._bf_auto_name(partner, vals["lang"])
         return super().create(vals_list)
 
     # ------------------------------------------------------------------
@@ -155,8 +160,8 @@ class LetterDocument(models.Model):
             body = str(letter.body_html or "")
             if body and _RESIDUAL_TOKEN_RE.search(body):
                 letter.merge_warning = _(
-                    "Des champs de fusion semblent non remplis. Appliquez le "
-                    "modèle ou corrigez le corps avant de finaliser."
+                    "Some merge fields seem to be unfilled. Apply the "
+                    "template or fix the body before finalizing."
                 )
             else:
                 letter.merge_warning = False
@@ -164,6 +169,35 @@ class LetterDocument(models.Model):
     # ------------------------------------------------------------------
     # Onchange
     # ------------------------------------------------------------------
+    def _bf_reader_lang(self, partner=None, lang=None):
+        """The language the recipient reads: the letter's, else the recipient's, else
+        the writer's. One rule for the title and the email, so they never differ."""
+        installed = {code for code, _name in self.env["res.lang"].get_installed()}
+        for code in (lang, partner.lang if partner else None, self.env.lang, self.env.user.lang):
+            if code in installed:
+                return code
+        return "en_US"
+
+    def _bf_auto_name(self, partner, lang):
+        """The automatic title, in the letter's language."""
+        return self.with_context(lang=self._bf_reader_lang(partner, lang)).env._(
+            "Letter to %s", partner.name)
+
+    def _bf_auto_names(self, partner=None):
+        """Titles that are automatic, not typed by the user: the default and
+        "Letter to X", in every installed language and in the French given
+        before the labels went English."""
+        names = {False, "", _DEFAULT_NAME, _LEGACY_DEFAULT_NAME}
+        codes = {code for code, _name in self.env["res.lang"].get_installed()} | {"en_US"}
+        for code in codes:
+            env = self.with_context(lang=code).env
+            names.add(env._("New letter"))
+            if partner:
+                names.add(env._("Letter to %s", partner.name))
+        if partner:
+            names.add(_LEGACY_AUTO_NAME % partner.name)
+        return names
+
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
         partner = self.partner_id
@@ -171,9 +205,9 @@ class LetterDocument(models.Model):
             return
         self.recipient_name = partner.name
         self.recipient_address = self._format_partner_address(partner)
-        self.lang = partner.lang or self.env.lang
-        if not self.name or self.name == _DEFAULT_NAME:
-            self.name = _("Lettre à %s") % partner.name
+        self.lang = self._bf_reader_lang(partner)
+        if not self.name or self.name in self._bf_auto_names(self._origin.partner_id):
+            self.name = self._bf_auto_name(partner, self.lang)
         self._apply_persona_defaults()
 
     @api.onchange("company_id")
@@ -314,14 +348,13 @@ class LetterDocument(models.Model):
     def action_apply_template(self):
         self.ensure_one()
         if not self.template_id:
-            raise UserError(_("Sélectionnez d'abord un modèle de lettre."))
+            raise UserError(_("Select a letter template first."))
         template = self.template_id
         self.body_html = self._render_body(template.body_html)
         self.letterhead_style = template.letterhead_style
         # Replace an auto-generated title (sentinel or "Lettre à X") with the
         # rendered template subject; keep a title the user typed themselves.
-        auto_name = _("Lettre à %s") % self.partner_id.name if self.partner_id else _DEFAULT_NAME
-        if template.subject and (not self.name or self.name in (_DEFAULT_NAME, auto_name)):
+        if template.subject and (not self.name or self.name in self._bf_auto_names(self.partner_id)):
             rendered_subject = self._render_template(
                 template.subject,
                 "letter.document",
@@ -336,7 +369,7 @@ class LetterDocument(models.Model):
         for letter in self:
             if not str(letter.body_html or "").strip():
                 raise UserError(
-                    _("Le corps de la lettre %s est vide.") % letter.reference
+                    _("The body of letter %s is empty.") % letter.reference
                 )
             vals = {"state": "finalized"}
             if not letter.recipient_name:
@@ -361,7 +394,7 @@ class LetterDocument(models.Model):
         pdf_data = self._get_pdf_binary()
         attachment = self.env["ir.attachment"].create(
             {
-                "name": "Apercu_%s.pdf" % (self.reference or "lettre"),
+                "name": _("Preview_%s.pdf", self.reference or _("letter")),
                 "type": "binary",
                 "datas": base64.b64encode(pdf_data),
                 "mimetype": "application/pdf",
@@ -381,7 +414,7 @@ class LetterDocument(models.Model):
         pdf_data = self._get_pdf_binary()
         attachment = self.env["ir.attachment"].create(
             {
-                "name": "%s.pdf" % (self.reference or "lettre"),
+                "name": "%s.pdf" % (self.reference or "letter"),
                 "type": "binary",
                 "datas": base64.b64encode(pdf_data),
                 "mimetype": "application/pdf",
@@ -400,7 +433,7 @@ class LetterDocument(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Envoyer la lettre"),
+            "name": _("Send the letter"),
             "res_model": "letter.send.wizard",
             "view_mode": "form",
             "target": "new",
@@ -411,7 +444,7 @@ class LetterDocument(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Insérer un bloc de texte"),
+            "name": _("Insert a text block"),
             "res_model": "letter.quicktext.picker",
             "view_mode": "form",
             "target": "new",
@@ -422,7 +455,8 @@ class LetterDocument(models.Model):
         self.ensure_one()
         if not self.claude_available:
             raise UserError(
-                _("La revue par Claude requiert le module bf_persona / bf_claude_chat.")
+                _("Review with Claude requires the bf_persona / "
+                  "bf_claude_chat module.")
             )
         prompt = (
             "Révise cette lettre avant envoi : %s, adressée à %s. Vérifie le "

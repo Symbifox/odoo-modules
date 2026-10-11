@@ -5,10 +5,9 @@
         <field name="name">letter.merge.wizard.form</field>
         <field name="model">letter.merge.wizard</field>
         <field name="arch" type="xml">
-            <form string="Fusion de lettres en lot">
+            <form string="Bulk letter merge">
                 <p class="text-muted">
-                    Crée une lettre par destinataire à partir du modèle choisi.
-                    Les champs de fusion sont remplis pour chaque destinataire.
+                    Creates one letter per recipient from the chosen template. Merge fields are filled in for each recipient.
                 </p>
                 <group>
                     <field name="template_id"/>
@@ -22,23 +21,23 @@
                 </group>
                 <footer>
                     <button name="action_create_letters" type="object"
-                            string="Créer les lettres" class="btn-primary"
+                            string="Create the letters" class="btn-primary"
                             icon="fa-magic"/>
-                    <button string="Annuler" special="cancel"/>
+                    <button string="Cancel" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_letter_merge_wizard" model="ir.actions.act_window">
-        <field name="name">Fusion en lot</field>
+        <field name="name">Bulk merge</field>
         <field name="res_model">letter.merge.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
     <record id="action_letter_merge_from_partners" model="ir.actions.act_window">
-        <field name="name">Créer des lettres</field>
+        <field name="name">Create letters</field>
         <field name="res_model">letter.merge.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

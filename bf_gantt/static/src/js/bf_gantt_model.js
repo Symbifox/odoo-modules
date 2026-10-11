@@ -10,11 +10,16 @@
  */
 
 import { reactive } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 
+// ⚠️ Le client web fusionne les traductions JS de TOUS les modules en un seul
+// dictionnaire : un terme court y prend le français du dernier module qui le
+// porte. « Day », « Week » et « Month » sont gardés parce que le cœur (vue
+// calendrier) les porte déjà avec le même français : Jour, Semaine, Mois.
 export const ECHELLES = [
-    { key: "day", label: "Jour" },
-    { key: "week", label: "Semaine" },
-    { key: "month", label: "Mois" },
+    { key: "day", label: _t("Day") },
+    { key: "week", label: _t("Week") },
+    { key: "month", label: _t("Month") },
 ];
 
 // Le tracé est calibré pour l'impression : à 1:1 il est illisible à l'écran.
@@ -105,7 +110,7 @@ export class GanttStore {
         } catch (e) {
             console.error("Échéancier : chargement refusé", e);
             s.geometrie = null;
-            s.erreur = e?.data?.message || e?.message || "Chargement impossible.";
+            s.erreur = e?.data?.message || e?.message || _t("The timeline could not be loaded.");
         } finally {
             s.loading = false;
         }

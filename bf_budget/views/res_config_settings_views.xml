@@ -7,10 +7,10 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app string="Budgets" name="bf_budget" logo_backgroundColor="#29ABE2">
-                    <block title="Menus concurrents" name="bf_budget_menus">
+                    <block title="Competing menus" name="bf_budget_menus">
                         <setting id="bf_budget_hide_menus"
-                                 string="Masquer les menus budget des modules tiers"
-                                 help="Plusieurs greffons comptables livrent leur propre menu « Budgets », généralement vide. Rien n'est supprimé : décocher les rallume.">
+                                 string="Hide budget menus from third-party modules"
+                                 help="Several accounting add-ons ship their own &quot;Budgets&quot; menu, usually empty. Nothing is deleted: unchecking turns them back on.">
                             <field name="bf_budget_hide_thirdparty_menus"/>
                         </setting>
                     </block>

@@ -5,19 +5,19 @@
         <field name="name">bf.gantt.plan.form</field>
         <field name="model">bf.gantt.plan</field>
         <field name="arch" type="xml">
-            <form string="Échéancier">
+            <form string="Timeline">
                 <header>
-                    <button name="action_bf_gantt" type="object" string="Ouvrir l'échéancier"
+                    <button name="action_bf_gantt" type="object" string="Open the timeline"
                             class="btn-primary" icon="fa-bar-chart"/>
                     <button name="action_bf_gantt_importer" type="object"
-                            string="Importer un fichier" icon="fa-upload"
+                            string="Import a file" icon="fa-upload"
                             groups="bf_gantt.group_bf_gantt_manager"/>
                     <button name="action_bf_gantt_publier" type="object"
-                            string="Publier au portail" icon="fa-globe"
+                            string="Publish on the portal" icon="fa-globe"
                             invisible="portal_published"
                             groups="bf_gantt.group_bf_gantt_manager"/>
                     <button name="action_bf_gantt_depublier" type="object"
-                            string="Retirer du portail" icon="fa-eye-slash"
+                            string="Remove from the portal" icon="fa-eye-slash"
                             invisible="not portal_published"
                             groups="bf_gantt.group_bf_gantt_manager"/>
                     <field name="state" widget="statusbar"
@@ -27,20 +27,20 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_bf_gantt" type="object"
                                 class="oe_stat_button" icon="fa-tasks">
-                            <field name="item_count" widget="statinfo" string="Lignes"/>
+                            <field name="item_count" widget="statinfo" string="Lines"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Publié" bg_color="text-bg-success"
+                    <widget name="web_ribbon" title="Published" bg_color="text-bg-success"
                             invisible="not portal_published"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Implantation chez…"/></h1>
+                        <h1><field name="name" placeholder="Rollout at…"/></h1>
                     </div>
                     <group>
                         <group>
                             <field name="partner_id"/>
                             <field name="project_id"
-                                   help="Lien de courtoisie. Aucune tâche n'est créée ni touchée."/>
+                                   help="Courtesy link. No task is created or touched."/>
                             <field name="user_id"/>
                         </group>
                         <group>
@@ -51,7 +51,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Lignes" name="lignes">
+                        <page string="Lines" name="lignes">
                             <field name="item_ids">
                                 <list editable="bottom" decoration-muted="state == 'cancel'"
                                       decoration-success="state == 'done'">
@@ -74,21 +74,20 @@
                             </field>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="note" placeholder="Hypothèses, réserves, ce qui reste à trancher…"/>
+                            <field name="note" placeholder="Assumptions, caveats, what is still to be decided…"/>
                         </page>
-                        <page string="Partage" name="partage"
+                        <page string="Sharing" name="partage"
                               groups="bf_gantt.group_bf_gantt_manager">
                             <group>
                                 <field name="access_url" widget="url" readonly="1"
-                                       string="Adresse du portail"/>
+                                       string="Portal address"/>
                                 <field name="access_token" readonly="1" string="Token"/>
                             </group>
                             <button name="action_bf_gantt_regenerer_token" type="object"
-                                    string="Régénérer le token" class="btn-secondary"
-                                    confirm="Les adresses déjà distribuées cesseront de fonctionner. Continuer ?"/>
+                                    string="Regenerate the token" class="btn-secondary"
+                                    confirm="Addresses already handed out will stop working. Continue?"/>
                             <div class="text-muted mt-2">
-                                Tant que « Publier au portail » n'a pas été cliqué, l'adresse
-                                répond « accès refusé » même avec le bon token.
+                                Until "Publish on the portal" has been clicked, the address answers "access denied" even with the right token.
                             </div>
                         </page>
                     </notebook>
@@ -102,15 +101,15 @@
         <field name="name">bf.gantt.plan.list</field>
         <field name="model">bf.gantt.plan</field>
         <field name="arch" type="xml">
-            <list string="Échéanciers">
+            <list string="Timelines">
                 <field name="name"/>
                 <field name="partner_id" optional="show"/>
                 <field name="project_id" optional="hide"/>
                 <field name="user_id" optional="show" widget="many2one_avatar_user"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
-                <field name="item_count" string="Lignes"/>
-                <field name="portal_published" string="Portail" optional="show"/>
+                <field name="item_count" string="Lines"/>
+                <field name="portal_published" string="Portal" optional="show"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'done'"
                        decoration-info="state == 'active'"/>
@@ -123,25 +122,25 @@
         <field name="name">bf.gantt.plan.search</field>
         <field name="model">bf.gantt.plan</field>
         <field name="arch" type="xml">
-            <search string="Échéanciers">
+            <search string="Timelines">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="project_id"/>
-                <filter name="mine" string="Les miens"
+                <filter name="mine" string="Mine"
                         domain="[('user_id', '=', uid)]"/>
-                <filter name="publies" string="Publiés au portail"
+                <filter name="publies" string="On the portal"
                         domain="[('portal_published', '=', True)]"/>
                 <separator/>
-                <filter name="actifs" string="En cours"
+                <filter name="actifs" string="In progress"
                         domain="[('state', '=', 'active')]"/>
-                <filter name="archives" string="Archivés"
+                <filter name="archives" string="Archived"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="par_client" string="Client"
                             context="{'group_by': 'partner_id'}"/>
-                    <filter name="par_responsable" string="Responsable"
+                    <filter name="par_responsable" string="Assignee"
                             context="{'group_by': 'user_id'}"/>
-                    <filter name="par_etat" string="État"
+                    <filter name="par_etat" string="State"
                             context="{'group_by': 'state'}"/>
                 </group>
             </search>
@@ -149,26 +148,23 @@
     </record>
 
     <record id="action_bf_gantt_plan" model="ir.actions.act_window">
-        <field name="name">Échéanciers autonomes</field>
+        <field name="name">Standalone timelines</field>
         <field name="res_model">bf.gantt.plan</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_bf_gantt_plan_search"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Dessinez un échéancier sans créer de tâches</p>
+            <p class="o_view_nocontent_smiling_face">Draw a timeline without creating tasks</p>
             <p>
-                Un échéancier autonome sert à montrer un calendrier : dans un devis,
-                dans un plan d'implantation, devant un comité. Il ne crée aucune tâche,
-                ne touche à aucun projet et ne compte pas d'heures.
+                A standalone timeline is for showing a schedule: in a quote, in a rollout plan, in front of a committee. It creates no task, touches no project and counts no hours.
             </p>
             <p>
-                Vous pouvez aussi partir d'un fichier existant : un
-                <b>.xml de Microsoft Project</b> ou un classeur Excel exporté d'ici.
+                You can also start from an existing file: a <b>Microsoft Project .xml</b> or an Excel workbook exported from here.
             </p>
         </field>
     </record>
 
     <record id="action_bf_gantt" model="ir.actions.client">
-        <field name="name">Échéancier</field>
+        <field name="name">Timeline</field>
         <field name="tag">bf_gantt</field>
     </record>
 

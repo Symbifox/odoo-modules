@@ -84,6 +84,29 @@ export class BfGanttView extends Component {
         return !this.state.loading && (!this.geo || !this.geo.lignes.length);
     }
 
+    /** Le repère du bandeau, en une seule phrase à traduire : une langue peut
+     *  déplacer le nombre et les dates, ce qu'aucun morceau collé ne permet. */
+    get repere() {
+        const g = this.geo;
+        return _t("%(count)s lines · %(start)s to %(end)s", {
+            count: g.compte,
+            start: g.debut,
+            end: g.fin,
+        });
+    }
+
+    /** L'avertissement de troncature, entier pour la même raison. */
+    get depassement() {
+        return _t("Beyond %(count)s lines, the display stops. Filter the project or split it.", {
+            count: this.geo.compte,
+        });
+    }
+
+    /** « 2026-09-07 au 2026-09-18 » pour l'infobulle d'une ligne. */
+    plage(ligne) {
+        return _t("%(start)s to %(end)s", { start: ligne.start, end: ligne.end });
+    }
+
     /** Le chemin SVG d'une flèche, construit une fois par rendu. */
     cheminFleche(fleche) {
         return fleche.points
@@ -117,8 +140,8 @@ export class BfGanttView extends Component {
         if (!liste.length) {
             this.notification.add(
                 kind === "plan"
-                    ? _t("Aucun échéancier autonome pour l'instant.")
-                    : _t("Aucun projet ouvert."),
+                    ? _t("No standalone timeline yet.")
+                    : _t("No open project."),
                 { type: "info" }
             );
             return;
@@ -184,7 +207,7 @@ export class BfGanttView extends Component {
         if (!s.resId) {
             return;
         }
-        this.notification.add(_t("Préparation du fichier…"), { type: "info" });
+        this.notification.add(_t("Preparing the file…"), { type: "info" });
         try {
             const res = await this.orm.call(
                 "bf.gantt.export",
@@ -209,9 +232,9 @@ export class BfGanttView extends Component {
             URL.revokeObjectURL(url);
         } catch (e) {
             console.error("Échéancier : export refusé", e);
-            this.notification.add(_t("Le fichier n'a pas pu être produit."), {
+            this.notification.add(_t("The file could not be produced."), {
                 type: "danger",
-                title: _t("Export"),
+                title: _t("Timeline export"),
             });
         }
     }
@@ -229,12 +252,12 @@ export class BfGanttView extends Component {
                 { echelle: s.echelle, grouping: s.grouping }
             );
             this.notification.add(
-                _t("Déposé au dossier : %s", res.name),
+                _t("Attached to the record: %s", res.name),
                 { type: "success" }
             );
         } catch (e) {
             console.error("Échéancier : dépôt refusé", e);
-            this.notification.add(_t("Le fichier n'a pas pu être déposé."), {
+            this.notification.add(_t("The file could not be attached."), {
                 type: "danger",
             });
         }

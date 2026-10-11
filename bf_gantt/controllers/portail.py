@@ -38,14 +38,14 @@ class EcheancierPortail(CustomerPortal):
     def _echeancier(self, kind, res_id, access_token):
         """L'enregistrement, si les trois gardes passent. Sinon, une erreur."""
         if kind not in MODELES:
-            raise MissingError(_("Échéancier inconnu."))
+            raise MissingError(_("Unknown timeline."))
         modele, drapeau = MODELES[kind]
         enregistrement = self._document_check_access(modele, res_id, access_token)
         if not enregistrement[drapeau]:
             # Le token est bon mais la publication est fermée. On refuse comme
             # si de rien n'était : distinguer les deux cas renseignerait un
             # visiteur sur l'existence de l'enregistrement.
-            raise AccessError(_("Cet échéancier n'est pas publié."))
+            raise AccessError(_("This timeline is not published."))
         return enregistrement
 
     def _payload(self, kind, enregistrement):
@@ -108,11 +108,11 @@ class EcheancierPortail(CustomerPortal):
 
     @http.route(
         ["/mon/echeancier/<string:kind>/<int:res_id>/<string:format_>"],
-        type="http", auth="public", website=False, sitemap=False)
+        type="http", auth="public", website=True, sitemap=False)
     def fichier(self, kind, res_id, format_, access_token=None,
                 echelle="week", zoom=None, **kw):
         if format_ not in FORMATS:
-            raise MissingError(_("Format inconnu."))
+            raise MissingError(_("Unknown format."))
         try:
             enregistrement = self._echeancier(kind, res_id, access_token)
         except (AccessError, MissingError):

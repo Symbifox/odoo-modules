@@ -23,23 +23,24 @@ class ProjectTask(models.Model):
     _inherit = "project.task"
 
     planned_date_begin = fields.Datetime(
-        string="Début planifié",
+        string="Planned start",
         index=True,
         tracking=True,
-        help="Quand le travail doit commencer. Laissé vide, l'échéancier retombe "
-             "sur la date d'assignation, puis sur la date de création, et le dit.",
+        help="When the work should start. Left empty, the timeline falls "
+             "back on the assignment date, then on the creation date, and "
+             "says so.",
     )
     bf_gantt_start_origin = fields.Selection(
         selection=[
-            ("planifie", "Début planifié"),
-            ("assignation", "Date d'assignation"),
-            ("creation", "Date de création"),
-            ("repli", "Reconstituée depuis l'échéance"),
+            ("planifie", "Planned start"),
+            ("assignation", "Assignment date"),
+            ("creation", "Creation date"),
+            ("repli", "Derived from the deadline"),
         ],
-        string="Origine du début",
+        string="Start date source",
         compute="_compute_bf_gantt_start_origin",
-        help="D'où vient la date de début affichée dans l'échéancier. "
-             "Tout ce qui n'est pas « Début planifié » est une approximation.",
+        help="Where the start date shown in the timeline comes from. "
+             "Anything other than \"Planned start\" is an approximation.",
     )
 
     @api.depends("planned_date_begin", "date_assign", "create_date", "date_deadline")
@@ -60,7 +61,8 @@ class ProjectTask(models.Model):
             if (tache.planned_date_begin and tache.date_deadline
                     and tache.planned_date_begin > tache.date_deadline):
                 raise ValidationError(_(
-                    "Le début planifié de « %(tache)s » tombe après son échéance.",
+                    "The planned start of \"%(tache)s\" falls after its "
+                    "deadline.",
                     tache=tache.display_name,
                 ))
 

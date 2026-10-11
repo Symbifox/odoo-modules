@@ -7,37 +7,37 @@
           plus quelques non alimentaires courants en milieu de travail.
         -->
         <record id="allergen_peanut" model="bf.ex.allergen">
-            <field name="name">Arachides</field><field name="sequence">10</field>
+            <field name="name">Peanuts</field><field name="sequence">10</field>
         </record>
         <record id="allergen_tree_nut" model="bf.ex.allergen">
-            <field name="name">Noix</field><field name="sequence">20</field>
+            <field name="name">Tree nuts</field><field name="sequence">20</field>
         </record>
         <record id="allergen_milk" model="bf.ex.allergen">
-            <field name="name">Lait</field><field name="sequence">30</field>
+            <field name="name">Milk</field><field name="sequence">30</field>
         </record>
         <record id="allergen_egg" model="bf.ex.allergen">
-            <field name="name">Œufs</field><field name="sequence">40</field>
+            <field name="name">Eggs</field><field name="sequence">40</field>
         </record>
         <record id="allergen_fish" model="bf.ex.allergen">
-            <field name="name">Poisson</field><field name="sequence">50</field>
+            <field name="name">Fish</field><field name="sequence">50</field>
         </record>
         <record id="allergen_shellfish" model="bf.ex.allergen">
-            <field name="name">Crustacés et mollusques</field><field name="sequence">60</field>
+            <field name="name">Crustaceans and molluscs</field><field name="sequence">60</field>
         </record>
         <record id="allergen_soy" model="bf.ex.allergen">
-            <field name="name">Soja</field><field name="sequence">70</field>
+            <field name="name">Soy</field><field name="sequence">70</field>
         </record>
         <record id="allergen_wheat" model="bf.ex.allergen">
-            <field name="name">Blé et triticale</field><field name="sequence">80</field>
+            <field name="name">Wheat and triticale</field><field name="sequence">80</field>
         </record>
         <record id="allergen_sesame" model="bf.ex.allergen">
-            <field name="name">Graines de sésame</field><field name="sequence">90</field>
+            <field name="name">Sesame seeds</field><field name="sequence">90</field>
         </record>
         <record id="allergen_sulphites" model="bf.ex.allergen">
-            <field name="name">Sulfites</field><field name="sequence">100</field>
+            <field name="name">Sulphites</field><field name="sequence">100</field>
         </record>
         <record id="allergen_mustard" model="bf.ex.allergen">
-            <field name="name">Moutarde</field><field name="sequence">110</field>
+            <field name="name">Mustard</field><field name="sequence">110</field>
         </record>
         <record id="allergen_gluten" model="bf.ex.allergen">
             <field name="name">Gluten</field><field name="sequence">120</field>
@@ -47,16 +47,16 @@
             <field name="is_food" eval="False"/>
         </record>
         <record id="allergen_bee" model="bf.ex.allergen">
-            <field name="name">Piqûres d'insectes</field><field name="sequence">210</field>
+            <field name="name">Insect stings</field><field name="sequence">210</field>
             <field name="is_food" eval="False"/>
         </record>
         <record id="allergen_fragrance" model="bf.ex.allergen">
-            <field name="name">Parfums et produits parfumés</field><field name="sequence">220</field>
+            <field name="name">Fragrances and scented products</field><field name="sequence">220</field>
             <field name="is_food" eval="False"/>
         </record>
 
         <record id="action_catering" model="ir.actions.server">
-            <field name="name">Liste de service (sans les noms)</field>
+            <field name="name">Catering list (without names)</field>
             <field name="model_id" ref="model_bf_ex_allergy"/>
             <field name="state">code</field>
             <field name="code">action = model.action_catering_list()</field>

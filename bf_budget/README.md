@@ -90,6 +90,10 @@ return nothing in the base module. `_seed_value_for()` on
 confirmed purchase orders, approved expenses and dated subscription renewals —
 and drivers, one day, without breaking anything.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The budget position is labelled **Budget item** in English, as in the rest of the family, so it no longer reads like a budget line. The positions the wizard proposes and the type shown on each report row are read in the user's language.
+
 ## Licence
 
 LGPL-3.

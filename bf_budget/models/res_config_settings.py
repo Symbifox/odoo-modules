@@ -7,11 +7,11 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_budget_hide_thirdparty_menus = fields.Boolean(
-        string="Masquer les menus budget des modules tiers",
+        string="Hide budget menus from third-party modules",
         config_parameter=PARAM_HIDE_ENABLED,
-        help="Plusieurs greffons comptables livrent leur propre menu « Budgets », "
-        "généralement vide. Ce réglage les masque au profit de celui-ci. Rien "
-        "n'est supprimé : décocher les rallume.",
+        help="Several accounting add-ons ship their own \"Budgets\" menu, "
+             "usually empty. This setting hides them in favor of this "
+             "one. Nothing is deleted: unchecking turns them back on.",
     )
 
     def set_values(self):

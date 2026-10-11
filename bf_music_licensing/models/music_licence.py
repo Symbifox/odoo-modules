@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import format_date
 
 
 class MusicLicence(models.Model):
@@ -16,13 +17,13 @@ class MusicLicence(models.Model):
     """
 
     _name = "bf.music.licence"
-    _description = "Période de licence musicale"
+    _description = "Music licence period"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, establishment_id"
 
     name = fields.Char(compute="_compute_name", store=True)
     establishment_id = fields.Many2one(
-        "bf.music.establishment", string="Établissement",
+        "bf.music.establishment", string="Establishment",
         required=True, ondelete="cascade", tracking=True,
     )
     partner_id = fields.Many2one(
@@ -35,51 +36,52 @@ class MusicLicence(models.Model):
         related="company_id.currency_id", readonly=True,
     )
 
-    date_start = fields.Date(string="Début", required=True)
-    date_end = fields.Date(string="Fin", required=True)
+    date_start = fields.Date(string="Start", required=True)
+    date_end = fields.Date(string="End", required=True)
     due_date = fields.Date(
-        string="Échéance de renouvellement", required=True, tracking=True,
+        string="Renewal due date", required=True, tracking=True,
     )
-    completed_date = fields.Date(string="Réglée le", tracking=True)
+    completed_date = fields.Date(string="Settled on", tracking=True)
     status = fields.Selection(
         selection=[
-            ("upcoming", "À venir"),
-            ("due_soon", "Échéance proche"),
-            ("overdue", "En retard"),
-            ("completed", "Réglée"),
+            ("upcoming", "Upcoming"),
+            ("due_soon", "Due soon"),
+            ("overdue", "Overdue"),
+            ("completed", "Settled"),
         ],
-        string="Statut", compute="_compute_status", store=True, index=True,
+        string="Status", compute="_compute_status", store=True, index=True,
     )
-    reminder_sent = fields.Boolean(string="Rappel envoyé", default=False)
+    reminder_sent = fields.Boolean(string="Reminder sent", default=False)
 
-    entandem_account = fields.Char(string="Compte Entandem", tracking=True)
+    entandem_account = fields.Char(string="Entandem account", tracking=True)
     payment_reference = fields.Char(
-        string="Référence de paiement",
-        help="Le numéro de reçu ou de facture qui prouve le versement.",
+        string="Payment reference",
+        help="The receipt or invoice number that proves the payment.",
     )
 
     line_ids = fields.One2many(
-        "bf.music.licence.line", "licence_id", string="Tarifs applicables",
+        "bf.music.licence.line", "licence_id", string="Applicable tariffs",
     )
     amount_paid = fields.Monetary(
-        string="Payé", compute="_compute_amounts", store=True,
+        string="Paid", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     amount_reference = fields.Monetary(
-        string="Redevance de référence", compute="_compute_amounts", store=True,
+        string="Reference royalty", compute="_compute_amounts", store=True,
         currency_field="currency_id",
-        help="Ce qui a été payé si le montant est connu, sinon ce que le tarif commande.",
+        help="What was paid if the amount is known, otherwise what the "
+             "tariff requires.",
     )
     amount_at_risk = fields.Monetary(
-        string="Sous tarif non homologué", compute="_compute_amounts", store=True,
+        string="Under uncertified tariff", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     adjustment_total = fields.Monetary(
-        string="Rajustement", compute="_compute_amounts", store=True,
+        string="Adjustment", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     has_uncertified = fields.Boolean(
-        string="Période non homologuée", compute="_compute_amounts", store=True,
+        string="Uncertified period", compute="_compute_amounts", store=True,
     )
 
     @api.depends("establishment_id.name", "date_start")
@@ -153,18 +155,24 @@ class MusicLicence(models.Model):
         )
         if not group:
             return
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
         for licence in licences:
             days = (licence.due_date - today).days
-            label = _("EN RETARD") if days <= 0 else _("%s jours", days)
             for user in group.users:
+                # Le travail planifié n'a la langue de personne : la note se lit par
+                # le destinataire de l'activité, dans la sienne (sinon en anglais).
+                lu = licence.with_context(lang=user.lang if user.lang in installees else "en_US")
+                label = lu.env._("OVERDUE") if days <= 0 else lu.env._("%s day(s) left", days)
                 licence.activity_schedule(
                     "mail.mail_activity_data_todo",
                     date_deadline=licence.due_date,
                     user_id=user.id,
-                    note=_(
-                        "<p><strong>Licence musicale (%(label)s)</strong></p>"
-                        "<p>%(name)s — échéance : %(due)s</p>",
-                        label=label, name=licence.name, due=licence.due_date,
+                    note=lu.env._(
+                        "<p><strong>Music licence "
+                        "(%(label)s)</strong></p><p>%(name)s, due on "
+                        "%(due)s</p>",
+                        label=label, name=licence.name,
+                        due=format_date(lu.env, licence.due_date),
                     ),
                 )
             licence.reminder_sent = True
@@ -174,13 +182,13 @@ class MusicLicenceLine(models.Model):
     """Un tarif appliqué à une période, avec ce qui a été payé en face."""
 
     _name = "bf.music.licence.line"
-    _description = "Ligne de redevance musicale"
+    _description = "Music royalty line"
     _order = "licence_id, tariff_id"
 
     licence_id = fields.Many2one(
         "bf.music.licence", required=True, ondelete="cascade", index=True,
     )
-    tariff_id = fields.Many2one("bf.music.tariff", string="Tarif", required=True)
+    tariff_id = fields.Many2one("bf.music.tariff", string="Tariff", required=True)
     establishment_id = fields.Many2one(
         related="licence_id.establishment_id", store=True, readonly=True,
     )
@@ -189,44 +197,44 @@ class MusicLicenceLine(models.Model):
     )
     society = fields.Selection(related="tariff_id.society", readonly=True)
     basis = fields.Selection(
-        related="tariff_id.basis", string="Assiette du tarif", readonly=True,
+        related="tariff_id.basis", string="Tariff basis", readonly=True,
     )
     tariff_state = fields.Selection(related="tariff_id.state", readonly=True)
     rate_confirmed = fields.Boolean(
         related="tariff_id.rate_confirmed", readonly=True,
     )
     is_certified = fields.Boolean(
-        string="Homologué", compute="_compute_amounts", store=True,
+        string="Certified", compute="_compute_amounts", store=True,
     )
 
     base_quantity = fields.Float(
-        string="Assiette",
+        string="Basis",
         compute="_compute_base_quantity", store=True, readonly=False,
         digits=(16, 2),
-        help="Reprise de l'établissement selon l'assiette du tarif. "
-             "Modifiable quand le tarif compte autrement.",
+        help="Taken from the establishment according to the tariff basis. "
+             "Editable when the tariff counts differently.",
     )
     amount_paid = fields.Monetary(
-        string="Payé", currency_field="currency_id",
+        string="Paid", currency_field="currency_id",
     )
     amount_proposed = fields.Monetary(
-        string="Au taux proposé", compute="_compute_amounts", store=True,
+        string="At proposed rate", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     amount_certified = fields.Monetary(
-        string="Au taux homologué", compute="_compute_amounts", store=True,
+        string="At certified rate", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     amount_reference = fields.Monetary(
-        string="Référence", compute="_compute_amounts", store=True,
+        string="Reference", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     amount_at_risk = fields.Monetary(
-        string="Sous tarif non homologué", compute="_compute_amounts", store=True,
+        string="Under uncertified tariff", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
     adjustment = fields.Monetary(
-        string="Rajustement", compute="_compute_amounts", store=True,
+        string="Adjustment", compute="_compute_amounts", store=True,
         currency_field="currency_id",
     )
 
@@ -313,6 +321,6 @@ class MusicLicenceLine(models.Model):
             tariff = rec.tariff_id
             if tariff.date_start > licence.date_end or tariff.date_end < licence.date_start:
                 raise ValidationError(_(
-                    "Le tarif %(tariff)s ne couvre pas la période %(licence)s.",
+                    "Tariff %(tariff)s does not cover the %(licence)s period.",
                     tariff=tariff.name, licence=licence.name,
                 ))

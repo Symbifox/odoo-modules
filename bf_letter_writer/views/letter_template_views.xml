@@ -5,7 +5,7 @@
         <field name="name">letter.template.list</field>
         <field name="model">letter.template</field>
         <field name="arch" type="xml">
-            <list string="Modèles de lettres">
+            <list string="Letter templates">
                 <field name="name"/>
                 <field name="subject"/>
                 <field name="letterhead_style"/>
@@ -17,13 +17,13 @@
         <field name="name">letter.template.form</field>
         <field name="model">letter.template</field>
         <field name="arch" type="xml">
-            <form string="Modèle de lettre">
+            <form string="Letter template">
                 <sheet>
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Nom du modèle..."/></h1>
+                        <h1><field name="name" placeholder="Template name..."/></h1>
                     </div>
                     <group>
                         <group>
@@ -36,29 +36,27 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Corps" name="body">
+                        <page string="Body" name="body">
                             <field name="body_html" widget="html" nolabel="1"/>
                         </page>
-                        <page string="Champs de fusion" name="merge_fields">
+                        <page string="Merge fields" name="merge_fields">
                             <div class="text-muted">
-                                <p>Insérez ces jetons dans l'objet ou le corps. Ils sont
-                                remplacés à l'application du modèle sur une lettre.</p>
+                                <p>Insert these tokens in the subject or the body. They are replaced when the template is applied to a letter.</p>
                                 <ul>
-                                    <li><code>{{ object.partner_id.name }}</code> — Nom du destinataire</li>
-                                    <li><code>{{ object.partner_id.parent_id.name }}</code> — Organisation du destinataire</li>
-                                    <li><code>{{ object.recipient_name }}</code> — Nom du destinataire (figé sur la lettre)</li>
-                                    <li><code>{{ object.letter_date }}</code> — Date de la lettre</li>
-                                    <li><code>{{ object.reference }}</code> — Référence (LET-AAAA-NNN)</li>
-                                    <li><code>{{ object.company_id.name }}</code> — Nom de l'expéditeur</li>
-                                    <li><code>{{ object.signatory_id.name }}</code> — Nom du signataire</li>
-                                    <li><code>{{ object.signatory_function }}</code> — Fonction du signataire</li>
+                                    <li><code>{{ object.partner_id.name }}</code>: recipient name</li>
+                                    <li><code>{{ object.partner_id.parent_id.name }}</code>: recipient organization</li>
+                                    <li><code>{{ object.recipient_name }}</code>: recipient name (frozen on the letter)</li>
+                                    <li><code>{{ object.letter_date }}</code>: letter date</li>
+                                    <li><code>{{ object.reference }}</code>: reference (LET-YYYY-NNN)</li>
+                                    <li><code>{{ object.company_id.name }}</code>: sender name</li>
+                                    <li><code>{{ object.signatory_id.name }}</code>: signatory name</li>
+                                    <li><code>{{ object.signatory_function }}</code>: signatory title</li>
                                 </ul>
-                                <p>Pour des cas avancés, la syntaxe QWeb est aussi acceptée,
-                                ex. <code>&lt;t t-out="object.partner_id.name"/&gt;</code>.</p>
+                                <p>For advanced cases, QWeb syntax is also accepted, e.g. <code>&lt;t t-out="object.partner_id.name"/&gt;</code>.</p>
                             </div>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="note" nolabel="1" placeholder="Description interne du modèle..."/>
+                            <field name="note" nolabel="1" placeholder="Internal description of the template..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -67,12 +65,12 @@
     </record>
 
     <record id="action_letter_template" model="ir.actions.act_window">
-        <field name="name">Modèles de lettres</field>
+        <field name="name">Letter templates</field>
         <field name="res_model">letter.template</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créer votre premier modèle de lettre
+                Create your first letter template
             </p>
         </field>
     </record>

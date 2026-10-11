@@ -1,7 +1,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
     "name": "Levée de fonds — Cœur",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Accounting/Donation",
     "summary": "Gestion des donateurs et structure de collecte (Fonds / Campagnes / "
     "Sollicitations / Trousses) par-dessus le module Dons — comparable à Raiser's Edge",

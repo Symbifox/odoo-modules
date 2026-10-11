@@ -5,7 +5,7 @@
         <field name="name">letter.send.wizard.form</field>
         <field name="model">letter.send.wizard</field>
         <field name="arch" type="xml">
-            <form string="Envoyer la lettre">
+            <form string="Send the letter">
                 <group>
                     <field name="letter_id" invisible="1"/>
                     <field name="recipient_ids" widget="many2many_tags"/>
@@ -16,18 +16,18 @@
                 <group invisible="not preview_url">
                     <div class="alert alert-success" role="alert">
                         <i class="fa fa-check-circle"/>
-                        Aperçu généré &#8212; cliquez le lien pour l'ouvrir :
+                        Preview generated. Click the link to open it:
                         <field name="preview_url" widget="url" nolabel="1"/>
                     </div>
                 </group>
                 <footer>
                     <button name="action_preview_pdf" type="object"
-                            string="Prévisualiser PDF" class="btn-secondary"
+                            string="Preview PDF" class="btn-secondary"
                             icon="fa-file-pdf-o"/>
                     <button name="action_send" type="object"
-                            string="Envoyer" class="btn-primary"
+                            string="Send" class="btn-primary"
                             icon="fa-paper-plane"/>
-                    <button string="Annuler" special="cancel"/>
+                    <button string="Cancel" special="cancel"/>
                 </footer>
             </form>
         </field>

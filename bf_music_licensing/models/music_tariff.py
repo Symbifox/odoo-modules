@@ -16,94 +16,96 @@ class MusicTariff(models.Model):
     """
 
     _name = "bf.music.tariff"
-    _description = "Tarif de redevance musicale"
+    _description = "Music royalty tariff"
     _inherit = ["mail.thread"]
     _order = "society, code, date_start desc"
 
     name = fields.Char(compute="_compute_name", store=True)
     society = fields.Selection(
         selection=[("socan", "SOCAN"), ("resound", "Ré:Sonne")],
-        string="Société de gestion",
+        string="Collective society",
         required=True,
         tracking=True,
     )
     code = fields.Char(
-        string="Tarif",
+        string="Tariff",
         required=True,
         tracking=True,
-        help="Le numéro tel que la Commission le désigne : 15.A, 15.B, 3.B.",
+        help="The number as the Board designates it: 15.A, 15.B, 3.B.",
     )
-    label = fields.Char(string="Intitulé", required=True)
+    label = fields.Char(string="Title", required=True)
     usage = fields.Selection(
         selection=[
-            ("background", "Musique d'ambiance"),
-            ("on_hold", "Attente téléphonique"),
+            ("background", "Background music"),
+            ("on_hold", "Music on hold"),
         ],
-        string="Usage visé",
+        string="Intended use",
         required=True,
         default="background",
     )
-    date_start = fields.Date(string="Début de la période", required=True, tracking=True)
-    date_end = fields.Date(string="Fin de la période", required=True, tracking=True)
+    date_start = fields.Date(string="Period start", required=True, tracking=True)
+    date_end = fields.Date(string="Period end", required=True, tracking=True)
     basis = fields.Selection(
         selection=[
-            ("area_sqm", "Par mètre carré"),
-            ("area_sqft", "Par pied carré"),
-            ("area_sqm_day", "Par mètre carré et par jour d'exploitation"),
-            ("area_sqft_day", "Par pied carré et par jour d'exploitation"),
-            ("line", "Par ligne téléphonique"),
-            ("flat", "Montant fixe"),
+            ("area_sqm", "Per square metre"),
+            ("area_sqft", "Per square foot"),
+            ("area_sqm_day", "Per square metre per operating day"),
+            ("area_sqft_day", "Per square foot per operating day"),
+            ("line", "Per phone line"),
+            ("flat", "Flat amount"),
         ],
-        string="Assiette",
+        string="Basis",
         required=True,
         default="area_sqm",
     )
     state = fields.Selection(
-        selection=[("proposed", "Proposé"), ("certified", "Homologué")],
-        string="État",
+        selection=[("proposed", "Proposed"), ("certified", "Certified")],
+        string="State",
         required=True,
         default="proposed",
         tracking=True,
-        help="Proposé : publié par la Commission mais pas encore homologué. "
-             "Ce que le client paie sous un tarif proposé reste révisable.",
+        help="Proposed: published by the Board but not yet certified. "
+             "What the client pays under a proposed tariff remains "
+             "subject to revision.",
     )
     rate_proposed = fields.Float(
-        string="Taux proposé", digits=(16, 5), tracking=True,
-        help="Taux par unité d'assiette. Sur une assiette par ligne "
-             "téléphonique, il ne vise que les lignes SUPPLÉMENTAIRES : "
-             "la première est facturée au montant de base.",
+        string="Proposed rate", digits=(16, 5), tracking=True,
+        help="Rate per basis unit. On a per-phone-line basis, it applies "
+             "only to ADDITIONAL lines: the first one is billed at the "
+             "base amount.",
     )
     rate_base_proposed = fields.Monetary(
-        string="Montant de base proposé", currency_field="currency_id",
-        help="Montant dû pour la première unité, quand le tarif est rédigé "
-             "« tant pour la première, tant pour chaque unité de plus ».",
+        string="Proposed base amount", currency_field="currency_id",
+        help="Amount due for the first unit, when the tariff is worded "
+             "\"so much for the first, so much for each additional unit\".",
     )
     minimum_proposed = fields.Monetary(
-        string="Minimum proposé", currency_field="currency_id",
-        help="Redevance annuelle minimale, quand le tarif en prévoit une.",
+        string="Proposed minimum", currency_field="currency_id",
+        help="Minimum annual royalty, when the tariff provides for one.",
     )
     rate_certified = fields.Float(
-        string="Taux homologué", digits=(16, 5), tracking=True,
+        string="Certified rate", digits=(16, 5), tracking=True,
     )
     rate_base_certified = fields.Monetary(
-        string="Montant de base homologué", currency_field="currency_id",
+        string="Certified base amount", currency_field="currency_id",
     )
     minimum_certified = fields.Monetary(
-        string="Minimum homologué", currency_field="currency_id",
+        string="Certified minimum", currency_field="currency_id",
     )
-    certification_date = fields.Date(string="Date d'homologation", tracking=True)
-    publication_date = fields.Date(string="Date de publication du projet")
+    certification_date = fields.Date(string="Certification date", tracking=True)
+    publication_date = fields.Date(string="Proposed tariff publication date")
     source_url = fields.Char(string="Source")
     rate_confirmed = fields.Boolean(
-        string="Taux relevé à la source",
+        string="Rate verified at source",
         default=False,
-        help="Faux tant que le taux n'a pas été lu sur le texte du tarif lui-même. "
-             "Un taux non relevé ne sert pas de promesse commerciale.",
+        help="False until the rate has been read in the text of the "
+             "tariff itself. An unverified rate must not be used as a "
+             "commercial promise.",
     )
     seasonal_half = fields.Boolean(
-        string="Demi-tarif saisonnier",
-        help="Le tarif prévoit la moitié du taux pour un établissement "
-             "exploité moins de six mois par année.",
+        string="Seasonal half rate",
+        help="The tariff provides for half the rate for an establishment "
+             "operated less than six months a year.",
     )
     notes = fields.Text(string="Notes")
     currency_id = fields.Many2one(
@@ -117,14 +119,14 @@ class MusicTariff(models.Model):
     active = fields.Boolean(default=True)
 
     rate_in_force = fields.Float(
-        string="Taux en vigueur", compute="_compute_in_force", digits=(16, 5),
+        string="Rate in force", compute="_compute_in_force", digits=(16, 5),
     )
     rate_base_in_force = fields.Monetary(
-        string="Montant de base en vigueur", compute="_compute_in_force",
+        string="Base amount in force", compute="_compute_in_force",
         currency_field="currency_id",
     )
     minimum_in_force = fields.Monetary(
-        string="Minimum en vigueur", compute="_compute_in_force",
+        string="Minimum in force", compute="_compute_in_force",
         currency_field="currency_id",
     )
 
@@ -132,8 +134,8 @@ class MusicTariff(models.Model):
         (
             "period_unique",
             "unique(society, code, usage, date_start, company_id)",
-            "Une même période ne peut porter qu'une ligne par tarif : "
-            "le taux proposé et le taux homologué vivent sur la même ligne.",
+            "A period can carry only one line per tariff: the proposed "
+            "rate and the certified rate live on the same line.",
         ),
     ]
 
@@ -165,7 +167,7 @@ class MusicTariff(models.Model):
         for rec in self:
             if rec.date_end < rec.date_start:
                 raise ValidationError(
-                    _("La fin de la période précède son début sur %s.", rec.name)
+                    _("The period end comes before its start on %s.", rec.name)
                 )
 
     @api.constrains("state", "certification_date")
@@ -173,9 +175,9 @@ class MusicTariff(models.Model):
         for rec in self:
             if rec.state == "certified" and not rec.certification_date:
                 raise ValidationError(
-                    _("Un tarif homologué porte sa date d'homologation. "
-                      "Sans elle, on ne sait pas à partir de quand le "
-                      "rajustement est dû (%s).", rec.name)
+                    _("A certified tariff carries its certification date. "
+                      "Without it, there is no way to know from when the "
+                      "adjustment is due (%s).", rec.name)
                 )
 
     @api.constrains("society", "code", "usage", "date_start", "date_end", "active")
@@ -195,7 +197,7 @@ class MusicTariff(models.Model):
             ], limit=1)
             if clash:
                 raise ValidationError(
-                    _("La période de %(new)s chevauche celle de %(old)s.",
+                    _("The period of %(new)s overlaps that of %(old)s.",
                       new=rec.name, old=clash.name)
                 )
 

@@ -2,25 +2,25 @@
 <odoo>
 
     <menuitem id="menu_music_root"
-              name="Licences musicales"
+              name="Music licensing"
               web_icon="bf_music_licensing,static/description/icon.png"
               sequence="52"
               groups="group_music_user"/>
 
     <menuitem id="menu_music_establishment"
-              name="Établissements"
+              name="Establishments"
               parent="menu_music_root"
               action="action_music_establishment"
               sequence="10"/>
 
     <menuitem id="menu_music_licence"
-              name="Périodes de licence"
+              name="Licence periods"
               parent="menu_music_root"
               action="action_music_licence"
               sequence="20"/>
 
     <menuitem id="menu_music_uncertified"
-              name="Sous tarif non homologué"
+              name="Under uncertified tariff"
               parent="menu_music_root"
               action="action_music_licence_uncertified"
               sequence="30"/>
@@ -32,7 +32,7 @@
               groups="group_music_manager"/>
 
     <menuitem id="menu_music_tariff"
-              name="Référentiel de tarifs"
+              name="Tariff register"
               parent="menu_music_config"
               action="action_music_tariff"
               sequence="10"/>

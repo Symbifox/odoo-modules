@@ -10,15 +10,15 @@ class DonationDonation(models.Model):
 
     appeal_id = fields.Many2one(
         "bf.appeal",
-        string="Sollicitation",
+        string="Appeal",
         tracking=True,
         ondelete="restrict",
-        help="Sollicitation à l'origine du don. La choisir renseigne "
-        "automatiquement la campagne.",
+        help="Appeal the donation came from. Choosing it fills in the "
+             "campaign automatically.",
     )
     package_id = fields.Many2one(
         "bf.package",
-        string="Trousse",
+        string="Package",
         tracking=True,
         ondelete="restrict",
         domain="[('appeal_id', '=', appeal_id)]",

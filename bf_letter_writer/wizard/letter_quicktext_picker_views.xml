@@ -5,21 +5,21 @@
         <field name="name">letter.quicktext.picker.form</field>
         <field name="model">letter.quicktext.picker</field>
         <field name="arch" type="xml">
-            <form string="Insérer un bloc de texte">
+            <form string="Insert a text block">
                 <group>
                     <field name="letter_id" invisible="1"/>
                     <field name="company_id" invisible="1"/>
                     <field name="quicktext_id"/>
                     <field name="position"/>
                 </group>
-                <group string="Aperçu du bloc" invisible="not preview_html">
+                <group string="Block preview" invisible="not preview_html">
                     <field name="preview_html" nolabel="1" readonly="1"/>
                 </group>
                 <footer>
                     <button name="action_insert" type="object"
-                            string="Insérer" class="btn-primary"
+                            string="Insert" class="btn-primary"
                             icon="fa-puzzle-piece"/>
-                    <button string="Annuler" special="cancel"/>
+                    <button string="Cancel" special="cancel"/>
                 </footer>
             </form>
         </field>

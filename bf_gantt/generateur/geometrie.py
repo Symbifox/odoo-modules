@@ -9,9 +9,11 @@ Le repère est celui du dessin, pas celui du PDF : **l'origine est en haut à
 gauche, y descend**. C'est le repère du SVG, du PNG et du navigateur.
 `pdf.py` est le seul à retourner l'axe, une fois, à l'écriture.
 
-Aucune dépendance : ce module s'exécute hors d'Odoo, ce qui rend les tests
-rapides et le raisonnement simple.
+Aucune dépendance à Odoo : ce module s'exécute hors d'Odoo, ce qui rend les
+tests rapides et le raisonnement simple. Babel, qu'Odoo exige déjà, nomme les
+mois ; sans lui, l'anglais fait le travail.
 """
+import functools
 from datetime import date, timedelta
 
 # ---------------------------------------------------------------- constantes
@@ -56,9 +58,34 @@ RAYON_JALON = 6.0
 LOGO_H_MAX = 32.0
 LOGO_L_MAX = 170.0
 
+# ⚠️ Plus lu par le dessin : seul le classeur (`xlsx.py`) s'en sert encore, et
+# il reste français pour tous tant que son import n'est pas bilingue. Les
+# graduations prennent leurs mois dans la langue du lecteur (`calendrier`).
 MOIS_FR = ["janv.", "févr.", "mars", "avr.", "mai", "juin",
            "juil.", "août", "sept.", "oct.", "nov.", "déc."]
-JOURS_FR = ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"]
+
+# Le repli quand la langue manque ou que babel ne la connaît pas : l'anglais,
+# la langue de la source.
+MOIS_EN = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+JOURS_EN = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+# Les textes que les rendus écrivent sur le dessin. La source (`_assembler`) les
+# fournit traduits dans le payload, sous `labels` ; ceux-ci ne servent que de
+# repli, quand un payload n'en porte pas (les essais appellent les générateurs
+# sans base). Les clés sont techniques, les valeurs des gabarits à espaces
+# réservés nommés, formatés par `formater`.
+LIBELLES = {
+    "untitled": "Timeline",
+    "summary": "%(count)s lines · %(start)s to %(end)s",
+    "period": "%(start)s to %(end)s",
+    "today": "today",
+    "scaled": "scaled to %(percent)s %%",
+    "truncated": "truncated list",
+    "range_capped": ("range capped at %(years)s years, chevron = bar that "
+                     "runs past it"),
+    "approximate": "dotted line = approximate start",
+}
 
 # Palette de statut. Le premier ton peint la barre, le second son remplissage.
 COULEURS = {
@@ -168,6 +195,82 @@ def _taille_svg(octets):
     if not l or not h:
         return None
     return l, h
+
+
+def libelles(payload):
+    """Les textes du dessin : ceux du payload, sinon l'anglais de `LIBELLES`."""
+    fournis = (payload or {}).get("labels") or {}
+    return {cle: (fournis.get(cle) or defaut) for cle, defaut in LIBELLES.items()}
+
+
+def formater(textes, cle, **valeurs):
+    """Remplit le gabarit `cle` de `textes`.
+
+    ⚠️ Une traduction qui perd ou renomme un espace réservé lèverait ici, sur
+    une route publique. On retombe alors sur l'anglais plutôt que sur un 500.
+    """
+    try:
+        return textes[cle] % valeurs
+    except (KeyError, TypeError, ValueError):
+        return LIBELLES[cle] % valeurs
+
+
+def _locale(langue):
+    """La locale babel d'un code de langue Odoo (fr_CA, en_US, sr@latin)."""
+    from babel import Locale
+
+    # « sr@latin » est le serbe en alphabet latin : babel le lit en cyrillique.
+    essais = [langue.replace("@latin", "_Latn"), langue,
+              langue.split("@")[0], langue.split("@")[0].split("_")[0]]
+    for code in essais:
+        try:
+            return Locale.parse(code)
+        except Exception:
+            continue
+    raise ValueError(langue)
+
+
+def _dessinable(noms):
+    """Lexend, la police du PDF et du PNG, ne couvre que l'alphabet latin
+    (accents et vietnamien compris). Hors de là, ses glyphes manquent."""
+    return all(ord(c) < 0x250 or 0x1E00 <= ord(c) <= 0x1EFF
+               for nom in noms for c in nom)
+
+
+@functools.lru_cache(maxsize=32)
+def calendrier(langue):
+    """Les noms abrégés des mois et des jours dans la langue du lecteur.
+
+    `mois` sert quand le mois suit un quantième (« 29 sept »), `mois_seuls`
+    quand il est seul ou suivi de l'année (« sept. 2026 ») : certaines langues
+    les écrivent différemment (le catalan dit « de set. » dans le premier cas,
+    « set. » dans le second). `jours` commence au lundi, comme `weekday()`.
+
+    Une langue absente ou inconnue de babel rend l'anglais, jamais une erreur :
+    une graduation ne vaut pas un rendu tombé. Une langue d'un autre alphabet
+    (russe, grec, japonais…) rend aussi l'anglais : Lexend ne sait pas la
+    dessiner, et l'écran doit montrer ce que montre le PDF.
+    """
+    if not langue:
+        return {"mois": MOIS_EN, "mois_seuls": MOIS_EN, "jours": JOURS_EN}
+    try:
+        from babel.dates import get_day_names, get_month_names
+
+        locale = _locale(str(langue))
+        mois = get_month_names("abbreviated", context="format", locale=locale)
+        seuls = get_month_names("abbreviated", context="stand-alone",
+                                locale=locale)
+        jours = get_day_names("abbreviated", context="format", locale=locale)
+        noms = {
+            "mois": tuple(mois[i] for i in range(1, 13)),
+            "mois_seuls": tuple(seuls[i] for i in range(1, 13)),
+            "jours": tuple(jours[i] for i in range(7)),
+        }
+        if not all(_dessinable(v) for v in noms.values()):
+            raise ValueError(langue)
+        return noms
+    except Exception:
+        return {"mois": MOIS_EN, "mois_seuls": MOIS_EN, "jours": JOURS_EN}
 
 
 def borner_zoom(valeur, defaut=ZOOM_DEFAUT):
@@ -320,7 +423,9 @@ def construire(payload, echelle="week", largeur_libelles=LARGEUR_LIBELLES,
     hauteur_totale = y + HAUTEUR_PIED + MARGE_PAGE
 
     # --- graduations --------------------------------------------------------
-    graduations, bandes = _graduer(debut, fin, pas, x_de, ppj)
+    # Les mois dans la langue du lecteur : `lang` est posé par la source.
+    graduations, bandes = _graduer(debut, fin, pas, x_de, ppj,
+                                   calendrier(payload.get("lang")))
 
     # --- flèches de dépendance ---------------------------------------------
     fleches = []
@@ -359,11 +464,18 @@ def construire(payload, echelle="week", largeur_libelles=LARGEUR_LIBELLES,
         "tronque": bool(payload.get("truncated")) or tronque_ici,
         "plage_reduite": plage_reduite,
         "compte": len(lignes),
+        "langue": payload.get("lang") or "",
+        "libelles": libelles(payload),
     }
 
 
-def _graduer(debut, fin, pas, x_de, ppj):
-    """Deux rangs : le rang large (mois ou année) et le rang fin."""
+def _graduer(debut, fin, pas, x_de, ppj, noms=None):
+    """Deux rangs : le rang large (mois ou année) et le rang fin.
+
+    `noms` vient de `calendrier` ; absent, les mois sont en anglais.
+    """
+    noms = noms or calendrier(None)
+    mois, mois_seuls = noms["mois"], noms["mois_seuls"]
     hauts, bas, bandes = [], [], []
     # ⚠️ Près de `date.max`, ajouter un jour lève `OverflowError`. La borne
     # exclusive se calcule donc une seule fois, ici, et prudemment.
@@ -389,14 +501,18 @@ def _graduer(debut, fin, pas, x_de, ppj):
         elif pas == "week":
             suivant = _plus_n_jours(jour, 7 - jour.weekday())
             largeur = (min(suivant, fin_exclusive) - jour).days * ppj
+            # Le point final tombe (« 29 sept », « 29 Sep ») : c'était l'effet
+            # de l'ancienne coupe à quatre lettres, qui amputait aussi les
+            # langues dont l'abréviation est plus longue (« de set. »).
             bas.append({"x": x_de(jour), "largeur": largeur,
-                        "texte": "%d %s" % (jour.day, MOIS_FR[jour.month - 1][:4]),
+                        "texte": "%d %s" % (jour.day,
+                                            mois[jour.month - 1].rstrip(".")),
                         "weekend": False})
         else:
             suivant = _mois_suivant(jour)
             largeur = (min(suivant, fin_exclusive) - jour).days * ppj
             bas.append({"x": x_de(jour), "largeur": largeur,
-                        "texte": MOIS_FR[jour.month - 1], "weekend": False})
+                        "texte": mois_seuls[jour.month - 1], "weekend": False})
         if suivant <= jour:
             break
         jour = suivant
@@ -406,7 +522,7 @@ def _graduer(debut, fin, pas, x_de, ppj):
     while jour <= fin and len(hauts) < GRADUATIONS_MAX:
         if pas != "month":
             suivant = _mois_suivant(jour)
-            texte = "%s %d" % (MOIS_FR[jour.month - 1], jour.year)
+            texte = "%s %d" % (mois_seuls[jour.month - 1], jour.year)
         else:
             try:
                 suivant = jour.replace(year=jour.year + 1)

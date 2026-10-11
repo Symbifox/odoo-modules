@@ -5,13 +5,13 @@
         <field name="name">bf.music.establishment.list</field>
         <field name="model">bf.music.establishment</field>
         <field name="arch" type="xml">
-            <list string="Établissements">
+            <list string="Establishments">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="area_sqm" string="m²"/>
                 <field name="music_source"/>
                 <field name="entandem_account" optional="show"/>
-                <field name="uncertified_period_count" string="Périodes non homologuées"/>
+                <field name="uncertified_period_count" string="Uncertified periods"/>
                 <field name="amount_at_risk" sum="Total"/>
                 <field name="adjustment_total" sum="Total" optional="show"/>
                 <field name="currency_id" column_invisible="True"/>
@@ -23,31 +23,31 @@
         <field name="name">bf.music.establishment.form</field>
         <field name="model">bf.music.establishment</field>
         <field name="arch" type="xml">
-            <form string="Établissement">
+            <form string="Establishment">
                 <header>
                     <button name="action_build_history" type="object"
-                            string="Évaluer l'exposition" class="oe_highlight"
-                            confirm="Une période de licence sera créée pour chaque année manquante depuis 2020, avec ses lignes de tarif. Continuer?"/>
+                            string="Assess exposure" class="oe_highlight"
+                            confirm="A licence period will be created for each missing year since 2020, with its tariff lines. Continue?"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_open_licences" type="object"
                                 class="oe_stat_button" icon="fa-calendar">
-                            <field name="licence_count" widget="statinfo" string="Périodes"/>
+                            <field name="licence_count" widget="statinfo" string="Periods"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Succursale du centre-ville"/></h1>
+                        <h1><field name="name" placeholder="Downtown branch"/></h1>
                     </div>
                     <group>
                         <group string="Client">
                             <field name="partner_id"/>
-                            <field name="entandem_account" placeholder="Numéro de compte"/>
+                            <field name="entandem_account" placeholder="Account number"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" widget="boolean_toggle"/>
                         </group>
-                        <group string="Assiette">
+                        <group string="Basis">
                             <label for="area_value"/>
                             <div class="o_row">
                                 <field name="area_value"/>
@@ -58,21 +58,21 @@
                         </group>
                     </group>
                     <group>
-                        <group string="Usages">
+                        <group string="Uses">
                             <field name="usage_background"/>
                             <field name="usage_on_hold"/>
                             <field name="on_hold_lines" invisible="not usage_on_hold"/>
                             <field name="days_of_operation"/>
                             <field name="seasonal"/>
                         </group>
-                        <group string="Provenance">
+                        <group string="Origin">
                             <field name="music_source"/>
                         </group>
                     </group>
                     <div class="alert alert-warning" role="alert" invisible="not source_warning">
                         <field name="source_warning" readonly="1" nolabel="1"/>
                     </div>
-                    <group string="Exposition">
+                    <group string="Exposure">
                         <group>
                             <field name="amount_reference"/>
                             <field name="amount_at_risk"/>
@@ -84,7 +84,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Périodes de licence" name="licences">
+                        <page string="Licence periods" name="licences">
                             <field name="licence_ids">
                                 <list>
                                     <field name="date_start"/>
@@ -112,31 +112,30 @@
         <field name="name">bf.music.establishment.search</field>
         <field name="model">bf.music.establishment</field>
         <field name="arch" type="xml">
-            <search string="Établissements">
+            <search string="Establishments">
                 <field name="name"/>
                 <field name="partner_id"/>
-                <filter name="exposed" string="Périodes non homologuées"
+                <filter name="exposed" string="Uncertified periods"
                         domain="[('uncertified_period_count', '&gt;', 0)]"/>
-                <filter name="no_account" string="Sans compte Entandem"
+                <filter name="no_account" string="Without an Entandem account"
                         domain="[('entandem_account', '=', False)]"/>
-                <filter name="source_unknown" string="Provenance inconnue"
+                <filter name="source_unknown" string="Unknown music source"
                         domain="[('music_source', '=', 'unknown')]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_source" string="Provenance" context="{'group_by': 'music_source'}"/>
+                    <filter name="group_source" string="Origin" context="{'group_by': 'music_source'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_music_establishment" model="ir.actions.act_window">
-        <field name="name">Établissements</field>
+        <field name="name">Establishments</field>
         <field name="res_model">bf.music.establishment</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun établissement</p>
-            <p>Un établissement, c'est un lieu où la musique joue. Sa superficie et
-               ses usages font l'assiette des redevances.</p>
+            <p class="o_view_nocontent_smiling_face">No establishment</p>
+            <p>An establishment is a place where music is played. Its area and its uses form the basis of the royalties.</p>
         </field>
     </record>
 

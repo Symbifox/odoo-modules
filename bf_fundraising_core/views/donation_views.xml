@@ -40,12 +40,12 @@
             <filter name="commercial_partner_groupby" position="after">
                 <filter
                     name="campaign_groupby"
-                    string="Campagne"
+                    string="Campaign"
                     context="{'group_by': 'campaign_id'}"
                 />
                 <filter
                     name="appeal_groupby"
-                    string="Sollicitation"
+                    string="Appeal"
                     context="{'group_by': 'appeal_id'}"
                 />
             </filter>

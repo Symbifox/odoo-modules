@@ -8,60 +8,61 @@ class ResCompany(models.Model):
 
     letter_signatory_id = fields.Many2one(
         "res.partner",
-        string="Signataire par défaut",
-        help="Personne dont le nom et la fonction apparaissent dans le bloc "
-        "de signature des lettres.",
+        string="Default signatory",
+        help="Person whose name and title appear in the signature block "
+             "of letters.",
     )
     letter_signatory_function = fields.Char(
-        string="Fonction du signataire",
-        help="Titre affiché sous le nom du signataire. Si vide, la fonction "
-        "du contact est utilisée.",
+        string="Signatory title",
+        help="Title shown under the signatory's name. If empty, the "
+             "contact's job position is used.",
     )
     letter_signature_image = fields.Binary(
-        string="Image de signature",
+        string="Signature image",
         attachment=True,
-        help="Signature numérisée insérée au-dessus du nom du signataire.",
+        help="Scanned signature inserted above the signatory's name.",
     )
     letter_header_note = fields.Char(
-        string="Mention d'en-tête",
-        help="Courte mention affichée sous le nom de l'entreprise dans "
-        "l'en-tête (ex. slogan, numéro d'entreprise).",
+        string="Letterhead note",
+        help="Short note shown under the company name in the letterhead "
+             "(e.g. tagline, business number).",
     )
     letter_footer_html = fields.Html(
-        string="Pied de page des lettres",
+        string="Letter footer",
         sanitize=False,
-        help="Contenu du pied de page. Si vide, le nom et l'adresse de "
-        "l'entreprise sont utilisés.",
+        help="Footer content. If empty, the company name and address are used.",
     )
 
     # --- « Utiliser mon propre en-tête » ---------------------------------
     letter_default_mode = fields.Selection(
         LETTERHEAD_MODES,
-        string="En-tête par défaut",
+        string="Default letterhead",
         default="banner",
-        help="Style d'en-tête appliqué par défaut aux nouvelles lettres.",
+        help="Letterhead style applied by default to new letters.",
     )
     letterhead_image = fields.Binary(
-        string="Image d'en-tête (PNG/JPG)",
+        string="Letterhead image (PNG/JPG)",
         attachment=True,
-        help="Image pleine page utilisée comme fond en mode « Image téléversée ».",
+        help="Full-page image used as the background in \"Uploaded "
+             "image\" mode.",
     )
     letterhead_image_filename = fields.Char()
     letterhead_pdf = fields.Binary(
-        string="PDF d'en-tête",
+        string="Letterhead PDF",
         attachment=True,
-        help="PDF d'en-tête sur lequel le corps de la lettre est superposé en "
-        "mode « PDF téléversé ».",
+        help="Letterhead PDF onto which the letter body is overlaid in "
+             "\"Uploaded PDF\" mode.",
     )
     letterhead_pdf_filename = fields.Char()
     letter_body_top_margin = fields.Integer(
-        string="Marge haute du corps (mm)",
+        string="Body top margin (mm)",
         default=45,
-        help="Décalage du corps depuis le haut de la page pour les modes sans "
-        "en-tête généré (image, PDF, papier pré-imprimé).",
+        help="Body offset from the top of the page for modes without a "
+             "generated letterhead (image, PDF, pre-printed paper).",
     )
     letter_body_bottom_margin = fields.Integer(
-        string="Marge basse du corps (mm)",
+        string="Body bottom margin (mm)",
         default=25,
-        help="Espace réservé en bas de page pour les modes sans en-tête généré.",
+        help="Space kept at the bottom of the page for modes without a "
+             "generated letterhead.",
     )

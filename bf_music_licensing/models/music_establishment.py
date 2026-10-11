@@ -11,11 +11,11 @@ class MusicEstablishment(models.Model):
     """Le lieu où la musique joue, et l'assiette des redevances qu'il doit."""
 
     _name = "bf.music.establishment"
-    _description = "Établissement diffusant de la musique"
+    _description = "Establishment playing music"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "partner_id, name"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
     partner_id = fields.Many2one(
         "res.partner", string="Client", required=True, tracking=True,
     )
@@ -27,78 +27,78 @@ class MusicEstablishment(models.Model):
         "res.currency", related="company_id.currency_id", readonly=True,
     )
 
-    area_value = fields.Float(string="Superficie", tracking=True)
+    area_value = fields.Float(string="Area", tracking=True)
     area_uom = fields.Selection(
-        selection=[("sqm", "m²"), ("sqft", "pi²")],
-        string="Unité", default="sqm", required=True,
+        selection=[("sqm", "m²"), ("sqft", "ft²")],
+        string="Unit", default="sqm", required=True,
     )
     area_sqm = fields.Float(
-        string="Superficie (m²)", compute="_compute_area", store=True, digits=(16, 2),
+        string="Area (m²)", compute="_compute_area", store=True, digits=(16, 2),
     )
     area_sqft = fields.Float(
-        string="Superficie (pi²)", compute="_compute_area", store=True, digits=(16, 2),
+        string="Area (ft²)", compute="_compute_area", store=True, digits=(16, 2),
     )
 
     usage_background = fields.Boolean(
-        string="Musique d'ambiance", default=True, tracking=True,
+        string="Background music", default=True, tracking=True,
     )
     usage_on_hold = fields.Boolean(
-        string="Attente téléphonique", tracking=True,
+        string="Music on hold", tracking=True,
     )
-    on_hold_lines = fields.Integer(string="Lignes téléphoniques", default=0)
+    on_hold_lines = fields.Integer(string="Phone lines", default=0)
     days_of_operation = fields.Integer(
-        string="Jours d'exploitation par année", default=365,
-        help="Nombre de jours où de la musique joue. Le tarif Ré:Sonne 3.B "
-             "multiplie la superficie par ce nombre.",
+        string="Operating days per year", default=365,
+        help="Number of days on which music is played. Ré:Sonne Tariff "
+             "3.B multiplies the area by this number.",
     )
     seasonal = fields.Boolean(
-        string="Établissement saisonnier",
-        help="Exploité moins de six mois par année. Certains tarifs prévoient "
-             "alors la moitié du taux.",
+        string="Seasonal establishment",
+        help="Operated less than six months a year. Some tariffs then "
+             "provide for half the rate.",
     )
 
     music_source = fields.Selection(
         selection=[
-            ("radio", "Radio commerciale"),
-            ("consumer_streaming", "Service d'écoute grand public"),
-            ("business_streaming", "Service d'écoute commercial"),
-            ("supplier", "Fournisseur de musique d'ambiance"),
-            ("own", "Enregistrements de l'établissement"),
-            ("live", "Musique en direct"),
-            ("unknown", "Inconnu"),
+            ("radio", "Commercial radio"),
+            ("consumer_streaming", "Consumer streaming service"),
+            ("business_streaming", "Business streaming service"),
+            ("supplier", "Background music supplier"),
+            ("own", "Establishment's own recordings"),
+            ("live", "Live music"),
+            ("unknown", "Unknown"),
         ],
-        string="Provenance de la musique",
+        string="Music source",
         default="unknown",
         required=True,
         tracking=True,
     )
     source_warning = fields.Char(
-        string="Constat sur la provenance", compute="_compute_source_warning",
+        string="Music source finding", compute="_compute_source_warning",
     )
-    entandem_account = fields.Char(string="Compte Entandem", tracking=True)
+    entandem_account = fields.Char(string="Entandem account", tracking=True)
 
     licence_ids = fields.One2many(
-        "bf.music.licence", "establishment_id", string="Périodes de licence",
+        "bf.music.licence", "establishment_id", string="Licence periods",
     )
     licence_count = fields.Integer(compute="_compute_totals", store=True)
     amount_reference = fields.Monetary(
-        string="Redevances de référence", compute="_compute_totals", store=True,
+        string="Reference royalties", compute="_compute_totals", store=True,
         currency_field="currency_id",
     )
     amount_at_risk = fields.Monetary(
-        string="Payé sous tarif non homologué", compute="_compute_totals", store=True,
+        string="Paid under uncertified tariffs", compute="_compute_totals", store=True,
         currency_field="currency_id",
-        help="Ce que l'établissement a versé sur des périodes que la Commission "
-             "n'a pas encore homologuées. Ce montant reste révisable.",
+        help="What the establishment paid for periods the Board has not "
+             "yet certified. This amount remains subject to revision.",
     )
     adjustment_total = fields.Monetary(
-        string="Rajustement constaté", compute="_compute_totals", store=True,
+        string="Recorded adjustment", compute="_compute_totals", store=True,
         currency_field="currency_id",
-        help="L'écart réel entre ce qui a été payé et ce que le tarif homologué "
-             "commande, sur les périodes déjà homologuées.",
+        help="The actual difference between what was paid and what the "
+             "certified tariff requires, for periods already certified.",
     )
     uncertified_period_count = fields.Integer(
-        string="Périodes non homologuées", compute="_compute_totals", store=True,
+        string="Uncertified periods", compute="_compute_totals", store=True,
     )
 
     @api.depends("area_value", "area_uom")
@@ -116,21 +116,22 @@ class MusicEstablishment(models.Model):
         for rec in self:
             if rec.music_source == "consumer_streaming":
                 rec.source_warning = _(
-                    "Un service d'écoute grand public utilisé dans un commerce "
-                    "s'ajoute aux redevances : ses conditions d'utilisation "
-                    "réservent l'écoute à un usage personnel. À vérifier au "
-                    "contrat du service avant d'en faire un constat écrit."
+                    "A consumer streaming service used in a business adds "
+                    "to the royalties: its terms of use restrict "
+                    "listening to personal use. Check the service "
+                    "agreement before making a written finding."
                 )
             elif rec.music_source == "supplier":
                 rec.source_warning = _(
-                    "Un fournisseur de musique d'ambiance détient normalement "
-                    "les licences de fourniture. Vérifier ce que l'abonnement "
-                    "couvre avant de facturer une redevance en double."
+                    "A background music supplier normally holds the "
+                    "supply licences. Check what the subscription covers "
+                    "before billing a duplicate royalty."
                 )
             elif rec.music_source == "unknown":
                 rec.source_warning = _(
-                    "Provenance non établie. C'est la première question du "
-                    "diagnostic : sans elle, aucune conclusion ne tient."
+                    "Music source not established. It is the first "
+                    "question of the assessment: without it, no "
+                    "conclusion holds."
                 )
             else:
                 rec.source_warning = False
@@ -168,12 +169,12 @@ class MusicEstablishment(models.Model):
         """
         year_to = year_to or date.today().year
         if year_from > year_to:
-            raise UserError(_("L'année de départ suit l'année de fin."))
+            raise UserError(_("The start year comes after the end year."))
         created = self.env["bf.music.licence"]
         for rec in self:
             if not rec._usages():
                 raise UserError(
-                    _("Aucun usage n'est coché sur %s : rien à évaluer.", rec.name)
+                    _("No use is checked on %s: nothing to assess.", rec.name)
                 )
             # `mapped(callable)` applique la fonction au RECORDSET entier en
             # Odoo 18, pas ligne par ligne : la compréhension est le seul
@@ -199,7 +200,7 @@ class MusicEstablishment(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Périodes de licence"),
+            "name": _("Licence periods"),
             "res_model": "bf.music.licence",
             "view_mode": "list,form",
             "domain": [("establishment_id", "=", self.id)],

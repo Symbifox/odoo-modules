@@ -5,7 +5,7 @@
         <field name="name">letter.quicktext.list</field>
         <field name="model">letter.quicktext</field>
         <field name="arch" type="xml">
-            <list string="Blocs de texte">
+            <list string="Text blocks">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="shortcut"/>
@@ -19,17 +19,17 @@
         <field name="name">letter.quicktext.form</field>
         <field name="model">letter.quicktext</field>
         <field name="arch" type="xml">
-            <form string="Bloc de texte">
+            <form string="Text block">
                 <sheet>
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Nom du bloc..."/></h1>
+                        <h1><field name="name" placeholder="Block name..."/></h1>
                     </div>
                     <group>
                         <group>
-                            <field name="shortcut" placeholder="::raccourci"/>
+                            <field name="shortcut" placeholder="::shortcut"/>
                             <field name="category"/>
                         </group>
                         <group>
@@ -37,7 +37,7 @@
                             <field name="active" invisible="1"/>
                         </group>
                     </group>
-                    <separator string="Contenu"/>
+                    <separator string="Content"/>
                     <field name="body_html" widget="html" nolabel="1"/>
                 </sheet>
             </form>
@@ -45,12 +45,12 @@
     </record>
 
     <record id="action_letter_quicktext" model="ir.actions.act_window">
-        <field name="name">Blocs de texte</field>
+        <field name="name">Text blocks</field>
         <field name="res_model">letter.quicktext</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créer votre premier bloc de texte réutilisable
+                Create your first reusable text block
             </p>
         </field>
     </record>

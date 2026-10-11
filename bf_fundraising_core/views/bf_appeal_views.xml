@@ -12,8 +12,8 @@
                 <field name="campaign_id" />
                 <field name="date_start" />
                 <field name="date_end" />
-                <field name="goal_amount" sum="Objectif" />
-                <field name="amount_raised" sum="Amassé" />
+                <field name="goal_amount" sum="Goal" />
+                <field name="amount_raised" sum="Raised" />
                 <field name="progress" widget="progressbar" />
             </list>
         </field>
@@ -27,7 +27,7 @@
                 <sheet>
                     <div class="oe_title">
                         <label for="name" />
-                        <h1><field name="name" placeholder="Nom de la sollicitation" /></h1>
+                        <h1><field name="name" placeholder="Appeal name" /></h1>
                     </div>
                     <group>
                         <group>
@@ -45,7 +45,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Trousses" name="packages">
+                        <page string="Packages" name="packages">
                             <field name="package_ids">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle" />
@@ -65,13 +65,12 @@
     </record>
 
     <record id="action_bf_appeal" model="ir.actions.act_window">
-        <field name="name">Sollicitations</field>
+        <field name="name">Appeals</field>
         <field name="res_model">bf.appeal</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez une sollicitation</p>
-            <p>Une sollicitation est un effort de collecte précis au sein d'une
-            campagne (ex. « Envoi postal printemps 2026 »).</p>
+            <p class="o_view_nocontent_smiling_face">Create an appeal</p>
+            <p>An appeal is a specific fundraising effort within a campaign (e.g. "Spring 2026 mailing").</p>
         </field>
     </record>
 
@@ -85,7 +84,7 @@
                 <field name="name" />
                 <field name="appeal_id" />
                 <field name="campaign_id" />
-                <field name="amount_raised" sum="Amassé" />
+                <field name="amount_raised" sum="Raised" />
             </list>
         </field>
     </record>
@@ -98,7 +97,7 @@
                 <sheet>
                     <div class="oe_title">
                         <label for="name" />
-                        <h1><field name="name" placeholder="Nom de la trousse" /></h1>
+                        <h1><field name="name" placeholder="Package name" /></h1>
                     </div>
                     <group>
                         <group>
@@ -120,7 +119,7 @@
     </record>
 
     <record id="action_bf_package" model="ir.actions.act_window">
-        <field name="name">Trousses</field>
+        <field name="name">Packages</field>
         <field name="res_model">bf.package</field>
         <field name="view_mode">list,form</field>
     </record>

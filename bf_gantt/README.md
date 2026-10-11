@@ -124,10 +124,15 @@ and return a 404 that looks like a badly written route.
 ⛔ The OWL component has **no** automated test: it needs a browser engine. What is
 proven is that its files enter the asset bundle and that the stylesheet compiles.
 
+## Languages (v18.0.1.6.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The drawn schedule (backend view, PDF, PNG and SVG) takes its texts and its month and day names from the reader's language, through babel, and falls back to English for a language babel does not know. The grouping labels and the reasons a Microsoft Project (MSPDI) import is refused are translated. The public file route now runs under the website, so a visitor's download follows the site's language. The Excel export keeps its French column headings for now. On upgrade, the access group names still carrying the delivered French switch to English; edited ones are kept.
+
 ## Changelog
 
 | Version | Notes |
 |---|---|
+| 18.0.1.6.0 | Labels written in English in the source, French in `i18n/fr_CA.po`; the drawn schedule follows the reader's language (see *Languages*). |
 | 18.0.1.5.7 | SVG text and accents read `--brand-dark`/`--brand-primary` instead of fixed hex values. |
 | 18.0.1.5.4 | The planned start date gets its own row and label on the task form. It used to be inserted inside the deadline's inline block, where the form draws no label: it showed as a second, blank date box under "Deadline", ahead of the real deadline, which it squeezed and truncated. |
 | 18.0.1.5.3 | Copying a schedule's private address now needs the same right as publishing one. The method is callable over RPC and mints the token as it goes, so hiding its button was never enough: anyone who could read the project could mint a link and hand it out. |
@@ -147,6 +152,6 @@ proven is that its files enter the asset bundle and that the stylesheet compiles
 
 ## Licence
 
-BUSL-1.1, Change Date **2030-09-04**, Change Licence LGPL-3.0-or-later. Internal
+BUSL-1.1, Change Date **2030-10-11**, Change Licence LGPL-3.0-or-later. Internal
 use stays free; reselling or hosting it for a third party needs a written
 agreement. See `LICENSE`.

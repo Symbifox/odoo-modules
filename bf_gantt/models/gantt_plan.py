@@ -17,46 +17,46 @@ from odoo.exceptions import AccessError, ValidationError
 GROUPE_GESTION = "bf_gantt.group_bf_gantt_manager"
 
 ETATS = [
-    ("draft", "Brouillon"),
-    ("active", "En cours"),
-    ("done", "Terminé"),
-    ("cancel", "Annulé"),
+    ("draft", "Draft"),
+    ("active", "In progress"),
+    ("done", "Done"),
+    ("cancel", "Cancelled"),
 ]
 
 
 class BfGanttPlan(models.Model):
     _name = "bf.gantt.plan"
-    _description = "Échéancier autonome"
+    _description = "Standalone timeline"
     _inherit = ["portal.mixin", "mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, name"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True,
     )
     partner_id = fields.Many2one("res.partner", string="Client", tracking=True)
     project_id = fields.Many2one(
-        "project.project", string="Projet cité", tracking=True,
-        help="Lien de courtoisie vers un projet. Le plan reste autonome : "
-             "aucune tâche n'est créée, lue ni modifiée.",
+        "project.project", string="Referenced project", tracking=True,
+        help="Courtesy link to a project. The plan stays standalone: no "
+             "task is created, read or modified.",
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsable", default=lambda self: self.env.user,
+        "res.users", string="Responsible", default=lambda self: self.env.user,
         tracking=True,
     )
-    state = fields.Selection(ETATS, string="Statut", default="draft",
+    state = fields.Selection(ETATS, string="Status", default="draft",
                              required=True, tracking=True)
-    date_start = fields.Date(string="Début", tracking=True)
-    date_end = fields.Date(string="Fin", tracking=True)
+    date_start = fields.Date(string="Start", tracking=True)
+    date_end = fields.Date(string="End", tracking=True)
     note = fields.Html(string="Notes")
-    item_ids = fields.One2many("bf.gantt.item", "plan_id", string="Lignes")
-    item_count = fields.Integer(string="Lignes", compute="_compute_item_count")
+    item_ids = fields.One2many("bf.gantt.item", "plan_id", string="Lines")
+    item_count = fields.Integer(string="Lines", compute="_compute_item_count")
     portal_published = fields.Boolean(
-        string="Publié au portail", tracking=True,
-        help="Tant que la case est décochée, l'adresse à token répond « accès "
-             "refusé » même avec le bon token.",
+        string="Published on the portal", tracking=True,
+        help="As long as the box is unchecked, the token address answers "
+             "\"access denied\" even with the right token.",
     )
 
     @api.depends("item_ids")
@@ -71,7 +71,8 @@ class BfGanttPlan(models.Model):
     def _check_dates(self):
         for plan in self:
             if plan.date_start and plan.date_end and plan.date_end < plan.date_start:
-                raise ValidationError(_("La fin du plan tombe avant son début."))
+                raise ValidationError(_("The plan's end falls before its "
+                                        "start."))
 
     def _compute_access_url(self):
         super()._compute_access_url()
@@ -112,8 +113,9 @@ class BfGanttPlan(models.Model):
         # protéger de plus (qui peut écrire une action serveur est déjà admin).
         if not self.env.su and not self.env.user.has_group(GROUPE_GESTION):
             raise AccessError(_(
-                "Publier un échéancier le rend lisible sans compte. Ce geste "
-                "demande le groupe « Échéancier : gestion et publication »."))
+                "Publishing a timeline makes it readable without an "
+                "account. This action requires the \"Timeline: management "
+                "and publishing\" group."))
 
     def action_bf_gantt_publier(self):
         self._exiger_le_droit_de_publier()
@@ -138,7 +140,7 @@ class BfGanttPlan(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Importer un échéancier"),
+            "name": _("Import a timeline"),
             "res_model": "bf.gantt.import",
             "view_mode": "form",
             "target": "new",
@@ -148,40 +150,40 @@ class BfGanttPlan(models.Model):
 
 class BfGanttItem(models.Model):
     _name = "bf.gantt.item"
-    _description = "Ligne d'un échéancier autonome"
+    _description = "Standalone timeline line"
     _order = "sequence, date_start, id"
 
-    name = fields.Char(string="Ligne", required=True)
+    name = fields.Char(string="Line", required=True)
     plan_id = fields.Many2one(
-        "bf.gantt.plan", string="Échéancier", required=True,
+        "bf.gantt.plan", string="Timeline", required=True,
         ondelete="cascade", index=True,
     )
     company_id = fields.Many2one(
         related="plan_id.company_id", store=True, index=True,
     )
-    sequence = fields.Integer(string="Séquence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10)
     lane = fields.Char(
-        string="Couloir",
-        help="Le regroupement horizontal. Une phase, une équipe, un lot : "
-             "ce que vous voulez, c'est du texte libre.",
+        string="Lane",
+        help="The horizontal grouping. A phase, a team, a work package: "
+             "whatever you like, it is free text.",
     )
-    date_start = fields.Date(string="Début", required=True)
-    date_end = fields.Date(string="Fin")
+    date_start = fields.Date(string="Start", required=True)
+    date_end = fields.Date(string="End")
     is_milestone = fields.Boolean(
-        string="Jalon",
-        help="Un jalon est un événement de durée nulle. Sa date de fin est ignorée.",
+        string="Milestone",
+        help="A milestone is a zero-duration event. Its end date is ignored.",
     )
-    progress = fields.Integer(string="Avancement", default=0)
-    assignee = fields.Char(string="Responsable")
-    allocated_hours = fields.Float(string="Heures prévues")
+    progress = fields.Integer(string="Progress", default=0)
+    assignee = fields.Char(string="Assignee")
+    allocated_hours = fields.Float(string="Planned hours")
     state = fields.Selection(
-        [("todo", "À venir"), ("doing", "En cours"),
-         ("done", "Terminé"), ("cancel", "Annulé")],
-        string="Statut", default="todo", required=True,
+        [("todo", "Upcoming"), ("doing", "In progress"),
+         ("done", "Done"), ("cancel", "Cancelled")],
+        string="Status", default="todo", required=True,
     )
     depend_on_ids = fields.Many2many(
         "bf.gantt.item", "bf_gantt_item_dep_rel", "item_id", "depends_on_id",
-        string="Précédée par",
+        string="Predecessors",
     )
     note = fields.Text(string="Note")
 
@@ -189,14 +191,14 @@ class BfGanttItem(models.Model):
     def _check_progress(self):
         for item in self:
             if not 0 <= item.progress <= 100:
-                raise ValidationError(_("L'avancement se donne entre 0 et 100."))
+                raise ValidationError(_("Progress must be between 0 and 100."))
 
     @api.constrains("date_start", "date_end")
     def _check_dates(self):
         for item in self:
             if item.date_end and item.date_start and item.date_end < item.date_start:
                 raise ValidationError(_(
-                    "La ligne « %(nom)s » finit avant de commencer.", nom=item.name))
+                    "The line \"%(nom)s\" ends before it starts.", nom=item.name))
 
     @api.constrains("depend_on_ids")
     def _check_no_cycle(self):
@@ -208,7 +210,7 @@ class BfGanttItem(models.Model):
                 courant = pile.pop()
                 if courant == item.id:
                     raise ValidationError(_(
-                        "« %(nom)s » finirait par dépendre d'elle-même.",
+                        "\"%(nom)s\" would end up depending on itself.",
                         nom=item.name))
                 if courant in vus:
                     continue

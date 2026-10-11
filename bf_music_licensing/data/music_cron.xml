@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_music_licence_deadlines" model="ir.cron">
-            <field name="name">Licences musicales : rappels d'échéance</field>
+            <field name="name">Music licensing: due date reminders</field>
             <field name="model_id" ref="model_bf_music_licence"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_licence_deadlines()</field>

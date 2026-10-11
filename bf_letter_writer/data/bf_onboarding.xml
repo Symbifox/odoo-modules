@@ -2,34 +2,34 @@
 <odoo noupdate="1">
 
     <record id="bf_onb_step_letterhead" model="onboarding.onboarding.step">
-        <field name="title">Configurer l'en-tête de lettre</field>
-        <field name="description">[action:base.action_res_company_form] Ouvrez la fiche de votre société, onglet « Lettres » : signataire, image de signature, mention d'en-tête et pied de page.</field>
-        <field name="button_text">Ouvrir la société</field>
-        <field name="done_text">En-tête configuré</field>
+        <field name="title">Set up the letterhead</field>
+        <field name="description">[action:base.action_res_company_form] Open your company record, "Letters" tab: signatory, signature image, letterhead note and footer.</field>
+        <field name="button_text">Open the company</field>
+        <field name="done_text">Letterhead set up</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
 
     <record id="bf_onb_step_templates" model="onboarding.onboarding.step">
-        <field name="title">Créer des modèles de lettres</field>
-        <field name="description">[action:bf_letter_writer.action_letter_template] Préparez vos modèles réutilisables avec champs de fusion.</field>
-        <field name="button_text">Voir les modèles</field>
-        <field name="done_text">Modèles prêts</field>
+        <field name="title">Create letter templates</field>
+        <field name="description">[action:bf_letter_writer.action_letter_template] Prepare your reusable templates with merge fields.</field>
+        <field name="button_text">View templates</field>
+        <field name="done_text">Templates ready</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
 
     <record id="bf_onb_step_first_letter" model="onboarding.onboarding.step">
-        <field name="title">Rédiger une première lettre</field>
-        <field name="description">[action:bf_letter_writer.action_letter_document] Créez une lettre, appliquez un modèle et générez le PDF brandé.</field>
-        <field name="button_text">Rédiger une lettre</field>
-        <field name="done_text">Première lettre rédigée</field>
+        <field name="title">Write your first letter</field>
+        <field name="description">[action:bf_letter_writer.action_letter_document] Create a letter, apply a template and generate the branded PDF.</field>
+        <field name="button_text">Write a letter</field>
+        <field name="done_text">First letter written</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">3</field>
     </record>
 
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Rédacteur de lettres</field>
+        <field name="name">Letter Writer</field>
         <field name="route_name">bf_letter_writer_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_letter_writer</field>
         <field name="step_ids" eval="[

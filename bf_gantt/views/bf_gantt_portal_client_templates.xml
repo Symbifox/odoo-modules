@@ -12,11 +12,11 @@
                  role="status">
                 <i class="fa fa-bar-chart" aria-hidden="true"/>
                 <span class="flex-grow-1">
-                    L'échéancier de ce projet est disponible en lecture.
+                    This project's timeline is available to view.
                 </span>
                 <a class="btn btn-primary btn-sm"
                    t-attf-href="/mon/echeancier/project/#{project.id}?access_token=#{project.access_token}">
-                    Voir l'échéancier
+                    View the timeline
                 </a>
             </div>
         </xpath>
@@ -32,9 +32,9 @@
         <div id="portal_service_category" position="inside">
             <t t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/bf_gantt/static/description/icon.png'"/>
-                <t t-set="title">Échéanciers</t>
+                <t t-set="title">Timelines</t>
                 <t t-set="url" t-value="'/my/echeanciers'"/>
-                <t t-set="text">Les chronologies qui vous ont été partagées</t>
+                <t t-set="text">Timelines shared with you</t>
                 <t t-set="placeholder_count" t-value="'bf_gantt_plan_count'"/>
             </t>
         </div>
@@ -44,10 +44,10 @@
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">Échéanciers</t>
+                <t t-set="title">Timelines</t>
             </t>
             <div t-if="not plans" class="alert alert-warning" role="alert">
-                Aucun échéancier ne vous a été partagé pour l'instant.
+                No timeline has been shared with you yet.
             </div>
             <t t-if="plans" t-call="portal.portal_table">
                 <tbody>
@@ -59,11 +59,14 @@
                         </td>
                         <td class="text-muted">
                             <span t-if="plan.date_start" t-field="plan.date_start"/>
-                            <t t-if="plan.date_start and plan.date_end"> au </t>
+                            <t t-if="plan.date_start and plan.date_end"> to </t>
                             <span t-if="plan.date_end" t-field="plan.date_end"/>
                         </td>
+                        <!-- Le texte est celui du gabarit, donc traduit avec lui ;
+                             « lignes » reste ailleurs une clé technique de la
+                             géométrie (g["lignes"]), sans rapport avec ce mot. -->
                         <td class="text-end">
-                            <t t-out="plan.item_count"/> lignes
+                            <t t-out="plan.item_count"/> lines
                         </td>
                     </tr>
                 </tbody>

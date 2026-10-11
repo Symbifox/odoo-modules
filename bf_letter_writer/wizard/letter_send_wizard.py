@@ -31,15 +31,15 @@ color:#6B7280;"><strong style="color:{dark};">{company_name}</strong>\
 
 class LetterSendWizard(models.TransientModel):
     _name = "letter.send.wizard"
-    _description = "Envoi d'une lettre par courriel"
+    _description = "Send letter by email"
 
     letter_id = fields.Many2one(
-        "letter.document", string="Lettre", required=True,
+        "letter.document", string="Letter", required=True,
     )
-    recipient_ids = fields.Many2many("res.partner", string="Destinataires")
-    subject = fields.Char(string="Sujet")
+    recipient_ids = fields.Many2many("res.partner", string="Recipients")
+    subject = fields.Char(string="Email subject")
     body = fields.Html(string="Message")
-    attach_pdf = fields.Boolean(string="Joindre le PDF", default=True)
+    attach_pdf = fields.Boolean(string="Attach PDF", default=True)
     preview_url = fields.Char(readonly=True)
 
     @api.onchange("letter_id")
@@ -50,11 +50,12 @@ class LetterSendWizard(models.TransientModel):
         if letter.partner_id:
             self.recipient_ids = letter.partner_id
         self.subject = letter.name
-        self.body = Markup(
-            "<p>Bonjour,</p>"
-            "<p>Veuillez trouver ci-joint la lettre <strong>%s</strong>.</p>"
-            "<p>Cordialement,<br/>%s</p>"
-        ) % (letter.name or "", self.env.user.name)
+        # The recipient reads this message: in the letter's language, like its title.
+        lu = self.with_context(lang=letter._bf_reader_lang(letter.partner_id, letter.lang))
+        self.body = Markup(lu.env._(
+            "<p>Hello,</p><p>Please find attached the letter "
+            "<strong>%s</strong>.</p><p>Best regards,<br/>%s</p>"
+        )) % (letter.name or "", self.env.user.name)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -81,7 +82,7 @@ class LetterSendWizard(models.TransientModel):
         pdf_data = letter._get_pdf_binary()
         return self.env["ir.attachment"].create(
             {
-                "name": "%s.pdf" % (letter.reference or "lettre"),
+                "name": "%s.pdf" % (letter.reference or "letter"),
                 "type": "binary",
                 "datas": base64.b64encode(pdf_data),
                 "mimetype": "application/pdf",
@@ -96,7 +97,7 @@ class LetterSendWizard(models.TransientModel):
         self.preview_url = "/web/content/%d?download=false" % attachment.id
         return {
             "type": "ir.actions.act_window",
-            "name": _("Envoyer la lettre"),
+            "name": _("Send the letter"),
             "res_model": self._name,
             "res_id": self.id,
             "views": [[False, "form"]],
@@ -106,7 +107,7 @@ class LetterSendWizard(models.TransientModel):
     def action_send(self):
         self.ensure_one()
         if not self.recipient_ids:
-            raise UserError(_("Sélectionnez au moins un destinataire."))
+            raise UserError(_("Select at least one recipient."))
         letter = self.letter_id
         attachment_ids = []
         if self.attach_pdf:
@@ -137,11 +138,11 @@ class LetterSendWizard(models.TransientModel):
             sent_to.append(partner.name)
         if not sent_to:
             raise UserError(
-                _("Aucun destinataire sélectionné n'a d'adresse courriel.")
+                _("None of the selected recipients has an email address.")
             )
         letter.action_mark_sent()
         letter.message_post(
-            body=_("Lettre envoyée par courriel à %s.") % ", ".join(sent_to),
+            body=_("Letter emailed to %s.") % ", ".join(sent_to),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
             attachment_ids=attachment_ids,

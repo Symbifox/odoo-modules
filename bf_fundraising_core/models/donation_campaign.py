@@ -9,22 +9,22 @@ class DonationCampaign(models.Model):
 
     _inherit = "donation.campaign"
 
-    date_end = fields.Date(string="Date de fin")
-    goal_amount = fields.Monetary(string="Objectif", currency_field="currency_id")
+    date_end = fields.Date(string="End date")
+    goal_amount = fields.Monetary(string="Goal", currency_field="currency_id")
     currency_id = fields.Many2one(
         "res.currency",
-        string="Devise",
+        string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
-    appeal_ids = fields.One2many("bf.appeal", "campaign_id", string="Sollicitations")
-    appeal_count = fields.Integer(compute="_compute_amounts", string="Sollicitations")
-    donation_ids = fields.One2many("donation.donation", "campaign_id", string="Dons")
+    appeal_ids = fields.One2many("bf.appeal", "campaign_id", string="Appeals")
+    appeal_count = fields.Integer(compute="_compute_amounts", string="Appeals")
+    donation_ids = fields.One2many("donation.donation", "campaign_id", string="Donations")
     amount_raised = fields.Monetary(
-        string="Montant amassé",
+        string="Amount raised",
         compute="_compute_amounts",
         currency_field="currency_id",
     )
-    progress = fields.Float(string="Progression (%)", compute="_compute_amounts")
+    progress = fields.Float(string="Progress (%)", compute="_compute_amounts")
 
     @api.depends(
         "donation_ids.amount_total", "donation_ids.state", "goal_amount", "appeal_ids"

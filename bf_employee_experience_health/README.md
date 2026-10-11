@@ -79,6 +79,10 @@ odoo -d <database> -u bf_employee_experience_health --test-enable \
      --test-tags /bf_employee_experience_health --stop-after-init --http-port=8180
 ```
 
+## Languages (v18.0.1.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The catering list's summary (allergen, number of people, highest severity) is written in the language of the user who opens it. The *My allergies* menu now goes through a method of the module, so the message shown to a user with no employee record is translated. On upgrade, the allergen names and the catering action still carrying the delivered French switch to English; a name edited by hand is kept, in every installed language.
+
 ## Licence
 
 LGPL-3.

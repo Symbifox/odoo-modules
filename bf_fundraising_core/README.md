@@ -25,6 +25,10 @@ The **compliant Canadian official receipt (CRA + Revenu Québec, in French)**
 is provided by the companion module **`bf_receipt_ca`**. The web donation form
 and the donor portal live in **`bf_fundraising_web`**.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The Fundraising app menu, which belongs to the `donation` module and which this module renames, is now named in every installed language that has a translation (*Levée de fonds* in French); French users used to read the `donation` module's own *Don*. On upgrade, the solicitation codes and onboarding texts still carrying the delivered French switch to English; edited ones are kept.
+
 ## Licence
 
 AGPL-3 (the module extends the OCA `donation` module, which is AGPL-3).

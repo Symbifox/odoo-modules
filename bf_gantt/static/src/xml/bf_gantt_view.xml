@@ -11,10 +11,10 @@
             <div class="btn-group btn-group-sm" role="group">
                 <button type="button"
                         t-attf-class="btn {{ state.kind === 'project' ? 'btn-primary' : 'btn-secondary' }}"
-                        t-on-click="() => this.onChangerGenre('project')">Projets</button>
+                        t-on-click="() => this.onChangerGenre('project')">Projects</button>
                 <button type="button"
                         t-attf-class="btn {{ state.kind === 'plan' ? 'btn-primary' : 'btn-secondary' }}"
-                        t-on-click="() => this.onChangerGenre('plan')">Autonomes</button>
+                        t-on-click="() => this.onChangerGenre('plan')">Standalone</button>
             </div>
 
             <select class="form-select form-select-sm o_bf_gantt_cible"
@@ -30,7 +30,7 @@
             <select class="form-select form-select-sm w-auto" t-on-change="onChangerGrouping">
                 <t t-foreach="groupings" t-as="g" t-key="g.key">
                     <option t-att-value="g.key" t-att-selected="g.key === state.grouping">
-                        Regrouper : <t t-esc="g.label"/>
+                        Group by: <t t-esc="g.label"/>
                     </option>
                 </t>
             </select>
@@ -45,7 +45,7 @@
             </div>
 
             <select class="form-select form-select-sm w-auto" t-on-change="onChangerZoom"
-                    title="Taille d'affichage (Ctrl + molette sur le dessin)">
+                    title="Display size (Ctrl + mouse wheel on the chart)">
                 <t t-foreach="zooms" t-as="z" t-key="z.value">
                     <option t-att-value="z.value" t-att-selected="z.value === state.zoom"
                             t-esc="z.label"/>
@@ -53,7 +53,7 @@
             </select>
 
             <button class="btn btn-sm btn-secondary" t-on-click="onActualiser"
-                    title="Recharger depuis le serveur">
+                    title="Reload from the server">
                 <i class="fa fa-refresh"/>
             </button>
 
@@ -61,19 +61,19 @@
                 <div class="btn-group btn-group-sm" role="group">
                     <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                        <i class="fa fa-download me-1"/>Exporter
+                        <i class="fa fa-download me-1"/>Export timeline
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <h6 class="dropdown-header">Télécharger</h6>
+                        <h6 class="dropdown-header">Download</h6>
                         <button class="dropdown-item" t-on-click="() => this.onExporter('pdf')">PDF</button>
                         <button class="dropdown-item" t-on-click="() => this.onExporter('png')">PNG</button>
                         <button class="dropdown-item" t-on-click="() => this.onExporter('svg')">SVG</button>
                         <button class="dropdown-item" t-on-click="() => this.onExporter('xlsx')">Excel</button>
                         <button class="dropdown-item" t-on-click="() => this.onExporter('mspdi')">MS Project (.xml)</button>
                         <div class="dropdown-divider"/>
-                        <h6 class="dropdown-header">Déposer au dossier</h6>
-                        <button class="dropdown-item" t-on-click="() => this.onJoindre('pdf')">PDF en pièce jointe</button>
-                        <button class="dropdown-item" t-on-click="() => this.onJoindre('xlsx')">Excel en pièce jointe</button>
+                        <h6 class="dropdown-header">Attach to the record</h6>
+                        <button class="dropdown-item" t-on-click="() => this.onJoindre('pdf')">PDF as attachment</button>
+                        <button class="dropdown-item" t-on-click="() => this.onJoindre('xlsx')">Excel as attachment</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
         <!-- Chargement -->
         <div t-if="state.loading" class="text-center p-5 text-muted">
             <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
-            <p class="mt-2">Lecture de l'échéancier…</p>
+            <p class="mt-2">Loading the timeline…</p>
         </div>
 
         <!-- Refus ou panne -->
@@ -93,25 +93,20 @@
         <!-- Rien à montrer -->
         <div t-elif="vide" class="o_view_nocontent">
             <div class="o_nocontent_help">
-                <p class="o_view_nocontent_smiling_face">Rien à placer sur l'échéancier</p>
+                <p class="o_view_nocontent_smiling_face">Nothing to place on the timeline</p>
                 <p t-if="state.kind === 'project'">
-                    Ce projet n'a aucune tâche, ou aucune n'a de date. Une tâche apparaît
-                    dès qu'elle a une échéance ; donnez-lui un <b>début planifié</b> pour
-                    que sa barre dise la vérité plutôt qu'une approximation.
+                    This project has no task, or none has a date. A task appears as soon as it has a deadline; give it a <b>planned start</b> so that its bar tells the truth rather than an approximation.
                 </p>
                 <p t-else="">
-                    Cet échéancier autonome n'a pas encore de lignes. Ajoutez-les à la main,
-                    ou importez un fichier MS Project ou Excel.
+                    This standalone timeline has no lines yet. Add them by hand, or import an MS Project or Excel file.
                 </p>
             </div>
         </div>
 
         <!-- Le dessin -->
         <div t-else="" class="o_bf_gantt_cadre" t-on-wheel="onMolette">
-            <div t-if="geo.tronque" class="alert alert-warning py-2 m-2">
-                Plus de <t t-esc="geo.compte"/> lignes : l'affichage s'arrête là.
-                Filtrez le projet ou découpez-le.
-            </div>
+            <div t-if="geo.tronque" class="alert alert-warning py-2 m-2"
+                 t-esc="depassement"/>
 
             <svg class="o_bf_gantt_svg"
                  t-att-width="boite.w" t-att-height="boite.h"
@@ -153,10 +148,7 @@
                 <text t-if="geo.sous_titre" x="39" y="59"
                       class="o_bf_gantt_sous_titre" t-esc="geo.sous_titre"/>
                 <text t-att-x="geo.largeur - 28" t-att-y="geo.y_axe - 14"
-                      text-anchor="end" class="o_bf_gantt_repere">
-                    <t t-esc="geo.compte"/> lignes ·
-                    <t t-esc="geo.debut"/> au <t t-esc="geo.fin"/>
-                </text>
+                      text-anchor="end" class="o_bf_gantt_repere" t-esc="repere"/>
 
                 <!-- Fins de semaine -->
                 <t t-foreach="geo.bandes" t-as="bande" t-key="bande_index">
@@ -253,7 +245,7 @@
                           t-att-x2="geo.x_aujourdhui" t-att-y2="geo.y_fin_lignes"
                           stroke="#C0392B" stroke-width="0.9" stroke-dasharray="3 2"/>
                     <text t-att-x="geo.x_aujourdhui + 2" t-att-y="geo.y_axe - 3"
-                          class="o_bf_gantt_aujourdhui">aujourd'hui</text>
+                          class="o_bf_gantt_aujourdhui">today</text>
                 </t>
             </svg>
         </div>
@@ -263,7 +255,7 @@
              t-attf-style="left: {{ state.survol.x + 14 }}px; top: {{ state.survol.y + 14 }}px;">
             <div class="fw-bold" t-esc="state.survol.ligne.name"/>
             <div class="text-muted small">
-                <t t-esc="state.survol.ligne.start"/> au <t t-esc="state.survol.ligne.end"/>
+                <t t-esc="plage(state.survol.ligne)"/>
                 <t t-if="!state.survol.ligne.is_milestone">
                     · <t t-esc="state.survol.ligne.progress"/> %
                 </t>
@@ -273,11 +265,11 @@
             </div>
             <div t-if="state.survol.detail and state.survol.detail.allocated_hours"
                  class="small text-muted">
-                <t t-esc="state.survol.detail.effective_hours"/> h faites sur
-                <t t-esc="state.survol.detail.allocated_hours"/> h prévues
+                <t t-esc="state.survol.detail.effective_hours"/> h logged out of
+                <t t-esc="state.survol.detail.allocated_hours"/> h planned
             </div>
             <div t-if="state.survol.ligne.approx" class="small text-warning">
-                Début approximatif : aucun début planifié sur cette tâche.
+                Approximate start: no planned start on this task.
             </div>
         </div>
     </div>

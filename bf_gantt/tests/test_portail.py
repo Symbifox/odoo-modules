@@ -162,9 +162,12 @@ class TestPortail(HttpCase):
         self.projet.action_bf_gantt_publier()
         self.env.flush_all()
         reponse = self.url_open(self._url("project", self.projet,
-                                          suffixe="/pdf"),
-                                allow_redirects=False)
-        self.assertIn(reponse.status_code, (301, 302, 303))
+                                          suffixe="/pdf"))
+        # La route suit la langue du site : une redirection de langue peut venir d'abord.
+        # Ce qui compte : la chaîne passe par l'espace client, et aucun PDF n'est servi.
+        etapes = [r.headers.get("Location", "") for r in reponse.history]
+        self.assertTrue(any(e.split("?")[0].rstrip("/").endswith("/my") for e in etapes), etapes)
+        self.assertNotIn("application/pdf", reponse.headers.get("Content-Type", ""))
 
     def test_un_format_inconnu_ne_sert_rien(self):
         self.projet.action_bf_gantt_publier()
@@ -254,7 +257,12 @@ class TestPortail(HttpCase):
         self.authenticate(usager.login, usager.login)
         reponse = self.url_open("/my/projects/%s" % self.projet.id)
         self.assertEqual(reponse.status_code, 200)
-        self.assertIn("Voir l'échéancier", reponse.text)
+        # La page suit la langue par défaut du site : fr_CA sur une base francophone.
+        # bf_gantt ne dépend pas de `website` : sans lui, la page parle la source.
+        francais = "website" in self.env and (
+            self.env["website"].get_current_website().default_lang_id.code or "").startswith("fr")
+        attendu = "Voir l'échéancier" if francais else "View the timeline"
+        self.assertIn(attendu, reponse.text)
 
     def test_le_bouton_disparait_quand_l_echeancier_est_referme(self):
         usager, partenaire = self._client_portail()
@@ -266,7 +274,10 @@ class TestPortail(HttpCase):
 
         self.authenticate(usager.login, usager.login)
         reponse = self.url_open("/my/projects/%s" % self.projet.id)
+        self.assertEqual(reponse.status_code, 200)
+        # Dans les deux langues : une page rendue en anglais ne prouverait rien.
         self.assertNotIn("Voir l'échéancier", reponse.text)
+        self.assertNotIn("View the timeline", reponse.text)
 
     def test_depublier_referme_sans_changer_le_token(self):
         self.projet.action_bf_gantt_publier()

@@ -49,7 +49,13 @@ class TestHealth(TransactionCase):
         return self.env["bf.ex.allergy"].with_user(user).search([])
 
     def test_canadian_priority_allergens_are_loaded(self):
-        allergens = self.env["bf.ex.allergen"].search([])
+        # Le français vient du catalogue : on le lit en fr_CA (un contexte sans langue
+        # lit la source anglaise).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        # Activer une langue n'importe aucun terme : sur une base neuve, sans français, il faut
+        # charger le catalogue du module.
+        self.env["ir.module.module"]._load_module_terms(["bf_employee_experience_health"], ["fr_CA"])
+        allergens = self.env["bf.ex.allergen"].with_context(lang="fr_CA").search([])
         names = set(allergens.mapped("name"))
         for expected in ("Arachides", "Noix", "Lait", "Œufs", "Sulfites", "Moutarde"):
             self.assertIn(expected, names)
@@ -87,7 +93,7 @@ class TestHealth(TransactionCase):
         blob = str(rows)
         self.assertNotIn("Aline", blob)
         self.assertNotIn("Bruno", blob)
-        peanut_row = next(r for r in rows if r["allergen"] == "Arachides")
+        peanut_row = next(r for r in rows if r["allergen"] == self.peanut.name)
         self.assertEqual(peanut_row["people"], 2)
         self.assertEqual(peanut_row["severity"], "anaphylaxis",
                          "la gravité retenue est la plus élevée du groupe")
@@ -122,7 +128,7 @@ class TestHealth(TransactionCase):
     def test_hr_still_gets_the_catering_list(self):
         rows = self.env["bf.ex.allergy"].with_user(self.user_hr).catering_constraints(
             company=self.company)
-        self.assertIn("Arachides", [r["allergen"] for r in rows])
+        self.assertIn(self.peanut.name, [r["allergen"] for r in rows])
         self.assertNotIn("Aline", str(rows))
 
     def test_no_duplicate_declaration(self):
@@ -156,10 +162,10 @@ class TestHealth(TransactionCase):
         tous les droits ORM sur sa déclaration et AUCUNE surface pour les
         exercer : les RH saisissaient à sa place."""
         menus = self.env["ir.ui.menu"].with_user(self.user_a).load_menus(False)
-        noms = {v["name"] for v in menus.values()
-                if isinstance(v, dict) and v.get("name")}
-        self.assertIn("Mes allergies", noms)
-        self.assertNotIn("Santé et sécurité", noms,
+        # Par identifiant : les noms se lisent dans la langue de l'usager.
+        ids = {v["id"] for v in menus.values() if isinstance(v, dict) and v.get("id")}
+        self.assertIn(self.env.ref("bf_employee_experience_health.menu_my_allergy").id, ids)
+        self.assertNotIn(self.env.ref("bf_employee_experience_health.menu_health").id, ids,
                          "les écrans de l'administration restent hors de vue")
 
     def test_the_self_service_action_is_scoped_to_the_caller(self):

@@ -67,7 +67,7 @@ def rendre(payload, echelle="week", titre_pied=""):
 
     tampon = io.BytesIO()
     c = rl_canvas.Canvas(tampon, pagesize=(largeur * facteur, hauteur * facteur))
-    c.setTitle(g["titre"] or "Échéancier")
+    c.setTitle(g["titre"] or g["libelles"]["untitled"])
     c.setAuthor(g["societe"].get("name", ""))
     if facteur != 1.0:
         c.scale(facteur, facteur)
@@ -147,7 +147,9 @@ def _entete(c, g, _y, mesurer, accent):
 
     c.setFillColorRGB(*_rgb(geo.GRIS))
     c.setFont(REGULIER, 8)
-    repere = "%s lignes · %s au %s" % (g["compte"], g["debut"], g["fin"])
+    # Les textes du dessin viennent de la source, traduits pour le lecteur.
+    repere = geo.formater(g["libelles"], "summary", count=g["compte"],
+                          start=g["debut"], end=g["fin"])
     c.drawRightString(droite, _y(y_repere), repere)
 
 
@@ -306,7 +308,7 @@ def _aujourdhui(c, g, _y):
     c.setFillColorRGB(*_rgb(geo.LIGNE_AUJOURDHUI))
     c.setFont(REGULIER, 6.5)
     # Au-dessus de l'axe : sous les graduations, il chevauchait la date.
-    c.drawString(x + 2, _y(g["y_axe"] - 3), "aujourd'hui")
+    c.drawString(x + 2, _y(g["y_axe"] - 3), g["libelles"]["today"])
 
 
 def _pied(c, g, _y, largeur, facteur, titre_pied):
@@ -322,13 +324,15 @@ def _pied(c, g, _y, largeur, facteur, titre_pied):
         gauche = "%s · %s" % (gauche, g["societe"]["tagline"])
     c.drawString(geo.MARGE_PAGE, _y(y + 4), gauche)
 
+    textes = g["libelles"]
     notes = []
     if facteur != 1.0:
-        notes.append("réduit à %d %%" % round(facteur * 100))
+        notes.append(geo.formater(textes, "scaled",
+                                  percent=round(facteur * 100)))
     if g["tronque"]:
-        notes.append("liste tronquée")
+        notes.append(textes["truncated"])
     if g.get("plage_reduite"):
-        notes.append("plage ramenée à %d ans, chevron = barre qui dépasse"
-                     % (geo.PLAGE_MAX_JOURS // 366))
-    notes.append("trait pointillé = début approximatif")
+        notes.append(geo.formater(textes, "range_capped",
+                                  years=geo.PLAGE_MAX_JOURS // 366))
+    notes.append(textes["approximate"])
     c.drawRightString(largeur - geo.MARGE_PAGE, _y(y + 4), " · ".join(notes))

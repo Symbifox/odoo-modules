@@ -46,7 +46,11 @@ Ni chemin critique, ni ordonnancement automatique, ni nivellement de ressources.
 Le ``.mpp`` binaire n'est pas lu : Microsoft Project sait exporter en MSPDI, et la
 seule bibliothèque capable de lire le ``.mpp`` exige une machine virtuelle Java.
 """,
-    "version": "18.0.1.5.7",
+    # 18.0.1.6.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.6.0",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

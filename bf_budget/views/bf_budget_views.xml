@@ -9,10 +9,10 @@
                 <field name="budget_type"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
-                <field name="amount_planned" sum="Prévu"/>
-                <field name="amount_committed" sum="Engagé"/>
-                <field name="amount_variance" sum="Écart" decoration-danger="amount_variance &lt; 0"/>
-                <field name="alert_line_count" string="Alertes" decoration-danger="alert_line_count &gt; 0"/>
+                <field name="amount_planned" sum="Planned"/>
+                <field name="amount_committed" sum="Committed"/>
+                <field name="amount_variance" sum="Variance" decoration-danger="amount_variance &lt; 0"/>
+                <field name="alert_line_count" string="Alerts" decoration-danger="alert_line_count &gt; 0"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'open'"
                        decoration-info="state == 'draft'"
@@ -29,18 +29,18 @@
         <field name="arch" type="xml">
             <form string="Budget">
                 <header>
-                    <button name="action_open" string="Ouvrir" type="object"
+                    <button name="action_open" string="Open budget" type="object"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_create_revision" string="Réviser" type="object"
+                    <button name="action_create_revision" string="Revise" type="object"
                             invisible="state not in ('open', 'closed')"/>
-                    <button name="action_close" string="Clôturer" type="object"
+                    <button name="action_close" string="Close" type="object"
                             invisible="state != 'open'"/>
-                    <button name="action_reset_draft" string="Remettre au brouillon" type="object"
+                    <button name="action_reset_draft" string="Reset to draft" type="object"
                             invisible="state not in ('open', 'cancelled')"/>
-                    <button name="action_cancel" string="Annuler" type="object"
+                    <button name="action_cancel" string="Cancel" type="object"
                             invisible="state in ('cancelled', 'revised')"/>
                     <button name="action_generate_lines_from_positions"
-                            string="Une ligne par poste" type="object"
+                            string="One line per budget item" type="object"
                             invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,open,closed"/>
@@ -48,22 +48,20 @@
                 <sheet>
                     <div class="alert alert-warning" role="alert"
                          invisible="not coverage_warning or state != 'draft'">
-                        Des comptes d'exploitation ne sont couverts par aucun poste de ce
-                        budget, ou le sont par deux postes. Un budget peut paraître respecté
-                        simplement parce qu'un poste manque. Voir l'onglet « Couverture ».
+                        Some operating accounts are covered by no budget item of this budget, or by two budget items. A budget can look on track simply because a budget item is missing. See the "Coverage" tab.
                     </div>
                     <div class="alert alert-info" role="alert" invisible="not revision_of_id">
-                        Ce budget est une révision. L'original reste consultable :
+                        This budget is a revision. The original can still be viewed:
                         <field name="revision_of_id" readonly="1" nolabel="1" class="oe_inline"/>
                     </div>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-list">
-                            <field name="line_count" widget="statinfo" string="Lignes"/>
+                            <field name="line_count" widget="statinfo" string="Lines"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Exploitation 2026"/></h1>
+                        <h1><field name="name" placeholder="Operations 2026"/></h1>
                     </div>
                     <group>
                         <group>
@@ -79,7 +77,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Lignes" name="lines">
+                        <page string="Lines" name="lines">
                             <field name="line_ids" readonly="state != 'draft'">
                                 <list editable="bottom" decoration-danger="is_alert">
                                     <field name="sequence" widget="handle"/>
@@ -90,35 +88,35 @@
                                     <field name="position_id"/>
                                     <field name="analytic_account_ids" widget="many2many_tags"
                                            options="{'no_create': True}"/>
-                                    <field name="amount_planned" sum="Prévu"/>
-                                    <field name="amount_actual" sum="Réalisé"/>
-                                    <field name="amount_committed" sum="Engagé"/>
-                                    <field name="amount_theoretical" sum="Théorique"/>
+                                    <field name="amount_planned" sum="Planned"/>
+                                    <field name="amount_actual" sum="Actual"/>
+                                    <field name="amount_committed" sum="Committed"/>
+                                    <field name="amount_theoretical" sum="Theoretical"/>
                                     <field name="theoretical_basis" optional="show"/>
-                                    <field name="amount_drift" sum="Écart au théorique"/>
+                                    <field name="amount_drift" sum="Variance from theoretical"/>
                                     <field name="is_alert" optional="hide"/>
                                     <field name="overrun_accepted" optional="hide"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Couverture" name="coverage">
+                        <page string="Coverage" name="coverage">
                             <group>
                                 <field name="coverage_warning" invisible="1"/>
                                 <field name="uncovered_account_ids" widget="many2many_tags"
                                        readonly="1"
-                                       help="Comptes d'exploitation du bon sens qu'aucun poste de ce budget ne couvre."/>
+                                       help="Operating accounts of the right type that no budget item of this budget covers."/>
                                 <field name="duplicated_account_ids" widget="many2many_tags"
                                        readonly="1"
-                                       help="Comptes couverts par plus d'un poste : leurs écritures sont comptées plusieurs fois."/>
+                                       help="Accounts covered by more than one budget item: their entries are counted several times."/>
                             </group>
                         </page>
-                        <page string="Totaux" name="totals">
+                        <page string="Totals" name="totals">
                             <group>
-                                <group string="Le plan">
+                                <group string="The plan">
                                     <field name="amount_planned"/>
                                     <field name="amount_theoretical"/>
                                 </group>
-                                <group string="Le réel">
+                                <group string="Actuals">
                                     <field name="amount_actual"/>
                                     <field name="amount_committed"/>
                                     <field name="amount_variance"/>
@@ -139,17 +137,17 @@
         <field name="arch" type="xml">
             <search string="Budgets">
                 <field name="name"/>
-                <filter name="draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
-                <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
+                <filter name="draft" string="Drafts" domain="[('state', '=', 'draft')]"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
                 <separator/>
-                <filter name="expense" string="Charges" domain="[('budget_type', '=', 'expense')]"/>
-                <filter name="revenue" string="Produits" domain="[('budget_type', '=', 'revenue')]"/>
+                <filter name="expense" string="Expenses" domain="[('budget_type', '=', 'expense')]"/>
+                <filter name="revenue" string="Revenue" domain="[('budget_type', '=', 'revenue')]"/>
                 <separator/>
-                <filter name="current" string="En cours"
+                <filter name="current" string="In progress"
                         domain="[('date_start', '&lt;=', context_today().strftime('%Y-%m-%d')), ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="group_type" string="Sens" context="{'group_by': 'budget_type'}"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Budget type" context="{'group_by': 'budget_type'}"/>
                 </group>
             </search>
         </field>
@@ -160,10 +158,9 @@
         <field name="res_model">bf.budget</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez votre premier budget</p>
+            <p class="o_view_nocontent_smiling_face">Create your first budget</p>
             <p>
-                Un budget compare un plan au réel, poste par poste. Le réel n'est jamais
-                recopié : il se relit dans la comptabilité à chaque affichage.
+                A budget compares a plan with actuals, budget item by budget item. Actuals are never copied: they are read from accounting on every display.
             </p>
         </field>
     </record>
