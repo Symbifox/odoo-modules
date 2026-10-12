@@ -115,7 +115,9 @@ class MailFollowers(models.Model):
             len(ids),
             always_remove,
         )
-        self.browse(ids).unlink()
+        # sudo: the rows are chosen by SQL for everyone, and bf_record_privacy
+        # hides the lines of records the cron's user (admin) cannot read.
+        self.sudo().browse(ids).unlink()
         return len(ids)
 
     @api.model
@@ -181,5 +183,7 @@ class MailFollowers(models.Model):
             uids,
             keep_ids,
         )
-        self.browse(ids).unlink()
+        # sudo: the rows are chosen by SQL for everyone, and bf_record_privacy
+        # hides the lines of records the cron's user (admin) cannot read.
+        self.sudo().browse(ids).unlink()
         return len(ids)

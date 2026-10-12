@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**80 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**81 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -210,7 +210,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_flux_ia` | Flux RSS : tri par IA | 18.0.1.1.2 | BUSL-1.1 | Second sort after a list's rules: a language model scores each retained item 0-100 with a one-line reason and flags what cannot wait, sending an email alert behind freshness, one-per-event and daily-cap guards; an outage never blocks delivery |
 | `bf_flux_nextcloud` | Flux RSS : corpus Nextcloud | 18.0.1.0.2 | BUSL-1.1 | Deposits what a list retains into a Nextcloud folder as monthly Markdown files per source, with an index, for a knowledge base read by an agent |
 | `bf_flux_partage` | Flux RSS : partage externe | 18.0.1.0.3 | BUSL-1.1 | Secret share links without login: a public card page and the same items as RSS, one link per recipient, with expiry, visit count and revocation |
-| `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.2.0 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
+| `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.2.1 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.3 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.7.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
@@ -296,6 +296,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_property_sms` | Copropriété : avis par texto | 18.0.2.2.0 | BUSL-1.1 | Text an occupant about a parcel or an urgent notice, with their express consent |
 | `bf_qr_manager` | Codes QR gérés | 18.0.1.0.2 | BUSL-1.1 | Sheets of QR labels printed ahead of time, linked on first scan, re-linked without reprinting; extends Symbifox Pastilles |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.5 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
+| `bf_record_privacy` | Record Privacy Guard | 18.0.1.0.0 | LGPL-3 | Access errors stop naming the records you cannot read, and follower lines follow the access of the record they follow |
 | `bf_recruitment` | Recrutement : cahier d'entrevues | 18.0.1.2.1 | BUSL-1.1 | Role-specific interview scorecards, multiple rounds, blind panel scoring and a consolidated interview book, grafted onto Odoo recruitment, with a catalogue of 32 ready-made scorecard templates, behaviourally anchored |
 | `bf_recruitment_expense` | Recrutement : dépenses et coût par embauche | 18.0.1.0.2 | BUSL-1.1 | Attach recruitment spend to the job, price the panel time the interview book already measures, and state what a hire cost while owning up to what the figure is missing |
 | `bf_recruitment_letter` | Recrutement : l'offre d'emploi | 18.0.1.0.1 | BUSL-1.1 | Draft the job offer from the application, on the company letterhead, with the terms already on file rather than retyped |
@@ -428,7 +429,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **80 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **81 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

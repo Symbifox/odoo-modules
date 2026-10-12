@@ -79,6 +79,14 @@ Distributed under the **LGPL-3** licence. See the `LICENSE` file.
 
 ## Changelog
 
+### 18.0.2.2.1
+
+- **FIX:** both cleanup crons now delete their follower rows as superuser. They
+  pick the rows by SQL for everyone, then read each row back to unlink it. With
+  `bf_record_privacy` installed, the follower lines of records the cron's user
+  (the administrator) cannot read are hidden from that user, so the unlink would
+  fail on them. No change in behaviour without `bf_record_privacy`.
+
 ### 18.0.2.2.0
 
 - **FIX:** the cleanup cron no longer removes a customer from its own invoices
