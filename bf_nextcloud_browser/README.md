@@ -1,7 +1,7 @@
 # Nextcloud File Browser
 
 Embedded and standalone WebDAV file browser for Nextcloud, integrated into Odoo
-project and task forms. Browse, preview, upload, organise and share files stored
+client, contact, project and task forms. Browse, preview, upload, organise and share files stored
 on a Nextcloud instance — without leaving Odoo.
 
 Each person connects **their own** Nextcloud account: the browser acts on their
@@ -15,9 +15,20 @@ activity entry carries their name.
 
 ## Features
 
-- **Embedded tab** *Fichiers Nextcloud* on `project.project` and `project.task`
-  forms, scoped to each record's Nextcloud folder. The tab only shows once the
-  project has a folder.
+- **Client folders** (since 18.0.4.2.0): a company is linked to its folder (or
+  several), chosen from the folders under a configured clients root, closest
+  names first. Its contacts show the same folder, a project takes a subfolder
+  of it (its folder under *(PROJETS)* for example), and a task follows its
+  project. See *Client folders* below.
+- **Create a client folder, file chatter attachments** (since 18.0.4.3.0): a
+  company without folder gets one copied from the configured template, and the
+  attachments of any thread are copied into a folder, never over an existing
+  file. See *Creating a client folder* below.
+- **Embedded tab** *Dossier Nextcloud* on companies and contacts, *Fichiers
+  Nextcloud* on `project.project` and `project.task`, scoped to the record's
+  folder. The tab only shows once the record has a folder (or, for a project,
+  once its client has one to choose from; for a company, once a clients root
+  is set, since 18.0.4.3.2).
 - **Search the whole tree** (since 18.0.4.1.0): from three characters, the
   filter box searches every folder under the root instead of filtering the
   current one. Names only, without case or accents.
@@ -48,7 +59,8 @@ activity entry carries their name.
 - **Knowledge integration** — link a file to a Knowledge Matrix item
   (`project.knowledge.item`) or, where available, an Odoo Knowledge article.
 - **Systray launcher** — a toggleable button, carrying the Nextcloud logo,
-  that slides the file browser open over the record you are already on. A
+  that slides the file browser open over the record you are already on, at
+  that record's folder when it has one (since 18.0.4.2.0). A
   second click, or a click outside, closes it; a button in its header hands the
   same folder over to the standalone app.
 
@@ -208,6 +220,55 @@ configuration from *Knowledge → Configuration → Nextcloud Documents*.
 - **Other addresses of the same Nextcloud** go in *Autres adresses de ce
   Nextcloud* on the configuration, so links written with them are recognised.
 
+## Client folders (since 18.0.4.2.0)
+
+Written for firms that keep one Nextcloud folder per client (for example
+`/Company/(Clients)/001 - Client/`, with one subfolder of `(PROJETS)` per
+project). Before this version Odoo knew none of these folders, so the
+record tab never showed and the panel always opened at the root.
+
+- **Where the folder lives.** On the commercial entity (a company, or a person
+  who is their own client), as `bf.nc.client.folder` records (*Nextcloud →
+  Dossiers clients*). A company may own several folders; the first in order is
+  the one its tab and its contacts show.
+- **Linking.** *Rattacher un dossier Nextcloud* on the company lists the
+  folders under the clients root, as the person, closest names first: the
+  company's name, its contacts' names (a folder named after a person) and its
+  projects' names (`009 - Chantier Sérénité` for a numbered company). A folder
+  already linked to another client is shown and cannot be taken.
+- **Projects.** A project takes its client's first folder by itself, and keeps
+  a choice made among several. *Choisir le dossier du
+  projet* lists the client's folders and the subfolders of their projects
+  subfolder. A folder typed by hand on the project (`nc_documents_folder`)
+  still wins.
+- **Panel.** The systray asks the server for the folder of the form on screen:
+  a company, a contact, a project, a task, or any record whose project or
+  partner has one. Outside the root, unreadable or without folder, the panel
+  reopens where it was.
+- **Matching** (`models/nc_match.py`) only sorts the offer; the person always
+  chooses. Numbers, accents and legal words (`inc`, `ltée`) are ignored; one
+  shared word is not enough between a folder and a project (`055 - Odoo` is not
+  the folder of a project named `Odoo Quincaillerie Lune`).
+
+## Creating a client folder, filing chatter attachments (since 18.0.4.3.0)
+
+- **Créer le dossier client**, on a company without folder: the configured
+  template (*Gabarit de dossier client*, e.g. `/Company/(Clients)/(DOSSIER TYPE)`)
+  is copied with WebDAV `COPY` (recursive, never over an existing folder), as
+  the person, under the clients root, then linked to the company. The name
+  follows *Nom d'un nouveau dossier client* (default `{NNN} - {client}`): the
+  number after the highest one already on disk (folders are also made by hand),
+  the client name cleaned of what Windows refuses. The same method,
+  `res.partner.nc_create_client_folder(name=False)`, is public for RPC callers
+  (an onboarding script).
+- **Classer des pièces au dossier client**, a folder button in the chatter bar:
+  the thread's attachments (on the record or on its messages) to tick, next to
+  the browser opened on the record's folder. The chosen ones are **copied**
+  (they stay in Odoo), never over an existing file (`Devis (2).pdf`), with a
+  note in the thread saying what went where. A file over the upload cap stays
+  in Odoo and is named. The note is skipped, never the copy, when the person may
+  not post there or has no email address.
+
 ## Page load (18.0.4.1.2)
 
 The systray button no longer holds the web client back: its group check and
@@ -223,8 +284,14 @@ stays hidden until the answer arrives, then appears.
    *Required for the standalone app.*
 4. Optionally adjust **Extensions ouvrant Nextcloud** (which file types open in
    Nextcloud instead of the inline preview) and the **share presets**.
-5. To enable the embedded tab on a project, set its *Nextcloud folder*; tasks
-   inherit their project's folder.
+5. Set **Racine des dossiers clients** (e.g. `/Company/(Clients)/`, under the
+   root prefix) and, if your client folders hold one folder per project,
+   **Sous-dossier des projets** (default `(PROJETS)`). Then link each company
+   to its folder from its *Dossier Nextcloud* tab; projects and tasks follow.
+   A project without client can still be given a folder by hand (*Nextcloud
+   folder*, from `bf_document_nextcloud_sync`).
+   To create client folders from Odoo, set **Gabarit de dossier client** and,
+   if needed, **Nom d'un nouveau dossier client**.
 
 Grant users the *Navigateur Nextcloud* access group to let them use the browser
 and see the systray launcher. Each of them connects their own Nextcloud account
@@ -237,7 +304,8 @@ same path in each person's tree (see *Identity*).
 
 ## Usage
 
-- **Embedded:** open a project or task → *Fichiers Nextcloud* tab.
+- **Embedded:** open a company or a contact → *Dossier Nextcloud* tab; a project
+  or a task → *Fichiers Nextcloud* tab.
 - **Standalone:** menu **Nextcloud → Fichiers Nextcloud**.
 - **Launcher:** the Nextcloud logo in the systray opens the file panel over
   the current page.

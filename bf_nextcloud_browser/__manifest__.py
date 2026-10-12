@@ -1,10 +1,13 @@
 {
     "name": "Nextcloud File Browser",
-    "summary": "Navigateur WebDAV Nextcloud embarque dans les fiches Odoo (projets, taches) + application autonome",
-    # 18.0.4.1.2: le bouton du systray ne retient plus l'affichage du client web : ses appels
+    "summary": "Navigateur WebDAV Nextcloud embarque dans les fiches Odoo (clients, projets, taches) + application autonome",
+    # 18.0.4.3.2: l'onglet « Dossier Nextcloud » des entreprises ne paraît plus sans racine
+    #   des dossiers clients (ses deux boutons ne menaient qu'à une erreur, chez chaque
+    #   locataire sans dossiers clients) ; description de l'appli et README à jour.
+    # 18.0.4.3.1: le bouton du systray ne retient plus l'affichage du client web : ses appels
     #   partent sans être attendus dans onWillStart. Loin du serveur,
     #   chaque aller-retour en chaîne retardait l'écran demandé.
-    "version": "18.0.4.1.2",
+    "version": "18.0.4.3.2",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -23,10 +26,13 @@
         "security/bf_nc_browser_security.xml",
         "security/ir.model.access.csv",
         "security/bf_nc_user_credential_security.xml",
+        "security/bf_nc_folder_pick_security.xml",
         "views/nextcloud_document_config_views.xml",
         "views/project_views.xml",
         "views/project_task_views.xml",
         "views/nc_browser_app.xml",
+        "views/bf_nc_client_folder_views.xml",
+        "views/res_partner_views.xml",
         "views/nc_user_credential_views.xml",
     ],
     "assets": {

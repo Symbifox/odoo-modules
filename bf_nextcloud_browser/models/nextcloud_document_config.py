@@ -14,6 +14,7 @@ cron has no person to speak for.
 """
 
 import logging
+import posixpath
 from urllib.parse import quote as url_quote
 from urllib.parse import unquote as url_unquote
 from urllib.parse import urlparse
@@ -26,8 +27,10 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 
 from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config import (
     _sanitize_nc_path,
+    _validate_path_under_prefix,
 )
 
+from . import nc_names
 from .bf_nc_user_credential import _server_key
 from .nc_identity import NcNotConnected, NcPersonAuth, NcTokenRejected
 
@@ -103,6 +106,35 @@ class NextcloudDocumentConfig(models.Model):
         help="Tout chemin atteignable depuis le navigateur de fichiers embarque "
         "doit etre sous ce prefixe (ex: /Entreprise/). Defense en profondeur en plus "
         "du dossier propre a chaque enregistrement.",
+    )
+
+    # Dossiers clients (18.0.4.2.0). Par exemple, un dossier par client sous
+    # /Entreprise/(Clients)/, un sous-dossier de (PROJETS) par projet.
+    nc_clients_root = fields.Char(
+        string="Racine des dossiers clients",
+        help="Dossier Nextcloud qui contient un dossier par client "
+        "(ex. /Entreprise/(Clients)/). On y choisit le dossier d'une entreprise. "
+        "Doit être sous le préfixe racine du navigateur.",
+    )
+    nc_projects_subfolder = fields.Char(
+        string="Sous-dossier des projets",
+        default="(PROJETS)",
+        help="Nom du sous-dossier, dans chaque dossier client, qui contient un "
+        "dossier par projet. On y choisit le dossier d'un projet. Vide : les "
+        "projets se choisissent directement dans le dossier du client.",
+    )
+
+    # Création d'un dossier client depuis la fiche (18.0.4.3.0).
+    nc_client_template = fields.Char(
+        string="Gabarit de dossier client",
+        help="Dossier Nextcloud recopié pour créer le dossier d'un nouveau client "
+        "(ex. /Entreprise/(Clients)/(DOSSIER TYPE)). Vide : pas de création depuis Odoo.",
+    )
+    nc_client_name_pattern = fields.Char(
+        string="Nom d'un nouveau dossier client",
+        default="{NNN} - {client}",
+        help="{NNN} : numéro suivant, sur autant de chiffres que de N (au moins). "
+        "{client} : nom de l'entreprise, nettoyé des caractères que Windows refuse.",
     )
 
     nc_open_extensions = fields.Char(
@@ -182,6 +214,60 @@ class NextcloudDocumentConfig(models.Model):
                             dim=dim,
                         )
                     )
+
+    @api.constrains("nc_clients_root", "nc_projects_subfolder", "browser_root_prefix")
+    def _check_nc_clients_root(self):
+        for cfg in self:
+            root = (cfg.nc_clients_root or "").strip()
+            if root:
+                clean = posixpath.normpath(_sanitize_nc_path(root))
+                if clean == "/":
+                    raise ValidationError(_("La racine des dossiers clients ne peut pas être '/'."))
+                prefix = (cfg.browser_root_prefix or "").strip()
+                if prefix not in ("", "/"):
+                    _validate_path_under_prefix(clean, _sanitize_nc_path(prefix))
+            sub = (cfg.nc_projects_subfolder or "").strip()
+            if sub:
+                _sanitize_nc_path("/" + sub)  # %XX and control characters
+            if sub and ("/" in sub or "\\" in sub or sub in (".", "..")):
+                raise ValidationError(
+                    _("Le sous-dossier des projets est un nom de dossier, pas un chemin : %s") % sub
+                )
+
+    @api.constrains("nc_client_template", "nc_client_name_pattern", "nc_clients_root", "browser_root_prefix")
+    def _check_nc_client_template(self):
+        for cfg in self:
+            tpl = (cfg.nc_client_template or "").strip()
+            if tpl:
+                clean = posixpath.normpath(_sanitize_nc_path(tpl))
+                root = cfg._nc_clients_root_path()
+                if not root:
+                    raise ValidationError(_("Le gabarit demande une racine des dossiers clients."))
+                prefix = (cfg.browser_root_prefix or "").strip()
+                if prefix not in ("", "/"):
+                    _validate_path_under_prefix(clean, _sanitize_nc_path(prefix))
+            pattern = cfg.nc_client_name_pattern or ""
+            if pattern and "{client}" not in pattern:
+                raise ValidationError(_("Le nom d'un nouveau dossier client doit contenir {client}."))
+            if "/" in pattern or "\\" in pattern:
+                raise ValidationError(_("Le nom d'un nouveau dossier client ne peut pas contenir de « / »."))
+            if pattern and not nc_names.readable(pattern):
+                raise ValidationError(_(
+                    "Ce nom ne pourrait pas être relu (un caractère que Windows refuse ?) : "
+                    "la numérotation repartirait toujours à 1."
+                ))
+
+    def _nc_client_template_path(self):
+        """The template folder as an absolute, normalised path, or ""."""
+        self.ensure_one()
+        tpl = (self.nc_client_template or "").strip()
+        return posixpath.normpath(_sanitize_nc_path(tpl)) if tpl else ""
+
+    def _nc_clients_root_path(self):
+        """The clients root as an absolute, normalised path, or "" if not set."""
+        self.ensure_one()
+        root = (self.nc_clients_root or "").strip()
+        return posixpath.normpath(_sanitize_nc_path(root)) if root else ""
 
     # ------------------------------------------------------------------
     # Per-person identity
@@ -364,6 +450,62 @@ class NextcloudDocumentConfig(models.Model):
         # 404 = already gone, treat as success (idempotent).
         if resp.status_code not in (200, 204, 404):
             raise UserError(_("Erreur WebDAV DELETE: HTTP %s") % resp.status_code)
+        return resp
+
+    def _webdav_put_new(self, path, content, content_type="application/octet-stream"):
+        """PUT a file only if nothing is there yet (`If-None-Match: *`).
+
+        Returns False when Nextcloud answers 412 (the name is taken), so the
+        caller tries the next free name: a listing may be cut short (500
+        entries) and two people may file the same name at once, the server is
+        the only one that knows. Used to file chatter attachments (18.0.4.3.0).
+        """
+        self.ensure_one()
+        path = _sanitize_nc_path(path)
+        url = self.webdav_url.rstrip("/") + url_quote(path)
+        try:
+            resp = requests.put(
+                url,
+                data=content,
+                headers={"Content-Type": content_type, "If-None-Match": "*"},
+                auth=self._get_auth(),
+                timeout=120,
+                verify=self._tls_verify,
+            )
+        except requests.RequestException as e:
+            raise UserError(_("Erreur lors du dépôt : %s") % str(e))
+        if resp.status_code == 412:
+            return False
+        if resp.status_code not in (200, 201, 204):
+            raise UserError(_("Nextcloud a refusé le dépôt : HTTP %s") % resp.status_code)
+        return True
+
+    def _webdav_copy(self, src_path, dst_path):
+        """Copy a folder (recursively) or a file via WebDAV COPY, never over
+        something that exists (Overwrite: F). Used to create a client folder
+        from the template (18.0.4.3.0)."""
+        self.ensure_one()
+        src_path = _sanitize_nc_path(src_path)
+        dst_path = _sanitize_nc_path(dst_path)
+        src_url = self.webdav_url.rstrip("/") + url_quote(src_path)
+        dst_url = self.webdav_url.rstrip("/") + url_quote(dst_path)
+        try:
+            resp = requests.request(
+                "COPY",
+                src_url,
+                headers={"Destination": dst_url, "Overwrite": "F", "Depth": "infinity"},
+                auth=self._get_auth(),
+                timeout=120,
+                verify=self._tls_verify,
+            )
+        except requests.RequestException as e:
+            raise UserError(_("Erreur lors de la copie : %s") % str(e))
+        if resp.status_code == 412:
+            raise UserError(_("Un dossier portant ce nom existe déjà à destination."))
+        if resp.status_code == 404:
+            raise UserError(_("Le gabarit est introuvable dans votre Nextcloud : %s") % src_path)
+        if resp.status_code not in (201, 204):
+            raise UserError(_("Erreur WebDAV COPY : HTTP %s") % resp.status_code)
         return resp
 
     def _webdav_move(self, src_path, dst_path):

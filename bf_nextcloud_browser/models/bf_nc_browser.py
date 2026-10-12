@@ -3,7 +3,8 @@
 The OWL widget and the streaming controller talk to Nextcloud ONLY through this
 model. Every entry point:
   * checks the caller is in group_nc_browser_user;
-  * resolves the config + folder root from the *record* (project / task), never
+  * resolves the config + folder root from the *record* (partner / project /
+    task, see `nc_browser_folder`), never
     from a client-supplied path or config id (prevents IDOR);
   * forces every requested path to stay under that record root, which itself must
     stay under the config browser_root_prefix;
@@ -49,16 +50,25 @@ from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config imp
     _validate_path_under_prefix,
 )
 
+from . import nc_names
 from .nextcloud_document_config import SHARE_TYPE_PUBLIC_LINK, like_literal
 
 _logger = logging.getLogger(__name__)
 
 GROUP = "bf_nextcloud_browser.group_nc_browser_user"
-ALLOWED_MODELS = ("project.project", "project.task")
+ALLOWED_MODELS = ("project.project", "project.task", "res.partner")
+# Records the systray panel follows without serving them a tab: their project,
+# or else the client of their partner, gives the folder (18.0.4.2.0).
+PANEL_LINK_FIELDS = ("project_id", "partner_id")
 # Modification times are shown in the person's own time zone, never in UTC.
 DEFAULT_TZ = "America/Montreal"
 # Cap RPC uploads (base64 in a single call) to protect the worker's memory.
 MAX_UPLOAD_BYTES = 64 * 1024 * 1024  # 64 MiB
+
+# Filing attachments: how many listed in the dialog, how many copied per call.
+ATTACH_LIST_LIMIT = 200
+FILE_BATCH_MAX = 50
+FREE_NAME_TRIES = 200
 
 # Search: below two characters every name matches; a hundred answers came back
 # in under a second on a real server, a thousand could take many seconds under load.
@@ -103,6 +113,22 @@ LINKED_BODY_MAX = 1_000_000
 LINKED_SCAN_BUDGET = 20_000_000
 # Shares read alone for their expiry, at most, per call: the list is used past it.
 SHARE_REREAD_MAX = 20
+
+
+def post_trace(record, body):
+    """A note saying what was done in Nextcloud, never at the cost of the work.
+
+    The Nextcloud side is already done when this runs: a refused post (no
+    write access to the thread, or an author without email address, which
+    message_post refuses) must not roll back the Odoo side of the same work.
+    """
+    try:
+        with record.env.cr.savepoint():
+            record.message_post(body=body, subtype_xmlid="mail.mt_note")
+        return True
+    except (AccessError, UserError) as e:
+        _logger.info("Trace Nextcloud non postee sur %s : %s", record, e)
+        return False
 
 
 def _text(value, label):
@@ -228,7 +254,7 @@ class BfNcBrowser(models.TransientModel):
         record, config = self._record_config(model, res_id)
         if not config:
             raise UserError(_("Aucune configuration Nextcloud disponible."))
-        root = record.nc_documents_folder
+        root = record.nc_browser_folder
         if not root:
             raise UserError(
                 _("Aucun dossier Nextcloud n'est configure pour cet enregistrement.")
@@ -331,6 +357,62 @@ class BfNcBrowser(models.TransientModel):
             "width_pct": config.nc_panel_width_pct or 80,
             "height_pct": config.nc_panel_height_pct or 80,
         }
+
+    @api.model
+    def root_record_path(self, model, res_id):
+        """Where the systray panel opens for the record on screen (18.0.4.2.0).
+
+        The record's folder relative to the standalone root, or "" when the
+        record has none, cannot be read, or sits outside the root: the panel
+        then reopens where it was. Nothing new is exposed: the standalone
+        browser already reaches everything under the root.
+        """
+        self._check_access()
+        empty = {"rel_path": "", "label": ""}
+        try:
+            _config, root = self._resolve_root_standalone()
+        except UserError:
+            return empty
+        try:
+            record, folder = self._panel_folder(model, res_id)
+        except (AccessError, UserError, ValidationError):
+            return empty
+        if not folder:
+            return empty
+        try:
+            path = _sanitize_nc_path(_plain(folder))
+            _validate_path_under_prefix(path, root)
+        except (UserError, ValidationError):
+            return empty
+        rel = posixpath.relpath(posixpath.normpath(path), posixpath.normpath(root))
+        return {"rel_path": "" if rel == "." else rel, "label": record.display_name}
+
+    def _panel_folder(self, model, res_id):
+        """(record, folder) for any record the person can read, or (record, False)."""
+        if not isinstance(model, str) or model not in self.env:
+            raise UserError(_("Modele non supporte: %s") % model)
+        Model = self.env[model]
+        if Model._abstract or Model._transient:
+            raise UserError(_("Modele non supporte: %s") % model)
+        record = Model.browse(self._as_id(res_id)).exists()
+        if not record:
+            raise UserError(_("Enregistrement introuvable."))
+        record.check_access("read")
+        if model in ALLOWED_MODELS:
+            return record, record.nc_browser_folder
+        for fname in PANEL_LINK_FIELDS:
+            field = record._fields.get(fname)
+            if not field or field.type != "many2one":
+                continue
+            if field.comodel_name not in ("project.project", "res.partner"):
+                continue
+            target = record[fname]
+            if not target:
+                continue
+            target.check_access("read")
+            if target.nc_browser_folder:
+                return record, target.nc_browser_folder
+        return record, False
 
     @api.model
     def _browsable_config(self):
@@ -657,7 +739,12 @@ class BfNcBrowser(models.TransientModel):
         a file can be linked to for the current record's project."""
         self._resolve_root(model, res_id)  # access + configured guard
         record = self._resolve_record(model, res_id)
-        project = record if model == "project.project" else record.project_id
+        if model == "project.project":
+            project = record
+        elif model == "project.task":
+            project = record.project_id
+        else:  # a client: its matrix items live on its projects, not here
+            project = self.env["project.project"]
 
         items = []
         if project:
@@ -1045,6 +1132,136 @@ class BfNcBrowser(models.TransientModel):
                 "share": share or False,
             })
         return {"ok": True, "links": out, "truncated": truncated}
+
+    # ------------------------------------------------------------------
+    # Filing chatter attachments into the client folder (18.0.4.3.0)
+    # ------------------------------------------------------------------
+    def _thread_attachments(self, record, ids=None):
+        """Binary attachments of a record's thread: on the record itself or on
+        one of its messages, newest first, among those the caller may read.
+
+        Filtered, not checked: anyone may link any attachment id to a message,
+        and one unreadable piece must not take the whole thread down for a
+        colleague (adversarial review of 18.0.4.3.0). The `search` applies the
+        attachment access rules.
+        """
+        Attachment = self.env["ir.attachment"]
+        messages = self.env["mail.message"].search(
+            [("model", "=", record._name), ("res_id", "=", record.id)]
+        )
+        candidate = set(messages.sudo().attachment_ids.ids) | set(Attachment.search(
+            [("res_model", "=", record._name), ("res_id", "=", record.id)]
+        ).ids)
+        if ids is not None:
+            candidate &= set(ids)
+        attachments = Attachment.search([("id", "in", list(candidate)), ("type", "=", "binary")])
+        return attachments.sorted(lambda a: (a.create_date or datetime.min, a.id), reverse=True)
+
+    @api.model
+    def thread_attachments(self, model, res_id):
+        """What can be filed from this chatter."""
+        self._check_access()
+        record = self._chatter_record(model, res_id)
+        tz = self._tz()
+        out = []
+        for att in self._thread_attachments(record)[:ATTACH_LIST_LIMIT]:
+            date = att.create_date and pytz.utc.localize(att.create_date).astimezone(tz)
+            out.append({
+                "id": att.id,
+                "name": att.name or "",
+                "size_display": _human_size(att.file_size),
+                "too_big": (att.file_size or 0) > MAX_UPLOAD_BYTES,
+                "date": date.strftime("%Y-%m-%d %H:%M") if date else "",
+            })
+        return {"attachments": out, "batch_max": FILE_BATCH_MAX}
+
+    @staticmethod
+    def _file_name(name):
+        """An attachment name as a Nextcloud file name (see nc_names.clean_name)."""
+        return nc_names.clean_name(name or "") or "piece"
+
+    @staticmethod
+    def _candidate_names(name):
+        """« name.ext », then « name (2).ext », « name (3).ext »…"""
+        stem, dot, ext = name.rpartition(".")
+        if not dot or not stem:
+            stem, ext = name, ""
+        yield name
+        for n in range(2, FREE_NAME_TRIES + 2):
+            yield "%s (%d)%s" % (stem, n, "." + ext if ext else "")
+
+    def _put_free(self, config, abs_dir, root, name, raw, mimetype, taken):
+        """Put `raw` under the first free name; the listing only skips names
+        known to be taken, the server decides (If-None-Match)."""
+        folded = {t.casefold() for t in taken}
+        for candidate in self._candidate_names(name):
+            if candidate.casefold() in folded:
+                continue
+            target = _sanitize_nc_path(posixpath.join(abs_dir, candidate))
+            _validate_path_under_prefix(target, root)
+            if config._webdav_put_new(target, raw, content_type=mimetype or "application/octet-stream"):
+                return candidate
+            folded.add(candidate.casefold())
+        raise UserError(_("Trop de fichiers portent déjà le nom « %s ».") % name)
+
+    @api.model
+    def root_file_attachments(self, model, res_id, attachment_ids, rel_path=""):
+        """Copy attachments of a chatter into a folder under the root.
+
+        The copy never replaces a file and the attachment stays in Odoo.
+        Each piece succeeds or fails on its own: what
+        went through is reported, and traced in the chatter, even when another
+        piece of the same batch was refused by Nextcloud.
+        """
+        config, abs_dir, root = self._resolve_path_standalone(rel_path)
+        record = self._chatter_record(model, res_id)
+        if not isinstance(attachment_ids, (list, tuple)) or not attachment_ids:
+            raise UserError(_("Choisissez au moins une pièce."))
+        if len(attachment_ids) > FILE_BATCH_MAX:
+            raise UserError(_("Au plus %s pièces à la fois.") % FILE_BATCH_MAX)
+        ids = {self._as_id(i) for i in attachment_ids}
+        attachments = self._thread_attachments(record, ids)
+        if len(attachments) != len(ids):
+            raise UserError(_("Une des pièces n'appartient pas à ce fil, ou vous ne pouvez pas la lire."))
+        # One listing says both whether the destination is a folder and which
+        # names are taken (a failed connection raises its own message here).
+        raw_listing = config._webdav_propfind(abs_dir, depth="1")
+        dav_root = self._dav_root(config)
+        here = posixpath.normpath(abs_dir)
+        if not any(
+            e.get("is_dir") and self._href_to_nc_path(config, e.get("href", ""), dav_root) == here
+            for e in raw_listing
+        ):
+            raise UserError(_("La destination n'est pas un dossier."))
+        taken = {e["name"] for e in self._entries(config, raw_listing, root, skip=(abs_dir,))}
+        done, skipped, failed = [], [], []
+        for att in attachments.sorted("id"):
+            if (att.file_size or 0) > MAX_UPLOAD_BYTES:
+                skipped.append(att.name)  # checked before reading a byte
+                continue
+            # One piece in memory at a time: `raw` is computed for the whole
+            # prefetch set otherwise (50 pieces of 60 MB read at once).
+            piece = att.with_prefetch([att.id])
+            raw = piece.raw or b""
+            piece.invalidate_recordset(["raw", "datas", "db_datas"])
+            if att.file_size and len(raw) != att.file_size:
+                failed.append({"name": att.name, "error": _("fichier absent du stockage d'Odoo")})
+                continue
+            try:
+                name = self._put_free(config, abs_dir, root, self._file_name(att.name), raw, att.mimetype, taken)
+            except UserError as e:
+                failed.append({"name": att.name, "error": str(e.args[0] if e.args else e)})
+                continue
+            taken.add(name)
+            done.append(name)
+        rel = posixpath.relpath(abs_dir, root)
+        rel = "" if rel == "." else rel
+        if done:
+            post_trace(record, Markup("<p>%s</p>") % (
+                _("Pièces copiées dans Nextcloud, %(dossier)s : %(noms)s.",
+                  dossier=rel or root, noms=", ".join(done))
+            ))
+        return {"done": done, "skipped": skipped, "failed": failed, "rel_path": rel}
 
     @api.model
     def linked_files(self, model, res_id):

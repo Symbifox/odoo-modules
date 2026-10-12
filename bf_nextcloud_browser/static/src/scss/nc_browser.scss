@@ -214,6 +214,14 @@
         font-weight: 500;
     }
 
+    // La fiche que le panneau suit (18.0.4.2.0) : le nom, sans voler la place
+    // des boutons quand il est long.
+    .o_nc_panel_record {
+        min-width: 0;
+        max-width: 40%;
+        opacity: 0.75;
+    }
+
     // La taille courante n'apparait que quand le pointeur est sur le panneau:
     // utile pendant qu'on tire la poignee, encombrant le reste du temps.
     .o_nc_panel_size {

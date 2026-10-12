@@ -478,6 +478,8 @@
                 <header class="o_nc_panel_header d-flex align-items-center gap-2">
                     <i class="fa fa-folder-open-o"/>
                     <span class="o_nc_panel_title">Fichiers Nextcloud</span>
+                    <span t-if="props.startLabel" class="o_nc_panel_record text-truncate small"
+                          t-att-title="props.startLabel">· <t t-esc="props.startLabel"/></span>
                     <span class="o_nc_panel_size text-muted small" t-esc="sizeLabel"/>
                     <div class="ms-auto d-flex align-items-center">
                         <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
@@ -495,7 +497,7 @@
                     </div>
                 </header>
                 <div class="o_nc_panel_body">
-                    <NcBrowserApp/>
+                    <NcBrowserApp startRel="props.startRel or ''"/>
                 </div>
                 <div class="o_nc_panel_grip" title="Redimensionner"
                      t-on-pointerdown="startResize"

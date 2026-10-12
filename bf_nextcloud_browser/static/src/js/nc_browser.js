@@ -1,10 +1,11 @@
 /** @odoo-module **/
 
-import { Component, useState, useRef, onWillStart, onWillUnmount } from "@odoo/owl";
+import { Component, useState, useRef, onMounted, onWillStart, onWillUnmount } from "@odoo/owl";
 import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
+import { useRecordObserver } from "@web/model/relational_model/utils";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { Dialog } from "@web/core/dialog/dialog";
 import { _t } from "@web/core/l10n/translation";
@@ -299,12 +300,59 @@ export class NcBrowser extends Component {
                 loginUrl: "",
             },
         });
+        // L'onglet suit la fiche (18.0.4.2.0). Le serveur resout la racine sur la
+        // fiche ENREGISTREE : tant qu'une saisie n'est pas enregistree, l'onglet
+        // garde la racine que le serveur sert, et c'est bien elle que touchent un
+        // depot ou une suppression. Une fois enregistree (assistant, sous-dossier
+        // tape a la main), ou quand le pager change de fiche, on recharge. Le
+        // rechargement attend que les nouvelles props soient en place.
+        // Le panneau autonome n'a pas de fiche : rien a observer.
+        if (this.props.record) {
+            let seen = null;
+            let mountedDirty = false;
+            useRecordObserver((record) => {
+                if (record.dirty) {
+                    // Monte pendant une saisie : le premier etat enregistre dira
+                    // quelle racine le serveur sert, quelle qu'ait ete la saisie.
+                    mountedDirty = mountedDirty || !seen;
+                    return;
+                }
+                const now = { resId: record.resId, folder: record.data.nc_browser_folder || "" };
+                const before = seen;
+                seen = now;
+                if (!before) {
+                    if (mountedDirty && now.folder) {
+                        this._reloadLater("");
+                    }
+                    return;
+                }
+                if (before.resId !== now.resId) {
+                    this._reloadLater(null);
+                } else if (before.folder !== now.folder && now.folder) {
+                    this._reloadLater("");
+                }
+            });
+        }
         this._pollTimer = null;
         this._searchTimer = null;
         this._searchSeq = 0;
         this._shareSeq = 0;
         onWillStart(() => this._start());
+        // Prevenir l'hote (la boite « Classer ») PENDANT le demarrage le ferait se
+        // redessiner, ce qui annule ce premier rendu et recree l'explorateur, qui
+        // recommence : une boucle sans fin, vue au banc (66 listages en 4 s). On
+        // attend donc d'etre monte pour signaler le dossier ouvert.
+        this._mounted = false;
+        this._pendingNav = null;
+        onMounted(() => {
+            this._mounted = true;
+            if (this._pendingNav) {
+                this.props.onNavigate?.(...this._pendingNav);
+                this._pendingNav = null;
+            }
+        });
         onWillUnmount(() => {
+            this._gone = true;
             this._stopPolling();
             browser.clearTimeout(this._searchTimer);
         });
@@ -331,6 +379,23 @@ export class NcBrowser extends Component {
             this._startPolling();
         }
         this.state.ready = true;
+    }
+
+    /**
+     * Recharge apres la mise a jour des props (pager) : `rel` null rouvre au
+     * dernier dossier vu sur la nouvelle fiche, "" a sa racine.
+     */
+    _reloadLater(rel) {
+        browser.setTimeout(() => {
+            if (this._gone || !this.state.conn.connected) {
+                return;
+            }
+            // Nouvelle racine : l'arbre de l'ancienne ne vaut plus rien.
+            this.state.error = "";
+            this.state.tree = [];
+            this.state.selected = [];
+            this.load(rel === null ? this._rememberedPath() : rel);
+        });
     }
 
     get model() {
@@ -581,11 +646,16 @@ export class NcBrowser extends Component {
             return;
         }
         this.state.loading = true;
+        // Deux listages en vol (pager rapide) : seul le dernier demande s'affiche.
+        const seq = (this._loadSeq = (this._loadSeq || 0) + 1);
         try {
             const res = await this.orm.call(this.rpcModel, this._method("browse_dir"), [
                 ...this._scopeArgs(),
                 relPath || "",
             ]);
+            if (seq !== this._loadSeq) {
+                return;
+            }
             this.state.relPath = res.rel_path;
             this.state.breadcrumb = res.breadcrumb;
             this.state.entries = res.entries;
@@ -594,6 +664,14 @@ export class NcBrowser extends Component {
             this.state.presets = res.presets || this.state.presets;
             this.state.maxUploadBytes = res.max_upload_bytes || this.state.maxUploadBytes;
             this._rememberPath(res.rel_path);
+            // Qui heberge l'explorateur (la boite « Classer ») suit le dossier ouvert.
+            if (this.props.onNavigate) {
+                if (this._mounted) {
+                    this.props.onNavigate(res.rel_path, res.breadcrumb);
+                } else {
+                    this._pendingNav = [res.rel_path, res.breadcrumb];
+                }
+            }
             this.state.error = "";
             this.state.selected = [];
             this.state.filter = "";
@@ -1434,6 +1512,35 @@ export class NcBrowserApp extends NcBrowser {
     }
     _urlMode(mode) {
         return "root_" + mode;
+    }
+    /**
+     * Le panneau du systray passe `startRel` quand la fiche affichee a un
+     * dossier (18.0.4.2.0) : on ouvre la, et non au dernier dossier vu. Une
+     * seule fois : une reconnexion ou un sondage ensuite reprend la memoire.
+     */
+    _rememberedPath() {
+        const start = this.props.startRel;
+        if (this.props.noMemory) {
+            // La boite « Classer » : ni la memoire du panneau (des pieces d'un
+            // client copiees chez un autre), ni la deplacer. Sans dossier de
+            // fiche, elle part de la racine.
+            if (!this._startUsed) {
+                this._startUsed = true;
+                return typeof start === "string" ? start : "";
+            }
+            return this.state.relPath || "";
+        }
+        if (!this._startUsed && typeof start === "string" && start) {
+            this._startUsed = true;
+            return start;
+        }
+        return super._rememberedPath();
+    }
+
+    _rememberPath(rel) {
+        if (!this.props.noMemory) {
+            super._rememberPath(rel);
+        }
     }
 }
 

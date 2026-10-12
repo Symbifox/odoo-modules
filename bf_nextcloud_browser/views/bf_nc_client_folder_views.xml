@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_nc_client_folder_list" model="ir.ui.view">
+        <field name="name">bf.nc.client.folder.list</field>
+        <field name="model">bf.nc.client.folder</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="path"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nc_client_folder_search" model="ir.ui.view">
+        <field name="name">bf.nc.client.folder.search</field>
+        <field name="model">bf.nc.client.folder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="path"/>
+                <group>
+                    <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nc_client_folder" model="ir.actions.act_window">
+        <field name="name">Dossiers clients</field>
+        <field name="res_model">bf.nc.client.folder</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun dossier client rattaché.</p>
+            <p>Rattachez un dossier depuis l'onglet « Dossier Nextcloud » d'une entreprise.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_nc_client_folder"
+              name="Dossiers clients"
+              parent="menu_nc_browser_root"
+              action="action_bf_nc_client_folder"
+              groups="bf_nextcloud_browser.group_nc_browser_user"
+              sequence="20"/>
+
+    <record id="view_bf_nc_folder_pick_form" model="ir.ui.view">
+        <field name="name">bf.nc.folder.pick.form</field>
+        <field name="model">bf.nc.folder.pick</field>
+        <field name="arch" type="xml">
+            <form string="Choisir le dossier Nextcloud">
+                <p class="text-muted">
+                    Pour <field name="target_name" class="fw-bold" readonly="1"/>.
+                    Les dossiers les plus proches du nom viennent en tête.
+                    <field name="note" readonly="1" invisible="not note"/>
+                </p>
+                <field name="line_ids" nolabel="1" readonly="1">
+                    <list create="0" delete="0" decoration-muted="taken_by">
+                        <field name="name"/>
+                        <field name="score" widget="progressbar"/>
+                        <field name="taken_by" optional="show"/>
+                        <field name="path" optional="hide"/>
+                        <button name="action_choose" type="object" string="Choisir"
+                                icon="fa-check" class="btn-link" invisible="taken_by"/>
+                    </list>
+                </field>
+                <footer>
+                    <button string="Fermer" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_nc_client_folder_create_form" model="ir.ui.view">
+        <field name="name">bf.nc.client.folder.create.form</field>
+        <field name="model">bf.nc.client.folder.create</field>
+        <field name="arch" type="xml">
+            <form string="Créer le dossier client">
+                <p class="text-muted">
+                    Le gabarit est recopié tel quel, avec ses sous-dossiers, puis le dossier est
+                    rattaché à l'entreprise. Le numéro suit le plus haut déjà présent.
+                </p>
+                <group>
+                    <field name="partner_id" readonly="1" options="{'no_open': True}"/>
+                    <field name="name"/>
+                    <field name="root"/>
+                    <field name="template"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Créer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

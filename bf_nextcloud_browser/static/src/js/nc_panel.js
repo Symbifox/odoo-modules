@@ -43,6 +43,9 @@ export class NcBrowserPanel extends Component {
         close: Function,
         defaultWidthPct: Number,
         defaultHeightPct: Number,
+        // Dossier de la fiche affichee, relatif a la racine (18.0.4.2.0).
+        startRel: { type: String, optional: true },
+        startLabel: { type: String, optional: true },
     };
 
     setup() {

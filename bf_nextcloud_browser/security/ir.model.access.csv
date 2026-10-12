@@ -4,3 +4,8 @@ access_nc_share_preset_user,nextcloud.share.preset.user,model_nextcloud_share_pr
 access_nc_share_preset_admin,nextcloud.share.preset.admin,model_nextcloud_share_preset,base.group_system,1,1,1,1
 access_bf_nc_user_credential_user,bf.nc.user.credential.user,model_bf_nc_user_credential,bf_nextcloud_browser.group_nc_browser_user,1,0,0,0
 access_bf_nc_user_credential_admin,bf.nc.user.credential.admin,model_bf_nc_user_credential,base.group_system,1,0,0,1
+access_bf_nc_client_folder_user,bf.nc.client.folder.user,model_bf_nc_client_folder,bf_nextcloud_browser.group_nc_browser_user,1,1,1,1
+access_bf_nc_client_folder_internal,bf.nc.client.folder.internal,model_bf_nc_client_folder,base.group_user,1,0,0,0
+access_bf_nc_folder_pick_user,bf.nc.folder.pick.user,model_bf_nc_folder_pick,bf_nextcloud_browser.group_nc_browser_user,1,1,1,1
+access_bf_nc_folder_pick_line_user,bf.nc.folder.pick.line.user,model_bf_nc_folder_pick_line,bf_nextcloud_browser.group_nc_browser_user,1,1,1,1
+access_bf_nc_client_folder_create_user,bf.nc.client.folder.create.user,model_bf_nc_client_folder_create,bf_nextcloud_browser.group_nc_browser_user,1,1,1,1

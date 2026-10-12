@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le dossier du client, sur l'entreprise et sur ses contacts (18.0.4.2.0).
+         Le dossier se rattache a l'entreprise ; un contact
+         montre celui de son entreprise. -->
+    <record id="view_partner_form_nc_browser" model="ir.ui.view">
+        <field name="name">res.partner.form.nc.browser</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Dossier Nextcloud" name="nc_client_folder"
+                      groups="bf_nextcloud_browser.group_nc_browser_user"
+                      invisible="(parent_id and not nc_browser_folder) or (not parent_id and not nc_client_folders_enabled and not nc_client_folder_ids)">
+                    <field name="nc_browser_folder" invisible="1"/>
+                    <field name="nc_client_folders_enabled" invisible="1"/>
+                    <field name="nc_client_folder_creation_enabled" invisible="1"/>
+                    <div class="mb-2 d-flex gap-2" invisible="parent_id or not nc_client_folders_enabled">
+                        <button name="action_nc_create_client_folder" type="object" icon="fa-plus"
+                                string="Créer le dossier client" class="btn-secondary"
+                                invisible="nc_client_folder_ids or not nc_client_folder_creation_enabled"/>
+                        <button name="action_nc_pick_folder" type="object" icon="fa-link"
+                                string="Rattacher un dossier Nextcloud" class="btn-secondary"/>
+                    </div>
+                    <field name="nc_client_folder_ids" invisible="parent_id or not nc_client_folder_ids"
+                           nolabel="1">
+                        <list editable="bottom" create="0">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="path"/>
+                        </list>
+                    </field>
+                    <div invisible="not nc_browser_folder">
+                        <widget name="nc_browser_panel"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

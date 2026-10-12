@@ -26,7 +26,55 @@
                     aria-label="Fichiers Nextcloud liés" title="Fichiers Nextcloud liés dans ce fil">
                 <i class="fa fa-cloud" role="img"/>
             </button>
+            <button t-if="bfNcLinksVisible" class="btn btn-link text-action o-bf-nc-file"
+                    type="button" t-on-click="onClickBfNcFile"
+                    aria-label="Classer des pièces au dossier client" title="Classer des pièces au dossier client">
+                <i class="fa fa-folder-open-o" role="img"/>
+            </button>
         </xpath>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcFileDialog">
+        <Dialog title="'Classer des pièces au dossier client'" size="'xl'" contentClass="'o_nc_file_dialog'">
+            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Lecture du fil…</div>
+            <div t-elif="state.error" class="alert alert-warning mb-0" t-esc="state.error"/>
+            <div t-else="" class="row g-3">
+                <div class="col-lg-4 o_nc_file_list">
+                    <div class="fw-bold mb-2">Pièces du fil</div>
+                    <div t-if="!state.attachments.length" class="text-muted">Aucune pièce jointe dans ce fil.</div>
+                    <div t-if="state.selected.length >= state.batchMax" class="small text-warning mb-1">
+                        Au plus <t t-esc="state.batchMax"/> pièces à la fois.
+                    </div>
+                    <label t-foreach="state.attachments" t-as="att" t-key="att.id"
+                           class="d-flex align-items-start gap-2 py-1 border-bottom o_nc_file_item"
+                           t-att-class="{ 'text-muted': att.too_big }">
+                        <input type="checkbox" class="form-check-input mt-1" t-att-disabled="isLocked(att)"
+                               t-att-checked="state.selected.includes(att.id)" t-on-change="() => this.toggle(att)"/>
+                        <span class="flex-grow-1 text-break">
+                            <span t-esc="att.name"/>
+                            <small class="d-block text-muted">
+                                <t t-esc="att.date"/> · <t t-esc="att.size_display"/>
+                                <t t-if="att.too_big"> · trop volumineuse</t>
+                            </small>
+                        </span>
+                    </label>
+                </div>
+                <div class="col-lg-8">
+                    <div t-if="!state.startRel" class="alert alert-info py-1 small">
+                        Cette fiche n'a pas de dossier client : choisissez où copier.
+                    </div>
+                    <NcBrowserApp startRel="state.startRel" noMemory="true" onNavigate.bind="onNavigate"/>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <span class="text-muted small me-auto">La pièce est copiée, elle reste aussi dans Odoo.</span>
+                <button class="btn btn-primary o_nc_file_go" t-att-disabled="!canFile" t-on-click="file">
+                    <i t-if="state.busy" class="fa fa-spinner fa-spin me-1"/>
+                    Copier <t t-esc="state.selected.length"/> pièce(s) dans « <t t-esc="where"/> »
+                </button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Fermer</button>
+            </t>
+        </Dialog>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcPickerDialog">

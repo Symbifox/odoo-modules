@@ -509,9 +509,17 @@ class TestNcLinks(TransactionCase):
     # The tab of an unmapped record
     # ------------------------------------------------------------------
     def test_the_tab_hides_without_a_folder_for_a_member_who_is_not_administrator(self):
-        for Model in (self.env["project.project"], self.env["project.task"]):
+        # Since 18.0.4.2.0 the condition reads nc_browser_folder (the record's own
+        # folder or its client's), and a project also shows the tab when its
+        # client has a folder to choose from.
+        expected = {
+            "project.project": 'invisible="not nc_browser_folder and not nc_client_folder_available"',
+            "project.task": 'invisible="not nc_browser_folder"',
+        }
+        for model, condition in expected.items():
+            Model = self.env[model]
             view = Model.with_user(self.alice).get_views([(False, "form")])
             arch = view["views"]["form"]["arch"]
             self.assertIn('name="nc_browser"', arch)
-            self.assertIn('invisible="not nc_documents_folder"', arch)
-            self.assertIn("nc_documents_folder", view["models"][Model._name]["fields"])
+            self.assertIn(condition, arch)
+            self.assertIn("nc_browser_folder", view["models"][model]["fields"])

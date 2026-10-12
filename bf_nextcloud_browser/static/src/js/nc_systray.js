@@ -26,6 +26,7 @@ export class NcPanelSystray extends Component {
     setup() {
         this.orm = useService("orm");
         this.overlay = useService("overlay");
+        this.action = useService("action");
         this.state = useState({ show: false, open: false, widthPct: 80, heightPct: 80 });
         this.removePanel = null;
 
@@ -56,9 +57,56 @@ export class NcPanelSystray extends Component {
         }
     }
 
-    toggle() {
+    /**
+     * La fiche a l'ecran (formulaire seulement) : modele et id courant. Le
+     * `currentState` du controleur suit le pager, pas ses props.
+     */
+    _recordOnScreen() {
+        const ctrl = this.action.currentController;
+        const model = ctrl?.props?.resModel;
+        const resId = ctrl?.currentState?.resId || ctrl?.props?.resId;
+        if (ctrl?.view?.type !== "form" || !model || !resId) {
+            return null;
+        }
+        return { model, resId };
+    }
+
+    /**
+     * Le dossier de la fiche affichee (18.0.4.2.0) : un client, son projet, sa
+     * tache, ou toute fiche dont le projet ou le partenaire en a un. Rien ne
+     * bloque l'ouverture : sans reponse, le panneau rouvre ou il etait.
+     */
+    async _startFor(rec) {
+        if (!rec) {
+            return {};
+        }
+        try {
+            const res = await this.orm.call("bf.nc.browser", "root_record_path", [
+                rec.model,
+                rec.resId,
+            ]);
+            return res && res.rel_path ? { startRel: res.rel_path, startLabel: res.label || "" } : {};
+        } catch {
+            return {};
+        }
+    }
+
+    async toggle() {
         if (this.removePanel) {
             this.close();
+            return;
+        }
+        if (this._opening) {
+            return;
+        }
+        this._opening = true;
+        let start;
+        try {
+            start = await this._startFor(this._recordOnScreen());
+        } finally {
+            this._opening = false;
+        }
+        if (this.removePanel) {
             return;
         }
         this.removePanel = this.overlay.add(
@@ -67,6 +115,7 @@ export class NcPanelSystray extends Component {
                 close: () => this.close(),
                 defaultWidthPct: this.state.widthPct,
                 defaultHeightPct: this.state.heightPct,
+                ...start,
             },
             // Sous la sequence des dialogues (50), qui doivent s'ouvrir par-dessus.
             {

@@ -225,6 +225,130 @@ export class NcLinkedFilesDialog extends Component {
     }
 }
 
+/**
+ * Classer des pieces du fil dans Nextcloud (18.0.4.3.0) : les pieces a cocher a
+ * gauche, l'explorateur a droite, ouvert sur le dossier client de la fiche. La
+ * piece est COPIEE et reste dans Odoo.
+ */
+export class NcFileDialog extends Component {
+    static template = "bf_nextcloud_browser.NcFileDialog";
+    static components = { Dialog, NcBrowserApp };
+    static props = { close: Function, model: String, resId: Number, onDone: { type: Function, optional: true } };
+
+    setup() {
+        this.orm = useService("orm");
+        this.notification = useService("notification");
+        this.state = useState({
+            loading: true,
+            error: "",
+            attachments: [],
+            selected: [],
+            startRel: "",
+            label: "",
+            rel: null,
+            crumbs: [],
+            busy: false,
+            batchMax: 50,
+        });
+        onWillStart(() => this.load());
+    }
+
+    async load() {
+        try {
+            const [list, start] = await Promise.all([
+                this.orm.call("bf.nc.browser", "thread_attachments", [this.props.model, this.props.resId]),
+                this.orm.call("bf.nc.browser", "root_record_path", [this.props.model, this.props.resId]),
+            ]);
+            this.state.attachments = list.attachments || [];
+            this.state.batchMax = list.batch_max || this.state.batchMax;
+            this.state.startRel = (start && start.rel_path) || "";
+            this.state.label = (start && start.label) || "";
+        } catch (e) {
+            this.state.error = errorMessage(e);
+        } finally {
+            this.state.loading = false;
+        }
+    }
+
+    toggle(att) {
+        if (att.too_big) {
+            return;
+        }
+        const i = this.state.selected.indexOf(att.id);
+        if (i >= 0) {
+            this.state.selected.splice(i, 1);
+        } else if (this.state.selected.length < this.state.batchMax) {
+            this.state.selected.push(att.id);
+        }
+    }
+
+    isLocked(att) {
+        return (
+            att.too_big ||
+            (!this.state.selected.includes(att.id) && this.state.selected.length >= this.state.batchMax)
+        );
+    }
+
+    onNavigate(rel, crumbs) {
+        this.state.rel = rel || "";
+        this.state.crumbs = (crumbs || []).map((c) => c.name);
+    }
+
+    get where() {
+        return this.state.crumbs.slice(1).join(" / ") || _t("Racine");
+    }
+
+    get canFile() {
+        return this.state.selected.length > 0 && this.state.rel !== null && !this.state.busy;
+    }
+
+    async file() {
+        if (!this.canFile) {
+            return;
+        }
+        this.state.busy = true;
+        try {
+            const res = await this.orm.call("bf.nc.browser", "root_file_attachments", [
+                this.props.model,
+                this.props.resId,
+                [...this.state.selected],
+                this.state.rel,
+            ]);
+            const n = (res.done || []).length;
+            const failed = res.failed || [];
+            if ((res.skipped || []).length) {
+                this.notification.add(
+                    _t("Trop volumineuses, laissées dans Odoo : %s", res.skipped.join(", ")),
+                    { type: "warning", sticky: true }
+                );
+            }
+            if (failed.length) {
+                this.notification.add(
+                    failed.map((f) => `${f.name} : ${f.error}`).join(" ; "),
+                    { title: _t("Non copiées"), type: "danger", sticky: true }
+                );
+            }
+            if (!n) {
+                // Rien n'est parti : la boite reste ouverte, rien ne dit « fait ».
+                return;
+            }
+            this.notification.add(
+                _t("%(n)s pièce(s) copiée(s) dans %(where)s.", { n, where: this.where }),
+                { type: "success" }
+            );
+            this.props.onDone?.();
+            this.props.close();
+        } catch (e) {
+            this.notification.add(errorMessage(e), { type: "danger" });
+            // Un proxy qui coupe (504) n'arrete pas le serveur : la note de ce
+            // qui est passe peut arriver quand meme, on relit le fil.
+            this.props.onDone?.();
+        } finally {
+            this.state.busy = false;
+        }
+    }
+}
+
 // ----------------------------------------------------------------------
 // Composer: « Insérer un lien Nextcloud »
 // ----------------------------------------------------------------------
@@ -297,5 +421,18 @@ patch(Chatter.prototype, {
             return;
         }
         this.bfNcLinksDialog.add(NcLinkedFilesDialog, { model: thread.model, resId: thread.id });
+    },
+
+    onClickBfNcFile() {
+        const thread = this.state.thread;
+        if (!isRecordThread(thread)) {
+            return;
+        }
+        this.bfNcLinksDialog.add(NcFileDialog, {
+            model: thread.model,
+            resId: thread.id,
+            // La note laissee au fil par le serveur paraît sans recharger la page.
+            onDone: () => thread.fetchNewMessages?.(),
+        });
     },
 });

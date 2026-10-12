@@ -1,7 +1,7 @@
 <section class="oe_container">
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan">Nextcloud File Browser</h2>
-        <h3 class="oe_slogan">Browse, preview, organise and share Nextcloud files — inside Odoo</h3>
+        <h3 class="oe_slogan">Your Nextcloud files and client folders, inside Odoo</h3>
     </div>
 </section>
 
@@ -9,18 +9,31 @@
     <div class="oe_row">
         <div class="oe_span12">
             <p class="oe_mt32">
-                A WebDAV file browser embedded on Odoo project and task forms, plus a
-                standalone application. Two-pane (folder tree + listing) navigation,
-                inline preview, drag-and-drop upload and move, configurable public
-                share presets, and one-click open in Nextcloud for office documents.
+                A WebDAV file browser embedded on Odoo companies, contacts, projects and
+                tasks, plus a standalone application. Each client keeps its Nextcloud
+                folder; Odoo opens it from the record you are on, creates it from your
+                template, and files the attachments of a conversation into it.
             </p>
             <ul>
-                <li>Embedded <em>Fichiers Nextcloud</em> tab on projects and tasks</li>
-                <li>Standalone <em>Nextcloud</em> application and systray launcher</li>
+                <li>Client folders: link a company to its folder, chosen among the folders
+                    under your clients root, closest names first; its contacts, projects
+                    and tasks follow</li>
+                <li>Create a client folder from your template, numbered after the ones
+                    already on disk</li>
+                <li>File chatter attachments into the client folder: copied, kept in Odoo,
+                    never written over an existing file, and noted in the thread when the
+                    person may post there</li>
+                <li>Embedded <em>Dossier Nextcloud</em> tab on companies and contacts,
+                    <em>Fichiers Nextcloud</em> on projects and tasks</li>
+                <li>Standalone <em>Nextcloud</em> application, and a systray panel that
+                    opens at the folder of the record on screen</li>
                 <li>One Nextcloud account per person, connected once, revocable any time</li>
-                <li>Folder tree, sortable columns, inline modal preview</li>
-                <li>Upload (drag-and-drop, multi-file), folder, rename, move, delete</li>
-                <li>Configurable share presets (internal / external)</li>
+                <li>Search the whole tree; insert an internal link or a share in a message;
+                    list and revoke the shares cited in a chatter</li>
+                <li>Folder tree, sortable columns, inline preview; upload (drag-and-drop,
+                    multi-file), folder, rename, move, delete</li>
+                <li>Configurable share presets (internal / external), existing shares shown
+                    with their expiry</li>
                 <li>Link files to the Knowledge Matrix</li>
             </ul>
         </div>
@@ -35,10 +48,15 @@
                 Every operation is gated by an access group, scoped to the record's
                 folder, and validated against path traversal. Each person connects their
                 own Nextcloud account through Nextcloud's Login Flow v2, single sign-on
-                included: Nextcloud applies its own permissions, and every share link and
-                activity entry carries the person's name. App passwords are stored
-                encrypted, never reach the browser, and are revoked on disconnection or
-                when the Odoo account is archived.
+                included: Nextcloud applies its own permissions, and every share link,
+                copied file and activity entry carries the person's name. App passwords
+                are stored encrypted, never reach the browser, and are revoked on
+                disconnection or when the Odoo account is archived.
+            </p>
+            <p>
+                On a company without folder, the tab and its buttons appear only once the
+                Nextcloud configuration is usable and has a clients root; the creation
+                button also needs a template.
             </p>
         </div>
     </div>
