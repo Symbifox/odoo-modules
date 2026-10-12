@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_route_day_form_bf_route_expense" model="ir.ui.view">
+        <field name="name">bf.route.day.form.bf_route_expense</field>
+        <field name="model">bf.route.day</field>
+        <field name="inherit_id" ref="bf_route.view_bf_route_day_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_claim_mileage" type="object" string="Claim the kilometres"
+                        invisible="state != 'done' or not personal_vehicle"
+                        groups="bf_route.group_route_manager"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_expenses" type="object" class="oe_stat_button"
+                        icon="fa-money" invisible="not expense_count"
+                        groups="bf_route.group_route_manager">
+                    <field name="expense_count" widget="statinfo" string="Expenses"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='distance_actual_km']" position="after">
+                <field name="personal_vehicle" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

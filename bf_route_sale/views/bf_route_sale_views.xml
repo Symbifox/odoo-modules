@@ -89,14 +89,14 @@
                 <field name="payment_reference" optional="hide"/>
                 <field name="sale_error" optional="show" decoration-danger="sale_error"/>
             </xpath>
-            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
-                <div class="oe_button_box" name="button_box">
-                    <button name="action_open_invoices" type="object" class="oe_stat_button"
-                            icon="fa-file-text-o" groups="account.group_account_invoice"
-                            invisible="not sales_total">
-                        <field name="sales_total" widget="statinfo" string="Invoiced"/>
-                    </button>
-                </div>
+            <!-- The button box belongs to bf_route (the satellites add their buttons inside it):
+                 a second box here would stack two rows of buttons. -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_invoices" type="object" class="oe_stat_button"
+                        icon="fa-file-text-o" groups="account.group_account_invoice"
+                        invisible="not sales_total">
+                    <field name="sales_total" widget="statinfo" string="Invoiced"/>
+                </button>
             </xpath>
         </field>
     </record>

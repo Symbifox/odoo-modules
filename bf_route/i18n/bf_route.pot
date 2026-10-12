@@ -1,17 +1,25 @@
-# Translation template for Symbifox Work Routes.
-# The module's source strings are written in English.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_route
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_route 18.0.1.0.4\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 00:11+0000\n"
-"PO-Revision-Date: 2026-10-11 00:11+0000\n"
+"POT-Creation-Date: 2026-10-11 07:49+0000\n"
+"PO-Revision-Date: 2026-10-11 07:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "%(located)s of %(total)s contacts located."
+msgstr ""
 
 #. module: bf_route
 #. odoo-python
@@ -96,6 +104,16 @@ msgid ""
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "<span class=\"mx-1\">·</span>"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "<span>From</span>"
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
 msgid "<span>days</span>"
 msgstr ""
@@ -103,6 +121,16 @@ msgstr ""
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
 msgid "<span>min</span>"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "<span>to</span>"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "<strong>Total</strong>"
 msgstr ""
 
 #. module: bf_route
@@ -309,6 +337,11 @@ msgid "Configuration"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model,name:bf_route.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_engine.py:0
 msgid "Could not fit in their time window, left at the end: %s."
@@ -363,8 +396,16 @@ msgid "Customer taken off the route: %s"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__visited
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "Customers visited"
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__date
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Date"
 msgstr ""
@@ -437,7 +478,15 @@ msgstr ""
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 #: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__done
 #: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__done
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Done"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.actions.act_window,help:bf_route.action_bf_route_mileage
+msgid ""
+"Each finished day gives one line: date, worker, vehicle, odometer, kilometres and the\n"
+"               customers visited. Print the log from the list for the year's register."
 msgstr ""
 
 #. module: bf_route
@@ -537,6 +586,7 @@ msgid ""
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Group by"
 msgstr ""
@@ -637,6 +687,19 @@ msgid "Keys of the refused marks the phone reported, so each counts once."
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "Kilometres"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid ""
+"Kilometres from the odometer read at the start and the\n"
+"                        end of each day. A day without both readings counts 0 km. Customers visited: stops done,\n"
+"                        or customer absent."
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__write_uid
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__write_uid
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__write_uid
@@ -679,6 +742,11 @@ msgid "Leaves from"
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "Leaving from (depot)"
+msgstr ""
+
+#. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Loading…"
@@ -699,6 +767,17 @@ msgstr ""
 #: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_end
 #: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_start
 msgid "Local time. Empty = any time."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "Locate on the map"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.server,name:bf_route.action_partner_locate
+msgid "Locate on the map (routes)"
 msgstr ""
 
 #. module: bf_route
@@ -786,6 +865,22 @@ msgid "Mileage"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route_mileage
+#: model:ir.actions.report,name:bf_route.action_report_mileage_log
+#: model:ir.model,name:bf_route.model_report_bf_route_report_mileage_log
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_mileage
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_graph
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_pivot
+msgid "Mileage log"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "Mileage log: business trips of the route days"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Mine"
 msgstr ""
@@ -818,6 +913,11 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__mon
 msgid "Monday"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
+msgid "Month"
 msgstr ""
 
 #. module: bf_route
@@ -884,6 +984,25 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid ""
+"No coordinates found for these addresses: %s. Check the street, the city and"
+" the postal code on the contact."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "No finished route day in this selection."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "No geocoder: enter the Nominatim address in the Routes settings."
+msgstr ""
+
+#. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "No network"
@@ -899,6 +1018,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_engine.py:0
 msgid "No optimizer: enter the VROOM address in the Routes settings."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.actions.act_window,help:bf_route.action_bf_route_mileage
+msgid "No route day finished in this period"
 msgstr ""
 
 #. module: bf_route
@@ -920,9 +1044,24 @@ msgid "No stop left to plan."
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "No vehicle"
+msgstr ""
+
+#. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
 msgid "Nobody"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Nominatim"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_nominatim_url
+msgid "Nominatim address"
 msgstr ""
 
 #. module: bf_route
@@ -938,9 +1077,31 @@ msgid "Not before"
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "Not found (check the street, city and postal code): %s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid ""
+"Not located yet (the geocoder did not get to them in time): %s. Locate them "
+"from the contacts (Action, Locate on the map (routes)), then try again."
+msgstr ""
+
+#. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Not recorded:"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid ""
+"Not tried yet (the geocoder ran out of time or did not answer): %s. Run this"
+" again."
 msgstr ""
 
 #. module: bf_route
@@ -948,6 +1109,12 @@ msgstr ""
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__note
 msgid "Note"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "Nothing to locate: these contacts already have coordinates."
 msgstr ""
 
 #. module: bf_route
@@ -991,6 +1158,7 @@ msgstr ""
 
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__odometer_end
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
 msgid "Odometer at end"
 msgstr ""
 
@@ -998,6 +1166,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__odometer_start
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
 msgid "Odometer at start"
 msgstr ""
 
@@ -1053,6 +1222,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route.py:0
 #: code:addons/bf_route/models/bf_route_day.py:0
+#: code:addons/bf_route/models/res_partner.py:0
 msgid "Only a route manager can do this."
 msgstr ""
 
@@ -1125,6 +1295,14 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__planned_clock
 msgid "Planned time"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_partner__bf_route_street_latitude
+#: model:ir.model.fields,help:bf_route.field_res_users__bf_route_street_latitude
+msgid ""
+"Point of the street when the geocoder found the street but not the number: "
+"it plans the kilometres, it never guides the phone."
 msgstr ""
 
 #. module: bf_route
@@ -1344,6 +1522,19 @@ msgid "Sees and drives their own route days, from the phone or the office."
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "Select at most %s contacts without coordinates at a time."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid ""
+"Self-hosted geocoder: coordinates of the contacts from their address. e.g. "
+"http://nominatim:8080"
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
 msgid "Self-hosted optimizer: order of the stops. e.g. http://vroom:3000"
 msgstr ""
@@ -1491,6 +1682,24 @@ msgid "Stops missed: %s"
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/res_partner.py:0
+msgid "Street found, but not the number (kept for the plans only): %s."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_partner__bf_route_street_latitude
+#: model:ir.model.fields,field_description:bf_route.field_res_users__bf_route_street_latitude
+msgid "Street latitude (routes)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_partner__bf_route_street_longitude
+#: model:ir.model.fields,field_description:bf_route.field_res_users__bf_route_street_longitude
+msgid "Street longitude (routes)"
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
 msgid "Sun"
 msgstr ""
@@ -1515,6 +1724,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_notice.py:0
 msgid "The alert comes from 0 to 1,440 minutes after the start."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__visited
+msgid ""
+"The customers driven to (stops done, or customer absent), in order: the "
+"purpose of the trip in the mileage log."
 msgstr ""
 
 #. module: bf_route
@@ -1709,6 +1925,7 @@ msgstr ""
 
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_list
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_list
 msgid "Total"
 msgstr ""
 
@@ -1747,6 +1964,7 @@ msgstr ""
 #: model:ir.model,name:bf_route.model_fleet_vehicle
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__vehicle_id
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__vehicle_id
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Vehicle"
 msgstr ""
@@ -1833,6 +2051,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__user_id
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__user_id
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__user_id
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_search
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Worker"
 msgstr ""
@@ -1858,6 +2077,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
 msgid "from %s"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "http://nominatim:8080"
 msgstr ""
 
 #. module: bf_route

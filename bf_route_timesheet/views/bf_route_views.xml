@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_route_form_bf_route_timesheet" model="ir.ui.view">
+        <field name="name">bf.route.form.bf_route_timesheet</field>
+        <field name="model">bf.route</field>
+        <field name="inherit_id" ref="bf_route.view_bf_route_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vehicle_id']" position="after">
+                <field name="timesheet_project_id" groups="project.group_project_user"/>
+                <field name="timesheet_task_id" invisible="not timesheet_project_id"
+                       groups="project.group_project_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_form_bf_route_timesheet" model="ir.ui.view">
+        <field name="name">bf.route.day.form.bf_route_timesheet</field>
+        <field name="model">bf.route.day</field>
+        <field name="inherit_id" ref="bf_route.view_bf_route_day_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_timesheets" type="object" class="oe_stat_button"
+                        icon="fa-clock-o" invisible="not timesheet_hours"
+                        groups="hr_timesheet.group_hr_timesheet_user">
+                    <field name="timesheet_hours" widget="statinfo" string="Hours logged"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,290 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_route_expense
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:39+0000\n"
+"PO-Revision-Date: 2026-10-11 07:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "%(km)s km claimed: draft expense for %(who)s (%(amount)s)."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "%s has no employee in this company: no expense to claim for."
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "<span>km</span>"
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "<span>per km</span>"
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.view_bf_route_day_form_bf_route_expense
+msgid "Claim the kilometres"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model,name:bf_route_expense.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model,name:bf_route_expense.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_bf_route_day__personal_vehicle
+#: model:ir.model.fields,field_description:bf_route_expense.field_fleet_vehicle__bf_route_personal
+msgid "Employee's own vehicle"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model,name:bf_route_expense.model_hr_expense
+msgid "Expense"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_bf_route_day__expense_count
+msgid "Expense Count"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_res_company__bf_route_mileage_reduced_product_id
+#: model:ir.model.fields,help:bf_route_expense.field_res_config_settings__bf_route_mileage_reduced_product_id
+msgid ""
+"Expense product of the kilometres beyond the yearly threshold. Its cost is "
+"the rate."
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_res_company__bf_route_mileage_product_id
+#: model:ir.model.fields,help:bf_route_expense.field_res_config_settings__bf_route_mileage_product_id
+msgid ""
+"Expense product of the kilometres up to the yearly threshold. Its cost is "
+"the rate."
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.view_bf_route_day_form_bf_route_expense
+msgid "Expenses"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_config_settings__bf_route_mileage_rate
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "Full rate"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_company__bf_route_mileage_threshold
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_config_settings__bf_route_mileage_threshold
+msgid "Kilometres at the full rate"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "Kilometres not claimed: %s"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "Mileage beyond the yearly threshold: %(route)s, %(date)s"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+#: model:ir.model.fields,field_description:bf_route_expense.field_bf_route_day__expense_ids
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "Mileage expenses"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_company__bf_route_mileage_product_id
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_config_settings__bf_route_mileage_product_id
+msgid "Mileage, full rate"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_company__bf_route_mileage_reduced_product_id
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_config_settings__bf_route_mileage_reduced_product_id
+msgid "Mileage, reduced rate"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "Mileage: %(route)s, %(date)s"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "No kilometres: enter the odometer at the start and at the end."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "No mileage expense product with a rate: check the Routes settings."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid ""
+"No reduced-rate mileage product with a rate: check the Routes settings, or "
+"set the yearly threshold to 0."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "Odometer %(start)s to %(end)s. Customers visited: %(purpose)s."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "Only a finished day claims its kilometres."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/fleet_vehicle.py:0
+msgid "Only a fleet manager says whether a vehicle is an employee's own."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/hr_expense.py:0
+msgid "Only the route module links an expense to a route day."
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_res_company__bf_route_mileage_threshold
+#: model:ir.model.fields,help:bf_route_expense.field_res_config_settings__bf_route_mileage_threshold
+msgid ""
+"Per employee and calendar year, counting every mileage expense of the year. "
+"0 = the full rate for every kilometre."
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid ""
+"Per employee and calendar year, counting every mileage expense. 0 = the full"
+" rate for every kilometre."
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid ""
+"Per kilometre, beyond the yearly threshold. The cost of this expense "
+"product."
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid ""
+"Per kilometre, up to the yearly threshold. The cost of this expense product."
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,field_description:bf_route_expense.field_res_config_settings__bf_route_mileage_reduced_rate
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "Reduced rate"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model,name:bf_route_expense.model_bf_route_day
+#: model:ir.model.fields,field_description:bf_route_expense.field_hr_expense__bf_route_day_id
+msgid "Route day"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_res_config_settings__bf_route_mileage_rate
+#: model:ir.model.fields,help:bf_route_expense.field_res_config_settings__bf_route_mileage_reduced_rate
+msgid "The cost of the expense product, per kilometre, in this company."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid ""
+"The kilometres changed after the expense was reported: %(expenses)s. Check "
+"it with the person who approves it; it was not changed."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "The kilometres were not claimed: %s"
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_hr_expense__bf_route_day_id
+msgid "The route day whose kilometres this expense claims."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid ""
+"The threshold moved, but the expense of this day was changed by hand: "
+"%(expenses)s. It was not redone; check its rate."
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model.fields,help:bf_route_expense.field_bf_route_day__personal_vehicle
+#: model:ir.model.fields,help:bf_route_expense.field_fleet_vehicle__bf_route_personal
+msgid ""
+"The worker's own car. Each route day finished with it gives the worker a "
+"draft expense for its kilometres, at the per-km rate. A company vehicle "
+"gives none."
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid ""
+"This day was not driven with an employee's own vehicle (Vehicle, Employee's "
+"own vehicle): its kilometres stay in the mileage log."
+msgstr ""
+
+#. module: bf_route_expense
+#: model:ir.model,name:bf_route_expense.model_fleet_vehicle
+msgid "Vehicle"
+msgstr ""
+
+#. module: bf_route_expense
+#: model_terms:ir.ui.view,arch_db:bf_route_expense.res_config_settings_view_form_bf_route_expense
+msgid "Yearly threshold"
+msgstr ""
+
+#. module: bf_route_expense
+#. odoo-python
+#: code:addons/bf_route_expense/models/bf_route_day.py:0
+msgid "no stop done"
+msgstr ""

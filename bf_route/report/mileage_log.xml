@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_mileage_log" model="ir.actions.report">
+        <field name="name">Mileage log</field>
+        <field name="model">bf.route.day</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_route.report_mileage_log</field>
+        <field name="report_file">bf_route.report_mileage_log</field>
+        <field name="binding_model_id" ref="model_bf_route_day"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_mileage_log">
+        <t t-call="web.html_container">
+            <t t-set="o" t-value="docs[:1]"/>
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Mileage log: business trips of the route days</h2>
+                    <p t-if="not groups">No finished route day in this selection.</p>
+                    <t t-foreach="groups" t-as="group">
+                        <h4 class="mt-4">
+                            <span t-out="group['user'].name or '-'"/>
+                            <span class="mx-1">·</span>
+                            <span t-if="group['vehicle']" t-out="group['vehicle'].display_name"/>
+                            <span t-else="">No vehicle</span>
+                        </h4>
+                        <p class="text-muted">
+                            <span>From</span> <span t-out="group['first']" t-options="{'widget': 'date'}"/>
+                            <span>to</span> <span t-out="group['last']" t-options="{'widget': 'date'}"/>
+                        </p>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Leaving from (depot)</th>
+                                    <th>Customers visited</th>
+                                    <th class="text-end">Odometer at start</th>
+                                    <th class="text-end">Odometer at end</th>
+                                    <th class="text-end">Kilometres</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="group['days']" t-as="day">
+                                    <td><span t-field="day.date"/></td>
+                                    <td><span t-out="(day.route_id.start_partner_id or day.company_id.partner_id).display_name"/></td>
+                                    <td><span t-out="day.visited or '-'"/></td>
+                                    <td class="text-end">
+                                        <span t-if="day.odometer_start" t-out="day.odometer_start" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-if="day.odometer_end" t-out="day.odometer_end" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="day.distance_actual_km" t-options="{'widget': 'float', 'precision': 1}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-end"><strong>Total</strong></td>
+                                    <td class="text-end">
+                                        <strong t-out="group['total']" t-options="{'widget': 'float', 'precision': 1}"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </t>
+                    <p class="text-muted small mt-4">Kilometres from the odometer read at the start and the
+                        end of each day. A day without both readings counts 0 km. Customers visited: stops done,
+                        or customer absent.</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

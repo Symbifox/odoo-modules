@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fleet_vehicle_form_bf_route_expense" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.bf_route_expense</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="bf_route.view_fleet_vehicle_form_bf_route"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bf_route_heavy']" position="after">
+                <field name="bf_route_personal"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,5 +1,8 @@
+// The surface and the border come through CSS variables, not the compiled SCSS values: the compiled
+// white is fixed at build time and stayed white (title invisible on it) under the dark theme, which
+// sets these variables on the body. The fallbacks are the light values, for the plain Odoo theme.
 .o_bf_my_route {
-    background-color: $o-view-background-color;
+    background-color: var(--o-view-background-color, #{$o-view-background-color});
     max-width: 720px;
     margin: 0 auto;
 
@@ -7,8 +10,8 @@
         position: sticky;
         top: 0;
         z-index: 1;
-        background-color: $o-view-background-color;
-        border-bottom: 1px solid $border-color;
+        background-color: var(--o-view-background-color, #{$o-view-background-color});
+        border-bottom: 1px solid var(--bs-border-color, #{$border-color});
     }
 
     .o_bf_my_route_stop {
@@ -37,4 +40,11 @@
         // As a flex box, the space between the icon and the label is dropped.
         gap: 0.35rem;
     }
+}
+
+// The dark theme paints the text of every <button> white (`body.bf_dark_mode button`), which beats
+// the Bootstrap button colour: white on the amber « Absent » button is 1.9:1. Keep the colour
+// Bootstrap computed for the button (dark on amber).
+body.bf_dark_mode .o_bf_my_route .btn-warning {
+    color: var(--btn-color, #000);
 }

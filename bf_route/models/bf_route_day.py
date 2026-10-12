@@ -116,6 +116,10 @@ class BfRouteDay(models.Model):
                                        digits=(10, 1), copy=False)
     duration_planned_minutes = fields.Integer(string="Planned driving time (min)", readonly=True,
                                               copy=False)
+    visited = fields.Char(
+        string="Customers visited", compute="_compute_visited", store=True,
+        help="The customers driven to (stops done, or customer absent), in order: the purpose of "
+             "the trip in the mileage log.")
     safety_check_at = fields.Datetime(string="Pre-trip inspection at", readonly=True, copy=False)
     safety_check_by = fields.Many2one("res.users", string="Pre-trip inspection by", readonly=True,
                                       copy=False)
@@ -148,6 +152,27 @@ class BfRouteDay(models.Model):
                 day.distance_actual_km = day.odometer_end - day.odometer_start
             else:
                 day.distance_actual_km = 0.0
+
+    @api.depends("stop_ids.state", "stop_ids.partner_id", "stop_ids.sequence")
+    def _compute_visited(self):
+        for day in self:
+            # An absent customer was driven to all the same: business kilometres.
+            done = day.stop_ids.filtered(lambda s: s.state in ("done", "absent")).sorted("sequence")
+            day.visited = ", ".join(dict.fromkeys(done.mapped("partner_id.display_name"))) or False
+
+    @api.constrains("odometer_start", "odometer_end")
+    def _check_odometer(self):
+        """The office's corrections hold to the phone's bounds: the kilometres become money."""
+        for day in self:
+            for value in (day.odometer_start, day.odometer_end):
+                if value and not 0 <= value <= MAX_ODOMETER:
+                    raise ValidationError(_("The odometer must be between 0 and %s.", MAX_ODOMETER))
+            if day.odometer_start and day.odometer_end:
+                if day.odometer_end < day.odometer_start:
+                    raise ValidationError(_("The odometer at the end is below the one at the start."))
+                if day.odometer_end - day.odometer_start > MAX_KM_PER_DAY:
+                    raise ValidationError(_("More than %s km in one day: check the odometer.",
+                                            MAX_KM_PER_DAY))
 
     @api.depends("stop_ids.state")
     def _compute_progress(self):

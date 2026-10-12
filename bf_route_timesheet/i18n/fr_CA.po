@@ -1,0 +1,192 @@
+# Translation of Symbifox Work Routes: Time Sheets - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_route_timesheet 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:39+0000\n"
+"PO-Revision-Date: 2026-10-11 07:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid ""
+"%(hours)s h between the start and the end of the day is more than %(max)s h:"
+" enter the time by hand."
+msgstr ""
+"%(hours)s h entre le début et la fin de la journée, c'est plus de %(max)s h "
+": inscrivez le temps à la main."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "%(hours)s h logged for %(who)s on %(project)s."
+msgstr "%(hours)s h inscrites pour %(who)s sur %(project)s."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "%s has no employee in this company."
+msgstr "%s n'a pas de fiche dans Employés pour cette société."
+
+#. module: bf_route_timesheet
+#: model:ir.model,name:bf_route_timesheet.model_account_analytic_line
+msgid "Analytic Line"
+msgstr "Ligne analytique"
+
+#. module: bf_route_timesheet
+#: model:ir.model,name:bf_route_timesheet.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_route_timesheet
+#: model:ir.model,name:bf_route_timesheet.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_route_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_route_timesheet.res_config_settings_view_form_bf_route_timesheet
+msgid "Default project"
+msgstr "Projet par défaut"
+
+#. module: bf_route_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_route_timesheet.view_bf_route_day_form_bf_route_timesheet
+msgid "Hours logged"
+msgstr "Heures inscrites"
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "Only the route module links a time sheet to a route day."
+msgstr ""
+"Seul le module des routes lie une feuille de temps à une journée de route."
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_bf_route__timesheet_project_id
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,help:bf_route_timesheet.field_res_company__bf_route_timesheet_project_id
+#: model:ir.model.fields,help:bf_route_timesheet.field_res_config_settings__bf_route_timesheet_project_id
+msgid ""
+"Project of the time of the routes that name none. Empty: no time is logged."
+msgstr ""
+"Projet du temps des routes qui n'en nomment aucun. Vide : aucun temps n'est "
+"inscrit."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "Route %(route)s: %(done)s of %(total)s stops done"
+msgstr "Route %(route)s : %(done)s arrêts faits sur %(total)s"
+
+#. module: bf_route_timesheet
+#: model:ir.model,name:bf_route_timesheet.model_bf_route_day
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_account_analytic_line__bf_route_day_id
+msgid "Route day"
+msgstr "Journée de route"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_res_company__bf_route_timesheet_project_id
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_res_config_settings__bf_route_timesheet_project_id
+msgid "Route time sheets"
+msgstr "Feuilles de temps des routes"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_bf_route_day__start_received_at
+msgid "Start received"
+msgstr "Départ reçu"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_bf_route__timesheet_task_id
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "The route's project must accept time sheets."
+msgstr "Le projet de la route doit accepter les feuilles de temps."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid ""
+"The start of the day reached the server %(minutes)s min after the time the "
+"phone gave it: enter the time by hand."
+msgstr ""
+"Le départ de la journée est arrivé au serveur %(minutes)s min après l'heure "
+"donnée par le téléphone : inscrivez le temps à la main."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "The task must belong to the route's project."
+msgstr "La tâche doit appartenir au projet de la route."
+
+#. module: bf_route_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_route_timesheet.res_config_settings_view_form_bf_route_timesheet
+msgid ""
+"The time of each finished day goes to the route's project, or to this one. "
+"Empty: no time is logged."
+msgstr ""
+"Le temps de chaque journée terminée va au projet de la route, sinon à celui-"
+"ci. Vide : aucun temps n'est inscrit."
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "The time of the day was not logged: %s"
+msgstr "Le temps de la journée n'a pas été inscrit : %s"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_bf_route_day__timesheet_hours
+msgid "Time logged"
+msgstr "Temps inscrit"
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+msgid "Time not logged: %s"
+msgstr "Temps non inscrit : %s"
+
+#. module: bf_route_timesheet
+#. odoo-python
+#: code:addons/bf_route_timesheet/models/bf_route.py:0
+#: model:ir.model.fields,field_description:bf_route_timesheet.field_bf_route_day__timesheet_ids
+#: model_terms:ir.ui.view,arch_db:bf_route_timesheet.res_config_settings_view_form_bf_route_timesheet
+msgid "Time sheets"
+msgstr "Feuilles de temps"
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,help:bf_route_timesheet.field_bf_route_day__start_received_at
+msgid ""
+"When the server received the start of the day, whatever time the phone gave "
+"it."
+msgstr ""
+"Quand le serveur a reçu le départ de la journée, quelle que soit l'heure "
+"donnée par le téléphone."
+
+#. module: bf_route_timesheet
+#: model:ir.model.fields,help:bf_route_timesheet.field_bf_route__timesheet_project_id
+msgid ""
+"Where the time of each finished day goes. Empty: the default project of the "
+"settings."
+msgstr ""
+"Où va le temps de chaque journée terminée. Vide : le projet par défaut des "
+"paramètres."
+
+#. module: bf_route_timesheet
+#: model:ir.model,name:bf_route_timesheet.model_bf_route
+msgid "Work route"
+msgstr "Route de travail"

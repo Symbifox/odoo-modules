@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Work Routes",
-    "version": "18.0.1.0.5",
+    "version": "18.0.1.1.1",
     "category": "Services/Field Service",
     "summary": "Recurring routes for people on the road: stops in order, proof at each stop, "
                "mileage, alerts, and a phone screen for the worker",
@@ -25,7 +25,11 @@ technicians, sales representatives.
   (Quebec Law 25, s. 8.1). Positions are erased after the retention period.
   There is no continuous tracking;
 - mileage: odometer at the start and end of the day, logged to the vehicle;
-  planned distance from a self-hosted OSRM;
+  planned distance from a self-hosted OSRM. The mileage log lists the days
+  driven with the customers visited as the purpose of each trip, and prints
+  for the year's register;
+- contacts without coordinates are located by a self-hosted Nominatim when a
+  route needs them, or from the contacts' Action menu;
 - "Optimize the order" sends the stops to a self-hosted VROOM. No address
   leaves for a third party. Without the service, the order stays manual;
 - a heavy vehicle (gross weight of 4,500 kg or more) asks for the pre-trip
@@ -46,6 +50,8 @@ technicians, sales representatives.
         "views/bf_route_day_views.xml",
         "views/fleet_vehicle_views.xml",
         "views/res_config_settings_views.xml",
+        "views/res_partner_views.xml",
+        "report/mileage_log.xml",
         "views/bf_route_menus.xml",
     ],
     "assets": {

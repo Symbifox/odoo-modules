@@ -50,6 +50,7 @@
                     <field name="state" widget="statusbar" statusbar_visible="planned,in_progress,done"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box"/>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
@@ -72,6 +73,7 @@
                             <field name="odometer_start"/>
                             <field name="odometer_end"/>
                             <field name="distance_actual_km"/>
+                            <field name="visited" invisible="not visited"/>
                         </group>
                         <group string="Plan" name="plan">
                             <field name="distance_planned_km"/>
@@ -123,6 +125,7 @@
                 <filter name="upcoming" string="To come" domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('state', '=', 'planned')]"/>
                 <filter name="on_road" string="On the road" domain="[('state', '=', 'in_progress')]"/>
                 <filter name="mine" string="Mine" domain="[('user_id', '=', uid)]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
                 <separator/>
                 <filter name="date" string="Date" date="date"/>
                 <group expand="0" string="Group by">
@@ -139,6 +142,91 @@
         <field name="res_model">bf.route.day</field>
         <field name="view_mode">list,calendar,form</field>
         <field name="context">{'search_default_upcoming': 1}</field>
+    </record>
+
+    <!-- Mileage log: the days driven, one line each, with the customers visited as the purpose of the
+         trip (registers of Revenu Québec and the CRA: date, places, purpose, kilometres, odometer). -->
+    <record id="view_bf_route_day_mileage_list" model="ir.ui.view">
+        <field name="name">bf.route.day.mileage.list</field>
+        <field name="model">bf.route.day</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <list create="0" default_order="date asc, id asc">
+                <field name="date"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="vehicle_id" optional="show"/>
+                <field name="route_id" optional="show"/>
+                <field name="odometer_start" optional="show"/>
+                <field name="odometer_end" optional="show"/>
+                <field name="distance_actual_km" sum="Total"/>
+                <field name="distance_planned_km" sum="Total" optional="hide"/>
+                <field name="visited"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_mileage_pivot" model="ir.ui.view">
+        <field name="name">bf.route.day.mileage.pivot</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <pivot string="Mileage log" sample="1">
+                <field name="user_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="distance_actual_km" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_mileage_graph" model="ir.ui.view">
+        <field name="name">bf.route.day.mileage.graph</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <graph string="Mileage log" type="bar" sample="1">
+                <field name="date" interval="month"/>
+                <field name="distance_actual_km" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_mileage_search" model="ir.ui.view">
+        <field name="name">bf.route.day.mileage.search</field>
+        <field name="model">bf.route.day</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="vehicle_id"/>
+                <field name="route_id"/>
+                <field name="visited"/>
+                <filter name="mine" string="Mine" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="date" string="Date" date="date" default_period="year"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_user" string="Worker" context="{'group_by': 'user_id'}"/>
+                    <filter name="by_vehicle" string="Vehicle" context="{'group_by': 'vehicle_id'}"/>
+                    <filter name="by_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_route_mileage" model="ir.actions.act_window">
+        <field name="name">Mileage log</field>
+        <field name="res_model">bf.route.day</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="domain">[('state', '=', 'done')]</field>
+        <field name="context">{'search_default_date': 1}</field>
+        <field name="search_view_id" ref="view_bf_route_day_mileage_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_bf_route_day_mileage_list')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_bf_route_day_mileage_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_bf_route_day_mileage_graph')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_bf_route_day_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No route day finished in this period</p>
+            <p>Each finished day gives one line: date, worker, vehicle, odometer, kilometres and the
+               customers visited. Print the log from the list for the year's register.</p>
+        </field>
     </record>
 
     <record id="view_bf_route_day_stop_list" model="ir.ui.view">

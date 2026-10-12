@@ -72,6 +72,8 @@ class TestEngine(RouteCase):
         params = self.env["ir.config_parameter"].sudo()
         params.set_param("bf_route.osrm_url", "http://osrm:5000/")
         params.set_param("bf_route.vroom_url", "http://vroom:3000")
+        # No geocoder here: these tests name the places without coordinates (see test_mileage_geocode).
+        params.set_param("bf_route.nominatim_url", "")
 
     def test_no_engine_says_so(self):
         self.env["ir.config_parameter"].sudo().set_param("bf_route.osrm_url", "")

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_bf_route_timesheet" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf_route_timesheet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_route.res_config_settings_view_form_bf_route"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_route_engine']" position="before">
+                <block title="Time sheets" name="bf_route_timesheet">
+                    <setting string="Default project"
+                             help="The time of each finished day goes to the route's project, or to this one. Empty: no time is logged.">
+                        <field name="bf_route_timesheet_project_id"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

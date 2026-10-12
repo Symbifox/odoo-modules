@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_expense_view_form_bf_route_expense" model="ir.ui.view">
+        <field name="name">hr.expense.form.bf_route_expense</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="bf_route_day_id" invisible="not bf_route_day_id"
+                       groups="bf_route.group_route_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

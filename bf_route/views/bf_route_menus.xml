@@ -10,6 +10,8 @@
               action="action_bf_route" sequence="20" groups="group_route_manager"/>
     <menuitem id="menu_bf_route_visits" name="Visits" parent="menu_bf_route_root"
               action="action_bf_route_day_stop" sequence="30" groups="group_route_manager"/>
+    <menuitem id="menu_bf_route_mileage" name="Mileage log" parent="menu_bf_route_root"
+              action="action_bf_route_mileage" sequence="40"/>
     <menuitem id="menu_bf_route_config" name="Configuration" parent="menu_bf_route_root"
               sequence="90" groups="group_route_manager"/>
     <menuitem id="menu_bf_route_settings" name="Settings" parent="menu_bf_route_config"

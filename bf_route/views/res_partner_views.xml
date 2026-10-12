@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Coordinates for the routes, from the self-hosted geocoder: in the Action menu of the contacts. -->
+    <record id="action_partner_locate" model="ir.actions.server">
+        <field name="name">Locate on the map (routes)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('group_route_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_bf_route_locate()</field>
+    </record>
+</odoo>

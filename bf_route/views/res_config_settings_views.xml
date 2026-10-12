@@ -40,6 +40,9 @@
                         <setting string="VROOM" help="Self-hosted optimizer: order of the stops. e.g. http://vroom:3000">
                             <field name="bf_route_vroom_url" placeholder="http://vroom:3000"/>
                         </setting>
+                        <setting string="Nominatim" help="Self-hosted geocoder: coordinates of the contacts from their address. e.g. http://nominatim:8080">
+                            <field name="bf_route_nominatim_url" placeholder="http://nominatim:8080"/>
+                        </setting>
                     </block>
                 </app>
             </xpath>
