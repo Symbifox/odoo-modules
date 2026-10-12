@@ -34,5 +34,17 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
+
+        <!-- L'assistant « Après une fuite », même raison : sans cette règle, une
+             autre personne lisait qui a subi une fuite, et à quelle date. -->
+        <record id="rule_credit_breach_own" model="ir.rule">
+            <field name="name">Credit breach: own wizards only</field>
+            <field name="model_id" ref="model_bf_credit_breach"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
     </data>
 </odoo>

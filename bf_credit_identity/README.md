@@ -32,6 +32,17 @@ installs on any Odoo 18 Community.
   Running it again creates no duplicate. Any reminder can be added by hand, for
   instance *Put the security freeze back* after lifting a TransUnion freeze to
   apply for credit.
+* **After a breach** (menu *After a breach*): after a data breach or a lost
+  wallet, plans both credit reports (Equifax and TransUnion) right away, then one
+  month and three months later: six one-off reminders, each archived once done.
+  Reminders due within 7 days (the two "right away" ones, from today) get their
+  activity at once. Each reminder keeps
+  the start date of its series: running it again for a date that already has a
+  series adds nothing, even when a reminder of the series is done (archived) or
+  was moved; another date (a second breach) gets its own series. These reminders,
+  and their copies, do not count as the starter calendar: *Set up my reminders*
+  still creates the yearly reports. This schedule is the app's choice, not a rule
+  from a source; the wizard and the guide (section 7) say so.
 * **Activities**: a daily scheduled action turns each reminder due within 7 days
   into an activity for its owner. *Done*, on the reminder or on its activity
   (systray, chatter, list), closes the activity and plans the next one from today
@@ -47,17 +58,27 @@ wherever Odoo reads it with elevated rights (an access error in debug mode, the
 name of an activity). A reminder has **no followers**, its thread notifies nobody
 and nobody else can be mentioned in it; an activity on a reminder can only be
 placed by its owner and stays assigned to them; a file can only be attached to
-one's own reminder. Activities are created without any notification: this module
-sends no email. The model declares a sensitive scope (`_gen_scope`) for the modules
+one's own reminder. Both wizards (*Set up my reminders*, *After a breach*) are
+limited to the person who opened them by a global rule: Odoo does not isolate
+transient records by itself. *After a breach* also deletes its own record once
+the series is planned, since its mere existence would say that someone had a
+breach. Activities are created without any notification:
+this module sends no email. The model declares a sensitive scope (`_gen_scope`) for the modules
 that read it, without depending on them: the next versions of `daily_todo_digest`
 (18.0.2.4.0) and of `bf_claude_chat` (18.0.1.36.0), not yet published, leave these
 reminders out. ⚠️ The published `daily_todo_digest` (18.0.2.3.0) does not read it yet:
 installed next to this module, it lists each person's own credit reminders in their
-daily email.
+daily email, including "after a breach" in their names, and the queued email can be
+read by an administrator until it is sent.
 
 The limit: the superuser (`sudo()`, scheduled actions) is not bound by the rule,
 and a system administrator can change the security rules themselves. The privacy
-holds between the people of a database, not against whoever administers it.
+holds between the people of a database, not against whoever administers it. Record
+ids are sequential, as everywhere in Odoo: someone who creates records of their own
+and compares the ids sees a gap when someone else created records in between. For
+reminders, the gap gives a count, not what they are. The *After a breach* wizard
+has its own table, used for nothing else: a gap in its ids, probed through RPC,
+shows that someone used it in that period.
 
 **What it does not do**: no connection to Equifax, TransUnion or any bank; no
 credit data is stored (only dates, a name and a free note); no credit monitoring.
@@ -79,8 +100,9 @@ and change. Re-read the sources before each version.
 against an administrator (ORM and JSON-RPC), names, followers, activities and
 attachments kept private, no email sent (with a control that proves the measure
 sees an email on another model), starter calendar, done and one-off reminders,
-done through the activity, notice window, guide in both languages with its
-sources.
+done through the activity, notice window, the *After a breach* series (dates,
+one-off, activities right away, no duplicate, apart from the starter calendar,
+private wizard, French names), guide in both languages with its sources.
 
 ## Français
 
@@ -96,6 +118,11 @@ Québec, avec des notes pour le reste du Canada.
 * **Rappels** (menu *Mes rappels*) : *Configurer mes rappels* crée le calendrier de
   départ (Equifax, puis TransUnion six mois plus tard, relevés chaque mois, revue
   annuelle des mesures, renouvellement d'une alerte de six ans).
+* **Après une fuite** (menu *Après une fuite*) : après une fuite de données ou un
+  portefeuille perdu, les deux dossiers de crédit tout de suite, puis à un mois et
+  à trois mois. Six rappels ponctuels, archivés une fois faits ; le calendrier de
+  départ reste à part. Relancer pour la même date n'ajoute rien. Ce calendrier est
+  un choix de l'appli, et l'assistant comme le guide le disent.
 * **Activités** : chaque jour, les rappels qui tombent dans 7 jours deviennent une
   activité pour leur propriétaire, **sans aucun avis par courriel**.
 * **Qui voit quoi** : chaque rappel n'est visible que par la personne qui le
@@ -107,6 +134,13 @@ Québec, avec des notes pour le reste du Canada.
 
 ## Version history
 
+* **18.0.1.1.0** (2026-10-11): *After a breach*. A wizard plans both credit
+  reports right away, then one month and three months later (six one-off
+  reminders, marked *After a breach* with the start date of their series),
+  private to the person who runs it and deleted once used. Running it again for
+  the same date adds nothing. The starter calendar ignores these reminders and
+  their copies. The guide's section 7 announces the series and says it is the
+  app's choice. No migration: existing reminders get the two new fields empty.
 * **18.0.1.0.1** (2026-10-09): privacy hardening before first publication. The
   name of a reminder is neutral for anyone but its owner; a reminder has no
   followers and its thread notifies nobody; activities and attachments can only

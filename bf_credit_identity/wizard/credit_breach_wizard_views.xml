@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_breach_form" model="ir.ui.view">
+        <field name="name">bf.credit.breach.form</field>
+        <field name="model">bf.credit.breach</field>
+        <field name="arch" type="xml">
+            <form string="After a breach">
+                <p>
+                    After a data breach or a lost wallet: check your Equifax and TransUnion credit
+                    reports right away, then again one month and three months later. These reminders
+                    are for you only, and each one is archived once done.
+                </p>
+                <p>
+                    This schedule is the app's choice: none of the guide's sources sets one. What to do
+                    first is in the guide, section 7, "If it happens". Running this again for the same
+                    date adds nothing; another date plans a new series.
+                </p>
+                <group>
+                    <field name="start_date"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Plan my checks"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_breach" model="ir.actions.act_window">
+        <field name="name">After a breach</field>
+        <field name="res_model">bf.credit.breach</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

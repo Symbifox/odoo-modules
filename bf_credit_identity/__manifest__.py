@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Credit & Identity",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "summary": "Check your credit files and protect your identity: a guide to "
                "your rights in Quebec and Canada, with private reminders",
@@ -30,8 +30,10 @@ Quebec, with notes for the rest of Canada.
   source, with the date it was read.
 * **Reminders**: a starter calendar (Equifax then TransUnion six months apart,
   monthly statements, yearly review of the protective measures, renewal of a
-  six-year alert). Each reminder becomes an activity for its owner a few days
-  before it is due, with no email sent.
+  six-year alert). After a data breach or a lost wallet, *After a breach* adds
+  both credit reports right away, then one month and three months later. Each
+  reminder becomes an activity for its owner a few days before it is due, with
+  no email sent.
 
 Who sees what
 -------------
@@ -52,6 +54,7 @@ Labels are written in English; French (Canada) comes from ``i18n/fr_CA.po``.
         "views/credit_guide_templates.xml",
         "views/credit_reminder_views.xml",
         "wizard/credit_setup_wizard_views.xml",
+        "wizard/credit_breach_wizard_views.xml",
         "views/credit_identity_menus.xml",
     ],
     "assets": {

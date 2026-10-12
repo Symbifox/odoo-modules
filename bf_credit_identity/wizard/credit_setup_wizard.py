@@ -11,7 +11,8 @@ Le calendrier de départ :
   (Equifax et TransUnion la gardent six ans).
 
 Relancer l'assistant ne crée pas de doublon : un rappel actif du même genre (et de
-la même agence) est gardé tel quel.
+la même agence) est gardé tel quel. Les rappels « après une fuite » ne comptent pas :
+ils sont ponctuels et s'archivent une fois faits, le calendrier de départ reste à créer.
 """
 from dateutil.relativedelta import relativedelta
 
@@ -67,7 +68,7 @@ class CreditSetupWizard(models.TransientModel):
         bureaus = dict(Reminder._fields["bureau"]._description_selection(self.env))
         # La règle globale ne montre que les rappels de la personne : la recherche
         # de doublons ne voit donc que les siens.
-        existants = Reminder.search([])
+        existants = Reminder.search([("after_breach", "=", False)])
         a_creer = []
         for kind, bureau, date, recurring, number, unit in self._plan():
             if existants.filtered(lambda r: r.kind == kind and (r.bureau or False) == bureau):

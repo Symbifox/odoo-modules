@@ -82,6 +82,8 @@
                 <filter name="next_30_days" string="Next 30 days"
                         domain="[('next_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
+                <filter name="after_breach" string="After a breach" domain="[('after_breach', '=', True)]"/>
+                <separator/>
                 <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By">
                     <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
@@ -100,7 +102,8 @@
             <p class="o_view_nocontent_smiling_face">No reminder yet</p>
             <p>Use <strong>Set up my reminders</strong> to create a starter calendar: your Equifax
                 and TransUnion credit reports, your monthly statements and a yearly review of your
-                protective measures. Only you can see your reminders.</p>
+                protective measures. If your data leaks or you lose your wallet, <strong>After a breach</strong>
+                plans extra checks of both credit reports. Only you can see your reminders.</p>
         </field>
     </record>
 </odoo>

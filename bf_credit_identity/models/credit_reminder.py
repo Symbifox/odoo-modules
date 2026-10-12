@@ -26,6 +26,10 @@ Ce que le module garde, et comment :
 * **Le calcul.** Un rappel fait repart du jour où il est fait (comme une
   maintenance d'hébergement), pas de son échéance : fait en retard, il ne
   s'accumule pas. Un rappel ponctuel (« une fois ») s'archive quand il est fait.
+* **Après une fuite.** Les rappels de l'assistant « Après une fuite »
+  (wizard/credit_breach_wizard.py) portent ``after_breach`` : le calendrier de
+  départ ne les compte pas comme ses propres dossiers. Les deux champs se
+  copient : un rappel dupliqué reste « après une fuite ».
 """
 from datetime import timedelta
 
@@ -132,6 +136,12 @@ class CreditReminder(models.Model):
     # L'échéance pour laquelle une activité a déjà été levée : la tâche planifiée
     # n'en lève pas deux pour la même, et déplace la sienne si l'échéance bouge.
     raised_for_date = fields.Date(readonly=True, copy=False)
+    after_breach = fields.Boolean(
+        "After a breach", readonly=True,
+        help="Created by After a breach: a one-off check, apart from the starter calendar.")
+    breach_date = fields.Date(
+        "Series start", readonly=True,
+        help="First check of the After a breach series this reminder belongs to.")
     due_state = fields.Selection(
         [("overdue", "Overdue"), ("soon", "Due soon"), ("planned", "Planned")],
         string="Status", compute="_compute_due_state")

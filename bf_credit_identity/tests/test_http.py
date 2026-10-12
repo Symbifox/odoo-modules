@@ -39,7 +39,8 @@ class TestParLeReseau(HttpCase):
     def test_les_vues_et_les_actions_se_chargent(self):
         self.authenticate("credit_anne", "credit_anne")
         for xmlid in ("bf_credit_identity.action_credit_reminder",
-                      "bf_credit_identity.action_credit_setup"):
+                      "bf_credit_identity.action_credit_setup",
+                      "bf_credit_identity.action_credit_breach"):
             with self.subTest(action=xmlid):
                 action = self.env.ref(xmlid)
                 vues = self.rpc(action.res_model, "get_views",

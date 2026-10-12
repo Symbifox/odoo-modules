@@ -6,14 +6,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 00:28+0000\n"
-"PO-Revision-Date: 2026-10-10 00:28+0000\n"
+"POT-Creation-Date: 2026-10-12 01:03+0000\n"
+"PO-Revision-Date: 2026-10-12 01:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "%(report)s (after a breach, %(step)s)"
+msgstr ""
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -280,6 +286,23 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.actions.act_window,name:bf_credit_identity.action_credit_breach
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__after_breach
+#: model:ir.ui.menu,name:bf_credit_identity.menu_credit_breach
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_search
+msgid "After a breach"
+msgstr ""
+
+#. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid ""
+"After a data breach or a lost wallet: check your Equifax and TransUnion credit\n"
+"                    reports right away, then again one month and three months later. These reminders\n"
+"                    are for you only, and each one is archived once done."
+msgstr ""
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__alert_bureau
 msgid "Alert placed at"
 msgstr ""
@@ -362,6 +385,13 @@ msgid "Both bureaus"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_breach__start_date
+msgid ""
+"Both credit reports are due on this day, then one month and three months "
+"later."
+msgstr ""
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__bureau
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_search
 msgid "Bureau"
@@ -386,6 +416,7 @@ msgid "Canadian Anti-Fraud Centre: Fraud victim (modified October 30, 2025)"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_setup_form
 msgid "Cancel"
 msgstr ""
@@ -420,12 +451,20 @@ msgid "Create my reminders"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__create_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__create_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_reminder__after_breach
+msgid ""
+"Created by After a breach: a one-off check, apart from the starter calendar."
+msgstr ""
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__create_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__create_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__create_date
 msgid "Created on"
@@ -488,6 +527,7 @@ msgid "Days"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__display_name
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__display_name
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__display_name
 msgid "Display Name"
@@ -588,8 +628,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__start_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__start_date
 msgid "First check"
+msgstr ""
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_reminder__breach_date
+msgid "First check of the After a breach series this reminder belongs to."
 msgstr ""
 
 #. module: bf_credit_identity
@@ -665,6 +711,7 @@ msgid ""
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__id
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__id
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__id
 msgid "ID"
@@ -708,6 +755,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
+msgid ""
+"In this app, <strong>After a breach</strong> plans checks of your two credit"
+" reports right away, then one month and three months later. This schedule is"
+" the app's choice: none of this guide's sources sets one."
+msgstr ""
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__message_is_follower
 msgid "Is Follower"
 msgstr ""
@@ -727,12 +782,14 @@ msgid "Kind"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__write_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__write_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__write_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__write_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__write_date
 msgid "Last Updated on"
@@ -900,6 +957,16 @@ msgid ""
 msgstr ""
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid "Plan my checks"
+msgstr ""
+
+#. module: bf_credit_identity
+#: model:ir.model,name:bf_credit_identity.model_bf_credit_breach
+msgid "Plan my credit checks after a breach"
+msgstr ""
+
+#. module: bf_credit_identity
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_reminder__due_state__planned
 msgid "Planned"
 msgstr ""
@@ -1003,6 +1070,11 @@ msgid "Security alert renewal"
 msgstr ""
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__breach_date
+msgid "Series start"
+msgstr ""
+
+#. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
 msgid ""
 "Service Canada: Protecting your social insurance number (modified May 13, "
@@ -1099,6 +1171,14 @@ msgstr ""
 
 #. module: bf_credit_identity
 #. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid ""
+"This date already has its series: nothing was added. Done or deleted "
+"reminders are not created again."
+msgstr ""
+
+#. module: bf_credit_identity
+#. odoo-python
 #: code:addons/bf_credit_identity/models/credit_reminder.py:0
 msgid "This reminder has no official page."
 msgstr ""
@@ -1107,6 +1187,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_credit_identity/models/credit_reminder.py:0
 msgid "This reminder is private: you cannot mention or notify anyone on it."
+msgstr ""
+
+#. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid ""
+"This schedule is the app's choice: none of the guide's sources sets one. What to do\n"
+"                    first is in the guide, section 7, \"If it happens\". Running this again for the same\n"
+"                    date adds nothing; another date plans a new series."
 msgstr ""
 
 #. module: bf_credit_identity
@@ -1167,7 +1255,8 @@ msgstr ""
 msgid ""
 "Use <strong>Set up my reminders</strong> to create a starter calendar: your Equifax\n"
 "                and TransUnion credit reports, your monthly statements and a yearly review of your\n"
-"                protective measures. Only you can see your reminders."
+"                protective measures. If your data leaks or you lose your wallet, <strong>After a breach</strong>\n"
+"                plans extra checks of both credit reports. Only you can see your reminders."
 msgstr ""
 
 #. module: bf_credit_identity
@@ -1273,8 +1362,26 @@ msgid ""
 msgstr ""
 
 #. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "one month later"
+msgstr ""
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "right away"
+msgstr ""
+
+#. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
 msgid "statements or mail that stop arriving;"
+msgstr ""
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "three months later"
 msgstr ""
 
 #. module: bf_credit_identity

@@ -2,7 +2,7 @@ from odoo.tests import TransactionCase, new_test_user
 
 
 class CreditCase(TransactionCase):
-    """Un ménage : Anne et Bruno, personnes ordinaires, et une administratrice.
+    """Un foyer : Anne et Bruno, personnes ordinaires, et une administratrice.
 
     Les essais jouent chaque parcours DANS LE RÔLE (``with_user`` / ``env(user=)``),
     jamais en superutilisateur : un essai en superutilisateur ne mesure pas les

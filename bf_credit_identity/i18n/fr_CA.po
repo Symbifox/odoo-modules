@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 05:48+0000\n"
-"PO-Revision-Date: 2026-10-02 05:48+0000\n"
+"POT-Creation-Date: 2026-10-12 01:03+0000\n"
+"PO-Revision-Date: 2026-10-12 01:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -15,6 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "%(report)s (after a breach, %(step)s)"
+msgstr "%(report)s (après une fuite, %(step)s)"
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -232,6 +238,12 @@ msgstr ""
 "Burlington (Ontario) L7N 3N8."
 
 #. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/mail_followers.py:0
+msgid "A credit reminder has no followers."
+msgstr "Personne ne suit un rappel de crédit."
+
+#. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
 msgid ""
 "A different password for each account, at least 12 characters; a passphrase "
@@ -251,6 +263,12 @@ msgstr ""
 "disponible ou un solde passe sous 100 $ ou un montant que vous fixez (ACFC)."
 " Ces alertes servent à gérer les soldes ; ce ne sont pas des alertes de "
 "fraude."
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/ir_attachment.py:0
+msgid "A file can only be attached to your own credit reminder."
+msgstr "Un fichier ne se joint qu'à un rappel de crédit qui vous appartient."
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_form
@@ -324,6 +342,11 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: bf_credit_identity
+#: model:ir.model,name:bf_credit_identity.model_mail_activity
+msgid "Activity"
+msgstr "Activité"
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr "Indicateur d’exception d’activité"
@@ -337,6 +360,27 @@ msgstr "Statut de l'activité"
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__activity_type_icon
 msgid "Activity Type Icon"
 msgstr "Icône de type d'activité"
+
+#. module: bf_credit_identity
+#: model:ir.actions.act_window,name:bf_credit_identity.action_credit_breach
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__after_breach
+#: model:ir.ui.menu,name:bf_credit_identity.menu_credit_breach
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_search
+msgid "After a breach"
+msgstr "Après une fuite"
+
+#. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid ""
+"After a data breach or a lost wallet: check your Equifax and TransUnion credit\n"
+"                    reports right away, then again one month and three months later. These reminders\n"
+"                    are for you only, and each one is archived once done."
+msgstr ""
+"Après une fuite de données ou un portefeuille perdu : consultez vos dossiers"
+" de crédit Equifax et TransUnion tout de suite, puis de nouveau à un mois et"
+" à trois mois. Ces rappels ne sont visibles que par vous, et chacun "
+"s'archive une fois fait."
 
 #. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__alert_bureau
@@ -360,6 +404,20 @@ msgstr ""
 "Avisez aussi Revenu Québec et l'Agence du revenu du Canada, Postes Canada si"
 " votre courrier est détourné, et vos fournisseurs de services (CAI, Centre "
 "antifraude du Canada)."
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/mail_activity.py:0
+msgid "An activity can only be placed on your own credit reminder."
+msgstr ""
+"Une activité ne se pose que sur un rappel de crédit qui vous appartient."
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/mail_activity.py:0
+msgid "An activity on a credit reminder stays with the reminder's owner."
+msgstr ""
+"L'activité d'un rappel de crédit reste à la personne qui possède le rappel."
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_form
@@ -391,6 +449,11 @@ msgstr ""
 "tous les six mois."
 
 #. module: bf_credit_identity
+#: model:ir.model,name:bf_credit_identity.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
@@ -414,6 +477,15 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_setup__alert_bureau__both
 msgid "Both bureaus"
 msgstr "Les deux agences"
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_breach__start_date
+msgid ""
+"Both credit reports are due on this day, then one month and three months "
+"later."
+msgstr ""
+"Les deux dossiers de crédit sont dus ce jour-là, puis un mois et trois mois "
+"plus tard."
 
 #. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__bureau
@@ -445,6 +517,7 @@ msgstr ""
 "2025)"
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_setup_form
 msgid "Cancel"
 msgstr "Annuler"
@@ -485,12 +558,22 @@ msgid "Create my reminders"
 msgstr "Créer mes rappels"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__create_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__create_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_reminder__after_breach
+msgid ""
+"Created by After a breach: a one-off check, apart from the starter calendar."
+msgstr ""
+"Créé par Après une fuite : une vérification ponctuelle, distincte du "
+"calendrier de départ."
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__create_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__create_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__create_date
 msgid "Created on"
@@ -500,6 +583,12 @@ msgstr "Créé le"
 #: model:ir.ui.menu,name:bf_credit_identity.menu_credit_root
 msgid "Credit & Identity"
 msgstr "Crédit et identité"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/credit_reminder.py:0
+msgid "Credit & Identity: reminders"
+msgstr "Crédit et identité : rappels"
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -553,10 +642,16 @@ msgid "Days"
 msgstr "Jours"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__display_name
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__display_name
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
+
+#. module: bf_credit_identity
+#: model:ir.model,name:bf_credit_identity.model_mail_followers
+msgid "Document Followers"
+msgstr "Abonnements au document"
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_reminder_form
@@ -660,9 +755,17 @@ msgstr ""
 "votre dossier de crédit et cote de crédit (modifiée le 1er juillet 2026)"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__start_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__start_date
 msgid "First check"
 msgstr "Première vérification"
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,help:bf_credit_identity.field_bf_credit_reminder__breach_date
+msgid "First check of the After a breach series this reminder belongs to."
+msgstr ""
+"Première vérification de la série Après une fuite à laquelle appartient ce "
+"rappel."
 
 #. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__message_follower_ids
@@ -754,6 +857,7 @@ msgstr ""
 "pour les victimes de fraude en ligne (AMF)."
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__id
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__id
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__id
 msgid "ID"
@@ -804,6 +908,18 @@ msgstr ""
 "protection, chacune révocable ; le gel peut aussi être suspendu (art. 8)."
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
+msgid ""
+"In this app, <strong>After a breach</strong> plans checks of your two credit"
+" reports right away, then one month and three months later. This schedule is"
+" the app's choice: none of this guide's sources sets one."
+msgstr ""
+"Dans cette appli, <strong>Après une fuite</strong> prévoit la consultation "
+"de vos deux dossiers de crédit tout de suite, puis à un mois et à trois "
+"mois. Ce calendrier est un choix de l'appli : aucune des sources de ce guide"
+" n'en fixe un."
+
+#. module: bf_credit_identity
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__message_is_follower
 msgid "Is Follower"
 msgstr "Est un abonné"
@@ -826,12 +942,14 @@ msgid "Kind"
 msgstr "Genre"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__write_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__write_uid
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__write_uid
 msgid "Last Updated by"
 msgstr "Mis à jour par"
 
 #. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_breach__write_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__write_date
 #: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_setup__write_date
 msgid "Last Updated on"
@@ -1016,9 +1134,25 @@ msgstr ""
 "cybersécurité, AMF)."
 
 #. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid "Plan my checks"
+msgstr "Planifier mes vérifications"
+
+#. module: bf_credit_identity
+#: model:ir.model,name:bf_credit_identity.model_bf_credit_breach
+msgid "Plan my credit checks after a breach"
+msgstr "Planifier mes vérifications de crédit après une fuite"
+
+#. module: bf_credit_identity
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_reminder__due_state__planned
 msgid "Planned"
 msgstr "Prévu"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/credit_reminder.py:0
+msgid "Private reminder"
+msgstr "Rappel privé"
 
 #. module: bf_credit_identity
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_reminder__kind__freeze_back
@@ -1126,6 +1260,11 @@ msgstr "Alerte de sécurité posée le"
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_reminder__kind__alert_renewal
 msgid "Security alert renewal"
 msgstr "Renouvellement de l'alerte de sécurité"
+
+#. module: bf_credit_identity
+#: model:ir.model.fields,field_description:bf_credit_identity.field_bf_credit_reminder__breach_date
+msgid "Series start"
+msgstr "Début de la série"
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -1249,9 +1388,37 @@ msgstr ""
 
 #. module: bf_credit_identity
 #. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid ""
+"This date already has its series: nothing was added. Done or deleted "
+"reminders are not created again."
+msgstr ""
+"Cette date a déjà sa série : rien n'a été ajouté. Les rappels faits ou "
+"supprimés ne sont pas recréés."
+
+#. module: bf_credit_identity
+#. odoo-python
 #: code:addons/bf_credit_identity/models/credit_reminder.py:0
 msgid "This reminder has no official page."
 msgstr "Ce rappel n'a pas de page officielle."
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/models/credit_reminder.py:0
+msgid "This reminder is private: you cannot mention or notify anyone on it."
+msgstr "Ce rappel est privé : on ne peut y mentionner ni aviser personne."
+
+#. module: bf_credit_identity
+#: model_terms:ir.ui.view,arch_db:bf_credit_identity.view_credit_breach_form
+msgid ""
+"This schedule is the app's choice: none of the guide's sources sets one. What to do\n"
+"                    first is in the guide, section 7, \"If it happens\". Running this again for the same\n"
+"                    date adds nothing; another date plans a new series."
+msgstr ""
+"Ce calendrier est un choix de l'appli : aucune des sources du guide n'en "
+"fixe un. Ce qu'il faut faire d'abord est dans le guide, section 7, « Si ça "
+"arrive ». Relancer pour la même date n'ajoute rien ; une autre date planifie"
+" une nouvelle série."
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -1319,12 +1486,15 @@ msgstr "Unité"
 msgid ""
 "Use <strong>Set up my reminders</strong> to create a starter calendar: your Equifax\n"
 "                and TransUnion credit reports, your monthly statements and a yearly review of your\n"
-"                protective measures. Only you can see your reminders."
+"                protective measures. If your data leaks or you lose your wallet, <strong>After a breach</strong>\n"
+"                plans extra checks of both credit reports. Only you can see your reminders."
 msgstr ""
 "Utilisez <strong>Configurer mes rappels</strong> pour créer un calendrier de"
 " départ : vos dossiers de crédit Equifax et TransUnion, vos relevés mensuels"
-" et une revue annuelle de vos mesures de protection. Vos rappels ne sont "
-"visibles que par vous."
+" et une revue annuelle de vos mesures de protection. Si vos données fuient "
+"ou si vous perdez votre portefeuille, <strong>Après une fuite</strong> "
+"planifie des vérifications supplémentaires de vos deux dossiers de crédit. "
+"Vos rappels ne sont visibles que par vous."
 
 #. module: bf_credit_identity
 #: model:ir.model.fields.selection,name:bf_credit_identity.selection__bf_credit_reminder__interval_unit__week
@@ -1455,9 +1625,27 @@ msgstr ""
 " dans le secteur privé, art. 79.1) ;"
 
 #. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "one month later"
+msgstr "à un mois"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "right away"
+msgstr "tout de suite"
+
+#. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
 msgid "statements or mail that stop arriving;"
 msgstr "des relevés ou du courrier qui n'arrivent plus ;"
+
+#. module: bf_credit_identity
+#. odoo-python
+#: code:addons/bf_credit_identity/wizard/credit_breach_wizard.py:0
+msgid "three months later"
+msgstr "à trois mois"
 
 #. module: bf_credit_identity
 #: model_terms:ir.ui.view,arch_db:bf_credit_identity.credit_guide_content
@@ -1472,60 +1660,3 @@ msgid ""
 msgstr ""
 "qui a consulté votre dossier, et chez TransUnion les demandes bloquées "
 "pendant un gel : communiquez avec toute société inconnue."
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/mail_followers.py:0
-msgid "A credit reminder has no followers."
-msgstr "Personne ne suit un rappel de crédit."
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/ir_attachment.py:0
-msgid "A file can only be attached to your own credit reminder."
-msgstr "Un fichier ne se joint qu'à un rappel de crédit qui vous appartient."
-
-#. module: bf_credit_identity
-#: model:ir.model,name:bf_credit_identity.model_mail_activity
-msgid "Activity"
-msgstr "Activité"
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/mail_activity.py:0
-msgid "An activity can only be placed on your own credit reminder."
-msgstr "Une activité ne se pose que sur un rappel de crédit qui vous appartient."
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/mail_activity.py:0
-msgid "An activity on a credit reminder stays with the reminder's owner."
-msgstr "L'activité d'un rappel de crédit reste à la personne qui possède le rappel."
-
-#. module: bf_credit_identity
-#: model:ir.model,name:bf_credit_identity.model_ir_attachment
-msgid "Attachment"
-msgstr "Pièce jointe"
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/credit_reminder.py:0
-msgid "Credit & Identity: reminders"
-msgstr "Crédit et identité : rappels"
-
-#. module: bf_credit_identity
-#: model:ir.model,name:bf_credit_identity.model_mail_followers
-msgid "Document Followers"
-msgstr "Abonnements au document"
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/credit_reminder.py:0
-msgid "Private reminder"
-msgstr "Rappel privé"
-
-#. module: bf_credit_identity
-#. odoo-python
-#: code:addons/bf_credit_identity/models/credit_reminder.py:0
-msgid "This reminder is private: you cannot mention or notify anyone on it."
-msgstr "Ce rappel est privé : on ne peut y mentionner ni aviser personne."

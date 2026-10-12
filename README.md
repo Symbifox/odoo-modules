@@ -146,7 +146,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.1 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.1.1 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
-| `bf_credit_identity` | Credit & Identity | 18.0.1.0.1 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
+| `bf_credit_identity` | Credit & Identity | 18.0.1.1.0 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
 | `bf_cx` | Expérience client | 18.0.1.13.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
