@@ -1,3 +1,4 @@
+import re
 from datetime import date, timedelta
 
 from odoo import fields
@@ -63,6 +64,17 @@ class TestSchoolHomework(HttpCase):
         self.assertIn("Lire le chapitre 4", page)
         self.assertIn(".ics", page)
         self.assertNotIn("Autre groupe", page)
+
+    def test_portal_badge_is_readable_on_the_website_theme(self):
+        """🔴 `text-bg-light` sur un badge du site : encre pâle sur fond pâle."""
+        self._hw()
+        self.authenticate("school_hw_p", "school_hw_p")
+        page = self.url_open("/my/school/homework").text
+        # Les badges de la page elle-même : la mention « Powered by » d'Odoo,
+        # dans le pied, en porte un `text-bg-light` qui n'est pas le nôtre.
+        badges = re.findall(r'<span[^>]*class="(badge[^"]*)"', page)
+        self.assertTrue(badges, "aucun badge sur la page")
+        self.assertFalse([b for b in badges if "text-bg-light" in b], badges)
 
     def test_ical_feed(self):
         self._hw(name="Projet, étape 1; brouillon",

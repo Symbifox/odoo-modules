@@ -206,6 +206,15 @@ draft until the minutes are written and transmitted. The time of the meeting
 prints in the company's time zone first, then the user's, so that two directors
 in two time zones never print two contradictory minutes.
 
+## Display of votes
+
+Votes keep four decimals in the database: quote-parts are rarely round, and
+the majority comparisons are made at that precision. The screens print only the
+decimals that carry something: "585", "12.3456", never "585.0000". Odoo's float
+widget pads every value back to the field's precision, so the module ships its
+own display widget, `bf_property_votes`, used on every vote field of its views
+and by the list totals.
+
 ## Security
 
 - Property users read meetings, attendance, resolutions, votes, ballots and
@@ -227,7 +236,11 @@ three majorities, quorum and reconvened meeting, the syndicate-held fraction,
 the presumed mandate, the caps, the convocation window, remote participation
 and the secret ballot (no path from person to choice in the schema, urn as an
 exact permutation of the register, exposure count), board meetings, and the
-reader's language of computed sentences (139 tests).
+reader's language of computed sentences, and that every vote field shown in
+a view of the module wears the vote widget. A browser test (hoot,
+`static/tests/votes_field.test.js`) checks the vote formatter itself: whole
+votes, four decimals at most, the sign, thousands, a comma language and an
+empty field. It runs only where the tests have Chrome; elsewhere Odoo skips it.
 
 ⚠️ A counter-intuitive result is not a bug. Under arts. 1091 and 1099 CCQ, in
 a co-ownership of fewer than five fractions, the majority holder alone with one

@@ -40,7 +40,7 @@
         </t>
         <t t-else="">
             <span class="badge text-bg-success">Returned</span>
-            <span t-if="homework.points_total" class="badge text-bg-light border ms-1">
+            <span t-if="homework.points_total" class="badge text-bg-secondary ms-1">
                 <t t-out="'%g' % submission.grade"/> / <t t-out="'%g' % homework.points_total"/>
             </span>
         </t>
@@ -67,7 +67,7 @@
                         </div>
                         <div>
                             <t t-call="bf_school_work.school_work_state_badge"/>
-                            <span class="badge text-bg-light border ms-1">Due <span t-field="homework.date_due"/></span>
+                            <span class="badge text-bg-secondary ms-1">Due <span t-field="homework.date_due"/></span>
                         </div>
                     </div>
                 </a>

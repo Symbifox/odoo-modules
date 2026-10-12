@@ -43,6 +43,18 @@
             </xpath>
         </template>
 
+        <!-- Fil d'Ariane : ces pages le placent dans la barre de recherche. Sans
+             ces entrées, le portail d'Odoo n'y affiche que l'icône d'accueil, et
+             la page n'a plus de titre du tout. -->
+        <template id="portal_breadcrumbs_rental" name="Locatif : fil d'Ariane"
+                  inherit_id="portal.portal_breadcrumbs" priority="40">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'rental_leases'" class="breadcrumb-item active">Mon bail</li>
+                <li t-if="page_name == 'rental_notices'" class="breadcrumb-item active">Les avis reçus</li>
+                <li t-if="page_name == 'rental_rent'" class="breadcrumb-item active">Mon loyer</li>
+            </xpath>
+        </template>
+
         <!-- ══════════════════ Mon bail ══════════════════ -->
         <template id="portal_rental_leases" name="Mon bail">
             <t t-call="portal.portal_layout">
@@ -252,7 +264,7 @@
                             <td>
                                 <t t-if="notice.silence_effect == 'accept'">Acceptation</t>
                                 <t t-elif="notice.silence_effect == 'refuse'">Refus</t>
-                                <t t-else=""><span class="text-muted">cet avis informe</span></t>
+                                <t t-else=""><span class="text-muted">Rien : l'avis informe seulement</span></t>
                                 <!--
                                     ⚠️ Le champ porte DÉJÀ « art. » : il vaut
                                     « art. 1945 », pas « 1945 ». Le préfixer ici
@@ -388,7 +400,7 @@
                                 <span t-elif="term.state == 'after_end'" class="badge text-bg-secondary">
                                     Après la fin du bail
                                 </span>
-                                <span t-else="" class="badge text-bg-light">À venir</span>
+                                <span t-else="" class="badge text-bg-secondary">À venir</span>
                             </td>
                         </tr>
                     </tbody>

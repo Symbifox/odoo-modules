@@ -12,9 +12,9 @@
                 <field name="name"/>
                 <field name="majority_type"/>
                 <field name="ballot_mode"/>
-                <field name="votes_for"/>
-                <field name="votes_against"/>
-                <field name="votes_abstain"/>
+                <field name="votes_for" widget="bf_property_votes"/>
+                <field name="votes_against" widget="bf_property_votes"/>
+                <field name="votes_abstain" widget="bf_property_votes"/>
                 <field name="result" widget="badge"/>
                 <field name="organisation_id" optional="hide"/>
             </list>
@@ -90,7 +90,7 @@
                                    invisible="ballot_mode != 'secret'"/>
                             <field name="ballot_cast_count"
                                    invisible="ballot_mode != 'secret'"/>
-                            <field name="votes_not_cast"
+                            <field name="votes_not_cast" widget="bf_property_votes"
                                    invisible="ballot_mode != 'secret'"/>
                             <field name="ballot_box_state"
                                    invisible="ballot_mode != 'secret'"/>
@@ -98,17 +98,17 @@
                         <group string="Décompte">
                             <label for="votes_for"/>
                             <div>
-                                <field name="votes_for" class="oe_inline"/> voix /
+                                <field name="votes_for" widget="bf_property_votes" class="oe_inline"/> voix /
                                 <field name="owners_for" class="oe_inline"/> copropriétaire(s)
                             </div>
                             <label for="votes_against"/>
                             <div>
-                                <field name="votes_against" class="oe_inline"/> voix /
+                                <field name="votes_against" widget="bf_property_votes" class="oe_inline"/> voix /
                                 <field name="owners_against" class="oe_inline"/> copropriétaire(s)
                             </div>
                             <label for="votes_abstain"/>
                             <div>
-                                <field name="votes_abstain" class="oe_inline"/> voix /
+                                <field name="votes_abstain" widget="bf_property_votes" class="oe_inline"/> voix /
                                 <field name="owners_abstain" class="oe_inline"/> copropriétaire(s)
                             </div>
                         </group>
@@ -136,7 +136,7 @@
                                 <list editable="bottom">
                                     <field name="partner_id" readonly="1"/>
                                     <field name="unit_id" readonly="1"/>
-                                    <field name="votes" readonly="1" sum="Voix"/>
+                                    <field name="votes" widget="bf_property_votes" readonly="1" sum="Voix"/>
                                     <field name="ballot_issued" readonly="1"
                                            optional="hide"/>
                                     <field name="choice"
@@ -151,7 +151,7 @@
                             </div>
                             <field name="secret_ballot_ids" readonly="1">
                                 <list decoration-muted="not is_cast">
-                                    <field name="votes" sum="Voix"/>
+                                    <field name="votes" widget="bf_property_votes" sum="Voix"/>
                                     <field name="choice"/>
                                     <field name="is_cast"/>
                                     <field name="exposed_by_weight" optional="show"/>

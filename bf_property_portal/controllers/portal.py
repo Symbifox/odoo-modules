@@ -26,6 +26,7 @@ from odoo.exceptions import AccessError, MissingError, UserError, ValidationErro
 from odoo.http import request
 
 from odoo.addons.bf_property_core.models.mail_template import bf_mail_layout
+from odoo.addons.bf_property_core.tools import format_decimal
 
 
 class PropertyPortal(CustomerPortal):
@@ -77,6 +78,9 @@ class PropertyPortal(CustomerPortal):
                 "owned_units": owned,
                 "occupied_units": occupied,
                 "roles": roles,
+                # La quote-part garde quatre décimales en base ; la page n'imprime
+                # que celles qui portent quelque chose (« 85 », pas « 85,0000 »).
+                "format_quote_part": lambda value: format_decimal(request.env, value),
                 "announcements": request.env["bf.property.announcement"].search(
                     [("is_visible_now", "=", True)], limit=5
                 ),

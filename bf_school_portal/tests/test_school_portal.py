@@ -1,3 +1,4 @@
+import re
 from datetime import date
 
 from odoo.exceptions import AccessError
@@ -43,6 +44,17 @@ class TestSchoolPortal(HttpCase):
         self.assertNotIn("Enfant Bravo", page)
         self.assertIn("Enseignante Essai", page)
         self.assertIn("301", page)
+
+    def test_role_badges_are_readable_on_the_website_theme(self):
+        """🔴 `text-bg-light` sur un badge du site : le thème calcule une encre
+        pâle contre un fond pâle, et les rôles (« Signs », « Pays ») disparaissaient."""
+        self.authenticate("school_parent_a", "school_parent_a")
+        page = self.url_open("/my/school").text
+        # Les badges de la page elle-même : la mention « Powered by » d'Odoo,
+        # dans le pied, en porte un `text-bg-light` qui n'est pas le nôtre.
+        badges = re.findall(r'<span[^>]*class="(badge[^"]*)"', page)
+        self.assertTrue(badges, "aucun badge sur la page")
+        self.assertFalse([b for b in badges if "text-bg-light" in b], badges)
 
     def test_roles_shown_are_this_adults(self):
         self.authenticate("school_parent_b", "school_parent_b")

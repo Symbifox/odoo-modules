@@ -37,6 +37,24 @@
             </xpath>
         </template>
 
+        <!-- Fil d'Ariane : sans ces entrées, le portail d'Odoo n'affiche que
+             l'icône d'accueil, et les pages qui le placent dans la barre de
+             recherche n'ont plus de titre du tout. -->
+        <template id="portal_breadcrumbs_property" name="Copropriété : fil d'Ariane"
+                  inherit_id="portal.portal_breadcrumbs" priority="40">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'property_home'" class="breadcrumb-item active">Ma copropriété</li>
+                <t t-if="page_name in ('property_announcements', 'property_documents', 'property_requests', 'property_bookings', 'property_deliveries')">
+                    <li class="breadcrumb-item"><a href="/my/property">Ma copropriété</a></li>
+                    <li t-if="page_name == 'property_announcements'" class="breadcrumb-item active">Annonces</li>
+                    <li t-if="page_name == 'property_documents'" class="breadcrumb-item active">Documents</li>
+                    <li t-if="page_name == 'property_requests'" class="breadcrumb-item active">Mes demandes d'entretien</li>
+                    <li t-if="page_name == 'property_bookings'" class="breadcrumb-item active">Espaces communs</li>
+                    <li t-if="page_name == 'property_deliveries'" class="breadcrumb-item active">Colis et visiteurs</li>
+                </t>
+            </xpath>
+        </template>
+
         <!-- Accueil « Ma copropriété ». -->
         <template id="portal_property_home" name="Ma copropriété">
             <t t-call="portal.portal_layout">
@@ -89,7 +107,7 @@
                                         <td><span t-field="unit.building_id.name"/></td>
                                         <td class="text-end">
                                             <span t-if="unit in owned_units"
-                                                  t-field="unit.quote_part"/>
+                                                  t-out="format_quote_part(unit.quote_part)"/>
                                         </td>
                                         <td>
                                             <t t-if="unit in owned_units">Copropriétaire</t>
@@ -119,6 +137,24 @@
                     </div>
                 </t>
 
+                <t t-if="announcements">
+                    <h5 class="mt-2">Annonces récentes</h5>
+                    <div t-foreach="announcements" t-as="announcement" class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>
+                                <i t-if="announcement.pinned" class="fa fa-thumb-tack me-2" title="Épinglée"/>
+                                <span t-field="announcement.name"/>
+                            </span>
+                            <small class="text-muted">
+                                <span t-field="announcement.organisation_id.name"/>
+                                <span t-if="announcement.building_id"> · <span t-field="announcement.building_id.name"/></span>
+                                · <span t-field="announcement.date_start"/>
+                            </small>
+                        </div>
+                        <div class="card-body" t-field="announcement.body"/>
+                    </div>
+                </t>
+
                 <div class="d-flex gap-2">
                     <a class="btn btn-secondary" href="/my/property/announcements">Toutes les annonces</a>
                     <a class="btn btn-secondary" href="/my/property/documents">Les documents</a>
@@ -132,6 +168,7 @@
         <!-- Annonces. -->
         <template id="portal_property_announcements" name="Annonces de l'immeuble">
             <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Annonces</t>
                 </t>
@@ -158,6 +195,7 @@
         <!-- Documents. -->
         <template id="portal_property_documents" name="Documents du syndicat">
             <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Documents</t>
                 </t>
@@ -192,7 +230,7 @@
                             <td>
                                 <span t-field="document.name"/>
                                 <span t-if="document.is_register_item"
-                                      class="badge text-bg-light ms-2"
+                                      class="badge text-bg-secondary ms-2"
                                       title="Pièce du registre, article 1070 C.c.Q.">Registre</span>
                             </td>
                             <td><span t-field="document.category"/></td>
@@ -211,6 +249,7 @@
         <!-- Demandes d'entretien. -->
         <template id="portal_property_requests" name="Mes demandes d'entretien">
             <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Mes demandes d'entretien</t>
                 </t>
@@ -309,9 +348,13 @@
                             <span t-if="req.unit_id"> · <span t-field="req.unit_id.name"/></span>
                             · <span t-field="req.cost_bearer"/>
                         </p>
-                        <t t-if="req.resolution">
+                        <!-- La résolution ne se montre qu'une fois la décision rendue : rouverte,
+                             une demande garde son ancien texte (historique du bureau). -->
+                        <t t-if="req.resolution and req.state in ('done', 'refused')">
                             <hr/>
-                            <p class="mb-0"><strong>Ce qui a été fait : </strong>
+                            <p t-if="req.state == 'refused'" class="mb-0"><strong>Motif du refus : </strong>
+                                <span t-field="req.resolution"/></p>
+                            <p t-else="" class="mb-0"><strong>Ce qui a été fait : </strong>
                                 <span t-field="req.resolution"/></p>
                         </t>
                     </div>
@@ -323,6 +366,7 @@
         <!-- Réservation des espaces communs. -->
         <template id="portal_property_bookings" name="Réserver un espace commun">
             <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Espaces communs</t>
                 </t>
@@ -403,7 +447,7 @@
                             </t>
                             <ul t-if="slot['busy']" class="mb-0">
                                 <li t-foreach="slot['busy']" t-as="busy">
-                                    <span t-esc="busy['date_start']"/> à <span t-esc="busy['date_stop']"/>
+                                    <span t-out="busy['date_start']" t-options="{'widget': 'datetime'}"/> à <span t-out="busy['date_stop']" t-options="{'widget': 'datetime'}"/>
                                 </li>
                             </ul>
                         </div>
@@ -448,6 +492,7 @@
         <!-- Colis et visiteurs. -->
         <template id="portal_property_deliveries" name="Colis et visiteurs">
             <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Colis et visiteurs</t>
                 </t>

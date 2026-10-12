@@ -31,7 +31,7 @@
                             <strong t-out="hw.name"/>
                             <small class="text-muted"> · <t t-out="pair[1].name"/> · <t t-out="hw.group_id.name"/></small>
                         </div>
-                        <span class="badge text-bg-light border"><span t-field="hw.kind"/> · <span t-field="hw.date_due"/></span>
+                        <span class="badge text-bg-secondary"><span t-field="hw.kind"/> · <span t-field="hw.date_due"/></span>
                     </div>
                     <div t-if="hw.description" class="mt-1 small" t-out="hw.description"/>
                 </div>

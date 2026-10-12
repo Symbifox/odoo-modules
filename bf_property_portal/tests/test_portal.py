@@ -574,14 +574,19 @@ class TestPropertyPortalPages(HttpCase):
         """
         # ⚠️ Le séparateur décimal dépend de la langue du lecteur : on cherche
         # les deux formes plutôt que de figer celle du banc.
+        # La page n'imprime que les décimales utiles : « 700 », pas « 700,0000 ».
+        cellule = r'<td class="text-end">\s*<span>\s*%s\s*</span>\s*</td>'
         self.authenticate("page_owner", "page_owner_pwd")
         owner_page = self.url_open("/my/property").text
-        self.assertTrue("700.00" in owner_page or "700,00" in owner_page,
-                        "le copropriétaire ne voit plus sa quote-part")
+        self.assertRegex(owner_page, cellule % "700",
+                         "le copropriétaire ne voit plus sa quote-part")
+        self.assertNotIn("700,0000", owner_page)
+        self.assertNotIn("700.0000", owner_page)
         self.authenticate("page_tenant", "page_tenant_pwd")
         tenant_page = self.url_open("/my/property").text
-        self.assertNotIn("300.00", tenant_page)
-        self.assertNotIn("300,00", tenant_page)
+        self.assertNotRegex(tenant_page, cellule % "300")
+        self.assertNotIn("300,0", tenant_page)
+        self.assertNotIn("300.0", tenant_page)
 
     def test_the_occupant_never_reads_the_owners_arrears(self):
         """🔴 Ce qu'un occupant lisait, et que ceci retient.

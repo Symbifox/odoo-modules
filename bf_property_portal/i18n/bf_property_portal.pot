@@ -63,6 +63,11 @@ msgid "<strong>Ce qui a été fait : </strong>"
 msgstr ""
 
 #. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "<strong>Motif du refus : </strong>"
+msgstr ""
+
+#. module: bf_property_portal
 #: model:mail.template,body_html:bf_property_portal.mail_template_staff_alert
 msgid ""
 "<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
@@ -194,8 +199,14 @@ msgstr ""
 #: model:ir.actions.act_window,name:bf_property_portal.action_property_announcement
 #: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__announcement_ids
 #: model:ir.ui.menu,name:bf_property_portal.menu_property_announcement
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_announcements
 msgid "Annonces"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Annonces récentes"
 msgstr ""
 
 #. module: bf_property_portal
@@ -543,6 +554,7 @@ msgid "Colis"
 msgstr ""
 
 #. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
@@ -830,6 +842,7 @@ msgstr ""
 
 #. module: bf_property_portal
 #: model:ir.ui.menu,name:bf_property_portal.menu_property_document
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
 msgid "Documents"
 msgstr ""
@@ -998,6 +1011,7 @@ msgid "Espace"
 msgstr ""
 
 #. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
 msgid "Espaces communs"
 msgstr ""
@@ -1408,12 +1422,14 @@ msgid "Local à colis, bureau, casier."
 msgstr ""
 
 #. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
 msgid "Ma copropriété"
 msgstr ""
 
 #. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_breadcrumbs_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
@@ -2636,6 +2652,7 @@ msgstr ""
 #. module: bf_property_portal
 #: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__pinned
 #: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_announcements
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
 msgid "Épinglée"
 msgstr ""
 

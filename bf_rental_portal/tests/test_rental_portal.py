@@ -952,7 +952,8 @@ class TestRentalPortalBranches(HttpCase, RentalPortalCommon):
         self.assertIn("Après la fin du bail", text)
         # Le montant paraît une fois, dû au bail ; la colonne « Reste » ne le
         # réclame pas.
-        self.assertEqual(text.count("987,65"), 1)
+        # ⚠️ Le séparateur décimal suit la langue de la base : les deux formes.
+        self.assertEqual(text.count("987,65") + text.count("987.65"), 1)
         self.assertNotIn("En retard", text)
         self.assertNotIn("dû sur les termes déjà exigibles", text)
 

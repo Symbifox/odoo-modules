@@ -111,12 +111,26 @@ class TestSchoolWork(HttpCase):
             self._hw(submission_mode="survey")
 
     def test_late_is_the_end_of_the_due_day_at_school(self):
-        homework = self._hw(date_due=date(2026, 10, 7))
+        # La date donnée suit la date due : sans elle, le défaut (aujourd'hui)
+        # tombait après le 7 octobre 2026 et l'essai cassait dès le lendemain.
+        homework = self._hw(date_assigned=date(2026, 10, 1), date_due=date(2026, 10, 7))
         self.school.company_id.partner_id.tz = "America/Toronto"
         # 23:59 on the due day in Québec is 03:59 UTC the next day: still on time.
         self.assertEqual(homework._school_due_moment(), datetime(2026, 10, 8, 4, 0))
 
     # ---------------------------------------------------------------- portal
+
+    def test_portal_badges_are_readable_on_the_website_theme(self):
+        """🔴 `text-bg-light` sur un badge du site : encre pâle sur fond pâle
+        (« Due … », points du travail)."""
+        self._hw()
+        self.authenticate("school_wk_p", "school_wk_p")
+        page = self.url_open("/my/school/work").text
+        # Les badges de la page elle-même : la mention « Powered by » d'Odoo,
+        # dans le pied, en porte un `text-bg-light` qui n'est pas le nôtre.
+        badges = re.findall(r'<span[^>]*class="(badge[^"]*)"', page)
+        self.assertTrue(badges, "aucun badge sur la page")
+        self.assertFalse([b for b in badges if "text-bg-light" in b], badges)
 
     def test_parent_hands_in_and_replaces(self):
         homework = self._hw()

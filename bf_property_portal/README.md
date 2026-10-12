@@ -401,7 +401,7 @@ the company's brand colour when the company carries one.
 
 | Route | What it shows |
 |---|---|
-| `/my/property` | The person's fractions per syndicate, the capacity in which they hold each, and how to reach the syndicate |
+| `/my/property` | The person's fractions per syndicate, the capacity in which they hold each, how to reach the syndicate, up to five announcements in window (pinned ones first, then the most recent), and the quote-part with only the decimals that carry something ("85", not "85.0000") |
 | `/my/property/announcements` | Announcements published, in window, and addressed to them |
 | `/my/property/documents` | Documents whose audience covers them, with the register notice when one applies |
 | `/my/property/document/<id>` | The file itself, after the record rules have answered |
@@ -413,6 +413,11 @@ the company's brand colour when the company carries one.
 | `/my/property/deliveries` | Their parcels, and the visitors they announce |
 | `/my/property/visitors/new` | Announcing one (POST) |
 | `/my/property/visitors/<id>/cancel` | Cancelling their own (POST) |
+
+Every page names itself in the portal breadcrumb, under "My co-ownership".
+The slots already taken in a common space are printed in the reader's time
+zone, like their own bookings below them, and a refused request shows its
+reason under "Reason for refusal", not under "What was done".
 
 ## Security
 
@@ -450,7 +455,10 @@ of a filing and the email preference; the decision reaching the requester; the
 invitation (the syndicate's, re-sent rather than duplicated, never converting
 an internal account, refused to a resident, with a link that opens the
 password page, followed over HTTP) and the syndicate's welcome after signup;
-and the branded layout on every message.
+and the branded layout on every message. What the pages show: the slots taken
+in the reader's time zone, every page named in the breadcrumb, the current
+announcements on the home page, a refusal labelled as one, and a register badge
+that stays readable on the website theme.
 
 ## Licence
 

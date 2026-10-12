@@ -15,7 +15,7 @@
                        decoration-success="convocation_state == 'ok'"
                        decoration-danger="convocation_state in ('late', 'early')"
                        decoration-warning="convocation_state == 'none'"/>
-                <field name="votes_present" optional="show"/>
+                <field name="votes_present" widget="bf_property_votes" optional="show"/>
                 <field name="quorum_reached" widget="boolean_toggle" readonly="1"/>
                 <field name="resolution_count" string="Résolutions"/>
                 <field name="state" widget="badge"/>
@@ -67,8 +67,8 @@
                     </div>
                     <div class="alert alert-warning" role="alert"
                          invisible="quorum_reached or state == 'draft'">
-                        Quorum non atteint : <field name="votes_present" readonly="1" nolabel="1" class="oe_inline"/>
-                        voix présentes ou représentées pour <field name="quorum_required" readonly="1" nolabel="1" class="oe_inline"/>
+                        Quorum non atteint : <field name="votes_present" widget="bf_property_votes" readonly="1" nolabel="1" class="oe_inline"/>
+                        voix présentes ou représentées pour <field name="quorum_required" widget="bf_property_votes" readonly="1" nolabel="1" class="oe_inline"/>
                         requises. <field name="quorum_rule" readonly="1" nolabel="1" class="oe_inline"/>
                     </div>
 
@@ -102,13 +102,13 @@
                             <field name="previous_assembly_id" invisible="not is_reconvened"/>
                         </group>
                         <group string="Quorum">
-                            <field name="total_votes"/>
-                            <field name="syndicat_held_votes"
+                            <field name="total_votes" widget="bf_property_votes"/>
+                            <field name="syndicat_held_votes" widget="bf_property_votes"
                                    invisible="not syndicat_held_votes"/>
                             <field name="total_owners"/>
-                            <field name="votes_present"/>
+                            <field name="votes_present" widget="bf_property_votes"/>
                             <field name="owners_present"/>
-                            <field name="quorum_required"/>
+                            <field name="quorum_required" widget="bf_property_votes"/>
                             <field name="quorum_reached"/>
                             <field name="quorum_rule"/>
                         </group>
@@ -122,7 +122,7 @@
                                     <field name="unit_id"/>
                                     <field name="partner_id"/>
                                     <field name="ownership_share" optional="hide"/>
-                                    <field name="base_votes"/>
+                                    <field name="base_votes" widget="bf_property_votes"/>
                                     <field name="status"/>
                                     <field name="participation_mode"
                                            readonly="status == 'absent'"/>
@@ -131,17 +131,17 @@
                                            readonly="status != 'represented'"/>
                                     <field name="mandate_refused" optional="hide"
                                            readonly="status != 'absent'"/>
-                                    <field name="indivision_votes" optional="hide"/>
+                                    <field name="indivision_votes" widget="bf_property_votes" optional="hide"/>
                                     <field name="syndicat_held" optional="hide"
                                            readonly="1"/>
                                     <field name="voting_deprived" optional="show"
                                            readonly="syndicat_held"/>
-                                    <field name="vote_reduction" optional="hide"/>
-                                    <field name="cap_reduction" optional="hide"/>
+                                    <field name="vote_reduction" widget="bf_property_votes" optional="hide"/>
+                                    <field name="cap_reduction" widget="bf_property_votes" optional="hide"/>
                                     <field name="cap_rule" optional="hide"/>
-                                    <field name="withheld_votes" optional="hide"
+                                    <field name="withheld_votes" widget="bf_property_votes" optional="hide"
                                            sum="Voix retranchées"/>
-                                    <field name="votes" sum="Voix retenues"/>
+                                    <field name="votes" widget="bf_property_votes" sum="Voix retenues"/>
                                     <field name="note" optional="hide"/>
                                 </list>
                             </field>
@@ -155,9 +155,9 @@
                                     <field name="name"/>
                                     <field name="majority_type"/>
                                     <field name="ballot_mode"/>
-                                    <field name="votes_for"/>
-                                    <field name="votes_against"/>
-                                    <field name="votes_abstain"/>
+                                    <field name="votes_for" widget="bf_property_votes"/>
+                                    <field name="votes_against" widget="bf_property_votes"/>
+                                    <field name="votes_abstain" widget="bf_property_votes"/>
                                     <field name="result" widget="badge"/>
                                 </list>
                             </field>

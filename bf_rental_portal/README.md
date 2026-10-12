@@ -159,6 +159,10 @@ announcements, common-space bookings and the register of art. 1070 CCQ on them
 would install obligations that are not theirs. The two portals coexist when both
 are installed; neither needs the other.
 
+**Every page names itself in the breadcrumb** ("My lease", "Notices received",
+"My rent"). The pages put the breadcrumb in the search bar, and without these
+entries Odoo showed only the home icon there, leaving the page without a title.
+
 ## Security
 
 - **Portal users**: read only on leases, notices, rent terms and payments,

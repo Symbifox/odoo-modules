@@ -59,8 +59,8 @@ msgstr ""
 
 #. module: bf_rental_portal
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
-msgid "<span class=\"text-muted\">cet avis informe</span>"
-msgstr "<span class=\"text-muted\">this notice informs</span>"
+msgid "<span class=\"text-muted\">Rien : l'avis informe seulement</span>"
+msgstr "<span class=\"text-muted\">Nothing: the notice only informs</span>"
 
 #. module: bf_rental_portal
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
@@ -349,6 +349,7 @@ msgid "Le silence vaut"
 msgstr "Silence means"
 
 #. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_breadcrumbs_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
@@ -377,6 +378,7 @@ msgid "Loyer"
 msgstr "Rent"
 
 #. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_breadcrumbs_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
@@ -385,6 +387,7 @@ msgid "Mon bail"
 msgstr "My lease"
 
 #. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_breadcrumbs_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
 #: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
