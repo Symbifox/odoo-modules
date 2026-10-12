@@ -293,8 +293,10 @@ class TestAppointmentPoll(TransactionCase):
             "participant_id": self.required_participant.id,
             "slot_id": slots[1].id, "answer": "yes"})
         self.poll.state = "closed"
+        # L'aperçu se lit dans la langue de l'usager : l'essai lit le français, il le demande.
+        self.env["res.lang"]._activate_lang("fr_CA")
         assistant = self.env["appointment.poll.schedule.wizard"].with_context(
-            default_poll_id=self.poll.id).create({"poll_id": self.poll.id})
+            default_poll_id=self.poll.id, lang="fr_CA").create({"poll_id": self.poll.id})
         self.assertEqual(assistant.slot_id, slots[1])
         # ⚠️ `create` remplit le nom depuis la partie locale de l'adresse quand
         # il manque : c'est « obligatoire » qui s'affiche, pas l'adresse.
@@ -740,8 +742,9 @@ class TestAppointmentPoll(TransactionCase):
         Vote.create({"participant_id": self.optional_participant.id,
                      "slot_id": creneau.id, "answer": "ifneedbe"})
         creneau.invalidate_recordset(["vote_summary"])
+        self.env["res.lang"]._activate_lang("fr_CA")
         self.assertEqual(
-            creneau.vote_summary,
+            creneau.with_context(lang="fr_CA").vote_summary,
             "Oui : Isabelle* · Si nécessaire : Mathieu",
             "l'ordre encode la lecture : les oui d'abord, les non en dernier",
         )
@@ -1780,7 +1783,11 @@ class TestPollCourrielDesAutres(HttpCase, TestAppointmentPoll):
             courriel = self.env["mail.mail"].sudo().search([("id", "not in", avant)])
         self.assertEqual(len(courriel), 1)
         self.assertEqual(courriel.body_html.count("box-shadow:0 4px 24px"), 1, "une carte, la commune")
-        self.assertIn("transmis par", courriel.body_html, "la mention du pied reste dans le contenu")
+        # La mention du pied, dans la langue où le courriel est rendu (celle du destinataire,
+        # sinon de l'organisateur) : française sur la base de BF, anglaise sur une base neuve.
+        self.assertTrue(
+            "transmis par" in courriel.body_html or "sent to you by" in courriel.body_html,
+            "la mention du pied reste dans le contenu")
         self.assertNotIn("border-radius:12px 12px 0 0", courriel.body_html)
 
     def test_un_participant_prend_la_societe_du_sondage(self):

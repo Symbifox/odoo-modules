@@ -2,7 +2,10 @@
 {
     "name": "Babillard : sondage de disponibilités",
     "summary": "Annoncer au fil qu'un sondage de dates cherche des réponses",
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1: l'état du sondage cité dans le refus de publier se lit dans
+    #   la langue de qui publie ; bf_appointment_poll 18.0.1.17.0 a passé sa
+    #   source en anglais, et le libellé brut de la sélection était anglais.
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

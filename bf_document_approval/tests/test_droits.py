@@ -22,18 +22,21 @@ class TestDroitsApprobation(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Les messages du fil sont écrits dans la langue de qui agit : ces essais lisent le
+        # français, ils le demandent (la source est anglaise ; une base neuve n'a pas fr_CA).
+        cls.env["res.lang"]._activate_lang("fr_CA")
         cls.responsable = new_test_user(
-            cls.env, "resp.essai", groups=USAGER, name="Responsable")
+            cls.env, "resp.essai", groups=USAGER, name="Responsable", lang="fr_CA")
         cls.tremblay = new_test_user(
-            cls.env, "tremblay.essai", groups=USAGER, name="M. Tremblay")
+            cls.env, "tremblay.essai", groups=USAGER, name="M. Tremblay", lang="fr_CA")
         cls.couture = new_test_user(
-            cls.env, "couture.essai", groups=USAGER, name="Mme Couture")
+            cls.env, "couture.essai", groups=USAGER, name="Mme Couture", lang="fr_CA")
         cls.intrus = new_test_user(
-            cls.env, "intrus.essai", groups=USAGER, name="Intrus")
+            cls.env, "intrus.essai", groups=USAGER, name="Intrus", lang="fr_CA")
         cls.gestionnaire = new_test_user(
-            cls.env, "gest.essai", groups=GESTION, name="Gestionnaire")
+            cls.env, "gest.essai", groups=GESTION, name="Gestionnaire", lang="fr_CA")
         cls.etranger = new_test_user(
-            cls.env, "etranger.essai", groups=USAGER, name="Étranger")
+            cls.env, "etranger.essai", groups=USAGER, name="Étranger", lang="fr_CA")
         cls.projet = cls.env["project.project"].create(
             {"name": "Essai des droits"})
         # Tous suivent le projet, sauf l'étranger : c'est la règle d'accès

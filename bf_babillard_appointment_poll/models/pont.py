@@ -20,7 +20,10 @@ class AppointmentPoll(models.Model):
         if self.state != "open":
             raise UserError(_(
                 "Seul un sondage en cours s'annonce : celui-ci est « %(etat)s ».",
-                etat=dict(self._fields["state"].selection).get(self.state, self.state)))
+                # Le libellé dans la langue de qui publie : `selection` rend celui de la
+                # source du sondage, anglaise depuis bf_appointment_poll 18.0.1.17.0.
+                etat=dict(self._fields["state"]._description_selection(self.env)).get(
+                    self.state, self.state)))
 
         langue = self.env["bf.babillard.post"]._langue_de_la_maison()
         moi = self.with_context(lang=langue)

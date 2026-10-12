@@ -8,17 +8,16 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
                 <notebook>
-                    <page string="Approbation" name="approbation">
+                    <page string="Approval" name="approbation">
                         <div class="alert alert-warning" role="alert"
                              invisible="approbation_attendue_count == 0">
                             <field name="approbation_attendue_count"
                                    class="oe_inline" readonly="1"/>
-                            avis requis manquent : cette version ne peut être ni
-                            approuvée ni publiée.
+                            required decision(s) missing: this version can be neither approved nor published.
                         </div>
                         <div class="alert alert-danger" role="alert"
                              invisible="not approbation_refusee">
-                            Cette version a été refusée.
+                            This version has been rejected.
                         </div>
                         <field name="approbation_complete" invisible="1"/>
                         <field name="approbateurs_modifiables" invisible="1"/>
@@ -45,16 +44,16 @@
                                        readonly="not est_mon_avis"/>
                                 <field name="date_avis" readonly="1"/>
                                 <button name="action_approuver" type="object"
-                                        icon="fa-check" title="Approuver"
+                                        icon="fa-check" title="Approve"
                                         invisible="avis == 'approuve' or not est_mon_avis"/>
                                 <button name="action_refuser" type="object"
-                                        icon="fa-times" title="Refuser"
+                                        icon="fa-times" title="Reject"
                                         invisible="avis == 'refuse' or not est_mon_avis"/>
                             </list>
                         </field>
                         <button name="action_diffuser_aux_informes"
                                 type="object" class="btn-primary mt-3"
-                                string="Diffuser aux parties prenantes informées"
+                                string="Distribute to informed stakeholders"
                                 invisible="not approbation_complete"/>
                     </page>
                 </notebook>

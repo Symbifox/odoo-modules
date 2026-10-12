@@ -25,125 +25,125 @@ _POOL_MAX = 60
 
 class AppointmentPoll(models.Model):
     _name = "appointment.poll"
-    _description = "Sondage de disponibilités"
+    _description = "Availability poll"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
 
     name = fields.Char(
-        string="Objet",
+        string="Subject",
         required=True,
         tracking=True,
-        help="Ce que les participants verront en titre du sondage.",
+        help="What participants will see as the poll title.",
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Organisateur",
+        string="Organizer",
         required=True,
         default=lambda self: self.env.user,
         tracking=True,
-        help="La personne dont le calendrier fournit les créneaux candidats "
-             "et qui tranchera à la clôture.",
+        help="The person whose calendar provides the candidate slots and "
+             "who will decide at closing.",
     )
     type_id = fields.Many2one(
         "resource.booking.type",
-        string="Type de rendez-vous",
+        string="Appointment type",
         required=True,
         tracking=True,
-        help="Détermine la durée, le calendrier de disponibilité et tout ce "
-             "qui suivra à la clôture : salle visio, rappels, gabarits.",
+        help="Sets the duration, the availability calendar and everything "
+             "that follows at closing: video room, reminders, templates.",
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("open", "En cours"),
-            ("closed", "Clos"),
-            ("scheduled", "Rencontre fixée"),
-            ("cancelled", "Annulé"),
+            ("draft", "Draft"),
+            ("open", "In progress"),
+            ("closed", "Closed"),
+            ("scheduled", "Meeting scheduled"),
+            ("cancelled", "Cancelled"),
         ],
-        string="État",
+        string="State",
         default="draft",
         required=True,
         tracking=True,
     )
     description = fields.Html(
-        string="Message aux participants",
+        string="Message to participants",
         sanitize=True,
-        help="Affiché en tête de la page de vote.",
+        help="Shown at the top of the voting page.",
     )
 
     slot_ids = fields.One2many(
-        "appointment.poll.slot", "poll_id", string="Créneaux proposés"
+        "appointment.poll.slot", "poll_id", string="Proposed slots"
     )
     participant_ids = fields.One2many(
         "appointment.poll.participant", "poll_id", string="Participants"
     )
 
     close_date = fields.Datetime(
-        string="Date limite de réponse",
+        string="Response deadline",
         tracking=True,
-        help="Passé ce moment, le cron clôt le sondage et prévient "
-             "l'organisateur. Vide = pas de clôture automatique.",
+        help="After this time, the scheduled job closes the poll and "
+             "notifies the organizer. Empty = no automatic closing.",
     )
     max_slots = fields.Integer(
-        string="Nombre maximal de créneaux",
+        string="Maximum number of slots",
         default=8,
-        help="Plafond du nombre de plages soumises au vote. Au-delà d'une "
-             "dizaine, le taux de réponse s'effondre.",
+        help="Cap on the number of slots put to the vote. Beyond about "
+             "ten, the response rate collapses.",
     )
     slot_source = fields.Selection(
         [
-            ("organizer", "Je propose les créneaux"),
-            ("seeder", "Un invité amorce la grille"),
-            ("open", "Chacun propose ses plages"),
+            ("organizer", "I propose the slots"),
+            ("seeder", "A guest seeds the grid"),
+            ("open", "Everyone proposes their slots"),
         ],
-        string="Qui propose les créneaux",
+        string="Who proposes the slots",
         default="organizer",
         required=True,
         tracking=True,
-        help="« Je propose » : vous choisissez les plages, tout le monde y "
-             "répond.\n"
-             "« Un invité amorce » : la première grille vient d'un invité, les "
-             "autres y répondent ensuite. Utile quand quelqu'un mène le "
-             "dossier et connaît mieux que vous les contraintes du groupe.\n"
-             "« Chacun propose » : chaque personne coche ce qui lui convient "
-             "dans vos disponibilités, et le recoupement se forme tout seul. "
-             "C'est le mode qui vous évite d'avoir à deviner les plages.",
+        help="\"I propose\": you choose the slots, and everyone answers "
+             "them.\n\"A guest seeds\": the first grid comes from a "
+             "guest, and the others answer it afterwards. Useful when "
+             "someone leads the matter and knows the group's constraints "
+             "better than you do.\n\"Everyone proposes\": each person "
+             "checks what suits them within your availability, and the "
+             "overlap forms on its own. This is the mode that spares you "
+             "from guessing the slots.",
     )
     seeder_participant_id = fields.Many2one(
         "appointment.poll.participant",
-        string="Invité qui amorce",
+        string="Seeding guest",
         domain="[('poll_id', '=', id)]",
-        help="Laisser vide pour que ce soit simplement la première personne "
-             "qui répond. Désigner quelqu'un évite que le hasard de la boîte "
-             "de réception décide qui cadre la rencontre.",
+        help="Leave empty for it to simply be the first person who "
+             "answers. Designating someone keeps the luck of the inbox "
+             "from deciding who frames the meeting.",
     )
     seeded_by_id = fields.Many2one(
         "appointment.poll.participant",
-        string="Grille amorcée par",
+        string="Grid seeded by",
         readonly=True,
         copy=False,
-        help="Qui a effectivement posé la grille. Une fois renseigné, la "
-             "grille est figée pour les répondants suivants.",
+        help="Who actually set the grid. Once filled in, the grid is "
+             "frozen for the next respondents.",
     )
     max_picks_per_participant = fields.Integer(
-        string="Plages par personne",
+        string="Slots per person",
         default=5,
-        help="Plafond de plages qu'une même personne peut proposer. Sans lui, "
-             "quelqu'un en coche trente et noie le recoupement.",
+        help="Cap on the slots one person can propose. Without it, "
+             "someone checks thirty and drowns the overlap.",
     )
 
     send_invitations = fields.Boolean(
-        string="Envoyer les invitations à l'ouverture",
+        string="Send invitations on opening",
         default=True,
-        help="Décoché, l'ouverture n'écrit à personne : le sondage devient "
-             "votre lien à coller dans votre propre courriel. Le lien de "
-             "chaque participant se copie depuis l'onglet Participants.",
+        help="Unchecked, opening the poll emails no one: the poll becomes "
+             "your link to paste into your own email. Each participant's "
+             "link can be copied from the Participants tab.",
     )
 
     # -- Inscription libre --------------------------------------------------
@@ -152,97 +152,94 @@ class AppointmentPoll(models.Model):
     # adresse que personne n'a validée en amont. C'est un pouvoir qu'on
     # accorde sondage par sondage, pas un défaut qu'on subit.
     self_signup = fields.Boolean(
-        string="Lien d'inscription libre",
+        string="Open sign-up link",
         default=False,
         tracking=True,
-        help="Publie un lien où chacun s'inscrit lui-même, puis répond. "
-             "Utile quand vous ne connaissez pas d'avance toutes les adresses "
-             "du groupe.\n\n"
-             "⚠️ En mode « chacun propose », une personne entrée par ce lien "
-             "choisit des plages dans VOTRE agenda, et pose donc la retenue "
-             "qui va avec. C'est à cela que servent les domaines admis et le "
-             "plafond d'inscriptions.",
+        help="Publishes a link where people sign themselves up, then "
+             "answer. Useful when you do not know all the group's "
+             "addresses in advance.\n\n⚠️ In \"everyone proposes\" mode, "
+             "a person who comes in through this link picks slots in YOUR "
+             "calendar, and therefore places the matching hold. That is "
+             "what the allowed domains and the sign-up cap are for.",
     )
     self_signup_max = fields.Integer(
-        string="Inscriptions max.",
+        string="Max. sign-ups",
         default=25,
-        help="Nombre maximal de personnes admises par le lien d'inscription. "
-             "0 = illimité (déconseillé : c'est le plafond qui empêche un lien "
-             "trop diffusé de remplir le sondage d'inconnus).",
+        help="Maximum number of people accepted through the sign-up link. "
+             "0 = unlimited (not recommended: the cap is what keeps an "
+             "overshared link from filling the poll with strangers).",
     )
     self_signup_domains = fields.Text(
-        string="Domaines admis",
-        help="Liste blanche appliquée aux adresses saisies : adresse complète, "
-             "ou domaine (« @client.com »), une par ligne ou séparées par des "
-             "virgules. Vide = toute adresse est admise, dans la limite du "
-             "plafond.",
+        string="Allowed domains",
+        help="Allowlist applied to the addresses entered: a full address, "
+             "or a domain (\"@client.com\"), one per line or separated by "
+             "commas. Empty = any address is accepted, up to the cap.",
     )
     signup_url = fields.Char(
-        string="Lien d'inscription",
+        string="Sign-up link",
         compute="_compute_signup_url",
         groups="base.group_user",
-        help="Adresse publique où les gens s'inscrivent eux-mêmes. Vide tant "
-             "que l'inscription libre n'est pas activée.",
+        help="Public address where people sign themselves up. Empty until "
+             "open sign-up is enabled.",
     )
 
     show_votes = fields.Boolean(
-        string="Montrer les réponses de chacun",
+        string="Show everyone's answers",
         default=True,
-        help="Affiche, sur la page de vote, qui a répondu quoi. C'est le "
-             "comportement des sondages grand public, et il aide : voir qu'une "
-             "plage rassemble déjà trois « oui » pousse à s'y rallier.\n\n"
-             "À décocher quand les disponibilités des uns ne regardent pas les "
-             "autres — un comité où les participants ne se connaissent pas, ou "
-             "un sondage qui mêle des gens de plusieurs organisations. Chacun "
-             "voit alors ses propres réponses, et rien d'autre.",
+        help="Shows, on the voting page, who answered what. This is how "
+             "consumer polls behave, and it helps: seeing that a slot "
+             "already has three \"yes\" answers encourages people to "
+             "rally to it.\n\nUncheck it when people's availability is "
+             "nobody else's business (a committee whose members do not "
+             "know each other, or a poll that mixes people from several "
+             "organizations). Everyone then sees their own answers, and "
+             "nothing else.",
     )
     hold_mode = fields.Selection(
         [
-            ("none", "Aucune retenue"),
-            ("visible", "Visible dans mon agenda, sans bloquer"),
-            ("blocking", "Réserver réellement les plages"),
+            ("none", "No hold"),
+            ("visible", "Visible in my calendar, not blocking"),
+            ("blocking", "Actually book the slots"),
         ],
-        string="Retenue dans l'agenda",
+        string="Calendar hold",
         default="none",
         required=True,
-        help="« Visible » pose un événement marqué disponible : vous voyez le "
-             "sondage en cours dans votre agenda, et les réservations "
-             "publiques passent quand même sur ces plages.\n"
-             "« Réserver réellement » ferme les plages à toute autre "
-             "réservation le temps du sondage. À garder pour les rencontres "
-             "qu'on ne peut pas se permettre de perdre.\n\n"
-             "La retenue se pose plage par plage, à mesure que quelqu'un la "
-             "choisit, et se libère dès qu'une personne obligatoire y répond "
-             "Non. En mode « réserver réellement », comptez donc que chaque "
-             "plage choisie sort de votre page publique de rendez-vous le "
-             "temps du sondage : c'est le plafond de plages qui borne "
-             "l'effet.",
+        help="\"Visible\" places an event marked as free: you see the "
+             "ongoing poll in your calendar, and public bookings still go "
+             "through on those slots.\n\"Actually book\" closes the slots "
+             "to any other booking for the duration of the poll. Keep it "
+             "for meetings you cannot afford to lose.\n\nThe hold is "
+             "placed slot by slot, as someone picks it, and is released "
+             "as soon as a required person answers No. In \"actually "
+             "book\" mode, expect each chosen slot to leave your public "
+             "appointment page for the duration of the poll: the slot cap "
+             "is what limits the effect.",
     )
 
     date_opened = fields.Datetime(
-        string="Ouvert le",
+        string="Opened on",
         readonly=True,
         copy=False,
-        help="Horodatage de l'ouverture du vote. Les relances se comptent à "
-             "partir de LUI, jamais de `write_date` : ce dernier bouge au "
-             "moindre changement (une correction de l'objet, un créneau "
-             "ajouté), ce qui repousserait les relances indéfiniment sans que "
-             "personne ne s'en aperçoive.",
+        help="Timestamp of when voting opened. Reminders are counted from "
+             "IT, never from `write_date`: the latter moves with the "
+             "slightest change (a corrected subject, an added slot), "
+             "which would push reminders back indefinitely without anyone "
+             "noticing.",
     )
     booking_id = fields.Many2one(
         "resource.booking",
-        string="Rendez-vous issu du sondage",
+        string="Appointment from the poll",
         readonly=True,
         copy=False,
-        help="Créé à la clôture par le module parent. C'est lui qui porte "
-             "l'événement d'agenda définitif, l'ICS et les rappels.",
+        help="Created at closing by the parent module. It carries the "
+             "final calendar event, the ICS file and the reminders.",
     )
     access_token = fields.Char(
-        string="Jeton du sondage",
+        string="Poll token",
         copy=False,
         groups="base.group_user",
-        help="Jeton du sondage lui-même. Chaque participant a EN PLUS son "
-             "propre jeton : c'est lui qui identifie la personne qui vote.",
+        help="Token of the poll itself. Each participant ALSO has their "
+             "own token: that is what identifies the person voting.",
     )
 
     # -- Compteurs ---------------------------------------------------------
@@ -252,11 +249,11 @@ class AppointmentPoll(models.Model):
     responded_count = fields.Integer(compute="_compute_counts")
     pending_required_count = fields.Integer(
         compute="_compute_counts",
-        string="Obligatoires sans réponse",
+        string="Required, not answered",
     )
     viable_slot_count = fields.Integer(
         compute="_compute_counts",
-        string="Créneaux encore viables",
+        string="Slots still viable",
     )
 
     @api.depends(
@@ -308,7 +305,7 @@ class AppointmentPoll(models.Model):
         """
         for poll in self:
             if poll.state not in ("draft", "open"):
-                raise UserError(_("Un sondage clos ne prend plus de créneaux."))
+                raise UserError(_("A closed poll no longer takes slots."))
             horizon_start = fields.Datetime.context_timestamp(
                 poll, fields.Datetime.now()
             ) + timedelta(hours=1)
@@ -353,19 +350,19 @@ class AppointmentPoll(models.Model):
         for poll in self:
             if not poll.participant_ids and not poll.self_signup:
                 raise UserError(_(
-                    "Ajoutez au moins un participant, ou activez le lien "
-                    "d'inscription libre."))
+                    "Add at least one participant, or enable the open "
+                    "sign-up link."))
             if poll.slot_source == "organizer" and not poll.slot_ids:
-                raise UserError(_("Proposez au moins un créneau avant d'ouvrir."))
+                raise UserError(_("Propose at least one slot before opening."))
             if poll.slot_source == "seeder" and poll.slot_ids:
                 raise UserError(_(
-                    "En mode « un invité amorce », la grille doit venir de "
-                    "l'invité. Retirez les créneaux, ou repassez en « je "
-                    "propose »."
+                    "In \"a guest seeds\" mode, the grid must come from "
+                    "the guest. Remove the slots, or switch back to \"I "
+                    "propose\"."
                 ))
             if (poll.slot_source == "seeder" and poll.seeder_participant_id
                     and poll.seeder_participant_id.poll_id != poll):
-                raise UserError(_("L'invité qui amorce doit appartenir à ce sondage."))
+                raise UserError(_("The seeding guest must belong to this poll."))
             poll.state = "open"
             poll.date_opened = fields.Datetime.now()
             # Tient la grille déjà connue. En « chacun propose », elle est
@@ -394,14 +391,15 @@ class AppointmentPoll(models.Model):
         for poll in self:
             if poll.state != "open":
                 raise UserError(_(
-                    "Ouvrez le vote avant d'inviter : le lien refuserait les "
-                    "réponses."))
+                    "Open voting before inviting: the link would refuse "
+                    "answers."))
             cibles = poll.participant_ids.filtered(
                 lambda p: not p.invitation_sent_on)
             if not cibles:
                 raise UserError(_(
-                    "Tout le monde a déjà reçu son invitation. Pour relancer "
-                    "une personne, copiez son lien dans l'onglet Participants."))
+                    "Everyone has already received their invitation. To "
+                    "follow up with someone, copy their link from the "
+                    "Participants tab."))
             cibles._send_invitation()
         return True
 
@@ -436,12 +434,12 @@ class AppointmentPoll(models.Model):
         """
         self.ensure_one()
         if self.booking_id:
-            raise UserError(_("Ce sondage a déjà donné lieu à un rendez-vous."))
+            raise UserError(_("This poll has already led to an appointment."))
         if not self.slot_ids.filtered("is_viable"):
-            raise UserError(_("Aucun créneau viable à retenir."))
+            raise UserError(_("No viable slot to choose."))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Sur quel créneau ?"),
+            "name": _("Which slot?"),
             "res_model": "appointment.poll.schedule.wizard",
             "view_mode": "form",
             "target": "new",
@@ -466,9 +464,9 @@ class AppointmentPoll(models.Model):
         # n'était appelé nulle part.
         slot = slot or self._ranked_slots().filtered("is_viable")[:1]
         if not slot:
-            raise UserError(_("Aucun créneau viable à retenir."))
+            raise UserError(_("No viable slot to choose."))
         if self.booking_id:
-            raise UserError(_("Ce sondage a déjà donné lieu à un rendez-vous."))
+            raise UserError(_("This poll has already led to an appointment."))
         partners = self.participant_ids._ensure_partners()
         # 🔴 Libérer la retenue de CE créneau AVANT de réserver. En mode
         # « réserver réellement », le sondage pose un événement `busy` sur la
@@ -511,7 +509,7 @@ class AppointmentPoll(models.Model):
         self.booking_id = booking
         self.state = "scheduled"
         self.message_post(
-            body=_("Rencontre fixée au créneau retenu à partir du sondage.")
+            body=_("Meeting scheduled on the slot chosen from the poll.")
         )
         # Dernier geste, et le seul qui sorte du système : la rencontre est
         # acquise, l'agenda est écrit, et c'est seulement là qu'on annonce.
@@ -578,6 +576,21 @@ class AppointmentPoll(models.Model):
 
     # -- Cron --------------------------------------------------------------
 
+    def _bf_organizer_lang(self):
+        """La langue des notes écrites pour l'organisateur sans qu'il agisse.
+
+        Le travail planifié tourne sous OdooBot, l'inscription par le lien sous
+        le visiteur : leurs notes au fil sont lues par l'organisateur. Sa
+        langue si elle est installée, sinon celle de la société, sinon
+        l'anglais (la langue de la source).
+        """
+        self.ensure_one()
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        for lang in (self.user_id.lang, (self.company_id or self.env.company).partner_id.lang):
+            if lang in installees:
+                return lang
+        return "en_US"
+
     @api.model
     def _cron_poll_maintenance(self):
         """Relances aux non-répondants, puis clôture des sondages échus.
@@ -597,9 +610,16 @@ class AppointmentPoll(models.Model):
             lambda p: p.close_date and p.close_date <= now
         )
         for poll in overdue:
-            poll.action_close()
+            lu = poll.with_context(lang=poll._bf_organizer_lang())
+            # Le suivi « En cours → Clos » s'écrit lui aussi pour l'organisateur.
+            lu.action_close()
+            # Odoo écrit le suivi au pré-commit, dans le contexte du PREMIER sondage
+            # suivi de la transaction : deux organisateurs de langues différentes clos
+            # dans le même passage recevraient le même libellé. On le finalise ici,
+            # dans la langue de celui-ci (le rappel du pré-commit ne trouve plus rien).
+            lu._track_finalize()
             poll.message_post(
-                body=_("Date limite atteinte : le sondage est clos.")
+                body=lu.env._("Deadline reached: the poll is closed.")
             )
         return True
 
@@ -856,8 +876,10 @@ class AppointmentPoll(models.Model):
         # abonné au fil. Il fallait ouvrir le sondage pour apprendre que
         # quelqu'un était arrivé, ce qui vide un lien d'inscription de son
         # intérêt : on le diffuse justement pour ne pas avoir à surveiller.
+        # Écrit par la page publique, dans la langue du visiteur : lu par l'organisateur.
+        lu = self.with_context(lang=self._bf_organizer_lang())
         self.message_post(
-            body=_("%(nom)s (%(courriel)s) s'est inscrit par le lien.",
+            body=lu.env._("%(nom)s (%(courriel)s) signed up through the link.",
                    nom=participant.name, courriel=email),
             partner_ids=self.user_id.partner_id.ids,
         )
@@ -1000,11 +1022,11 @@ class AppointmentPoll(models.Model):
         """
         self.ensure_one()
         if self.hold_mode == "none":
-            raise UserError(_("Aucune retenue n'est demandée sur ce sondage."))
+            raise UserError(_("No hold is requested on this poll."))
         retenus = self.slot_ids.filtered("is_shortlisted")
         if not retenus:
             raise UserError(_(
-                "Cochez d'abord les créneaux à retenir dans l'onglet « Créneaux »."
+                "First check the slots to hold in the \"Proposed slots\" tab."
             ))
         retenus._create_hold()
         return True

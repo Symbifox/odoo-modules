@@ -126,6 +126,10 @@ install.
   `"0"`, which is truthy — the success banner used to fire even when nothing
   had been added.
 
+## Languages (v18.0.1.17.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The four poll emails (invitation, reminder, access code, confirmation) are written in English and translated, and each goes out in the language of its participant. What the module writes with nobody behind it is written for its readers: the calendar-hold note follows the language of whoever opens the poll; the closing note and the tracked status change written by the scheduled job follow the language of the poll's organizer, so two polls with organizers of different languages, closed in the same pass, each read in their own; the note left when someone signs up through the shared link is in the organizer's language, not the visitor's. The vote summary and the schedule wizard preview punctuate according to the language. On upgrade, the four email templates and the scheduled job name move to the English source only where the database still carries the delivered text: a value edited by hand keeps its edit.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
@@ -135,10 +139,15 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-20, this version converts automatically to
+- **Change Date**: on 2030-10-12, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.17.0
+
+- **Source language.** Labels, messages and the four email templates are written in English; the French ships in `i18n/fr_CA.po`. See the Languages section.
+- **Notes written by the scheduled job and by the shared sign-up link** follow the language of the poll's organizer, and the tracked status change of a closing poll is finalized in the organizer's language, one poll at a time.
 
 ### 18.0.1.16.0
 

@@ -6,7 +6,7 @@ from odoo import api, fields, models
 
 class AppointmentPollVote(models.Model):
     _name = "appointment.poll.vote"
-    _description = "Réponse à un créneau"
+    _description = "Slot answer"
     _order = "slot_id, participant_id"
 
     participant_id = fields.Many2one(
@@ -18,7 +18,7 @@ class AppointmentPollVote(models.Model):
     )
     slot_id = fields.Many2one(
         "appointment.poll.slot",
-        string="Créneau",
+        string="Slot",
         required=True,
         ondelete="cascade",
         index=True,
@@ -28,11 +28,11 @@ class AppointmentPollVote(models.Model):
     )
     answer = fields.Selection(
         [
-            ("yes", "Oui"),
-            ("ifneedbe", "Si nécessaire"),
-            ("no", "Non"),
+            ("yes", "Yes"),
+            ("ifneedbe", "If need be"),
+            ("no", "No"),
         ],
-        string="Réponse",
+        string="Answer",
         required=True,
         default="yes",
     )
@@ -41,7 +41,7 @@ class AppointmentPollVote(models.Model):
         (
             "one_vote_per_slot",
             "UNIQUE(participant_id, slot_id)",
-            "Un participant ne répond qu'une fois par créneau.",
+            "A participant answers only once per slot.",
         ),
     ]
 

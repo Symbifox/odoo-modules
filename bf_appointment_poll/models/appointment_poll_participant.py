@@ -29,12 +29,12 @@ _OTP_RESEND_SECONDS = 60
 
 class AppointmentPollParticipant(models.Model):
     _name = "appointment.poll.participant"
-    _description = "Participant à un sondage"
+    _description = "Poll participant"
     _order = "required desc, id"
 
     poll_id = fields.Many2one(
         "appointment.poll",
-        string="Sondage",
+        string="Poll",
         required=True,
         ondelete="cascade",
         index=True,
@@ -42,95 +42,94 @@ class AppointmentPollParticipant(models.Model):
     partner_id = fields.Many2one(
         "res.partner",
         string="Contact",
-        help="Optionnel : un participant peut n'être qu'une adresse. Le "
-             "contact est créé au moment de fixer la rencontre, pas avant — "
-             "un sondage sans suite ne doit pas laisser de fiches derrière lui.",
+        help="Optional: a participant can be just an address. The contact "
+             "is created when the meeting is scheduled, not before: a "
+             "poll that goes nowhere should not leave records behind.",
     )
-    name = fields.Char(string="Nom")
-    email = fields.Char(string="Courriel", required=True)
+    name = fields.Char(string="Name")
+    email = fields.Char(string="Email", required=True)
     tz = fields.Selection(
         lambda self: [(t, t) for t in sorted(pytz.all_timezones)],
-        string="Fuseau horaire",
-        help="Celui dans lequel cette personne lit les heures. Capté du "
-             "navigateur quand elle passe par le lien, sinon repris de sa "
-             "fiche de contact. À défaut, celui du calendrier de "
-             "disponibilité, puis le fuseau par défaut réglé dans les "
-             "Paramètres.",
+        string="Timezone",
+        help="The time zone in which this person reads times. Captured "
+             "from the browser when they use the link, otherwise taken "
+             "from their contact record. Failing that, the availability "
+             "calendar's, then the default time zone set in Settings.",
     )
     required = fields.Boolean(
-        string="Présence obligatoire",
+        string="Attendance required",
         default=False,
-        help="Un créneau cesse d'être viable dès qu'une personne obligatoire "
-             "y répond Non. Les réponses des personnes facultatives comptent "
-             "dans le décompte sans jamais écarter un créneau.",
+        help="A slot stops being viable as soon as a required person "
+             "answers No to it. Answers from optional people count in the "
+             "tally without ever ruling out a slot.",
     )
 
     self_signup = fields.Boolean(
-        string="Inscrit par le lien",
+        string="Signed up via link",
         readonly=True,
         copy=False,
-        help="La personne est entrée d'elle-même par le lien d'inscription, "
-             "elle n'a pas été invitée nommément. Elle est facultative, et "
-             "son identité ne tient qu'à l'adresse qu'elle a saisie : c'est "
-             "pourquoi modifier des réponses déjà données lui demande un code.",
+        help="The person came in on their own through the sign-up link; "
+             "they were not invited by name. They are optional, and their "
+             "identity rests only on the address they entered: that is "
+             "why changing answers already given requires a code.",
     )
     otp_hash = fields.Char(
-        string="Empreinte du code",
+        string="Code hash",
         readonly=True,
         copy=False,
         groups="base.group_system",
-        help="⚠️ Le code n'est jamais gardé en clair. On en stocke une "
-             "empreinte signée avec le secret de la base et l'identifiant du "
-             "participant : elle ne vaut rien ailleurs, et ne se remonte pas.",
+        help="⚠️ The code is never kept in plaintext. A hash signed with "
+             "the database secret and the participant's ID is stored: it "
+             "is worthless elsewhere, and cannot be reversed.",
     )
     otp_expires_at = fields.Datetime(
-        string="Code valable jusqu'à", readonly=True, copy=False)
+        string="Code valid until", readonly=True, copy=False)
     otp_attempts = fields.Integer(
-        string="Essais sur le code", default=0, readonly=True, copy=False)
+        string="Code attempts", default=0, readonly=True, copy=False)
     otp_sent_at = fields.Datetime(
-        string="Code envoyé le", readonly=True, copy=False)
+        string="Code sent on", readonly=True, copy=False)
     invitation_sent_on = fields.Datetime(
-        string="Invitation envoyée le",
+        string="Invitation sent on",
         readonly=True,
         copy=False,
-        help="Vide = cette personne n'a jamais reçu d'invitation du module. "
-             "C'est ce que regarde le bouton « Envoyer les invitations » pour "
-             "ne pas écrire deux fois à la même personne.",
+        help="Empty = this person has never received an invitation from "
+             "the module. This is what the \"Send invitations\" button "
+             "checks so as not to email the same person twice.",
     )
     vote_url = fields.Char(
-        string="Lien de vote",
+        string="Voting link",
         compute="_compute_vote_url",
         groups="base.group_user",
-        help="Le lien personnel de cette personne. Copiez-le pour l'inclure "
-             "dans votre propre courriel, ou pour relancer quelqu'un de la "
-             "main.",
+        help="This person's personal link. Copy it to include in your own "
+             "email, or to follow up with someone by hand.",
     )
 
     access_token = fields.Char(
-        string="Jeton",
+        string="Token",
         copy=False,
         groups="base.group_user",
-        help="Identifie la personne qui vote. C'est le lien personnel envoyé "
-             "dans l'invitation.",
+        help="Identifies the person voting. It is the personal link sent "
+             "in the invitation.",
     )
     vote_ids = fields.One2many(
-        "appointment.poll.vote", "participant_id", string="Réponses"
+        "appointment.poll.vote", "participant_id", string="Answers"
     )
     proposed_slot_ids = fields.One2many(
-        "appointment.poll.slot", "proposed_by_id", string="Plages proposées"
+        "appointment.poll.slot", "proposed_by_id", string="Slots this "
+                                                          "person proposed"
     )
     proposed_count = fields.Integer(
-        compute="_compute_proposed_count", string="Nombre de plages proposées"
+        compute="_compute_proposed_count", string="Number of slots proposed"
     )
-    responded_at = fields.Datetime(string="A répondu le", readonly=True)
-    reminder_count = fields.Integer(string="Relances envoyées", default=0, readonly=True)
-    last_reminder_date = fields.Datetime(string="Dernière relance", readonly=True)
+    responded_at = fields.Datetime(string="Answered on", readonly=True)
+    reminder_count = fields.Integer(string="Reminders sent", default=0, readonly=True)
+    last_reminder_date = fields.Datetime(string="Last reminder", readonly=True)
 
     _sql_constraints = [
         (
             "email_unique_per_poll",
             "UNIQUE(poll_id, email)",
-            "Cette adresse est déjà invitée à ce sondage.",
+            "This address is already invited to this poll.",
         ),
     ]
 

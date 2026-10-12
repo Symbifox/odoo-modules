@@ -16,6 +16,10 @@ Publishing to the noticeboard is reserved to the noticeboard's editorial group. 
 
 `bf_babillard`, `bf_appointment_poll`.
 
+## Language of the refusal (18.0.1.0.1)
+
+When a poll that is not open is announced, the refusal quotes the poll's state in the language of whoever publishes. It used to quote the poll module's source label, which is English since `bf_appointment_poll` 18.0.1.17.0.
+
 ## Licence
 
 Business Source License 1.1; see `LICENSE`. Each version converts to LGPL-3.0-or-later four years after its release.

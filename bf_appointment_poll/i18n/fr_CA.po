@@ -1,0 +1,1524 @@
+# Translation of Rendez-vous : sondage de disponibilités - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_appointment_poll 18.0.1.17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 02:32+0000\n"
+"PO-Revision-Date: 2026-10-12 02:32+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__slot_source
+msgid ""
+"\"I propose\": you choose the slots, and everyone answers them.\n"
+"\"A guest seeds\": the first grid comes from a guest, and the others answer it afterwards. Useful when someone leads the matter and knows the group's constraints better than you do.\n"
+"\"Everyone proposes\": each person checks what suits them within your availability, and the overlap forms on its own. This is the mode that spares you from guessing the slots."
+msgstr ""
+"« Je propose » : vous choisissez les plages, tout le monde y répond.\n"
+"« Un invité amorce » : la première grille vient d'un invité, les autres y répondent ensuite. Utile quand quelqu'un mène le dossier et connaît mieux que vous les contraintes du groupe.\n"
+"« Chacun propose » : chaque personne coche ce qui lui convient dans vos disponibilités, et le recoupement se forme tout seul. C'est le mode qui vous évite d'avoir à deviner les plages."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__hold_mode
+msgid ""
+"\"Visible\" places an event marked as free: you see the ongoing poll in your calendar, and public bookings still go through on those slots.\n"
+"\"Actually book\" closes the slots to any other booking for the duration of the poll. Keep it for meetings you cannot afford to lose.\n"
+"\n"
+"The hold is placed slot by slot, as someone picks it, and is released as soon as a required person answers No. In \"actually book\" mode, expect each chosen slot to leave your public appointment page for the duration of the poll: the slot cap is what limits the effect."
+msgstr ""
+"« Visible » pose un événement marqué disponible : vous voyez le sondage en cours dans votre agenda, et les réservations publiques passent quand même sur ces plages.\n"
+"« Réserver réellement » ferme les plages à toute autre réservation le temps du sondage. À garder pour les rencontres qu'on ne peut pas se permettre de perdre.\n"
+"\n"
+"La retenue se pose plage par plage, à mesure que quelqu'un la choisit, et se libère dès qu'une personne obligatoire y répond Non. En mode « réserver réellement », comptez donc que chaque plage choisie sort de votre page publique de rendez-vous le temps du sondage : c'est le plafond de plages qui borne l'effet."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "%(nom)s (%(courriel)s) signed up through the link."
+msgstr "%(nom)s (%(courriel)s) s'est inscrit par le lien."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "%(rang)s. %(jour)s %(heure)s: %(detail)s%(etat)s"
+msgstr "%(rang)s. %(jour)s %(heure)s : %(detail)s%(etat)s"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+msgid "%(reponse)s: %(noms)s"
+msgstr "%(reponse)s : %(noms)s"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "<span class=\"o_stat_text\">Appointment</span>"
+msgstr "<span class=\"o_stat_text\">Rendez-vous</span>"
+
+#. module: bf_appointment_poll
+#: model:mail.template,body_html:bf_appointment_poll.mail_template_poll_reminder
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Friendly reminder</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">Just a gentle reminder: we still need your availability to schedule the meeting “<strong><t t-out=\"object.poll_id.name or ''\"/></strong>”.</p>\n"
+"        <t t-if=\"object.required\"><p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">Since your attendance is required, the meeting is waiting for your answer before it can be set.</p></t>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"         <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">Subject</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.name or ''\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Expected duration</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Proposed slots</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"len(object.poll_id.slot_ids)\"/></td></tr>\n"
+"         <t t-if=\"object.poll_id.close_date\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Please reply by</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.close_display()\"/></td></tr></t>\n"
+"         <t t-if=\"object.required\"><tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">Your attendance</td><td style=\"padding:12px 16px; font-size:14px; font-weight:600; color:#374151;\">Required</td></tr></t>\n"
+"        </tbody></table>\n"
+"        <p style=\"text-align:center; margin:24px 0 8px 0;\">\n"
+"         <a t-att-href=\"object._vote_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;\">Reply now</a>\n"
+"        </p>\n"
+"        <p style=\"text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;\">This link is just for you.</p>\n"
+"<p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:24px 0 0 0;\">\n"
+"      This poll was sent to you by <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"object.poll_id.user_id.name or ''\"/></strong>\n"
+"      via <t t-out=\"company.name\"/>. Your answers are only used to schedule this meeting.\n"
+"     </p>"
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Petit rappel</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">Un rappel sans pression : vos disponibilités manquent encore pour fixer la rencontre «&nbsp;<strong><t t-out=\"object.poll_id.name or ''\"/></strong>&nbsp;».</p>\n"
+"        <t t-if=\"object.required\"><p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">Votre présence étant requise, la rencontre attend votre réponse pour se fixer.</p></t>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"         <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">Objet</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.name or ''\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Durée prévue</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Créneaux proposés</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"len(object.poll_id.slot_ids)\"/></td></tr>\n"
+"         <t t-if=\"object.poll_id.close_date\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Répondre avant le</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.close_display()\"/></td></tr></t>\n"
+"         <t t-if=\"object.required\"><tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">Votre présence</td><td style=\"padding:12px 16px; font-size:14px; font-weight:600; color:#374151;\">Requise</td></tr></t>\n"
+"        </tbody></table>\n"
+"        <p style=\"text-align:center; margin:24px 0 8px 0;\">\n"
+"         <a t-att-href=\"object._vote_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;\">Répondre maintenant</a>\n"
+"        </p>\n"
+"        <p style=\"text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;\">Ce lien vous est personnel.</p>\n"
+"<p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:24px 0 0 0;\">\n"
+"      Ce sondage vous a été transmis par <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"object.poll_id.user_id.name or ''\"/></strong>\n"
+"      via <t t-out=\"company.name\"/>. Vos réponses ne servent qu’à fixer cette rencontre.\n"
+"     </p>\n"
+
+#. module: bf_appointment_poll
+#: model:mail.template,body_html:bf_appointment_poll.mail_template_poll_invitation
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Your availability</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\"><t t-out=\"object.poll_id.user_id.name or ''\"/> is looking for a time that works for everyone for the meeting “<strong><t t-out=\"object.poll_id.name or ''\"/></strong>”.</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">A few time slots are proposed. For each one, let us know whether it works for you, would work if need be, or does not work at all. It only takes a minute.</p>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"         <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">Subject</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.name or ''\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Expected duration</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Proposed slots</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"len(object.poll_id.slot_ids)\"/></td></tr>\n"
+"         <t t-if=\"object.poll_id.close_date\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Please reply by</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.close_display()\"/></td></tr></t>\n"
+"         <t t-if=\"object.required\"><tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">Your attendance</td><td style=\"padding:12px 16px; font-size:14px; font-weight:600; color:#374151;\">Required</td></tr></t>\n"
+"        </tbody></table>\n"
+"        <p style=\"text-align:center; margin:24px 0 8px 0;\">\n"
+"         <a t-att-href=\"object._vote_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;\">Share my availability</a>\n"
+"        </p>\n"
+"        <p style=\"text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;\">This link is just for you.</p>\n"
+"<p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:24px 0 0 0;\">\n"
+"      This poll was sent to you by <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"object.poll_id.user_id.name or ''\"/></strong>\n"
+"      via <t t-out=\"company.name\"/>. Your answers are only used to schedule this meeting.\n"
+"     </p>"
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Vos disponibilités</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\"><t t-out=\"object.poll_id.user_id.name or ''\"/> cherche un moment qui convienne à tout le monde pour la rencontre «&nbsp;<strong><t t-out=\"object.poll_id.name or ''\"/></strong>&nbsp;».</p>\n"
+"        <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;\">Quelques plages vous sont proposées. Pour chacune, indiquez si elle vous convient, si elle vous conviendrait au besoin, ou pas du tout. Ça prend une minute.</p>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"         <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">Objet</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.name or ''\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Durée prévue</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"         <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Créneaux proposés</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"len(object.poll_id.slot_ids)\"/></td></tr>\n"
+"         <t t-if=\"object.poll_id.close_date\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Répondre avant le</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.close_display()\"/></td></tr></t>\n"
+"         <t t-if=\"object.required\"><tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">Votre présence</td><td style=\"padding:12px 16px; font-size:14px; font-weight:600; color:#374151;\">Requise</td></tr></t>\n"
+"        </tbody></table>\n"
+"        <p style=\"text-align:center; margin:24px 0 8px 0;\">\n"
+"         <a t-att-href=\"object._vote_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;\">Indiquer mes disponibilités</a>\n"
+"        </p>\n"
+"        <p style=\"text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;\">Ce lien vous est personnel.</p>\n"
+"<p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:24px 0 0 0;\">\n"
+"      Ce sondage vous a été transmis par <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"object.poll_id.user_id.name or ''\"/></strong>\n"
+"      via <t t-out=\"company.name\"/>. Vos réponses ne servent qu’à fixer cette rencontre.\n"
+"     </p>\n"
+
+#. module: bf_appointment_poll
+#: model:mail.template,body_html:bf_appointment_poll.mail_template_poll_otp
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Your code</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"     <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Here is the code that lets you change your answers to the poll “<strong><t t-out=\"object.poll_id.name or ''\"/></strong>”.</p>\n"
+"     <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:34px; font-weight:800; letter-spacing:8px; color:#111827; margin:0 0 8px 0; text-align:center;\"><t t-out=\"ctx.get('bf_poll_otp') or ''\"/></p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:0 0 16px 0; text-align:center;\">Valid for 15&nbsp;minutes, for this change only.</p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:0;\">Didn’t ask for this? No need to do anything: without this code, no one can change your answers. The code expires on its own.</p>"
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Votre code</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"     <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Voici le code qui vous permet de modifier vos réponses au sondage «&nbsp;<strong><t t-out=\"object.poll_id.name or ''\"/></strong>&nbsp;».</p>\n"
+"     <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:34px; font-weight:800; letter-spacing:8px; color:#111827; margin:0 0 8px 0; text-align:center;\"><t t-out=\"ctx.get('bf_poll_otp') or ''\"/></p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:0 0 16px 0; text-align:center;\">Valable 15&nbsp;minutes, pour cette modification seulement.</p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:0;\">Vous n’avez rien demandé&nbsp;? Ne faites rien : sans ce code, personne ne peut toucher à vos réponses. Le code expire tout seul.</p>\n"
+
+#. module: bf_appointment_poll
+#: model:mail.template,body_html:bf_appointment_poll.mail_template_poll_scheduled
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<t t-set=\"booking\" t-value=\"object.poll_id.booking_id\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">It’s set</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"     <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Thank you for sharing your availability. The meeting “<strong><t t-out=\"object.poll_id.name or ''\"/></strong>” is now scheduled.</p>\n"
+"     <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"      <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">When</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.scheduled_display(object)\"/></td></tr>\n"
+"      <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Duration</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"      <t t-if=\"booking and booking.videocall_location\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Where</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><a t-attf-href=\"{{ booking.videocall_location }}\" t-attf-style=\"color:{{ brand_primary }};\"><t t-out=\"booking.videocall_location\"/></a></td></tr></t>\n"
+"      <tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">With</td><td style=\"padding:12px 16px; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.user_id.name or ''\"/></td></tr>\n"
+"     </tbody></table>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:16px 0 0 0;\">The attached file adds the meeting to your calendar in one click.</p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:8px 0 0 0;\">Can’t make it? Reply to this email and we’ll find another time.</p>"
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.poll_id.type_id.company_id) or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<t t-set=\"booking\" t-value=\"object.poll_id.booking_id\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">C’est fixé</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"     <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">Merci d’avoir donné vos disponibilités. La rencontre «&nbsp;<strong><t t-out=\"object.poll_id.name or ''\"/></strong>&nbsp;» est fixée.</p>\n"
+"     <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;\"><tbody>\n"
+"      <tr><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;\">Quand</td><td style=\"padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;\"><t t-out=\"object.poll_id.scheduled_display(object)\"/></td></tr>\n"
+"      <tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Durée</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.duration_display()\"/></td></tr>\n"
+"      <t t-if=\"booking and booking.videocall_location\"><tr><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;\">Où</td><td style=\"padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;\"><a t-attf-href=\"{{ booking.videocall_location }}\" t-attf-style=\"color:{{ brand_primary }};\"><t t-out=\"booking.videocall_location\"/></a></td></tr></t>\n"
+"      <tr><td style=\"padding:12px 16px; color:#6B7280; font-size:14px;\">Avec</td><td style=\"padding:12px 16px; font-size:14px; color:#374151;\"><t t-out=\"object.poll_id.user_id.name or ''\"/></td></tr>\n"
+"     </tbody></table>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:16px 0 0 0;\">Le fichier joint ajoute la rencontre à votre agenda en un clic.</p>\n"
+"     <p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:8px 0 0 0;\">Un empêchement&nbsp;? Répondez à ce courriel, on trouvera autre chose.</p>\n"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "@client.com, jane@other.com"
+msgstr "@client.com, jean@autre.ca"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "A closed poll no longer takes slots."
+msgstr "Un sondage clos ne prend plus de créneaux."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__slot_source__seeder
+msgid "A guest seeds the grid"
+msgstr "Un invité amorce la grille"
+
+#. module: bf_appointment_poll
+#: model:ir.model.constraint,message:bf_appointment_poll.constraint_appointment_poll_vote_one_vote_per_slot
+msgid "A participant answers only once per slot."
+msgstr "Un participant ne répond qu'une fois par créneau."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__required
+msgid ""
+"A slot stops being viable as soon as a required person answers No to it. "
+"Answers from optional people count in the tally without ever ruling out a "
+"slot."
+msgstr ""
+"Un créneau cesse d'être viable dès qu'une personne obligatoire y répond Non."
+" Les réponses des personnes facultatives comptent dans le décompte sans "
+"jamais écarter un créneau."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__is_complete
+msgid ""
+"A viable but incomplete slot stays pending: the answer of at least one "
+"person whose attendance is required is missing."
+msgstr ""
+"Un créneau viable mais incomplet reste en attente : il manque la réponse "
+"d'au moins une personne dont la présence est requise."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__hold_mode__blocking
+msgid "Actually book the slots"
+msgstr "Réserver réellement les plages"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Add at least one participant, or enable the open sign-up link."
+msgstr ""
+"Ajoutez au moins un participant, ou activez le lien d'inscription libre."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__close_date
+msgid ""
+"After this time, the scheduled job closes the poll and notifies the "
+"organizer. Empty = no automatic closing."
+msgstr ""
+"Passé ce moment, le cron clôt le sondage et prévient l'organisateur. Vide = "
+"pas de clôture automatique."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__is_complete
+msgid "All required people have answered"
+msgstr "Tous les obligatoires ont répondu"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__self_signup_domains
+msgid "Allowed domains"
+msgstr "Domaines admis"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__self_signup_domains
+msgid ""
+"Allowlist applied to the addresses entered: a full address, or a domain "
+"(\"@client.com\"), one per line or separated by commas. Empty = any address "
+"is accepted, up to the cap."
+msgstr ""
+"Liste blanche appliquée aux adresses saisies : adresse complète, ou domaine "
+"(« @client.com »), une par ligne ou séparées par des virgules. Vide = toute "
+"adresse est admise, dans la limite du plafond."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__answer
+msgid "Answer"
+msgstr "Réponse"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__responded_at
+msgid "Answered on"
+msgstr "A répondu le"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__vote_ids
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__vote_ids
+msgid "Answers"
+msgstr "Réponses"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__booking_id
+msgid "Appointment from the poll"
+msgstr "Rendez-vous issu du sondage"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__type_id
+msgid "Appointment type"
+msgstr "Type de rendez-vous"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__required
+msgid "Attendance required"
+msgstr "Présence obligatoire"
+
+#. module: bf_appointment_poll
+#: model:ir.model,name:bf_appointment_poll.model_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Availability poll"
+msgstr "Sondage de disponibilités"
+
+#. module: bf_appointment_poll
+#: model:mail.template,name:bf_appointment_poll.mail_template_poll_otp
+msgid "Availability poll: edit code"
+msgstr "Sondage de disponibilités — code de modification"
+
+#. module: bf_appointment_poll
+#: model:mail.template,name:bf_appointment_poll.mail_template_poll_invitation
+msgid "Availability poll: invitation"
+msgstr "Sondage de disponibilités — invitation"
+
+#. module: bf_appointment_poll
+#: model:mail.template,name:bf_appointment_poll.mail_template_poll_scheduled
+msgid "Availability poll: meeting scheduled"
+msgstr "Sondage de disponibilités — rencontre fixée"
+
+#. module: bf_appointment_poll
+#: model:mail.template,name:bf_appointment_poll.mail_template_poll_reminder
+msgid "Availability poll: reminder"
+msgstr "Sondage de disponibilités — relance"
+
+#. module: bf_appointment_poll
+#: model:ir.actions.act_window,name:bf_appointment_poll.appointment_poll_action
+#: model:ir.ui.menu,name:bf_appointment_poll.menu_appointment_poll
+msgid "Availability polls"
+msgstr "Sondages de disponibilités"
+
+#. module: bf_appointment_poll
+#: model:ir.actions.server,name:bf_appointment_poll.cron_poll_maintenance_ir_actions_server
+msgid "Availability polls: reminders and closing"
+msgstr "Sondages de disponibilités : relances et clôtures"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__hold_mode
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__hold_event_id
+msgid "Calendar hold"
+msgstr "Retenue dans l'agenda"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_schedule_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__max_slots
+msgid ""
+"Cap on the number of slots put to the vote. Beyond about ten, the response "
+"rate collapses."
+msgstr ""
+"Plafond du nombre de plages soumises au vote. Au-delà d'une dizaine, le taux"
+" de réponse s'effondre."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__max_picks_per_participant
+msgid ""
+"Cap on the slots one person can propose. Without it, someone checks thirty "
+"and drowns the overlap."
+msgstr ""
+"Plafond de plages qu'une même personne peut proposer. Sans lui, quelqu'un en"
+" coche trente et noie le recoupement."
+
+#. module: bf_appointment_poll
+#: model:ir.model,name:bf_appointment_poll.model_appointment_poll_schedule_wizard
+msgid "Choose the slot for the meeting"
+msgstr "Choisir le créneau qui fixe la rencontre"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__slot_id
+msgid "Chosen slot"
+msgstr "Créneau retenu"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Close voting"
+msgstr "Clore le vote"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__state__closed
+msgid "Closed"
+msgstr "Clos"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__otp_attempts
+msgid "Code attempts"
+msgstr "Essais sur le code"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__otp_hash
+msgid "Code hash"
+msgstr "Empreinte du code"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__otp_sent_at
+msgid "Code sent on"
+msgstr "Code envoyé le"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__otp_expires_at
+msgid "Code valid until"
+msgstr "Code valable jusqu'à"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.actions.act_window,help:bf_appointment_poll.appointment_poll_action
+msgid "Create a poll"
+msgstr "Créer un sondage"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__booking_id
+msgid ""
+"Created at closing by the parent module. It carries the final calendar "
+"event, the ICS file and the reminders."
+msgstr ""
+"Créé à la clôture par le module parent. C'est lui qui porte l'événement "
+"d'agenda définitif, l'ICS et les rappels."
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__create_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__create_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__create_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__create_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Deadline reached: the poll is closed."
+msgstr "Date limite atteinte : le sondage est clos."
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__display_name
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__display_name
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__display_name
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__display_name
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__invitation_sent_on
+msgid ""
+"Empty = this person has never received an invitation from the module. This "
+"is what the \"Send invitations\" button checks so as not to email the same "
+"person twice."
+msgstr ""
+"Vide = cette personne n'a jamais reçu d'invitation du module. C'est ce que "
+"regarde le bouton « Envoyer les invitations » pour ne pas écrire deux fois à"
+" la même personne."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__proposed_by_id
+msgid ""
+"Empty when the slot comes from the organizer. Filled in \"a guest seeds\" "
+"and \"everyone proposes\" modes."
+msgstr ""
+"Vide quand la plage vient de l'organisateur. Renseigné en mode « un invité "
+"amorce » et « chacun propose »."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__stop
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__hold_event_id
+msgid ""
+"Event marked \"free\" that makes the poll visible in the organizer's "
+"calendar without blocking public bookings on that slot."
+msgstr ""
+"Événement marqué « disponible » qui rend le sondage visible dans l'agenda de"
+" l'organisateur sans bloquer les réservations publiques sur cette plage."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid ""
+"Everyone has already received their invitation. To follow up with someone, "
+"copy their link from the Participants tab."
+msgstr ""
+"Tout le monde a déjà reçu son invitation. Pour relancer une personne, copiez"
+" son lien dans l'onglet Participants."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__slot_source__open
+msgid "Everyone proposes their slots"
+msgstr "Chacun propose ses plages"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__is_viable
+msgid "False as soon as a REQUIRED participant has answered No."
+msgstr "Faux dès qu'un participant OBLIGATOIRE a répondu Non."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "First check the slots to hold in the \"Proposed slots\" tab."
+msgstr ""
+"Cochez d'abord les créneaux à retenir dans l'onglet « Créneaux proposés »."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__seeded_by_id
+msgid "Grid seeded by"
+msgstr "Grille amorcée par"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Hold in my calendar"
+msgstr "Retenir dans mon agenda"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__slot_source__organizer
+msgid "I propose the slots"
+msgstr "Je propose les créneaux"
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__access_token
+msgid ""
+"Identifies the person voting. It is the personal link sent in the "
+"invitation."
+msgstr ""
+"Identifie la personne qui vote. C'est le lien personnel envoyé dans "
+"l'invitation."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_has_error
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__ifneedbe_count
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll_vote__answer__ifneedbe
+msgid "If need be"
+msgstr "Si nécessaire"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid ""
+"In \"a guest seeds\" mode, the grid must come from the guest. Remove the "
+"slots, or switch back to \"I propose\"."
+msgstr ""
+"En mode « un invité amorce », la grille doit venir de l'invité. Retirez les "
+"créneaux, ou repassez en « je propose »."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__state__open
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__invitation_sent_on
+msgid "Invitation sent on"
+msgstr "Invitation envoyée le"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_appointment_poll
+#: model:mail.template,subject:bf_appointment_poll.mail_template_poll_scheduled
+msgid "It's set: {{ object.poll_id.name }}"
+msgstr "C'est fixé : {{ object.poll_id.name }}"
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_appointment_poll
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__write_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__write_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__write_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__write_date
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__last_reminder_date
+msgid "Last reminder"
+msgstr "Dernière relance"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__seeder_participant_id
+msgid ""
+"Leave empty for it to simply be the first person who answers. Designating "
+"someone keeps the luck of the inbox from deciding who frames the meeting."
+msgstr ""
+"Laisser vide pour que ce soit simplement la première personne qui répond. "
+"Désigner quelqu'un évite que le hasard de la boîte de réception décide qui "
+"cadre la rencontre."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__self_signup_max
+msgid "Max. sign-ups"
+msgstr "Inscriptions max."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__self_signup_max
+msgid ""
+"Maximum number of people accepted through the sign-up link. 0 = unlimited "
+"(not recommended: the cap is what keeps an overshared link from filling the "
+"poll with strangers)."
+msgstr ""
+"Nombre maximal de personnes admises par le lien d'inscription. 0 = illimité "
+"(déconseillé : c'est le plafond qui empêche un lien trop diffusé de remplir "
+"le sondage d'inconnus)."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__max_slots
+msgid "Maximum number of slots"
+msgstr "Nombre maximal de créneaux"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__state__scheduled
+msgid "Meeting scheduled"
+msgstr "Rencontre fixée"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Meeting scheduled on the slot chosen from the poll."
+msgstr "Rencontre fixée au créneau retenu à partir du sondage."
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Meeting subject"
+msgstr "Objet de la rencontre"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__description
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Message to participants"
+msgstr "Message aux participants"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__no_count
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll_vote__answer__no
+msgid "No"
+msgstr "Non"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__hold_mode__none
+msgid "No hold"
+msgstr "Aucune retenue"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "No hold is requested on this poll."
+msgstr "Aucune retenue n'est demandée sur ce sondage."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "No slot."
+msgstr "Aucun créneau."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "No viable slot to choose."
+msgstr "Aucun créneau viable à retenir."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__proposed_count
+msgid "Number of slots proposed"
+msgstr "Nombre de plages proposées"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__slot_detail
+msgid "On this slot"
+msgstr "Sur ce créneau"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Open sign-up"
+msgstr "Inscription libre"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__self_signup
+msgid "Open sign-up link"
+msgstr "Lien d'inscription libre"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Open voting"
+msgstr "Ouvrir le vote"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Open voting before inviting: the link would refuse answers."
+msgstr "Ouvrez le vote avant d'inviter : le lien refuserait les réponses."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__date_opened
+msgid "Opened on"
+msgstr "Ouvert le"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__partner_id
+msgid ""
+"Optional: a participant can be just an address. The contact is created when "
+"the meeting is scheduled, not before: a poll that goes nowhere should not "
+"leave records behind."
+msgstr ""
+"Optionnel : un participant peut n'être qu'une adresse. Le contact est créé "
+"au moment de fixer la rencontre, pas avant — un sondage sans suite ne doit "
+"pas laisser de fiches derrière lui."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__user_id
+msgid "Organizer"
+msgstr "Organisateur"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__participant_id
+msgid "Participant"
+msgstr "Participant"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__participant_count
+msgid "Participant Count"
+msgstr "Nombre de participants"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__participant_ids
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Participants"
+msgstr "Participants"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__poll_id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__poll_id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__poll_id
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__poll_id
+msgid "Poll"
+msgstr "Sondage"
+
+#. module: bf_appointment_poll
+#: model:ir.model,name:bf_appointment_poll.model_appointment_poll_participant
+msgid "Poll participant"
+msgstr "Participant à un sondage"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__poll_state
+msgid "Poll state"
+msgstr "État du sondage"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__access_token
+msgid "Poll token"
+msgstr "Jeton du sondage"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+msgid "Poll: %s"
+msgstr "Sondage : %s"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_list
+msgid "Polls"
+msgstr "Sondages"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_schedule_wizard__slot_id
+msgid ""
+"Preselected on the best ranked: viable first, then complete, then the most "
+"\"yes\" answers. Nothing forces you to keep it."
+msgstr ""
+"Présélectionné sur le mieux classé : viable d'abord, puis complet, puis le "
+"plus de « oui ». Rien ne vous y oblige."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Propose at least one slot before opening."
+msgstr "Proposez au moins un créneau avant d'ouvrir."
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Propose free slots"
+msgstr "Proposer des créneaux libres"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.actions.act_window,help:bf_appointment_poll.appointment_poll_action
+msgid ""
+"Propose several slots that are already free in your calendar, let everyone "
+"answer, then schedule the meeting."
+msgstr ""
+"Proposez plusieurs créneaux déjà libres dans votre calendrier,\n"
+"               laissez chacun répondre, puis fixez la rencontre."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__proposed_by_id
+msgid "Proposed by"
+msgstr "Proposé par"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__slot_ids
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Proposed slots"
+msgstr "Créneaux proposés"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__signup_url
+msgid ""
+"Public address where people sign themselves up. Empty until open sign-up is "
+"enabled."
+msgstr ""
+"Adresse publique où les gens s'inscrivent eux-mêmes. Vide tant que "
+"l'inscription libre n'est pas activée."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__self_signup
+msgid ""
+"Publishes a link where people sign themselves up, then answer. Useful when you do not know all the group's addresses in advance.\n"
+"\n"
+"⚠️ In \"everyone proposes\" mode, a person who comes in through this link picks slots in YOUR calendar, and therefore places the matching hold. That is what the allowed domains and the sign-up cap are for."
+msgstr ""
+"Publie un lien où chacun s'inscrit lui-même, puis répond. Utile quand vous ne connaissez pas d'avance toutes les adresses du groupe.\n"
+"\n"
+"⚠️ En mode « chacun propose », une personne entrée par ce lien choisit des plages dans VOTRE agenda, et pose donc la retenue qui va avec. C'est à cela que servent les domaines admis et le plafond d'inscriptions."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_appointment_poll
+#: model:mail.template,subject:bf_appointment_poll.mail_template_poll_reminder
+msgid "Reminder: {{ object.poll_id.name }}"
+msgstr "Rappel — {{ object.poll_id.name }}"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__reminder_count
+msgid "Reminders sent"
+msgstr "Relances envoyées"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__pending_required_count
+msgid "Required, not answered"
+msgstr "Obligatoires sans réponse"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Reset to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__responded_count
+msgid "Responded Count"
+msgstr "Nombre de réponses"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__close_date
+msgid "Response deadline"
+msgstr "Date limite de réponse"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_schedule_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Schedule the meeting"
+msgstr "Fixer la rencontre"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Schedule the meeting here"
+msgstr "Fixer la rencontre ici"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__seeder_participant_id
+msgid "Seeding guest"
+msgstr "Invité qui amorce"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__is_shortlisted
+msgid "Selected"
+msgstr "Retenu"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Send invitations"
+msgstr "Envoyer les invitations"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__send_invitations
+msgid "Send invitations on opening"
+msgstr "Envoyer les invitations à l'ouverture"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__type_id
+msgid ""
+"Sets the duration, the availability calendar and everything that follows at "
+"closing: video room, reminders, templates."
+msgstr ""
+"Détermine la durée, le calendrier de disponibilité et tout ce qui suivra à "
+"la clôture : salle visio, rappels, gabarits."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__show_votes
+msgid "Show everyone's answers"
+msgstr "Montrer les réponses de chacun"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__description
+msgid "Shown at the top of the voting page."
+msgstr "Affiché en tête de la page de vote."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__show_votes
+msgid ""
+"Shows, on the voting page, who answered what. This is how consumer polls behave, and it helps: seeing that a slot already has three \"yes\" answers encourages people to rally to it.\n"
+"\n"
+"Uncheck it when people's availability is nobody else's business (a committee whose members do not know each other, or a poll that mixes people from several organizations). Everyone then sees their own answers, and nothing else."
+msgstr ""
+"Affiche, sur la page de vote, qui a répondu quoi. C'est le comportement des sondages grand public, et il aide : voir qu'une plage rassemble déjà trois « oui » pousse à s'y rallier.\n"
+"\n"
+"À décocher quand les disponibilités des uns ne regardent pas les autres — un comité où les participants ne se connaissent pas, ou un sondage qui mêle des gens de plusieurs organisations. Chacun voit alors ses propres réponses, et rien d'autre."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__signup_url
+msgid "Sign-up link"
+msgstr "Lien d'inscription"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__self_signup
+msgid "Signed up via link"
+msgstr "Inscrit par le lien"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_vote__slot_id
+msgid "Slot"
+msgstr "Créneau"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__slot_count
+msgid "Slot Count"
+msgstr "Nombre de créneaux"
+
+#. module: bf_appointment_poll
+#: model:ir.model,name:bf_appointment_poll.model_appointment_poll_vote
+msgid "Slot answer"
+msgstr "Réponse à un créneau"
+
+#. module: bf_appointment_poll
+#: model:ir.model,name:bf_appointment_poll.model_appointment_poll_slot
+msgid "Slot put to the vote"
+msgstr "Créneau proposé au vote"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+msgid ""
+"Slot put to the vote. This event is released automatically when the poll "
+"closes."
+msgstr ""
+"Créneau soumis au vote. Cet événement se libère tout seul à la clôture du "
+"sondage."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_schedule_wizard__apercu
+msgid "Slots from best to worst, with who answered what."
+msgstr "Les créneaux du meilleur au moins bon, avec qui a répondu quoi."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__max_picks_per_participant
+msgid "Slots per person"
+msgstr "Plages par personne"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__viable_slot_count
+msgid "Slots still viable"
+msgstr "Créneaux encore viables"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__proposed_slot_ids
+msgid "Slots this person proposed"
+msgstr "Plages proposées"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__is_viable
+msgid "Still viable"
+msgstr "Encore viable"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__name
+msgid "Subject"
+msgstr "Objet"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__vote_summary
+msgid ""
+"The detail behind the counters. Three \"yes\" answers are not equal "
+"depending on who gave them, and the screen only showed the number. The "
+"asterisk marks a required attendee, as on the public page."
+msgstr ""
+"Le détail derrière les compteurs. Trois « oui » ne se valent pas selon qui "
+"les a donnés, et l'écran ne montrait que le nombre. L'astérisque marque une "
+"présence requise, comme sur la page publique."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__self_signup
+msgid ""
+"The person came in on their own through the sign-up link; they were not "
+"invited by name. They are optional, and their identity rests only on the "
+"address they entered: that is why changing answers already given requires a "
+"code."
+msgstr ""
+"La personne est entrée d'elle-même par le lien d'inscription, elle n'a pas "
+"été invitée nommément. Elle est facultative, et son identité ne tient qu'à "
+"l'adresse qu'elle a saisie : c'est pourquoi modifier des réponses déjà "
+"données lui demande un code."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__user_id
+msgid ""
+"The person whose calendar provides the candidate slots and who will decide "
+"at closing."
+msgstr ""
+"La personne dont le calendrier fournit les créneaux candidats et qui "
+"tranchera à la clôture."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "The seeding guest must belong to this poll."
+msgstr "L'invité qui amorce doit appartenir à ce sondage."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__tz
+msgid ""
+"The time zone in which this person reads times. Captured from the browser "
+"when they use the link, otherwise taken from their contact record. Failing "
+"that, the availability calendar's, then the default time zone set in "
+"Settings."
+msgstr ""
+"Celui dans lequel cette personne lit les heures. Capté du navigateur quand "
+"elle passe par le lien, sinon repris de sa fiche de contact. À défaut, celui"
+" du calendrier de disponibilité, puis le fuseau par défaut réglé dans les "
+"Paramètres."
+
+#. module: bf_appointment_poll
+#: model:ir.model.constraint,message:bf_appointment_poll.constraint_appointment_poll_participant_email_unique_per_poll
+msgid "This address is already invited to this poll."
+msgstr "Cette adresse est déjà invitée à ce sondage."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__vote_url
+msgid ""
+"This person's personal link. Copy it to include in your own email, or to "
+"follow up with someone by hand."
+msgstr ""
+"Le lien personnel de cette personne. Copiez-le pour l'inclure dans votre "
+"propre courriel, ou pour relancer quelqu'un de la main."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "This poll has already led to an appointment."
+msgstr "Ce sondage a déjà donné lieu à un rendez-vous."
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "This slot does not belong to this poll."
+msgstr "Ce créneau n'appartient pas à ce sondage."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__date_opened
+msgid ""
+"Timestamp of when voting opened. Reminders are counted from IT, never from "
+"`write_date`: the latter moves with the slightest change (a corrected "
+"subject, an added slot), which would push reminders back indefinitely "
+"without anyone noticing."
+msgstr ""
+"Horodatage de l'ouverture du vote. Les relances se comptent à partir de LUI,"
+" jamais de `write_date` : ce dernier bouge au moindre changement (une "
+"correction de l'objet, un créneau ajouté), ce qui repousserait les relances "
+"indéfiniment sans que personne ne s'en aperçoive."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__tz
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__access_token
+msgid "Token"
+msgstr "Jeton"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__access_token
+msgid ""
+"Token of the poll itself. Each participant ALSO has their own token: that is"
+" what identifies the person voting."
+msgstr ""
+"Jeton du sondage lui-même. Chaque participant a EN PLUS son propre jeton : "
+"c'est lui qui identifie la personne qui vote."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__send_invitations
+msgid ""
+"Unchecked, opening the poll emails no one: the poll becomes your link to "
+"paste into your own email. Each participant's link can be copied from the "
+"Participants tab."
+msgstr ""
+"Décoché, l'ouverture n'écrit à personne : le sondage devient votre lien à "
+"coller dans votre propre courriel. Le lien de chaque participant se copie "
+"depuis l'onglet Participants."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_slot__is_shortlisted
+msgid ""
+"Used in \"everyone proposes\" mode: you first select a few slots from the "
+"overlap, and the calendar hold only covers those."
+msgstr ""
+"Sert en mode « chacun propose » : on retient d'abord quelques plages parmi "
+"le recoupement, et la retenue d'agenda ne porte que sur celles-là."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll__hold_mode__visible
+msgid "Visible in my calendar, not blocking"
+msgstr "Visible dans mon agenda, sans bloquer"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_participant__vote_url
+msgid "Voting link"
+msgstr "Lien de vote"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__name
+msgid "What participants will see as the poll title."
+msgstr "Ce que les participants verront en titre du sondage."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_schedule_wizard__apercu
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_schedule_wizard_form
+msgid "What the poll said"
+msgstr "Ce que le sondage a dit"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "Where things stand"
+msgstr "Où en est-on"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll.py:0
+msgid "Which slot?"
+msgstr "Sur quel créneau ?"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll__seeded_by_id
+msgid ""
+"Who actually set the grid. Once filled in, the grid is frozen for the next "
+"respondents."
+msgstr ""
+"Qui a effectivement posé la grille. Une fois renseigné, la grille est figée "
+"pour les répondants suivants."
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__vote_summary
+msgid "Who answered what"
+msgstr "Qui a répondu quoi"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll__slot_source
+msgid "Who proposes the slots"
+msgstr "Qui propose les créneaux"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_slot.py:0
+#: model:ir.model.fields,field_description:bf_appointment_poll.field_appointment_poll_slot__yes_count
+#: model:ir.model.fields.selection,name:bf_appointment_poll.selection__appointment_poll_vote__answer__yes
+msgid "Yes"
+msgstr "Oui"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "all required people have answered"
+msgstr "tous les obligatoires ont répondu"
+
+#. module: bf_appointment_poll
+#: model_terms:ir.ui.view,arch_db:bf_appointment_poll.appointment_poll_view_form
+msgid "default"
+msgstr "par défaut"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "no answer"
+msgstr "aucune réponse"
+
+#. module: bf_appointment_poll
+#. odoo-python
+#: code:addons/bf_appointment_poll/models/appointment_poll_schedule_wizard.py:0
+msgid "ruled out"
+msgstr "écarté"
+
+#. module: bf_appointment_poll
+#: model:mail.template,subject:bf_appointment_poll.mail_template_poll_invitation
+msgid "{{ object.poll_id.name }}: your availability"
+msgstr "{{ object.poll_id.name }} : vos disponibilités"
+
+#. module: bf_appointment_poll
+#: model:mail.template,subject:bf_appointment_poll.mail_template_poll_otp
+msgid "{{ object.poll_id.name }}: your code to change your answers"
+msgstr "{{ object.poll_id.name }} : votre code pour modifier vos réponses"
+
+#. module: bf_appointment_poll
+#: model:ir.model.fields,help:bf_appointment_poll.field_appointment_poll_participant__otp_hash
+msgid ""
+"⚠️ The code is never kept in plaintext. A hash signed with the database "
+"secret and the participant's ID is stored: it is worthless elsewhere, and "
+"cannot be reversed."
+msgstr ""
+"⚠️ Le code n'est jamais gardé en clair. On en stocke une empreinte signée "
+"avec le secret de la base et l'identifiant du participant : elle ne vaut "
+"rien ailleurs, et ne se remonte pas."

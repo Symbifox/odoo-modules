@@ -4,7 +4,7 @@
         <!-- noupdate : sinon chaque `-u` remettrait ce cron à `active=False`,
              annulant en silence le jour où on l'aura activé. -->
     <record id="cron_poll_maintenance" model="ir.cron">
-        <field name="name">Sondages de disponibilités : relances et clôtures</field>
+        <field name="name">Availability polls: reminders and closing</field>
         <field name="model_id" ref="model_appointment_poll"/>
         <field name="state">code</field>
         <field name="code">model._cron_poll_maintenance()</field>

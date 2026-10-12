@@ -1,0 +1,382 @@
+# Translation template for Documents : Approbation à plusieurs.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_document_approval 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 02:32+0000\n"
+"PO-Revision-Date: 2026-10-12 02:32+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(auteur)s made the decision of %(qui)s on version %(version)s optional: it "
+"no longer blocks publication."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(auteur)s recorded, on behalf of %(qui)s, the decision \"%(quoi)s\" on "
+"version %(version)s.%(motif)s"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "%(auteur)s removed %(qui)s from the approvers of version %(version)s."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(auteur)s replaced %(avant)s with %(apres)s among the approvers of version "
+"%(version)s."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(geste)s: refused. %(n)s decision(s) still missing.\n"
+"\n"
+"Waiting for %(qui)s."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(geste)s: refused. %(qui)s rejected this version.\n"
+"\n"
+"%(motifs)s"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "%(qui)s has %(quoi)s version %(version)s.%(motif)s"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"%(qui)s has given their decision: the line can no longer be removed and no "
+"longer changes holder or required status. To start the approvals over, "
+"create a new version."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"A decision cannot be edited directly: the named person gives it with the "
+"Approve and Reject buttons."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"A rejection without a reason cannot be acted on: say what needs to change."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "A version that is not approved cannot be distributed."
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid "Approval"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_version__approbation_complete
+msgid "Approval complete"
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid "Approve"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "Approve this version"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields.selection,name:bf_document_approval.selection__project_document_approver__avis__approuve
+msgid "Approved"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__user_id
+msgid "Approver"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_version__approver_ids
+msgid "Approvers"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_version__approbateurs_modifiables
+msgid "Can set the approvers"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__avis
+msgid "Decision"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__date_avis
+msgid "Decision date"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_version__approbation_attendue_count
+msgid "Decisions awaited"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid "Distribute to informed stakeholders"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "Distributions for version %s"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__document_id
+msgid "Document"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model,name:bf_document_approval.model_project_document_approver
+msgid "Document version approver"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_document_approval
+#. modules: bf_appointment_poll, bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__est_mon_avis
+msgid "My decision"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"No one new to inform: either the matrix names no informed stakeholder, or "
+"they have all already received this version."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_version__approbation_complete
+msgid "No required decision is missing, and none is a rejection."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__sequence
+msgid "Order"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields.selection,name:bf_document_approval.selection__project_document_approver__avis__attente
+msgid "Pending"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "Publish this version"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__commentaire
+msgid "Reason"
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid "Reject"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields.selection,name:bf_document_approval.selection__project_document_approver__avis__refuse
+msgid "Rejected"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__requis
+msgid "Required"
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_approver__commentaire
+msgid ""
+"Required for a rejection: a rejection without a reason cannot be acted on."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"The approvers of version %(version)s are set by %(qui)s, who is accountable "
+"for the document, or by a document manager."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_approver__user_id
+msgid "The person who must decide, not the one who writes."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"The reason belongs to the person who decides: no one else writes it for "
+"them."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"These fields of an approval line cannot be written directly: %(champs)s."
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "This decision belongs to %(qui)s: no one else can give it for them."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.constraint,message:bf_document_approval.constraint_project_document_approver_un_avis_par_personne
+msgid "This person is already an approver of this version."
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid "This version has been rejected."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_version__approbateurs_modifiables
+msgid ""
+"True for the document's owner (failing that, its author) and document "
+"managers."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_approver__est_mon_avis
+msgid ""
+"True for the named person only: only they see the Approve and Reject "
+"buttons."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,help:bf_document_approval.field_project_document_approver__requis
+msgid "Unchecked, the decision is requested but does not block publication."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_approver__version_id
+msgid "Version"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid ""
+"Version %(version)s distributed to %(n)s informed stakeholder(s): %(qui)s."
+msgstr ""
+
+#. module: bf_document_approval
+#: model:ir.model.fields,field_description:bf_document_approval.field_project_document_version__approbation_refusee
+msgid "Version rejected"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "approved"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "its owner"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "no reason given"
+msgstr ""
+
+#. module: bf_document_approval
+#. odoo-python
+#: code:addons/bf_document_approval/models/approbation.py:0
+msgid "rejected"
+msgstr ""
+
+#. module: bf_document_approval
+#: model_terms:ir.ui.view,arch_db:bf_document_approval.view_document_version_form_approbation
+msgid ""
+"required decision(s) missing: this version can be neither approved nor "
+"published."
+msgstr ""

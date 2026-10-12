@@ -12,74 +12,74 @@ _logger = logging.getLogger(__name__)
 
 class AppointmentPollSlot(models.Model):
     _name = "appointment.poll.slot"
-    _description = "Créneau proposé au vote"
+    _description = "Slot put to the vote"
     _order = "start"
 
     poll_id = fields.Many2one(
         "appointment.poll",
-        string="Sondage",
+        string="Poll",
         required=True,
         ondelete="cascade",
         index=True,
     )
-    start = fields.Datetime(string="Début", required=True)
-    stop = fields.Datetime(string="Fin", required=True)
+    start = fields.Datetime(string="Start", required=True)
+    stop = fields.Datetime(string="End", required=True)
     vote_ids = fields.One2many(
-        "appointment.poll.vote", "slot_id", string="Réponses"
+        "appointment.poll.vote", "slot_id", string="Answers"
     )
 
     proposed_by_id = fields.Many2one(
         "appointment.poll.participant",
-        string="Proposé par",
+        string="Proposed by",
         ondelete="set null",
-        help="Vide quand la plage vient de l'organisateur. Renseigné en mode "
-             "« un invité amorce » et « chacun propose ».",
+        help="Empty when the slot comes from the organizer. Filled in \"a "
+             "guest seeds\" and \"everyone proposes\" modes.",
     )
     is_shortlisted = fields.Boolean(
-        string="Retenu",
+        string="Selected",
         default=False,
-        help="Sert en mode « chacun propose » : on retient d'abord quelques "
-             "plages parmi le recoupement, et la retenue d'agenda ne porte "
-             "que sur celles-là.",
+        help="Used in \"everyone proposes\" mode: you first select a few "
+             "slots from the overlap, and the calendar hold only covers "
+             "those.",
     )
 
     hold_event_id = fields.Many2one(
         "calendar.event",
-        string="Retenue dans l'agenda",
+        string="Calendar hold",
         readonly=True,
         copy=False,
         ondelete="set null",
-        help="Événement marqué « disponible » qui rend le sondage visible dans "
-             "l'agenda de l'organisateur sans bloquer les réservations "
-             "publiques sur cette plage.",
+        help="Event marked \"free\" that makes the poll visible in the "
+             "organizer's calendar without blocking public bookings on "
+             "that slot.",
     )
 
-    yes_count = fields.Integer(compute="_compute_counts", string="Oui")
+    yes_count = fields.Integer(compute="_compute_counts", string="Yes")
     ifneedbe_count = fields.Integer(
-        compute="_compute_counts", string="Si nécessaire"
+        compute="_compute_counts", string="If need be"
     )
-    no_count = fields.Integer(compute="_compute_counts", string="Non")
+    no_count = fields.Integer(compute="_compute_counts", string="No")
     is_viable = fields.Boolean(
         compute="_compute_is_viable",
         store=True,
-        string="Encore viable",
-        help="Faux dès qu'un participant OBLIGATOIRE a répondu Non.",
+        string="Still viable",
+        help="False as soon as a REQUIRED participant has answered No.",
     )
     is_complete = fields.Boolean(
         compute="_compute_is_complete",
-        string="Tous les obligatoires ont répondu",
-        help="Un créneau viable mais incomplet reste en attente : il manque "
-             "la réponse d'au moins une personne dont la présence est requise.",
+        string="All required people have answered",
+        help="A viable but incomplete slot stays pending: the answer of "
+             "at least one person whose attendance is required is missing.",
     )
     poll_state = fields.Selection(
-        related="poll_id.state", string="État du sondage", readonly=True)
+        related="poll_id.state", string="Poll state", readonly=True)
     vote_summary = fields.Char(
         compute="_compute_vote_summary",
-        string="Qui a répondu quoi",
-        help="Le détail derrière les compteurs. Trois « oui » ne se valent "
-             "pas selon qui les a donnés, et l'écran ne montrait que le "
-             "nombre. L'astérisque marque une présence requise, comme sur la "
-             "page publique.",
+        string="Who answered what",
+        help="The detail behind the counters. Three \"yes\" answers are "
+             "not equal depending on who gave them, and the screen only "
+             "showed the number. The asterisk marks a required attendee, "
+             "as on the public page.",
     )
 
     # ⚠️ Trois calculs distincts, et non un seul. Odoo avertit qu'un calcul
@@ -117,9 +117,9 @@ class AppointmentPollSlot(models.Model):
         dernier à la simple lecture d'une colonne.
         """
         libelles = [
-            ("yes", _("Oui")),
-            ("ifneedbe", _("Si nécessaire")),
-            ("no", _("Non")),
+            ("yes", _("Yes")),
+            ("ifneedbe", _("If need be")),
+            ("no", _("No")),
         ]
         for slot in self:
             morceaux = []
@@ -132,7 +132,8 @@ class AppointmentPollSlot(models.Model):
                     for v in slot.vote_ids.filtered(lambda v: v.answer == cle)
                 ]
                 if noms:
-                    morceaux.append("%s : %s" % (libelle, ", ".join(noms)))
+                    # La ponctuation suit la langue (« Oui : » en français, « Yes: » en anglais).
+                    morceaux.append(_("%(reponse)s: %(noms)s", reponse=libelle, noms=", ".join(noms)))
             slot.vote_summary = " · ".join(morceaux)
 
     @api.depends("vote_ids.participant_id.required",
@@ -197,18 +198,21 @@ class AppointmentPollSlot(models.Model):
             if poll.hold_mode == "none":
                 continue
             bloquant = poll.hold_mode == "blocking"
+            # La retenue est posée à l'agenda de l'organisateur, quelle que soit la
+            # personne qui ouvre le sondage : dans SA langue.
+            lu = slot.with_context(lang=poll._bf_organizer_lang())
             slot.hold_event_id = Event.with_context(
                 no_mail_to_attendees=True, dont_notify=True
             ).create({
-                "name": _("Sondage : %s", poll.name),
+                "name": lu.env._("Poll: %s", poll.name),
                 "start": slot.start,
                 "stop": slot.stop,
                 "user_id": poll.user_id.id,
                 "partner_ids": [(6, 0, poll.user_id.partner_id.ids)],
                 "show_as": "busy" if bloquant else "free",
-                "description": _(
-                    "Créneau soumis au vote. Cet événement se libère tout seul "
-                    "à la clôture du sondage."
+                "description": lu.env._(
+                    "Slot put to the vote. This event is released "
+                    "automatically when the poll closes."
                 ),
                 **extra,
             })
@@ -299,7 +303,7 @@ class AppointmentPollSlot(models.Model):
         """
         for slot in self:
             if not slot.start:
-                slot.display_name = _("Créneau")
+                slot.display_name = _("Slot")
                 continue
             slot.display_name = "%s · %s" % (
                 slot.display_day(), slot.display_time())

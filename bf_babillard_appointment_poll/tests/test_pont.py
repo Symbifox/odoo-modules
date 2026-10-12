@@ -92,3 +92,17 @@ class TestPontDisponibilites(TransactionCase):
         with self.assertRaises(AccessError):
             poll.with_user(self.u_simple).action_annoncer_au_babillard()
         self.assertFalse(self._carte(poll))
+
+    def test_l_etat_cite_dans_le_refus_suit_la_langue_de_qui_publie(self):
+        """La source du sondage est anglaise depuis bf_appointment_poll 18.0.1.17.0 : le libellé
+        brut de la sélection l'est aussi, et une rédactrice francophone lisait « Draft »."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        # Activer la langue ne charge pas les termes : sur une base neuve, le libellé
+        # « Brouillon » vient de fr_CA.po du sondage (sans effet là où il est déjà chargé).
+        self.env["ir.module.module"]._load_module_terms(["bf_appointment_poll"], ["fr_CA"])
+        poll = self._poll()
+        for lang, etat in (("fr_CA", "« Brouillon »"), ("en_US", "« Draft »")):
+            with self.assertRaises(UserError) as refus:
+                poll.with_user(self.u_redactrice).with_context(
+                    lang=lang).action_annoncer_au_babillard()
+            self.assertIn(etat, str(refus.exception))

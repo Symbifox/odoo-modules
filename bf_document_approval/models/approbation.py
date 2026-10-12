@@ -17,9 +17,9 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 AVIS = [
-    ("attente", "En attente"),
-    ("approuve", "Approuvé"),
-    ("refuse", "Refusé"),
+    ("attente", "Pending"),
+    ("approuve", "Approved"),
+    ("refuse", "Rejected"),
 ]
 
 GROUPE_GESTION = "project_knowledge_matrix.group_document_manager"
@@ -59,7 +59,7 @@ class ProjectDocumentApprover(models.Model):
     """
 
     _name = "project.document.approver"
-    _description = "Approbateur d'une version de document"
+    _description = "Document version approver"
     _order = "version_id, sequence, id"
 
     version_id = fields.Many2one(
@@ -68,28 +68,30 @@ class ProjectDocumentApprover(models.Model):
     document_id = fields.Many2one(
         "project.document", related="version_id.document_id", store=True,
         string="Document", index=True)
-    sequence = fields.Integer(string="Ordre", default=10)
+    sequence = fields.Integer(string="Order", default=10)
     user_id = fields.Many2one(
-        "res.users", string="Approbateur", required=True,
-        help="La personne qui doit se prononcer, pas celle qui rédige.")
+        "res.users", string="Approver", required=True,
+        help="The person who must decide, not the one who writes.")
     requis = fields.Boolean(
-        string="Requis", default=True,
-        help="Décoché, l'avis est sollicité mais ne bloque pas la publication.")
-    avis = fields.Selection(AVIS, string="Avis", default="attente",
+        string="Required", default=True,
+        help="Unchecked, the decision is requested but does not block "
+             "publication.")
+    avis = fields.Selection(AVIS, string="Decision", default="attente",
                             required=True, copy=False)
-    date_avis = fields.Datetime(string="Date de l'avis", readonly=True,
+    date_avis = fields.Datetime(string="Decision date", readonly=True,
                                 copy=False)
     commentaire = fields.Char(
-        string="Motif", copy=False,
-        help="Obligatoire pour un refus : un refus sans motif ne se traite pas.")
+        string="Reason", copy=False,
+        help="Required for a rejection: a rejection without a reason "
+             "cannot be acted on.")
     est_mon_avis = fields.Boolean(
-        string="C'est mon avis", compute="_compute_est_mon_avis",
-        help="Vrai pour la personne nommée seulement : elle seule voit les"
-             " boutons Approuver et Refuser.")
+        string="My decision", compute="_compute_est_mon_avis",
+        help="True for the named person only: only they see the Approve "
+             "and Reject buttons.")
 
     _sql_constraints = [
         ("un_avis_par_personne", "unique (version_id, user_id)",
-         "Cette personne se prononce déjà sur cette version."),
+         "This person is already an approver of this version."),
     ]
 
     @api.depends("user_id")
@@ -122,8 +124,8 @@ class ProjectDocumentApprover(models.Model):
         hors_champ = changes - CHAMPS_APPROBATEUR - CHAMPS_COMPOSITION
         if hors_champ:
             raise AccessError(_(
-                "Ces champs d'une ligne d'approbation ne s'écrivent pas"
-                " directement : %(champs)s.",
+                "These fields of an approval line cannot be written "
+                "directly: %(champs)s.",
                 champs=", ".join(sorted(hors_champ))))
         if "commentaire" in changes and self.filtered(
                 lambda l: l.user_id != self.env.user):
@@ -141,12 +143,17 @@ class ProjectDocumentApprover(models.Model):
         if not self.env.su:
             self.version_id._verifier_composition()
             self._refuser_si_avis_donne()
-        traces = [(ligne.document_id, _(
-            "%(auteur)s a retiré %(qui)s des approbateurs de la version"
-            " %(version)s.",
-            auteur=self.env.user.name, qui=ligne.user_id.name,
-            version=ligne.version_id.version_number or ""))
-            for ligne in self.sudo()]
+        # Une boucle et non une compréhension : en Python 3.10 et 3.11, la compréhension a
+        # son propre cadre, où `_()` ne trouve `self` que tant qu'elle le cite. Pas
+        # `self.env._` non plus : sans langue au contexte (RPC), il écrit en anglais, alors
+        # que `_()` reprend la langue de l'usager, comme les autres traces.
+        traces = []
+        for ligne in self.sudo():
+            traces.append((ligne.document_id, _(
+                "%(auteur)s removed %(qui)s from the approvers of version "
+                "%(version)s.",
+                auteur=self.env.user.name, qui=ligne.user_id.name,
+                version=ligne.version_id.version_number or "")))
         res = super().unlink()
         self._tracer(traces)
         return res
@@ -176,20 +183,21 @@ class ProjectDocumentApprover(models.Model):
         donnes = self.filtered(lambda l: l.avis != "attente")
         if donnes:
             raise UserError(_(
-                "L'avis de %(qui)s est donné : sa ligne ne se retire plus et"
-                " ne change plus de titulaire ni de caractère requis. Pour"
-                " reprendre le tour de table, créez une nouvelle version.",
+                "%(qui)s has given their decision: the line can no longer "
+                "be removed and no longer changes holder or required "
+                "status. To start the approvals over, create a new "
+                "version.",
                 qui=", ".join(donnes.mapped("user_id.name"))))
 
     def _message_avis_par_les_boutons(self):
         return _(
-            "Un avis ne s'écrit pas : il se donne avec les boutons Approuver"
-            " et Refuser, par la personne nommée.")
+            "A decision cannot be edited directly: the named person gives "
+            "it with the Approve and Reject buttons.")
 
     def _message_motif_a_soi(self):
         return _(
-            "Le motif appartient à la personne qui se prononce : personne"
-            " d'autre ne l'écrit à sa place.")
+            "The reason belongs to the person who decides: no one else "
+            "writes it for them.")
 
     def _traces_avant_ecriture(self, vals, changes):
         """Ce qui, dans `vals`, affaiblit le verrou d'une ligne en attente."""
@@ -202,14 +210,15 @@ class ProjectDocumentApprover(models.Model):
             version = ligne.version_id.version_number or ""
             if nouveau is not None and ligne.user_id != nouveau:
                 traces.append((ligne.document_id, _(
-                    "%(auteur)s a remplacé %(avant)s par %(apres)s parmi les"
-                    " approbateurs de la version %(version)s.",
+                    "%(auteur)s replaced %(avant)s with %(apres)s among "
+                    "the approvers of version %(version)s.",
                     auteur=auteur, avant=ligne.user_id.name,
                     apres=nouveau.name or "—", version=version)))
             if "requis" in changes and ligne.requis and not vals["requis"]:
                 traces.append((ligne.document_id, _(
-                    "%(auteur)s a rendu facultatif l'avis de %(qui)s sur la"
-                    " version %(version)s : il ne bloque plus la publication.",
+                    "%(auteur)s made the decision of %(qui)s on version "
+                    "%(version)s optional: it no longer blocks "
+                    "publication.",
                     auteur=auteur, qui=ligne.user_id.name, version=version)))
         return traces
 
@@ -226,13 +235,13 @@ class ProjectDocumentApprover(models.Model):
         auteur = self.env.user
         if not self.env.su and self.user_id != auteur:
             raise AccessError(_(
-                "Cet avis appartient à %(qui)s : personne d'autre ne peut le"
-                " donner à sa place.", qui=self.user_id.name))
+                "This decision belongs to %(qui)s: no one else can give "
+                "it for them.", qui=self.user_id.name))
         motif = commentaire or self.commentaire
         if avis == "refuse" and not motif:
             raise UserError(_(
-                "Un refus sans motif ne se traite pas : dites ce qui doit"
-                " changer."))
+                "A rejection without a reason cannot be acted on: say "
+                "what needs to change."))
         vals = {"avis": avis, "date_avis": fields.Datetime.now()}
         if commentaire:
             vals["commentaire"] = commentaire
@@ -243,18 +252,18 @@ class ProjectDocumentApprover(models.Model):
         motif = " %s" % motif if motif else ""
         if auteur == self.user_id:
             corps = _(
-                "%(qui)s a %(quoi)s la version %(version)s.%(motif)s",
+                "%(qui)s has %(quoi)s version %(version)s.%(motif)s",
                 qui=auteur.name,
-                quoi=_("approuvé") if avis == "approuve" else _("refusé"),
+                quoi=_("approved") if avis == "approuve" else _("rejected"),
                 version=version, motif=motif)
         else:
             # Seul un code serveur en sudo arrive ici. Le fil ne prête pas
             # la parole : il dit qui a consigné l'avis, et pour qui.
             corps = _(
-                "%(auteur)s a consigné, au nom de %(qui)s, l'avis « %(quoi)s »"
-                " sur la version %(version)s.%(motif)s",
+                "%(auteur)s recorded, on behalf of %(qui)s, the decision "
+                "\"%(quoi)s\" on version %(version)s.%(motif)s",
                 auteur=auteur.name, qui=self.user_id.name,
-                quoi=_("approuvé") if avis == "approuve" else _("refusé"),
+                quoi=_("approved") if avis == "approuve" else _("rejected"),
                 version=version, motif=motif)
         self.version_id.document_id.sudo().message_post(
             body=corps, author_id=auteur.partner_id.id)
@@ -271,19 +280,19 @@ class ProjectDocumentVersionApprobation(models.Model):
     _inherit = "project.document.version"
 
     approver_ids = fields.One2many(
-        "project.document.approver", "version_id", string="Approbateurs")
+        "project.document.approver", "version_id", string="Approvers")
     approbation_attendue_count = fields.Integer(
-        string="Avis attendus", compute="_compute_approbation")
+        string="Decisions awaited", compute="_compute_approbation")
     approbation_refusee = fields.Boolean(
-        string="Refusée", compute="_compute_approbation")
+        string="Version rejected", compute="_compute_approbation")
     approbation_complete = fields.Boolean(
-        string="Approbation complète", compute="_compute_approbation",
-        help="Aucun avis requis ne manque, et aucun n'est un refus.")
+        string="Approval complete", compute="_compute_approbation",
+        help="No required decision is missing, and none is a rejection.")
     approbateurs_modifiables = fields.Boolean(
-        string="Peut composer le tour de table",
+        string="Can set the approvers",
         compute="_compute_approbateurs_modifiables",
-        help="Vrai pour le responsable du document (à défaut, son auteur) et"
-             " les gestionnaires des documents.")
+        help="True for the document's owner (failing that, its author) "
+             "and document managers.")
 
     @api.depends("approver_ids.avis", "approver_ids.requis")
     def _compute_approbation(self):
@@ -326,12 +335,12 @@ class ProjectDocumentVersionApprobation(models.Model):
             if not version._peut_composer():
                 document = version.sudo().document_id
                 raise AccessError(_(
-                    "Le tour de table de la version %(version)s se compose"
-                    " par %(qui)s, qui répond du document, ou par un"
-                    " gestionnaire des documents.",
+                    "The approvers of version %(version)s are set by "
+                    "%(qui)s, who is accountable for the document, or by "
+                    "a document manager.",
                     version=version.sudo().version_number or "",
                     qui=(document.owner_id or document.author_id).name
-                    or _("son responsable")))
+                    or _("its owner")))
 
     def _exiger_approbation(self, geste):
         """Refuse le geste tant que le tour de table n'est pas fini.
@@ -346,24 +355,28 @@ class ProjectDocumentVersionApprobation(models.Model):
                 continue
             if rec.approbation_refusee:
                 refus = lignes.filtered(lambda a: a.avis == "refuse")
+                # Hors de l'appel et hors de l'expression génératrice : logé dans les
+                # arguments d'un autre `_()`, l'extracteur ne le voyait pas, et dans la
+                # génératrice `_()` n'a pas de `self` pour lire la langue.
+                sans_motif = _("no reason given")
                 raise UserError(_(
-                    "%(geste)s est refusé : %(qui)s a rejeté cette version.\n\n"
-                    "%(motifs)s",
+                    "%(geste)s: refused. %(qui)s rejected this "
+                    "version.\n\n%(motifs)s",
                     geste=geste, qui=", ".join(refus.mapped("user_id.name")),
                     motifs="\n".join(
-                        "· %s" % (a.commentaire or _("sans motif"))
+                        "· %s" % (a.commentaire or sans_motif)
                         for a in refus)))
             if rec.approbation_attendue_count:
                 attente = lignes.filtered(
                     lambda a: a.requis and a.avis == "attente")
                 raise UserError(_(
-                    "%(geste)s est refusé : %(n)s avis manquent encore.\n\n"
-                    "En attente de %(qui)s.",
+                    "%(geste)s: refused. %(n)s decision(s) still "
+                    "missing.\n\nWaiting for %(qui)s.",
                     geste=geste, n=rec.approbation_attendue_count,
                     qui=", ".join(attente.mapped("user_id.name"))))
 
     def action_approve(self):
-        self._exiger_approbation(_("Approuver cette version"))
+        self._exiger_approbation(_("Approve this version"))
         return super().action_approve()
 
     def action_release(self):
@@ -371,7 +384,7 @@ class ProjectDocumentVersionApprobation(models.Model):
         # ne l'a fait. Une politique pouvait donc être publiée d'un clic sans
         # qu'aucun des approbateurs nommés se soit prononcé : c'est ce chemin-là
         # qu'il faut fermer, pas seulement `action_approve`.
-        self._exiger_approbation(_("Publier cette version"))
+        self._exiger_approbation(_("Publish this version"))
         return super().action_release()
 
     # ------------------------------------------------------------ diffusion
@@ -395,16 +408,16 @@ class ProjectDocumentVersionApprobation(models.Model):
         self.ensure_one()
         if self.state not in ("approved", "released"):
             raise UserError(_(
-                "On ne diffuse pas une version qui n'est pas approuvée."))
+                "A version that is not approved cannot be distributed."))
         Distribution = self.env["project.document.distribution"]
         deja = Distribution.search(
             [("version_id", "=", self.id)]).mapped("partner_id")
         cibles = self._partenaires_informes() - deja
         if not cibles:
             raise UserError(_(
-                "Personne de neuf à informer : soit la matrice ne désigne"
-                " aucune partie prenante informée, soit elles ont toutes déjà"
-                " reçu cette version."))
+                "No one new to inform: either the matrix names no "
+                "informed stakeholder, or they have all already received "
+                "this version."))
         creees = Distribution.create([{
             "version_id": self.id,
             "recipient_type": "partner",
@@ -412,13 +425,13 @@ class ProjectDocumentVersionApprobation(models.Model):
             "distribution_method": "email",
         } for partenaire in cibles])
         self.document_id.message_post(body=_(
-            "Version %(version)s diffusée à %(n)s partie(s) prenante(s)"
-            " informée(s) : %(qui)s.",
+            "Version %(version)s distributed to %(n)s informed "
+            "stakeholder(s): %(qui)s.",
             version=self.version_number or "", n=len(creees),
             qui=", ".join(cibles.mapped("display_name"))))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Distributions — version %s") % (self.version_number or ""),
+            "name": _("Distributions for version %s") % (self.version_number or ""),
             "res_model": "project.document.distribution",
             "view_mode": "list,form",
             "domain": [("id", "in", creees.ids)],

@@ -87,7 +87,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.1 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.64.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.1.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
-| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.16.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
+| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.17.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
@@ -95,7 +95,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
 | `bf_babillard` | Babillard | 18.0.1.8.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
-| `bf_babillard_appointment_poll` | Babillard : sondage de disponibilités | 18.0.1.0.0 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
+| `bf_babillard_appointment_poll` | Babillard : sondage de disponibilités | 18.0.1.0.1 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
 | `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.1.0 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
 | `bf_babillard_event` | Babillard : événements | 18.0.1.1.0 | BUSL-1.1 | Upcoming events appear on the noticeboard and follow their changes |
 | `bf_babillard_gamification` | Babillard : reconnaissance | 18.0.1.1.0 | BUSL-1.1 | A badge given by a colleague appears on the noticeboard |
@@ -168,7 +168,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
-| `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.1.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
+| `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.2.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
 | `bf_document_export_nextcloud` | Policies & Procedures Export - Nextcloud | 18.0.1.2.1 | BUSL-1.1 | Deposit the exported registry in a Nextcloud folder (only what changed, never overwriting, never deleting) and read the Nextcloud files behind external documents |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.5.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |

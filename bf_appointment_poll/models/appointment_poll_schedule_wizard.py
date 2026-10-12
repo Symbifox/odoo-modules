@@ -14,26 +14,27 @@ from odoo.exceptions import UserError
 
 class AppointmentPollScheduleWizard(models.TransientModel):
     _name = "appointment.poll.schedule.wizard"
-    _description = "Choisir le créneau qui fixe la rencontre"
+    _description = "Choose the slot for the meeting"
 
     poll_id = fields.Many2one(
-        "appointment.poll", string="Sondage", required=True, readonly=True,
+        "appointment.poll", string="Poll", required=True, readonly=True,
         ondelete="cascade")
     slot_id = fields.Many2one(
         "appointment.poll.slot",
-        string="Créneau retenu",
+        string="Chosen slot",
         required=True,
         domain="[('poll_id', '=', poll_id), ('is_viable', '=', True)]",
-        help="Présélectionné sur le mieux classé : viable d'abord, puis "
-             "complet, puis le plus de « oui ». Rien ne vous y oblige.",
+        help="Preselected on the best ranked: viable first, then "
+             "complete, then the most \"yes\" answers. Nothing forces you "
+             "to keep it.",
     )
     apercu = fields.Text(
-        string="Ce que le sondage a dit",
+        string="What the poll said",
         compute="_compute_apercu",
-        help="Les créneaux du meilleur au moins bon, avec qui a répondu quoi.",
+        help="Slots from best to worst, with who answered what.",
     )
     slot_detail = fields.Char(
-        string="Sur ce créneau", compute="_compute_slot_detail")
+        string="On this slot", compute="_compute_slot_detail")
 
     @api.model
     def default_get(self, fields_list):
@@ -54,21 +55,22 @@ class AppointmentPollScheduleWizard(models.TransientModel):
             for rang, creneau in enumerate(assistant.poll_id._ranked_slots(), 1):
                 etat = []
                 if not creneau.is_viable:
-                    etat.append(_("écarté"))
+                    etat.append(_("ruled out"))
                 elif creneau.is_complete:
-                    etat.append(_("tous les obligatoires ont répondu"))
-                detail = creneau.vote_summary or _("aucune réponse")
-                lignes.append("%d. %s %s — %s%s" % (
-                    rang, creneau.display_day(), creneau.display_time(), detail,
-                    (" (%s)" % ", ".join(etat)) if etat else ""))
-            assistant.apercu = "\n".join(lignes) or _("Aucun créneau.")
+                    etat.append(_("all required people have answered"))
+                detail = creneau.vote_summary or _("no answer")
+                lignes.append(_(
+                    "%(rang)s. %(jour)s %(heure)s: %(detail)s%(etat)s",
+                    rang=rang, jour=creneau.display_day(), heure=creneau.display_time(),
+                    detail=detail, etat=(" (%s)" % ", ".join(etat)) if etat else ""))
+            assistant.apercu = "\n".join(lignes) or _("No slot.")
 
     @api.depends("slot_id")
     def _compute_slot_detail(self):
         for assistant in self:
             creneau = assistant.slot_id
             assistant.slot_detail = (
-                creneau.vote_summary or _("aucune réponse")) if creneau else ""
+                creneau.vote_summary or _("no answer")) if creneau else ""
 
     def action_confirm(self):
         """Fixe la rencontre et ouvre le rendez-vous qui en sort."""
@@ -76,6 +78,6 @@ class AppointmentPollScheduleWizard(models.TransientModel):
         if self.slot_id.poll_id != self.poll_id:
             # ⚠️ Le domaine de la vue n'autorise rien : un client bricolé peut
             # poster l'identifiant d'un créneau d'un autre sondage.
-            raise UserError(_("Ce créneau n'appartient pas à ce sondage."))
+            raise UserError(_("This slot does not belong to this poll."))
         self.poll_id.action_schedule(self.slot_id)
         return self.poll_id.action_view_booking()

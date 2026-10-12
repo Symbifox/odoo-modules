@@ -83,7 +83,16 @@ conclude before a policy goes out — does not call for a tier engine.
 rejection with and without a reason, the RACI distribution, and who may give,
 write, compose and see a verdict, played as the users concerned.
 
+## Languages (v18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The lines the module writes in a document's chatter are written in the language of the person acting: the removal of an approver, and the wording used when a refusal comes without a reason (the language of whoever publishes). The approvers tab and the round table read in the user's language.
+
 ## Changelog
+
+### 18.0.1.2.0
+
+- **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`.
+- **Chatter lines** (removed approver, refusal without a reason) are written in the language of the person acting.
 
 ### 18.0.1.1.0
 
@@ -103,4 +112,4 @@ write, compose and see a verdict, played as the users concerned.
 Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
 own internal business operations; providing it to third parties as a hosted,
 managed or resold service requires a written agreement. This version converts
-to LGPL-3.0-or-later on 2030-10-02.
+to LGPL-3.0-or-later on 2030-10-12.
