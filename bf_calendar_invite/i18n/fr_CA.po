@@ -96,11 +96,6 @@ msgid "Attendees:"
 msgstr "Participants :"
 
 #. module: bf_calendar_invite
-#: model:ir.model.fields,field_description:bf_calendar_invite.field_bf_calendar_event_cancel__blocker
-msgid "Blocker"
-msgstr ""
-
-#. module: bf_calendar_invite
 #: model:ir.model,name:bf_calendar_invite.model_calendar_event
 msgid "Calendar Event"
 msgstr "Événement calendrier"
@@ -418,6 +413,14 @@ msgid ""
 msgstr "Personne ne sera prévenu : cette rencontre n'a aucun invité avec une adresse courriel à part vous."
 
 #. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/wizard/calendar_event_cancel.py:0
+msgid ""
+"Nothing would change: every meeting this choice reaches is already cancelled "
+"or over."
+msgstr "Rien ne changerait : toutes les rencontres que ce choix atteint sont déjà annulées ou terminées."
+
+#. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 msgid "Office"
 msgstr ""
@@ -632,16 +635,6 @@ msgstr ""
 #: code:addons/bf_calendar_invite/wizard/calendar_event_cancel.py:0
 msgid "There is no meeting to cancel."
 msgstr "Il n'y a aucune rencontre à annuler."
-
-#. module: bf_calendar_invite
-#. odoo-python
-#: code:addons/bf_calendar_invite/models/calendar_event.py:0
-#: code:addons/bf_calendar_invite/models/calendar_event.py:0
-msgid ""
-"This meeting is part of a series. Cancel it from the form, where Odoo can "
-"ask whether you mean this occurrence, the following ones, or the whole "
-"series."
-msgstr "Cette rencontre fait partie d'une série. Annulez-la depuis le formulaire, où Odoo peut demander s'il s'agit de cette occurrence, des suivantes, ou de toute la série."
 
 #. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
@@ -950,3 +943,66 @@ msgstr "{{ object.name }} a changé"
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_change_en
 msgid "{{ object.name }} has changed"
 msgstr "{{ object.name }} a changé"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_bf_calendar_event_cancel__scope
+msgid "Which meetings"
+msgstr "Quelles rencontres"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__bf_calendar_event_cancel__scope__self_only
+msgid "This meeting only"
+msgstr "Cette rencontre seulement"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__bf_calendar_event_cancel__scope__future_events
+msgid "This meeting and the following ones"
+msgstr "Cette rencontre et les suivantes"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__bf_calendar_event_cancel__scope__all_events
+msgid "The whole series"
+msgstr "Toute la série"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_bf_calendar_event_cancel__scope
+msgid ""
+"Only asked on a recurring meeting. \"The whole series\" means every "
+"occurrence that has not ended yet: the ones already held are left as they "
+"were."
+msgstr ""
+"Demandé seulement sur une rencontre récurrente. « Toute la série » veut dire "
+"chaque occurrence qui n'est pas encore terminée : celles qui ont déjà eu "
+"lieu restent comme elles étaient."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_bf_calendar_event_cancel__target_ids
+msgid "Meetings to cancel"
+msgstr "Rencontres à annuler"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_bf_calendar_event_cancel__target_ids
+msgid ""
+"What the chosen scope reaches. Occurrences already cancelled are not listed: "
+"nobody is told twice."
+msgstr ""
+"Ce que la portée choisie atteint. Les occurrences déjà annulées n'y figurent "
+"pas : personne n'est prévenu deux fois."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/wizard/calendar_event_cancel.py:0
+msgid "%(count)s meetings will be cancelled, from %(first)s to %(last)s."
+msgstr "%(count)s rencontres seront annulées, du %(first)s au %(last)s."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
+msgid "The meetings below are cancelled."
+msgstr "Les rencontres ci-dessous sont annulées."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
+msgid ""
+"The attached file removes these meetings from your calendar. If your\n"
+"                                                calendar still shows one of them after opening the file, delete the entry by hand."
+msgstr "Le fichier joint retire ces rencontres de votre agenda. Si l'une d'elles s'affiche encore après que vous l'avez ouvert, supprimez l'entrée à la main."

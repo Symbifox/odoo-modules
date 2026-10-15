@@ -57,7 +57,20 @@
     #   `resource_calendar_id` (from `resource`, which this module does not depend
     #   on), and the forced English template tests assumed en_US was active. They
     #   failed on any fresh database, so in the public CI.
-    "version": "18.0.6.1.1",
+    # 18.0.6.2.2: the cancel dialog accepts a recurring meeting. It asks "this
+    #   meeting only", "this one and the following ones" or "the whole series"
+    #   (occurrences already held, or already cancelled, are left as they were),
+    #   with the number of dates and the first and last written under the choice.
+    #   One email per action and per series, whose .ics carries one cancelling
+    #   VEVENT per date, each named by its RECURRENCE-ID (of the same type as its
+    #   DTSTART, floating for an all-day meeting). The base event of a series,
+    #   once cancelled, is named by its slot too: the series UID without a
+    #   RECURRENCE-ID means "the whole series" to a calendar client. The form's
+    #   button no longer sends the user back to the form they are already on.
+    #   An all-day meeting no longer makes the cancellation and change notices
+    #   fail to render as soon as a guest has an address: `format_date(value=...)`,
+    #   where core's helper is `format_date(date, ...)`.
+    "version": "18.0.6.2.2",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

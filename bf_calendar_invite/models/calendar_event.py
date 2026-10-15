@@ -419,24 +419,49 @@ class CalendarEvent(models.Model):
             "context": {"default_event_ids": [(6, 0, self.ids)]},
         }
 
-    def _bf_cancel_blocker(self):
-        """Why this meeting cannot be cancelled from here, or False.
+    def _bf_series_scope(self, scope):
+        """The live meetings a cancellation reaches, for the scope chosen.
 
-        ⚠️ A recurring meeting is refused rather than handled. Writing on one
-        occurrence of a series raises core's "this event / this and following /
-        all events" question, and a dialog that does not show that choice would
-        answer it silently — on a whole series of meetings, and by email. The
-        popover hides the button for the same reason; this is the guard for
-        every other way in.
+        The three answers core asks of anyone who touches a series, and what
+        each one means here:
+
+        * `self_only`: this meeting;
+        * `future_events`: this one and every later occurrence of the series;
+        * `all_events`: every occurrence that has not ended yet. Occurrences
+          already behind us are left alone on purpose: they took place, a
+          strike-through would rewrite the agenda's past, and a guest's own
+          calendar keeps them.
+
+        Occurrences already cancelled are dropped, so the dialog counts what
+        will actually change and a second pass tells nobody twice.
+
+        ⚠️ Nothing here goes through core's `recurrence_update`. Writing the
+        status on a set of occurrences is an ordinary write on fields that are
+        not recurrence fields: core applies it where it is told to and asks no
+        question. The old refusal protected against a dialog answering that
+        question silently; there is no question left to answer, and the scope
+        is now chosen, in plain words, by the person cancelling.
         """
         self.ensure_one()
-        if self.recurrency or self.recurrence_id:
-            return _(
-                "This meeting is part of a series. Cancel it from the form, "
-                "where Odoo can ask whether you mean this occurrence, the "
-                "following ones, or the whole series."
-            )
-        return False
+        event = self._origin
+        recurrence = event.recurrence_id
+        if scope == "self_only" or not recurrence:
+            chosen = event
+        else:
+            occurrences = recurrence.calendar_event_ids.sorted("start")
+            if scope == "future_events":
+                chosen = occurrences.filtered(lambda e: e.start >= event.start)
+            else:
+                now = fields.Datetime.now()
+                today = fields.Date.context_today(self, now)
+                # An all-day meeting is stored with its end at 18:00 UTC of its last day:
+                # no instant anyone lives in. It has ended when that last DAY is behind the
+                # person cancelling, in their own time zone.
+                chosen = occurrences.filtered(
+                    lambda e: (e.stop_date or e.stop.date()) >= today
+                    if e.allday else e.stop >= now
+                )
+        return chosen.filtered(lambda e: e.bf_event_status != "cancelled")
 
     def _bf_cancel(self, reason=None, notify=False):
         """Mark these meetings cancelled, free their slot, keep them in place.
@@ -461,10 +486,6 @@ class CalendarEvent(models.Model):
         attention, and the commonest way to do it is a double click.
         """
         to_cancel = self.filtered(lambda e: e.bf_event_status != "cancelled")
-        for event in to_cancel:
-            blocker = event._bf_cancel_blocker()
-            if blocker:
-                raise UserError(blocker)
         if not to_cancel:
             return self.env["calendar.event"]
 
@@ -535,6 +556,12 @@ class CalendarEvent(models.Model):
         carries is the cancellation, and a per-guest send would put one
         `METHOD:CANCEL` per recipient on the same UID for no gain.
 
+        ⚠️ One message per ACTION, not per date. Cancelling a series of twenty
+        meetings writes to the same guests once, with one `.ics` carrying a
+        cancellation per date, instead of twenty messages in a row. Occurrences
+        are grouped by who would be written to: a guest invited to only some of
+        the dates is told about those, and not about the others.
+
         ⚠️ `force_send=False`. The notice goes through the outgoing queue like
         every other message, so a mail server that is down delays it instead of
         raising inside the dialog and rolling the cancellation back with it.
@@ -550,17 +577,53 @@ class CalendarEvent(models.Model):
             )
             return False
         sent = self.env["mail.mail"].sudo().browse()
-        for event in self:
+        groups = {}
+        for event in self.sorted("start"):
             recipients = event._bf_cancellation_recipients()
             if not recipients:
                 continue
-            mail_id = template.sudo().send_mail(
-                event.id,
+            # ⚠️ One notice per SERIES and guest list, not per guest list alone. Grouped on
+            # guests only, two unrelated meetings with the same guests went out as one
+            # message titled with the first one's name and carrying both dates. Alone,
+            # a meeting that is not in a series is its own group.
+            key = (event.recurrence_id.id or -event.id, frozenset(recipients.ids))
+            groups.setdefault(key, []).append(event)
+        for (_series, recipient_ids), events in groups.items():
+            batch = self.browse([event.id for event in events])
+            mail_id = template.sudo().with_context(
+                bf_cancellation_batch=batch.ids,
+            ).send_mail(
+                batch[0].id,
                 force_send=False,
-                email_values={"recipient_ids": [(6, 0, recipients.ids)]},
+                email_values={"recipient_ids": [(6, 0, sorted(recipient_ids))]},
             )
             sent |= self.env["mail.mail"].sudo().browse(mail_id)
         return sent
+
+    def _bf_cancellation_batch(self):
+        """The meetings one cancellation notice speaks about.
+
+        Read from the context set by `_bf_send_cancellation_notice`, so the
+        body and the attachment, rendered separately by the template engine,
+        agree on the list. Outside a send, the notice is about this meeting.
+        """
+        self.ensure_one()
+        # ⚠️ The ids come from the context, and a context travels in the request:
+        # anyone who may call `mail.template.send_mail` on a meeting they can read
+        # could put other ids in it and have their dates, and their `.ics`, rendered.
+        # Only the module's own send is believed (it runs as superuser), and only
+        # for the occurrences of THIS series.
+        if not self.env.su:
+            return self
+        ids = self.env.context.get("bf_cancellation_batch") or []
+        if self.id not in ids:
+            return self
+        batch = self.browse(ids).exists()
+        if self.recurrence_id:
+            batch = batch.filtered(lambda e: e.recurrence_id == self.recurrence_id)
+        else:
+            batch = self
+        return batch.sorted("start")
 
     # ------------------------------------------------------------
     # Poke
@@ -1099,7 +1162,12 @@ class CalendarEvent(models.Model):
             return self._bf_ics_uid_get(), None, bool(self.rrule)
 
         base = recurrence.base_event_id
-        if base and base == self:
+        # ⚠️ A CANCELLED base occurrence is named by its slot like any other.
+        # The series UID with no RECURRENCE-ID is, for a calendar client, "the
+        # whole series": cancelling only the first Tuesday of a weekly meeting
+        # would take every Tuesday out of the guests' calendars. Cancelling
+        # the whole series is the same set of dates, one cancellation each.
+        if base and base == self and self.bf_event_status != "cancelled":
             return base._bf_ics_uid_get(), None, True
 
         anchor = self.bf_ics_recurrence_id or (
@@ -1269,6 +1337,33 @@ class CalendarEvent(models.Model):
             return tail.strip()
         return html2plaintext(unquote(head)).strip()
 
+    def _bf_merged_ics(self):
+        """One `.ics` carrying a VEVENT per meeting of this set, or b"".
+
+        A series cancelled in one go is one message, so it is one attachment:
+        a single VCALENDAR with a `METHOD:CANCEL` VEVENT per date, each named
+        by its own RECURRENCE-ID. Concatenating the per-event files would put
+        several VCALENDARs in one attachment, which clients read as the first
+        one and drop the rest of.
+        """
+        files = self._get_ics_file()
+        try:
+            import vobject
+        except ImportError:  # pragma: no cover - vobject ships with Odoo
+            return b""
+        head = None
+        for event in self.sorted("start"):
+            raw = files.get(event.id)
+            if not raw:
+                continue
+            calendar = vobject.readOne(raw.decode("utf-8"))
+            if head is None:
+                head = calendar
+                continue
+            for vevent in calendar.vevent_list:
+                head.add(vevent)
+        return head.serialize().encode("utf-8") if head is not None else b""
+
     def _get_ics_file(self):
         """Give every emitted `.ics` an identity, a revision and a slot.
 
@@ -1334,8 +1429,14 @@ class CalendarEvent(models.Model):
                 if recurrence_id:
                     if hasattr(vevent, "recurrence_id"):
                         del vevent.contents["recurrence-id"]
-                    vevent.add("recurrence-id").value = pytz.utc.localize(
-                        fields.Datetime.to_datetime(recurrence_id)
+                    slot = fields.Datetime.to_datetime(recurrence_id)
+                    # ⚠️ RFC 5545 §3.8.4.4: the value type and time reference of
+                    # RECURRENCE-ID are those of DTSTART. Core writes an all-day
+                    # meeting's DTSTART as a FLOATING date-time (no `Z`), so a UTC
+                    # RECURRENCE-ID names an instant no instance of the series has,
+                    # and the client does not match it.
+                    vevent.add("recurrence-id").value = (
+                        slot if event.allday else pytz.utc.localize(slot)
                     )
 
                 address, cn = event._bf_ics_organizer()

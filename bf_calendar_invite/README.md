@@ -77,11 +77,11 @@ The SMS button opens the composer with an empty body.
   against a list rather than against an idea of one.
 
   "Delete" comes back on a meeting that is **already cancelled**: the cleanup
-  is still available, just after the fact. It also stays on a recurring
-  meeting, where "Cancel" is not offered — writing on one occurrence raises
-  core's "this event / this and following / all events" question, and a dialog
-  that cannot show that choice would answer it silently, on a whole series, by
-  email.
+  is still available, just after the fact. The popover also keeps "Delete" on a
+  recurring meeting, where "Cancel" is not offered: a bubble has no room to show
+  which dates a choice would reach. Cancel a series from the form's button
+  instead, whose dialog asks that question with the dates written out (see
+  *Cancelling a recurring meeting*, from **v18.0.6.2.2**).
 
   Writing the status by hand does the same thing. The coupling between the
   status and `show_as` lives in `write()`, not in the cancel path, which makes
@@ -178,8 +178,13 @@ moved Thursday describes a whole weekly series. Three shapes here:
 
 - a plain meeting: its own UID, no `RECURRENCE-ID`, no `RRULE`;
 - the **base** event of a series: the series UID and the `RRULE`;
-- **any other occurrence**: the series UID plus a `RECURRENCE-ID` naming the
-  slot, and no `RRULE`.
+- **any other occurrence**, and the base itself once it is **cancelled**: the
+  series UID plus a `RECURRENCE-ID` naming the slot, and no `RRULE`.
+
+⚠️ A cancelled base is named by its slot. To a calendar client the series UID
+without a `RECURRENCE-ID` means "the whole series": cancelling only the first
+meeting with the base's identity would remove every meeting from the guests'
+calendars.
 
 ⚠️ The `RECURRENCE-ID` is the **original** slot, not the new one — it answers
 "which occurrence moved". It is captured **before** the write: once `start` is
@@ -202,6 +207,35 @@ text, in plain>` — a `data:` URI that lost its scheme on the way in. The plain
 half is taken as it stands; it comes from the producer, not from us. ⚠️ Only the
 **outgoing copy** is repaired: the field itself keeps its value, and the next
 event ingested arrives the same way.
+
+### Cancelling a recurring meeting
+
+From **v18.0.6.2.2** the cancel dialog, on a series, asks the question core asks
+of anyone who edits one, with the dates written under the choice (how many, the
+first and the last touched):
+
+- **this meeting only** — the default, because the safe state touches one date;
+- **this meeting and the following ones**;
+- **the whole series** — every occurrence that has not ended yet. The ones
+  already held are left as they were: striking the past out of a calendar would
+  rewrite it.
+
+This does not go through core's `recurrence_update`. Writing the status on
+occurrences is an ordinary write on fields that are not recurrence fields, so
+core applies it where it is told and asks nothing. The occurrences stay in their
+series, struck through, with the slot given back.
+
+**One email per action**, not one per date. Its `.ics` is a single
+`VCALENDAR` with `METHOD:CANCEL` and one `VEVENT` per date, each named by its
+`RECURRENCE-ID` and carrying a raised `SEQUENCE` (one calendar per file: several
+concatenated would be read by a client as the first one only). Occurrences are
+grouped by guest list, so someone invited to some of the dates hears about those
+only, and each list gets its own email. An occurrence already cancelled is never
+announced twice, and a double click is not an error.
+
+A series with no end is materialised by core as several hundred dates. Cancelling
+all of them puts as many `VEVENT`s in the one attachment and one line per date in
+the body: the attachment stays whole, but a mail client may clip the body.
 
 ## The shared mail layout (6.1)
 

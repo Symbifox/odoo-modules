@@ -18,6 +18,9 @@ from datetime import datetime, timedelta
 from odoo import fields
 from odoo.tests.common import TransactionCase, tagged
 
+# La ligne qui nomme le jour de la rencontre dans le corps rendu. Une par date.
+DATE_ROW = "color:#6B7280;margin-top:4px;"
+
 
 @tagged("post_install", "-at_install")
 class TestCalendarChangeNotice(TransactionCase):
@@ -268,6 +271,41 @@ class TestCalendarChangeNotice(TransactionCase):
         self.assertNotIn("NoneType", rendu)
         self.assertIn(event._bf_change_format("stop", origine), rendu)
         self.assertIn(event._bf_change_format("stop", event.stop), rendu)
+
+    def test_le_message_rendu_nomme_le_jour_de_la_rencontre(self):
+        """La ligne qui nomme le jour de la rencontre est écrite, une seule fois.
+
+        Une boucle sur un nom que le gabarit ne définit pas ne dit rien et ne
+        rend rien : l'invité lirait un avis qui ne dit pas de quelle rencontre
+        il parle. Il ne suffit pas de regarder l'avant et l'après.
+        """
+        event = self._event()
+        event.write({"stop": event.stop + timedelta(minutes=30)})
+        gabarit = self.env.ref("bf_calendar_invite.mail_template_calendar_change")
+        rendu = gabarit._render_field("body_html", event.ids)[event.id]
+        self.assertEqual(rendu.count(DATE_ROW), 1, "une ligne de date, ni zéro ni deux")
+        annee = fields.Datetime.context_timestamp(event, event.start).year
+        ligne = rendu.split(DATE_ROW, 1)[1].split("</div>", 1)[0]
+        self.assertIn(str(annee), ligne, "la ligne doit écrire la date, pas rester vide")
+
+    def test_un_evenement_toute_la_journee_se_rend(self):
+        """Le gabarit appelait `format_date(value=…)` ; l'aide d'Odoo veut `date=`.
+
+        Déjà dans 6.1.1, sur la branche « toute la journée » seulement : l'avis
+        plantait au rendu (« Échec du rendu du modèle QWeb ») dès qu'un invité
+        avait une adresse.
+        """
+        jour = (fields.Datetime.now() + timedelta(days=9)).date()
+        event = self._event(allday=True, start=jour, stop=jour,
+                            start_date=jour, stop_date=jour)
+        self.assertTrue(event.allday)
+        event.write({"location": "Salle du fond"})
+        gabarit = self.env.ref("bf_calendar_invite.mail_template_calendar_change")
+        rendu = gabarit._render_field("body_html", event.ids)[event.id]
+        self.assertNotIn("NoneType", rendu)
+        self.assertEqual(rendu.count(DATE_ROW), 1)
+        ligne = rendu.split(DATE_ROW, 1)[1].split("</div>", 1)[0]
+        self.assertIn(str(jour.year), ligne)
 
     def test_la_recherche_trouve_ce_qui_est_du(self):
         event = self._event()

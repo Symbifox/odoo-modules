@@ -6,11 +6,13 @@ and stays forever in the guests' own calendars. Everything here therefore
 walks the three things a cancellation has to do that a delete never did —
 leave the meeting visible, give the time back, and (when asked) actually reach
 the guests — plus the two it must NOT do: notify twice, or answer the
-recurrence question on its own.
+recurrence question on its own (see `test_calendar_cancel_series` for the
+series).
 """
 
-from odoo import Command
-from odoo.exceptions import UserError
+from datetime import timedelta
+
+from odoo import Command, fields
 from odoo.tests import TransactionCase, tagged
 from odoo.tools.safe_eval import safe_eval
 
@@ -259,19 +261,26 @@ class TestCalendarCancel(TransactionCase):
 
     # --- what it refuses to do -----------------------------------------
 
-    def test_a_series_is_refused_rather_than_guessed(self):
-        """🔴 Answering the recurrence question silently is the failure mode.
+    def test_a_series_is_no_longer_refused(self):
+        """🔴 Le refus d'avant renvoyait au formulaire, où l'on était déjà.
 
-        "This event / this and following / all events" cannot be answered from
-        a dialog that does not show the choice, and getting it wrong cancels a
-        whole series of meetings by email.
+        La portée se choisit maintenant dans l'assistant (voir
+        `test_calendar_cancel_series`). Ce qui compte ici : annuler UNE
+        occurrence ne touche qu'elle, et ne pose aucune question au cœur.
         """
-        event = self._make_event(recurrency=True, rrule_type="weekly",
-                                 count=3, mon=True, event_tz="UTC",
-                                 end_type="count")
-        self.assertTrue(event._bf_cancel_blocker())
-        with self.assertRaises(UserError):
-            event._bf_cancel()
+        # Quotidienne et relative à maintenant : une règle hebdomadaire sur une
+        # date en dur ne rend pas le même nombre d'occurrences selon le jour.
+        start = fields.Datetime.now().replace(microsecond=0) + timedelta(days=2)
+        event = self._make_event(
+            start=start, stop=start + timedelta(hours=1),
+            recurrency=True, rrule_type="daily", interval=1,
+            count=3, event_tz="UTC", end_type="count")
+        occurrences = event.recurrence_id.calendar_event_ids.sorted("start")
+        self.assertEqual(len(occurrences), 3)
+        occurrences[1]._bf_cancel()
+        self.assertEqual(occurrences[1].bf_event_status, "cancelled")
+        self.assertNotEqual(occurrences[0].bf_event_status, "cancelled")
+        self.assertNotEqual(occurrences[2].bf_event_status, "cancelled")
 
     # --- the neighbour -------------------------------------------------
 

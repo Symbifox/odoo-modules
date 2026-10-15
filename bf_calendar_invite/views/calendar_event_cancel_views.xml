@@ -15,14 +15,23 @@
         <field name="model">bf.calendar.event.cancel</field>
         <field name="arch" type="xml">
             <form string="Cancel the meeting">
-                <field name="blocker" invisible="1"/>
+                <field name="has_series" invisible="1"/>
                 <field name="recipient_warning" invisible="1"/>
-                <div class="alert alert-warning" role="alert" invisible="not blocker">
-                    <field name="blocker" nolabel="1" readonly="1"/>
-                </div>
-                <group invisible="blocker">
+                <group>
                     <field name="event_ids" widget="many2many_tags" readonly="1"
                            options="{'no_create': True}"/>
+                    <!--
+                      Asked only on a series, and asked with the dates written
+                      out underneath. Core asks the same question of anyone who
+                      edits a series, in a box that lists nothing; here the
+                      answer is chosen against the count and the first and last
+                      date it reaches.
+                    -->
+                    <field name="scope" widget="radio" invisible="not has_series"/>
+                    <div class="text-muted" colspan="2"
+                         invisible="not has_series or not target_summary">
+                        <field name="target_summary" nolabel="1" readonly="1"/>
+                    </div>
                     <field name="notify"/>
                     <field name="recipient_ids" widget="many2many_tags" readonly="1"
                            invisible="not notify or not recipient_ids"
@@ -35,7 +44,7 @@
                 </group>
                 <footer>
                     <button name="action_apply" type="object" string="Cancel the meeting"
-                            class="btn-primary" invisible="blocker"/>
+                            class="btn-primary"/>
                     <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

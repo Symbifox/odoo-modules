@@ -45,9 +45,9 @@ patch(AttendeeCalendarCommonPopover.prototype, {
      * worse than no button group: the popover closes either way, so the failure
      * looks like a successful change until the page is reloaded.
      *
-     * Also hidden on a recurring event. Writing the status there raises the
-     * "this event / this and following / all events" question, and answering it
-     * from a popover with no way to show the choice would silently pick one.
+     * Also hidden on a recurring event: from a popover there is no way to say, or
+     * to show, whether a status reaches this date or the series. The form, where
+     * the dates are written out, is the place for that choice.
      */
     get bfDisplayStatusChoice() {
         return (
@@ -88,10 +88,10 @@ patch(AttendeeCalendarCommonPopover.prototype, {
      * Une rencontre qui n'a pas encore été annulée peut l'être d'ici.
      *
      * Masqué sur une série, pour la même raison que les boutons de statut
-     * au-dessus : écrire sur une occurrence pose la question « cette
-     * rencontre / celle-ci et les suivantes / toute la série », et une bulle
-     * qui ne sait pas la montrer y répondrait toute seule — sur une série
-     * entière, et par courriel.
+     * au-dessus : une bulle n'a pas la place de montrer quelles dates un choix
+     * atteindrait. On annule une série depuis le bouton du formulaire, dont
+     * l'assistant pose la question « cette rencontre / celle-ci et les
+     * suivantes / toute la série » avec les dates écrites dessous.
      */
     get bfDisplayCancel() {
         return (

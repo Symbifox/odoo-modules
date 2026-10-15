@@ -2,5 +2,6 @@ from . import test_calendar_invite
 from . import test_calendar_status_poke
 from . import test_calendar_ics_identity
 from . import test_calendar_cancel
+from . import test_calendar_cancel_series
 from . import test_calendar_change_notice
 from . import test_mise_en_page

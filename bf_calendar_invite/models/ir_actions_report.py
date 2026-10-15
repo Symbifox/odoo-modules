@@ -36,6 +36,13 @@ class IrActionsReport(models.Model):
                 "not to %(model)s."
             ) % {"model": report.model})
         events = self.env["calendar.event"].browse(res_ids).exists()
+        # A cancellation notice that speaks about several dates carries them in
+        # ONE file; the template renders it for the first date and the batch
+        # comes through the context (`_bf_send_cancellation_notice`).
+        if len(events) == 1:
+            batch = events._bf_cancellation_batch()
+            if len(batch) > 1:
+                return batch._bf_merged_ics(), "ics"
         ics_files = events._get_ics_file()
         # vobject is an optional dependency of core; without it _get_ics_file
         # returns {} and there is simply nothing to attach.
