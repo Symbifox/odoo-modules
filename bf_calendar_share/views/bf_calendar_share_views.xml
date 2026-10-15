@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_calendar_share_view_list" model="ir.ui.view">
+        <field name="name">bf.calendar.share.list</field>
+        <field name="model">bf.calendar.share</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="owner_id" column_invisible="not context.get('bf_share_show_owner')"
+                       readonly="1" force_save="1" widget="many2one_avatar_user"/>
+                <field name="grantee_id" widget="many2one_avatar_user"
+                       readonly="context.get('bf_share_show_owner')"
+                       options="{'no_create': True, 'no_open': True}"/>
+                <field name="level" readonly="context.get('bf_share_show_owner')"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_calendar_share_action_mine" model="ir.actions.act_window">
+        <field name="name">Share my calendar</field>
+        <field name="res_model">bf.calendar.share</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('owner_id', '=', uid)]</field>
+        <field name="context">{'default_owner_id': uid}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Share your calendar with a colleague</p>
+            <p>Choose what each colleague sees of the meetings you organize: your
+               availability only, titles and locations, all details, or the right
+               to edit them. Without a line here, colleagues see what your
+               preferences say (all details by default). People invited to a
+               meeting always see it, and a private meeting always shows as Busy.</p>
+        </field>
+    </record>
+
+    <record id="bf_calendar_share_action_granted" model="ir.actions.act_window">
+        <field name="name">Calendars shared with me</field>
+        <field name="res_model">bf.calendar.share</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('grantee_id', '=', uid)]</field>
+        <field name="context">{'bf_share_show_owner': True, 'create': False, 'delete': False}</field>
+    </record>
+
+    <menuitem id="bf_calendar_share_menu_root" name="Sharing"
+              parent="calendar.mail_menu_calendar" sequence="20"/>
+    <menuitem id="bf_calendar_share_menu_mine" action="bf_calendar_share_action_mine"
+              parent="bf_calendar_share_menu_root" sequence="10"/>
+    <menuitem id="bf_calendar_share_menu_granted" action="bf_calendar_share_action_granted"
+              parent="bf_calendar_share_menu_root" sequence="20"/>
+
+    <record id="res_users_form_view_preferences_bf_share" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.bf_calendar_share</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="calendar.res_users_form_view_calendar_default_privacy"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='calendar_default_privacy']" position="after">
+                <field name="bf_calendar_share_default" readonly="0" invisible="share"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

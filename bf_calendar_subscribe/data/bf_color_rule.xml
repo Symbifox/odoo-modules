@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Un agenda abonné a sa couleur dans la grille. Séquence 4 : avant les plages
+     retenues (5) et les plages de travail (6). Modifiable, jamais réécrite. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_subscription" model="bf.color.rule">
+        <field name="name">External calendars</field>
+        <field name="sequence">4</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="field_id" ref="bf_calendar_subscribe.field_calendar_event__bf_subscription_id"/>
+        <field name="only_listed" eval="False"/>
+    </record>
+</odoo>

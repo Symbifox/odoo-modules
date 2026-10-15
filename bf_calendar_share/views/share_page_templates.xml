@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La page d'un lien de partage : autonome (aucun actif d'Odoo, aucune session),
+         en lecture, dans la langue de la personne qui partage. -->
+    <template id="share_page" name="Calendar sharing page">
+        <html t-att-lang="(owner.lang or 'en_US').replace('_', '-')">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title t-esc="'%s' % owner.name"/>
+                <style>
+                    :root { --fond: #ffffff; --texte: #2E3132; --doux: #6b7174; --trait: #e3e6e8; --accent: #29ABE2; }
+                    @media (prefers-color-scheme: dark) {
+                        :root { --fond: #1d2021; --texte: #e8eaeb; --doux: #a3a9ac; --trait: #34393b; }
+                    }
+                    body { margin: 0; background: var(--fond); color: var(--texte);
+                           font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+                    main { max-width: 720px; margin: 0 auto; padding: 24px 16px 48px; }
+                    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+                    .sous { color: var(--doux); margin: 0 0 24px; }
+                    h2 { font-size: 1rem; margin: 24px 0 8px; padding-bottom: 4px;
+                         border-bottom: 2px solid var(--accent); text-transform: capitalize; }
+                    ul { list-style: none; margin: 0; padding: 0; }
+                    li { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--trait); }
+                    .heure { flex: 0 0 120px; color: var(--doux); font-variant-numeric: tabular-nums; }
+                    .lieu, .desc { color: var(--doux); font-size: .9rem; }
+                    .desc { white-space: pre-line; }
+                    .vide { color: var(--doux); }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <h1 t-esc="owner.name"/>
+                    <p class="sous">
+                        <t t-if="link.level == 'freebusy'">Availability for the next four weeks</t>
+                        <t t-else="">Calendar for the next four weeks</t>
+                        <t t-if="owner.tz"> (<t t-esc="owner.tz"/>)</t>
+                    </p>
+                    <t t-if="not jours">
+                        <p class="vide">Nothing planned.</p>
+                    </t>
+                    <t t-foreach="jours" t-as="jour">
+                        <h2 t-esc="jour[0].strftime('%Y-%m-%d')"/>
+                        <ul>
+                            <t t-foreach="jour[1]" t-as="ligne">
+                                <li>
+                                    <span class="heure" t-esc="ligne[0]"/>
+                                    <span>
+                                        <strong t-esc="ligne[1]['resume']"/>
+                                        <t t-if="ligne[1].get('lieu')">
+                                            <br/><span class="lieu" t-esc="ligne[1]['lieu']"/>
+                                        </t>
+                                        <t t-if="ligne[1].get('description')">
+                                            <br/><span class="desc" t-esc="ligne[1]['description']"/>
+                                        </t>
+                                    </span>
+                                </li>
+                            </t>
+                        </ul>
+                    </t>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

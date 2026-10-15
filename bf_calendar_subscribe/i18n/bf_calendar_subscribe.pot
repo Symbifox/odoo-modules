@@ -1,0 +1,367 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calendar_subscribe
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 03:51+0000\n"
+"PO-Revision-Date: 2026-10-15 03:51+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "%s unreadable or unsupported events were skipped."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "A subscription cannot be moved to someone else's calendar."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__import_free
+msgid "Also import free events"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_calendar_event__bf_subscription_key
+msgid "Bf Subscription Key"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_calendar_event__bf_subscription_serie
+msgid "Bf Subscription Serie"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "Busy"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__import_free
+msgid ""
+"By default only busy events are imported. Busy imported events close online "
+"booking slots; free ones do not."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model,name:bf_calendar_subscribe.model_calendar_event
+msgid "Calendar Event"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.actions.server,name:bf_calendar_subscribe.ir_cron_bf_calendar_subscription_ir_actions_server
+msgid "Calendar subscriptions: refresh external calendars"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__state__error
+msgid "Error"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__event_count
+msgid "Event Count"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.ui.view,arch_db:bf_calendar_subscribe.bf_calendar_subscription_view_form
+msgid "Events"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_calendar_event__bf_subscription_id
+msgid "External calendar"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model,name:bf_calendar_subscribe.model_bf_calendar_subscription
+msgid "External calendar subscription"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:bf.color.rule,name:bf_calendar_subscribe.bf_color_rule_subscription
+#: model:ir.actions.act_window,name:bf_calendar_subscribe.bf_calendar_subscription_action
+#: model:ir.ui.menu,name:bf_calendar_subscribe.bf_calendar_subscription_menu_root
+msgid "External calendars"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__name
+msgid "For example: Main client (Outlook)."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__future_days
+msgid "Future Days"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__http_etag
+msgid "Http Etag"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__http_last_modified
+msgid "Http Last Modified"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__import_location
+msgid "Import locations"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__last_error
+msgid "Last Error"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__last_fetch
+msgid "Last Fetch"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__state__new
+msgid "Never read"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__privacy__confidential
+msgid "Only internal users"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "Only the first %s occurrences were imported."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__color_hex
+msgid "Own color"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__past_days
+msgid "Past Days"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.actions.act_window,help:bf_calendar_subscribe.bf_calendar_subscription_action
+msgid ""
+"Paste the address a calendar publishes (Outlook, Google, Apple, Nextcloud).\n"
+"               Its events appear in your calendar in their own colour, read only, and its\n"
+"               busy times are no longer offered for online booking."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__privacy
+msgid "Privacy of imported events"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__privacy__private
+msgid "Private"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__privacy
+msgid "Private: colleagues and sharing links only see Busy."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__privacy__public
+msgid "Public"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__url
+msgid "Published address"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.ui.view,arch_db:bf_calendar_subscribe.bf_calendar_subscription_view_form
+msgid ""
+"Read only: events from this calendar are changed in that calendar, never here.\n"
+"                        Their busy times close online booking slots. Only open standards are used\n"
+"                        (iCalendar over https); in Outlook, publish the calendar and paste its ICS link."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__refresh_minutes
+msgid "Refresh every (minutes)"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.ui.view,arch_db:bf_calendar_subscribe.bf_calendar_subscription_view_form
+msgid "Refresh now"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.actions.act_window,help:bf_calendar_subscribe.bf_calendar_subscription_action
+msgid "Show another calendar in yours"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__owner_id
+msgid "Shown in the calendar of"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__state
+msgid "State"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,field_description:bf_calendar_subscribe.field_bf_calendar_subscription__color_text
+msgid "Text color"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "The calendar could not be read (%s)."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "The calendar server answered %s."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields,help:bf_calendar_subscribe.field_bf_calendar_subscription__url
+msgid ""
+"The iCalendar address the other calendar publishes (https:// or webcal://). "
+"In Outlook: Settings > Calendar > Shared calendars > Publish a calendar, "
+"then copy the ICS link. Keep it private: it gives read access to that "
+"calendar."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "The vobject library is missing."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "This address does not return a calendar."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/subscription.py:0
+msgid "This address does not return a readable calendar."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/calendar_event.py:0
+msgid ""
+"This event comes from a subscribed external calendar: change it in that "
+"calendar."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#. odoo-python
+#: code:addons/bf_calendar_subscribe/models/calendar_event.py:0
+msgid ""
+"This event comes from a subscribed external calendar: it cannot be deleted "
+"here."
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model:ir.model.fields.selection,name:bf_calendar_subscribe.selection__bf_calendar_subscription__state__ok
+msgid "Up to date"
+msgstr ""
+
+#. module: bf_calendar_subscribe
+#: model_terms:ir.ui.view,arch_db:bf_calendar_subscribe.bf_calendar_subscription_view_form
+msgid "e.g. Main client (Outlook)"
+msgstr ""

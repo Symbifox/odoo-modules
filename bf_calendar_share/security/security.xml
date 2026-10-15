@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pour les comptes techniques qui lisent les agendas de tous (traitement des
+         rencontres, Gen, intégrations) : un niveau restreint posé par quelqu'un ne
+         doit pas les rendre aveugles. Personne n'y est mis d'office. -->
+    <record id="group_calendar_see_all" model="res.groups">
+        <field name="name">Calendar: see every calendar in full</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="comment">Ignores the calendar sharing levels set by users (private meetings stay hidden). For technical accounts only.</field>
+    </record>
+
+    <!-- Je gère les partages de MON agenda ; je lis ceux qu'on m'accorde. -->
+    <record id="rule_bf_calendar_share_own" model="ir.rule">
+        <field name="name">Calendar shares: my own calendar</field>
+        <field name="model_id" ref="model_bf_calendar_share"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_bf_calendar_share_granted" model="ir.rule">
+        <field name="name">Calendar shares: granted to me (read)</field>
+        <field name="model_id" ref="model_bf_calendar_share"/>
+        <field name="domain_force">[('grantee_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_bf_calendar_share_system" model="ir.rule">
+        <field name="name">Calendar shares: administrators</field>
+        <field name="model_id" ref="model_bf_calendar_share"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <!-- Un lien ne se voit, ne se modifie et ne se retire que par la personne dont il
+         partage l'agenda ; son journal d'accès aussi. -->
+    <record id="rule_bf_calendar_share_link_own" model="ir.rule">
+        <field name="name">Calendar links: my own</field>
+        <field name="model_id" ref="model_bf_calendar_share_link"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_bf_calendar_share_access_own" model="ir.rule">
+        <field name="name">Calendar link accesses: my own links</field>
+        <field name="model_id" ref="model_bf_calendar_share_access"/>
+        <field name="domain_force">[('link_id.owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Inventaire de ce qui sort vers l'extérieur, en lecture, pour les administrateurs
+         (Loi 25 : savoir quels agendas sont partagés, avec qui, et qui les lit). -->
+    <record id="rule_bf_calendar_share_link_admin" model="ir.rule">
+        <field name="name">Calendar links: administrators read all</field>
+        <field name="model_id" ref="model_bf_calendar_share_link"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_bf_calendar_share_access_admin" model="ir.rule">
+        <field name="name">Calendar link accesses: administrators read all</field>
+        <field name="model_id" ref="model_bf_calendar_share_access"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

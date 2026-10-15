@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- L'adresse publiée donne accès à l'autre agenda : seule la personne qui s'abonne la voit. -->
+    <record id="rule_bf_calendar_subscription_own" model="ir.rule">
+        <field name="name">Calendar subscriptions: my own</field>
+        <field name="model_id" ref="model_bf_calendar_subscription"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

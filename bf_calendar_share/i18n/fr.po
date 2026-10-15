@@ -1,0 +1,766 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 03:51+0000\n"
+"PO-Revision-Date: 2026-10-15 03:51+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share.py:0
+msgid "A calendar can only be shared with an internal user here."
+msgstr "Ici, un agenda ne se partage qu'avec un usager interne."
+
+#. module: bf_calendar_share
+#: model_terms:ir.actions.act_window,help:bf_calendar_share.bf_calendar_share_link_action
+msgid ""
+"A link gives a read-only view of your calendar at the level you choose:\n"
+"               availability only, titles and locations, or all details. It works with\n"
+"               Outlook, Google, Apple and Thunderbird (open standards only), and as a web\n"
+"               page. Private meetings always show as Busy. Links expire after 90 days by\n"
+"               default and can be revoked at any time."
+msgstr ""
+"Un lien donne une vue en lecture seule de votre agenda, au niveau choisi : "
+"disponibilités seulement, titres et lieux, ou tous les détails. Il marche "
+"avec Outlook, Google, Apple et Thunderbird (standards ouverts seulement), et"
+" comme page web. Une rencontre privée paraît toujours « Occupé ». Les liens "
+"expirent après 90 jours par défaut et se retirent à tout moment."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid ""
+"A web page with the next four weeks, for people without a calendar "
+"application."
+msgstr ""
+"Une page web des quatre prochaines semaines, pour qui n'a pas d'application "
+"d'agenda."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__access_count
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__access_ids
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "Accesses"
+msgstr "Accès"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_needaction
+msgid "Action Needed"
+msgstr "Action nécessaire"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__active
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du type d'activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__ip
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "Addresses to send"
+msgstr "Adresses à envoyer"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__date_expiry
+msgid "After this date the link no longer answers (90 days by default)."
+msgstr "Après cette date, le lien ne répond plus (90 jours par défaut)."
+
+#. module: bf_calendar_share
+#: model:ir.actions.act_window,name:bf_calendar_share.bf_calendar_share_link_action_all
+#: model:ir.ui.menu,name:bf_calendar_share.bf_calendar_share_menu_links_all
+msgid "All calendar links"
+msgstr "Tous les liens d'agenda"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "All day"
+msgstr "Toute la journée"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share__level__details
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_link__level__details
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__res_users__bf_calendar_share_default__details
+msgid "All details"
+msgstr "Tous les détails"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_access__kind__freebusy
+msgid "Availability"
+msgstr "Disponibilités"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__url_freebusy
+msgid "Availability (free/busy)"
+msgstr "Disponibilités (libre/occupé)"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.share_page
+msgid "Availability for the next four weeks"
+msgstr "Disponibilités des quatre prochaines semaines"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Availability of %s"
+msgstr "Disponibilités de %s"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share__level__freebusy
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_link__level__freebusy
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__res_users__bf_calendar_share_default__freebusy
+msgid "Availability only"
+msgstr "Disponibilités seulement"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__bf_rappel_pour
+msgid "Bf Rappel Pour"
+msgstr "Rappel envoyé pour"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+#: code:addons/bf_calendar_share/models/calendar_event.py:0
+msgid "Busy"
+msgstr "Occupé"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid ""
+"Busy times only (VFREEBUSY), for calendar clients that look up availability,"
+" such as Outlook's Internet Free/Busy."
+msgstr ""
+"Les heures occupées seulement (VFREEBUSY), pour les clients d'agenda qui "
+"consultent les disponibilités, comme la recherche « Disponibilités Internet "
+"» d'Outlook."
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_calendar_attendee
+msgid "Calendar Attendee Information"
+msgstr "Participant à un événement"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_calendar_event
+msgid "Calendar Event"
+msgstr "Événement du calendrier"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.share_page
+msgid "Calendar for the next four weeks"
+msgstr "Agenda des quatre prochaines semaines"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Calendar link for %s expires soon"
+msgstr "Le lien d'agenda pour %s expire bientôt"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__owner_id
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__owner_id
+msgid "Calendar of"
+msgstr "Agenda de"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Calendar of %s"
+msgstr "Agenda de %s"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_bf_calendar_share
+msgid "Calendar shared with a colleague"
+msgstr "Agenda partagé avec un collègue"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_bf_calendar_share_link
+msgid "Calendar sharing link"
+msgstr "Lien de partage d'agenda"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_bf_calendar_share_access
+msgid "Calendar sharing link access"
+msgstr "Accès à un lien de partage d'agenda"
+
+#. module: bf_calendar_share
+#: model:ir.actions.server,name:bf_calendar_share.ir_cron_bf_calendar_share_links_ir_actions_server
+msgid "Calendar sharing: expiry reminders and access log cleanup"
+msgstr "Partage d'agenda : rappels d'expiration et ménage du journal d'accès"
+
+#. module: bf_calendar_share
+#: model:res.groups,name:bf_calendar_share.group_calendar_see_all
+msgid "Calendar: see every calendar in full"
+msgstr "Agenda : voir tous les agendas en entier"
+
+#. module: bf_calendar_share
+#: model:ir.actions.act_window,name:bf_calendar_share.bf_calendar_share_action_granted
+#: model:ir.ui.menu,name:bf_calendar_share.bf_calendar_share_menu_granted
+msgid "Calendars shared with me"
+msgstr "Agendas partagés avec moi"
+
+#. module: bf_calendar_share
+#: model_terms:ir.actions.act_window,help:bf_calendar_share.bf_calendar_share_action_mine
+msgid ""
+"Choose what each colleague sees of the meetings you organize: your\n"
+"               availability only, titles and locations, all details, or the right\n"
+"               to edit them. Without a line here, colleagues see what your\n"
+"               preferences say (all details by default). People invited to a\n"
+"               meeting always see it, and a private meeting always shows as Busy."
+msgstr ""
+"Choisissez ce que chaque collègue voit des rencontres que vous organisez : "
+"vos disponibilités seulement, les titres et lieux, tous les détails, ou le "
+"droit de les modifier. Sans ligne ici, vos collègues voient ce que disent "
+"vos préférences (tous les détails par défaut). Les personnes invitées voient"
+" toujours la rencontre, et une rencontre privée paraît toujours « Occupé »."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__user_agent
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_res_users__bf_calendar_share_default
+msgid "Colleagues see my calendar"
+msgstr "Mes collègues voient mon agenda"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__create_uid
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__create_date
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__future_days
+msgid "Days ahead"
+msgstr "Jours à venir"
+
+#. module: bf_calendar_share
+#: model:ir.model.constraint,message:bf_calendar_share.constraint_bf_calendar_share_link_future_days_range
+msgid "Days ahead: 0 to 731."
+msgstr "Jours à venir : de 0 à 731."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__past_days
+msgid "Days in the past"
+msgstr "Jours passés"
+
+#. module: bf_calendar_share
+#: model:ir.model.constraint,message:bf_calendar_share.constraint_bf_calendar_share_link_past_days_range
+msgid "Days in the past: 0 to 366."
+msgstr "Jours passés : de 0 à 366."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__display_name
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__display_name
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_mail_followers
+msgid "Document Followers"
+msgstr "Abonnés au document"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share__level__edit
+msgid "Edit"
+msgstr "Modifier"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__date_expiry
+msgid "Expires on"
+msgstr "Expire le"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__bf_rappel_pour
+msgid "Expiry date already reminded (one reminder per expiry date)."
+msgstr "Date d'expiration déjà rappelée (un rappel par date d'expiration)."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "Extend 90 days"
+msgstr "Prolonger de 90 jours"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Extend it if it is still in use, or let it expire."
+msgstr "Prolongez-le s'il sert encore, sinon laissez-le expirer."
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Extended by 90 days."
+msgstr "Prolongé de 90 jours."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__id
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__id
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône indiquant une activité en exception."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_calendar_share
+#: model:res.groups,comment:bf_calendar_share.group_calendar_see_all
+msgid ""
+"Ignores the calendar sharing levels set by users (private meetings stay "
+"hidden). For technical accounts only."
+msgstr ""
+"Ignore les niveaux de partage d'agenda posés par les usagers (les rencontres"
+" privées restent cachées). Pour les comptes techniques seulement."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__write_uid
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__write_date
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__last_access
+msgid "Last access"
+msgstr "Dernier accès"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__level
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__level
+msgid "Level"
+msgstr "Niveau"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_access__link_id
+msgid "Link"
+msgstr "Lien"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "Link revoked: its address no longer answers."
+msgstr "Lien retiré : son adresse ne répond plus."
+
+#. module: bf_calendar_share
+#: model:ir.actions.act_window,name:bf_calendar_share.bf_calendar_share_link_action
+#: model:ir.ui.menu,name:bf_calendar_share.bf_calendar_share_menu_links
+msgid "Links to my calendar"
+msgstr "Liens vers mon agenda"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, pour les recherches seulement"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, pour les recherches seulement"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "New address"
+msgstr "Nouvelle adresse"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "New address: the previous one no longer answers."
+msgstr "Nouvelle adresse : l'ancienne ne répond plus."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement de la prochaine activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.share_page
+msgid "Nothing planned."
+msgstr "Rien de prévu."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur de livraison"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid ""
+"Outlook, Google Calendar, Apple Calendar and Thunderbird can subscribe to "
+"this address. Read only; they refresh it on their own schedule (several "
+"hours for Outlook)."
+msgstr ""
+"Outlook, Google Agenda, Calendrier d'Apple et Thunderbird peuvent s'abonner "
+"à cette adresse. En lecture seulement ; ils la relisent à leur rythme "
+"(plusieurs heures pour Outlook)."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid ""
+"Private meetings always show as Busy. Attendees, video call links and\n"
+"                        tags are never shared through a link, at any level. Each opening of the\n"
+"                        link is logged below, with its address, for traceability (kept one year by default)."
+msgstr ""
+"Une rencontre privée paraît toujours « Occupé ». Les participants, les liens"
+" de visioconférence et les étiquettes ne passent jamais par un lien, à aucun"
+" niveau. Chaque ouverture du lien est journalisée ci-dessous, avec son "
+"adresse, pour la traçabilité (gardée un an par défaut)."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__activity_user_id
+msgid "Responsible User"
+msgstr "Responsable"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "Revoke"
+msgstr "Retirer"
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "Revoked"
+msgstr "Retiré"
+
+#. module: bf_calendar_share
+#: model:ir.actions.act_window,name:bf_calendar_share.bf_calendar_share_action_mine
+#: model:ir.ui.menu,name:bf_calendar_share.bf_calendar_share_menu_mine
+msgid "Share my calendar"
+msgstr "Partager mon agenda"
+
+#. module: bf_calendar_share
+#: model_terms:ir.actions.act_window,help:bf_calendar_share.bf_calendar_share_action_mine
+msgid "Share your calendar with a colleague"
+msgstr "Partagez votre agenda avec un collègue"
+
+#. module: bf_calendar_share
+#: model_terms:ir.actions.act_window,help:bf_calendar_share.bf_calendar_share_link_action
+msgid "Share your calendar with someone outside the company"
+msgstr "Partagez votre agenda avec une personne de l'extérieur"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share__grantee_id
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__name
+msgid "Shared with"
+msgstr "Partagé avec"
+
+#. module: bf_calendar_share
+#: model:ir.ui.menu,name:bf_calendar_share.bf_calendar_share_menu_root
+msgid "Sharing"
+msgstr "Partage"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/calendar_event.py:0
+msgid "Sorry, you are not allowed to access this document."
+msgstr "Désolé, vous n'êtes pas autorisé à accéder à ce document."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"État selon les activités\n"
+"En retard : l'échéance est passée\n"
+"Aujourd'hui : l'activité est pour aujourd'hui\n"
+"Planifiée : activités à venir."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_access__kind__ics
+msgid "Subscription"
+msgstr "Abonnement"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__url_ics
+msgid "Subscription (iCalendar)"
+msgstr "Abonnement (iCalendar)"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__url_webcal
+msgid "Subscription (webcal)"
+msgstr "Abonnement (webcal)"
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share_link.py:0
+msgid "The calendar and the address of a link cannot be changed this way."
+msgstr "L'agenda et l'adresse d'un lien ne se changent pas de cette façon."
+
+#. module: bf_calendar_share
+#: model:ir.model.constraint,message:bf_calendar_share.constraint_bf_calendar_share_owner_grantee_uniq
+msgid "The calendar is already shared with this colleague."
+msgstr "L'agenda est déjà partagé avec ce collègue."
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share.py:0
+msgid "The calendar of a share cannot be changed."
+msgstr "L'agenda d'un partage ne peut pas être changé."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "The current address will stop working. Send the new one to the person."
+msgstr ""
+"L'adresse actuelle cessera de fonctionner. Envoyez la nouvelle à la "
+"personne."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "The link will stop working for good."
+msgstr "Le lien cessera de fonctionner pour de bon."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid ""
+"The same subscription, opened directly by Apple Calendar and some phones."
+msgstr ""
+"Le même abonnement, ouvert directement par Calendrier d'Apple et certains "
+"téléphones."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share__level__titles
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_link__level__titles
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__res_users__bf_calendar_share_default__titles
+msgid "Titles and locations"
+msgstr "Titres et lieux"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__token
+msgid "Token"
+msgstr "Jeton"
+
+#. module: bf_calendar_share
+#: model:ir.model.constraint,message:bf_calendar_share.constraint_bf_calendar_share_link_token_uniq
+msgid "Token collision, try again."
+msgstr "Collision de jeton, réessayez."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception sur la fiche."
+
+#. module: bf_calendar_share
+#: model:ir.model,name:bf_calendar_share.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__url_page
+#: model:ir.model.fields.selection,name:bf_calendar_share.selection__bf_calendar_share_access__kind__page
+msgid "Web page"
+msgstr "Page web"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_res_users__bf_calendar_share_default
+msgid ""
+"What colleagues see of the meetings you organize, unless you share your "
+"calendar with them at another level. People invited to a meeting always see "
+"it in full, and a private meeting always shows as Busy. All details is "
+"Odoo's usual behaviour."
+msgstr ""
+"Ce que vos collègues voient des rencontres que vous organisez, sauf si vous "
+"leur partagez votre agenda à un autre niveau. Les personnes invitées à une "
+"rencontre la voient toujours en entier, et une rencontre privée paraît "
+"toujours « Occupé ». « Tous les détails » est le comportement habituel "
+"d'Odoo."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "What it covers"
+msgstr "Ce qu'il couvre"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__level
+msgid "What the link shows. Private meetings always show as Busy."
+msgstr ""
+"Ce que le lien montre. Une rencontre privée paraît toujours « Occupé »."
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__name
+msgid ""
+"Who this link is for, for your own records (for example: accounting firm)."
+msgstr ""
+"Pour qui est ce lien, pour vos propres repères (par exemple : cabinet "
+"comptable)."
+
+#. module: bf_calendar_share
+#. odoo-python
+#: code:addons/bf_calendar_share/models/bf_calendar_share.py:0
+msgid "You cannot share your calendar with yourself."
+msgstr "Vous ne pouvez pas partager votre agenda avec vous-même."
+
+#. module: bf_calendar_share
+#: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
+msgid "e.g. Accounting firm"
+msgstr "p. ex. Cabinet comptable"

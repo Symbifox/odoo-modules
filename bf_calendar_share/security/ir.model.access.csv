@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_calendar_share_user,bf.calendar.share user,model_bf_calendar_share,base.group_user,1,1,1,1
+access_bf_calendar_share_system,bf.calendar.share system,model_bf_calendar_share,base.group_system,1,1,1,1
+access_bf_calendar_share_link_user,bf.calendar.share.link user,model_bf_calendar_share_link,base.group_user,1,1,1,1
+access_bf_calendar_share_access_user,bf.calendar.share.access user,model_bf_calendar_share_access,base.group_user,1,0,0,0
