@@ -22,7 +22,7 @@
     #   sens, voir bf_calendar_subscribe (lot 6). Aucun protocole fermé.
     # 18.0.1.1.1 : paramètre système `bf_calendar_share.base_url` pour l'adresse publique
     #   des liens (www. redirigeait en 308 chez BF).
-    "version": "18.0.1.1.3",
+    "version": "18.0.1.1.4",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -764,3 +764,13 @@ msgstr "Vous ne pouvez pas partager votre agenda avec vous-même."
 #: model_terms:ir.ui.view,arch_db:bf_calendar_share.bf_calendar_share_link_view_form
 msgid "e.g. Accounting firm"
 msgstr "p. ex. Cabinet comptable"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,field_description:bf_calendar_share.field_bf_calendar_share_link__full_history
+msgid "Full history"
+msgstr "Tout l'historique"
+
+#. module: bf_calendar_share
+#: model:ir.model.fields,help:bf_calendar_share.field_bf_calendar_share_link__full_history
+msgid "Every past meeting, with no limit, and the next ten years. The file gets large for a busy calendar, and anyone holding the address sees all of it."
+msgstr "Toutes les rencontres passées, sans limite, et les dix prochaines années. Le fichier devient lourd pour un agenda chargé, et quiconque détient l'adresse voit tout."

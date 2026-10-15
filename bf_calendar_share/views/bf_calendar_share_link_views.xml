@@ -44,8 +44,9 @@
                             <field name="active" invisible="1"/>
                         </group>
                         <group name="portee" string="What it covers">
-                            <field name="past_days"/>
-                            <field name="future_days"/>
+                            <field name="full_history"/>
+                            <field name="past_days" invisible="full_history"/>
+                            <field name="future_days" invisible="full_history"/>
                         </group>
                     </group>
                     <div class="alert alert-info" role="note">

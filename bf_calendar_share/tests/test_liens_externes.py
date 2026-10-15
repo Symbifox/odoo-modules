@@ -44,6 +44,27 @@ class TestLiensExternes(HttpCase):
         reponse = self.url_open(url.replace(self.base_url(), ""))
         return reponse
 
+    # -- tout l'historique ------------------------------------------------------
+
+    def test_tout_l_historique(self):
+        maintenant = fields.Datetime.now().replace(minute=0, second=0, microsecond=0)
+        E = self.env["calendar.event"].with_user(self.proprio)
+        for nom, jours in (("Il y a trois ans", -3 * 365), ("Dans cinq ans", 5 * 365), ("Dans onze ans", 11 * 365)):
+            debut = maintenant + timedelta(days=jours)
+            E.create({"name": nom, "privacy": "public", "start": debut, "stop": debut + timedelta(hours=1)})
+        borne = self._lien("titles")
+        corps = self._get(borne.url_ics).text
+        self.assertNotIn("Il y a trois ans", corps)
+        self.assertNotIn("Dans cinq ans", corps)
+        tout = self._lien("titles", full_history=True)
+        corps = self._get(tout.url_ics).text
+        self.assertIn("Il y a trois ans", corps)
+        self.assertIn("Dans cinq ans", corps)
+        self.assertNotIn("Dans onze ans", corps)  # dix ans devant, pas plus
+        dispo = self._get(tout.url_freebusy).text
+        self.assertIn("BEGIN:VFREEBUSY", dispo)
+        self.assertGreaterEqual(dispo.count("FREEBUSY;FBTYPE=BUSY:"), 3)
+
     # -- niveaux --------------------------------------------------------------
 
     def test_disponibilites_seulement(self):

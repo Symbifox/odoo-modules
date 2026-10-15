@@ -85,6 +85,7 @@ single meeting goes both ways through invitations (iMIP, `bf_calendar_invite`).
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.1.4 | 2026-10-15 | *Full history* on a link: every past meeting with no limit, and the next ten years |
 | 18.0.1.1.3 | 2026-10-15 | Web page of a link: the doctype was escaped and showed as text at the top of the page; the example in the link name is now generic |
 | 18.0.1.1.2 | 2026-10-15 | French: the link form said the access log is kept 90 days; it is kept one year by default (`bf_calendar_share.access_retention_days`) |
 | 18.0.1.1.1 | 2026-10-15 | System parameter `bf_calendar_share.base_url`: the public address used in links, when it differs from `web.base.url` (a `www.` address that redirects with a 308 is followed badly by some calendar clients) |

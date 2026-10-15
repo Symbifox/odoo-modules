@@ -34,6 +34,7 @@ from .res_users import NIVEAUX
 
 NIVEAUX_LIEN = [n for n in NIVEAUX if n[0] != "edit"]
 JOURS_RAPPEL = 7
+JOURS_AVENIR_HISTORIQUE = 3650  # « Tout l'historique » : dix ans devant
 
 
 def _jeton():
@@ -66,6 +67,10 @@ class BfCalendarShareLink(models.Model):
                                  help="Expiry date already reminded (one reminder per expiry date).")
     past_days = fields.Integer(string="Days in the past", default=30)
     future_days = fields.Integer(string="Days ahead", default=180)
+    full_history = fields.Boolean(
+        string="Full history",
+        help="Every past meeting, with no limit, and the next ten years. The file gets large "
+             "for a busy calendar, and anyone holding the address sees all of it.")
     url_ics = fields.Char(string="Subscription (iCalendar)", compute="_compute_urls")
     url_webcal = fields.Char(string="Subscription (webcal)", compute="_compute_urls")
     url_freebusy = fields.Char(string="Availability (free/busy)", compute="_compute_urls")
@@ -174,14 +179,23 @@ class BfCalendarShareLink(models.Model):
     def _bf_domaine_portee(self):
         """Le domaine des événements que ce lien peut montrer (étendu par le pont Nextcloud)."""
         self.ensure_one()
-        maintenant = fields.Datetime.now()
-        debut = maintenant - timedelta(days=max(self.past_days, 0))
-        fin = maintenant + timedelta(days=max(self.future_days, 0))
+        debut, fin = self._bf_fenetre()
         moi = self.owner_id.partner_id
-        return [
-            "|", ("user_id", "=", self.owner_id.id), ("partner_ids", "in", moi.ids),
-            ("stop", ">=", debut), ("start", "<=", fin),
-        ]
+        domaine = ["|", ("user_id", "=", self.owner_id.id), ("partner_ids", "in", moi.ids),
+                   ("start", "<=", fin)]
+        if debut:
+            domaine.append(("stop", ">=", debut))
+        return domaine
+
+    def _bf_fenetre(self):
+        """``(début, fin)`` de ce que le lien couvre ; début vide pour tout l'historique."""
+        self.ensure_one()
+        maintenant = fields.Datetime.now()
+        if self.full_history:
+            # Dix ans devant : un anniversaire ou une série sans fin irait sinon jusqu'en 2744.
+            return None, maintenant + timedelta(days=JOURS_AVENIR_HISTORIQUE)
+        return (maintenant - timedelta(days=max(self.past_days, 0)),
+                maintenant + timedelta(days=max(self.future_days, 0)))
 
     def _bf_evenements(self):
         self.ensure_one()
@@ -283,8 +297,8 @@ class BfCalendarShareLink(models.Model):
                 fusion[-1] = (fusion[-1][0], max(fusion[-1][1], f))
             else:
                 fusion.append((d, f))
-        debut = maintenant - timedelta(days=max(self.past_days, 0))
-        fin = maintenant + timedelta(days=max(self.future_days, 0))
+        debut, fin = self._bf_fenetre()
+        debut = debut or (fusion[0][0] if fusion else maintenant)
         composant = ["BEGIN:VFREEBUSY", "UID:freebusy-%s@symbifox" % self.id,
                      "DTSTAMP:%s" % ics.instant(maintenant),
                      "DTSTART:%s" % ics.instant(debut), "DTEND:%s" % ics.instant(fin)]
