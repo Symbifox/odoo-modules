@@ -176,6 +176,13 @@ class TestCalendarPoke(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ⚠️ Les essais de langue activent fr_CA, mais activer ne lit aucun
+        # `.po` : sur une base neuve (la CI), la prose restait anglaise et les
+        # essais « dans la langue de l'invité » échouaient, alors qu'un
+        # locataire, qui a fr_CA depuis l'installation, passait.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_calendar_invite"], ["fr_CA"])
         cls.organiser = cls.env["res.users"].create({
             "name": "Organiser",
             "login": "bf_poke_organiser",
