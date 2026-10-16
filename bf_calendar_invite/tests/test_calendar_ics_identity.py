@@ -110,9 +110,13 @@ class TestCalendarIcsIdentity(TransactionCase):
     # -- recurrence ----------------------------------------------------------
 
     def _series(self):
+        # ⚠️ Bornée par une date, pas par un compte. Avec `count`, le cœur compte
+        # depuis le début de la semaine puis jette ce qui précède le départ :
+        # parti un vendredi ou un samedi, « 3 occurrences » en laissait une
+        # seule, et ces essais rougissaient selon le jour où ils tournaient.
         event = self._event(
             recurrency=True, rrule_type="weekly", interval=1,
-            count=3, end_type="count",
+            end_type="end_date", until=(self.start + timedelta(days=2)).date(),
             mon=True, tue=True, wed=True, thu=True, fri=True, sat=True, sun=True,
         )
         return event.recurrence_id.calendar_event_ids.sorted("start")

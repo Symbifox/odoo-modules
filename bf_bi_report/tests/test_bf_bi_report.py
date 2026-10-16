@@ -793,10 +793,14 @@ class TestTemplates(TransactionCase):
         measure = self.env["bf.bi.measure"].search([("code", "=", "hour_bank_adjustments")])
         if not measure:
             self.skipTest("pont des banques d'heures absent")
+        # Ce qui manquait déjà avant : le rapport de direction lit aussi des
+        # mesures d'autres ponts (hébergement), absents d'une base sans eux.
+        before = {t["key"]: t["missing_codes"] for t in Report.bf_list_templates()}
         measure.active = False
         statuses = {t["key"]: t for t in Report.bf_list_templates()}
         for key in ("hour_bank", "management"):
-            self.assertEqual((statuses[key]["available"], statuses[key]["missing_codes"]), (False, ["hour_bank_adjustments"]))
+            expected = sorted(set(before[key]) | {"hour_bank_adjustments"})
+            self.assertEqual((statuses[key]["available"], sorted(statuses[key]["missing_codes"])), (False, expected))
             with self.assertRaises(UserError):
                 Report.bf_create_from_template(key)
 
