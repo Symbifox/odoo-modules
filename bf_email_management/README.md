@@ -958,7 +958,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-11, this version converts automatically to
+- **Change Date**: on 2030-10-16, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog

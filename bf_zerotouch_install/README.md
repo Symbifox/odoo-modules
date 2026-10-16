@@ -62,5 +62,5 @@ is the one people type at the boot menu.
 ## Licence
 
 Business Source License 1.1 — see [LICENSE](LICENSE). Each version converts to
-LGPL-3.0-or-later on its Change Date (2030-09-26 for this version), or on the
+LGPL-3.0-or-later on its Change Date (2030-10-16 for this version), or on the
 fourth anniversary of its first public distribution, whichever comes first.

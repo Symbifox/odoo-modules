@@ -10,7 +10,7 @@ way DocuSeal does it).
 - **Licence**: **BUSL-1.1**. Production use is allowed for your **own internal
   business operations**; providing the module as a product or service to third
   parties (hosted, managed or resold) requires a written agreement. Converts to
-  **LGPL-3.0-or-later** on **2030-10-02**. See [`LICENSE`](LICENSE). It does not
+  **LGPL-3.0-or-later** on **2030-10-16**. See [`LICENSE`](LICENSE). It does not
   cover embedded third-party works (typefaces): see
   [`THIRD-PARTY.md`](THIRD-PARTY.md).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
@@ -306,7 +306,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-02, this version converts automatically to
+- **Change Date**: on 2030-10-16, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 Embedded third-party works (typefaces) remain under their own licences: see
