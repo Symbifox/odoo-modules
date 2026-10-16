@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A teacher reads the courses and results of the groups they teach (or are in charge of)
+         and gives the grades of the courses they teach, not of their colleagues'. The office
+         sees and corrects everything. -->
+    <record id="rule_course_teacher" model="ir.rule">
+        <field name="name">Course: the courses I teach or the groups I am in charge of</field>
+        <field name="model_id" ref="model_bf_school_course"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">['|', ('teacher_ids', 'in', [user.id]), ('group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_course_manager" model="ir.rule">
+        <field name="name">Course: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_course"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_course_result_teacher" model="ir.rule">
+        <field name="name">Course result: the courses I teach or the groups I am in charge of</field>
+        <field name="model_id" ref="model_bf_school_course_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">['|', ('course_id.teacher_ids', 'in', [user.id]), ('course_id.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_course_result_manager" model="ir.rule">
+        <field name="name">Course result: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_course_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_course_result_line_teacher" model="ir.rule">
+        <field name="name">Component result: the courses I teach or the groups I am in charge of</field>
+        <field name="model_id" ref="model_bf_school_course_result_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">['|', ('result_id.course_id.teacher_ids', 'in', [user.id]), ('result_id.course_id.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_course_result_line_manager" model="ir.rule">
+        <field name="name">Component result: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_course_result_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_assessment_teacher" model="ir.rule">
+        <field name="name">Evaluation: the courses I teach</field>
+        <field name="model_id" ref="model_bf_school_assessment"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('course_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_assessment_manager" model="ir.rule">
+        <field name="name">Evaluation: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_assessment"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_assessment_result_teacher" model="ir.rule">
+        <field name="name">Grade: the courses I teach</field>
+        <field name="model_id" ref="model_bf_school_assessment_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('course_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_assessment_result_manager" model="ir.rule">
+        <field name="name">Grade: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_assessment_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_exam_result_teacher" model="ir.rule">
+        <field name="name">Exam result: the courses I teach</field>
+        <field name="model_id" ref="model_bf_school_exam_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('course_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_exam_result_manager" model="ir.rule">
+        <field name="name">Exam result: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_exam_result"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_term_company" model="ir.rule">
+        <field name="name">Term: my companies</field>
+        <field name="model_id" ref="model_bf_school_term"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_course_company" model="ir.rule">
+        <field name="name">Course: my companies</field>
+        <field name="model_id" ref="model_bf_school_course"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_assessment_company" model="ir.rule">
+        <field name="name">Evaluation: my companies</field>
+        <field name="model_id" ref="model_bf_school_assessment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_assessment_result_company" model="ir.rule">
+        <field name="name">Grade: my companies</field>
+        <field name="model_id" ref="model_bf_school_assessment_result"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_course_result_company" model="ir.rule">
+        <field name="name">Course result: my companies</field>
+        <field name="model_id" ref="model_bf_school_course_result"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_exam_result_company" model="ir.rule">
+        <field name="name">Exam result: my companies</field>
+        <field name="model_id" ref="model_bf_school_exam_result"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- 🔴 The children have no company of their own: the office's `(1, '=', 1)` above gave the results by
+         competency and the components of every company's courses to the office of any of them. -->
+    <record id="rule_course_result_line_company" model="ir.rule">
+        <field name="name">Component result: my companies</field>
+        <field name="model_id" ref="model_bf_school_course_result_line"/>
+        <field name="domain_force">[('result_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_course_component_company" model="ir.rule">
+        <field name="name">Course component: my companies</field>
+        <field name="model_id" ref="model_bf_school_course_component"/>
+        <field name="domain_force">[('course_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- The subjects: the ones that ship have no company and every school reads them; the system administration
+         changes them (a change reaches every school's courses); the office changes the ones its own company made. -->
+    <record id="rule_subject_read" model="ir.rule">
+        <field name="name">Subject: the shared ones and my companies' own</field>
+        <field name="model_id" ref="model_bf_school_subject"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_subject_office_change" model="ir.rule">
+        <field name="name">Subject: the office changes its company's own</field>
+        <field name="model_id" ref="model_bf_school_subject"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+    <record id="rule_subject_system_change" model="ir.rule">
+        <field name="name">Subject: the system administration changes the shared ones</field>
+        <field name="model_id" ref="model_bf_school_subject"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_system')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+    <record id="rule_subject_component_read" model="ir.rule">
+        <field name="name">Subject component: the shared ones and my companies' own</field>
+        <field name="model_id" ref="model_bf_school_subject_component"/>
+        <field name="domain_force">['|', ('subject_id.company_id', '=', False), ('subject_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_subject_component_office_change" model="ir.rule">
+        <field name="name">Subject component: the office changes its company's own</field>
+        <field name="model_id" ref="model_bf_school_subject_component"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[('subject_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+    <record id="rule_subject_component_system_change" model="ir.rule">
+        <field name="name">Subject component: the system administration changes the shared ones</field>
+        <field name="model_id" ref="model_bf_school_subject_component"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_system')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+</odoo>

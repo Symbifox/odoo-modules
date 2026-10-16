@@ -1,0 +1,1628 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_report_card
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 00:01+0000\n"
+"PO-Revision-Date: 2026-10-12 00:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "%(student)s, term %(term)s"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "%s has no subject: generate it from the gradebook first."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"%s is a preschool group: its report card gives statements on the development"
+" of competencies, not percentages (annex IV), and is not made here."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "%s is not a draft."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "(corrected version"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid ""
+"* Provisional: the result of the ministerial exam is not in, the final "
+"result is the school's alone."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+msgid ", term"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid ""
+".\n"
+"                        Seal"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,body_html:bf_school_report_card.mail_template_report_card_correction
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">A corrected version of the report card of <strong t-out=\"object.student_id.name or ''\"/> for term <t t-out=\"object.term_id.sequence or ''\"/> of <t t-out=\"object.year_id.name or ''\"/> is available in the family portal. It replaces the one you had received.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/report-cards\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Open the report card\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,body_html:bf_school_report_card.mail_template_report_card
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The report card of <strong t-out=\"object.student_id.name or ''\"/> for term <t t-out=\"object.term_id.sequence or ''\"/> of <t t-out=\"object.year_id.name or ''\"/> is available in the family portal.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/report-cards\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Open the report card\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,body_html:bf_school_report_card.mail_template_communication
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;white-space:pre-wrap;\" t-out=\"object.body or ''\"/>\n"
+"    <p style=\"margin:12px 0 0 0;\">The school</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_my_school_report_cards_link
+msgid "<i class=\"fa fa-file-text-o me-1\"/>Report cards"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Comment</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Group</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Level</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Permanent code</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Student</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "<strong>Year-end decision:</strong>"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "A communication is marked sent with its button."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "A communication stays with its student and its school year."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "A communication that was sent is kept as it went."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_generate_view_form
+msgid ""
+"A draft report card is made for each student of the group, from the gradebook. Drafts that\n"
+"                    already exist are refreshed and keep their comments; issued ones are left alone."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "A message from the school"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_correct_view_form
+msgid ""
+"A new version is made as a draft. The families keep seeing the issued one "
+"until the new one replaces it."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "A read receipt is not edited."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "A read receipt is written by the portal."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "A report card stays on its student, group and term."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "A report card's state and proof move with the buttons."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.constraint,message:bf_school_report_card.constraint_bf_school_report_card_student_term_version_unique
+msgid "A student has one report card per term and version."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"A teacher of one subject reads their own lines of a report card, not the "
+"whole of it."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "A teacher writes the comment and the decision of a report card."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_needaction
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_needaction
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "An issued report card is frozen: a correction is a new version."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"An issued report card is kept: it is the school's record of what was sent."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "An issued report card is not refreshed."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__reason__conduct
+msgid "Behaviour that breaks the conduct rules"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__body
+msgid "Body"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card_line__mode__competency
+msgid "By competency"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card_line__mode__volet
+msgid "By theory and practice component"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_correct_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_generate_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__card_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__card_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__card_id
+msgid "Card"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__channel
+msgid "Channel"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Check the seal"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__comment
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__comment
+msgid "Comment"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Comment and decision"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.actions.act_window,name:bf_school_report_card.bf_school_report_card_line_action
+#: model:ir.ui.menu,name:bf_school_report_card.menu_school_report_card_lines
+msgid "Comments on the subjects"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__company_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__company_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__company_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__component_ids
+msgid "Competencies and components"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Correct"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+#: model:ir.actions.act_window,name:bf_school_report_card.bf_school_report_card_correct_action
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card_correct
+msgid "Correct a report card"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__correction_reason
+msgid "Correction Reason"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__course_id
+msgid "Course"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__create_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__create_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__decision_note
+msgid "Decision note"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card_line__mode__discipline
+msgid "Discipline result only"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__display_name
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Drafts"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__due_date
+msgid "Due Date"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__channel__email
+msgid "Email"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Exam"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Final group average"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__final_group_average
+msgid "Final group average (%)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Final result"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__final_percent
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__final_percent
+msgid "Final result (%)"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__kind__first
+msgid "First written communication"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "First written communications"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.ui.menu,name:bf_school_report_card.menu_school_report_cards_generate
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_generate_view_form
+msgid "Generate"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.actions.act_window,name:bf_school_report_card.bf_school_report_card_generate_action
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card_generate
+msgid "Generate the report cards of a group"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__group_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__group_id
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Group"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Group average"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__group_average
+msgid "Group average (%)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__has_exam
+msgid "Has Exam"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__has_final
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__has_final
+msgid "Has Final"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__has_message
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__has_message
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__has_percent
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__has_percent
+msgid "Has Percent"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__message_needaction
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__message_needaction
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__message_has_error
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__message_has_error
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__message_has_error
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__is_overdue
+msgid "Is Overdue"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Issue"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Issue the report card before showing it to the families."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__state__issued
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Issued"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__issued_by_id
+msgid "Issued By"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__issued_late
+msgid "Issued Late"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__issued_on
+msgid "Issued On"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Issued after the deadline of %s."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__issued_late
+msgid "Issued after the term's deadline."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Issued on"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Issuing seals the report card: its content can no longer change."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__kind
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__kind
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_search
+msgid "Kind"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__lang
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__lang
+msgid "Language"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__write_uid
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__write_date
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__kind__final
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Last report card of the year"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__decision
+msgid ""
+"Last report card of the year only. The school's pass rules decide (Education"
+" Regulation s. 28); the card records the decision, with the subjects not "
+"passed shown."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__level_id
+msgid "Level"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__line_id
+msgid "Line"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_correct_view_form
+msgid "Make a corrected version"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_form
+msgid "Mark as sent (paper or in person)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_mail_message
+msgid "Message"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_has_error
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_has_error
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__exam_percent
+msgid "Ministerial exam (%)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__mode
+msgid "Mode"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__kind__monthly
+msgid "Monthly information"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__reason
+msgid "Monthly information only (Education Regulation s. 29.2)."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid ""
+"Monthly information says which of the three cases of s. 29.2 it answers."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Monthly information to prepare"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__decision__promoted
+msgid "Moves on to the next level"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_line_view_search
+msgid "My subjects"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+msgid "New"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid ""
+"No adult with an email to tell for %s: send it another way and mark it sent."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+msgid "No report card is available yet."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.actions.act_window,help:bf_school_report_card.bf_school_report_card_line_action
+msgid "No subject to comment"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card_line__outcome__failed
+msgid "Not passed"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Not shown yet"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/wizard/generate.py:0
+msgid ""
+"Nothing to generate: every report card of this group and term is already "
+"issued."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__channel__other
+msgid "On paper or in person"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.constraint,message:bf_school_report_card.constraint_bf_school_report_card_read_card_guardian_unique
+msgid "One receipt per adult and report card."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only an issued report card is corrected."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only an issued report card is sealed."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only the school administration corrects a report card."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only the school administration issues report cards."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Only the school administration prepares the communications of a year."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"Only the school administration refreshes a report card from the gradebook."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only the school administration renders the PDF."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Only the school administration shows report cards to the families."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Only the school staff send communications."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/thread.py:0
+msgid ""
+"Only the school's staff follow or receive the messages of this thread: %s."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__kind__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__decision__other
+msgid "Other, see the note"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__outcome
+msgid "Outcome"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__is_overdue
+msgid "Overdue"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "PDF"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__pdf_sha256
+msgid "PDF SHA-256"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__pdf_error
+msgid "PDF error"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card_line__outcome__passed
+msgid "Passed"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__pdf
+msgid "Pdf"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__pdf_name
+msgid "Pdf Name"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_year_view_form_communications
+msgid "Prepare the first communications"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_year_view_form_communications
+msgid "Prepare this month's information"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__reason__plan
+msgid "Provided in the intervention plan"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__provisional
+msgid "Provisional"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__rating_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__rating_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__read_on
+msgid "Read On"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__read_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_read__guardian_id
+msgid "Read by"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Read receipts"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__reason
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_correct__reason
+msgid "Reason"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Refresh from the gradebook"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Render the PDF"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__decision__repeats
+msgid "Repeats the level"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__state__superseded
+msgid "Replaced"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__replaced_by_id
+msgid "Replaced By"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+#: model:ir.actions.report,name:bf_school_report_card.action_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Report card"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card_component
+msgid "Report card competency or component"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__deadline
+msgid "Report card deadline"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card_line
+msgid "Report card line"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_report_card_read
+msgid "Report card read receipt"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/controllers/portal.py:0
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Report card, %(term)s"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Report card, %(term)s: PDF rendered again"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Report card, term %(term)s, %(year)s"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/wizard/generate.py:0
+#: model:ir.actions.act_window,name:bf_school_report_card.bf_school_report_card_action
+#: model:ir.ui.menu,name:bf_school_report_card.menu_school_report_cards
+#: model:ir.ui.menu,name:bf_school_report_card.menu_school_report_cards_root
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_breadcrumbs_school_report_cards
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+msgid "Report cards"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+#: code:addons/bf_school_report_card/wizard/generate.py:0
+msgid "Report cards are generated by the school administration."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Result"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__percent
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__percent
+msgid "Result (%)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Results are percentages. The success threshold is"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__reason__performance
+msgid "Results that may not reach the success threshold"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__snapshot_sha256
+msgid "SHA-256"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Say why the report card is corrected."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__school_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__school_id
+msgid "School"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_year
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__year_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__year_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__year_id
+msgid "School year"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,name:bf_school_report_card.mail_template_report_card_correction
+msgid "School: a corrected report card is available"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,name:bf_school_report_card.mail_template_report_card
+msgid "School: a report card is available"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.actions.server,name:bf_school_report_card.ir_cron_render_pdfs_ir_actions_server
+msgid "School: render the PDF of issued report cards"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,name:bf_school_report_card.mail_template_communication
+msgid "School: written communication"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_form
+msgid "Send by email"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__state__sent
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_search
+msgid "Sent"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__sent_by_id
+msgid "Sent By"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__sent_on
+msgid "Sent On"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Sent by email to: %s."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__recipient
+msgid "Sent to"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_component__sequence
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Show to the families"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__published_late
+msgid "Shown late"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__published_late
+msgid ""
+"Shown to the families after the term's deadline: the deadline is about the "
+"families receiving the report card."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__published_on
+msgid "Shown to the families on"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"Shown to the families. No adult has an email address: the report card is in "
+"the portal."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "Shown to the families. Told by email: %s."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__snapshot
+msgid "Snapshot"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__stage
+msgid "Stage"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__state
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__state
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__state
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "State"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__student_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__student_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__student_id
+msgid "Student"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_record
+msgid "Student's file"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__subject_name
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Subject"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__subject
+msgid "Subject of the message"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "Subjects"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__supersedes_id
+msgid "Supersedes"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__teacher_names
+msgid "Teachers"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__term_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_generate__term_id
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__term_id
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_search
+msgid "Term"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__kind__interim
+msgid "Term report card"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The PDF of a draft is not kept: issue the report card first."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"The PDF was rendered again. SHA-256 before: %(before)s. After: %(after)s."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__recipient_ids
+msgid ""
+"The adults the email was sent to. The email itself is not kept once it is "
+"sent: this is the trace of who was told, never of what was said."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"The component weights of %(subjects)s do not total 100 %%: enter the "
+"evaluation framework's weights in the course before issuing the report card "
+"of %(student)s."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The components of a report card come from the gradebook."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card_line__provisional
+msgid ""
+"The course ends with a ministerial exam whose result is not in: the final "
+"result is the school's alone."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__deadline
+msgid ""
+"The date by which the report card of this term reaches the families. The "
+"regulation sets November 20, March 15 and July 10 at the latest."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "The email for %s was not queued: the communication stays to send."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The figures of a report card come from the gradebook."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid ""
+"The final result of a competency or component counts the three terms for 20 "
+"%, 20 % and 60 %."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__comment
+msgid "The homeroom teacher's general comment, printed on the report card."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__lang
+msgid ""
+"The language the report card is written in: subject names and the page."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid ""
+"The last report card of the year records the year-end decision: choose it "
+"for %s."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/thread.py:0
+msgid ""
+"The messages of a report card or of a communication are kept as they were "
+"written."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "The name of the student has a line break: the email cannot be sent."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__recipient__guardians
+msgid "The parents"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/controllers/portal.py:0
+msgid "The report card is being prepared: try again in a few minutes."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The report card no longer matches the seal made when it was issued."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The report card still matches its seal."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid ""
+"The results in %(subjects)s may not reach the success threshold of "
+"%(threshold)s %%."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_report_card__recipient__student
+msgid "The student (of age)"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid ""
+"The student is of age: the report card goes to them, not to the parents."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__level_id
+msgid ""
+"The student's level this year, taken from the enrolment when it has one, "
+"else from the group when the group has a single level."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "The subject of the message is one line."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The subjects of a report card come from the gradebook."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.actions.act_window,help:bf_school_report_card.bf_school_report_card_line_action
+msgid ""
+"The subjects you teach appear here, with their results, once the office has "
+"generated the drafts of the report cards."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The term belongs to another school year than the group."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "The year-end decision goes on the last report card of the year."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_form
+msgid "This communication is overdue."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/controllers/portal.py:0
+msgid ""
+"This report card cannot be given out for now: the school has to check it."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_report_card_view_form
+msgid "This report card is past its deadline."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_staff_thread
+msgid "Thread kept by the school's staff"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields.selection,name:bf_school_report_card.selection__bf_school_communication__state__to_send
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.bf_school_communication_view_search
+msgid "To send"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__recipient_ids
+msgid "Told by email"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__units
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "Units"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__units_earned
+msgid "Units earned"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__version
+msgid "Version"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_communication__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_staff_thread__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__website_message_ids
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__website_message_ids
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_staff_thread__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card_line__weights_ok
+msgid "Weights Ok"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_communication__body
+msgid "What the parents are told. Written by the teacher or the office."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Where %s stands"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,help:bf_school_report_card.field_bf_school_report_card__pdf_error
+msgid ""
+"Why the last rendering failed. The cron leaves a report card with an error "
+"alone; the office retries it."
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/communication.py:0
+msgid "Write what the parents are told before sending it."
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model,name:bf_school_report_card.model_bf_school_communication
+msgid "Written communication to the parents"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.actions.act_window,name:bf_school_report_card.bf_school_communication_action
+#: model:ir.ui.menu,name:bf_school_report_card.menu_school_communications
+msgid "Written communications"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:ir.model.fields,field_description:bf_school_report_card.field_bf_school_report_card__decision
+msgid "Year-end decision"
+msgstr ""
+
+#. module: bf_school_report_card
+#. odoo-python
+#: code:addons/bf_school_report_card/models/report_card.py:0
+msgid "term %(term)s, version %(version)s"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,subject:bf_school_report_card.mail_template_report_card_correction
+msgid "{{ object.student_id.name }}: a corrected report card is available"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,subject:bf_school_report_card.mail_template_report_card
+msgid "{{ object.student_id.name }}: a report card is available"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model:mail.template,subject:bf_school_report_card.mail_template_communication
+msgid "{{ object.student_id.name }}: {{ object.subject }}"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.portal_school_report_cards
+msgid "· corrected version"
+msgstr ""
+
+#. module: bf_school_report_card
+#: model_terms:ir.ui.view,arch_db:bf_school_report_card.report_card_document
+msgid "— term"
+msgstr ""

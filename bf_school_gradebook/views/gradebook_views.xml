@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- School years and their terms -->
+    <record id="bf_school_year_view_form" model="ir.ui.view">
+        <field name="name">bf.school.year.form.gradebook</field>
+        <field name="model">bf.school.year</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_terms" type="object" string="Create the three terms"
+                            class="btn-primary" invisible="term_ids"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="school_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="state" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="first_communication_date"/>
+                            <field name="success_threshold"/>
+                            <field name="deadline_override_reason"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Terms" name="terms">
+                            <field name="term_ids">
+                                <list editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="report_deadline"/>
+                                    <field name="legal_deadline" optional="show"/>
+                                    <field name="weight"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'open'"
+                                           decoration-muted="state == 'closed'"/>
+                                    <button name="action_close" type="object" string="Close" icon="fa-lock"
+                                            invisible="state == 'closed'"/>
+                                    <button name="action_reopen" type="object" string="Reopen" icon="fa-unlock"
+                                            invisible="state == 'open'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_year_view_list" model="ir.ui.view">
+        <field name="name">bf.school.year.list.gradebook</field>
+        <field name="model">bf.school.year</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="school_id"/>
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state" widget="badge" decoration-success="state == 'current'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_year_action" model="ir.actions.act_window">
+        <field name="name">School years and terms</field>
+        <field name="res_model">bf.school.year</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_school_year_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_school_year_view_form')})]"/>
+    </record>
+
+    <!-- Subjects -->
+    <record id="bf_school_subject_view_form" model="ir.ui.view">
+        <field name="name">bf.school.subject.form</field>
+        <field name="model">bf.school.subject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><h1><field name="name" placeholder="Subject"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="stage"/>
+                            <field name="result_mode"/>
+                        </group>
+                        <group>
+                            <field name="units"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components" name="components" invisible="result_mode == 'discipline'">
+                            <field name="component_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="kind"/>
+                                    <field name="default_weight"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_subject_view_list" model="ir.ui.view">
+        <field name="name">bf.school.subject.list</field>
+        <field name="model">bf.school.subject</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="stage"/>
+                <field name="result_mode"/>
+                <field name="units"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_subject_view_search" model="ir.ui.view">
+        <field name="name">bf.school.subject.search</field>
+        <field name="model">bf.school.subject</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="elementary" string="Elementary" domain="[('stage', '=', 'elementary')]"/>
+                <filter name="secondary" string="Secondary" domain="[('stage', '=', 'secondary')]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_subject_action" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="res_model">bf.school.subject</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Courses -->
+    <record id="bf_school_course_view_form" model="ir.ui.view">
+        <field name="name">bf.school.course.form</field>
+        <field name="model">bf.school.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="alert alert-warning" role="alert" invisible="weights_ok">
+                        <strong>The component weights must total 100 %:</strong>
+                        no discipline result is computed until they do. Total now: <field name="weights_total" class="oe_inline"/> %.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not units_to_enter">
+                        <strong>Enter the units of this course:</strong>
+                        the subjects ship with the units of the first cycle (s. 23) and the table of the second
+                        cycle (s. 23.1) is not shipped. A report card prints these units.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not exam_weight_hint">
+                        <field name="exam_weight_hint" class="oe_inline"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="group_id"/>
+                            <field name="subject_id"/>
+                            <field name="result_mode"/>
+                            <field name="teacher_ids" widget="many2many_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="ministry_course_code"/>
+                            <field name="units"/>
+                            <field name="units_to_enter" invisible="1"/>
+                            <field name="third_term_basis"/>
+                            <field name="ministerial_exam"/>
+                            <field name="exam_weight" invisible="not ministerial_exam"/>
+                            <field name="weights_ok" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components and weights" name="components" invisible="result_mode == 'discipline'">
+                            <field name="component_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="kind"/>
+                                    <field name="weight"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Evaluations" name="assessments">
+                            <field name="assessment_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="term_id"/>
+                                    <field name="component_id"/>
+                                    <field name="max_score"/>
+                                    <field name="graded_count"/>
+                                    <field name="average" widget="float" digits="[3, 1]"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Exam results" name="exams" invisible="not ministerial_exam">
+                            <field name="exam_result_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_course_view_list" model="ir.ui.view">
+        <field name="name">bf.school.course.list</field>
+        <field name="model">bf.school.course</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="not weights_ok or units_to_enter">
+                <field name="group_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_ids" widget="many2many_avatar_user"/>
+                <field name="ministry_course_code" optional="show"/>
+                <field name="weights_ok" column_invisible="1"/>
+                <field name="units_to_enter" column_invisible="1"/>
+                <field name="ministerial_exam" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_course_view_search" model="ir.ui.view">
+        <field name="name">bf.school.course.search</field>
+        <field name="model">bf.school.course</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="group_id"/>
+                <field name="subject_id"/>
+                <field name="teacher_ids"/>
+                <filter name="mine" string="My courses" domain="[('teacher_ids', 'in', [uid])]"/>
+                <filter name="no_weights" string="Weights to complete" domain="[('weights_ok', '=', False)]"/>
+                <filter name="units_to_enter" string="Units to enter" domain="[('units_to_enter', '=', True)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_group" string="Group" context="{'group_by': 'group_id'}"/>
+                    <filter name="by_subject" string="Subject" context="{'group_by': 'subject_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_course_action" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">bf.school.course</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_mine': 1}</field>
+    </record>
+
+    <!-- Evaluations and grades -->
+    <record id="bf_school_assessment_view_form" model="ir.ui.view">
+        <field name="name">bf.school.assessment.form</field>
+        <field name="model">bf.school.assessment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="Evaluation"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="course_id"/>
+                            <field name="year_id" invisible="1"/>
+                            <field name="term_id"/>
+                            <field name="result_mode" invisible="1"/>
+                            <field name="component_id" invisible="result_mode == 'discipline'"
+                                   required="result_mode != 'discipline'"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="max_score"/>
+                            <field name="weight"/>
+                            <field name="graded_count"/>
+                            <field name="average" widget="float" digits="[3, 1]"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Grades" name="grades">
+                            <field name="result_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="student_id" readonly="1"/>
+                                    <field name="status"/>
+                                    <field name="score" readonly="status == 'exempt'"/>
+                                    <field name="percent" widget="float" digits="[3, 1]"/>
+                                    <field name="comment"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_assessment_view_list" model="ir.ui.view">
+        <field name="name">bf.school.assessment.list</field>
+        <field name="model">bf.school.assessment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="term_id"/>
+                <field name="component_id" optional="show"/>
+                <field name="max_score"/>
+                <field name="graded_count"/>
+                <field name="average" widget="float" digits="[3, 1]"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_assessment_view_search" model="ir.ui.view">
+        <field name="name">bf.school.assessment.search</field>
+        <field name="model">bf.school.assessment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="term_id"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="by_term" string="Term" context="{'group_by': 'term_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_assessment_action" model="ir.actions.act_window">
+        <field name="name">Evaluations</field>
+        <field name="res_model">bf.school.assessment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Computed results -->
+    <record id="bf_school_course_result_view_list" model="ir.ui.view">
+        <field name="name">bf.school.course.result.list</field>
+        <field name="model">bf.school.course.result</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0">
+                <field name="course_id"/>
+                <field name="term_id"/>
+                <field name="student_id"/>
+                <field name="has_percent" column_invisible="1"/>
+                <field name="percent" invisible="not has_percent"/>
+                <field name="group_average" invisible="not has_percent"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_course_result_view_form" model="ir.ui.view">
+        <field name="name">bf.school.course.result.form</field>
+        <field name="model">bf.school.course.result</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="course_id"/>
+                            <field name="term_id"/>
+                            <field name="student_id"/>
+                        </group>
+                        <group>
+                            <field name="has_percent"/>
+                            <field name="percent"/>
+                            <field name="group_average"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="percent"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_course_result_view_search" model="ir.ui.view">
+        <field name="name">bf.school.course.result.search</field>
+        <field name="model">bf.school.course.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="term_id"/>
+                <filter name="failing" string="Below the threshold"
+                        domain="[('has_percent', '=', True), ('percent', '&lt;', 60)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="by_term" string="Term" context="{'group_by': 'term_id'}"/>
+                    <filter name="by_student" string="Student" context="{'group_by': 'student_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_course_result_action" model="ir.actions.act_window">
+        <field name="name">Results</field>
+        <field name="res_model">bf.school.course.result</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Ministerial exams -->
+    <record id="bf_school_exam_result_view_list" model="ir.ui.view">
+        <field name="name">bf.school.exam.result.list</field>
+        <field name="model">bf.school.exam.result</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="course_id"/>
+                <field name="student_id"/>
+                <field name="state"/>
+                <field name="exam_year"/>
+                <field name="exam_month"/>
+                <field name="percent"/>
+                <field name="objective_score" optional="hide"/>
+                <field name="development_score" optional="hide"/>
+                <field name="short_development_score" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_exam_result_action" model="ir.actions.act_window">
+        <field name="name">Ministerial exam results</field>
+        <field name="res_model">bf.school.exam.result</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_school_gradebook_root" name="Gradebook" parent="bf_school_core.menu_school_root" sequence="18"/>
+    <menuitem id="menu_school_assessments" name="Evaluations" parent="menu_school_gradebook_root"
+              action="bf_school_assessment_action" sequence="10"/>
+    <menuitem id="menu_school_course_results" name="Results" parent="menu_school_gradebook_root"
+              action="bf_school_course_result_action" sequence="20"/>
+    <menuitem id="menu_school_courses" name="Courses" parent="menu_school_gradebook_root"
+              action="bf_school_course_action" sequence="30"/>
+    <menuitem id="menu_school_exam_results" name="Ministerial exams" parent="menu_school_gradebook_root"
+              action="bf_school_exam_result_action" sequence="40"/>
+    <menuitem id="menu_school_subjects" name="Subjects" parent="bf_school_core.menu_school_config"
+              action="bf_school_subject_action" sequence="30"/>
+    <menuitem id="menu_school_years_terms" name="School years and terms" parent="bf_school_core.menu_school_config"
+              action="bf_school_year_action" sequence="35"/>
+</odoo>

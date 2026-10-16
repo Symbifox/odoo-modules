@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Subjects of the Education Regulation (I-13.3, r. 8, s. 22 and 23, read in the text of 2026-05-01).
+         Units of the secondary first cycle are those of s. 23. The second cycle (s. 23.1) is the school's to
+         enter: its table could not be read as text. Component weights are left at 0 on purpose: they are
+         the evaluation framework's figures, to be entered by the school. -->
+    <record id="subject_el_fra" model="bf.school.subject">
+        <field name="name">French, language of instruction</field><field name="code">FRA</field>
+        <field name="stage">elementary</field><field name="result_mode">competency</field>
+        <field name="units">0</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_fra_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fra"/><field name="name">Read texts</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_fra_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fra"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_fra_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fra"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_el_eng" model="bf.school.subject">
+        <field name="name">English, language of instruction</field><field name="code">ENG</field>
+        <field name="stage">elementary</field><field name="result_mode">competency</field>
+        <field name="units">0</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_eng_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_eng"/><field name="name">Read texts</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_eng_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_eng"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_eng_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_eng"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_el_esl" model="bf.school.subject">
+        <field name="name">English, second language</field><field name="code">ESL</field>
+        <field name="stage">elementary</field><field name="result_mode">competency</field>
+        <field name="units">0</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_el_esl_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_esl"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_esl_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_esl"/><field name="name">Understand texts read and heard</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_esl_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_esl"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_el_fsl" model="bf.school.subject">
+        <field name="name">French, second language</field><field name="code">FSL</field>
+        <field name="stage">elementary</field><field name="result_mode">competency</field>
+        <field name="units">0</field><field name="sequence">40</field>
+    </record>
+    <record id="subject_el_fsl_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fsl"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_fsl_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fsl"/><field name="name">Understand texts read and heard</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_fsl_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_fsl"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_el_mat" model="bf.school.subject">
+        <field name="name">Mathematics</field><field name="code">MAT</field>
+        <field name="stage">elementary</field><field name="result_mode">competency</field>
+        <field name="units">0</field><field name="sequence">50</field>
+    </record>
+    <record id="subject_el_mat_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_mat"/><field name="name">Solve a situational problem</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_mat_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_mat"/><field name="name">Use mathematical reasoning</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_sct" model="bf.school.subject">
+        <field name="name">Science and technology</field><field name="code">SCT</field>
+        <field name="stage">elementary</field><field name="result_mode">volet</field>
+        <field name="units">0</field><field name="sequence">60</field>
+    </record>
+    <record id="subject_el_sct_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_sct"/><field name="name">Theory component</field>
+        <field name="kind">theory</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_el_sct_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_el_sct"/><field name="name">Practice component</field>
+        <field name="kind">practice</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_el_ghc" model="bf.school.subject">
+        <field name="name">Geography, history and citizenship education</field><field name="code">GHC</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">70</field>
+    </record>
+    <record id="subject_el_adr" model="bf.school.subject">
+        <field name="name">Drama</field><field name="code">ADR</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">80</field>
+    </record>
+    <record id="subject_el_apl" model="bf.school.subject">
+        <field name="name">Visual arts</field><field name="code">APL</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">90</field>
+    </record>
+    <record id="subject_el_dan" model="bf.school.subject">
+        <field name="name">Dance</field><field name="code">DAN</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">100</field>
+    </record>
+    <record id="subject_el_mus" model="bf.school.subject">
+        <field name="name">Music</field><field name="code">MUS</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">110</field>
+    </record>
+    <record id="subject_el_eps" model="bf.school.subject">
+        <field name="name">Physical education and health</field><field name="code">EPS</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">120</field>
+    </record>
+    <record id="subject_el_ccq" model="bf.school.subject">
+        <field name="name">Quebec culture and citizenship</field><field name="code">CCQ</field>
+        <field name="stage">elementary</field><field name="result_mode">discipline</field>
+        <field name="units">0</field><field name="sequence">130</field>
+    </record>
+    <record id="subject_sec_fra" model="bf.school.subject">
+        <field name="name">French, language of instruction</field><field name="code">FRA</field>
+        <field name="stage">secondary</field><field name="result_mode">competency</field>
+        <field name="units">16</field><field name="sequence">110</field>
+    </record>
+    <record id="subject_sec_fra_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fra"/><field name="name">Read texts</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_fra_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fra"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_fra_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fra"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_sec_eng" model="bf.school.subject">
+        <field name="name">English, language of instruction</field><field name="code">ENG</field>
+        <field name="stage">secondary</field><field name="result_mode">competency</field>
+        <field name="units">12</field><field name="sequence">120</field>
+    </record>
+    <record id="subject_sec_eng_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_eng"/><field name="name">Read texts</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_eng_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_eng"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_eng_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_eng"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_sec_esl" model="bf.school.subject">
+        <field name="name">English, second language</field><field name="code">ESL</field>
+        <field name="stage">secondary</field><field name="result_mode">competency</field>
+        <field name="units">8</field><field name="sequence">130</field>
+    </record>
+    <record id="subject_sec_esl_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_esl"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_esl_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_esl"/><field name="name">Understand texts read and heard</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_esl_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_esl"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_sec_fsl" model="bf.school.subject">
+        <field name="name">French, second language</field><field name="code">FSL</field>
+        <field name="stage">secondary</field><field name="result_mode">competency</field>
+        <field name="units">12</field><field name="sequence">140</field>
+    </record>
+    <record id="subject_sec_fsl_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fsl"/><field name="name">Communicate orally</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_fsl_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fsl"/><field name="name">Understand texts read and heard</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_fsl_c3" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_fsl"/><field name="name">Write texts</field>
+        <field name="kind">competency</field><field name="sequence">30</field>
+    </record>
+    <record id="subject_sec_mat" model="bf.school.subject">
+        <field name="name">Mathematics</field><field name="code">MAT</field>
+        <field name="stage">secondary</field><field name="result_mode">competency</field>
+        <field name="units">12</field><field name="sequence">150</field>
+    </record>
+    <record id="subject_sec_mat_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_mat"/><field name="name">Solve a situational problem</field>
+        <field name="kind">competency</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_mat_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_mat"/><field name="name">Use mathematical reasoning</field>
+        <field name="kind">competency</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_sct" model="bf.school.subject">
+        <field name="name">Science and technology</field><field name="code">SCT</field>
+        <field name="stage">secondary</field><field name="result_mode">volet</field>
+        <field name="units">8</field><field name="sequence">160</field>
+    </record>
+    <record id="subject_sec_sct_c1" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_sct"/><field name="name">Theory component</field>
+        <field name="kind">theory</field><field name="sequence">10</field>
+    </record>
+    <record id="subject_sec_sct_c2" model="bf.school.subject.component">
+        <field name="subject_id" ref="subject_sec_sct"/><field name="name">Practice component</field>
+        <field name="kind">practice</field><field name="sequence">20</field>
+    </record>
+    <record id="subject_sec_geo" model="bf.school.subject">
+        <field name="name">Geography</field><field name="code">GEO</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">6</field><field name="sequence">170</field>
+    </record>
+    <record id="subject_sec_his" model="bf.school.subject">
+        <field name="name">History and citizenship education</field><field name="code">HIS</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">6</field><field name="sequence">180</field>
+    </record>
+    <record id="subject_sec_adr" model="bf.school.subject">
+        <field name="name">Drama</field><field name="code">ADR</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">8</field><field name="sequence">190</field>
+    </record>
+    <record id="subject_sec_apl" model="bf.school.subject">
+        <field name="name">Visual arts</field><field name="code">APL</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">8</field><field name="sequence">200</field>
+    </record>
+    <record id="subject_sec_dan" model="bf.school.subject">
+        <field name="name">Dance</field><field name="code">DAN</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">8</field><field name="sequence">210</field>
+    </record>
+    <record id="subject_sec_mus" model="bf.school.subject">
+        <field name="name">Music</field><field name="code">MUS</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">8</field><field name="sequence">220</field>
+    </record>
+    <record id="subject_sec_eps" model="bf.school.subject">
+        <field name="name">Physical education and health</field><field name="code">EPS</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">4</field><field name="sequence">230</field>
+    </record>
+    <record id="subject_sec_ccq" model="bf.school.subject">
+        <field name="name">Quebec culture and citizenship</field><field name="code">CCQ</field>
+        <field name="stage">secondary</field><field name="result_mode">discipline</field>
+        <field name="units">4</field><field name="sequence">240</field>
+    </record>
+</odoo>

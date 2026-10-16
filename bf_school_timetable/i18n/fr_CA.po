@@ -1,0 +1,900 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_timetable
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:09+0000\n"
+"PO-Revision-Date: 2026-10-11 07:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "%(done)s class(es) loaded, %(skipped)s line(s) not."
+msgstr "Cours chargés : %(done)s ; lignes non chargées : %(skipped)s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/feed.py:0
+msgid "%(group)s, %(period)s, day %(day)s of the cycle"
+msgstr "%(group)s, %(period)s, jour %(day)s du cycle"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "%(period)s overlaps %(other)s: two periods of a day do not share a minute."
+msgstr "%(period)s chevauche %(other)s : deux périodes d'une journée ne partagent aucune minute."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "%(room)s is already used by %(course)s on day %(day)s, %(period)s."
+msgstr "Le local %(room)s est déjà occupé par le cours %(course)s au jour %(day)s, %(period)s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "%(slot)s is held on a day beyond the cycle of %(days)s days: move it first."
+msgstr "%(slot)s a lieu un jour au-delà du cycle de %(days)s jours : déplacez-le d'abord."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "%(teacher)s is already teaching %(course)s on day %(day)s, %(period)s."
+msgstr "%(teacher)s donne déjà le cours %(course)s au jour %(day)s, %(period)s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "%s is not a course of this school year."
+msgstr "Le cours %s n'appartient pas à cette année scolaire."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/feed.py:0
+msgid "%s: timetable"
+msgstr "%s : horaire"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable_day__cycle_day
+msgid "0 when there is no class."
+msgstr "0 quand il n'y a pas de cours."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_my_school_timetable_link
+msgid "<i class=\"fa fa-calendar me-1\"/>Timetable"
+msgstr "<i class=\"fa fa-calendar me-1\"/>Horaire"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_import_view_form
+msgid ""
+"A CSV file with one class per line and the columns group, subject, day, period and, if you\n"
+"                    have it, room. The day is the day of the cycle; the period is its name or its number."
+msgstr ""
+"Un fichier CSV avec un cours par ligne et les colonnes groupe, matière, jour, période et, si vous\n"
+"                    l'avez, local. Le jour est le jour du cycle ; la période est son nom ou son numéro."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "A break holds no class."
+msgstr "Aucun cours n'a lieu pendant une pause."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_period__is_break
+msgid "A break holds no class: it only shows on the timetable."
+msgstr "Aucun cours n'a lieu pendant une pause : elle figure seulement à l'horaire."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/feed.py:0
+msgid "A calendar link is made from the family portal."
+msgstr "Un lien de calendrier se crée à partir du portail des familles."
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_timetable_cycle_range
+msgid "A cycle has between 1 and 20 days."
+msgstr "Un cycle compte entre 1 et 20 jours."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__cycle_days
+msgid "A cycle of 9 or 10 school days, or 5 for a plain week."
+msgstr "Un cycle de 9 ou 10 jours de classe, ou de 5 pour une simple semaine."
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_timetable_day_timetable_date_unique
+msgid "A date appears once in a calendar."
+msgstr "Une date ne figure qu'une seule fois dans un calendrier."
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_timetable_feed_token_unique
+msgid "A link is used once."
+msgstr "Chaque lien est unique."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "A period ends after it starts, on the same day."
+msgstr "Une période se termine après son début, le même jour."
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_room_name_school_unique
+msgid "A room name is used once per school."
+msgstr "Un nom de local ne s'utilise qu'une fois par école."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "A timetable ends after it starts."
+msgstr "Un horaire se termine après son début."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "Add this address to your calendar program as a subscribed calendar. Anyone who has it reads this timetable: keep it to yourself, and replace it if it leaks."
+msgstr "Ajoutez ce lien à votre logiciel de calendrier en tant qu'abonnement. Toute personne qui possède ce lien peut lire cet horaire : gardez-le pour vous et remplacez-le s'il circule."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__guardian_id
+msgid "Adult"
+msgstr "Adulte"
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_timetable_feed_student_guardian_unique
+msgid "An adult has one link at a time for a student."
+msgstr "Une personne adulte n'a qu'un lien à la fois pour un élève."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Back to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__is_break
+msgid "Break"
+msgstr "Pause"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__day_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_timetable_feed
+msgid "Calendar feed of a student's timetable"
+msgstr "Lien de calendrier de l'horaire d'un élève"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__capacity
+msgid "Capacity"
+msgstr "Capacité"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable_day__kind__class
+msgid "Class day"
+msgstr "Jour de classe"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_timetable_slot
+msgid "Class in the timetable"
+msgstr "Cours à l'horaire"
+
+#. module: bf_school_timetable
+#: model:ir.actions.act_window,name:bf_school_timetable.bf_school_timetable_slot_action
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__slot_ids
+#: model:ir.ui.menu,name:bf_school_timetable.menu_school_timetable_slots
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Classes"
+msgstr "Cours à l'horaire"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_import_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__company_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__company_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__company_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__course_id
+msgid "Course"
+msgstr "Cours"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_course
+msgid "Course (a subject taught to a group)"
+msgstr "Cours (une matière enseignée à un groupe)"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__create_rooms
+msgid "Create the rooms that do not exist"
+msgstr "Créer les locaux manquants"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__created_on
+msgid "Created On"
+msgstr "Date de création"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__create_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__create_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.report_group_timetable
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "Day %(day)s, %(period)s: %(course)s"
+msgstr "Jour %(day)s, %(period)s : %(course)s"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__cycle_day
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__day_no
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_slot_view_search
+msgid "Day of the cycle"
+msgstr "Jour du cycle"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__first_cycle_day
+msgid "Day of the cycle on the first day"
+msgstr "Jour du cycle de la première journée"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_timetable_day
+msgid "Day of the timetable calendar"
+msgstr "Jour du calendrier de l'horaire"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__cycle_days
+msgid "Days in the cycle"
+msgstr "Nombre de jours du cycle"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__display_name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__end_time
+msgid "End Time"
+msgstr "Heure de fin"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__end_label
+msgid "End time (text)"
+msgstr "Heure de fin (texte)"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__date_end
+msgid "Ends"
+msgstr "Fin"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable_day__kind__exam
+msgid "Exam day"
+msgstr "Jour d'examen"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__state
+msgid "Families see a published timetable only."
+msgstr "Les familles ne voient qu'un horaire publié."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__file
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__file_name
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_follower_ids
+msgid "Followers"
+msgstr "Personnes abonnées"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Personnes abonnées (contacts)"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_period__name
+msgid "For example Period 1, or Lunch."
+msgstr "Par exemple Période 1 ou Dîner."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Generate the calendar"
+msgstr "Générer le calendrier"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "Generate the calendar before publishing: families see dates."
+msgstr "Générez le calendrier avant de publier : les familles voient des dates."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "Get a calendar address"
+msgstr "Obtenir un lien de calendrier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__group_id
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_slot_view_search
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_slot_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable_day__kind__holiday
+msgid "Holiday or break"
+msgstr "Congé ou relâche"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si cette case est cochée, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__message_has_error
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si cette case est cochée, certains messages ont une erreur de livraison."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_import_view_form
+msgid "Import"
+msgstr "Importer"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_timetable_import
+msgid "Import a timetable from a CSV file"
+msgstr "Importer un horaire depuis un fichier CSV"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+#: model:ir.actions.act_window,name:bf_school_timetable.bf_school_timetable_import_action
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Import classes from a file"
+msgstr "Importer les cours à l'horaire depuis un fichier"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "In your calendar"
+msgstr "Dans votre calendrier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_is_follower
+msgid "Is Follower"
+msgstr "Suit la fiche"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__last_read_on
+msgid "Last Read On"
+msgstr "Date de la dernière lecture"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__write_uid
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__write_date
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: %(why)s"
+msgstr "Ligne %(n)s : %(why)s"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: no course %(subject)s for the group %(group)s."
+msgstr "Ligne %(n)s : aucun cours « %(subject)s » pour le groupe %(group)s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: no period %(period)s."
+msgstr "Ligne %(n)s : aucune période « %(period)s »."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: the day %(day)s is not in the cycle."
+msgstr "Ligne %(n)s : le jour %(day)s ne fait pas partie du cycle."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: the room %(room)s is archived."
+msgstr "Ligne %(n)s : le local %(room)s est archivé."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Line %(n)s: this class is already in the timetable."
+msgstr "Ligne %(n)s : ce cours est déjà dans l'horaire."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__log
+msgid "Log"
+msgstr "Journal"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_slot_view_search
+msgid "My classes"
+msgstr "Mes cours"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__name
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "No class in the next seven days, or the timetable is not published yet."
+msgstr "Aucun cours dans les sept prochains jours, ou l'horaire n'est pas encore publié."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.report_group_timetable
+msgid "No published timetable for this school year."
+msgstr "Aucun horaire publié pour cette année scolaire."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "Nothing was replaced: fix the lines below, then load the file again."
+msgstr "Rien n'a été remplacé : corrigez les lignes ci-dessous, puis chargez de nouveau le fichier."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur de livraison"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable_day__kind__pedagogical
+msgid "Pedagogical day"
+msgstr "Journée pédagogique"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable_day__kind
+msgid "Pedagogical days and holidays hold no class and do not use a day of the cycle."
+msgstr "Les journées pédagogiques et les congés n'ont pas de cours et ne comptent pas comme jour du cycle."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__period_id
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.report_group_timetable
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_period
+msgid "Period of the day"
+msgstr "Période de la journée"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__period_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Periods"
+msgstr "Périodes"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_view_form
+msgid "Publish"
+msgstr "Publier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields.selection,name:bf_school_timetable.selection__bf_school_timetable__state__published
+msgid "Published"
+msgstr "Publié"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "Replace the address"
+msgstr "Remplacer le lien"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__replace
+msgid "Replace the classes of the groups in the file"
+msgstr "Remplacer les cours à l'horaire des groupes présents dans le fichier"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__room_id
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.bf_school_timetable_slot_view_search
+msgid "Room"
+msgstr "Local"
+
+#. module: bf_school_timetable
+#: model:ir.actions.act_window,name:bf_school_timetable.bf_school_room_action
+#: model:ir.ui.menu,name:bf_school_timetable.menu_school_rooms
+msgid "Rooms"
+msgstr "Locaux"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de livraison SMS"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_room__school_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__school_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_timetable
+#: model:ir.model,name:bf_school_timetable.model_bf_school_room
+msgid "School room"
+msgstr "Local de l'école"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__year_id
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__allow_overlap
+msgid "Shares the group"
+msgstr "Partage le groupe"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__slot_count
+msgid "Slot Count"
+msgstr "Nombre de cours à l'horaire"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__start_time
+msgid "Start Time"
+msgstr "Heure de début"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__start_label
+msgid "Start time (text)"
+msgstr "Heure de début (texte)"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__date_start
+msgid "Starts"
+msgstr "Début"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__teacher_ids
+msgid "Teachers"
+msgstr "Personnel enseignant"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The day of the cycle follows from the calendar: it is not entered."
+msgstr "Le jour du cycle découle du calendrier : il ne se saisit pas."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The day of the cycle is between 1 and %s."
+msgstr "Le jour du cycle doit être compris entre 1 et %s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The day of the cycle on the first day is between 1 and %s."
+msgstr "Le jour du cycle de la première journée est compris entre 1 et %s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "The file has more than %s lines."
+msgstr "Le fichier compte plus de %s lignes."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "The file has no column for: %s."
+msgstr "Le fichier n'a aucune colonne pour : %s."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "The file is too big for a timetable: %s MB at most."
+msgstr "Le fichier est trop gros pour un horaire : %s Mo au plus."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The group %(group)s already has %(course)s on day %(day)s, %(period)s. Tick \"Shares the group\" on both when the group splits."
+msgstr "Le groupe %(group)s a déjà le cours %(course)s au jour %(day)s, %(period)s. Cochez « Partage le groupe » sur les deux cours quand le groupe se divise."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable_slot__allow_overlap
+msgid "The group splits for this class (options, languages): another class of the group may be held at the same time."
+msgstr "Le groupe se divise pour ce cours (options, langues) : un autre cours du groupe peut avoir lieu en même temps."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The period belongs to another timetable."
+msgstr "La période appartient à un autre horaire."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The room belongs to another school."
+msgstr "Le local appartient à une autre école."
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "The school has not linked any child to your account yet."
+msgstr "L'école n'a encore associé aucun enfant à votre compte."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "The school year belongs to another school."
+msgstr "L'année scolaire appartient à une autre école."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+msgid "There is no class in this timetable yet."
+msgstr "Cet horaire ne contient encore aucun cours."
+
+#. module: bf_school_timetable
+#: model:ir.model.constraint,message:bf_school_timetable.constraint_bf_school_timetable_slot_slot_unique
+msgid "This class is already in that period."
+msgstr "Ce cours figure déjà à cette période."
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_period__start_time
+msgid "Time of day."
+msgstr "Heure de la journée."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/models/timetable.py:0
+#: model:ir.model,name:bf_school_timetable.model_bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_period__timetable_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_day__timetable_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_import__timetable_id
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_slot__timetable_id
+#: model:ir.ui.menu,name:bf_school_timetable.menu_school_timetable_root
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_breadcrumbs_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "Timetable"
+msgstr "Horaire"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.report_group_timetable
+msgid "Timetable of"
+msgstr "Horaire du groupe"
+
+#. module: bf_school_timetable
+#: model:ir.actions.report,name:bf_school_timetable.action_report_group_timetable
+msgid "Timetable of the group"
+msgstr "Horaire du groupe"
+
+#. module: bf_school_timetable
+#: model:ir.actions.act_window,name:bf_school_timetable.bf_school_timetable_action
+#: model:ir.ui.menu,name:bf_school_timetable.menu_school_timetables
+msgid "Timetables"
+msgstr "Horaires"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable_feed__token
+msgid "Token"
+msgstr "Jeton"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,field_description:bf_school_timetable.field_bf_school_timetable__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site Web"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site Web"
+
+#. module: bf_school_timetable
+#: model:ir.model.fields,help:bf_school_timetable.field_bf_school_timetable_slot__teacher_ids
+msgid "Who gives the grades of this course. Taken from the group when it has only one teacher."
+msgstr "Qui saisit les notes de ce cours. Pris du groupe lorsque celui-ci n'a qu'une seule personne enseignante."
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "day of the cycle"
+msgstr "jour du cycle"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "group"
+msgstr "groupe"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "of the cycle"
+msgstr "du cycle"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "period"
+msgstr "période"
+
+#. module: bf_school_timetable
+#. odoo-python
+#: code:addons/bf_school_timetable/wizard/import_csv.py:0
+msgid "subject"
+msgstr "matière"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "to"
+msgstr "à"
+
+#. module: bf_school_timetable
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable.portal_school_timetable
+msgid "· day"
+msgstr "· jour"

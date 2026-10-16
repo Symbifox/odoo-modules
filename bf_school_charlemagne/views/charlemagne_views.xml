@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Settings -->
+    <record id="bf_school_charlemagne_config_view_form" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.config.form</field>
+        <field name="model">bf.school.charlemagne.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_check_keys" type="object" string="Check the keys"
+                            invisible="mode != 'production' or not keys_set"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_batches" type="object" class="oe_stat_button" icon="fa-paper-plane">
+                            <field name="batch_count" widget="statinfo" string="Transmissions"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="mode != 'simulation'">
+                        Simulation: the whole circuit runs, a stand-in for the Ministry only checks the structure
+                        of the file, nothing is encrypted and nothing leaves the server.
+                    </div>
+                    <group>
+                        <group string="The school">
+                            <field name="school_id"/>
+                            <field name="organism_code"/>
+                            <field name="transmitter_code"/>
+                            <field name="responsible_name"/>
+                            <field name="building_code"/>
+                            <field name="local_result_month"/>
+                            <field name="mode"/>
+                        </group>
+                        <group string="Codes of the school's settings">
+                            <field name="teaching_language_fr"/>
+                            <field name="teaching_language_en"/>
+                            <field name="order_code_elementary"/>
+                            <field name="order_code_secondary"/>
+                            <field name="keep_plain_xml"/>
+                        </group>
+                    </group>
+                    <group string="What is set (the system administrator enters it)">
+                        <field name="sftp_ready"/>
+                        <field name="password_set"/>
+                        <field name="keys_set"/>
+                        <field name="school_key_fingerprint"/>
+                        <field name="ministry_key_fingerprint"/>
+                        <field name="keys_checked_on"/>
+                    </group>
+                    <notebook groups="base.group_system">
+                        <page string="Server and keys" name="secrets">
+                            <group>
+                                <group string="Ministry's SFTP server">
+                                    <field name="sftp_host"/>
+                                    <field name="sftp_port"/>
+                                    <field name="sftp_user"/>
+                                    <field name="sftp_in_dir"/>
+                                    <field name="sftp_out_dir"/>
+                                    <field name="sftp_known_host"/>
+                                    <field name="sftp_password" password="True"/>
+                                    <field name="sftp_private_key"/>
+                                </group>
+                                <group string="Keys">
+                                    <field name="gpg_ministry_key"/>
+                                    <field name="gpg_secret_key"/>
+                                    <field name="gpg_passphrase" password="True"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_config_action" model="ir.actions.act_window">
+        <field name="name">Charlemagne settings</field>
+        <field name="res_model">bf.school.charlemagne.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Student's data for the Ministry -->
+    <record id="bf_school_charlemagne_profile_view_list" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.profile.list</field>
+        <field name="model">bf.school.charlemagne.profile</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" decoration-warning="not names_confirmed">
+                <field name="student_id"/>
+                <field name="year_id"/>
+                <field name="last_name"/>
+                <field name="first_name"/>
+                <field name="names_confirmed"/>
+                <field name="postal_code"/>
+                <field name="mother_tongue_code"/>
+                <field name="home_language_code"/>
+                <field name="birthplace_mother_code"/>
+                <field name="birthplace_father_code"/>
+                <field name="free_schooling"/>
+                <field name="declaration_type" optional="show"/>
+                <field name="teaching_order" optional="hide"/>
+                <field name="pathway_code" optional="hide"/>
+                <field name="program_code" optional="hide"/>
+                <field name="boarding" optional="hide"/>
+                <field name="withdraw" optional="hide"/>
+                <field name="ledger_state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_profile_view_search" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.profile.search</field>
+        <field name="model">bf.school.charlemagne.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="last_name"/>
+                <filter name="unconfirmed" string="Names to confirm" domain="[('names_confirmed', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_year" string="School year" context="{'group_by': 'year_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_profile_action" model="ir.actions.act_window">
+        <field name="name">Students' data for the Ministry</field>
+        <field name="res_model">bf.school.charlemagne.profile</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Transmissions -->
+    <record id="bf_school_charlemagne_batch_view_form" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.batch.form</field>
+        <field name="model">bf.school.charlemagne.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_collect" type="object" string="Collect the transactions" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_open_request" type="object" string="Ask for a file"
+                            invisible="state != 'draft'"/>
+                    <button name="action_build" type="object" string="Check and build the file"
+                            invisible="state not in ('draft', 'built')"/>
+                    <button name="action_seal" type="object" string="Sign and encrypt" invisible="state != 'built'"/>
+                    <button name="action_send" type="object" string="Send" class="btn-primary"
+                            invisible="state != 'sealed' or mode != 'production'"
+                            confirm="This sends the file to the Ministry. Continue?"/>
+                    <button name="action_send" type="object" string="Rehearse the sending" class="btn-primary"
+                            invisible="state != 'sealed' or mode == 'production'"/>
+                    <button name="action_fetch_answers" type="object" string="Fetch the answers"
+                            invisible="state != 'sent' or mode != 'production'"/>
+                    <button name="action_retry_answers" type="object" string="Read again the files not read"
+                            invisible="state != 'sent' or mode != 'production' or not error_count"/>
+                    <button name="action_back_to_draft" type="object" string="Start over"
+                            invisible="state not in ('built', 'sealed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,built,sealed,sent,answered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="config_id" readonly="state != 'draft'"/>
+                            <field name="school_id"/>
+                            <field name="mode" invisible="not id"/>
+                            <field name="year_id" readonly="state != 'draft'"/>
+                            <field name="request_count" invisible="state in ('draft', 'built')"/>
+                            <field name="error_count" invisible="not error_count"/>
+                        </group>
+                        <group string="What to collect">
+                            <field name="include_declarations" readonly="state != 'draft'"/>
+                            <field name="include_results" readonly="state != 'draft'"/>
+                            <field name="include_exams" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group invisible="state == 'draft'">
+                        <group>
+                            <field name="file_base"/>
+                            <field name="xml_sha256"/>
+                            <field name="sealed_name"/>
+                            <field name="sealed_sha256"/>
+                        </group>
+                        <group>
+                            <field name="built_on"/>
+                            <field name="sent_on"/>
+                            <field name="sent_by_id"/>
+                            <field name="command_number"/>
+                            <field name="answered_on"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not collect_log">
+                        <strong>Left out:</strong>
+                        <field name="collect_log" class="d-block"/>
+                    </div>
+                    <notebook>
+                        <page string="Transactions" name="transactions">
+                            <field name="transaction_ids">
+                                <list decoration-danger="state in ('invalid', 'rejected')" decoration-success="state == 'accepted'"
+                                      decoration-warning="state in ('accepted_message', 'suspended')">
+                                    <field name="kind"/>
+                                    <field name="code"/>
+                                    <field name="student_id"/>
+                                    <field name="ident" optional="hide"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Files returned" name="answers">
+                            <field name="answer_ids">
+                                <list create="0" delete="0" edit="0" decoration-danger="kind == 'error'">
+                                    <field name="received_on"/>
+                                    <field name="name"/>
+                                    <field name="kind"/>
+                                    <field name="error"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Messages" name="messages">
+                            <field name="message_ids">
+                                <list create="0" delete="0" edit="0">
+                                    <field name="source"/>
+                                    <field name="number"/>
+                                    <field name="consequence"/>
+                                    <field name="text"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_batch_view_list" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.batch.list</field>
+        <field name="model">bf.school.charlemagne.batch</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="school_id"/>
+                <field name="year_id"/>
+                <field name="mode"/>
+                <field name="transaction_count"/>
+                <field name="invalid_count"/>
+                <field name="rejected_count"/>
+                <field name="state" widget="badge" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_batch_action" model="ir.actions.act_window">
+        <field name="name">Transmissions to Charlemagne</field>
+        <field name="res_model">bf.school.charlemagne.batch</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_charlemagne_transaction_view_form" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.transaction.form</field>
+        <field name="model">bf.school.charlemagne.transaction</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="batch_id"/>
+                            <field name="kind"/>
+                            <field name="code"/>
+                            <field name="student_id"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="ident"/>
+                            <field name="key"/>
+                        </group>
+                    </group>
+                    <group string="Elements"><field name="values" nolabel="1"/></group>
+                    <field name="message_ids">
+                        <list><field name="source"/><field name="number"/><field name="consequence"/><field name="text"/></list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_ledger_view_list" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.ledger.list</field>
+        <field name="model">bf.school.charlemagne.ledger</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0">
+                <field name="kind"/>
+                <field name="student_id"/>
+                <field name="key"/>
+                <field name="state"/>
+                <field name="batch_id"/>
+                <field name="updated_on"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_ledger_action" model="ir.actions.act_window">
+        <field name="name">What the Ministry accepted</field>
+        <field name="res_model">bf.school.charlemagne.ledger</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Request for a file -->
+    <record id="bf_school_charlemagne_request_view_form" model="ir.ui.view">
+        <field name="name">bf.school.charlemagne.request.form</field>
+        <field name="model">bf.school.charlemagne.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="batch_id" invisible="1"/>
+                    <field name="code"/>
+                    <field name="parameters"/>
+                </group>
+                <footer>
+                    <button name="action_add" type="object" string="Add" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_charlemagne_request_action" model="ir.actions.act_window">
+        <field name="name">Ask for a file</field>
+        <field name="res_model">bf.school.charlemagne.request</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Group form: the Ministry's number -->
+    <record id="bf_school_group_view_form_charlemagne" model="ir.ui.view">
+        <field name="name">bf.school.group.form.charlemagne</field>
+        <field name="model">bf.school.group</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_group_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='teacher_ids']" position="after">
+                <field name="ministry_group_number" groups="bf_school_core.group_school_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_charlemagne_root" name="Ministry (Charlemagne)" parent="bf_school_core.menu_school_root"
+              sequence="26" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_charlemagne_batches" name="Transmissions" parent="menu_school_charlemagne_root"
+              action="bf_school_charlemagne_batch_action" sequence="10"/>
+    <menuitem id="menu_school_charlemagne_profiles" name="Students' data" parent="menu_school_charlemagne_root"
+              action="bf_school_charlemagne_profile_action" sequence="20"/>
+    <menuitem id="menu_school_charlemagne_ledger" name="What the Ministry accepted" parent="menu_school_charlemagne_root"
+              action="bf_school_charlemagne_ledger_action" sequence="30"/>
+    <menuitem id="menu_school_charlemagne_config" name="Charlemagne" parent="bf_school_core.menu_school_config"
+              action="bf_school_charlemagne_config_action" sequence="50"/>
+</odoo>

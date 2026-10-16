@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_record_view_form" model="ir.ui.view">
+        <field name="name">bf.school.record.form</field>
+        <field name="model">bf.school.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_leave" type="object" string="Student leaves" invisible="state != 'open'"
+                            confirm="The file is kept. Mark the student as having left?"/>
+                    <button name="action_reopen" type="object" string="Reopen" invisible="state != 'left'"/>
+                    <button name="action_export_portable" type="object" string="Copy of the file (JSON)"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="is_complete">
+                        <field name="missing_count" class="oe_inline"/> required piece(s) missing from this file.
+                    </div>
+                    <group>
+                        <group string="Register of enrolment">
+                            <field name="student_id"/>
+                            <field name="school_id"/>
+                            <field name="birthdate"/>
+                            <field name="residence_address"/>
+                            <field name="teaching_language"/>
+                            <field name="authority_holders"/>
+                        </group>
+                        <group string="Admission">
+                            <field name="permanent_code"/>
+                            <field name="arrival_date"/>
+                            <field name="departure_date"/>
+                            <field name="is_complete" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Pieces" name="pieces">
+                            <field name="document_ids">
+                                <list editable="bottom" decoration-danger="state == 'missing'"
+                                      decoration-muted="state == 'not_applicable'">
+                                    <field name="type_id"/>
+                                    <field name="state"/>
+                                    <field name="date"/>
+                                    <field name="file" filename="file_name" widget="binary"/>
+                                    <field name="file_name" column_invisible="1"/>
+                                    <field name="note"/>
+                                    <button name="action_download" type="object" string="Download" icon="fa-download"
+                                            invisible="not file_name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Transfers" name="transfers">
+                            <field name="transfer_ids" context="{'default_record_id': id}">
+                                <list>
+                                    <field name="destination_name"/>
+                                    <field name="requested_on"/>
+                                    <field name="due_on"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Access log" name="log">
+                            <field name="log_ids">
+                                <list create="0" delete="0" edit="0">
+                                    <field name="date"/>
+                                    <field name="user_id"/>
+                                    <field name="action"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_record_view_list" model="ir.ui.view">
+        <field name="name">bf.school.record.list</field>
+        <field name="model">bf.school.record</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="not is_complete" decoration-muted="state == 'left'">
+                <field name="student_id"/>
+                <field name="school_id"/>
+                <field name="permanent_code" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="missing_count"/>
+                <field name="is_complete" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- The register of enrolment: the five entries of s. 8 -->
+    <record id="bf_school_record_register_view_list" model="ir.ui.view">
+        <field name="name">bf.school.record.register.list</field>
+        <field name="model">bf.school.record</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0">
+                <field name="student_id"/>
+                <field name="residence_address"/>
+                <field name="birthdate"/>
+                <field name="teaching_language"/>
+                <field name="authority_holders"/>
+                <field name="school_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_record_view_search" model="ir.ui.view">
+        <field name="name">bf.school.record.search</field>
+        <field name="model">bf.school.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="permanent_code"/>
+                <field name="school_id"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="left" string="Left" domain="[('state', '=', 'left')]"/>
+                <filter name="incomplete" string="Incomplete" domain="[('missing_count', '>', 0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_record_action" model="ir.actions.act_window">
+        <field name="name">Students' files</field>
+        <field name="res_model">bf.school.record</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <record id="bf_school_record_register_action" model="ir.actions.act_window">
+        <field name="name">Register of enrolment</field>
+        <field name="res_model">bf.school.record</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_school_record_register_view_list')})]"/>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <!-- Transfers -->
+    <record id="bf_school_record_transfer_view_form" model="ir.ui.view">
+        <field name="name">bf.school.record.transfer.form</field>
+        <field name="model">bf.school.record.transfer</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare" type="object" string="Prepare the package" class="btn-primary"
+                            invisible="state == 'sent'"/>
+                    <button name="action_download" type="object" string="Download the package" icon="fa-download"
+                            invisible="state == 'draft'"/>
+                    <button name="action_mark_sent" type="object" string="Mark as sent" invisible="state != 'ready'"/>
+                    <button name="action_back_to_draft" type="object" string="Change what it holds" invisible="state != 'ready'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="record_id"/>
+                            <field name="destination_name" readonly="state != 'draft'"/>
+                            <field name="destination_code" readonly="state == 'sent'"/>
+                            <field name="requested_on" readonly="state == 'sent'"/>
+                            <field name="due_on"/>
+                        </group>
+                        <group string="What goes in the package">
+                            <field name="include_guardians" readonly="state == 'sent'"/>
+                            <field name="include_results" readonly="state == 'sent'"/>
+                            <field name="include_documents" readonly="state == 'sent'"/>
+                            <field name="scope_note" readonly="state == 'sent'"/>
+                        </group>
+                    </group>
+                    <group invisible="state == 'draft'">
+                        <field name="package_name"/>
+                        <field name="package_sha256"/>
+                        <field name="sent_how"/>
+                        <field name="sent_on"/>
+                        <field name="sent_by_id"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_record_transfer_view_list" model="ir.ui.view">
+        <field name="name">bf.school.record.transfer.list</field>
+        <field name="model">bf.school.record.transfer</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state != 'sent' and due_on and due_on &lt; context_today().strftime('%Y-%m-%d')">
+                <field name="student_id"/>
+                <field name="destination_name"/>
+                <field name="requested_on"/>
+                <field name="due_on"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_record_transfer_action" model="ir.actions.act_window">
+        <field name="name">Transfers to other schools</field>
+        <field name="res_model">bf.school.record.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Kinds of pieces -->
+    <record id="bf_school_record_type_view_list" model="ir.ui.view">
+        <field name="name">bf.school.record.type.list</field>
+        <field name="model">bf.school.record.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="requirement"/>
+                <field name="legal_ref"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_record_type_action" model="ir.actions.act_window">
+        <field name="name">Kinds of pieces</field>
+        <field name="res_model">bf.school.record.type</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- On the school: closure export and missing files -->
+    <record id="bf_school_view_form_record" model="ir.ui.view">
+        <field name="name">bf.school.form.record</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_records" type="object" class="oe_stat_button" icon="fa-folder-open"
+                        groups="bf_school_core.group_school_manager">
+                    <field name="record_count" widget="statinfo" string="Files"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="record_transfer_days" groups="bf_school_core.group_school_manager"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <header groups="bf_school_core.group_school_manager">
+                    <button name="action_create_missing_records" type="object" string="Create the missing files"/>
+                    <button name="action_export_closure" type="object" string="Export every file (closure)"
+                            confirm="This builds a zip of every student's file, with their pieces. Continue?"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_record_root" name="Files" parent="bf_school_core.menu_school_root" sequence="25"
+              groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_records" name="Students' files" parent="menu_school_record_root"
+              action="bf_school_record_action" sequence="10"/>
+    <menuitem id="menu_school_register" name="Register of enrolment" parent="menu_school_record_root"
+              action="bf_school_record_register_action" sequence="20"/>
+    <menuitem id="menu_school_record_transfers" name="Transfers to other schools" parent="menu_school_record_root"
+              action="bf_school_record_transfer_action" sequence="30"/>
+    <menuitem id="menu_school_record_types" name="Kinds of pieces" parent="bf_school_core.menu_school_config"
+              action="bf_school_record_type_action" sequence="40"/>
+</odoo>

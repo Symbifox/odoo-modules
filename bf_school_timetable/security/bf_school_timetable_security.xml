@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_room_company" model="ir.rule">
+        <field name="name">Room: my companies</field>
+        <field name="model_id" ref="model_bf_school_room"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_timetable_company" model="ir.rule">
+        <field name="name">Timetable: my companies</field>
+        <field name="model_id" ref="model_bf_school_timetable"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_period_company" model="ir.rule">
+        <field name="name">Period of a timetable: my companies</field>
+        <field name="model_id" ref="model_bf_school_period"/>
+        <field name="domain_force">[('timetable_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_timetable_day_company" model="ir.rule">
+        <field name="name">Day of a timetable: my companies</field>
+        <field name="model_id" ref="model_bf_school_timetable_day"/>
+        <field name="domain_force">[('timetable_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_timetable_slot_company" model="ir.rule">
+        <field name="name">Class of a timetable: my companies</field>
+        <field name="model_id" ref="model_bf_school_timetable_slot"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_timetable_feed_company" model="ir.rule">
+        <field name="name">Calendar feed: my companies</field>
+        <field name="model_id" ref="model_bf_school_timetable_feed"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

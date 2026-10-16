@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- The eight pieces of s. 7 of the Regulation respecting private educational institutions
+         at the preschool, elementary and secondary levels (E-9.1, r. 3), read in the text
+         current on 2026-06-01. "When it applies" is the regulation's "le cas échéant". -->
+    <record id="type_application" model="bf.school.record.type">
+        <field name="name">Admission and enrolment applications, with their supporting documents</field>
+        <field name="code">application</field><field name="sequence">10</field>
+        <field name="requirement">always</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 1</field>
+    </record>
+    <record id="type_birth_certificate" model="bf.school.record.type">
+        <field name="name">Birth certificate</field>
+        <field name="code">birth_certificate</field><field name="sequence">20</field>
+        <field name="requirement">always</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 2</field>
+    </record>
+    <record id="type_attendance_proof" model="bf.school.record.type">
+        <field name="name">Proof of school attendance on the dates set by the budget rules</field>
+        <field name="code">attendance_proof</field><field name="sequence">30</field>
+        <field name="requirement">when_applicable</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 3</field>
+    </record>
+    <record id="type_enrolment_form" model="bf.school.record.type">
+        <field name="name">Official enrolment form</field>
+        <field name="code">enrolment_form</field><field name="sequence">40</field>
+        <field name="requirement">always</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 4</field>
+    </record>
+    <record id="type_english_eligibility" model="bf.school.record.type">
+        <field name="name">Proof of eligibility for instruction in English, or the Minister's exemption</field>
+        <field name="code">english_eligibility</field><field name="sequence">50</field>
+        <field name="requirement">when_applicable</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 5</field>
+    </record>
+    <record id="type_departure_notice" model="bf.school.record.type">
+        <field name="name">Copy of the notice of departure</field>
+        <field name="code">departure_notice</field><field name="sequence">60</field>
+        <field name="requirement">when_applicable</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 6</field>
+    </record>
+    <record id="type_results" model="bf.school.record.type">
+        <field name="name">School results in each subject</field>
+        <field name="code">results</field><field name="sequence">70</field>
+        <field name="requirement">always</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 7</field>
+    </record>
+    <record id="type_contract" model="bf.school.record.type">
+        <field name="name">Enrolment form or contract of educational services</field>
+        <field name="code">contract</field><field name="sequence">80</field>
+        <field name="requirement">always</field><field name="legal_ref">E-9.1, r. 3, s. 7, para. 8</field>
+    </record>
+</odoo>

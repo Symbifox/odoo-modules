@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_record_company" model="ir.rule">
+        <field name="name">Student's file: my companies</field>
+        <field name="model_id" ref="model_bf_school_record"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_record_document_company" model="ir.rule">
+        <field name="name">Piece of a file: my companies</field>
+        <field name="model_id" ref="model_bf_school_record_document"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_record_transfer_company" model="ir.rule">
+        <field name="name">Transfer: my companies</field>
+        <field name="model_id" ref="model_bf_school_record_transfer"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_record_log_company" model="ir.rule">
+        <field name="name">Access log: my companies</field>
+        <field name="model_id" ref="model_bf_school_record_log"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- The kinds of pieces: the legal ones have no company and every school reads them; only the system
+         administration changes them; the office changes the kinds its own company added. -->
+    <record id="rule_record_type_read" model="ir.rule">
+        <field name="name">Kind of piece: the shared ones and my companies' own</field>
+        <field name="model_id" ref="model_bf_school_record_type"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_record_type_office_change" model="ir.rule">
+        <field name="name">Kind of piece: the office changes its company's own</field>
+        <field name="model_id" ref="model_bf_school_record_type"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+    <record id="rule_record_type_system_change" model="ir.rule">
+        <field name="name">Kind of piece: the system administration changes the shared ones</field>
+        <field name="model_id" ref="model_bf_school_record_type"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_system')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+    </record>
+</odoo>

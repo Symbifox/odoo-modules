@@ -1,0 +1,1837 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_charlemagne
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:09+0000\n"
+"PO-Revision-Date: 2026-10-11 07:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%(name)s was not read: %(why)s Look the transmission up in Charlemagne."
+msgstr "%(name)s n'a pas été lu : %(why)s Consultez la transmission dans Charlemagne."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%(student)s has no result for the third term in %(course)s yet."
+msgstr "%(student)s n'a pas encore de résultat à la troisième étape pour %(course)s."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%(student)s, %(course)s: the Ministry holds this result under %(held)s, which cannot be modified: the new result is sent for that record."
+msgstr "%(student)s, %(course)s : le Ministère détient ce résultat sous %(held)s, éléments qui ne se modifient pas : le nouveau résultat est envoyé pour cette fiche."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%(student)s: %(course)s has no exam sitting entered."
+msgstr "%(student)s : aucune session d'épreuve n'est saisie pour %(course)s."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%(student)s: the exam is no longer held, its results are taken off now and the registration is cancelled in the next transmission."
+msgstr "%(student)s : l'épreuve n'est plus retenue, ses résultats sont retirés maintenant et l'inscription est annulée à la prochaine transmission."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s has no permanent code."
+msgstr "%s n'a pas de code permanent."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/profile.py:0
+msgid "%s is not enrolled in a group this year."
+msgstr "%s n'a aucune inscription dans un groupe cette année."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s transaction(s) do not pass the checks: fix what the messages say in the students' Charlemagne cards, then collect and build again. Nothing is sent partially."
+msgstr "%s transaction(s) ne passent pas les contrôles : corrigez ce que disent les messages dans les fiches Charlemagne des élèves, puis recueillez et produisez de nouveau. Rien n'est envoyé en partie."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/profile.py:0
+msgid "%s: an attendance declaration needs the date attendance started."
+msgstr "%s : une déclaration de fréquentation demande la date de début de fréquentation."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s: the component weights do not total 100 %%, its results are not collected."
+msgstr "%s : les pondérations des compétences ou volets ne totalisent pas 100 %%, ses résultats ne sont pas recueillis."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s: the component weights do not total 100 %%, the school's result is not sent with its exams."
+msgstr "%s : les pondérations des compétences ou volets ne totalisent pas 100 %%, le résultat de l'école n'est pas envoyé avec les résultats d'épreuve."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s: the course code or the group number is missing, its exams are not collected."
+msgstr "%s : le code de cours ou le numéro de groupe manque ; ses épreuves ne sont pas recueillies."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s: the declaration was cancelled; it is not made again here."
+msgstr "%s : la déclaration a été annulée ; elle n'est pas refaite ici."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "%s: the group has no Ministry number, its results are not collected."
+msgstr "%s : le groupe n'a pas de numéro du Ministère ; ses résultats ne sont pas recueillis."
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "<strong>Left out:</strong>"
+msgstr "<strong>Ce qui a été laissé de côté :</strong>"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A file came back from the Ministry: %s."
+msgstr "Le Ministère a retourné un fichier : %s."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A message is not edited."
+msgstr "Un message ne se modifie pas."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A returned file is not edited."
+msgstr "Un fichier retourné ne se modifie pas."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.constraint,message:bf_school_charlemagne.constraint_bf_school_charlemagne_answer_batch_name_unique
+msgid "A returned file is read once."
+msgstr "Un fichier retourné n'est lu qu'une fois."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.constraint,message:bf_school_charlemagne.constraint_bf_school_charlemagne_config_school_unique
+msgid "A school has one set of Charlemagne settings."
+msgstr "Une école a un seul ensemble de paramètres Charlemagne."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.constraint,message:bf_school_charlemagne.constraint_bf_school_charlemagne_profile_student_year_unique
+msgid "A student has one profile per school year."
+msgstr "Chaque élève a une seule fiche par année scolaire."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A transmission that was built is not edited: start a new one."
+msgstr "Une transmission dont le fichier est produit ne se modifie plus : commencez-en une nouvelle."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A transmission that was sent is kept: it is the school's record of what the Ministry received."
+msgstr "Une transmission envoyée est conservée : c'est la trace, pour l'école, de ce que le Ministère a reçu."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "A transmission's state and files move with the buttons."
+msgstr "Le statut et les fichiers d'une transmission changent seulement au moyen des boutons."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__state__accepted
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__accepted
+msgid "Accepted"
+msgstr "Acceptée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__accepted_count
+msgid "Accepted Count"
+msgstr "Nombre de transactions acceptées"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_message__consequence__a
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__accepted_message
+msgid "Accepted with a message"
+msgstr "Acceptée avec message"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_needaction
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_request_view_form
+msgid "Add"
+msgstr "Ajouter"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__merge
+msgid "Adds to what was accepted"
+msgstr "S'ajoute à ce qui a été accepté"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/group.py:0
+msgid "Another group of the year already has the Ministry number %s."
+msgstr "Un autre groupe de l'année porte déjà le numéro du Ministère %s."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__answered
+msgid "Answered"
+msgstr "Réponse reçue"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__answered_on
+msgid "Answered On"
+msgstr "Réponse reçue le"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+#: model:ir.actions.act_window,name:bf_school_charlemagne.bf_school_charlemagne_request_action
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Ask for a file"
+msgstr "Demander un fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__withdraw
+msgid "Ask the Ministry to cancel this year's declaration (SUP). The Ministry keeps it with a cancellation date."
+msgstr "Demander au Ministère d'annuler la déclaration de cette année (SUP). Le Ministère la conserve avec une date d'annulation."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__declaration_type__fre
+msgid "Attendance"
+msgstr "Fréquentation"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__end_date
+msgid "Attendance end date"
+msgstr "Date de fin de fréquentation"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__start_date
+msgid "Attendance start date"
+msgstr "Date de début de fréquentation"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__batch_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__batch_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__batch_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__batch_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__batch_id
+msgid "Batch"
+msgstr "Transmission"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__batch_count
+msgid "Batch Count"
+msgstr "Nombre de transmissions"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__draft
+msgid "Being prepared"
+msgstr "En préparation"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__boarding
+msgid "Boarder"
+msgstr "Élève pensionnaire"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Build the file first."
+msgstr "Produisez d'abord le fichier."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__building_code
+msgid "Building code"
+msgstr "Code de l'immeuble"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__built_on
+msgid "Built On"
+msgstr "Fichier produit le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_transaction__code
+msgid "CRE, MOD, SUP, or the code of a request for a file."
+msgstr "CRE, MOD, SUP, ou le code d'une demande de fichier."
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_request_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__withdraw
+msgid "Cancel the declaration"
+msgstr "Annuler la déclaration"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__state__withdrawn
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__ledger_state__withdrawn
+msgid "Cancelled"
+msgstr "Déclaration annulée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__ledger_state__changed
+msgid "Changed since declared"
+msgstr "Changements depuis la déclaration"
+
+#. module: bf_school_charlemagne
+#: model:ir.ui.menu,name:bf_school_charlemagne.menu_school_charlemagne_config
+msgid "Charlemagne"
+msgstr "Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_message
+msgid "Charlemagne message"
+msgstr "Message Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.actions.act_window,name:bf_school_charlemagne.bf_school_charlemagne_config_action
+msgid "Charlemagne settings"
+msgstr "Paramètres Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_transaction
+msgid "Charlemagne transaction"
+msgstr "Transaction Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_batch
+msgid "Charlemagne transmission"
+msgstr "Transmission à Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_config
+msgid "Charlemagne transmission settings"
+msgstr "Paramètres de transmission à Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Check and build the file"
+msgstr "Vérifier et produire le fichier"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Check the keys"
+msgstr "Vérifier les clés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_message__source__local
+msgid "Checked here"
+msgstr "Vérification locale"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__class_code
+msgid "Class (échelon)"
+msgstr "Classe (échelon)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__code
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__teaching_language_en
+msgid "Code: English"
+msgstr "Code : anglais"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__teaching_language_fr
+msgid "Code: French"
+msgstr "Code : français"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Codes of the school's settings"
+msgstr "Codes propres à l'école"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Collect the transactions"
+msgstr "Recueillir les transactions"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__command_number
+msgid "Command number"
+msgstr "Numéro de commande"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__company_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/profile.py:0
+msgid "Confirm the names of %s against the Ministry's register first."
+msgstr "Confirmez d'abord les noms de %s selon le registre du Ministère."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__consequence
+msgid "Consequence"
+msgstr "Conséquence"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__create_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__create_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__kind__dj
+msgid "Declaration"
+msgstr "Déclaration"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__kind__dj
+msgid "Declaration (FGJ)"
+msgstr "Déclaration (FGJ)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__include_declarations
+msgid "Declarations"
+msgstr "Déclarations"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__ledger_state__declared
+msgid "Declared"
+msgstr "Déclaration acceptée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_in_dir
+msgid "Deposit directory"
+msgstr "Répertoire de dépôt"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__digest
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__digest
+msgid "Digest"
+msgstr "Empreinte"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__display_name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__invalid
+msgid "Does not pass the checks"
+msgstr "Échec des vérifications"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_transaction_view_form
+msgid "Elements"
+msgstr "Éléments"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "Enter the school's Ministry code on the school: every transaction carries it."
+msgstr "Saisissez le code d'organisme dans la fiche de l'école : chaque transaction le porte."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__kind__ij
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__kind__ij
+msgid "Exam registration"
+msgstr "Inscription à l'épreuve"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__include_exams
+msgid "Exam registrations and results"
+msgstr "Inscriptions et résultats d'épreuves"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__kind__uj
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__kind__uj
+msgid "Exam result"
+msgstr "Résultat d'épreuve"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__last_name
+msgid "Family name"
+msgstr "Nom de famille"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__birthplace_father_code
+msgid "Father's birthplace (code)"
+msgstr "Lieu de naissance du père (code)"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Fetch the answers"
+msgstr "Récupérer les réponses"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__sealed_sha256
+msgid "File SHA-256"
+msgstr "SHA-256 du fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__built
+msgid "File built"
+msgstr "Fichier produit"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__file_base
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_answer
+msgid "File returned by Charlemagne"
+msgstr "Fichier retourné par Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__error_count
+msgid "Files not read"
+msgstr "Fichiers non lus"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__answer_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Files returned"
+msgstr "Fichiers retournés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__declaration_type__fin
+msgid "Financing"
+msgstr "Financement"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__first_name
+msgid "First name"
+msgstr "Prénom"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__free_schooling
+msgid "Free schooling by residence status"
+msgstr "Gratuité scolaire selon le statut de résidence"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__command_number
+msgid "Given by the Ministry in its answer."
+msgstr "Attribué par le Ministère dans sa réponse."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__group_id
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_profile_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__has_message
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_message__consequence__s
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__suspended
+msgid "Held back"
+msgstr "Mise en suspens"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__free_schooling
+msgid "IND_GRAT_SCOLR (gratuité scolaire): whether the student's residence status in Québec gives them free schooling."
+msgstr "IND_GRAT_SCOLR (gratuité scolaire) : indique si le statut de résidence de l'élève au Québec lui donne droit à la gratuité scolaire."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_needaction
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_error
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_error
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "In simulation the answer comes back as the file is sent."
+msgstr "En simulation, la réponse revient dès l'envoi du fichier."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__mode
+msgid "In simulation the whole circuit runs, with a stand-in for the Ministry that only checks the structure of the file. Nothing is encrypted and nothing is sent."
+msgstr "En simulation, tout le circuit s'exécute, avec un substitut du Ministère qui vérifie seulement la structure du fichier. Rien n'est chiffré et rien n'est envoyé."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__invalid_count
+msgid "Invalid Count"
+msgstr "Nombre de transactions en échec"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__keep_plain_xml
+msgid "Keep the unencrypted file"
+msgstr "Conserver le fichier non chiffré"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__key
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__key
+msgid "Key"
+msgstr "Clé fonctionnelle"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Keys"
+msgstr "Clés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__keys_checked_on
+msgid "Keys Checked On"
+msgstr "Clés vérifiées le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__keys_set
+msgid "Keys entered"
+msgstr "Saisie des clés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__kind
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__kind
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__declaration_type
+msgid "Kind of declaration"
+msgstr "Type de déclaration"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__home_language_code
+msgid "Language spoken at home (code)"
+msgstr "Langue parlée à la maison (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__write_uid
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__write_date
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__ledger_state
+msgid "Ledger State"
+msgstr "Statut au registre"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__ledger_values
+msgid "Ledger Values"
+msgstr "Valeurs pour le registre"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__start_date
+msgid "Left empty, the date the student joined the group."
+msgstr "Si vide, la date d'arrivée de l'élève dans le groupe."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__kind__rj
+msgid "Local result"
+msgstr "Résultat local"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__kind__rj
+msgid "Local result (FGJ)"
+msgstr "Résultat local (FGJ)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__include_results
+msgid "Local results"
+msgstr "Résultats locaux"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_error
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__message_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Messages are written by the checks and the answers of the Ministry."
+msgstr "Les messages sont écrits uniquement par les vérifications et par les réponses du Ministère."
+
+#. module: bf_school_charlemagne
+#: model:ir.ui.menu,name:bf_school_charlemagne.menu_school_charlemagne_root
+msgid "Ministry (Charlemagne)"
+msgstr "Ministère (Charlemagne)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_group__ministry_group_number
+msgid "Ministry group number"
+msgstr "Numéro de groupe du Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__ministry_key_fingerprint
+msgid "Ministry key"
+msgstr "Clé du Ministère"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Ministry's SFTP server"
+msgstr "Serveur SFTP du Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_ministry_key
+msgid "Ministry's public key"
+msgstr "Clé publique du Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__mode
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__mode
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__mode
+msgid "Mode"
+msgstr "Mode"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__local_result_month
+msgid "Month of local results"
+msgstr "Mois des résultats locaux"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__mother_tongue_code
+msgid "Mother tongue (code)"
+msgstr "Langue maternelle (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__birthplace_mother_code
+msgid "Mother's birthplace (code)"
+msgstr "Lieu de naissance de la mère (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__name
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__names_confirmed
+msgid "Names confirmed"
+msgstr "Confirmation des noms"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_profile_view_search
+msgid "Names to confirm"
+msgstr "Noms à confirmer"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "New"
+msgstr "Nouvelle"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__boarding__n
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__free_schooling__n
+msgid "No"
+msgstr "Non"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Not answered yet: %s. What these hold is collected again here, and the Ministry refuses a creation it already has. Wait for the answers, or expect those refusals."
+msgstr "Toujours sans réponse : %s. Ce que ces transmissions contiennent est recueilli de nouveau ici, et le Ministère refuse une création qu'il a déjà. Attendez les réponses, ou attendez-vous à ces refus."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__ledger_state__new
+msgid "Not declared"
+msgstr "Aucune déclaration"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_answer__kind__error
+msgid "Not read"
+msgstr "Non lu"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__number
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__teaching_order
+msgid "ORDRE_ENSEI. Left empty, the order of the school's settings for the level is used."
+msgstr "ORDRE_ENSEI. Si vide, l'ordre d'enseignement prévu pour le niveau dans les paramètres de l'école est utilisé."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.constraint,message:bf_school_charlemagne.constraint_bf_school_charlemagne_ledger_school_key_mode_unique
+msgid "One ledger line per functional key."
+msgstr "Une seule ligne du registre par clé fonctionnelle."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_request__parameters
+msgid "One parameter per line, TAG=value, for example AN_EPREU=2027 and SESN_EPREU=06. The school's code and the school year are filled in when the request asks for them."
+msgstr "Un paramètre par ligne, ÉTIQUETTE=valeur, par exemple AN_EPREU=2027 et SESN_EPREU=06. Le code d'organisme de l'école et l'année scolaire sont remplis d'office lorsque la demande les prévoit."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Only a file that was not sent goes back to preparation."
+msgstr "Seul un fichier qui n'a pas été envoyé peut revenir en préparation."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Only a transmission being prepared can collect transactions."
+msgstr "Seule une transmission en préparation peut recueillir des transactions."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Only a transmission being prepared takes requests."
+msgstr "Seule une transmission en préparation accepte des demandes de fichier."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Only a transmission sent to the Ministry has answers to fetch."
+msgstr "Seule une transmission envoyée au Ministère a des réponses à récupérer."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "Only the school administration checks the keys."
+msgstr "Seule l'administration de l'école vérifie les clés."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/profile.py:0
+msgid "Only the school administration enters the data for the Ministry."
+msgstr "Seule l'administration de l'école saisit les données destinées au Ministère."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Only the school administration prepares transmissions."
+msgstr "Seule l'administration de l'école prépare les transmissions."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__organism_code
+msgid "Organism code"
+msgstr "Code d'organisme"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_answer__kind__file
+msgid "Other file"
+msgstr "Autre fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_request__parameters
+msgid "Parameters"
+msgstr "Paramètres"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__password_set
+msgid "Password or key entered"
+msgstr "Saisie du mot de passe ou de la clé"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__pathway_code
+msgid "Pathway (code)"
+msgstr "Type de parcours (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__responsible_name
+msgid "Person responsible for the data"
+msgstr "Personne responsable des données transmises"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__hours
+msgid "Planned hours of attendance"
+msgstr "Heures de fréquentation prévues"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__postal_code
+msgid "Postal code of the residence"
+msgstr "Code postal de la résidence"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__responsible_name
+msgid "Printed on each request (nomResponsableDonneesTransmises)."
+msgstr "Figure sur chaque demande de service (nomResponsableDonneesTransmises)."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_passphrase
+msgid "Private key passphrase"
+msgstr "Phrase secrète de la clé privée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_passphrase_enc
+msgid "Private key passphrase (stored encrypted)"
+msgstr "Phrase secrète de la clé privée (conservée chiffrée)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__mode__production
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__mode__production
+msgid "Production"
+msgstr "Production"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "Production needs %s: the system administrator enters them in the settings."
+msgstr "La production exige %s : l'administrateur système les saisit dans les paramètres."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_config__mode__production
+msgid "Production: the Ministry's server"
+msgstr "Production : le serveur du Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__program_code
+msgid "Program (code)"
+msgstr "Programme (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__rating_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Read again the files not read"
+msgstr "Relire les fichiers non lus"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__ready
+msgid "Ready"
+msgstr "Prête"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__end_reason
+msgid "Reason for the end of attendance (code)"
+msgstr "Motif de fin de fréquentation (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__received_on
+msgid "Received on"
+msgstr "Reçu le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__refused
+msgid "Refused by the Ministry"
+msgstr "Refusée par le Ministère"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Rehearse the sending"
+msgstr "Répéter l'envoi"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_message__consequence__r
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__rejected
+msgid "Rejected"
+msgstr "Rejetée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__rejected_count
+msgid "Rejected Count"
+msgstr "Nombre de transactions rejetées"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_answer__kind__request
+msgid "Report of a request"
+msgstr "Rapport d'une demande"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_answer__kind__command
+msgid "Report of the command"
+msgstr "Rapport de la commande"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__kind__fi
+msgid "Request for a file"
+msgstr "Demande de fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_request
+msgid "Request for a file from Charlemagne"
+msgstr "Demande de fichier à Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__request_count
+msgid "Requests in the file"
+msgstr "Demandes dans le fichier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_out_dir
+msgid "Return directory"
+msgstr "Répertoire de retour"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Returned files are recorded by the fetch of the answers."
+msgstr "Les fichiers retournés sont consignés par la récupération des réponses."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_user
+msgid "SFTP identification code"
+msgstr "Code d'identification SFTP"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_password
+msgid "SFTP password"
+msgstr "Mot de passe SFTP"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_password_enc
+msgid "SFTP password (stored encrypted)"
+msgstr "Mot de passe SFTP (conservé chiffré)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_port
+msgid "SFTP port"
+msgstr "Port SFTP"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_private_key
+msgid "SFTP private key"
+msgstr "Clé privée SFTP"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_key_enc
+msgid "SFTP private key (stored encrypted)"
+msgstr "Clé privée SFTP (conservée chiffrée)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_host
+msgid "SFTP server"
+msgstr "Serveur SFTP"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_answer__sha256
+msgid "SHA-256"
+msgstr "SHA-256"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__school_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__school_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__school_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__file_number
+msgid "School file number"
+msgstr "Numéro de dossier de l'organisme scolaire"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_group
+msgid "School group"
+msgstr "Groupe"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__school_key_fingerprint
+msgid "School key"
+msgstr "Clé de l'école"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__year_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_profile_view_search
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_secret_key
+msgid "School's private key"
+msgstr "Clé privée de l'école"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_secret_enc
+msgid "School's private key (stored encrypted)"
+msgstr "Clé privée de l'école (conservée chiffrée)"
+
+#. module: bf_school_charlemagne
+#: model:ir.actions.server,name:bf_school_charlemagne.ir_cron_fetch_answers_ir_actions_server
+msgid "School: fetch the answers of the Ministry (Charlemagne)"
+msgstr "École : récupérer les réponses du Ministère (Charlemagne)"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__sent
+msgid "Sent"
+msgstr "Envoyée"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__sent_by_id
+msgid "Sent By"
+msgstr "Envoi par"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__sent_on
+msgid "Sent On"
+msgstr "Date d'envoi"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Sent: %(name)s, SHA-256 %(sha)s."
+msgstr "Fichier envoyé : %(name)s, SHA-256 %(sha)s."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Server and keys"
+msgstr "Serveur et clés"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_ready
+msgid "Server entered"
+msgstr "Saisie du serveur"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_known_host
+msgid "Server host key"
+msgstr "Clé de l'hôte du serveur"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__config_id
+msgid "Settings"
+msgstr "Paramètres"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Sign and encrypt"
+msgstr "Signer et chiffrer"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Sign and encrypt the file before sending it."
+msgstr "Signez et chiffrez le fichier avant de l'envoyer."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__state__sealed
+msgid "Signed and encrypted"
+msgstr "Fichier signé et chiffré"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__sealed
+msgid "Signed and encrypted file"
+msgstr "Fichier signé et chiffré"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__sealed_name
+msgid "Signed file name"
+msgstr "Nom du fichier signé"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_batch__mode__simulation
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_ledger__mode__simulation
+msgid "Simulation"
+msgstr "Simulation"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_config__mode__simulation
+msgid "Simulation: nothing leaves the server"
+msgstr "Simulation : rien ne quitte le serveur"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid ""
+"Simulation: the whole circuit runs, a stand-in for the Ministry only checks the structure\n"
+"                        of the file, nothing is encrypted and nothing leaves the server."
+msgstr ""
+"Simulation : tout le circuit s'exécute, un substitut du Ministère vérifie seulement la structure\n"
+"                        du fichier, rien n'est chiffré et rien ne quitte le serveur."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__source
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Start over"
+msgstr "Recommencer"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__state
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__state
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__student_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__student_id
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_profile
+msgid "Student's data for the Ministry"
+msgstr "Données de l'élève pour le Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.ui.menu,name:bf_school_charlemagne.menu_school_charlemagne_profiles
+msgid "Students' data"
+msgstr "Données des élèves"
+
+#. module: bf_school_charlemagne
+#: model:ir.actions.act_window,name:bf_school_charlemagne.bf_school_charlemagne_profile_action
+msgid "Students' data for the Ministry"
+msgstr "Données des élèves pour le Ministère"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_profile__teaching_order
+msgid "Teaching order (code)"
+msgstr "Ordre d'enseignement (code)"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__order_code_elementary
+msgid "Teaching order: elementary"
+msgstr "Ordre d'enseignement : primaire"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__order_code_secondary
+msgid "Teaching order: secondary"
+msgstr "Ordre d'enseignement : secondaire"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__text
+msgid "Text"
+msgstr "Texte"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_message__source__ministry
+msgid "The Ministry"
+msgstr "Ministère"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The Ministry refused the whole transmission: none of its requests was processed. Read its messages, fix what they say and start a new transmission."
+msgstr "Le Ministère a refusé la transmission entière : aucune de ses demandes n'a été traitée. Lisez ses messages, corrigez ce qu'ils disent et commencez une nouvelle transmission."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__request_count
+msgid "The Ministry returns one report per request: the transmission is answered when each has come back."
+msgstr "Le Ministère retourne un rapport par demande : la transmission a sa réponse lorsque chacun est revenu."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__teaching_language_en
+msgid "The Ministry's code for English as the language of instruction (LANG_ENSEI). Not given in the teletransmission guide: copy it from the Ministry's domain tables."
+msgstr "Le code du Ministère pour l'anglais comme langue d'enseignement (LANG_ENSEI). Il ne figure pas dans le guide de télétransmission : reprenez-le des tables des domaines de valeurs du Ministère."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__building_code
+msgid "The Ministry's code of the school's building, if it asks for one."
+msgstr "Le code de l'immeuble de l'école attribué par le Ministère, s'il en demande un."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/group.py:0
+msgid "The Ministry's group number is between 1 and 99."
+msgstr "Le numéro de groupe du Ministère doit être compris entre 1 et 99."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The Ministry's report does not say what became of %(count)s %(kind)s transaction(s): look them up in Charlemagne."
+msgstr "Le rapport du Ministère ne dit pas ce qu'il est advenu de %(count)s transaction(s) %(kind)s : consultez-les dans Charlemagne."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The SFTP %s must be a plain name: letters, digits, dots, dashes and underscores, and it does not start with a dash."
+msgstr "Le %s SFTP doit être un nom simple : lettres, chiffres, points, tirets et traits de soulignement, sans tiret au début."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The XML file no longer matches the one that was built."
+msgstr "Le fichier XML ne correspond plus à celui qui a été produit."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__keep_plain_xml
+msgid "The XML holds identities and results. Off, it is deleted once the encrypted file exists; the transactions keep what was sent and the file's SHA-256."
+msgstr "Le fichier XML contient des identités et des résultats. Option désactivée, il est supprimé dès que le fichier chiffré existe ; les transactions conservent ce qui a été envoyé et le SHA-256 du fichier."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The answer %s is not signed by the Ministry's key: it is not read."
+msgstr "La réponse %s n'est pas signée par la clé du Ministère : elle n'est pas lue."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The answers could not be fetched: %s"
+msgstr "Les réponses n'ont pas pu être récupérées : %s"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__gpg_ministry_key
+msgid "The armored public key the Ministry gave."
+msgstr "La clé publique fournie par le Ministère, en armure ASCII."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__transmitter_code
+msgid "The code of the organism the Ministry authorised to transmit (codeOrganismeTransmetteur). Left empty, the school's own code is used."
+msgstr "Le code de l'organisme transmetteur autorisé par le Ministère (codeOrganismeTransmetteur). Si vide, le code d'organisme de l'école est utilisé."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__organism_code
+msgid "The code the Ministry of Education gives the school (code d'organisme)."
+msgstr "Le code que le ministère de l'Éducation attribue à l'école (code d'organisme)."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The element %(tag)s is not defined for this transaction."
+msgstr "L'élément %(tag)s n'est pas défini pour cette transaction."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The element %(tag)s is required."
+msgstr "L'élément %(tag)s est obligatoire."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_transaction__values
+msgid "The elements of the transaction, as JSON."
+msgstr "Les éléments de la transaction, en JSON."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__names_confirmed
+msgid "The family name and the first name entered here are those of the Ministry's register of students (Ariane), checked against the permanent code. Charlemagne refuses an identity that does not match."
+msgstr "Le nom de famille et le prénom saisis ici sont ceux du registre des élèves du Ministère (Ariane), vérifiés d'après le code permanent. Charlemagne refuse une identité qui ne correspond pas."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The file could not be sent: %s"
+msgstr "Le fichier n'a pas pu être envoyé : %s"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The file could not be signed and encrypted: %s"
+msgstr "Le fichier n'a pas pu être signé et chiffré : %s"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_group__ministry_group_number
+msgid "The group's number in Charlemagne (NO_GROUP_ELEVE and GROUP_ELEVE), 1 to 99. A group's name such as 301 is the school's, this is the Ministry's."
+msgstr "Le numéro du groupe d'élèves dans Charlemagne (NO_GROUP_ELEVE et GROUP_ELEVE), de 1 à 99. Le nom d'un groupe, comme 301, est celui de l'école ; ce numéro est celui du Ministère."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The key check writes the fingerprints and the date of the check."
+msgstr "La vérification des clés inscrit les empreintes et la date de la vérification."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The keys are only used in production."
+msgstr "Les clés ne servent qu'en production."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The keys do not work: %s"
+msgstr "Les clés ne fonctionnent pas : %s"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The ledger is written by the answers of the Ministry."
+msgstr "Le registre de ce que le Ministère a accepté s'écrit uniquement à partir de ses réponses."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_transaction__merge
+msgid "The ledger keeps the union of what was accepted (exam results)."
+msgstr "Le registre cumule tout ce qui a été accepté (résultats d'épreuves)."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__mode
+msgid "The mode of the settings when this transmission was made. A transmission and the ledger it writes belong to one mode for good."
+msgstr "Le mode des paramètres au moment de cette transmission. Une transmission et le registre qu'elle écrit appartiennent à un seul mode, pour de bon."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__local_result_month
+msgid "The month (session) the local results are sent for: 6 for the results of the school year."
+msgstr "Le mois (session) visé par la transmission des résultats locaux : 6 pour les résultats de l'année scolaire."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.constraint,message:bf_school_charlemagne.constraint_bf_school_charlemagne_config_month_range
+msgid "The month is 1 to 12."
+msgstr "Le mois doit être compris entre 1 et 12."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__file_base
+msgid "The name of the file without its extension (the guide's ZzZ)."
+msgstr "Le nom du fichier sans son extension (le ZzZ du guide)."
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "The school"
+msgstr "L'école"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The school of a set of settings is the system administrator's to change."
+msgstr "L'école d'un jeu de paramètres ne se change que par l'administration du système."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The school's key signs and the Ministry's key encrypts."
+msgstr "La clé de l'école signe et la clé du Ministère chiffre."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The secret cannot be stored: no encryption key is configured on this server (%s)."
+msgstr "Le secret ne peut pas être enregistré : aucune clé de chiffrement n'est configurée sur ce serveur (%s)."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__sftp_known_host
+msgid "The server's key as a known_hosts line, for example 'echanges.education.gouv.qc.ca ssh-ed25519 AAAA...'. Check it with the Ministry before pasting it: credentials are never sent to a server whose key was not entered."
+msgstr "La clé de l'hôte du serveur, sous forme de ligne known_hosts, par exemple « echanges.education.gouv.qc.ca ssh-ed25519 AAAA... ». Vérifiez-la auprès du Ministère avant de la coller : les identifiants ne sont jamais envoyés à un serveur dont la clé n'a pas été saisie."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The server, the account and the keys are the system administrator's."
+msgstr "Le serveur, le compte et les clés relèvent de l'administration du système."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The settings changed from %(was)s to %(now)s since this transmission was made: start a new one, so what was accepted in one mode is not taken for what was accepted in the other."
+msgstr "Les paramètres sont passés de %(was)s à %(now)s depuis cette transmission : commencez-en une nouvelle, afin que ce qui a été accepté dans un mode ne soit pas pris pour ce qui a été accepté dans l'autre."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "The stored secrets cannot be read on this server: %s"
+msgstr "Les secrets enregistrés ne peuvent pas être lus sur ce serveur : %s"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The structure %(tag)s appears once at most."
+msgstr "La structure %(tag)s apparaît au plus une fois."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The structure %(tag)s is required."
+msgstr "La structure %(tag)s est obligatoire."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_profile__file_number
+msgid "The student's number in the school (NO_DOSR_ORGAN_SCOLR). Left empty, an internal number is used."
+msgstr "Le numéro de dossier de l'élève à l'école (NO_DOSR_ORGAN_SCOLR). Si vide, un numéro interne est utilisé."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The third term is not closed: no local result is collected before it is."
+msgstr "La troisième étape n'est pas fermée : aucun résultat local n'est recueilli avant qu'elle le soit."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The value %(value)s for %(tag)s holds a character ISO-8859-1 cannot carry."
+msgstr "La valeur %(value)s de %(tag)s contient un caractère que l'ISO-8859-1 ne peut pas porter."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "The value %(value)s for the element %(tag)s does not respect the expected format: %(format)s."
+msgstr "La valeur %(value)s de l'élément %(tag)s ne respecte pas le format attendu : %(format)s."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "There is nothing to send: collect the transactions first."
+msgstr "Il n'y a rien à envoyer : recueillez d'abord les transactions."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "This report of a request lists no request and none of this transmission's transactions."
+msgstr "Ce rapport de demande ne liste aucune demande ni aucune transaction de cette transmission."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "This report of the command has no command in it."
+msgstr "Ce rapport de la commande ne contient aucune commande."
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "This sends the file to the Ministry. Continue?"
+msgstr "Le fichier sera envoyé au Ministère. Continuer ?"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "This transmission was already sealed."
+msgstr "Cette transmission a déjà été signée et chiffrée."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_transaction__state__draft
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_message__transaction_id
+msgid "Transaction"
+msgstr "Transaction"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__transaction_count
+msgid "Transaction Count"
+msgstr "Nombre de transactions"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__ident
+msgid "Transaction id"
+msgstr "Identification de la transaction"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__transaction_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "Transactions"
+msgstr "Transactions"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Transactions are prepared by the collection of the transmission."
+msgstr "Les transactions sont préparées uniquement par la collecte de la transmission."
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Transmission"
+msgstr "Transmission"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+#: model:ir.ui.menu,name:bf_school_charlemagne.menu_school_charlemagne_batches
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "Transmissions"
+msgstr "Transmissions"
+
+#. module: bf_school_charlemagne
+#: model:ir.actions.act_window,name:bf_school_charlemagne.bf_school_charlemagne_batch_action
+msgid "Transmissions to Charlemagne"
+msgstr "Transmissions à Charlemagne"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__transmitter_code
+msgid "Transmitter code"
+msgstr "Code de l'organisme transmetteur"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__xml
+msgid "Unencrypted XML file"
+msgstr "Fichier XML non chiffré"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "Unknown request %s."
+msgstr "La demande %s est inconnue."
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__updated_on
+msgid "Updated On"
+msgstr "Mis à jour le"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_ledger__values
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_transaction__values
+msgid "Values"
+msgstr "Valeurs"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_config__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_batch__website_message_ids
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_config__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_charlemagne
+#: model:ir.model,name:bf_school_charlemagne.model_bf_school_charlemagne_ledger
+msgid "What Charlemagne accepted"
+msgstr "Ce que Charlemagne a accepté"
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_config_view_form
+msgid "What is set (the system administrator enters it)"
+msgstr "Ce qui est configuré (l'administrateur système le saisit)"
+
+#. module: bf_school_charlemagne
+#: model:ir.actions.act_window,name:bf_school_charlemagne.bf_school_charlemagne_ledger_action
+#: model:ir.ui.menu,name:bf_school_charlemagne.menu_school_charlemagne_ledger
+msgid "What the Ministry accepted"
+msgstr "Ce que le Ministère a accepté"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,help:bf_school_charlemagne.field_bf_school_charlemagne_transaction__ident
+msgid "What the Ministry reports back, so each answer finds its line."
+msgstr "Identification que le Ministère reprend dans sa réponse, pour rattacher chaque réponse à sa ligne."
+
+#. module: bf_school_charlemagne
+#: model_terms:ir.ui.view,arch_db:bf_school_charlemagne.bf_school_charlemagne_batch_view_form
+msgid "What to collect"
+msgstr "Éléments à recueillir"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__collect_log
+msgid "What was left out"
+msgstr "Ce qui a été laissé de côté"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/wizard/request.py:0
+msgid "Write one parameter per line as TAG=value: %s"
+msgstr "Écrivez un paramètre par ligne sous la forme ÉTIQUETTE=valeur : %s"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields,field_description:bf_school_charlemagne.field_bf_school_charlemagne_batch__xml_sha256
+msgid "XML SHA-256"
+msgstr "SHA-256 du XML"
+
+#. module: bf_school_charlemagne
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__boarding__o
+#: model:ir.model.fields.selection,name:bf_school_charlemagne.selection__bf_school_charlemagne_profile__free_schooling__o
+msgid "Yes"
+msgstr "Oui"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "account"
+msgstr "compte"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "alphanumeric"
+msgstr "alphanumérique"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "date yyyy-mm-dd"
+msgstr "date aaaa-mm-jj"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "host"
+msgstr "serveur"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/batch.py:0
+msgid "numeric"
+msgstr "numérique"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "the SFTP password or key"
+msgstr "le mot de passe ou la clé SFTP"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "the SFTP server, account and host key"
+msgstr "le serveur SFTP, le compte et la clé de l'hôte"
+
+#. module: bf_school_charlemagne
+#. odoo-python
+#: code:addons/bf_school_charlemagne/models/config.py:0
+msgid "the school's private key and the Ministry's public key"
+msgstr "la clé privée de l'école et la clé publique du Ministère"

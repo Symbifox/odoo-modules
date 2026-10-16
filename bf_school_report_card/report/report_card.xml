@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_report_card" model="report.paperformat">
+        <field name="name">Report card (Letter, portrait)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">14</field>
+        <field name="margin_bottom">14</field>
+        <field name="margin_left">14</field>
+        <field name="margin_right">14</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_card" model="ir.actions.report">
+        <field name="name">Report card</field>
+        <field name="model">bf.school.report.card</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_school_report_card.report_card_document</field>
+        <field name="report_file">bf_school_report_card.report_card_document</field>
+        <field name="paperformat_id" ref="paperformat_report_card"/>
+    </record>
+
+    <template id="report_card_document">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="card">
+                <!-- 🔴 Printed from the sealed snapshot, not from the live records: a name corrected after the report
+                     card was sent must not change what was sent. -->
+                <t t-set="data" t-value="card._report_data()"/>
+                <t t-set="final" t-value="data['kind'] == 'final'"/>
+                <t t-set="secondary" t-value="card.stage == 'secondary'"/>
+                <div class="page" style="font-family: sans-serif; font-size: 11px;">
+                    <style>
+                        .rc-title { font-size: 20px; margin: 0; }
+                        .rc-meta td { padding: 2px 10px 2px 0; vertical-align: top; }
+                        .rc-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+                        .rc-table th, .rc-table td { border: 1px solid #999; padding: 4px 6px; }
+                        .rc-table th { background: #eee; text-align: left; }
+                        .rc-num { text-align: right; white-space: nowrap; }
+                        .rc-sub td { padding-left: 18px; color: #333; }
+                        .rc-fail { font-weight: bold; }
+                        .rc-foot { margin-top: 14px; color: #555; font-size: 9px; }
+                    </style>
+                    <h1 class="rc-title" t-out="data['school']"/>
+                    <h2 style="font-size:14px;margin:2px 0 10px 0;">
+                        <t t-if="final">Last report card of the year</t>
+                        <t t-else="">Report card</t>
+                        — term <t t-out="data['term']"/>, <t t-out="data['year']"/>
+                        <span t-if="data['version'] &gt; 1"> (corrected version <t t-out="data['version']"/>)</span>
+                    </h2>
+                    <table class="rc-meta">
+                        <tr><td><strong>Student</strong></td><td t-out="data['student']['name']"/>
+                            <td><strong>Permanent code</strong></td><td t-out="data['student']['permanent_code'] or ''"/></tr>
+                        <tr><td><strong>Group</strong></td><td t-out="data['group']"/>
+                            <td><strong>Level</strong></td><td t-out="data['level'] or ''"/></tr>
+                    </table>
+                    <table class="rc-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th class="rc-num">Result</th>
+                                <th class="rc-num">Group average</th>
+                                <t t-if="final">
+                                    <th class="rc-num">Exam</th>
+                                    <th class="rc-num">Final result</th>
+                                    <th class="rc-num">Final group average</th>
+                                    <th t-if="secondary" class="rc-num">Units</th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="data['lines']" t-as="line">
+                                <tr>
+                                    <td>
+                                        <strong t-out="line['subject']"/>
+                                        <div t-if="line['teachers']" style="color:#555;font-size:9px;" t-out="line['teachers']"/>
+                                    </td>
+                                    <td class="rc-num"><t t-if="line['result'] is not None"><t t-out="line['result']"/> %</t></td>
+                                    <td class="rc-num"><t t-if="line['group_average'] is not None"><t t-out="line['group_average']"/> %</t></td>
+                                    <t t-if="final">
+                                        <td class="rc-num"><t t-if="line['exam'] is not None"><t t-out="line['exam']"/> %</t></td>
+                                        <td t-attf-class="rc-num #{'rc-fail' if line['outcome'] == 'failed' else ''}">
+                                            <t t-if="line['final'] is not None"><t t-out="line['final']"/> %<t t-if="line['provisional']"> *</t></t>
+                                        </td>
+                                        <td class="rc-num"><t t-if="line['final_group_average'] is not None"><t t-out="line['final_group_average']"/> %</t></td>
+                                        <td t-if="secondary" class="rc-num">
+                                            <t t-if="line['units_earned'] is not None and not line['provisional']"><t t-out="line['units_earned']"/> / <t t-out="line['units'] or 0"/></t>
+                                            <t t-elif="line['provisional'] and line['units']">— / <t t-out="line['units']"/></t>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr t-foreach="line['components']" t-as="component" class="rc-sub">
+                                    <td t-out="component['name']"/>
+                                    <td class="rc-num"><t t-if="component['result'] is not None"><t t-out="component['result']"/> %</t></td>
+                                    <td/>
+                                    <t t-if="final">
+                                        <td/>
+                                        <td class="rc-num"><t t-if="component['final'] is not None"><t t-out="component['final']"/> %</t></td>
+                                        <td/>
+                                        <td t-if="secondary"/>
+                                    </t>
+                                </tr>
+                                <tr t-if="line['comment']">
+                                    <td colspan="7" style="font-style:italic;" t-out="line['comment']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div t-if="data['comment']" style="margin-top:12px;">
+                        <strong>Comment</strong>
+                        <p t-out="data['comment']" style="white-space: pre-wrap;"/>
+                    </div>
+                    <div t-if="final and data['decision']" style="margin-top:12px;">
+                        <strong>Year-end decision:</strong>
+                        <span t-out="dict(card._fields['decision']._description_selection(card.env))[data['decision']]"/>
+                        <p t-if="data['decision_note']" t-out="data['decision_note']" style="white-space: pre-wrap;"/>
+                    </div>
+                    <div t-if="final and any(line['provisional'] for line in data['lines'])" class="rc-foot">
+                        * Provisional: the result of the ministerial exam is not in, the final result is the school's alone.
+                    </div>
+                    <div class="rc-foot">
+                        Results are percentages. The success threshold is <t t-out="int(data['success_threshold'])"/> %.
+                        <t t-if="final">The final result of a competency or component counts the three terms for 20 %, 20 % and 60 %.</t>
+                        <t t-if="card.issued_on">Issued on <span t-out="card.issued_on" t-options='{"widget": "date"}'/>.
+                        Seal <t t-out="(card.snapshot_sha256 or '')[:16]"/>.</t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

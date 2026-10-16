@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_render_pdfs" model="ir.cron">
+            <field name="name">School: render the PDF of issued report cards</field>
+            <field name="model_id" ref="model_bf_school_report_card"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_render_pdfs()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 🔴 No gender agreement: the text names the child and never describes them. -->
+        <record id="mail_template_report_card" model="mail.template">
+            <field name="name">School: a report card is available</field>
+            <field name="model_id" ref="model_bf_school_report_card"/>
+            <field name="subject">{{ object.student_id.name }}: a report card is available</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The report card of <strong t-out="object.student_id.name or ''"/> for term <t t-out="object.term_id.sequence or ''"/> of <t t-out="object.year_id.name or ''"/> is available in the family portal.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/report-cards"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Open the report card
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- A correction replaces a report card the family already has: the email says so. -->
+        <record id="mail_template_report_card_correction" model="mail.template">
+            <field name="name">School: a corrected report card is available</field>
+            <field name="model_id" ref="model_bf_school_report_card"/>
+            <field name="subject">{{ object.student_id.name }}: a corrected report card is available</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">A corrected version of the report card of <strong t-out="object.student_id.name or ''"/> for term <t t-out="object.term_id.sequence or ''"/> of <t t-out="object.year_id.name or ''"/> is available in the family portal. It replaces the one you had received.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/report-cards"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Open the report card
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_communication" model="mail.template">
+            <field name="name">School: written communication</field>
+            <field name="model_id" ref="model_bf_school_communication"/>
+            <field name="subject">{{ object.student_id.name }}: {{ object.subject }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;white-space:pre-wrap;" t-out="object.body or ''"/>
+    <p style="margin:12px 0 0 0;">The school</p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

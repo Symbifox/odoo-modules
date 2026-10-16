@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_record_type_manager,bf.school.record.type administration,model_bf_school_record_type,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_record_manager,bf.school.record administration,model_bf_school_record,bf_school_core.group_school_manager,1,1,1,0
+access_bf_school_record_document_manager,bf.school.record.document administration,model_bf_school_record_document,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_record_transfer_manager,bf.school.record.transfer administration,model_bf_school_record_transfer,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_record_log_manager,bf.school.record.log administration,model_bf_school_record_log,bf_school_core.group_school_manager,1,0,0,0

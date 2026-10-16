@@ -1,0 +1,1395 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:09+0000\n"
+"PO-Revision-Date: 2026-10-11 07:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/subject.py:0
+msgid "%(component)s cannot be a %(kind)s of %(subject)s."
+msgstr "Dans %(subject)s, %(component)s ne peut pas être de type « %(kind)s »."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "%(score)s is already entered for %(student)s: the evaluation cannot be marked out of less than that (%(max)s)."
+msgstr "%(score)s est déjà saisi pour %(student)s : l'évaluation ne peut pas être notée sur moins que cela (%(max)s)."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "%(score)s is not between 0 and %(max)s, the maximum of %(name)s."
+msgstr "%(score)s ne se situe pas entre 0 et %(max)s, la note maximale de %(name)s."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "%(student)s is not in the group of this course."
+msgstr "%(student)s ne fait pas partie du groupe de ce cours."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "%s has a single discipline result: an evaluation judges no component."
+msgstr "%s n'a qu'un résultat disciplinaire : une évaluation n'y porte sur aucune compétence ni aucun volet."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/subject.py:0
+msgid "%s has a single discipline result: it takes no components."
+msgstr "%s n'a qu'un résultat disciplinaire : cette matière ne compte ni compétence ni volet."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "%s has no ministerial exam."
+msgstr "%s n'a pas d'épreuve ministérielle."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "%s is closed: ask the school office to reopen it before changing grades."
+msgstr "%s est fermée : demandez au secrétariat de la rouvrir avant de modifier des notes."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/course.py:0
+msgid "%s is not a component of the subject of this course."
+msgstr "%s n'est ni une compétence ni un volet de la matière de ce cours."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "%s is not in the group of this course."
+msgstr "%s ne fait pas partie du groupe de ce cours."
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+msgid ""
+"<strong>Enter the units of this course:</strong>\n"
+"                        the subjects ship with the units of the first cycle (s. 23) and the table of the second\n"
+"                        cycle (s. 23.1) is not shipped. A report card prints these units."
+msgstr ""
+"<strong>Saisissez les unités de ce cours :</strong>\n"
+"                        les matières sont livrées avec les unités du premier cycle (art. 23) et le tableau du second\n"
+"                        cycle (art. 23.1) n'est pas livré. Un bulletin imprime ces unités."
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+msgid ""
+"<strong>The component weights must total 100 %:</strong>\n"
+"                        no discipline result is computed until they do. Total now:"
+msgstr ""
+"<strong>Les pondérations des compétences ou volets doivent totaliser 100 % :</strong>\n"
+"                        aucun résultat disciplinaire n'est calculé tant qu'elles ne le font pas. Total actuel :"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_term__state
+msgid "A closed term no longer takes grades from the teachers; the office can reopen it."
+msgstr "Une étape fermée ne reçoit plus de notes du personnel enseignant ; le secrétariat peut la rouvrir."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_component_course_component_unique
+msgid "A component is listed once per course."
+msgstr "Une compétence ou un volet ne figure qu'une fois par cours."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "A grade cannot be moved to another evaluation or student."
+msgstr "Une note reste liée à son évaluation et à son élève : elle ne peut pas être déplacée."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "A grade stays with its evaluation: its course and its term are the evaluation's."
+msgstr "Une note reste avec son évaluation : son cours et son étape sont ceux de l'évaluation."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_exam_result_percent_range
+msgid "A result is a percentage."
+msgstr "Un résultat est un pourcentage."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_term_sequence_year_unique
+msgid "A school year has one term of each number."
+msgstr "Une année scolaire n'a qu'une étape par numéro."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__units_to_enter
+msgid "A secondary course of the second cycle whose units are not entered yet."
+msgstr "Un cours du second cycle du secondaire dont les unités ne sont pas encore saisies."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_exam_weight_range
+msgid "A share is a percentage."
+msgstr "La part de l'épreuve est un pourcentage."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_assessment_result_assessment_student_unique
+msgid "A student has one grade per evaluation."
+msgstr "Chaque élève a une seule note par évaluation."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/subject.py:0
+msgid "A subject belongs to one of your companies."
+msgstr "Une matière appartient à l'une de vos sociétés."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_subject_code_stage_unique
+msgid "A subject code is used once per stage."
+msgstr "Un code de matière ne sert qu'une fois par ordre d'enseignement."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_group_subject_unique
+msgid "A subject is taught once to a group."
+msgstr "Une matière n'est enseignée qu'une fois à un même groupe."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "A term ends after it starts."
+msgstr "Une étape se termine après son début."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_component_weight_range
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_subject_component_weight_range
+msgid "A weight is a percentage."
+msgstr "Une pondération est un pourcentage."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_exam_result__state__absent
+msgid "Absent"
+msgstr "Absence"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_needaction
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__active
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_course__third_term_basis__year
+msgid "All the year's evaluations"
+msgstr "Toutes les évaluations de l'année"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "An evaluation cannot be moved to another course."
+msgstr "Une évaluation ne peut pas être déplacée vers un autre cours."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_assessment_max_positive
+msgid "An evaluation is marked out of a positive number."
+msgstr "Une évaluation est notée sur un nombre positif."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "An evaluation stays in its course, its year and its school."
+msgstr "Une évaluation reste dans son cours, son année et son école."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "An exam result stays with its student and its course."
+msgstr "Un résultat d'épreuve reste avec son élève et son cours."
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__assessment_id
+msgid "Assessment"
+msgstr "Évaluation"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__average
+msgid "Average (%)"
+msgstr "Moyenne (%)"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+msgid "Below the threshold"
+msgstr "Sous le seuil de réussite"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject__result_mode__competency
+msgid "By competency"
+msgstr "Par compétence"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject__result_mode__volet
+msgid "By theory and practice component"
+msgstr "Par volet théorique et pratique"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_exam_result__exam_year
+msgid "Calendar year of the exam sitting."
+msgstr "Année civile de la passation de l'épreuve."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "Choose the competency or component this evaluation judges: %s has results by competency or component."
+msgstr "Choisissez la compétence ou le volet sur lequel porte cette évaluation : %s a des résultats par compétence ou par volet."
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_year_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_term__state__closed
+msgid "Closed"
+msgstr "Fermée"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__comment
+msgid "Comment"
+msgstr "Commentaire"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_eng_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_esl_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fra_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fsl_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_eng_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_esl_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fra_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fsl_c1
+msgid "Communicate orally"
+msgstr "Communiquer oralement"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__company_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject_component__kind__competency
+msgid "Competency"
+msgstr "Compétence"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__component_id
+msgid "Competency or component"
+msgstr "Compétence ou volet"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__component_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__component_id
+msgid "Component"
+msgstr "Compétence ou volet"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_course_result_line
+msgid "Component result"
+msgstr "Résultat d'une compétence ou d'un volet"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__component_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__line_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__component_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_form
+msgid "Components"
+msgstr "Compétences ou volets"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+msgid "Components and weights"
+msgstr "Compétences ou volets et pondérations"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__course_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__course_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__course_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__course_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__course_id
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_assessment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+msgid "Course"
+msgstr "Cours"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_course
+msgid "Course (a subject taught to a group)"
+msgstr "Cours (une matière enseignée à un groupe)"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_course_component
+msgid "Course component"
+msgstr "Compétence ou volet d'un cours"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_course_result
+msgid "Course result for a term"
+msgstr "Résultat d'un cours pour une étape"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_course_action
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_courses
+msgid "Courses"
+msgstr "Cours"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_year_view_form
+msgid "Create the three terms"
+msgstr "Créer les trois étapes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__create_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__create_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_dan
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_dan
+msgid "Dance"
+msgstr "Danse"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_year__deadline_override_reason
+msgid "Deadline exception"
+msgstr "Dérogation aux échéances"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__development_score
+msgid "Development part"
+msgstr "Partie à développement"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject__result_mode__discipline
+msgid "Discipline result only"
+msgstr "Résultat disciplinaire seulement"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__display_name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_adr
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_adr
+msgid "Drama"
+msgstr "Art dramatique"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_year__success_threshold
+msgid "Education Regulation s. 28.1: the success threshold is 60 % for every subject."
+msgstr "Régime pédagogique, art. 28.1 : le seuil de réussite est de 60 % dans toutes les matières."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_term__weight
+msgid "Education Regulation s. 30.2: 20 % for the first term, 20 % for the second, 60 % for the third."
+msgstr "Régime pédagogique, art. 30.2 : 20 % pour la première étape, 20 % pour la deuxième, 60 % pour la troisième."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__exam_weight
+msgid "Education Regulation s. 30.3: the result on a ministerial exam is worth 20 % of the final result, subject to s. 34, under which the Minister counts 50 % of the school's evaluation for the programs of the fourth and fifth years of secondary school. Proposed from the levels of the group; a group whose levels do not say which applies keeps 20 %: check it, the share stays editable."
+msgstr "Régime pédagogique, art. 30.3 : le résultat à une épreuve ministérielle compte pour 20 % du résultat final, sous réserve de l'art. 34, selon lequel le ministre tient compte à 50 % de l'évaluation de l'école pour les programmes de la 4e et de la 5e secondaire. La part est proposée selon les niveaux du groupe ; un groupe dont les niveaux ne permettent pas de trancher garde 20 % : vérifiez-la, elle reste modifiable."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject__stage__elementary
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_search
+msgid "Elementary"
+msgstr "Primaire"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_subject__company_id
+msgid "Empty: a subject shared by every company of the database, which only the system administration changes. A subject a school adds carries its company."
+msgstr "Vide : matière partagée par toutes les sociétés de la base, que seule l'administration du système modifie. Une matière ajoutée par une école porte sa société."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__date_end
+msgid "Ends"
+msgstr "Fin"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_eng
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_eng
+msgid "English, language of instruction"
+msgstr "Anglais, langue d'enseignement"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_esl
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_esl
+msgid "English, second language"
+msgstr "Anglais, langue seconde"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "Enter the percentage the Ministry gave with the state “Result received”."
+msgstr "Saisissez le pourcentage donné par le Ministère avec l'état « Résultat reçu »."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "Enter the year and the month of the sitting of a taken exam."
+msgstr "Pour une épreuve passée, saisissez l'année et le mois de la passation."
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_assessment
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_assessment_view_form
+msgid "Evaluation"
+msgstr "Évaluation"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_assessment_action
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__assessment_ids
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_assessments
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+msgid "Evaluations"
+msgstr "Évaluations"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__exam_month
+msgid "Exam month"
+msgstr "Mois de l'épreuve"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__exam_result_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_form
+msgid "Exam results"
+msgstr "Résultats à l'épreuve"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__exam_weight
+msgid "Exam share (%)"
+msgstr "Part de l'épreuve (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__exam_weight_hint
+msgid "Exam share check"
+msgstr "Vérification de la part de l'épreuve"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__exam_year
+msgid "Exam year"
+msgstr "Année de l'épreuve"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_assessment_result__status__exempt
+msgid "Exempt"
+msgstr "Exemption"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course_result__has_percent
+msgid "False when the evaluations cannot give a discipline result yet (for example the component weights are not entered)."
+msgstr "Décoché tant que les évaluations ne permettent pas d'établir un résultat disciplinaire (par exemple, si les pondérations des compétences ou volets ne sont pas saisies)."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_year__first_communication_date
+msgid "First written communication"
+msgstr "Première communication écrite"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_follower_ids
+msgid "Followers"
+msgstr "Personnes abonnées"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Personnes abonnées (partenaires)"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_fra
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_fra
+msgid "French, language of instruction"
+msgstr "Français, langue d'enseignement"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_fsl
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_fsl
+msgid "French, second language"
+msgstr "Français, langue seconde"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course_component__weight
+msgid "From the evaluation framework of the subject."
+msgstr "Selon le cadre d'évaluation des apprentissages de la matière."
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_geo
+msgid "Geography"
+msgstr "Géographie"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_ghc
+msgid "Geography, history and citizenship education"
+msgstr "Géographie, histoire et éducation à la citoyenneté"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_assessment_result
+msgid "Grade on an evaluation"
+msgstr "Note à une évaluation"
+
+#. module: bf_school_gradebook
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_gradebook_root
+msgid "Gradebook"
+msgstr "Carnet de notes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_assessment_result__status__graded
+msgid "Graded"
+msgstr "Avec note"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__graded_count
+msgid "Graded results"
+msgstr "Notes saisies"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_assessment_view_form
+msgid "Grades"
+msgstr "Notes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__group_id
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__group_average
+msgid "Group average (%)"
+msgstr "Moyenne du groupe (%)"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_assessment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__has_message
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__has_percent
+msgid "Has a result"
+msgstr "Résultat disponible"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_his
+msgid "History and citizenship education"
+msgstr "Histoire et éducation à la citoyenneté"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_group__homeroom_ids
+msgid "Homeroom teachers"
+msgstr "Titulaires"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__message_needaction
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__message_has_error
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__message_has_error
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_is_follower
+msgid "Is Follower"
+msgstr "Abonnement actif"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__kind
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__write_uid
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__write_date
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_mat
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_mat
+msgid "Mathematics"
+msgstr "Mathématique"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_has_error
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__ministerial_exam
+msgid "Ministerial exam"
+msgstr "Épreuve ministérielle"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_exam_result
+msgid "Ministerial exam result"
+msgstr "Résultat à une épreuve ministérielle"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_exam_result_action
+msgid "Ministerial exam results"
+msgstr "Résultats aux épreuves ministérielles"
+
+#. module: bf_school_gradebook
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_exam_results
+msgid "Ministerial exams"
+msgstr "Épreuves ministérielles"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__ministry_course_code
+msgid "Ministry course code"
+msgstr "Code de cours du Ministère"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_exam_result__exam_month
+msgid "Month of the exam sitting, 1 to 12 (the Ministry's session)."
+msgstr "Mois de la passation de l'épreuve, de 1 à 12 (la session du Ministère)."
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_mus
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_mus
+msgid "Music"
+msgstr "Musique"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+msgid "My courses"
+msgstr "Mes cours"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__name
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_assessment_result__status__pending
+msgid "Not graded"
+msgstr "Sans note"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__objective_score
+msgid "Objective part"
+msgstr "Partie objective"
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_exam_result_course_student_unique
+msgid "One exam result per student and course."
+msgstr "Un seul résultat d'épreuve par élève et par cours."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_result_line_result_component_unique
+msgid "One result per component."
+msgstr "Un seul résultat par compétence ou volet."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_result_course_term_student_unique
+msgid "One result per student, course and term."
+msgstr "Un seul résultat par élève, par cours et par étape."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment_result__status
+msgid "Only a graded evaluation counts. Exempt: the student does not take part and nothing is held against them."
+msgstr "Seule une évaluation avec note compte. Exemption : l'élève ne participe pas à l'évaluation, sans conséquence sur son résultat."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "Only the school administration closes or reopens a term."
+msgstr "Seule l'administration de l'école ferme ou rouvre une étape."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_term__state__open
+msgid "Open"
+msgstr "Ouverte"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__max_score
+msgid "Out of"
+msgstr "Note maximale"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__percent
+msgid "Percent"
+msgstr "Pourcentage"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_eps
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_eps
+msgid "Physical education and health"
+msgstr "Éducation physique et à la santé"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_sct_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_sct_c2
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject_component__kind__practice
+msgid "Practice component"
+msgstr "Volet pratique"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_ccq
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_ccq
+msgid "Quebec culture and citizenship"
+msgstr "Culture et citoyenneté québécoise"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__rating_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__rating_ids
+msgid "Ratings"
+msgstr "Appréciations"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_eng_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fra_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_eng_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fra_c1
+msgid "Read texts"
+msgstr "Lire des textes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__legal_deadline
+msgid "Regulation deadline"
+msgstr "Échéance réglementaire"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__weight
+msgid "Relative importance of this evaluation among those that judge the same competency or component in the same term."
+msgstr "Importance relative de cette évaluation parmi celles qui portent sur la même compétence ou le même volet durant la même étape."
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_year_view_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__report_deadline
+msgid "Report card deadline"
+msgstr "Date limite du bulletin"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__result_id
+msgid "Result"
+msgstr "Résultat"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__percent
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result_line__percent
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__percent
+msgid "Result (%)"
+msgstr "Résultat (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__result_mode
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__result_mode
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__result_mode
+msgid "Result mode"
+msgstr "Mode de résultat"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_exam_result__state__graded
+msgid "Result received"
+msgstr "Résultat reçu"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_course_result_action
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__result_ids
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_course_results
+msgid "Results"
+msgstr "Résultats"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__school_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__school_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__school_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_group
+msgid "School group"
+msgstr "Groupe"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_subject
+msgid "School subject"
+msgstr "Matière scolaire"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_term
+msgid "School term"
+msgstr "Étape de l'année scolaire"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_year
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__year_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__year_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__year_id
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_year_action
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_years_terms
+msgid "School years and terms"
+msgstr "Années scolaires et étapes"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_sct
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_sct
+msgid "Science and technology"
+msgstr "Science et technologie"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__score
+msgid "Score"
+msgstr "Note"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject__stage__secondary
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_search
+msgid "Secondary"
+msgstr "Secondaire"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__sequence
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__sequence
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_subject__code
+msgid "Short code, for example FRA or MAT."
+msgstr "Code court, par exemple FRA ou MAT."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__short_development_score
+msgid "Short development part"
+msgstr "Partie à court développement"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_mat_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_mat_c1
+msgid "Solve a situational problem"
+msgstr "Résoudre une situation-problème"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__stage
+msgid "Stage"
+msgstr "Ordre d'enseignement"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__date_start
+msgid "Starts"
+msgstr "Début"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__state
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__student_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__student_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_exam_result__student_id
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__subject_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__subject_id
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_subject_view_form
+msgid "Subject"
+msgstr "Matière"
+
+#. module: bf_school_gradebook
+#: model:ir.model,name:bf_school_gradebook.model_bf_school_subject_component
+msgid "Subject component"
+msgstr "Compétence ou volet d'une matière"
+
+#. module: bf_school_gradebook
+#: model:ir.actions.act_window,name:bf_school_gradebook.bf_school_subject_action
+#: model:ir.ui.menu,name:bf_school_gradebook.menu_school_subjects
+msgid "Subjects"
+msgstr "Matières"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_year__success_threshold
+msgid "Success threshold (%)"
+msgstr "Seuil de réussite (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_exam_result__state__taken
+msgid "Taken"
+msgstr "Passée"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_exam_result__state
+msgid "Taken: the student sat the exam and the school entered what it marks itself. Result received: the Ministry's result is in and counts for its share of the final result."
+msgstr "Passée : l'élève a passé l'épreuve et l'école a saisi ce qu'elle corrige elle-même. Résultat reçu : le résultat du Ministère est arrivé et compte pour sa part du résultat final."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__teacher_ids
+msgid "Teachers"
+msgstr "Personnel enseignant"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__term_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment_result__term_id
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__term_id
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_assessment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+msgid "Term"
+msgstr "Étape"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "Term %(number)s, %(year)s"
+msgstr "Étape %(number)s, %(year)s"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__sequence
+msgid "Term number"
+msgstr "Numéro de l'étape"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_year__term_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_year_view_form
+msgid "Terms"
+msgstr "Étapes"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/exam.py:0
+msgid "The Ministry's result is entered by the school administration: a teacher marks the exam as taken and enters the raw scores."
+msgstr "Le résultat du Ministère est saisi par l'administration de l'école : le personnel enseignant marque l'épreuve comme passée et saisit les notes brutes."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "The component is not one of this course's."
+msgstr "Cette compétence ou ce volet n'appartient pas à ce cours."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__ministry_course_code
+msgid "The course code (code de cours) the Ministry uses in Charlemagne, up to 10 characters."
+msgstr "Le code de cours que le Ministère utilise dans Charlemagne, 10 caractères au plus."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__ministerial_exam
+msgid "The course ends with an exam the Minister imposes: its result is worth a share of the final result (Education Regulation s. 30.3)."
+msgstr "Le cours se termine par une épreuve imposée par le Ministère : son résultat compte pour une part du résultat final (Régime pédagogique, art. 30.3)."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_term__report_deadline
+msgid "The date by which the report card of this term reaches the families. The regulation sets November 20, March 15 and July 10 at the latest."
+msgstr "La date à laquelle le bulletin de cette étape parvient aux familles. Le Régime pédagogique fixe comme dates limites le 20 novembre, le 15 mars et le 10 juillet."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "The first written communication is due on %(legal)s at the latest (Education Regulation s. 29). To set %(date)s, fill in the deadline exception with the order that allows it."
+msgstr "La première communication écrite doit être remise au plus tard le %(legal)s (Régime pédagogique, art. 29). Pour fixer le %(date)s, remplissez la dérogation aux échéances avec le décret qui le permet."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_year__deadline_override_reason
+msgid "The government order that moves a legal deadline for this year, with its reference. Required to set a date later than the regulation's."
+msgstr "Le décret qui déplace une échéance légale pour cette année, avec sa référence. Obligatoire pour fixer une date postérieure à celle du Régime pédagogique."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/course.py:0
+msgid "The group has no level, so the share cannot be said: 20 % (s. 30.3), or 50 % for the fourth and fifth years of secondary school (s. 34). Check the share."
+msgstr "Le groupe n'a aucun niveau, la part ne peut donc pas être dite : 20 % (art. 30.3), ou 50 % pour la 4e et la 5e secondaire (art. 34). Vérifiez la part."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_exam_result_month_range
+msgid "The month is 1 to 12."
+msgstr "Le mois va de 1 à 12."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/course.py:0
+msgid "The regulation gives %(said)s %% for the levels of this group (s. 30.3 and 34). This course uses %(used)s %%."
+msgstr "Le Régime donne %(said)s %% pour les niveaux de ce groupe (art. 30.3 et 34). Ce cours utilise %(used)s %%."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_term_sequence_range
+msgid "The regulation has three terms: the number is 1, 2 or 3."
+msgstr "Le Régime pédagogique prévoit trois étapes : le numéro est 1, 2 ou 3."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "The report card of term %(number)s is due on %(legal)s at the latest (Education Regulation s. 29.1). To set %(date)s, fill in the deadline exception of the school year with the order that allows it."
+msgstr "Le bulletin de l'étape %(number)s doit être remis au plus tard le %(legal)s (Régime pédagogique, art. 29.1). Pour fixer le %(date)s, remplissez la dérogation aux échéances de l'année scolaire avec le décret qui le permet."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_exam_result__percent
+msgid "The student's result on the exam, as a percentage, once the Ministry's result is received: the one the report card uses. Meaningless before that."
+msgstr "Résultat de l'élève à l'épreuve, en pourcentage, une fois le résultat du Ministère reçu : c'est celui qu'utilise le bulletin. Sans signification avant."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_year_success_threshold_range
+msgid "The success threshold is a percentage."
+msgstr "Le seuil de réussite est un pourcentage."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_group__homeroom_ids
+msgid "The teachers in charge of the group (titulaires): they write the general comment and the year-end decision of its report cards. At the secondary level the group lists all its teachers, so who is in charge is said here. Taken from the group's teacher when it has only one."
+msgstr "Le personnel enseignant responsable du groupe (titulaires) : il écrit le commentaire général et la décision de fin d'année des bulletins du groupe. Au secondaire, le groupe liste tout son personnel enseignant : on dit donc ici qui en est responsable. Repris du groupe lorsque celui-ci n'a qu'une seule personne enseignante."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/assessment.py:0
+msgid "The term belongs to another school year than the course."
+msgstr "L'étape appartient à une autre année scolaire que celle du cours."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_course__third_term_basis__term
+msgid "The third term's own evaluations"
+msgstr "Les évaluations de la troisième étape seulement"
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_term_weight_range
+msgid "The weight of a term is a percentage."
+msgstr "La pondération d'une étape est un pourcentage."
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_assessment_weight_positive
+msgid "The weight of an evaluation is positive."
+msgstr "La pondération d'une évaluation est positive."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_subject_component__default_weight
+msgid "The weight the evaluation framework gives this component in the discipline result. Left at 0 until the school enters the framework's figure: a course does not compute its discipline result on weights nobody has confirmed."
+msgstr "La pondération que le cadre d'évaluation des apprentissages accorde à cette compétence ou à ce volet dans le résultat disciplinaire. Laissée à 0 jusqu'à ce que l'école saisisse la valeur du cadre : un cours ne calcule pas son résultat disciplinaire avec des pondérations que personne n'a confirmées."
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/term.py:0
+msgid "The weights of the three terms of %(year)s total %(total)s %%, not 100 %%."
+msgstr "Les pondérations des trois étapes de %(year)s totalisent %(total)s %%, et non 100 %%."
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_sct_c1
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_sct_c1
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_subject_component__kind__theory
+msgid "Theory component"
+msgstr "Volet théorique"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__third_term_basis
+msgid "Third term result rests on"
+msgstr "Base du résultat de la troisième étape"
+
+#. module: bf_school_gradebook
+#. odoo-python
+#: code:addons/bf_school_gradebook/models/course.py:0
+msgid "This group has students of the fourth or fifth year and of other years: the exam is worth 50 % in the first (s. 34) and 20 % in the others (s. 30.3). Check the share."
+msgstr "Ce groupe compte des élèves de 4e ou de 5e secondaire et d'autres années : l'épreuve vaut 50 % pour les premiers (art. 34) et 20 % pour les autres (art. 30.3). Vérifiez la part."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields.selection,name:bf_school_gradebook.selection__bf_school_exam_result__state__pending
+msgid "To take"
+msgstr "À passer"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__third_term_basis
+msgid "Under the regulation the result of the third term is a summary of the whole program (s. 30.1). Whether it is computed from the evaluations of that term alone or from the whole year's is the school's choice."
+msgstr "Selon le Régime pédagogique, le résultat de la troisième étape fait le bilan de l'ensemble du programme (art. 30.1). L'école choisit de le calculer à partir des seules évaluations de cette étape ou de celles de toute l'année."
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_esl_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fsl_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_esl_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fsl_c2
+msgid "Understand texts read and heard"
+msgstr "Comprendre des textes lus et entendus"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__units
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject__units
+msgid "Units"
+msgstr "Unités"
+
+#. module: bf_school_gradebook
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_course_units_positive
+#: model:ir.model.constraint,message:bf_school_gradebook.constraint_bf_school_subject_units_positive
+msgid "Units cannot be negative."
+msgstr "Les unités ne peuvent pas être négatives."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__units
+msgid "Units earned when the final result reaches the threshold (secondary school). Copied from the subject, except for a group of the second cycle: the subjects ship with the units of the first cycle (s. 23), so the school enters those of its second-cycle courses."
+msgstr "Unités obtenues lorsque le résultat final atteint le seuil (secondaire). Reprises de la matière, sauf pour un groupe du second cycle : les matières sont livrées avec les unités du premier cycle (art. 23), l'école saisit donc celles de ses cours du second cycle."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_subject__units
+msgid "Units of the subject at the secondary level (the regulation, s. 23): earned when the final result reaches the threshold. Courses can set their own."
+msgstr "Unités de la matière au secondaire (Régime pédagogique, art. 23) : obtenues lorsque le résultat final atteint le seuil de réussite. Un cours peut fixer les siennes."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__units_to_enter
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+msgid "Units to enter"
+msgstr "Unités à saisir"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_mat_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_mat_c2
+msgid "Use mathematical reasoning"
+msgstr "Déployer un raisonnement mathématique"
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject,name:bf_school_gradebook.subject_el_apl
+#: model:bf.school.subject,name:bf_school_gradebook.subject_sec_apl
+msgid "Visual arts"
+msgstr "Arts plastiques"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__website_message_ids
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_assessment__weight
+msgid "Weight"
+msgstr "Pondération"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_component__weight
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_subject_component__default_weight
+msgid "Weight (%)"
+msgstr "Pondération (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_term__weight
+msgid "Weight in the final result (%)"
+msgstr "Pondération dans le résultat final (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__weights_ok
+msgid "Weights Ok"
+msgstr "Pondérations valides"
+
+#. module: bf_school_gradebook
+#: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_view_search
+msgid "Weights to complete"
+msgstr "Pondérations à compléter"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course__weights_total
+msgid "Weights total (%)"
+msgstr "Total des pondérations (%)"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_assessment__component_id
+msgid "What this evaluation judges. Required in the subjects that have a result by competency or by component."
+msgstr "Ce sur quoi porte cette évaluation. Obligatoire dans les matières qui ont un résultat par compétence ou par volet."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course__teacher_ids
+msgid "Who gives the grades of this course. Taken from the group when it has only one teacher."
+msgstr "Qui saisit les notes de ce cours. Pris du groupe lorsque celui-ci n'a qu'une seule personne enseignante."
+
+#. module: bf_school_gradebook
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_eng_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_esl_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fra_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_el_fsl_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_eng_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_esl_c3
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fra_c2
+#: model:bf.school.subject.component,name:bf_school_gradebook.subject_sec_fsl_c3
+msgid "Write texts"
+msgstr "Écrire des textes"
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_year__first_communication_date
+msgid "Written communication other than a report card, sent to the parents at the latest on October 15 (Education Regulation s. 29)."
+msgstr "Communication écrite autre qu'un bulletin, transmise aux parents au plus tard le 15 octobre (Régime pédagogique, art. 29)."

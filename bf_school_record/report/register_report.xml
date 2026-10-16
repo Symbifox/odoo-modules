@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_register" model="ir.actions.report">
+        <field name="name">Register of enrolment</field>
+        <field name="model">bf.school.record</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_school_record.report_register</field>
+        <field name="report_file">bf_school_record.report_register</field>
+        <field name="binding_model_id" ref="model_bf_school_record"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_register">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <h2>Register of enrolment</h2>
+                <p class="text-muted">
+                    Regulation respecting private educational institutions at the preschool, elementary
+                    and secondary levels (E-9.1, r. 3), section 8.
+                </p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Residence address</th>
+                            <th>Birth date</th>
+                            <th>Language of instruction</th>
+                            <th>Holders of parental authority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="docs" t-as="record">
+                            <td><span t-field="record.student_id.name"/></td>
+                            <td><span t-field="record.residence_address"/></td>
+                            <td><span t-field="record.birthdate"/></td>
+                            <td><span t-field="record.teaching_language"/></td>
+                            <td><span t-field="record.authority_holders"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

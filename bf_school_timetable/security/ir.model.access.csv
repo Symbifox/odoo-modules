@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_room_user,bf.school.room staff,model_bf_school_room,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_room_manager,bf.school.room administration,model_bf_school_room,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_timetable_user,bf.school.timetable staff,model_bf_school_timetable,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_timetable_manager,bf.school.timetable administration,model_bf_school_timetable,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_period_user,bf.school.period staff,model_bf_school_period,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_period_manager,bf.school.period administration,model_bf_school_period,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_timetable_day_user,bf.school.timetable.day staff,model_bf_school_timetable_day,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_timetable_day_manager,bf.school.timetable.day administration,model_bf_school_timetable_day,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_timetable_slot_user,bf.school.timetable.slot staff,model_bf_school_timetable_slot,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_timetable_slot_manager,bf.school.timetable.slot administration,model_bf_school_timetable_slot,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_timetable_feed_manager,bf.school.timetable.feed administration,model_bf_school_timetable_feed,bf_school_core.group_school_manager,1,0,0,1
+access_bf_school_timetable_import_manager,bf.school.timetable.import administration,model_bf_school_timetable_import,bf_school_core.group_school_manager,1,1,1,1

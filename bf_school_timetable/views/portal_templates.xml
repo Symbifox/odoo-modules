@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_timetable_link" name="School: link to the timetable"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/timetable" class="btn btn-secondary">
+                <i class="fa fa-calendar me-1"/>Timetable</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_timetable" name="School: timetable breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="38">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_timetable'" class="breadcrumb-item active">Timetable</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_timetable" name="School: timetable">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Timetable</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Timetable</t>
+            </t>
+            <div t-if="not children" class="alert alert-info mt-3">The school has not linked any child to your account yet.</div>
+            <t t-foreach="week" t-as="entry">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 t-out="entry['student'].name"/>
+                        <p t-if="not entry['days']" class="text-muted">No class in the next seven days, or the timetable is not published yet.</p>
+                        <div t-foreach="entry['days']" t-as="day" class="mb-2">
+                            <strong t-out="day[0]" t-options='{"widget": "date", "format": "EEEE d MMMM"}'/>
+                            <span class="text-muted"> · day <t t-out="day[1][0]['cycle_day']"/> of the cycle</span>
+                            <ul class="list-unstyled mb-0">
+                                <li t-foreach="day[1]" t-as="item">
+                                    <t t-out="item['period'].start_label"/>
+                                    to <t t-out="item['period'].end_label"/>
+                                    · <strong t-out="item['course'].subject_id.name"/>
+                                    <span t-if="item['room']" class="text-muted"> · <t t-out="item['room'].name"/></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-3 border-top pt-3">
+                            <h6>In your calendar</h6>
+                            <div t-if="entry['feed']">
+                                <p class="text-muted small mb-1">Add this address to your calendar program as a subscribed calendar. Anyone who has it reads this timetable: keep it to yourself, and replace it if it leaks.</p>
+                                <input class="form-control" readonly="1" onclick="this.select()"
+                                       t-att-value="'%s/school/timetable/%s.ics' % (base_url, entry['feed'].token)"/>
+                            </div>
+                            <form method="post" action="/my/school/timetable/link" class="mt-2">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="student_id" t-att-value="entry['student'].id"/>
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <t t-if="entry['feed']">Replace the address</t>
+                                    <t t-else="">Get a calendar address</t>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

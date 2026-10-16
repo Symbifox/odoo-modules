@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A teacher listed on a group reads the report cards of that group, whole; a teacher of one subject of
+         the group reads and comments the lines of their own subject (rules of the lines below, the screen
+         "Comments on the subjects"), never the card: the general comment, the decision, the drafts, the versions
+         and the thread are the group's teachers' and the office's. The homeroom teacher writes the general
+         comment. Issuing and publishing are the office's. -->
+    <record id="rule_card_teacher_read" model="ir.rule">
+        <field name="name">Report card: the groups I teach (read)</field>
+        <field name="model_id" ref="model_bf_school_report_card"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('group_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_card_teacher_write" model="ir.rule">
+        <field name="name">Report card: the groups I am in charge of (write the comment)</field>
+        <field name="model_id" ref="model_bf_school_report_card"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('group_id.homeroom_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_card_manager" model="ir.rule">
+        <field name="name">Report card: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_report_card"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_card_line_teacher_read" model="ir.rule">
+        <field name="name">Report card line: my groups and my subjects (read)</field>
+        <field name="model_id" ref="model_bf_school_report_card_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">['|', ('card_id.group_id.teacher_ids', 'in', [user.id]), ('course_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_card_line_teacher_write" model="ir.rule">
+        <field name="name">Report card line: my subjects (write the comment)</field>
+        <field name="model_id" ref="model_bf_school_report_card_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('course_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_card_line_manager" model="ir.rule">
+        <field name="name">Report card line: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_report_card_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_card_component_teacher" model="ir.rule">
+        <field name="name">Report card component: my groups and my subjects</field>
+        <field name="model_id" ref="model_bf_school_report_card_component"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">['|', ('line_id.card_id.group_id.teacher_ids', 'in', [user.id]), ('line_id.course_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_card_component_manager" model="ir.rule">
+        <field name="name">Report card component: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_report_card_component"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_communication_teacher" model="ir.rule">
+        <field name="name">Communication: the students of my groups</field>
+        <field name="model_id" ref="model_bf_school_communication"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('student_id.student_enrollment_ids', 'any', [('state', '=', 'active'), ('group_id.teacher_ids', 'in', [user.id])])]</field>
+    </record>
+    <record id="rule_communication_manager" model="ir.rule">
+        <field name="name">Communication: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_communication"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Multi-company -->
+    <record id="rule_card_company" model="ir.rule">
+        <field name="name">Report card: my companies</field>
+        <field name="model_id" ref="model_bf_school_report_card"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_communication_company" model="ir.rule">
+        <field name="name">Communication: my companies</field>
+        <field name="model_id" ref="model_bf_school_communication"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_card_read_company" model="ir.rule">
+        <field name="name">Read receipt: my companies</field>
+        <field name="model_id" ref="model_bf_school_report_card_read"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- 🔴 The lines and their components have no rule of company of their own: the office's `(1, '=', 1)` above
+         gave the subjects, the results and the teachers' comments of every company to the office of any of them. -->
+    <record id="rule_card_line_company" model="ir.rule">
+        <field name="name">Report card line: my companies</field>
+        <field name="model_id" ref="model_bf_school_report_card_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_card_component_company" model="ir.rule">
+        <field name="name">Report card component: my companies</field>
+        <field name="model_id" ref="model_bf_school_report_card_component"/>
+        <field name="domain_force">[('line_id.company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

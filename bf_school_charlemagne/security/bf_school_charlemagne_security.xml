@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_charlemagne_config_company" model="ir.rule">
+        <field name="name">Charlemagne settings: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_config"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_profile_company" model="ir.rule">
+        <field name="name">Charlemagne profile: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_profile"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_batch_company" model="ir.rule">
+        <field name="name">Charlemagne transmission: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_batch"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_transaction_company" model="ir.rule">
+        <field name="name">Charlemagne transaction: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_transaction"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_message_company" model="ir.rule">
+        <field name="name">Charlemagne message: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_message"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_answer_company" model="ir.rule">
+        <field name="name">Charlemagne returned file: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_answer"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_charlemagne_ledger_company" model="ir.rule">
+        <field name="name">Charlemagne ledger: my companies</field>
+        <field name="model_id" ref="model_bf_school_charlemagne_ledger"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

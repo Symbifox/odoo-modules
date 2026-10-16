@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_group_timetable" model="ir.actions.report">
+        <field name="name">Timetable of the group</field>
+        <field name="model">bf.school.group</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_school_timetable.report_group_timetable</field>
+        <field name="report_file">bf_school_timetable.report_group_timetable</field>
+        <field name="binding_model_id" ref="bf_school_core.model_bf_school_group"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_group_timetable">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="group">
+                <t t-set="timetable" t-value="group.env['bf.school.timetable'].sudo()._timetable_to_print(group)"/>
+                <div class="page" style="font-size: 10px;">
+                    <h2>Timetable of <t t-out="group.name"/></h2>
+                    <p class="text-muted"><t t-out="group.school_id.name"/>, <t t-out="group.year_id.name"/></p>
+                    <p t-if="not timetable">No published timetable for this school year.</p>
+                    <table t-if="timetable" class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th t-foreach="range(1, timetable.cycle_days + 1)" t-as="day">Day <t t-out="day"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="timetable.period_ids.sorted('start_time')" t-as="period">
+                                <td>
+                                    <strong t-out="period.name"/><br/>
+                                    <t t-out="'%02d:%02d' % (int(period.start_time), round((period.start_time % 1) * 60))"/>-<t t-out="'%02d:%02d' % (int(period.end_time), round((period.end_time % 1) * 60))"/>
+                                </td>
+                                <td t-foreach="range(1, timetable.cycle_days + 1)" t-as="day">
+                                    <t t-foreach="timetable.slot_ids.filtered(lambda s: s.group_id == group and s.day_no == day and s.period_id == period)" t-as="slot">
+                                        <div><t t-out="slot.course_id.subject_id.name"/><t t-if="slot.room_id"> (<t t-out="slot.room_id.name"/>)</t></div>
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

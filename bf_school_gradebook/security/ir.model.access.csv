@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_subject_user,bf.school.subject staff,model_bf_school_subject,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_subject_manager,bf.school.subject administration,model_bf_school_subject,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_subject_component_user,bf.school.subject.component staff,model_bf_school_subject_component,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_subject_component_manager,bf.school.subject.component administration,model_bf_school_subject_component,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_term_user,bf.school.term staff,model_bf_school_term,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_term_manager,bf.school.term administration,model_bf_school_term,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_course_user,bf.school.course staff,model_bf_school_course,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_course_manager,bf.school.course administration,model_bf_school_course,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_course_component_user,bf.school.course.component staff,model_bf_school_course_component,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_course_component_manager,bf.school.course.component administration,model_bf_school_course_component,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_assessment_user,bf.school.assessment staff,model_bf_school_assessment,bf_school_core.group_school_user,1,1,1,1
+access_bf_school_assessment_manager,bf.school.assessment administration,model_bf_school_assessment,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_assessment_result_user,bf.school.assessment.result staff,model_bf_school_assessment_result,bf_school_core.group_school_user,1,1,1,1
+access_bf_school_assessment_result_manager,bf.school.assessment.result administration,model_bf_school_assessment_result,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_course_result_user,bf.school.course.result staff,model_bf_school_course_result,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_course_result_manager,bf.school.course.result administration,model_bf_school_course_result,bf_school_core.group_school_manager,1,0,0,0
+access_bf_school_course_result_line_user,bf.school.course.result.line staff,model_bf_school_course_result_line,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_course_result_line_manager,bf.school.course.result.line administration,model_bf_school_course_result_line,bf_school_core.group_school_manager,1,0,0,0
+access_bf_school_exam_result_user,bf.school.exam.result staff,model_bf_school_exam_result,bf_school_core.group_school_user,1,1,1,1
+access_bf_school_exam_result_manager,bf.school.exam.result administration,model_bf_school_exam_result,bf_school_core.group_school_manager,1,1,1,1

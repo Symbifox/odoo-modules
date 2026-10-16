@@ -1,0 +1,1037 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:09+0000\n"
+"PO-Revision-Date: 2026-10-11 07:19+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__state
+msgid "A file is kept after the student leaves."
+msgstr "Le dossier est conservé après le départ de l'élève."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/ir_attachment.py:0
+msgid "A file kept with a student's file is not replaced or deleted from here: it changes by the screen or the button of its record, which keep a trace."
+msgstr "Un fichier conservé avec le dossier d'un élève ne se remplace ni ne se supprime d'ici : il change par l'écran ou le bouton de sa fiche, qui en gardent une trace."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record_type.py:0
+msgid "A kind of piece belongs to one of your companies."
+msgstr "Un type de pièce appartient à l'une de vos sociétés."
+
+#. module: bf_school_record
+#: model:ir.model.constraint,message:bf_school_record.constraint_bf_school_record_type_code_unique
+msgid "A kind of piece has its own code."
+msgstr "Chaque type de pièce a son propre code."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "A prepared or sent transfer is kept: it is part of the file's history."
+msgstr "Un transfert préparé ou envoyé est conservé : il fait partie de l'historique du dossier."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "A prepared transfer is not edited: the package was made for what it says."
+msgstr "Un transfert préparé ne se modifie pas : le paquet a été fait pour ce qu'il dit."
+
+#. module: bf_school_record
+#: model:ir.model.constraint,message:bf_school_record.constraint_bf_school_record_student_school_unique
+msgid "A student has one file per school."
+msgstr "Chaque élève a un seul dossier par école."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "A student's file is not deleted: the regulation makes the school keep it, and hand it to the Minister if the school closes. Close it with the student's departure."
+msgstr "Le dossier d'un élève ne se supprime pas : le règlement oblige l'école à le conserver et à le remettre au Ministère si elle ferme. Fermez-le plutôt avec le bouton « Départ de l'élève »."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "A transfer that was sent is kept as it went."
+msgstr "Un transfert envoyé est conservé tel quel."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "A transfer's state and package move with the buttons."
+msgstr "L'état et le paquet d'un transfert ne changent que par ses boutons."
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__log_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Access log"
+msgstr "Journal des accès"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_record_log
+msgid "Access log of a student's file"
+msgstr "Journal des accès au dossier d'un élève"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__action
+msgid "Action"
+msgstr "Action"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_needaction
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Admission"
+msgstr "Admission"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_application
+msgid "Admission and enrolment applications, with their supporting documents"
+msgstr "Demandes d'admission et d'inscription, avec leurs pièces justificatives"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__arrival_date
+msgid "Admitted on"
+msgstr "Date d'admission"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_type__requirement__always
+msgid "Always required"
+msgstr "Toujours obligatoire"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_type__requirement
+msgid "Always required: the file is incomplete without it. Required when it applies: the school marks the piece received, missing, or not applicable with a note. School's own: kept in the file, never reported as missing."
+msgstr "Toujours obligatoire : le dossier est incomplet sans cette pièce. Obligatoire, le cas échéant : l'école indique si la pièce est reçue, à fournir ou sans objet (avec une note). Propre à l'école : conservée au dossier, jamais signalée comme manquante."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "Ask for or write the notice of departure."
+msgstr "Demandez ou rédigez l'avis de départ."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "Attach the file of “%s”, or note where the school keeps it."
+msgstr "Joignez le fichier de « %s » ou indiquez où l'école le conserve."
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_birth_certificate
+msgid "Birth certificate"
+msgstr "Certificat de naissance"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__birthdate
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Birth date"
+msgstr "Date de naissance"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_transfer_view_form
+msgid "Change what it holds"
+msgstr "Modifier son contenu"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__closure_export
+msgid "Closure export"
+msgstr "Exportation de fermeture"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__company_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__company_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__company_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__company_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__is_complete
+msgid "Complete"
+msgstr "Dossier complet"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__export_portable
+msgid "Copy given (portability)"
+msgstr "Copie remise (portabilité)"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Copy of the file (JSON)"
+msgstr "Copie du dossier (JSON)"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_departure_notice
+msgid "Copy of the notice of departure"
+msgstr "Copie de l'avis de départ"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_view_form_record
+msgid "Create the missing files"
+msgstr "Créer les dossiers manquants"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__create_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__create_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__create_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__create_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__create_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__create_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__create_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__create_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school__record_transfer_days
+msgid "Days within which the school sends a leaving student's information to the receiving school. The Private Education Act (s. 38.1) says as soon as possible and gives no figure: this is the school's own target, used to flag a late transfer."
+msgstr "Nombre de jours dans lesquels l'école transmet à l'école d'accueil les renseignements d'un élève qui la quitte. La Loi sur l'enseignement privé (art. 38.1) demande de le faire le plus tôt possible, sans fixer de délai : cette cible est propre à l'école et sert à signaler un transfert en retard."
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__display_name
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__display_name
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__display_name
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__display_name
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__file
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__user_id
+msgid "Done by"
+msgstr "Fait par"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Download"
+msgstr "Télécharger"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_transfer_view_form
+msgid "Download the package"
+msgstr "Télécharger le paquet"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_application
+msgid "E-9.1, r. 3, s. 7, para. 1"
+msgstr "E-9.1, r. 3, art. 7, par. 1"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_birth_certificate
+msgid "E-9.1, r. 3, s. 7, para. 2"
+msgstr "E-9.1, r. 3, art. 7, par. 2"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_attendance_proof
+msgid "E-9.1, r. 3, s. 7, para. 3"
+msgstr "E-9.1, r. 3, art. 7, par. 3"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_enrolment_form
+msgid "E-9.1, r. 3, s. 7, para. 4"
+msgstr "E-9.1, r. 3, art. 7, par. 4"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_english_eligibility
+msgid "E-9.1, r. 3, s. 7, para. 5"
+msgstr "E-9.1, r. 3, art. 7, par. 5"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_departure_notice
+msgid "E-9.1, r. 3, s. 7, para. 6"
+msgstr "E-9.1, r. 3, art. 7, par. 6"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_results
+msgid "E-9.1, r. 3, s. 7, para. 7"
+msgstr "E-9.1, r. 3, art. 7, par. 7"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,legal_ref:bf_school_record.type_contract
+msgid "E-9.1, r. 3, s. 7, para. 8"
+msgstr "E-9.1, r. 3, art. 7, par. 8"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_type__company_id
+msgid "Empty: a kind shared by every company of the database (the ones that ship with the module), which only the system administration changes. A kind a school adds carries its company."
+msgstr "Vide : type partagé par toutes les sociétés de la base (ceux qui sont livrés avec le module), que seule l'administration du système modifie. Un type ajouté par une école porte sa société."
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record__teaching_language__en
+msgid "English"
+msgstr "Anglais"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_enrollment
+msgid "Enrolment"
+msgstr "Inscription"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_contract
+msgid "Enrolment form or contract of educational services"
+msgstr "Formulaire d'inscription ou contrat de services éducatifs"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_view_form_record
+msgid "Export every file (closure)"
+msgstr "Exporter tous les dossiers (fermeture)"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__file_name
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__created
+msgid "File created"
+msgstr "Dossier créé"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__seal_mismatch
+msgid "File refused: it no longer matches its seal"
+msgstr "Fichier refusé : il ne correspond plus à son sceau"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__reopened
+msgid "File reopened"
+msgstr "Dossier rouvert"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Modèle d'aide au téléchargement de fichiers pour les contrôleurs"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school__record_count
+#: model:ir.ui.menu,name:bf_school_record.menu_school_record_root
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_view_form_record
+msgid "Files"
+msgstr "Dossiers"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_follower_ids
+msgid "Followers"
+msgstr "Personnes abonnées"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Personnes abonnées (partenaires)"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__sent_how
+msgid "For example the secure transfer link, or the file handed over. A correction after the sending is kept in the history of the transfer."
+msgstr "Par exemple le lien de transfert sécurisé, ou le fichier remis en main propre. Une correction après l'envoi est conservée dans l'historique du transfert."
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record__teaching_language__fr
+msgid "French"
+msgstr "Français"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__has_message
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__authority_holders
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Holders of parental authority"
+msgstr "Titulaires de l'autorité parentale"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__sent_how
+msgid "How it was sent"
+msgstr "Mode d'envoi"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__message_needaction
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__message_has_error
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__message_has_error
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_search
+msgid "Incomplete"
+msgstr "Incomplet"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_is_follower
+msgid "Is Follower"
+msgstr "Abonnement actif"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__type_id
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_record_type
+msgid "Kind of piece in a student's file"
+msgstr "Type de pièce du dossier d'un élève"
+
+#. module: bf_school_record
+#: model:ir.actions.act_window,name:bf_school_record.bf_school_record_type_action
+#: model:ir.ui.menu,name:bf_school_record.menu_school_record_types
+msgid "Kinds of pieces"
+msgstr "Types de pièces"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__teaching_language
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Language of instruction"
+msgstr "Langue d'enseignement"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__write_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__write_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__write_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__write_uid
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__write_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__write_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__write_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__write_date
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record__state__left
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_search
+msgid "Left"
+msgstr "Départ"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__departure_date
+msgid "Left on"
+msgstr "Date de départ"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__legal_ref
+msgid "Legal reference"
+msgstr "Référence légale"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_transfer_view_form
+msgid "Mark as sent"
+msgstr "Marquer comme envoyé"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_has_error
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_ids
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__destination_code
+msgid "Ministry code of the receiving school"
+msgstr "Code ministériel de l'école d'accueil"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_document__state__missing
+msgid "Missing"
+msgstr "À fournir"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__missing_type_ids
+msgid "Missing pieces"
+msgstr "Pièces manquantes"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__name
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_document__state__not_applicable
+msgid "Not applicable"
+msgstr "Sans objet"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__note
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__include_documents
+msgid "Off by default: the file holds the birth certificate and other documents the receiving school may not need."
+msgstr "Désactivé par défaut : le dossier contient le certificat de naissance et d'autres documents dont l'école d'accueil n'a peut-être pas besoin."
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_enrolment_form
+msgid "Official enrolment form"
+msgstr "Formulaire officiel d'inscription"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "Only a prepared transfer goes back to being prepared."
+msgstr "Seul un transfert préparé revient en préparation."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/school.py:0
+msgid "Only the school administration exports the files."
+msgstr "Seule l'administration de l'école exporte les dossiers."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "Only the school administration keeps the students' files."
+msgstr "Seule l'administration de l'école tient les dossiers des élèves."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/school.py:0
+msgid "Only the school administration opens the students' files."
+msgstr "Seule l'administration de l'école ouvre les dossiers des élèves."
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record__state__open
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_search
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record__teaching_language__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__package
+msgid "Package"
+msgstr "Paquet"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__package_name
+msgid "Package Name"
+msgstr "Nom du paquet"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__permanent_code
+msgid "Permanent code"
+msgstr "Code permanent"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__piece_added
+msgid "Piece added"
+msgstr "Pièce ajoutée"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__piece_downloaded
+msgid "Piece downloaded"
+msgstr "Pièce téléchargée"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_record_document
+msgid "Piece of a student's file"
+msgstr "Pièce du dossier d'un élève"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__piece_removed
+msgid "Piece removed"
+msgstr "Pièce retirée"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__piece_replaced
+msgid "Piece replaced"
+msgstr "Pièce remplacée"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__document_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Pieces"
+msgstr "Pièces"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__missing_count
+msgid "Pieces missing"
+msgstr "Pièces manquantes"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_transfer_view_form
+msgid "Prepare the package"
+msgstr "Préparer le paquet"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "Prepare the package before saying it was sent."
+msgstr "Préparez le paquet avant d'indiquer qu'il a été envoyé."
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_english_eligibility
+msgid "Proof of eligibility for instruction in English, or the Minister's exemption"
+msgstr "Preuve d'admissibilité à l'enseignement en anglais ou exemption accordée par le Ministère"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_attendance_proof
+msgid "Proof of school attendance on the dates set by the budget rules"
+msgstr "Preuve de fréquentation scolaire aux dates fixées par les règles budgétaires"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__rating_ids
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_transfer__state__ready
+msgid "Ready"
+msgstr "Prêt"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_document__state__received
+msgid "Received"
+msgstr "Reçue"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__destination_name
+msgid "Receiving school"
+msgstr "École d'accueil"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__record_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_log__record_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__record_id
+msgid "Record"
+msgstr "Dossier"
+
+#. module: bf_school_record
+#: model:ir.actions.act_window,name:bf_school_record.bf_school_record_register_action
+#: model:ir.actions.report,name:bf_school_record.action_report_register
+#: model:ir.ui.menu,name:bf_school_record.menu_school_register
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Register of enrolment"
+msgstr "Registre d'inscription"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__teaching_language
+msgid "Register of enrolment, entry 4 (E-9.1, r. 3, s. 8)."
+msgstr "Registre d'inscription, élément 4 (E-9.1, r. 3, art. 8)."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid ""
+"Regulation respecting private educational institutions at the preschool, elementary\n"
+"                    and secondary levels (E-9.1, r. 3), section 8."
+msgstr ""
+"Règlement sur les établissements d'enseignement privés à l'éducation préscolaire, au primaire\n"
+"                    et au secondaire (E-9.1, r. 3), article 8."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__requested_on
+msgid "Requested On"
+msgstr "Date de la demande"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_type__requirement__when_applicable
+msgid "Required when it applies"
+msgstr "Obligatoire, le cas échéant"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__requirement
+msgid "Requirement"
+msgstr "Exigence"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__residence_address
+#: model_terms:ir.ui.view,arch_db:bf_school_record.report_register
+msgid "Residence address"
+msgstr "Adresse de résidence"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__package_sha256
+msgid "SHA-256"
+msgstr "SHA-256"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "Say how it was sent."
+msgstr "Indiquez le mode d'envoi."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "Say why “%s” does not apply."
+msgstr "Indiquez pourquoi « %s » est sans objet."
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__school_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__school_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_record
+#: model:bf.school.record.type,name:bf_school_record.type_results
+msgid "School results in each subject"
+msgstr "Résultats scolaires dans chaque matière"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_type__requirement__optional
+msgid "School's own, not required"
+msgstr "Propre à l'école, non obligatoire"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__due_on
+msgid "Send by"
+msgstr "Échéance d'envoi"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_transfer__state__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__sent_by_id
+msgid "Sent By"
+msgstr "Envoyé par"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__sent_on
+msgid "Sent On"
+msgstr "Envoyé le"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_type__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__source_model
+msgid "Source Model"
+msgstr "Modèle source"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__source_res_id
+msgid "Source record"
+msgstr "Fiche d'origine"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__state
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__state
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__student_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_document__student_id
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Student leaves"
+msgstr "Départ de l'élève"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__left
+msgid "Student left"
+msgstr "Départ de l'élève"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_record
+msgid "Student's file"
+msgstr "Dossier de l'élève"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/school.py:0
+#: model:ir.actions.act_window,name:bf_school_record.bf_school_record_action
+#: model:ir.ui.menu,name:bf_school_record.menu_school_records
+msgid "Students' files"
+msgstr "Dossiers des élèves"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "The access log is not deleted."
+msgstr "Le journal des accès ne peut pas être supprimé."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "The access log is not edited."
+msgstr "Le journal des accès ne peut pas être modifié."
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__permanent_code
+msgid "The code the Ministry of Education gives every student: four letters then eight digits."
+msgstr "Le code que le ministère de l'Éducation attribue à chaque élève : quatre lettres puis huit chiffres."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "The file is kept. Mark the student as having left?"
+msgstr "Le dossier est conservé. Consigner le départ de l'élève ?"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__include_guardians
+msgid "The guardians"
+msgstr "Les responsables"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__include_documents
+msgid "The pieces of the file"
+msgstr "Les pièces du dossier"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__scope_note
+msgid "The receiving school's request, in its words."
+msgstr "La demande de l'école d'accueil, dans ses propres termes."
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_document__source_model
+msgid "The record of another module this piece comes from."
+msgstr "L'enregistrement d'un autre module dont provient cette pièce."
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__include_results
+msgid "The results"
+msgstr "Les résultats"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__due_on
+msgid "The school's own target: the law says as soon as possible."
+msgstr "Cible propre à l'école : la loi demande d'agir le plus tôt possible."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_view_form_record
+msgid "This builds a zip of every student's file, with their pieces. Continue?"
+msgstr "Cette opération produit un fichier zip de tous les dossiers des élèves, avec leurs pièces. Continuer ?"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/ir_binary.py:0
+msgid "This file no longer matches its seal: it is not given out."
+msgstr "Ce fichier ne correspond plus à son sceau : il n'est pas remis."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "This filter does not support the operator %s."
+msgstr "Ce filtre ne prend pas en charge l'opérateur %s."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/controllers/main.py:0
+msgid "This package no longer matches its seal: it is not given out."
+msgstr "Ce paquet ne correspond plus à son sceau : il n'est pas remis."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "This transfer was already sent."
+msgstr "Ce transfert a déjà été envoyé."
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_transfer__state__draft
+msgid "To prepare"
+msgstr "À préparer"
+
+#. module: bf_school_record
+#: model:ir.model,name:bf_school_record.model_bf_school_record_transfer
+msgid "Transfer of a student's information to another school"
+msgstr "Transfert des renseignements d'un élève à une autre école"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__transfer_downloaded
+msgid "Transfer package downloaded"
+msgstr "Paquet de transfert téléchargé"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__transfer_prepared
+msgid "Transfer prepared"
+msgstr "Transfert préparé"
+
+#. module: bf_school_record
+#: model:ir.model.fields.selection,name:bf_school_record.selection__bf_school_record_log__action__transfer_sent
+msgid "Transfer sent"
+msgstr "Transfert envoyé"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school__record_transfer_days
+msgid "Transfer target (days)"
+msgstr "Délai cible de transfert (jours)"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__transfer_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "Transfers"
+msgstr "Transferts"
+
+#. module: bf_school_record
+#: model:ir.actions.act_window,name:bf_school_record.bf_school_record_transfer_action
+#: model:ir.ui.menu,name:bf_school_record.menu_school_record_transfers
+msgid "Transfers to other schools"
+msgstr "Transferts vers d'autres écoles"
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record__website_message_ids
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_transfer__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_transfer_view_form
+msgid "What goes in the package"
+msgstr "Contenu du paquet"
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/transfer.py:0
+msgid "What this transfer holds changed since the package was prepared (a report card, a name, a piece). Use “Change what it holds” and prepare it again."
+msgstr "Le contenu de ce transfert a changé depuis la préparation du paquet (un bulletin, un nom, une pièce). Utilisez « Modifier son contenu » et préparez-le de nouveau."
+
+#. module: bf_school_record
+#: model:ir.model.fields,field_description:bf_school_record.field_bf_school_record_transfer__scope_note
+msgid "What was asked for"
+msgstr "Objet de la demande"
+
+#. module: bf_school_record
+#: model:ir.model.fields,help:bf_school_record.field_bf_school_record_type__legal_ref
+msgid "Where the requirement comes from, for example E-9.1, r. 3, s. 7, para. 2."
+msgstr "Source de l'exigence, par exemple E-9.1, r. 3, art. 7, par. 2."
+
+#. module: bf_school_record
+#: model_terms:ir.ui.view,arch_db:bf_school_record.bf_school_record_view_form
+msgid "required piece(s) missing from this file."
+msgstr "pièce(s) obligatoire(s) manquante(s) dans ce dossier."
+
+#. module: bf_school_record
+#. odoo-python
+#: code:addons/bf_school_record/models/record.py:0
+msgid "“%s” is always required: it cannot be marked not applicable."
+msgstr "« %s » est toujours obligatoire : cette pièce ne peut pas être marquée sans objet."
