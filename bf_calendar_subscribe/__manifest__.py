@@ -10,7 +10,11 @@
     #   événements importés sont privés par défaut, sans rappel, sans ordre du
     #   jour, et ne repartent nulle part. Lecture gardée contre les adresses
     #   internes (même garde que bf_bookmarks).
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2 : le module rend lui-même calendar.event coloriable. La règle
+    #   de couleur des agendas abonnés supposait que calendar_nextcloud_sync
+    #   l'avait déjà fait : sur une base sans lui, l'installation s'arrêtait
+    #   (« Calendar Event has no free color »).
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -19,7 +19,13 @@ CHAMPS_VERROUILLES = {
 
 
 class CalendarEvent(models.Model):
-    _inherit = "calendar.event"
+    # ⚠️ Le mixin est déclaré ici, pas emprunté : la règle de couleur des agendas
+    # abonnés (data/bf_color_rule.xml) exige un calendar.event coloriable. Un
+    # autre module peut déclarer le même mixin, la double déclaration est sans
+    # effet ; sans aucun, l'installation s'arrêtait sur « Calendar Event has no
+    # free color ».
+    _name = "calendar.event"
+    _inherit = ["calendar.event", "bf.color.mixin"]
 
     bf_subscription_id = fields.Many2one(
         "bf.calendar.subscription", string="External calendar", index=True,

@@ -33,6 +33,7 @@ checked again, size is capped at 5 MB, the connection at 5 seconds and each wait
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.0.2 | 2026-10-16 | Installs on a database where no other module makes calendar events colorable |
 | 18.0.1.0.1 | 2026-10-15 | The example in the subscription name is now generic |
 | 18.0.1.0.0 | 2026-10-14 | External calendar subscriptions (lot 6) |
 
