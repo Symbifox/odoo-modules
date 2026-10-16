@@ -30,7 +30,11 @@ COMMUNE = "bf_onboarding_base.bf_mail_layout"
 # La carte de la mise en page commune (copie de secours et originale) : une, pas deux.
 CARTE = "box-shadow:0 4px 24px"
 # Ce que seule l'ancienne coquille portait, dans un courriel envoyé.
-ANCIEN_ENTETE = re.compile(r"border-radius:10px 10px 0 0|/brand/logo/\d+/brand")
+# ⚠️ Son logo (`/brand/logo/<id>/brand`) n'est plus une trace à lui seul : la
+# mise en page commune porte le même depuis qu'elle met le logo pour fond sombre
+# dans son en-tête. Un logo, c'est la commune ; deux, la coquille est revenue.
+ANCIEN_ENTETE = re.compile(r"border-radius:10px 10px 0 0")
+LOGO = re.compile(r"/brand/logo/\d+/brand")
 # Dans un corps stocké.
 TRACES = ("max-width:600px", "border-radius:10px 10px 0 0", "/brand/logo/")
 RACINE = Path(__file__).resolve().parent.parent
@@ -88,6 +92,10 @@ class TestMiseEnPage(BaseNeuve, TransactionCase):
     def _nouveaux(self, avant):
         return self.env["mail.mail"].sudo().search([("id", "not in", avant)])
 
+    def _sans_ancienne_coquille(self, corps):
+        self.assertFalse(ANCIEN_ENTETE.search(corps), "en-tête de l'ancienne coquille")
+        self.assertLessEqual(len(LOGO.findall(corps)), 1, "un logo, celui de la commune")
+
     def _valeurs(self, template):
         self.env.flush_all()
         self.env.cr.execute("SELECT body_html FROM mail_template WHERE id = %s", [template.id])
@@ -116,7 +124,7 @@ class TestMiseEnPage(BaseNeuve, TransactionCase):
         self.assertEqual(len(courriel), 1)
         corps = courriel.body_html
         self.assertEqual(corps.count(CARTE), 1, "une carte, la commune")
-        self.assertFalse(ANCIEN_ENTETE.search(corps))
+        self._sans_ancienne_coquille(corps)
         self.assertIn(">Signature requise</p>", corps)
         self.assertIn(signataire._signing_url(), html.unescape(corps))
         self.assertFalse(courriel.model, "le jeton ne doit pas rester rattaché à un document")
@@ -141,7 +149,7 @@ class TestMiseEnPage(BaseNeuve, TransactionCase):
         self.assertEqual(len(courriel), 1)
         corps = courriel.body_html
         self.assertEqual(corps.count(CARTE), 1)
-        self.assertFalse(ANCIEN_ENTETE.search(corps))
+        self._sans_ancienne_coquille(corps)
         self.assertIn(">Code de vérification</p>", corps)
         self.assertIn("123456", corps)
         self.assertNotIn("<b>Piège</b>", corps)
@@ -155,7 +163,7 @@ class TestMiseEnPage(BaseNeuve, TransactionCase):
         courriel = self._nouveaux(avant)
         self.assertEqual(len(courriel), 1)
         self.assertEqual(courriel.body_html.count(CARTE), 1)
-        self.assertFalse(ANCIEN_ENTETE.search(courriel.body_html))
+        self._sans_ancienne_coquille(courriel.body_html)
 
     def test_la_migration_rend_la_source(self):
         """L'outil de la migration, appliqué à l'ancien corps, rend la source neuve."""
