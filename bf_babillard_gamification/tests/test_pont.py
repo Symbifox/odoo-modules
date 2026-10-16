@@ -130,6 +130,10 @@ class TestPontBadges(TransactionCase):
     def test_le_titre_est_dans_la_langue_de_la_maison(self):
         """🔴 Une carte écrite dans la langue de qui déclenche arrive en anglais
         sur un babillard français dès qu'un compte technique passe par là."""
+        # ⚠️ fr_CA doit exister avant d'écrire dans cette langue : une base
+        # neuve (la CI) n'a que en_US, et l'écriture levait « Invalid
+        # language code: fr_CA ». Les libellés, l'essai les pose lui-même.
+        self.env["res.lang"]._activate_lang("fr_CA")
         self.env.company.partner_id.lang = "fr_CA"
         self.badge.with_context(lang="fr_CA").name = "Coup de main"
         self.badge.with_context(lang="en_US").name = "Helping hand"
