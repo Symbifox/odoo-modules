@@ -170,6 +170,11 @@ jobs:
     name: Tests
     needs: prepare
     runs-on: ubuntu-latest
+    # ⚠️ A lot runs 5 to 10 minutes. Without a ceiling, a deadlocked test
+    # (wkhtmltopdf fetching its CSS from the very server the test holds)
+    # sat for 4 h 43 until the next push cancelled it, and the run never said
+    # which test. Forty-five minutes fails it loudly instead.
+    timeout-minutes: 45
     container:
       image: odoo:18
       options: --user root

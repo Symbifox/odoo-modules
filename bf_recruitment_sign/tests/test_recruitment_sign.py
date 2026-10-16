@@ -41,6 +41,15 @@ class TestRecruitmentSign(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ⚠️ Même parade que les essais de bf_celebrations : un vrai PDF fait
+        # chercher ses feuilles de style par wkhtmltopdf à `report.url` ou
+        # `web.base.url`, donc au serveur de test lui-même, dont le fil de
+        # requête attend le verrou du registre que la passe tient. Blocage
+        # mutuel, sans délai : un lot de CI tenait ainsi 4 h 43 avant d'être
+        # annulé. Une adresse fermée fait échouer la récupération tout de
+        # suite ; le PDF sort quand même, sans styles.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "report.url", "http://127.0.0.1:9")
         cls.company = cls.env.ref("base.main_company")
         cls.job = cls.env["hr.job"].create({
             "name": "Ferblantière", "company_id": cls.company.id,
