@@ -270,9 +270,22 @@ class TestLeReveilGardeLesGardes(TransactionCase):
         appareil = self._appareil("https://ntfy.example.test/upA")
         postes = []
         Transport = type(self.env["sms.archive.unifiedpush"])
-        with patch.object(Transport, "_post",
-                          lambda s, endpoint, payload, *a, **k: postes.append(
-                              (endpoint, payload))):
+        # ⚠️ `.test` ne résout nulle part (RFC 2606) : sans réponse DNS fixe, la
+        # garde refusait l'hôte faute d'adresse et l'essai mesurait le
+        # résolveur du banc, pas la garde. La garde tourne ici pour de vrai ;
+        # seule la résolution de CET hôte est fixée, sur une adresse publique.
+        from ..models import push_transport
+        resoudre = push_transport.socket.getaddrinfo
+
+        def dns_fixe(host, *args, **kwargs):
+            if host == "ntfy.example.test":
+                return [(2, 1, 6, "", ("93.184.215.14", 0))]
+            return resoudre(host, *args, **kwargs)
+
+        with patch.object(push_transport.socket, "getaddrinfo", dns_fixe), \
+                patch.object(Transport, "_post",
+                             lambda s, endpoint, payload, *a, **k: postes.append(
+                                 (endpoint, payload))):
             self.env["sms.archive.unifiedpush"]._reveiller(appareil)
         self.assertEqual(len(postes), 1)
         self.assertEqual(postes[0][1], {"type": "wake"})
