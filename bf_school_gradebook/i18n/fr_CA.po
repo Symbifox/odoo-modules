@@ -238,6 +238,7 @@ msgstr "Moyenne (%)"
 
 #. module: bf_school_gradebook
 #: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__below_threshold
 msgid "Below the threshold"
 msgstr "Sous le seuil de réussite"
 
@@ -1393,3 +1394,12 @@ msgstr "Écrire des textes"
 #: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_year__first_communication_date
 msgid "Written communication other than a report card, sent to the parents at the latest on October 15 (Education Regulation s. 29)."
 msgstr "Communication écrite autre qu'un bulletin, transmise aux parents au plus tard le 15 octobre (Régime pédagogique, art. 29)."
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course_result__below_threshold
+msgid ""
+"A result under the success threshold of the course's school year (60 % "
+"unless the year says otherwise)."
+msgstr ""
+"Un résultat sous le seuil de réussite de l'année scolaire du cours (60 % "
+"sauf si l'année en fixe un autre)."

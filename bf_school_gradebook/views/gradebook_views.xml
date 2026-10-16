@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- School years and their terms -->
+    <record id="bf_school_group_view_form_homeroom" model="ir.ui.view">
+        <field name="name">bf.school.group.form.homeroom</field>
+        <field name="model">bf.school.group</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_group_view_form"/>
+        <field name="arch" type="xml">
+            <field name="teacher_ids" position="after">
+                <field name="homeroom_ids" widget="many2many_avatar_user"/>
+            </field>
+        </field>
+    </record>
+
     <record id="bf_school_year_view_form" model="ir.ui.view">
         <field name="name">bf.school.year.form.gradebook</field>
         <field name="model">bf.school.year</field>
@@ -396,8 +407,7 @@
                 <field name="student_id"/>
                 <field name="course_id"/>
                 <field name="term_id"/>
-                <filter name="failing" string="Below the threshold"
-                        domain="[('has_percent', '=', True), ('percent', '&lt;', 60)]"/>
+                <filter name="failing" string="Below the threshold" domain="[('below_threshold', '=', True)]"/>
                 <group expand="0" string="Group by">
                     <filter name="by_course" string="Course" context="{'group_by': 'course_id'}"/>
                     <filter name="by_term" string="Term" context="{'group_by': 'term_id'}"/>

@@ -843,3 +843,28 @@ class TestIsolationAndLimits(GradebookCase):
         elementary = self.env["bf.school.course"].create(
             {"group_id": self._second_cycle_group([], name="E1").id, "subject_id": self.math.id})
         self.assertFalse(elementary.units_to_enter)
+
+
+@tagged("post_install", "-at_install")
+class TestThresholdAndHomeroom(GradebookCase):
+
+    def test_below_the_threshold_follows_the_year_threshold(self):
+        quiz = self._assess(self.pe_course, self.t1, name="Quiz", max_score=100.0)
+        self._grade(quiz, self.alpha, 65.0)
+        self._grade(quiz, self.bravo, 55.0)
+        Result = self.env["bf.school.course.result"]
+        below = Result.search([("course_id", "=", self.pe_course.id), ("below_threshold", "=", True)])
+        self.assertEqual(below.student_id, self.bravo, "60 % by default: 55 is below, 65 is not")
+        self.year.success_threshold = 70
+        below = Result.search([("course_id", "=", self.pe_course.id), ("below_threshold", "=", True)])
+        self.assertEqual(below.student_id, self.alpha | self.bravo, "the year asks 70 %: 65 is below too")
+        above = Result.search([("course_id", "=", self.pe_course.id), ("below_threshold", "=", False)])
+        self.assertFalse(above & below)
+        self.assertTrue(self._result(self.pe_course, self.t1, self.alpha).below_threshold)
+
+    def test_the_group_form_shows_its_homeroom_teachers(self):
+        arch = self.env["bf.school.group"].with_user(self.office).get_views([(False, "form")])["views"]["form"]["arch"]
+        self.assertIn('name="homeroom_ids"', arch)
+        self.assertEqual(self.group.homeroom_ids, self.teacher, "taken from the group's only teacher")
+        self.group.with_user(self.office).homeroom_ids = self.colleague
+        self.assertEqual(self.group.homeroom_ids, self.colleague)

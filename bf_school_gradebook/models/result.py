@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from odoo import api, fields, models
+from odoo.osv import expression
 
 from . import engine
 
@@ -26,6 +27,9 @@ class SchoolCourseResult(models.Model):
         "Has a result", help="False when the evaluations cannot give a discipline result yet "
                              "(for example the component weights are not entered).")
     percent = fields.Integer("Result (%)")
+    below_threshold = fields.Boolean(
+        "Below the threshold", compute="_compute_below_threshold", search="_search_below_threshold",
+        help="A result under the success threshold of the course's school year (60 % unless the year says otherwise).")
     # Never stored: a student who leaves changes it without any grade being written, and the report card seals it.
     group_average = fields.Integer("Group average (%)", compute="_compute_group_average")
     line_ids = fields.One2many("bf.school.course.result.line", "result_id", "Components")
@@ -34,6 +38,22 @@ class SchoolCourseResult(models.Model):
         ("course_term_student_unique", "UNIQUE(course_id, term_id, student_id)",
          "One result per student, course and term."),
     ]
+
+    @api.depends("percent", "has_percent", "course_id.year_id.success_threshold")
+    def _compute_below_threshold(self):
+        for result in self:
+            result.below_threshold = bool(
+                result.has_percent and result.percent < result.course_id._success_threshold())
+
+    def _search_below_threshold(self, operator, value):
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise NotImplementedError(operator)
+        # One clause per school year the user can read: each year has its own threshold.
+        below = [[("course_id.year_id", "=", year.id), ("has_percent", "=", True),
+                  ("percent", "<", year.success_threshold or engine.SUCCESS_THRESHOLD)]
+                 for year in self.env["bf.school.year"].search([])]
+        domain = expression.OR(below) if below else expression.FALSE_DOMAIN
+        return domain if (operator == "=") == value else ["!", *domain]
 
     @api.depends("percent", "has_percent", "course_id.group_id.enrollment_ids.state")
     def _compute_group_average(self):

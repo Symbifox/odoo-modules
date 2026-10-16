@@ -328,7 +328,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_core` | Symbifox École | 18.0.1.0.2 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
 | `bf_school_device` | Symbifox École : postes des élèves | 18.0.1.0.1 | BUSL-1.1 | Student accounts in the school's directory and Blue Fox OS computers lent to students, bridged to the Blue Fox OS policy |
 | `bf_school_forms` | Symbifox École : autorisations | 18.0.1.0.3 | BUSL-1.1 | Field trip and activity authorisations: one click per guardian, dated evidence, a refusal always wins |
-| `bf_school_gradebook` | Symbifox École : carnet de notes | 18.0.1.0.0 | BUSL-1.1 | Evaluations and grades by course, results by competency and discipline, the 20/20/60 weighting over the three terms and the ministerial exams |
+| `bf_school_gradebook` | Symbifox École : carnet de notes | 18.0.1.0.1 | BUSL-1.1 | Evaluations and grades by course, results by competency and discipline, the 20/20/60 weighting over the three terms and the ministerial exams |
 | `bf_school_health` | Symbifox École : santé | 18.0.1.0.4 | BUSL-1.1 | Health alerts for every staff member, detailed health records and medication for a restricted group, parents' authorisations signed on the portal |
 | `bf_school_homework` | Symbifox École : devoirs et agenda | 18.0.1.0.4 | BUSL-1.1 | Homework, studies, projects and announced tests per group, on the family portal and in the parents' own calendar (iCal) |
 | `bf_school_meal` | Symbifox École : repas | 18.0.1.0.5 | BUSL-1.1 | Caterer menus, meal orders on the family portal, prepaid balance or monthly invoice, food allergies checked at the order and on the kitchen list |

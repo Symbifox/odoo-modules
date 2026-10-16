@@ -243,6 +243,7 @@ msgstr ""
 
 #. module: bf_school_gradebook
 #: model_terms:ir.ui.view,arch_db:bf_school_gradebook.bf_school_course_result_view_search
+#: model:ir.model.fields,field_description:bf_school_gradebook.field_bf_school_course_result__below_threshold
 msgid "Below the threshold"
 msgstr ""
 
@@ -1470,4 +1471,11 @@ msgstr ""
 msgid ""
 "Written communication other than a report card, sent to the parents at the "
 "latest on October 15 (Education Regulation s. 29)."
+msgstr ""
+
+#. module: bf_school_gradebook
+#: model:ir.model.fields,help:bf_school_gradebook.field_bf_school_course_result__below_threshold
+msgid ""
+"A result under the success threshold of the course's school year (60 % "
+"unless the year says otherwise)."
 msgstr ""

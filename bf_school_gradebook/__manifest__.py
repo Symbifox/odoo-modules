@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : carnet de notes",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Evaluations and grades by course, results by competency and discipline, "
                "the 20/20/60 weighting over the three terms and the ministerial exams",
