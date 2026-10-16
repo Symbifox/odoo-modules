@@ -14,6 +14,8 @@ sans jamais lever d'erreur :
   en ayant l'air de filtrer.
 """
 
+from freezegun import freeze_time
+
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase, tagged
 
@@ -335,13 +337,18 @@ class TestChargeUtileReelle(TransactionCase):
 
     def test_un_releve_sans_forfait_ni_credits_ne_casse_rien(self):
         """Le vrai relevé ne porte ni `subscription_type` ni `extra_usage`."""
-        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
-                                             charge=CHARGE_REELLE)
-        compte = self.Compte.browse(cid)
-        self.assertFalse(compte.subscription_type)
-        self.assertFalse(compte.credits_actifs)
-        self.assertEqual(compte.etat_sonde, "ok")
-        self.assertEqual(compte.etat, "ok")
+        # ⚠️ Lu au moment où le relevé a été pris. Ses bascules sont datées
+        # (semaine : 2026-09-18) : passé cette date, la fenêtre de 7 % est à
+        # moins de 24 h de sa remise à zéro et le compte se dit, à bon droit,
+        # « dormant ». L'essai est devenu rouge seul le 2026-09-18.
+        with freeze_time("2026-09-11 09:00:00"):
+            cid = self.Compte.enregistrer_releve("/home/gen/.claude",
+                                                 charge=CHARGE_REELLE)
+            compte = self.Compte.browse(cid)
+            self.assertFalse(compte.subscription_type)
+            self.assertFalse(compte.credits_actifs)
+            self.assertEqual(compte.etat_sonde, "ok")
+            self.assertEqual(compte.etat, "ok")
 
 
 @tagged("post_install", "-at_install")

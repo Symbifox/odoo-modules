@@ -3,6 +3,7 @@
 
 from datetime import date, datetime, timedelta
 
+from odoo import fields
 from odoo.tests import TransactionCase, tagged
 
 
@@ -68,7 +69,11 @@ class TestSansDate(TransactionCase):
         occ = self._occasion_sans_date()
         action = occ.action_creer_tableau()
         board = self.env["bf.celebration.board"].browse(action["res_id"])
-        attendu_jour = date.today() + timedelta(days=7)
+        # ⚠️ Le jour du fuseau de la personne, comme le code
+        # (`context_today`), pas celui d'UTC : entre 20 h et minuit à Montréal,
+        # `date.today()` d'un serveur en UTC a déjà un jour d'avance, et
+        # l'essai échouait chaque soir (vécu en CI, 21 h 28 le 2026-09-27).
+        attendu_jour = fields.Date.context_today(occ) + timedelta(days=7)
         # 13 h à Toronto, rendu en UTC : 17 h l'été, 18 h l'hiver. On
         # vérifie par le fuseau plutôt que par une constante.
         import pytz
