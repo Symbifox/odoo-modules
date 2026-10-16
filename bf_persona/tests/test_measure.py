@@ -1,6 +1,6 @@
 from odoo.exceptions import AccessError
 from odoo.service.model import get_public_method
-from odoo.tests import tagged
+from odoo.tests import new_test_user, tagged
 
 from .common import PersonaCase
 
@@ -375,7 +375,13 @@ class TestRepair(PersonaCase):
 
     def test_personas_created_by_a_person_are_left_alone(self):
         robot = self.Partner.create({"name": "Info", "email": "info@example.net"})
-        persona = self.Persona.with_user(self.env.ref("base.user_admin")).create({"partner_id": robot.id})
+        # ⚠️ Une vraie personne AVEC le droit de créer : `base.user_admin`
+        # n'a le groupe persona que là où quelqu'un le lui a donné (chez les
+        # locataires), pas sur une base neuve, où l'essai tombait en AccessError.
+        personne = new_test_user(
+            self.env, login="persona.humaine",
+            groups="base.group_user,bf_persona.group_persona_user")
+        persona = self.Persona.with_user(personne).create({"partner_id": robot.id})
         plan = self.Persona._repair_legacy_personas(apply=False)
         self.assertNotIn(persona.id, {r[0] for r in plan})
 

@@ -90,6 +90,17 @@ class TestKickstart(TransactionCase):
     def test_select_unknown_host_refused(self):
         # With several orgs present, an unmatched host must NOT leak another
         # tenant — it is refused (404) rather than falling back.
+        # ⚠️ "Several" is made here, not assumed: a tenant database already
+        # holds its own org next to acme, a fresh one (CI) holds acme alone,
+        # and a single org is served whatever the host (back-compat). The
+        # test then proved the fallback instead of the refusal.
+        if self.Org.search_count([]) < 2:
+            self.Org.create({
+                "company_id": self.env["res.company"].create(
+                    {"name": "Beta Co."}).id,
+                "domain": "beta.example",
+                "slug": "beta",
+            })
         org, status = self.Org._select_for_host("nope.example")
         self.assertFalse(org)
         self.assertEqual(status, 404)

@@ -291,6 +291,19 @@ class TestPulseParcours(PulseCase, HttpCase):
 
     def test_le_courriel_d_invitation_porte_la_marque(self):
         """Le gabarit rendu, pas le gabarit écrit."""
+        # ⚠️ L'accent se pose ici : l'essai ne vaut que pour un accent trop
+        # pâle pour porter du blanc. Une société neuve hérite sinon de la
+        # couleur par défaut d'Odoo (#714B67), déjà assez sombre : le bouton
+        # prend alors l'accent tel quel, à bon droit, et la dernière assertion
+        # échouait sur une base vierge alors que le code faisait juste.
+        # Les deux champs que lit `couleurs()`, dans son ordre : le premier
+        # présent gagne, et `report_brand_primary` vaut lui aussi #714B67
+        # sur une société neuve.
+        self.company.write({
+            nom: "#29ABE2"
+            for nom in ("report_brand_primary", "primary_color")
+            if nom in self.company._fields
+        })
         gabarit = self.env.ref(
             "bf_employee_experience_pulse.mail_template_pulse_invite")
         corps = gabarit._render_field(
