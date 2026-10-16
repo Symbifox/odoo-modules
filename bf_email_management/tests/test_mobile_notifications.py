@@ -30,6 +30,9 @@ supprime aussitôt « parti » et ne se compterait plus).
 une notification sans envoi forcé attend trente secondes et n'existe pas encore
 au moment de compter. Un zéro y passerait pour la garde.
 """
+from datetime import timedelta
+
+from odoo import fields
 from odoo.tests import new_test_user, tagged
 
 from .common import MobileApiCase
@@ -294,12 +297,18 @@ class TestMobileNotifications(MobileApiCase):
         """
         fournisseur = self._fournisseur("fournisseur.report@acme.test")
         avant = self._dernier_id()
+        # ⚠️ Le report se demande ici, par le mécanisme du noyau que
+        # `mail_post_defer` emploie lui-même (`scheduled_date` dans le futur).
+        # L'essai comptait sur ce module de l'OCA, présent chez les locataires
+        # mais pas parmi les dépendances : sur une base qui ne l'a pas (la CI),
+        # rien n'était différé et l'essai échouait sur sa propre garde.
         self.tache.with_user(self.owner).with_context(
             bf_notify_explicit_only=("project.task", self.tache.id),
             mail_notify_force_send=False,
         ).message_post(body="Envoi différé", message_type="comment",
                        subtype_xmlid="mail.mt_comment",
-                       partner_ids=fournisseur.ids)
+                       partner_ids=fournisseur.ids,
+                       scheduled_date=fields.Datetime.now() + timedelta(seconds=30))
         envoi = self._nouveaux_messages(avant)
         self.env.flush_all()
         programme = self.env["mail.message.schedule"].sudo().search(

@@ -30,6 +30,16 @@ class TestIcsSequence(TransactionCase):
         cls.env = cls.env(context=dict(
             cls.env.context, tracking_disable=True, tz="UTC"))
         cls.backend = cls.env["calendar.caldav.backend"]
+        cls.voisin = "bf_ics_sequence" in cls.env["calendar.event"]._fields
+
+    def _exiger_le_voisin(self):
+        # ⚠️ Le lien est mou : sur une base sans `bf_calendar_invite` (la CI
+        # teste chaque module dans son lot, sans ses voisins facultatifs), il
+        # n'y a aucune révision à suivre. Ces deux essais ne prouvent rien
+        # sans le champ ; le repli, lui, est couvert plus bas dans les deux cas.
+        if not self.voisin:
+            self.skipTest("bf_calendar_invite absent de cette base : aucun "
+                          "bf_ics_sequence à écrire")
 
     def _event(self, **vals):
         base = {
@@ -44,12 +54,14 @@ class TestIcsSequence(TransactionCase):
         return event
 
     def test_le_vevent_porte_une_revision(self):
+        self._exiger_le_voisin()
         event = self._event()
         ics = self.backend.build_ics(event)
         self.assertIn("SEQUENCE:", ics)
 
     def test_la_revision_suit_les_deplacements(self):
         """Ce qui compte n'est pas la présence du champ, c'est qu'il MONTE."""
+        self._exiger_le_voisin()
         event = self._event()
         premier = self.backend.build_ics(event)
         event.write({"stop": datetime(2026, 8, 20, 22, 0, 0)})
@@ -67,11 +79,12 @@ class TestIcsSequence(TransactionCase):
         est exactement ce que voit un locataire sans `bf_calendar_invite`.
         """
         event = self._event()
+        if not self.voisin:
+            # Le cas réel d'un locataire sans le module voisin : rien à simuler.
+            self.assertNotIn("SEQUENCE:", self.backend.build_ics(event))
+            return
         champs = dict(event._fields)
-        retire = champs.pop("bf_ics_sequence", None)
-        self.assertTrue(
-            retire, "sans le champ, l'essai ne prouverait rien de ce banc-ci"
-        )
+        champs.pop("bf_ics_sequence")
         # ⚠️ `self.patch` d'Odoo applique tout de suite et défait au nettoyage :
         # ce n'est PAS un gestionnaire de contexte, et l'écrire en `with` rend
         # « 'NoneType' object does not support the context manager protocol ».
