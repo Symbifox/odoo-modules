@@ -1,0 +1,37 @@
+# pylint + pylint-odoo, ERRORS ONLY.
+#
+# No style: the point is the class of defect that reaches a tenant, not the
+# look of the code. Everything starts disabled, then the E and F categories
+# (pylint core and pylint-odoo alike) come back, minus four checks that only
+# measure the absence of Odoo on the runner:
+#
+#   import-error, no-name-in-module  odoo is not installed where this runs;
+#   no-member                        the ORM builds recordsets dynamically:
+#                                    `self.env`, `x or False`, mixins, all read
+#                                    as "no such member" (57 hits, all false);
+#   access-member-before-definition  a field read then assigned in an
+#                                    onchange is the ORM idiom, not a bug.
+#
+# The CI job is `continue-on-error` while the backlog is worked down. A rule
+# joins the blocking set once it reads zero, never before.
+
+[MAIN]
+load-plugins=pylint_odoo
+jobs=0
+score=no
+ignore-paths=^oca/.*$,^tools/.*$,.*/migrations/.*
+
+[ODOOLINT]
+valid-odoo-versions=18.0
+
+[MESSAGES CONTROL]
+# ⚠️ ONE `disable=` only: a second key silently replaces the first, and the
+# run then reports every style message there is (measured: 37 000 lines).
+# pylint applies `disable` before `enable`, so the four exclusions above
+# cannot be written here next to `all`: the CI job passes them on the command
+# line, which is read after this file (see the pylint-odoo job in ci.yml).
+disable=all
+enable=E,F
+
+[REPORTS]
+output-format=colorized

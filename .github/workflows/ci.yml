@@ -121,6 +121,47 @@ jobs:
           sys.exit(1 if bad else 0)
           PY
 
+  pylint-odoo:
+    name: pylint-odoo (errors only, not blocking yet)
+    # A job of its own, beside `lint`, so its verdict never hides or delays
+    # the one that blocks. Errors only (E and F, pylint core and pylint-odoo),
+    # no style: see .pylintrc-errors for what is excluded and why.
+    #
+    # ⚠️ continue-on-error: the backlog measured on 2026-09-28 is not zero, and
+    # a red job everybody learns to ignore teaches nothing. The job stays
+    # visible (annotations, count in the log) without failing the run. Remove
+    # this line once the count reads zero, so a new error blocks from then on.
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.10"
+
+      - name: Install pylint-odoo
+        run: pip install --quiet pylint-odoo==10.0.11
+
+      - name: pylint-odoo, errors only
+        run: |
+          MODULES=$(for m in */__manifest__.py; do dirname "$m"; done)
+          # The four exclusions come after the rcfile on purpose: pylint reads
+          # `disable` before `enable`, so inside the file they would be undone
+          # by `enable=E,F`.
+          pylint --rcfile=.pylintrc-errors \
+            --disable=import-error,no-name-in-module,no-member,access-member-before-definition \
+            --output-format=parseable $MODULES | tee pylint.txt || true
+          echo "--- by rule"
+          grep -oE '\[[EF][0-9]+\([a-z0-9-]+\)' pylint.txt | tr -d '[' | sort | uniq -c | sort -rn || true
+          COUNT=$(grep -cE '\[[EF][0-9]+\(' pylint.txt || true)
+          echo "::notice::pylint-odoo: ${COUNT:-0} error(s)"
+          # Annotations on the lines themselves, capped: GitHub keeps the
+          # first fifty per step and drops the rest silently.
+          grep -E '\[[EF][0-9]+\(' pylint.txt | head -50 | \
+            sed -E 's/^([^:]+):([0-9]+): \[([^]]+)\] (.*)$/::error file=\1,line=\2::\3 \4/' || true
+          [ "${COUNT:-0}" -eq 0 ]
+
   prepare:
     name: Select testable modules
     needs: lint
