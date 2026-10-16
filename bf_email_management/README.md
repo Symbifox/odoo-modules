@@ -416,9 +416,10 @@ notice — that is the intended behaviour, not an error path. Same reasoning as
 instead of shipping.
 
 A mail handled elsewhere — another tab, the phone, a rule — closes its own
-notice, off the `bf_email/changed` tick. The `calendarNotification` service is
-**not** overridden: calendar reminders keep their popup and their snooze buttons,
-mail notices simply sit next to them.
+notice, off the `bf_email/changed` tick. Mail notices never touch calendar
+reminders: those come from the module's own replacement of the
+`calendarNotification` service (see *Calendar reminders*), with their snooze
+buttons, and mail notices simply sit next to them.
 
 **Three buttons (11.6)** — *Ouvrir*, *Reporter*, *Traité*. The last two go through
 `bf.email.popup_snooze` and `bf.email.popup_mark_handled`, which **delegate** to
@@ -450,11 +451,21 @@ nothing.
 
 **Two arrivals in one thread make one notice (11.30)** — grouped on
 `thread_root_id`, within a single sweep's burst ("2 dans ce fil"); without it two
-messages steal each other's turn in the queue to say the same thing twice. The
-buttons act on the most recent one, *Vu* drops the whole group. The burst now
-costs **one** ORM read instead of one per message, and it is a `searchRead`: a row
-deleted between send and display simply falls out of the result instead of
-silencing the whole batch.
+messages steal each other's turn in the queue to say the same thing twice. Until
+11.60.2 the buttons acted on the most recent one only; *Vu* drops the whole group.
+The burst costs **one** ORM read instead of one per message, and it is a
+`searchRead`: a row deleted between send and display simply falls out of the
+result instead of silencing the whole batch.
+
+**…and so do later arrivals (11.60.2)** — the grouping no longer stops at the
+burst. A mail of the same thread, or from the same sender with the same
+normalised subject (`Re:`, `Fw:`, `Fwd:`, `TR:` stripped), merges into the notice
+already on screen ("3 dans ce fil", "2 au même objet"), even seconds later: a
+monitoring service sending *incident* and *recovered* under one subject no
+longer stacks two identical toasts. The newest mail speaks for the group. When
+an arrival merges into a notice on screen, the countdown starts over at the
+longer of the two durations; a mail that matches two notices folds both into
+one. *Traité* and *Reporter* act on every mail of the merged notice.
 
 **Snoozing re-announces (11.6)** — `_cron_imap_mirror` already woke rows whose
 `snoozed_until` had passed; it now asks for the notice again, flagged `wake`, so
@@ -614,6 +625,11 @@ entire quoted thread.
   the event form. Every button hits a real server endpoint (`bf_snooze` /
   `bf_dismiss` on `calendar.attendee`), so a decision taken in one window
   closes the reminder in the others.
+- **One reminder per meeting (11.60.2).** A meeting with two notification
+  alarms (say 15 minutes and 1 minute before) used to stack two identical
+  toasts. Reminders are keyed on the event: the next alarm replaces the toast
+  on screen instead of adding one, and a poll that still returns the earlier
+  alarm does not bring it back.
 - A reminder replayed by `bus.bus` no longer surfaces on the spot. The bus
   replays up to 24 h on reconnection, and a replayed payload carries an already
   negative `timer` that `setTimeout` rounds to zero. Payloads are stamped with

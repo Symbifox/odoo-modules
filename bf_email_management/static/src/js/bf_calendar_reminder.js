@@ -137,9 +137,15 @@ export const bfCalendarNotificationService = {
         let nextCalendarNotifTimeout = null;
         let staleBusNotifs = 0;
         let everDisplayed = false;
-        // Clé "<event_id>,<alarm_id>" -> fonction qui retire le toast. Une
-        // Map plutôt qu'un Set : il faut pouvoir fermer un rappel décidé
-        // ailleurs, pas seulement savoir qu'il est affiché.
+        // Clé "<event_id>" -> { alarms, remove } : UN toast par rencontre.
+        // La clé portait avant l'alarme aussi, et une rencontre à
+        // deux alarmes de notification empilait deux toasts identiques : le texte vient de
+        // `display_time`, le même pour les deux, et le premier, `sticky`,
+        // attendait encore quand le second arrivait. Le second n'apportait
+        // rien : « Vu » et les reports portent déjà sur la rencontre.
+        //
+        // `alarms` garde les alarmes que ce toast a déjà dites, pour qu'un
+        // sondage qui rend encore la première ne le refasse pas surgir.
         const displayedNotifications = new Map();
 
         bus_service.subscribe("calendar.alarm", (payload) => {
@@ -157,11 +163,9 @@ export const bfCalendarNotificationService = {
             if (!eventId) {
                 return;
             }
-            const prefix = `${eventId},`;
-            for (const [key, remove] of [...displayedNotifications]) {
-                if (key.startsWith(prefix)) {
-                    remove();
-                }
+            const shown = displayedNotifications.get(String(eventId));
+            if (shown) {
+                shown.remove();
             }
         });
         // ---------------------------------------------------------------
@@ -311,12 +315,34 @@ export const bfCalendarNotificationService = {
             calendarNotifTimeouts = {};
 
             notifications.forEach(function (notif) {
-                const key = notif.event_id + "," + notif.alarm_id;
-                if (displayedNotifications.has(key)) {
+                const eventKey = String(notif.event_id);
+                const alarmKey = String(notif.alarm_id);
+                const already = displayedNotifications.get(eventKey);
+                if (already && already.alarms.has(alarmKey)) {
                     return;
                 }
+                const key = eventKey + "," + alarmKey;
                 calendarNotifTimeouts[key] = browser.setTimeout(function () {
+                    // Relu ici et non à l'armement : une autre alarme de la
+                    // même rencontre a pu s'afficher entre-temps.
+                    const previous = displayedNotifications.get(eventKey);
+                    if (previous && previous.alarms.has(alarmKey)) {
+                        return;
+                    }
+                    // L'alarme suivante d'une rencontre déjà à l'écran
+                    // REMPLACE son toast : il repasse en bas de la pile, comme
+                    // une nouvelle sonnerie, au lieu d'en poser un deuxième.
+                    // Sorti de la Map AVANT d'être fermé, pour que son
+                    // `onClose` ne retire pas le toast qui lui succède.
+                    if (previous) {
+                        displayedNotifications.delete(eventKey);
+                        previous.remove();
+                    }
                     let notificationRemove = () => {};
+                    const shown = {
+                        alarms: new Set([...(previous ? previous.alarms : []), alarmKey]),
+                        remove: () => notificationRemove(),
+                    };
                     notificationRemove = notification.add(notif.message, {
                         title: notif.title,
                         type: "warning",
@@ -325,11 +351,13 @@ export const bfCalendarNotificationService = {
                         // la mise en forme toucherait tous les toasts.
                         className: "o_bf_calendar_reminder",
                         onClose: () => {
-                            displayedNotifications.delete(key);
+                            if (displayedNotifications.get(eventKey) === shown) {
+                                displayedNotifications.delete(eventKey);
+                            }
                         },
                         buttons: buildSnoozeButtons(notif, () => notificationRemove()),
                     });
-                    displayedNotifications.set(key, () => notificationRemove());
+                    displayedNotifications.set(eventKey, shown);
                     everDisplayed = true;
                 }, notif.timer * 1000);
                 lastNotifTimer = Math.max(lastNotifTimer, notif.timer);

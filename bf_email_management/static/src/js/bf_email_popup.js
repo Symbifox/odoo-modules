@@ -127,6 +127,9 @@ export const bfEmailPopupService = {
         // classe unique -> son entrée, pour retrouver l'entrée à partir du
         // noeud survolé ou cliqué.
         const byCls = new Map();
+        // clé de fusion -> l'entrée À L'ÉCRAN qui la porte. Voir
+        // `fusionKeys`.
+        const byKey = new Map();
         let hoverNode = null;
         let seq = 0;
         let pending = [];
@@ -211,6 +214,41 @@ export const bfEmailPopupService = {
             return match ? match[1] : from || _t("Nouveau courriel");
         }
 
+        /**
+         * Les clés sous lesquelles deux courriels ne font qu'un avis.
+         *
+         * Le fil d'abord. Puis l'expéditeur et l'objet : deux envois séparés
+         * au même objet (un accusé de réception renvoyé, deux liens de
+         * connexion à une minute d'écart) portent deux fils distincts et
+         * s'affichaient en deux avis indiscernables. Arbitrage du
+         * 2026-10-16 : on accepte que deux messages vraiment différents au
+         * même objet se fondent, le compteur le dit.
+         *
+         * Un report échu ne se fond qu'avec un report échu : c'est un rappel
+         * qu'on s'est donné, pas une arrivée, et il garde son orange.
+         */
+        function fusionKeys(row, payload) {
+            const kind = payload && payload.wake ? "report" : "arrivée";
+            const keys = [];
+            if (row.thread_root_id) {
+                keys.push(`${kind}:fil:${row.thread_root_id}`);
+            }
+            const from = (row.email_from || "").match(/<([^>]+)>/);
+            const sender = (from ? from[1] : row.email_from || "").trim().toLowerCase();
+            const subject = (row.subject || "")
+                .replace(/^\s*((re|tr|fw|fwd)\s*:\s*)+/i, "")
+                .replace(/\s+/g, " ")
+                .trim()
+                .toLowerCase();
+            if (sender && subject) {
+                keys.push(`${kind}:objet:${sender}|${subject}`);
+            }
+            if (!keys.length) {
+                keys.push(`${kind}:id:${row.id}`);
+            }
+            return keys;
+        }
+
         function localTime(value) {
             if (!value) {
                 return "";
@@ -243,13 +281,15 @@ export const bfEmailPopupService = {
             return `<span class="o_bf_email_popup_flag">${escape(label)}</span>`;
         }
 
-        function metaChunks(row, payload, count) {
+        function metaChunks(row, payload, count, sameThread) {
             const chunks = [];
             if (payload && payload.wake) {
                 chunks.push(flag(_t("Report échu")));
             }
             if (count > 1) {
-                chunks.push(flag(_t("%s dans ce fil", count)));
+                chunks.push(flag(sameThread
+                    ? _t("%s dans ce fil", count)
+                    : _t("%s au même objet", count)));
             }
             const mailbox = mailboxLabel(row);
             if (mailbox) {
@@ -317,7 +357,7 @@ export const bfEmailPopupService = {
          * offrirait au premier expéditeur venu d'écrire du HTML dans le client
          * web de la personne qui le reçoit.
          */
-        function bodyFor(row, payload, lifespan, armed, count) {
+        function bodyFor(row, payload, lifespan, armed, count, sameThread) {
             const parts = [];
             const subject = row.subject || _t("(sans objet)");
             parts.push(
@@ -329,7 +369,7 @@ export const bfEmailPopupService = {
                     `<div class="o_bf_email_popup_preview">${escape(preview)}</div>`
                 );
             }
-            const chunks = metaChunks(row, payload, count);
+            const chunks = metaChunks(row, payload, count, sameThread);
             if (chunks.length) {
                 parts.push(
                     `<div class="o_bf_email_popup_meta">${chunks.join("")}</div>`
@@ -375,6 +415,25 @@ export const bfEmailPopupService = {
             }
         }
 
+        /**
+         * Le même geste sur TOUS les courriels d'un avis fondu.
+         * Sans ça, « Traité » sur « 2 au même objet » ne traitait que le
+         * porte-parole : l'autre restait en boîte, et son avis était parti.
+         * Les méthodes serveur prennent un courriel à la fois (`ensure_one`),
+         * d'où un appel par courriel ; l'avis ne part qu'après le dernier.
+         */
+        async function runOnRows(method, ids, remove, failure) {
+            try {
+                const results = await Promise.all(
+                    ids.map((id) => orm.call("bf.email", method, [id])));
+                remove();
+                return results[results.length - 1];
+            } catch (error) {
+                notification.add(failure, { type: "danger" });
+                throw error;
+            }
+        }
+
         function buttonsFor(entry, remove) {
             return [
                 {
@@ -398,8 +457,8 @@ export const bfEmailPopupService = {
                 {
                     name: _t("Reporter"),
                     onClick: async () => {
-                        const result = await runOnRow(
-                            "popup_snooze", entry.lead, remove,
+                        const result = await runOnRows(
+                            "popup_snooze", entry.ids, remove,
                             _t("Le report a échoué.")
                         );
                         // Seul geste dont le résultat ne se voit pas : le
@@ -415,8 +474,8 @@ export const bfEmailPopupService = {
                 },
                 {
                     name: _t("Traité"),
-                    onClick: () => runOnRow(
-                        "popup_mark_handled", entry.lead, remove,
+                    onClick: () => runOnRows(
+                        "popup_mark_handled", entry.ids, remove,
                         _t("Le marquage « traité » a échoué.")
                     ),
                 },
@@ -522,6 +581,11 @@ export const bfEmailPopupService = {
                 }
             }
             byCls.delete(entry.cls);
+            for (const key of entry.keys) {
+                if (byKey.get(key) === entry) {
+                    byKey.delete(key);
+                }
+            }
             const index = entries.indexOf(entry);
             if (index >= 0) {
                 entries.splice(index, 1);
@@ -538,7 +602,7 @@ export const bfEmailPopupService = {
          * est commun, et qui vit ici, c'est la file : le tour de rôle, la
          * borne de pile, et le nettoyage à la fermeture.
          */
-        function push({ makeBody, title, classes, ttl, ids, lead, onBody, buttons }) {
+        function push({ makeBody, title, classes, ttl, ids, lead, onBody, buttons, rows, keys }) {
             // La pile est pleine : le plus ancien cède la place. C'est lui qui
             // décomptait, donc celui qui allait partir de toute façon.
             while (entries.length >= STACK_MAX) {
@@ -556,6 +620,10 @@ export const bfEmailPopupService = {
                 cls: `o_bf_email_popup_k${seq}`,
                 ids: ids || [],
                 lead: lead || null,
+                // Les lignes relues et les clés de fusion : seulement pour un
+                // avis de courriel, pas pour un résumé de lot.
+                rows: rows || null,
+                keys: keys || [],
                 ttl,
                 onBody: onBody || null,
                 timer: null,
@@ -583,6 +651,9 @@ export const bfEmailPopupService = {
             byCls.set(entry.cls, entry);
             for (const id of entry.ids) {
                 byId.set(id, entry);
+            }
+            for (const key of entry.keys) {
+                byKey.set(key, entry);
             }
             everShown = true;
             expiredStreak = 0;
@@ -662,36 +733,101 @@ export const bfEmailPopupService = {
             }
             const byRowId = new Map(rows.map((row) => [row.id, row]));
 
-            // Regroupés par fil, dans l'ordre d'arrivée. Deux messages du même
-            // fil venus de la même passe font un seul avis : sans ça ils se
-            // volent leur tour de file pour dire deux fois la même chose.
-            const groups = [];
-            const byThread = new Map();
+            // Regroupés par fil ou par expéditeur et objet (voir `fusionKeys`),
+            // dans l'ordre d'arrivée. Deux messages qui se ressemblent venus de
+            // la même passe font un seul avis : sans ça ils se volent leur tour
+            // de file pour dire deux fois la même chose.
+            //
+            // Un courriel peut toucher deux groupes à la fois (le fil de l'un,
+            // l'objet de l'autre) : ils se réunissent alors en un seul, sans
+            // quoi l'un des deux resterait en double à côté.
+            let groups = [];
+            const byGroupKey = new Map();
+            const rank = new Map();
+            const payloadOf = new Map();
             for (const payload of wanted) {
                 const row = byRowId.get(payload.email_id);
                 if (!row) {
                     continue;
                 }
-                const key = row.thread_root_id || `id:${row.id}`;
-                let group = byThread.get(key);
-                if (!group) {
-                    group = { rows: [], payload };
-                    byThread.set(key, group);
+                rank.set(row.id, rank.size);
+                payloadOf.set(row.id, payload);
+                const keys = fusionKeys(row, payload);
+                const hit = [...new Set(
+                    keys.map((key) => byGroupKey.get(key)).filter(Boolean))];
+                const group = hit[0] || { rows: [], keys: new Set() };
+                if (!hit.length) {
                     groups.push(group);
                 }
+                for (const other of hit.slice(1)) {
+                    group.rows.push(...other.rows);
+                    for (const key of other.keys) {
+                        group.keys.add(key);
+                    }
+                    groups = groups.filter((g) => g !== other);
+                }
                 group.rows.push(row);
-                // Le plus récent devient le porte-parole : c'est sur lui
-                // qu'agissent « Ouvrir », « Reporter » et « Traité ».
-                group.payload = payload;
+                for (const key of group.keys) {
+                    byGroupKey.set(key, group);
+                }
+                for (const key of keys) {
+                    group.keys.add(key);
+                    byGroupKey.set(key, group);
+                }
             }
             for (const group of groups) {
-                const rowsOfGroup = group.rows;
+                // Le plus récent devient le porte-parole : c'est sur lui
+                // qu'agissent « Ouvrir » et la teinte. Une réunion de groupes
+                // mêle l'ordre, d'où le tri sur le rang d'arrivée.
+                group.rows.sort((a, b) => rank.get(a.id) - rank.get(b.id));
+                group.payload = payloadOf.get(group.rows[group.rows.length - 1].id);
+            }
+            for (const group of groups) {
+                // 🔴 La fusion ci-dessus ne voit que la rafale de
+                // 250 ms. Un deuxième courriel du même fil arrivé quelques
+                // secondes plus tard (un service de surveillance envoie l'incident puis le
+                // rétablissement sous le même objet) posait un deuxième avis
+                // identique sous le premier. Il reprend donc l'avis déjà à
+                // l'écran : ses lignes passent devant, l'ancien toast part, le
+                // nouveau repart avec un décompte entier.
+                //
+                // Tous les avis touchés, pas le premier seulement : le même
+                // courriel peut rejoindre le fil de l'un et l'objet de l'autre.
+                // Un avis collant (dossier suivi, 30 s) ne voit pas sa durée
+                // raccourcie par une arrivée ordinaire qui s'y fond.
+                const shown = [...new Set([...group.keys]
+                    .map((key) => byKey.get(key))
+                    .filter((entry) => entry && entry.rows))];
+                const fresh = new Set(group.rows.map((row) => row.id));
+                const earlier = new Map();
+                let ttl = ttlOf(group.payload);
+                for (const entry of shown) {
+                    for (const row of entry.rows) {
+                        if (!fresh.has(row.id)) {
+                            earlier.set(row.id, row);
+                        }
+                    }
+                    for (const key of entry.keys) {
+                        group.keys.add(key);
+                    }
+                    ttl = Math.max(ttl, entry.ttl);
+                    // L'avis lu sous la souris s'en va : sans ça, son noeud
+                    // encore attaché gèlerait la file jusqu'au prochain
+                    // mouvement.
+                    if (hoverNode && hoverNode.classList.contains(entry.cls)) {
+                        hoverNode = null;
+                    }
+                    entry.remove();
+                }
+                const rowsOfGroup = [...earlier.values(), ...group.rows];
                 const lead = rowsOfGroup[rowsOfGroup.length - 1];
                 const payload = group.payload;
-                const ttl = ttlOf(payload);
+                const sameThread = rowsOfGroup.every(
+                    (row) => row.thread_root_id
+                        && row.thread_root_id === lead.thread_root_id);
                 push({
                     makeBody: (armed) => bodyFor(
-                        lead, payload, ttl, armed, rowsOfGroup.length),
+                        lead, payload, ttl, armed, rowsOfGroup.length, sameThread),
                     title: senderLabel(lead),
                     classes: classesFor(lead, payload),
                     ttl,
@@ -699,6 +835,8 @@ export const bfEmailPopupService = {
                     lead: lead.id,
                     onBody: () => openEmail(lead.id),
                     buttons: buttonsFor,
+                    rows: rowsOfGroup,
+                    keys: [...group.keys],
                 });
             }
         }

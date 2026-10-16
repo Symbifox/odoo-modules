@@ -4,6 +4,28 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.2] - 2026-10-16
+
+### Fixed
+
+- **One calendar reminder per meeting.** Reminders were keyed on the event AND
+  the alarm, so a meeting with two notification alarms stacked two identical
+  toasts (same title, same `display_time` text), the first one sticky and still
+  waiting when the second arrived. They are now keyed on the event: the next
+  alarm of the same meeting replaces the toast on screen, a poll that still
+  returns the earlier alarm does not bring it back, and the cross-window close
+  finds it by event id.
+- **One arrival notice per conversation, not per burst.** Grouping on
+  `thread_root_id` only applied inside a single 250 ms burst, so two mails of the
+  same thread arriving a few seconds apart made two identical notices, and so did
+  two mails from the same sender with the same subject in different threads.
+  Grouping now also matches sender plus subject (ignoring `Re:`/`Fw:`/`Fwd:`/`TR:`
+  prefixes). A new arrival now merges into the notice already on screen
+  ("N dans ce fil", "N au même objet"): the most recent mail speaks for the
+  group and the countdown starts over. *Traité* and *Reporter* act on every
+  mail of the merged notice.
+- JavaScript only; nothing changes on the server.
+
 ## [18.0.11.60.1] - 2026-10-11
 
 ### Changed
