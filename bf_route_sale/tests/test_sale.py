@@ -38,6 +38,13 @@ class TestSale(RouteCase):
         self.day = self.make_day()
         self.stop_a = self.day.stop_ids.filtered(lambda s: s.partner_id == self.partner_a())
 
+    def payment(self):
+        """The stop's payment, read by the books. The day is the route manager's,
+        and a route manager need not have Invoicing (the views hide the invoice
+        from them): reading the payment through their record raised an
+        AccessError on a base where nothing else gave them that right."""
+        return self.stop_a.sudo().payment_id
+
     def partner_a(self):
         return self.route.stop_ids.sorted("sequence")[0].partner_id
 
@@ -88,23 +95,23 @@ class TestSale(RouteCase):
     def test_on_account_leaves_invoice_open(self):
         self.sell(mode="account", amount=50)
         self.assertEqual(self.stop_a.invoice_id.payment_state, "not_paid")
-        self.assertFalse(self.stop_a.payment_id)
+        self.assertFalse(self.payment())
         self.assertEqual(self.stop_a.payment_amount, 0)
 
     def test_card_keeps_authorization_number(self):
         self.sell(mode="card", reference="AUTH 4711")
         self.assertEqual(self.stop_a.payment_reference, "AUTH 4711")
-        self.assertIn("AUTH 4711", self.stop_a.payment_id.memo)
+        self.assertIn("AUTH 4711", self.payment().memo)
 
     def test_payment_is_recorded_exactly_as_received(self):
         self.sell(amount=34.03)
-        self.assertEqual(self.stop_a.payment_id.amount, 34.03)
+        self.assertEqual(self.payment().amount, 34.03)
         self.assertAlmostEqual(self.day.cash_total, 34.03)
         self.assertIn("34.03", self.day.message_ids[0].body)
 
     def test_short_payment_is_kept_and_flagged(self):
         self.sell(amount=30.0)
-        self.assertEqual(self.stop_a.payment_id.amount, 30.0)
+        self.assertEqual(self.payment().amount, 30.0)
         self.assertNotEqual(self.stop_a.invoice_id.payment_state, "paid")
         self.assertIn("30.0", self.day.message_ids[0].body)
 
@@ -121,7 +128,7 @@ class TestSale(RouteCase):
         self.sell(delivered=0, empties=2, amount=5)
         self.assertEqual(self.stop_a.state, "done")
         self.assertEqual(self.stop_a.invoice_id.move_type, "out_refund")
-        self.assertEqual(self.stop_a.payment_id.amount, 5.0, "the cash received is in the books")
+        self.assertEqual(self.payment().amount, 5.0, "the cash received is in the books")
         self.assertAlmostEqual(self.day.cash_total, 5.0)
 
     def test_negative_total_with_taxes_on_the_deposit_only(self):
@@ -164,8 +171,8 @@ class TestSale(RouteCase):
         self.deposit.list_price = 0.0
         self.sell(amount=12.0)
         self.assertFalse(self.stop_a.invoice_id)
-        self.assertEqual(self.stop_a.payment_id.amount, 12.0)
-        self.assertNotEqual(self.stop_a.payment_id.state, "draft")
+        self.assertEqual(self.payment().amount, 12.0)
+        self.assertNotEqual(self.payment().state, "draft")
         self.assertIn("without an invoice", self.day.message_ids[0].body)
 
     def test_invoice_in_the_currency_of_the_price_list(self):
@@ -294,7 +301,7 @@ class TestSale(RouteCase):
     def test_legal_cash_rounding_is_not_reported(self):
         self.jug.list_price = 8.01  # 3 x 8.01 + 10 = 34.03, rounded to 34.05 in cash
         self.sell(amount=34.05)
-        self.assertEqual(self.stop_a.payment_id.amount, 34.05)
+        self.assertEqual(self.payment().amount, 34.05)
         self.assertFalse(self.day.activity_ids.filtered(lambda a: "Sale to check" in a.summary))
         self.assertAlmostEqual(self.day.cash_total, 34.05)
 
@@ -315,7 +322,7 @@ class TestSale(RouteCase):
         self.jug.list_price = 8.01
         self.sell(amount=34.05)
         invoice = self.stop_a.invoice_id
-        self.assertTrue(self.stop_a.payment_id.move_id, "the payment made an entry")
+        self.assertTrue(self.payment().move_id, "the payment made an entry")
         self.assertTrue(invoice.currency_id.is_zero(invoice.amount_residual),
                         "the 2 cents were written off: %s left" % invoice.amount_residual)
 

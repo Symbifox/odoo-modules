@@ -359,6 +359,15 @@ class TestOrganisationRegime(TransactionCase):
         self.landlord.kind = "syndicat"
         self.assertTrue(self.landlord.is_syndicat)
 
+    def _skip_without(self, *names):
+        """Ces modèles vivent dans les modules de copropriété (gouvernance,
+        finances, registres), que bf_property_core ne déclare pas : c'est eux
+        qui dépendent du socle. Chez un locataire, ils sont posés ensemble ; sur
+        une base qui n'a que le socle (la CI), l'essai n'a rien à mesurer."""
+        missing = sorted(name for name in names if name not in self.env)
+        if missing:
+            self.skipTest("modules de copropriété absents : %s" % ", ".join(missing))
+
     def test_an_assembly_refuses_to_exist_at_a_landlord(self):
         """🔴 Une assemblée générale de copropriétaires chez un bailleur est un
         non-sens juridique, pas une question de droits d'accès.
@@ -366,6 +375,7 @@ class TestOrganisationRegime(TransactionCase):
         D'où `ValidationError` : le gestionnaire a bien la permission, c'est
         l'objet qui n'existe pas dans ce régime.
         """
+        self._skip_without("bf.property.assembly")
         with self.assertRaises(ValidationError) as caught:
             self.env["bf.property.assembly"].create(
                 {
@@ -378,6 +388,7 @@ class TestOrganisationRegime(TransactionCase):
         self.assertIn("Bailleur", str(caught.exception))
 
     def test_the_same_assembly_is_fine_at_a_syndicat(self):
+        self._skip_without("bf.property.assembly")
         assembly = self.env["bf.property.assembly"].create(
             {
                 "name": "Assemblée annuelle",
@@ -412,6 +423,7 @@ class TestOrganisationRegime(TransactionCase):
             "bf.property.contingency.study",
             "bf.property.maintenance.log",
         }
+        self._skip_without(*expected)
         for name in expected:
             ancestry = {
                 getattr(cls, "_name", None) for cls in type(self.env[name]).__mro__

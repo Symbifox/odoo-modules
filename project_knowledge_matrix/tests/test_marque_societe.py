@@ -121,6 +121,13 @@ class TestMarqueDeLaSociete(TransactionCase):
     def test_l_adresse_d_envoi_et_de_reponse_ne_changent_pas(self):
         """La marque seulement. Envoyer sous la société de la matrice ferait
         recalculer à Odoo le « Répondre à » sur l'alias de cette société."""
+        # Chez un locataire, la société de la session a déjà son domaine d'alias.
+        # Sur une base neuve (la CI), elle n'en a aucun, et Odoo se rabat sur le
+        # premier qui existe : celui de la matrice, créé juste en dessous. L'essai
+        # mesurait alors ce repli, pas l'envoi.
+        if not self.session.alias_domain_id:
+            self.session.alias_domain_id = self.env["mail.alias.domain"].create(
+                {"name": "session.example"})
         domaine = self.env["mail.alias.domain"].create({"name": "matrice.example"})
         self.autre.alias_domain_id = domaine
         courriel = self._par_le_bouton()

@@ -24,10 +24,19 @@ class TestHomeLanguage(TransactionCase):
         super().setUpClass()
         cls.env["res.lang"]._activate_lang("fr_CA")
         cls.env["ir.module.module"]._load_module_terms(["bf_home"], ["fr_CA"], overwrite=True)
+        groupes = cls.env.ref("base.group_user")
+        # With bf_meeting in the same base, the meetings band also reads each
+        # event's agendas (meeting_agenda_ids), which only the Meetings group
+        # may read. A tenant's readers have it; without it the band is silent
+        # (the collector catches the AccessError), and _c_meetings called
+        # directly raises it. The test measures the clock, so the reader gets
+        # the group the band needs.
+        groupes |= cls.env.ref("bf_meeting.group_meeting_user", raise_if_not_found=False) \
+            or cls.env["res.groups"]
         cls.lectrice = cls.env["res.users"].create({
             "name": "Lectrice Accueil", "login": "lectrice.accueil@example.test",
             "email": "lectrice.accueil@example.test", "lang": "fr_CA", "tz": "America/Toronto",
-            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+            "groups_id": [(6, 0, groupes.ids)],
         })
 
     def _home(self, lang):

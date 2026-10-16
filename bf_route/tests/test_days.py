@@ -2,12 +2,20 @@ from datetime import date, datetime, timedelta
 
 from unittest.mock import patch
 
+from freezegun import freeze_time
+
 from odoo.addons.bf_route.models.bf_route_day import clean_env
 from odoo.addons.bf_route.models.tools import local_today
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
 from .common import MONDAY, RouteCase
+
+# The calendar only rewrites days still to come (local_today <= day.date):
+# once MONDAY was in the past, a route change left every generated day alone
+# and these tests went red by themselves on 2026-10-13. The clock is held at
+# dawn on MONDAY in Toronto, the route's time zone.
+ON_MONDAY = freeze_time("2026-10-12 06:00:00")
 
 
 @tagged("post_install", "-at_install")
@@ -37,6 +45,7 @@ class TestDays(RouteCase):
         day.with_user(self.manager).action_cancel()
         self.assertFalse(self.route._generate_days(today=MONDAY), "a cancelled day is not recreated")
 
+    @ON_MONDAY
     def test_refresh_follows_the_template_until_the_office_edits_a_day(self):
         days = self.route._generate_days(today=MONDAY).sorted("date")
         untouched, edited = days
@@ -68,6 +77,7 @@ class TestDays(RouteCase):
         day.with_user(self.manager).date = MONDAY + timedelta(days=1)
         self.assertFalse(self.route._generate_days(today=MONDAY), "the moved Monday is not made again")
 
+    @ON_MONDAY
     def test_new_weekdays_drop_the_untouched_days_only(self):
         days = self.route._generate_days(today=MONDAY).sorted("date")
         kept = days[1]
@@ -220,6 +230,7 @@ class TestDays(RouteCase):
         self.assertFalse(day.with_user(self.worker).app_report_refusal("a b c d", reason="x"))
         self.assertFalse(day.refusal_keys)
 
+    @ON_MONDAY
     def test_customer_taken_off_the_route_leaves_the_days_that_follow_it(self):
         days = self.route._generate_days(today=MONDAY).sorted("date")
         follows, edited = days
@@ -236,6 +247,7 @@ class TestDays(RouteCase):
         day = self.make_day().with_context(tz="Nowhere/Never", lang="xx_XX")
         self.assertEqual(clean_env(day).env.context, {})
 
+    @ON_MONDAY
     def test_a_day_with_a_postponed_stop_is_not_dropped(self):
         days = self.route._generate_days(today=MONDAY).sorted("date")
         extra = self.env["res.partner"].create({"name": "Extra"})

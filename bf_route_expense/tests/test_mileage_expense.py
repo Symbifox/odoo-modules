@@ -343,11 +343,21 @@ class TestMileageExpense(RouteCase):
         with self.assertRaisesRegex(UserError, "No mileage expense product"):
             day.with_user(self.manager).action_claim_mileage()
 
+    def _company_in_dollars(self):
+        """The hook sets rates only for a company in Canadian dollars. Every
+        tenant is; a fresh base (the CI) starts in US dollars, with CAD not even
+        active, so the company is put in CAD the way an office would."""
+        cad = self.env.ref("base.CAD")
+        if self.company.currency_id != cad:
+            cad.active = True
+            self.company.currency_id = cad
+        self.assertEqual(self.company.currency_id, cad)
+
     def test_install_hook_makes_the_reduced_product(self):
         from odoo.addons.bf_route_expense import post_init_hook
         self.env["ir.model.data"].search([("module", "=", "bf_route_expense"),
                                           ("name", "=", "product_mileage_reduced")]).unlink()
-        self.assertEqual(self.company.currency_id, self.env.ref("base.CAD"))
+        self._company_in_dollars()
         self.full.with_company(self.company).standard_price = 1.0
         nzd = self.env["res.company"].create({"name": "Kiwi", "currency_id": self.env.ref("base.NZD").id})
         self.full.with_company(nzd).standard_price = 1.0
@@ -370,7 +380,7 @@ class TestMileageExpense(RouteCase):
         from odoo.addons.bf_route_expense import post_init_hook
         self.env["ir.model.data"].search([("module", "=", "bf_route_expense"),
                                           ("name", "=", "product_mileage_reduced")]).unlink()
-        self.assertEqual(self.company.currency_id, self.env.ref("base.CAD"))
+        self._company_in_dollars()
         self.full.with_company(self.company).standard_price = 0.70
         post_init_hook(self.env)
         self.assertAlmostEqual(self.full.with_company(self.company).standard_price, 0.70)
