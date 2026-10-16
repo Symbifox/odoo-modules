@@ -23,26 +23,39 @@ runs:
 
     - name: Clone OCA dependencies
       shell: bash
+      # 🔴 Pinned by commit, not by branch. The tip of 18.0 moves under us:
+      # mail_composer_cc_bcc 18.0.1.0.3 (2026) rewrote the Bcc path and now
+      # refuses to send ("Could not determine the recipient of this email")
+      # where bf_email_management expects the 18.0.1.0.1 behaviour that every
+      # tenant runs. A floating clone made CI test a combination no tenant
+      # has, and turned an upstream release into a red run with nothing of
+      # ours changed. Each SHA is the commit whose code matches the copy
+      # deployed on the Blue Fox tenant (helpdesk: the last commit carrying
+      # the deployed version, 18.0.1.7.0). Moving one is a deliberate change,
+      # made together with the tenants, never a side effect of a CI run.
       run: |
         set -euo pipefail
         mkdir -p oca
-        clone() {  # repo, then the modules to keep
-          local repo="$1"; shift
+        clone() {  # repo, commit, then the modules to keep
+          local repo="$1" sha="$2"; shift 2
           local dir; dir="$(mktemp -d)"
-          git clone --quiet --depth 1 --branch 18.0 \
-            "https://github.com/OCA/${repo}.git" "$dir"
+          git -C "$dir" init --quiet
+          git -C "$dir" fetch --quiet --depth 1 \
+            "https://github.com/OCA/${repo}.git" "$sha"
+          git -C "$dir" checkout --quiet FETCH_HEAD
           for module in "$@"; do
             if [ -d "$dir/$module" ]; then
               cp -r "$dir/$module" oca/
             else
-              echo "::warning::OCA/${repo} has no ${module} on 18.0"
+              echo "::error::OCA/${repo}@${sha} has no ${module}"
+              exit 1
             fi
           done
           rm -rf "$dir"
         }
-        clone helpdesk helpdesk_mgmt helpdesk_mgmt_project
-        clone contract  contract
-        clone donation  donation donation_base
-        clone mail      mail_composer_cc_bcc mail_quoted_reply
-        clone calendar  resource_booking
+        clone helpdesk cfc684ba983285c7960565bdde2464c420884a29 helpdesk_mgmt helpdesk_mgmt_project  # 18.0.1.7.0 / 18.0.1.0.0
+        clone contract cca86f084940ce225192b02efb8b19f37f1fccfd contract                             # 18.0.2.0.3
+        clone donation 1ebd3d2a898f5d8ec1dda85dfcac8725c8fd5e6e donation donation_base               # 18.0.1.3.0 / 18.0.1.2.0
+        clone mail     5795b4ab9eacc0b38761434cc7adeb2e1b34ccb7 mail_composer_cc_bcc mail_quoted_reply  # 18.0.1.0.1 / 18.0.1.0.0
+        clone calendar 737966814ffab280957677bdf0cc5a002c3284c6 resource_booking                     # 18.0.1.0.2
         echo "addons in ./oca:"; ls oca
