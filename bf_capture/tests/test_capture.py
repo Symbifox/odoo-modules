@@ -234,6 +234,11 @@ class TestCapture(TransactionCase):
         self.assertTrue(any(pieces[0] in m.attachment_ids for m in note.message_ids))
 
     def test_memo_transcrit_porte_le_texte_et_son_titre(self):
+        # ⚠️ Le moteur de transcription (bf_speech) n'est pas publié : lien
+        # mou, testé par `in self.env` dans le code. Sans lui, il n'y a rien à
+        # remplacer, et le repli « sans transcription » est couvert plus haut.
+        if "bf.speech.transcriber" not in self.env:
+            self.skipTest("bf_speech absent : aucun moteur de transcription")
         with patch.object(type(self.Capture), "transcription_disponible",
                           lambda self: True), \
              patch.object(type(self.env["bf.speech.transcriber"]), "transcribe",
