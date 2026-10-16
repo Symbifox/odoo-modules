@@ -209,6 +209,9 @@ class TestRegistryExport(TransactionCase):
 
     def test_tree_speaks_the_templates_language(self):
         # The cron runs in English: type names must still come in the tree's language.
+        # A fresh database (the CI) has only en_US: the tree's language must be active
+        # before a translation can be written in it.
+        self.env["res.lang"]._activate_lang("fr_CA")
         doc_type = self.env["project.document.type"].create(
             {"name": "Quick Guide test", "code": "T_LANG", "is_internal": True})
         doc_type.update_field_translations("name", {"fr_CA": "Guide rapide d'essai"})

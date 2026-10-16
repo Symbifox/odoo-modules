@@ -63,12 +63,22 @@ class TestRentalPortalAffichage(HttpCase, RentalPortalCommon):
         self.assertTrue(badge, "badge « À venir » absent")
         self.assertNotIn("text-bg-light", badge.group(1))
 
-    def test_the_information_notice_reads_in_english(self):
-        self.env["res.lang"]._activate_lang("en_CA")
+    def _en_anglais(self):
+        """La locataire lit en anglais, catalogue du module chargé tel qu'il est sur disque."""
+        lang = self.env["res.lang"]._activate_lang("en_CA")
         self.env["ir.module.module"]._load_module_terms(
             ["bf_rental_portal"], ["en_CA"], overwrite=True
         )
+        # ⚠️ Le site ne sert que ses langues : sans en_CA parmi elles, la page
+        # sortait en en_US (sans traduction, donc la source française). Les sites
+        # des locataires l'ont ; celui d'une base neuve (la CI) n'a que en_US.
+        if "website" in self.env:
+            for site in self.env["website"].search([]):
+                site.language_ids |= lang
         self.tenant_user.lang = "en_CA"
+
+    def test_the_information_notice_reads_in_english(self):
+        self._en_anglais()
         today = fields.Date.context_today(self.env.user)
         self.env["bf.rental.notice"].create(
             {"lease_id": self.lease.id, "kind": "new_tenant_rent",
@@ -83,11 +93,7 @@ class TestRentalPortalAffichage(HttpCase, RentalPortalCommon):
         (`portal_breadcrumbs_rental`). Odoo range les traductions de vue par
         xmlid : « Mon bail », traduit sous les autres vues, restait en français
         dans celle-ci, et c'est elle qui tient lieu de titre à ces trois pages."""
-        self.env["res.lang"]._activate_lang("en_CA")
-        self.env["ir.module.module"]._load_module_terms(
-            ["bf_rental_portal"], ["en_CA"], overwrite=True
-        )
-        self.tenant_user.lang = "en_CA"
+        self._en_anglais()
         self.authenticate("rt_tenant", "rt_tenant_pwd")
         for url, nom in [
             ("/my/rental", "My lease"),

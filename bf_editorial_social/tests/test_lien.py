@@ -95,7 +95,11 @@ class TestLienDiffuse(TransactionCase):
             "entry_id": self.entry.id, "channel_id": self.canal.id,
             "body": "Sans lien.", "kind": "new",
         })
-        self.assertTrue(any("lien" in r for r in post._blocking_reasons()))
+        # Le motif se lit en français : sans langue au contexte, il suivait
+        # l'usager de l'essai (en_US sur une base neuve, fr_CA chez un locataire).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        raisons = post.with_context(lang="fr_CA")._blocking_reasons()
+        self.assertTrue(any("lien" in r for r in raisons))
         with self.assertRaises(UserError):
             post.action_send_now()
 
@@ -105,7 +109,10 @@ class TestLienDiffuse(TransactionCase):
             "entry_id": self.entry.id, "channel_id": self.canal.id,
             "body": "Une pensée du jour.", "kind": "adhoc",
         })
-        self.assertFalse(any("lien" in r for r in post._blocking_reasons()))
+        self.env["res.lang"]._activate_lang("fr_CA")
+        # En français, comme l'essai précédent : en anglais, « lien » n'y serait jamais.
+        raisons = post.with_context(lang="fr_CA")._blocking_reasons()
+        self.assertFalse(any("lien" in r for r in raisons))
 
 
 @tagged("post_install", "-at_install")

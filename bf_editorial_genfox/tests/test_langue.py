@@ -24,6 +24,10 @@ class TestLangueGenFox(TransactionCase):
         Lang = self.env["res.lang"]
         for code in ("fr_CA", "en_CA", "en_US"):
             Lang._activate_lang(code)
+        # `_activate_lang` ne lit aucun .po : sur une base neuve (la CI), le
+        # libellé restait la source anglaise. Un locataire a fr_CA chargé dès
+        # l'installation.
+        self.env["ir.module.module"]._load_module_terms(["bf_editorial_genfox"], ["fr_CA"])
         blog = self.env["blog.blog"].create({"name": "Banc éditorial"})
         post = self.env["blog.post"].create({"name": "Billet d'essai", "blog_id": blog.id})
         self.env.cr.execute(

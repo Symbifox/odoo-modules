@@ -17,6 +17,9 @@ class TestLangueDuBillet(TransactionCase):
         super().setUpClass()
         cls.env["res.lang"]._activate_lang("fr_CA")
         cls.env["res.lang"]._activate_lang("en_US")
+        # `_activate_lang` ne lit aucun .po : sur une base neuve (la CI), le
+        # libellé d'un état (« Annulé ») restait la source anglaise.
+        cls.env["ir.module.module"]._load_module_terms(["bf_editorial_social"], ["fr_CA"])
         cls.env.company.partner_id.lang = "fr_CA"
         internes = [(6, 0, [cls.env.ref("base.group_user").id])]
         cls.anglophone = cls.env["res.users"].create({

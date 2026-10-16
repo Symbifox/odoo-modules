@@ -82,9 +82,16 @@ class TestConnecteurLinkedIn(TransactionCase):
         self.assertEqual(self.canal.linkedin_member_urn, "urn:li:person:abc123")
         self.assertIn("Blue Fox", message)
 
+    @staticmethod
+    def _fr(enregistrements):
+        """La personne qui lit l'erreur parle français. Sans langue au
+        contexte, le message suivait l'usager de l'essai : en_US sur une base
+        neuve (la CI), fr_CA chez un locataire."""
+        return enregistrements.with_context(lang="fr_CA")
+
     def test_un_401_dit_que_le_jeton_a_expire(self):
         with self._avec(Reponse(401, texte="unauthorized")):
-            ok, message = self.connecteur._validate_credentials(self.canal)
+            ok, message = self._fr(self.connecteur)._validate_credentials(self._fr(self.canal))
         self.assertFalse(ok)
         self.assertIn("60 jours", message)
 
@@ -117,7 +124,7 @@ class TestConnecteurLinkedIn(TransactionCase):
         self.canal.sudo().write({"linkedin_member_urn": "urn:li:person:abc"})
         with self._avec(Reponse(201, {}, {})):
             with self.assertRaises(UserError) as pris:
-                self.connecteur._publish(self.billet_social)
+                self._fr(self.connecteur)._publish(self._fr(self.billet_social))
         self.assertIn("deux fois", str(pris.exception))
 
     def test_un_refus_leve_une_erreur_explicite(self):
@@ -170,7 +177,7 @@ class TestConnecteurLinkedIn(TransactionCase):
             type(self.canal), "_decrypt_secret", lambda self_: ""
         ):
             with self.assertRaises(UserError) as pris:
-                self.connecteur._entetes(self.canal)
+                self._fr(self.connecteur)._entetes(self._fr(self.canal))
         self.assertIn("jeton", str(pris.exception))
 
     # --- expiration du jeton ---------------------------------------------

@@ -21,6 +21,9 @@ class TestLangue(TransactionCase):
         super().setUpClass()
         for code in ("en_US", "fr_CA"):
             cls.env["res.lang"]._activate_lang(code)
+        # `_activate_lang` ne lit aucun .po : sur une base neuve (la CI), le
+        # libellé d'une cible (« Pages de personnes ») restait la source anglaise.
+        cls.env["ir.module.module"]._load_module_terms(["bf_linkpage"], ["fr_CA"])
         cls.Page = cls.env["bf.linkpage"]
         cls.org = cls.env["res.partner"].create({
             "name": "Organisation de langue", "is_company": True,

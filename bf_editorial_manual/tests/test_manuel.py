@@ -35,6 +35,13 @@ class TestCanalManuel(TransactionCase):
             "link_url": "https://exemple.test/article",
         })
 
+    def _fr(self, enregistrements):
+        """La personne qui lit le refus parle français. Sans langue au
+        contexte, le message suivait l'usager de l'essai : en_US sur une base
+        neuve (la CI), fr_CA chez un locataire."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        return enregistrements.with_context(lang="fr_CA")
+
     def test_le_reseau_est_selectionnable(self):
         """Le cadre découvre les connecteurs installés : celui-ci doit y être."""
         reseaux = dict(self.env["bf.social.channel"]._selection_network())
@@ -52,12 +59,13 @@ class TestCanalManuel(TransactionCase):
         dans le connecteur, pas dans la file.
         """
         with self.assertRaises(UserError) as caught:
-            self.canal._connector()._publish(self.post)
+            self._fr(self.canal)._connector()._publish(self._fr(self.post))
         self.assertIn("manuel", str(caught.exception).lower())
 
     def test_identifiants_ni_valides_ni_refuses(self):
         """Ni « valide » ni « refusé » : il n'y a pas de session à ouvrir."""
-        ok, message = self.canal._connector()._validate_credentials(self.canal)
+        canal = self._fr(self.canal)
+        ok, message = canal._connector()._validate_credentials(canal)
         self.assertTrue(ok)
         self.assertIn("manuel", message.lower())
 

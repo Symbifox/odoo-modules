@@ -237,7 +237,11 @@ class TestPlanifierDepuisOdj(TransactionCase):
                          'Projet Planif')
 
     def test_description_objectifs_et_sujets_acceptes_seulement(self):
-        agenda = self._agenda(objectives="Arrêter le périmètre\nFixer <la> date",
+        # Un OdJ en français : sans langue sur la fiche, les intertitres suivent
+        # le repli (client, personne, société), en_US sur une base neuve (la CI).
+        self.env['res.lang']._activate_lang('fr_CA')
+        agenda = self._agenda(lang='fr_CA',
+                              objectives="Arrêter le périmètre\nFixer <la> date",
                               context_html='<p>Note interne du contexte</p>',
                               preparation_html='<p>Note de préparation</p>')
         Topic = self.env['meeting.agenda.topic']

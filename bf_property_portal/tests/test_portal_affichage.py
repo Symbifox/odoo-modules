@@ -202,10 +202,16 @@ class TestPortalAffichage(HttpCase):
 
     def _en_anglais(self):
         """La lectrice lit en anglais, catalogue du module chargé tel qu'il est sur disque."""
-        self.env["res.lang"]._activate_lang("en_CA")
+        lang = self.env["res.lang"]._activate_lang("en_CA")
         self.env["ir.module.module"]._load_module_terms(
             ["bf_property_portal"], ["en_CA"], overwrite=True
         )
+        # ⚠️ Le site ne sert que ses langues : sans en_CA parmi elles, la page
+        # sortait en en_US (sans traduction, donc la source française). Les sites
+        # des locataires l'ont ; celui d'une base neuve (la CI) n'a que en_US.
+        if "website" in self.env:
+            for site in self.env["website"].search([]):
+                site.language_ids |= lang
         self.user.lang = "en_CA"
 
     def test_the_new_labels_read_in_english(self):
