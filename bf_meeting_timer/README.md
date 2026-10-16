@@ -90,6 +90,14 @@ répètent pas d'une instance à l'autre : un ordre du jour est réécrit à neu
 chaque fois. Il n'y a donc ni meilleur segment, ni somme des
 meilleurs, ni record à battre. La seule comparaison est le plan.
 
+## Langues (18.0.1.5.1)
+
+Le tableau du rapport de compte rendu suit la langue du compte rendu, comme le
+reste du PDF (`bf_meeting` 18.0.3.68.0 et plus) : ses libellés sont écrits en
+anglais dans la source (« Time per agenda topic ») et traduits en français dans
+`i18n/fr_CA.po`. Le reste de l'interface est encore écrit en français dans la
+source.
+
 ## Dépendances
 
 `bf_meeting`.

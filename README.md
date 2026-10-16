@@ -247,7 +247,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting` | Rencontres | 18.0.3.68.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.2.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
-| `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
+| `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.1 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
 | `bf_membership` | Membres | 18.0.1.0.4 | BUSL-1.1 | The member register of an association, a non-profit or a federation: categories, memberships, renewals and delegates, without depending on an invoice |
 | `bf_membership_account` | Membres : facturation et reçus fiscaux | 18.0.1.0.2 | BUSL-1.1 | Invoices the membership fee in Odoo, follows its payment on the membership, and issues a registered charity's partial tax receipt for money actually received |
 | `bf_membership_assembly` | Membres : AGA et votes | 18.0.1.0.3 | BUSL-1.1 | General meetings of members: notice within the legal delays, voters fixed at a record date, attendance, quorum, proxies, show-of-hands or secret-ballot votes |

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Chronomètre de rencontre",
-    "version": "18.0.1.5.0",
+    "version": "18.0.1.5.1",
     "category": "Services/Meetings",
     "summary": "Le temps réel passé sur chaque sujet, et l'heure de fin projetée "
                "pendant que la rencontre dure encore",
