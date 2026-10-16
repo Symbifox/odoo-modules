@@ -1,0 +1,248 @@
+# Translation template for Progression: deposit through secure transfer storage.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_stepbystep_securetransfer 18.0.1.0.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 09:19+0000\n"
+"PO-Revision-Date: 2026-10-16 09:19+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_stepbystep_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_securetransfer.progression_portal_page_s3
+msgid ""
+"<span class=\"o_progression_s3_sending d-none\">Sending…</span>\n"
+"                <span class=\"o_progression_s3_failed d-none\">The file could not be sent. Try again.</span>"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/controllers/portal.py:0
+msgid "An error occurred. Try again later."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_deposit__storage__odoo
+msgid "Attachment"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_secure_transfer__bf_progression_upload
+msgid "Client portal deposit (Progression)"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model,name:bf_stepbystep_securetransfer.model_bf_progression_upload
+msgid "Client portal upload in progress (S3 storage)"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__document_id
+msgid "Document"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model,name:bf_stepbystep_securetransfer.model_bf_progression_deposit
+msgid "Document deposited on the client portal"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "Document deposited on the client portal of %s."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_upload__state__done
+msgid "Done"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_securetransfer.bf_stepbystep_securetransfer_project_form
+msgid "Download"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,help:bf_stepbystep_securetransfer.field_secure_transfer__bf_progression_upload
+msgid ""
+"Draft created by the client portal of Progression. Hidden from every user: "
+"only the portal reads it, behind its own guards."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_upload__state__failed
+msgid "Failed"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__file_id
+msgid "File"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__filename
+msgid "Filename"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/controllers/portal.py:0
+msgid "Invalid part numbers."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__ip_address
+msgid "Ip Address"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_deposit__s3_expiry
+msgid "Kept until"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.actions.server,name:bf_stepbystep_securetransfer.ir_cron_progression_s3_menage_ir_actions_server
+msgid "Progression: purge expired S3 deposits and abandoned uploads"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__project_id
+msgid "Project"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_deposit__storage__purged
+msgid "Purged"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "Reserved to project users."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_deposit__storage__s3
+msgid "S3 storage"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_securetransfer.progression_portal_page_s3
+msgid "Send"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_securetransfer.progression_portal_page_s3
+msgid "Send another version"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__size
+msgid "Size"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__state
+msgid "State"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_deposit__storage
+msgid "Storage"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_deposit__transfer_file_id
+msgid "Stored file"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "The company has no email address: the portal cannot store this file."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/controllers/portal.py:0
+msgid "The file could not be stored. Try again later."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "The file did not arrive in full. Send it again."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "This file is not in the S3 storage anymore."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "This upload is already closed."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__token
+msgid "Token"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#. odoo-python
+#: code:addons/bf_stepbystep_securetransfer/models/progression_upload.py:0
+msgid "Too many documents sent in the last hour. Try again later."
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields,field_description:bf_stepbystep_securetransfer.field_bf_progression_upload__transfer_id
+msgid "Transfer"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model,name:bf_stepbystep_securetransfer.model_secure_transfer
+msgid "Transfert sécurisé"
+msgstr ""
+
+#. module: bf_stepbystep_securetransfer
+#: model:ir.model.fields.selection,name:bf_stepbystep_securetransfer.selection__bf_progression_upload__state__uploading
+msgid "Uploading"
+msgstr ""

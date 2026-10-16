@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les envois en cours ne se lisent que dans les sociétés de l'usager (seuls
+         les administrateurs de projets y ont accès). Les dépôts eux-mêmes sont
+         bornés par les règles de bf_stepbystep_clients. -->
+    <record id="bf_progression_upload_comp_rule" model="ir.rule">
+        <field name="name">Progression upload: multi-company</field>
+        <field name="model_id" ref="model_bf_progression_upload"/>
+        <field name="domain_force">[('project_id.company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <!-- 🔴 Les brouillons de transfert du portail. Le groupe Utilisateur du socle
+         lit TOUS les transferts ([(1, '=', 1)]), et la société du brouillon suit
+         la marque, pas le projet : sans ces règles, cet usager lisait le
+         brouillon d'un projet qu'il ne lit pas et, par RPC, faisait signer le
+         lien de téléchargement de son fichier (`presign_download`) ou des
+         parties d'un envoi en cours (`mpu_sign`). Règles GLOBALES (sans groupe) :
+         elles valent pour tous, administrateurs du socle compris. Le portail lit
+         ces brouillons en sudo, derrière ses propres gardes ; les crons du socle
+         tournent en superusager. -->
+    <record id="bf_progression_transfer_hidden_rule" model="ir.rule">
+        <field name="name">Progression: portal drafts hidden from users</field>
+        <field name="model_id" ref="bf_securetransfer.model_secure_transfer"/>
+        <field name="domain_force">[('bf_progression_upload', '=', False)]</field>
+    </record>
+
+    <record id="bf_progression_transfer_file_hidden_rule" model="ir.rule">
+        <field name="name">Progression: files of portal drafts hidden from users</field>
+        <field name="model_id" ref="bf_securetransfer.model_secure_transfer_file"/>
+        <field name="domain_force">[('transfer_id.bf_progression_upload', '=', False)]</field>
+    </record>
+
+    <record id="bf_progression_transfer_log_hidden_rule" model="ir.rule">
+        <field name="name">Progression: access log of portal drafts hidden from users</field>
+        <field name="model_id" ref="bf_securetransfer.model_secure_transfer_access_log"/>
+        <field name="domain_force">[('transfer_id.bf_progression_upload', '=', False)]</field>
+    </record>
+
+    <record id="bf_progression_transfer_audience_hidden_rule" model="ir.rule">
+        <field name="name">Progression: audience of portal drafts hidden from users</field>
+        <field name="model_id" ref="bf_securetransfer.model_secure_transfer_audience"/>
+        <field name="domain_force">[('transfer_id.bf_progression_upload', '=', False)]</field>
+    </record>
+
+</odoo>

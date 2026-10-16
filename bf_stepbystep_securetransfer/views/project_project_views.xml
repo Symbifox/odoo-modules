@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les gros fichiers restés dans le seau : où ils sont, jusqu'à quand, et un
+         lien de téléchargement court pour l'équipe. -->
+    <record id="bf_stepbystep_securetransfer_project_form" model="ir.ui.view">
+        <field name="name">project.project.form.bf_stepbystep_securetransfer</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="bf_stepbystep_clients.bf_stepbystep_project_form_portal"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='progression_deposit_ids']/list/field[@name='attachment_id']" position="after">
+                <field name="storage" optional="show"/>
+                <field name="s3_expiry" optional="show"/>
+                <button name="action_download_stored_file" type="object" icon="fa-download"
+                        string="Download" invisible="storage != 's3'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

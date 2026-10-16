@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- En mode S3, le formulaire n'est plus posté : le JavaScript téléverse dans
+         le seau, puis demande au serveur de terminer. Le bouton naît DÉSACTIVÉ et le
+         script l'active en se branchant : avant (paquet public chargé en defer async,
+         téléphone lent), un clic soumettait le formulaire en GET simple, rechargeait
+         la page et ne déposait rien, sans un mot. -->
+    <template id="progression_portal_page_s3" inherit_id="bf_stepbystep_clients.progression_portal_page"
+              name="Progression: client portal, S3 deposit">
+        <xpath expr="//form[@enctype='multipart/form-data']" position="after">
+            <form t-elif="deposit_mode == 's3'" class="o_progression_s3_form d-flex flex-wrap gap-2 align-items-center mt-2"
+                  t-att-data-start="'/progression/%s/%s/s3/start' % (project.id, token)"
+                  t-att-data-base="'/progression/%s/%s/s3/' % (project.id, token)"
+                  t-att-data-page="'/progression/%s/%s' % (project.id, token)"
+                  t-att-data-document="doc['id']">
+                <input type="file" name="file" class="form-control form-control-sm flex-grow-1"
+                       accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.webp,.tif,.tiff,.doc,.docx,.odt,.rtf,.txt,.xls,.xlsx,.ods,.csv,image/*,application/pdf"/>
+                <button type="submit" class="btn btn-primary btn-sm" disabled="disabled">
+                    <t t-if="doc['count']">Send another version</t>
+                    <t t-else="">Send</t>
+                </button>
+                <div class="o_progression_s3_progress progress w-100 d-none" role="progressbar"
+                     aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: 0%"/>
+                </div>
+                <div class="o_progression_s3_error small text-danger w-100 d-none" role="alert"/>
+                <!-- En texte, pas en attributs data-* : QWeb ne traduit pas ceux-là. -->
+                <span class="o_progression_s3_sending d-none">Sending…</span>
+                <span class="o_progression_s3_failed d-none">The file could not be sent. Try again.</span>
+            </form>
+        </xpath>
+    </template>
+
+</odoo>
