@@ -523,6 +523,14 @@ class TestCommunications(ReportCardCase):
         self.assertEqual(set(created.mapped("due_date")), {date(2026, 10, 15)})
         self.assertFalse(Communication._prepare_first(self.year), "prepared once")
 
+    def test_a_communication_is_named_by_its_student_and_its_kind_in_the_reader_language(self):
+        item = self.env["bf.school.communication"].with_user(self.office).create({
+            "student_id": self.alpha.id, "year_id": self.year.id, "kind": "first", "body": "x"})
+        self.assertEqual(item.display_name, "%s, First written communication" % self.alpha.name)
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.assertEqual(item.with_context(lang="fr_CA").display_name,
+                         "%s, Première communication écrite" % self.alpha.name)
+
     def test_a_late_first_communication_is_flagged(self):
         self.year.first_communication_date = date(2026, 10, 1)
         created = self.env["bf.school.communication"]._prepare_first(self.year)

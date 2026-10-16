@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : bulletins",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Elementary and secondary report cards from the gradebook, sealed when issued, "
                "shown to the families with a read receipt, and the written communications "

@@ -60,6 +60,14 @@ class SchoolCommunication(models.Model):
              "of who was told, never of what was said.")
     is_overdue = fields.Boolean(compute="_compute_is_overdue")
 
+    @api.depends_context("lang")
+    @api.depends("student_id.name", "kind")
+    def _compute_display_name(self):
+        kinds = dict(self._fields["kind"]._description_selection(self.env))
+        for item in self:
+            item.display_name = _("%(student)s, %(kind)s", student=item.student_id.name or "",
+                                  kind=kinds.get(item.kind, ""))
+
     @api.depends("state", "due_date")
     def _compute_is_overdue(self):
         today = fields.Date.context_today(self)
