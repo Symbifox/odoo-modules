@@ -38,6 +38,7 @@ from odoo.tools import html_escape
 from odoo.tools.misc import format_date
 
 from ..models import s3
+from ..models.secure_transfer import active_lang
 
 _logger = logging.getLogger(__name__)
 
@@ -311,10 +312,16 @@ def _resolve_locale(env=None):
 
 
 def _apply_locale():
-    """Resolve the visitor locale and push it into the request context."""
+    """Resolve the visitor locale and push it into the request context.
+
+    The locale picks the page's strings (``_UI_STRINGS``); the context gets an
+    active language. ⚠️ fr_CA pushed as is on a database without it made
+    every public page answer 400 « Invalid language code: fr_CA ».
+    """
     lang = _resolve_locale()
-    if request.env.context.get("lang") != lang:
-        request.update_context(lang=lang)
+    context_lang = active_lang(request.env, lang)
+    if request.env.context.get("lang") != context_lang:
+        request.update_context(lang=context_lang)
     return lang
 
 

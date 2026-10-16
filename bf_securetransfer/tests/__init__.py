@@ -20,3 +20,4 @@ from . import test_open_audience
 from . import test_dataroom_templates
 from . import test_mail_queue_wakeup
 from . import test_otp_essais_par_code
+from . import test_langue_sans_fr_ca

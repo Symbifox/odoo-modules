@@ -34,6 +34,22 @@ from .secure_transfer_file import DENY_EXTENSIONS
 
 _logger = logging.getLogger(__name__)
 
+
+def active_lang(env, code=None):
+    """``code`` when it is active in this database, else an active language.
+
+    The fallback order is fr_CA, the company's language, then the first active
+    language. ⚠️ Never a language written in stone: ``Environment.lang`` raises
+    « Invalid language code » for one that is not active, and the old hardcoded
+    fr_CA turned every public page into a 400 on a database without it.
+    """
+    # sudo: the public pages call this as the public user.
+    actives = [c for c, _name in env["res.lang"].sudo().get_installed()]
+    for candidate in (code, "fr_CA", env.company.sudo().partner_id.lang):
+        if candidate and candidate in actives:
+            return candidate
+    return actives[0] if actives else "en_US"
+
 # Same scheme res.users relies on — zero new dependency.
 _pwd_ctx = CryptContext(schemes=["pbkdf2_sha512"])
 
@@ -1787,8 +1803,13 @@ class SecureTransfer(models.Model):
             partner = self.env["res.partner"].sudo().search(
                 [("email", "=ilike", email)], limit=1)
             if partner and partner.lang:
-                return partner.lang
-        return self.locale or "fr_CA"
+                return active_lang(self.env, partner.lang)
+        return active_lang(self.env, self.locale)
+
+    def _render_lang(self):
+        """The transfer's locale as a language this database can render in."""
+        self.ensure_one()
+        return active_lang(self.env, self.locale)
 
     def _email_subject_line(self, kind):
         """The subject line to force on an outgoing mail, or None.

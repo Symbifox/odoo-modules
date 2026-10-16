@@ -14,7 +14,7 @@
         <!-- Le certificat est lu par le CLIENT, pas par l'employé : il se rend
              dans la langue du transfert, pas dans celle de qui l'imprime (sans
              quoi un dossier francophone sort avec des dates en 07/13/2026). -->
-        <t t-set="doc" t-value="doc.with_context(lang=doc.locale or 'fr_CA')"/>
+        <t t-set="doc" t-value="doc.with_context(lang=doc._render_lang())"/>
         <t t-set="brand" t-value="doc.brand_id"/>
         <t t-set="c" t-value="doc._certificate_context()"/>
         <t t-set="primary" t-value="brand.color_primary or '#1f2937'"/>

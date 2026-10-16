@@ -8,8 +8,8 @@ artefact), **automatic purging**, **multi-brand** resolution by hostname,
 **personal drop pages** (`/to/<slug>`), **anti-piggyback allowlists** and
 **automatic suspension on abuse reports**.
 
-- **Version**: `18.0.1.21.8`.
-- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-10-02**. See [`LICENSE`](LICENSE).
+- **Version**: `18.0.1.21.9`.
+- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-10-16**. See [`LICENSE`](LICENSE).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
 - **Multiple tiers**: the multi-brand system supports a limited free tier
   (default brand, optional "Powered by" mention) and a paid white-label tier on
@@ -439,6 +439,7 @@ defensible; "beyond the reach of any foreign access" is not, until Phase 3
 
 | Version | Highlights |
 |---|---|
+| `18.0.1.21.9` | **Public pages on a database without fr_CA.** The pages pushed the product's default locale, fr_CA, into the request context as is, and Odoo refuses a language that is not active: on any database without fr_CA every public page answered 400 « Invalid language code ». The context, the e-mails and the access certificate now fall back to an active language (fr_CA when active, else the company's language, else the first active one). The stored locale and the page's strings do not change. |
 | `18.0.1.21.8` | **Extensible draft clean-up.** The hourly draft harvest now takes its domain from `_gc_drafts_domain(cutoff)`, so a module that deliberately keeps a draft open past the TTL (a document request waiting for its files until its own deadline) can leave its drafts out by extending the method. Nothing changes for the base module alone. |
 | `18.0.1.21.6` | **Per-code attempt counter.** The six-digit code challenge lives in the session, and the only brake was an in-memory limiter per (IP, transfer): one cookie replayed from rotating IPs got the full allowance again on every address and every worker. Failed attempts on the code in flight are now counted in the database (`otp_verify_fails` on the audience line), read and written under a row lock, five per code sent; past that the code is burnt and a new one must be requested. Sends stay capped per identity (five codes an hour for a named recipient), so attempts stay bounded per hour. The brand is also chosen from the host Odoo keeps behind a proxy (`proxy_mode`), not from the first raw `X-Forwarded-Host` element a client can set. Regression tests for both. |
 | `18.0.1.21.5` | **Security fixes.** A **blocked** named recipient can no longer get back in by asking for a new code: sending and confirming a code now go through the same admissibility check that reads the block. Codes sent to one named recipient are **capped per hour**, so a shared link cannot be used to flood someone with e-mail or paid SMS from rotating addresses. The public **abuse report** no longer takes a transfer offline on the token alone: it raises a flag for the owner to review. Regression tests for each. |
@@ -472,5 +473,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-02, this version converts automatically to
+- **Change Date**: on 2030-10-16, this version converts automatically to
   **LGPL-3.0-or-later**.
