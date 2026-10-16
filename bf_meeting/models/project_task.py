@@ -22,10 +22,10 @@ class ProjectTask(models.Model):
              "Sera effacé si la rencontre est annulée.",
     )
     bf_discuss_tag = fields.Selection([
-        ('next_client', 'Prochaine rencontre client'),
-        ('next_project', 'Prochaine rencontre projet'),
-        ('all_client', 'Toutes les rencontres client'),
-        ('all_project', 'Toutes les rencontres projet'),
+        ('next_client', 'Next client meeting'),
+        ('next_project', 'Next project meeting'),
+        ('all_client', 'All client meetings'),
+        ('all_project', 'All project meetings'),
     ], string='Discuter à', index=True,
         help="Tague la tâche pour qu'elle apparaisse aux ordres du jour à venir :\n"
              "• « Prochaine » : seulement au prochain OdJ admissible.\n"

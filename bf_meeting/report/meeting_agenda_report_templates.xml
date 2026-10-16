@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="report_meeting_agenda">
+    <!-- Enveloppe : chaque document se rend dans SA langue d'envoi.
+         Le libellé statique d'un gabarit se traduit dans la langue du t-call
+         (`t-lang`), pas dans celle d'une variable : avant, les données
+         suivaient `_bf_langue_envoi()` et les intitulés la langue de qui
+         imprimait. Le corps garde l'identifiant `report_meeting_agenda`, que
+         d'autres modules étendent (bf_meeting_timer). -->
+    <template id="report_meeting_agenda_main">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_meeting.report_meeting_agenda" t-lang="doc._bf_langue_envoi()"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_meeting_agenda">
                 <t t-set="lang" t-value="doc._bf_langue_envoi()"/>
-                <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="data" t-value="doc._get_report_data()"/>
                 <t t-set="brand_company" t-value="doc.company_id or env.company"/>
                 <t t-set="brand_primary" t-value="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>
                 <t t-set="brand_dark" t-value="(brand_company and brand_company.report_brand_dark) or '#212529'"/>
@@ -213,11 +226,11 @@
                                 <img t-att-src="image_data_uri(doc.company_id.meeting_logo or doc.company_id.logo)" alt="Logo"/>
                             </div>
                             <div class="banner-content">
-                                <div class="doc-type">Ordre du jour</div>
+                                <div class="doc-type">Agenda</div>
                                 <h1><t t-out="doc.name"/></h1>
                                 <div class="doc-subtitle">
                                     <t t-if="doc.project_id">
-                                        Projet : <t t-out="doc.project_id.name"/>
+                                        Project: <t t-out="doc.project_id.name"/>
                                     </t>
                                 </div>
                             </div>
@@ -234,14 +247,14 @@
                             </div>
                             <t t-if="doc.location">
                                 <div class="ma-meta-item">
-                                    <div class="ma-meta-label">Lieu</div>
+                                    <div class="ma-meta-label">Location</div>
                                     <div class="ma-meta-value">
                                         <t t-out="doc.location"/>
                                     </div>
                                 </div>
                             </t>
                             <div class="ma-meta-item right">
-                                <div class="ma-meta-label">Dur&#233;e pr&#233;vue</div>
+                                <div class="ma-meta-label">Planned duration</div>
                                 <div class="ma-meta-value">
                                     <t t-if="doc.duration_planned">
                                         <t t-out="doc.duration_planned"/> min
@@ -258,11 +271,11 @@
                             </div>
                             <div class="ma-kpi-card">
                                 <div class="ma-kpi-number"><t t-out="data['topic_count']"/></div>
-                                <div class="ma-kpi-label">Sujets</div>
+                                <div class="ma-kpi-label">Topics</div>
                             </div>
                             <div class="ma-kpi-card">
                                 <div class="ma-kpi-number"><t t-out="data['tagged_task_count']"/></div>
-                                <div class="ma-kpi-label">&#201;l&#233;ments d'action</div>
+                                <div class="ma-kpi-label">Action items</div>
                             </div>
                         </div>
 
@@ -280,20 +293,20 @@
 
                             <!-- Objectives -->
                             <t t-if="doc.objectives">
-                                <div class="ma-section-title">Objectifs</div>
+                                <div class="ma-section-title">Objectives</div>
                                 <p style="white-space: pre-wrap;"><t t-out="doc.objectives"/></p>
                             </t>
 
                             <!-- Topics table -->
                             <t t-if="data['topics']">
-                                <div class="ma-section-title">Sujets</div>
+                                <div class="ma-section-title">Topics</div>
                                 <table class="ma-table">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 25%;">Sujet</th>
-                                            <th style="width: 8%; text-align: center;">Dur&#233;e</th>
-                                            <th style="width: 12%;">Intervenant</th>
+                                            <th style="width: 25%;">Topic</th>
+                                            <th style="width: 8%; text-align: center;">Duration</th>
+                                            <th style="width: 12%;">Presenter</th>
                                             <th style="width: 50%;">Notes</th>
                                         </tr>
                                     </thead>
@@ -321,14 +334,14 @@
 
                             <!-- Tagged tasks -->
                             <t t-if="data.get('tagged_tasks')">
-                                <div class="ma-section-title">&#201;l&#233;ments d'action &#224; discuter</div>
+                                <div class="ma-section-title">Action items to discuss</div>
                                 <table class="ma-table">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 40%;">T&#226;che</th>
-                                            <th style="width: 20%;">Assign&#233;e &#224;</th>
-                                            <th style="width: 15%; text-align: center;">&#201;ch&#233;ance</th>
+                                            <th style="width: 40%;">Task</th>
+                                            <th style="width: 20%;">Assigned to</th>
+                                            <th style="width: 15%; text-align: center;">Deadline</th>
                                             <th style="width: 20%;">Source</th>
                                         </tr>
                                     </thead>
@@ -355,13 +368,13 @@
 
                             <!-- Context -->
                             <t t-if="doc.context_html">
-                                <div class="ma-section-title">Contexte</div>
+                                <div class="ma-section-title">Context</div>
                                 <t t-out="doc.context_html"/>
                             </t>
 
                             <!-- Preparation -->
                             <t t-if="doc.preparation_html">
-                                <div class="ma-section-title">Pr&#233;paration</div>
+                                <div class="ma-section-title">Preparation</div>
                                 <t t-out="doc.preparation_html"/>
                             </t>
 
@@ -373,14 +386,12 @@
                                 <t t-out="doc.company_id.name"/>
                             </div>
                             <div class="ma-footer-right">
-                                Ordre du jour &#8212; Document confidentiel
+                                Agenda &#8212; Confidential document
                             </div>
                         </div>
 
                     </div>
                 </div>
-            </t>
-        </t>
     </template>
 
 </odoo>

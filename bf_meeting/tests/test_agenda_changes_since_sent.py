@@ -29,6 +29,12 @@ class TestAgendaChangesSinceSent(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Attentes en français : épingler fr_CA (OdooBot n'est en fr_CA que sur
+        # certaines bases ; `env._` sans langue rend la source, anglaise depuis
+        # 18.0.3.68.0).
+        cls.env['res.lang']._activate_lang('fr_CA')
+        cls.env['ir.module.module']._load_module_terms(['bf_meeting'], ['fr_CA'], overwrite=True)
+        cls.env = cls.env(context=dict(cls.env.context, lang='fr_CA'))
         cls.alice = cls.env['res.partner'].create({
             'name': 'Alice Exemple', 'email': 'alice@essai.test'})
         cls.bruno = cls.env['res.partner'].create({

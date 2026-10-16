@@ -1,4 +1,5 @@
 from . import meeting_document_mixin
+from . import meeting_lang_mixin
 from . import meeting_record
 from . import meeting_decision
 from . import meeting_topic

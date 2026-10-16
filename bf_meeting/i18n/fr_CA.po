@@ -1,0 +1,944 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_record.py:0
+msgid "%(city)s: %(time)s"
+msgstr "%(city)s : %(time)s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "(empty)"
+msgstr "(vide)"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "(excused)"
+msgstr "(excusé)"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "<b>%(label)s</b>: %(change)s"
+msgstr "<b>%(label)s</b> : %(change)s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "<b>%(label)s</b>: %(old)s → %(new)s"
+msgstr "<b>%(label)s</b> : %(old)s → %(new)s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "<b>%(label)s</b>: changed"
+msgstr "<b>%(label)s</b> : modifié"
+
+#. module: bf_meeting
+#: model:mail.template,body_html:bf_meeting.meeting_agenda_mail_template
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Agenda</p>\n"
+"<h2 t-attf-style=\"font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;\">\n"
+"    <t t-out=\"object.name\"/>\n"
+"</h2>\n"
+"\n"
+"<p style=\"font-size:13px; color:#6B7280; margin:0 0 20px 0;\">\n"
+"    <t t-if=\"object.date\">\n"
+"        <t t-set=\"is_placeholder\" t-value=\"object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0\"/>\n"
+"        <strong style=\"color:#374151;\">Date:</strong>\n"
+"        <t t-if=\"is_placeholder\">\n"
+"            <t t-out=\"object.date.strftime('%Y-%m-%d')\"/>\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            <t t-out=\"object.report_date_display_html()\"/>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-if=\"object.duration_planned\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Planned duration:</strong> <t t-out=\"object.duration_planned\"/> min\n"
+"    </t>\n"
+"    <t t-if=\"object.location\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Location:</strong> <t t-out=\"object.location\"/>\n"
+"    </t>\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"    Hello,\n"
+"</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"    Here is the agenda for the upcoming meeting.\n"
+"</p>\n"
+"\n"
+"<!-- Renvoi : ce qui a chang&#233; depuis la copie que\n"
+"     les destinataires tiennent d&#233;j&#224;. Rendu vide\n"
+"     sur un premier envoi et quand la case est\n"
+"     d&#233;coch&#233;e, donc rien &#224; masquer ici. -->\n"
+"<t t-set=\"agenda_changes\" t-value=\"object.resend_changes_block_html()\"/>\n"
+"<t t-if=\"agenda_changes\">\n"
+"<div style=\"margin:0 0 20px 0; padding:14px 16px; background-color:#FFF8E1; border-left-width:4px; border-left-style:solid; border-left-color:#F0B429; border-radius:6px;\">\n"
+"    <p style=\"font-size:14px; font-weight:600; color:#374151; margin:0 0 8px 0;\">\n"
+"        What has changed since the last version\n"
+"    </p>\n"
+"    <div style=\"font-size:14px; line-height:22px; color:#374151;\">\n"
+"        <t t-out=\"agenda_changes\"/>\n"
+"    </div>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.participant_ids\">\n"
+"<div style=\"margin:0 0 20px 0; padding:12px 14px; background-color:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;\">\n"
+"    <strong t-attf-style=\"color:{{ brand_dark }};\">Participants:</strong>\n"
+"    <t t-foreach=\"object.participant_ids\" t-as=\"p\">\n"
+"        <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};\"><t t-out=\"p.name\"/></span>\n"
+"    </t>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.objectives\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Objectives</h3>\n"
+"<div style=\"margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;\"><t t-out=\"object.objectives\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.published_topic_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Topics</h3>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr t-attf-style=\"background-color:{{ brand_dark }}; color:#FFFFFF;\">\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:32px;\">#</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600;\">Topic</th>\n"
+"            <th style=\"padding:8px 10px; text-align:center; font-weight:600; width:70px;\">Duration</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:140px;\">Presenter</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <t t-foreach=\"object.published_topic_ids\" t-as=\"topic\">\n"
+"            <tr style=\"border-bottom:1px solid #EAEEF2;\">\n"
+"                <td style=\"padding:8px 10px; color:#8A9099;\"><t t-out=\"topic_index + 1\"/></td>\n"
+"                <td style=\"padding:8px 10px; color:#374151;\"><strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"topic.name\"/></strong></td>\n"
+"                <td style=\"padding:8px 10px; text-align:center; color:#6B7280;\">\n"
+"                    <t t-if=\"topic.duration_planned\"><t t-out=\"topic.duration_planned\"/> min</t>\n"
+"                </td>\n"
+"                <td style=\"padding:8px 10px; color:#6B7280;\">\n"
+"                    <t t-if=\"topic.presenter_id\"><t t-out=\"topic.presenter_id.name\"/></t>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </t>\n"
+"    </tbody>\n"
+"</table>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.agenda_task_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Action items to discuss</h3>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr t-attf-style=\"background-color:{{ brand_dark }}; color:#FFFFFF;\">\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:32px;\">#</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600;\">Task</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:140px;\">Assigned to</th>\n"
+"            <th style=\"padding:8px 10px; text-align:center; font-weight:600; width:100px;\">Deadline</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <t t-foreach=\"object.agenda_task_ids\" t-as=\"task\">\n"
+"            <tr style=\"border-bottom:1px solid #EAEEF2;\">\n"
+"                <td style=\"padding:8px 10px; color:#8A9099;\"><t t-out=\"task_index + 1\"/></td>\n"
+"                <td style=\"padding:8px 10px; color:#374151;\"><strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"task.name\"/></strong></td>\n"
+"                <td style=\"padding:8px 10px; color:#6B7280;\">\n"
+"                    <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-out=\"u.name\"/><t t-if=\"not u_last\">, </t></t>\n"
+"                </td>\n"
+"                <td style=\"padding:8px 10px; text-align:center; color:#6B7280;\">\n"
+"                    <t t-if=\"task.date_deadline\"><t t-out=\"task.date_deadline\"/></t>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </t>\n"
+"    </tbody>\n"
+"</table>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.preparation_html\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Preparation</h3>\n"
+"<div style=\"margin:0 0 20px 0; color:#374151;\"><t t-out=\"object.preparation_html\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.context_html\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Context</h3>\n"
+"<div style=\"margin:0 0 20px 0; color:#374151;\"><t t-out=\"object.context_html\"/></div>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;\">\n"
+"    Please review the agenda and prepare your input.\n"
+"</p>\n"
+"\n"
+"<t t-if=\"object.allow_contributions and object.access_token and object.contributions_open\">\n"
+"    <t t-set=\"base\" t-value=\"object.get_base_url()\"/>\n"
+"    <div style=\"margin:24px 0 0 0; padding:14px 16px; background-color:#F5F7FA; border-radius:6px;\">\n"
+"        <p style=\"font-size:14px; color:#374151; margin:0 0 10px 0;\">\n"
+"            Would you like to add a topic or leave a note before the meeting?\n"
+"        </p>\n"
+"        <a t-attf-href=\"{{ base }}/meeting/agenda/{{ object.access_token }}\" t-attf-style=\"display:inline-block; padding:10px 18px; background-color:{{ brand_primary }}; color:#FFFFFF; border-radius:6px; text-decoration:none; font-weight:600; font-size:14px;\">\n"
+"            Suggest a topic or a comment\n"
+"        </a>\n"
+"    </div>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;\">\n"
+"    Kind regards,<br/>\n"
+"    <t t-out=\"user.name\"/>\n"
+"</p>\n"
+"            "
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Ordre du jour</p>\n"
+"<h2 t-attf-style=\"font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;\">\n"
+"    <t t-out=\"object.name\"/>\n"
+"</h2>\n"
+"\n"
+"<p style=\"font-size:13px; color:#6B7280; margin:0 0 20px 0;\">\n"
+"    <t t-if=\"object.date\">\n"
+"        <t t-set=\"is_placeholder\" t-value=\"object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0\"/>\n"
+"        <strong style=\"color:#374151;\">Date :</strong>\n"
+"        <t t-if=\"is_placeholder\">\n"
+"            <t t-out=\"object.date.strftime('%Y-%m-%d')\"/>\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            <t t-out=\"object.report_date_display_html()\"/>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-if=\"object.duration_planned\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Durée prévue :</strong> <t t-out=\"object.duration_planned\"/> min\n"
+"    </t>\n"
+"    <t t-if=\"object.location\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Lieu :</strong> <t t-out=\"object.location\"/>\n"
+"    </t>\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"    Bonjour,\n"
+"</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"    Voici l'ordre du jour pour la rencontre à venir.\n"
+"</p>\n"
+"\n"
+"<!-- Renvoi : ce qui a chang&#233; depuis la copie que\n"
+"     les destinataires tiennent d&#233;j&#224;. Rendu vide\n"
+"     sur un premier envoi et quand la case est\n"
+"     d&#233;coch&#233;e, donc rien &#224; masquer ici. -->\n"
+"<t t-set=\"agenda_changes\" t-value=\"object.resend_changes_block_html()\"/>\n"
+"<t t-if=\"agenda_changes\">\n"
+"<div style=\"margin:0 0 20px 0; padding:14px 16px; background-color:#FFF8E1; border-left-width:4px; border-left-style:solid; border-left-color:#F0B429; border-radius:6px;\">\n"
+"    <p style=\"font-size:14px; font-weight:600; color:#374151; margin:0 0 8px 0;\">\n"
+"        Ce qui a changé depuis le dernier envoi\n"
+"    </p>\n"
+"    <div style=\"font-size:14px; line-height:22px; color:#374151;\">\n"
+"        <t t-out=\"agenda_changes\"/>\n"
+"    </div>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.participant_ids\">\n"
+"<div style=\"margin:0 0 20px 0; padding:12px 14px; background-color:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;\">\n"
+"    <strong t-attf-style=\"color:{{ brand_dark }};\">Participants :</strong>\n"
+"    <t t-foreach=\"object.participant_ids\" t-as=\"p\">\n"
+"        <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};\"><t t-out=\"p.name\"/></span>\n"
+"    </t>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.objectives\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Objectifs</h3>\n"
+"<div style=\"margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;\"><t t-out=\"object.objectives\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.published_topic_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Sujets</h3>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr t-attf-style=\"background-color:{{ brand_dark }}; color:#FFFFFF;\">\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:32px;\">#</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600;\">Sujet</th>\n"
+"            <th style=\"padding:8px 10px; text-align:center; font-weight:600; width:70px;\">Durée</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:140px;\">Intervenant</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <t t-foreach=\"object.published_topic_ids\" t-as=\"topic\">\n"
+"            <tr style=\"border-bottom:1px solid #EAEEF2;\">\n"
+"                <td style=\"padding:8px 10px; color:#8A9099;\"><t t-out=\"topic_index + 1\"/></td>\n"
+"                <td style=\"padding:8px 10px; color:#374151;\"><strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"topic.name\"/></strong></td>\n"
+"                <td style=\"padding:8px 10px; text-align:center; color:#6B7280;\">\n"
+"                    <t t-if=\"topic.duration_planned\"><t t-out=\"topic.duration_planned\"/> min</t>\n"
+"                </td>\n"
+"                <td style=\"padding:8px 10px; color:#6B7280;\">\n"
+"                    <t t-if=\"topic.presenter_id\"><t t-out=\"topic.presenter_id.name\"/></t>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </t>\n"
+"    </tbody>\n"
+"</table>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.agenda_task_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Éléments d'action à discuter</h3>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr t-attf-style=\"background-color:{{ brand_dark }}; color:#FFFFFF;\">\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:32px;\">#</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600;\">Tâche</th>\n"
+"            <th style=\"padding:8px 10px; text-align:left; font-weight:600; width:140px;\">Assignée à</th>\n"
+"            <th style=\"padding:8px 10px; text-align:center; font-weight:600; width:100px;\">Échéance</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <t t-foreach=\"object.agenda_task_ids\" t-as=\"task\">\n"
+"            <tr style=\"border-bottom:1px solid #EAEEF2;\">\n"
+"                <td style=\"padding:8px 10px; color:#8A9099;\"><t t-out=\"task_index + 1\"/></td>\n"
+"                <td style=\"padding:8px 10px; color:#374151;\"><strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"task.name\"/></strong></td>\n"
+"                <td style=\"padding:8px 10px; color:#6B7280;\">\n"
+"                    <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-out=\"u.name\"/><t t-if=\"not u_last\">, </t></t>\n"
+"                </td>\n"
+"                <td style=\"padding:8px 10px; text-align:center; color:#6B7280;\">\n"
+"                    <t t-if=\"task.date_deadline\"><t t-out=\"task.date_deadline\"/></t>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </t>\n"
+"    </tbody>\n"
+"</table>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.preparation_html\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Préparation</h3>\n"
+"<div style=\"margin:0 0 20px 0; color:#374151;\"><t t-out=\"object.preparation_html\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.context_html\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Contexte</h3>\n"
+"<div style=\"margin:0 0 20px 0; color:#374151;\"><t t-out=\"object.context_html\"/></div>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;\">\n"
+"    Merci de consulter l'ordre du jour et de préparer vos interventions.\n"
+"</p>\n"
+"\n"
+"<t t-if=\"object.allow_contributions and object.access_token and object.contributions_open\">\n"
+"    <t t-set=\"base\" t-value=\"object.get_base_url()\"/>\n"
+"    <div style=\"margin:24px 0 0 0; padding:14px 16px; background-color:#F5F7FA; border-radius:6px;\">\n"
+"        <p style=\"font-size:14px; color:#374151; margin:0 0 10px 0;\">\n"
+"            Vous souhaitez ajouter un sujet ou laisser une note avant la rencontre ?\n"
+"        </p>\n"
+"        <a t-attf-href=\"{{ base }}/meeting/agenda/{{ object.access_token }}\" t-attf-style=\"display:inline-block; padding:10px 18px; background-color:{{ brand_primary }}; color:#FFFFFF; border-radius:6px; text-decoration:none; font-weight:600; font-size:14px;\">\n"
+"            Proposer un sujet ou un commentaire\n"
+"        </a>\n"
+"    </div>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;\">\n"
+"    Cordialement,<br/>\n"
+"    <t t-out=\"user.name\"/>\n"
+"</p>\n"
+"            "
+
+#. module: bf_meeting
+#: model:mail.template,body_html:bf_meeting.meeting_report_mail_template
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Meeting minutes</p>\n"
+"<h2 t-attf-style=\"font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;\">\n"
+"    <t t-out=\"object.room_name or object.name\"/>\n"
+"</h2>\n"
+"\n"
+"<p style=\"font-size:13px; color:#6B7280; margin:0 0 20px 0;\">\n"
+"    <t t-if=\"object.date\">\n"
+"        <t t-set=\"is_placeholder\" t-value=\"object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0\"/>\n"
+"        <strong style=\"color:#374151;\">Date:</strong>\n"
+"        <t t-if=\"is_placeholder\">\n"
+"            <t t-out=\"object.date.strftime('%Y-%m-%d')\"/>\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            <t t-out=\"object.report_date_display_html()\"/>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-if=\"object.duration_minutes\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Duration:</strong> <t t-out=\"object.duration_minutes\"/> min\n"
+"    </t>\n"
+"    <t t-if=\"object.location\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Location:</strong> <t t-out=\"object.location\"/>\n"
+"    </t>\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"    Hello,\n"
+"</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"    Please find the meeting minutes below. The full PDF is attached to this email.\n"
+"</p>\n"
+"\n"
+"<t t-if=\"object.attendance_ids or object.participant_ids\">\n"
+"<div style=\"margin:0 0 20px 0; padding:12px 14px; background-color:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;\">\n"
+"    <strong t-attf-style=\"color:{{ brand_dark }};\">Attendees:</strong>\n"
+"    <t t-if=\"object.attendance_ids\">\n"
+"        <t t-foreach=\"object.attendance_ids\" t-as=\"a\">\n"
+"            <t t-set=\"absent\" t-value=\"a.status != 'present'\"/>\n"
+"            <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ '#9CA3AF' if absent else brand_dark }};\"><t t-out=\"a.partner_id.name\"/><t t-if=\"a.status == 'excused'\"> (excused)</t><t t-if=\"a.status == 'absent'\"> (absent)</t></span>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-else=\"\">\n"
+"        <t t-foreach=\"object.participant_ids\" t-as=\"p\">\n"
+"            <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};\"><t t-out=\"p.name\"/></span>\n"
+"        </t>\n"
+"    </t>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.summary\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Summary</h3>\n"
+"<div style=\"margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;\"><t t-out=\"object.summary\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.topic_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Topics discussed</h3>\n"
+"<ol style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"object.topic_ids\" t-as=\"topic\">\n"
+"        <li style=\"margin-bottom:10px;\">\n"
+"            <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"topic.name\"/></strong>\n"
+"            <t t-if=\"topic.points_html\">\n"
+"                <div style=\"margin-top:4px; color:#5C6368; font-size:14px;\"><t t-out=\"topic.points_html\"/></div>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ol>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.decision_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Decisions</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:0; list-style:none;\">\n"
+"    <t t-foreach=\"object.decision_ids\" t-as=\"decision\">\n"
+"        <li t-attf-style=\"margin-bottom:8px; padding:8px 12px; background-color:#F5F7FA; border-left-width:3px; border-left-style:solid; border-left-color:{{ brand_primary }}; border-radius:3px; color:#374151;\">\n"
+"            <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"decision.name\"/></strong>\n"
+"            <t t-if=\"decision.decision_maker_id\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-out=\"decision.decision_maker_id.name\"/></span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.task_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Action items</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"object.task_ids\" t-as=\"task\">\n"
+"        <li style=\"margin-bottom:6px;\">\n"
+"            <t t-out=\"task.name\"/>\n"
+"            <t t-if=\"task.user_ids\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-if=\"not u_first\" t-out=\"', '\"/><t t-out=\"u.name\"/></t></span>\n"
+"            </t>\n"
+"            <t t-if=\"task.date_deadline\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> (due <t t-out=\"task.date_deadline.strftime('%Y-%m-%d')\"/>)</span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<t t-set=\"discussed_tasks\" t-value=\"object._discussed_tasks_for_report()\"/>\n"
+"<t t-if=\"discussed_tasks\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Existing tasks discussed</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"discussed_tasks\" t-as=\"task\">\n"
+"        <li style=\"margin-bottom:6px;\">\n"
+"            <t t-out=\"task.name\"/>\n"
+"            <t t-if=\"task.user_ids\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-if=\"not u_first\" t-out=\"', '\"/><t t-out=\"u.name\"/></t></span>\n"
+"            </t>\n"
+"            <t t-if=\"task.date_deadline\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> (due <t t-out=\"task.date_deadline.strftime('%Y-%m-%d')\"/>)</span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;\">\n"
+"    Feel free to reply to this email with any correction or clarification.\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;\">\n"
+"    Kind regards,<br/>\n"
+"    <t t-out=\"user.name\"/>\n"
+"</p>\n"
+"            "
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"/>\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Compte rendu</p>\n"
+"<h2 t-attf-style=\"font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;\">\n"
+"    <t t-out=\"object.room_name or object.name\"/>\n"
+"</h2>\n"
+"\n"
+"<p style=\"font-size:13px; color:#6B7280; margin:0 0 20px 0;\">\n"
+"    <t t-if=\"object.date\">\n"
+"        <t t-set=\"is_placeholder\" t-value=\"object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0\"/>\n"
+"        <strong style=\"color:#374151;\">Date :</strong>\n"
+"        <t t-if=\"is_placeholder\">\n"
+"            <t t-out=\"object.date.strftime('%Y-%m-%d')\"/>\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            <t t-out=\"object.report_date_display_html()\"/>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-if=\"object.duration_minutes\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Durée :</strong> <t t-out=\"object.duration_minutes\"/> min\n"
+"    </t>\n"
+"    <t t-if=\"object.location\">\n"
+"        &nbsp;·&nbsp; <strong style=\"color:#374151;\">Lieu :</strong> <t t-out=\"object.location\"/>\n"
+"    </t>\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"    Bonjour,\n"
+"</p>\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"    Veuillez trouver ci-dessous le compte rendu de la rencontre. Le PDF complet est joint à ce courriel.\n"
+"</p>\n"
+"\n"
+"<t t-if=\"object.attendance_ids or object.participant_ids\">\n"
+"<div style=\"margin:0 0 20px 0; padding:12px 14px; background-color:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;\">\n"
+"    <strong t-attf-style=\"color:{{ brand_dark }};\">Participants :</strong>\n"
+"    <t t-if=\"object.attendance_ids\">\n"
+"        <t t-foreach=\"object.attendance_ids\" t-as=\"a\">\n"
+"            <t t-set=\"absent\" t-value=\"a.status != 'present'\"/>\n"
+"            <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ '#9CA3AF' if absent else brand_dark }};\"><t t-out=\"a.partner_id.name\"/><t t-if=\"a.status == 'excused'\"> (excusé)</t><t t-if=\"a.status == 'absent'\"> (absent)</t></span>\n"
+"        </t>\n"
+"    </t>\n"
+"    <t t-else=\"\">\n"
+"        <t t-foreach=\"object.participant_ids\" t-as=\"p\">\n"
+"            <span t-attf-style=\"display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};\"><t t-out=\"p.name\"/></span>\n"
+"        </t>\n"
+"    </t>\n"
+"</div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.summary\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Résumé</h3>\n"
+"<div style=\"margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;\"><t t-out=\"object.summary\"/></div>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.topic_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Sujets abordés</h3>\n"
+"<ol style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"object.topic_ids\" t-as=\"topic\">\n"
+"        <li style=\"margin-bottom:10px;\">\n"
+"            <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"topic.name\"/></strong>\n"
+"            <t t-if=\"topic.points_html\">\n"
+"                <div style=\"margin-top:4px; color:#5C6368; font-size:14px;\"><t t-out=\"topic.points_html\"/></div>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ol>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.decision_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Décisions</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:0; list-style:none;\">\n"
+"    <t t-foreach=\"object.decision_ids\" t-as=\"decision\">\n"
+"        <li t-attf-style=\"margin-bottom:8px; padding:8px 12px; background-color:#F5F7FA; border-left-width:3px; border-left-style:solid; border-left-color:{{ brand_primary }}; border-radius:3px; color:#374151;\">\n"
+"            <strong t-attf-style=\"color:{{ brand_dark }};\"><t t-out=\"decision.name\"/></strong>\n"
+"            <t t-if=\"decision.decision_maker_id\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-out=\"decision.decision_maker_id.name\"/></span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<t t-if=\"object.task_ids\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Éléments d'action</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"object.task_ids\" t-as=\"task\">\n"
+"        <li style=\"margin-bottom:6px;\">\n"
+"            <t t-out=\"task.name\"/>\n"
+"            <t t-if=\"task.user_ids\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-if=\"not u_first\" t-out=\"', '\"/><t t-out=\"u.name\"/></t></span>\n"
+"            </t>\n"
+"            <t t-if=\"task.date_deadline\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> (échéance <t t-out=\"task.date_deadline.strftime('%Y-%m-%d')\"/>)</span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<t t-set=\"discussed_tasks\" t-value=\"object._discussed_tasks_for_report()\"/>\n"
+"<t t-if=\"discussed_tasks\">\n"
+"<h3 t-attf-style=\"color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};\">Tâches existantes discutées</h3>\n"
+"<ul style=\"margin:0 0 20px 0; padding-left:24px; color:#374151;\">\n"
+"    <t t-foreach=\"discussed_tasks\" t-as=\"task\">\n"
+"        <li style=\"margin-bottom:6px;\">\n"
+"            <t t-out=\"task.name\"/>\n"
+"            <t t-if=\"task.user_ids\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> — <t t-foreach=\"task.user_ids\" t-as=\"u\"><t t-if=\"not u_first\" t-out=\"', '\"/><t t-out=\"u.name\"/></t></span>\n"
+"            </t>\n"
+"            <t t-if=\"task.date_deadline\">\n"
+"                <span style=\"color:#6B7280; font-size:13px;\"> (échéance <t t-out=\"task.date_deadline.strftime('%Y-%m-%d')\"/>)</span>\n"
+"            </t>\n"
+"        </li>\n"
+"    </t>\n"
+"</ul>\n"
+"</t>\n"
+"\n"
+"<p style=\"font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;\">\n"
+"    N'hésitez pas à répondre à ce courriel pour toute correction ou précision.\n"
+"</p>\n"
+"\n"
+"<p style=\"font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;\">\n"
+"    Cordialement,<br/>\n"
+"    <t t-out=\"user.name\"/>\n"
+"</p>\n"
+"            "
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Action item <b>added</b>: “%(name)s”"
+msgstr "Élément d'action <b>ajouté</b> : « %(name)s »"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Action item <b>removed</b>: “%(name)s”"
+msgstr "Élément d'action <b>retiré</b> : « %(name)s »"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Action items"
+msgstr "Éléments d'action"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Action items to discuss"
+msgstr "Éléments d'action à discuter"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Agenda"
+msgstr "Ordre du jour"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Agenda — Confidential document"
+msgstr "Ordre du jour — Document confidentiel"
+
+#. module: bf_meeting
+#: model:mail.template,subject:bf_meeting.meeting_agenda_mail_template
+msgid "Agenda — {{ object.name }} ({{ object.date.strftime('%Y-%m-%d') }})"
+msgstr ""
+"Ordre du jour — {{ object.name }} ({{ object.date.strftime('%Y-%m-%d') }})"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Agenda_%(name)s_%(date)s"
+msgstr "OdJ_%(name)s_%(date)s"
+
+#. module: bf_meeting
+#: model:ir.model.fields.selection,name:bf_meeting.selection__project_task__bf_discuss_tag__all_client
+msgid "All client meetings"
+msgstr "Toutes les rencontres client"
+
+#. module: bf_meeting
+#: model:ir.model.fields.selection,name:bf_meeting.selection__project_task__bf_discuss_tag__all_project
+msgid "All project meetings"
+msgstr "Toutes les rencontres projet"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Assigned to"
+msgstr "Assignée à"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Assignee"
+msgstr "Assigné"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Context"
+msgstr "Contexte"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Deadline"
+msgstr "Échéance"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Decision"
+msgstr "Décision"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Decision maker"
+msgstr "Décideur"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Decisions"
+msgstr "Décisions"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Deliverables"
+msgstr "Livrables"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Duration"
+msgstr "Durée"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Existing tasks discussed"
+msgstr "Tâches existantes discutées"
+
+#. module: bf_meeting
+#: model:ir.model.fields,field_description:bf_meeting.field_bf_meeting_lang_mixin__lang_manual
+#: model:ir.model.fields,field_description:bf_meeting.field_meeting_agenda__lang_manual
+#: model:ir.model.fields,field_description:bf_meeting.field_meeting_record__lang_manual
+msgid "Language chosen by hand"
+msgstr "Langue choisie à la main"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Location"
+msgstr "Lieu"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Meeting date"
+msgstr "Date de la réunion"
+
+#. module: bf_meeting
+#: model:ir.model,name:bf_meeting.model_bf_meeting_lang_mixin
+msgid "Meeting language (shared)"
+msgstr "Langue de rencontre (socle)"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Meeting minutes"
+msgstr "Compte rendu"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Meeting minutes — Confidential document"
+msgstr "Compte rendu — Document confidentiel"
+
+#. module: bf_meeting
+#: model:mail.template,subject:bf_meeting.meeting_report_mail_template
+msgid ""
+"Meeting minutes — {{ object.room_name or object.name }} ({{ "
+"object.date.strftime('%Y-%m-%d') }})"
+msgstr ""
+"Compte rendu — {{ object.room_name or object.name }} ({{ "
+"object.date.strftime('%Y-%m-%d') }})"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_record.py:0
+msgid "Minutes_%(name)s_%(date)s"
+msgstr "CR_%(name)s_%(date)s"
+
+#. module: bf_meeting
+#: model:ir.model.fields.selection,name:bf_meeting.selection__project_task__bf_discuss_tag__next_client
+msgid "Next client meeting"
+msgstr "Prochaine rencontre client"
+
+#. module: bf_meeting
+#: model:ir.model.fields.selection,name:bf_meeting.selection__project_task__bf_discuss_tag__next_project
+msgid "Next project meeting"
+msgstr "Prochaine rencontre projet"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Objectives"
+msgstr "Objectifs"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Open questions"
+msgstr "Questions ouvertes"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Pinned"
+msgstr "Épinglée"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Planned duration"
+msgstr "Durée prévue"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Preparation"
+msgstr "Préparation"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Presenter"
+msgstr "Intervenant"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Project:"
+msgstr "Projet :"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Related item"
+msgstr "Élément lié"
+
+#. module: bf_meeting
+#: model:ir.model.fields,help:bf_meeting.field_bf_meeting_lang_mixin__lang_manual
+#: model:ir.model.fields,help:bf_meeting.field_meeting_agenda__lang_manual
+#: model:ir.model.fields,help:bf_meeting.field_meeting_record__lang_manual
+msgid ""
+"Set when someone picks a language other than the one the rule gives. The "
+"language then stops following the client and the participants."
+msgstr ""
+"Cochée quand quelqu'un choisit une autre langue que celle que donne la "
+"règle. La langue cesse alors de suivre le client et les participants."
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Summary"
+msgstr "Résumé"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_record
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "The <b>order</b> of the topics changed."
+msgstr "L'<b>ordre</b> des sujets a changé."
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Topic"
+msgstr "Sujet"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Topic <b>added</b>: “%(name)s”"
+msgstr "Sujet <b>ajouté</b> : « %(name)s »"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Topic <b>removed</b>: “%(name)s”"
+msgstr "Sujet <b>retiré</b> : « %(name)s »"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Topic <b>renamed</b>: “%(old)s” → “%(new)s”"
+msgstr "Sujet <b>renommé</b> : « %(old)s » → « %(new)s »"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "Topic “%(name)s”: %(what)s"
+msgstr "Sujet « %(name)s » : %(what)s"
+
+#. module: bf_meeting
+#: model_terms:ir.ui.view,arch_db:bf_meeting.report_meeting_agenda
+msgid "Topics"
+msgstr "Sujets"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "added (several): %s"
+msgstr "ajoutés : %s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "added: %s"
+msgstr "ajouté : %s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "context"
+msgstr "contexte"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "duration"
+msgstr "durée"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_record.py:0
+msgid "meeting"
+msgstr "reunion"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "presenter"
+msgstr "intervenant"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "removed (several): %s"
+msgstr "retirés : %s"
+
+#. module: bf_meeting
+#. odoo-python
+#: code:addons/bf_meeting/models/meeting_agenda.py:0
+msgid "removed: %s"
+msgstr "retiré : %s"

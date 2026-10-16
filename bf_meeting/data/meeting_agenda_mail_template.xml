@@ -6,7 +6,7 @@
             <field name="name">Ordre du jour de réunion</field>
             <field name="model_id" ref="bf_meeting.model_meeting_agenda"/>
             <field name="lang">{{ object._bf_langue_envoi() }}</field>
-            <field name="subject">Ordre du jour — {{ object.name }} ({{ object.date.strftime('%Y-%m-%d') }})</field>
+            <field name="subject">Agenda — {{ object.name }} ({{ object.date.strftime('%Y-%m-%d') }})</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="partner_to">{{ object.partner_to_ids }}</field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -15,7 +15,7 @@
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Ordre du jour</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Agenda</p>
 <h2 t-attf-style="font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;">
     <t t-out="object.name"/>
 </h2>
@@ -23,7 +23,7 @@
 <p style="font-size:13px; color:#6B7280; margin:0 0 20px 0;">
     <t t-if="object.date">
         <t t-set="is_placeholder" t-value="object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0"/>
-        <strong style="color:#374151;">Date :</strong>
+        <strong style="color:#374151;">Date:</strong>
         <t t-if="is_placeholder">
             <t t-out="object.date.strftime('%Y-%m-%d')"/>
         </t>
@@ -32,18 +32,18 @@
         </t>
     </t>
     <t t-if="object.duration_planned">
-        &#160;·&#160; <strong style="color:#374151;">Durée prévue :</strong> <t t-out="object.duration_planned"/> min
+        &#160;·&#160; <strong style="color:#374151;">Planned duration:</strong> <t t-out="object.duration_planned"/> min
     </t>
     <t t-if="object.location">
-        &#160;·&#160; <strong style="color:#374151;">Lieu :</strong> <t t-out="object.location"/>
+        &#160;·&#160; <strong style="color:#374151;">Location:</strong> <t t-out="object.location"/>
     </t>
 </p>
 
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
-    Bonjour,
+    Hello,
 </p>
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-    Voici l'ordre du jour pour la rencontre à venir.
+    Here is the agenda for the upcoming meeting.
 </p>
 
 <!-- Renvoi : ce qui a changé depuis la copie que
@@ -54,7 +54,7 @@
 <t t-if="agenda_changes">
 <div style="margin:0 0 20px 0; padding:14px 16px; background-color:#FFF8E1; border-left-width:4px; border-left-style:solid; border-left-color:#F0B429; border-radius:6px;">
     <p style="font-size:14px; font-weight:600; color:#374151; margin:0 0 8px 0;">
-        Ce qui a changé depuis le dernier envoi
+        What has changed since the last version
     </p>
     <div style="font-size:14px; line-height:22px; color:#374151;">
         <t t-out="agenda_changes"/>
@@ -64,7 +64,7 @@
 
 <t t-if="object.participant_ids">
 <div style="margin:0 0 20px 0; padding:12px 14px; background-color:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;">
-    <strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>
+    <strong t-attf-style="color:{{ brand_dark }};">Participants:</strong>
     <t t-foreach="object.participant_ids" t-as="p">
         <span t-attf-style="display:inline-block; margin:2px 4px; padding:2px 10px; background-color:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};"><t t-out="p.name"/></span>
     </t>
@@ -72,19 +72,19 @@
 </t>
 
 <t t-if="object.objectives">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Objectifs</h3>
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Objectives</h3>
 <div style="margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;"><t t-out="object.objectives"/></div>
 </t>
 
 <t t-if="object.published_topic_ids">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Sujets</h3>
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Topics</h3>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;">
     <thead>
         <tr t-attf-style="background-color:{{ brand_dark }}; color:#FFFFFF;">
             <th style="padding:8px 10px; text-align:left; font-weight:600; width:32px;">#</th>
-            <th style="padding:8px 10px; text-align:left; font-weight:600;">Sujet</th>
-            <th style="padding:8px 10px; text-align:center; font-weight:600; width:70px;">Durée</th>
-            <th style="padding:8px 10px; text-align:left; font-weight:600; width:140px;">Intervenant</th>
+            <th style="padding:8px 10px; text-align:left; font-weight:600;">Topic</th>
+            <th style="padding:8px 10px; text-align:center; font-weight:600; width:70px;">Duration</th>
+            <th style="padding:8px 10px; text-align:left; font-weight:600; width:140px;">Presenter</th>
         </tr>
     </thead>
     <tbody>
@@ -105,14 +105,14 @@
 </t>
 
 <t t-if="object.agenda_task_ids">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Éléments d'action à discuter</h3>
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Action items to discuss</h3>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;">
     <thead>
         <tr t-attf-style="background-color:{{ brand_dark }}; color:#FFFFFF;">
             <th style="padding:8px 10px; text-align:left; font-weight:600; width:32px;">#</th>
-            <th style="padding:8px 10px; text-align:left; font-weight:600;">Tâche</th>
-            <th style="padding:8px 10px; text-align:left; font-weight:600; width:140px;">Assignée à</th>
-            <th style="padding:8px 10px; text-align:center; font-weight:600; width:100px;">Échéance</th>
+            <th style="padding:8px 10px; text-align:left; font-weight:600;">Task</th>
+            <th style="padding:8px 10px; text-align:left; font-weight:600; width:140px;">Assigned to</th>
+            <th style="padding:8px 10px; text-align:center; font-weight:600; width:100px;">Deadline</th>
         </tr>
     </thead>
     <tbody>
@@ -133,34 +133,34 @@
 </t>
 
 <t t-if="object.preparation_html">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Préparation</h3>
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Preparation</h3>
 <div style="margin:0 0 20px 0; color:#374151;"><t t-out="object.preparation_html"/></div>
 </t>
 
 <t t-if="object.context_html">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Contexte</h3>
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Context</h3>
 <div style="margin:0 0 20px 0; color:#374151;"><t t-out="object.context_html"/></div>
 </t>
 
 <p style="font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;">
-    Merci de consulter l'ordre du jour et de préparer vos interventions.
+    Please review the agenda and prepare your input.
 </p>
 
 <t t-if="object.allow_contributions and object.access_token and object.contributions_open">
     <t t-set="base" t-value="object.get_base_url()"/>
     <div style="margin:24px 0 0 0; padding:14px 16px; background-color:#F5F7FA; border-radius:6px;">
         <p style="font-size:14px; color:#374151; margin:0 0 10px 0;">
-            Vous souhaitez ajouter un sujet ou laisser une note avant la rencontre ?
+            Would you like to add a topic or leave a note before the meeting?
         </p>
         <a t-attf-href="{{ base }}/meeting/agenda/{{ object.access_token }}"
            t-attf-style="display:inline-block; padding:10px 18px; background-color:{{ brand_primary }}; color:#FFFFFF; border-radius:6px; text-decoration:none; font-weight:600; font-size:14px;">
-            Proposer un sujet ou un commentaire
+            Suggest a topic or a comment
         </a>
     </div>
 </t>
 
 <p style="font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;">
-    Cordialement,<br/>
+    Kind regards,<br/>
     <t t-out="user.name"/>
 </p>
             </field>

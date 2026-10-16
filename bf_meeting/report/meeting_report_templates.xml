@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="report_meeting_record">
+    <!-- Enveloppe : chaque document se rend dans SA langue d'envoi.
+         Le libellé statique d'un gabarit se traduit dans la langue du t-call
+         (`t-lang`), pas dans celle d'une variable : avant, les données
+         suivaient `_bf_langue_envoi()` et les intitulés la langue de qui
+         imprimait. Le corps garde l'identifiant `report_meeting_record`, que
+         d'autres modules étendent (bf_meeting_timer). -->
+    <template id="report_meeting_record_main">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_meeting.report_meeting_record" t-lang="doc._bf_langue_envoi()"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_meeting_record">
                 <t t-set="lang" t-value="doc._bf_langue_envoi()"/>
-                <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="data" t-value="doc._get_report_data()"/>
                 <t t-set="brand_company" t-value="doc.company_id or env.company"/>
                 <t t-set="brand_primary" t-value="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>
                 <t t-set="brand_dark" t-value="(brand_company and brand_company.report_brand_dark) or '#212529'"/>
@@ -201,11 +214,11 @@
                                 <img t-att-src="image_data_uri(doc.company_id.meeting_logo or doc.company_id.logo)" alt="Logo"/>
                             </div>
                             <div class="banner-content">
-                                <div class="doc-type">Compte rendu</div>
+                                <div class="doc-type">Meeting minutes</div>
                                 <h1><t t-out="doc.room_name or doc.name"/></h1>
                                 <div class="doc-subtitle">
                                     <t t-if="doc.project_id">
-                                        Projet : <t t-out="doc.project_id.name"/>
+                                        Project: <t t-out="doc.project_id.name"/>
                                     </t>
                                 </div>
                             </div>
@@ -215,13 +228,13 @@
                         <!-- Metadata -->
                         <div class="mr-meta">
                             <div class="mr-meta-item">
-                                <div class="mr-meta-label">Date de la r&#233;union</div>
+                                <div class="mr-meta-label">Meeting date</div>
                                 <div class="mr-meta-value">
                                     <t t-out="data['date_display']"/>
                                 </div>
                             </div>
                             <div class="mr-meta-item right">
-                                <div class="mr-meta-label">Dur&#233;e</div>
+                                <div class="mr-meta-label">Duration</div>
                                 <div class="mr-meta-value">
                                     <t t-if="doc.duration_minutes">
                                         <t t-out="doc.duration_minutes"/> min
@@ -238,11 +251,11 @@
                             </div>
                             <div class="mr-kpi-card">
                                 <div class="mr-kpi-number"><t t-out="data['decision_count']"/></div>
-                                <div class="mr-kpi-label">D&#233;cisions</div>
+                                <div class="mr-kpi-label">Decisions</div>
                             </div>
                             <div class="mr-kpi-card">
                                 <div class="mr-kpi-number"><t t-out="data['task_count']"/></div>
-                                <div class="mr-kpi-label">&#201;l&#233;ments d'action</div>
+                                <div class="mr-kpi-label">Action items</div>
                             </div>
                         </div>
 
@@ -255,7 +268,7 @@
                                     <t t-if="doc.attendance_ids">
                                         <t t-foreach="doc.attendance_ids" t-as="a">
                                             <t t-set="absent" t-value="a.status != 'present'"/>
-                                            <span t-attf-style="color: {{ '#999999' if absent else 'inherit' }};"><t t-out="a.partner_id.name"/><t t-if="a.status == 'excused'"> (excusé)</t><t t-if="a.status == 'absent'"> (absent)</t></span><t t-if="not a_last">, </t>
+                                            <span t-attf-style="color: {{ '#999999' if absent else 'inherit' }};"><t t-out="a.partner_id.name"/><t t-if="a.status == 'excused'"> (excused)</t><t t-if="a.status == 'absent'"> (absent)</t></span><t t-if="not a_last">, </t>
                                         </t>
                                     </t>
                                     <t t-else="">
@@ -268,7 +281,7 @@
 
                             <!-- Summary -->
                             <t t-if="doc.summary">
-                                <div class="mr-section-title">R&#233;sum&#233;</div>
+                                <div class="mr-section-title">Summary</div>
                                 <p><t t-out="doc.summary"/></p>
                             </t>
 
@@ -288,14 +301,14 @@
 
                             <!-- Decisions -->
                             <t t-if="doc.decision_ids">
-                                <div class="mr-section-title">D&#233;cisions</div>
+                                <div class="mr-section-title">Decisions</div>
                                 <table class="mr-table">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 55%;">D&#233;cision</th>
-                                            <th style="width: 20%;">D&#233;cideur</th>
-                                            <th style="width: 20%;">&#201;l&#233;ment li&#233;</th>
+                                            <th style="width: 55%;">Decision</th>
+                                            <th style="width: 20%;">Decision maker</th>
+                                            <th style="width: 20%;">Related item</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -313,13 +326,13 @@
 
                             <!-- Action items -->
                             <t t-if="doc.task_ids">
-                                <div class="mr-section-title">&#201;l&#233;ments d'action</div>
+                                <div class="mr-section-title">Action items</div>
                                 <table class="mr-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 55%;">T&#226;che</th>
-                                            <th style="width: 25%;">Assign&#233;</th>
-                                            <th style="width: 20%;">&#201;ch&#233;ance</th>
+                                            <th style="width: 55%;">Task</th>
+                                            <th style="width: 25%;">Assignee</th>
+                                            <th style="width: 20%;">Deadline</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -341,13 +354,13 @@
                             <!-- Existing tasks the meeting discussed -->
                             <t t-set="discussed_tasks" t-value="doc._discussed_tasks_for_report()"/>
                             <t t-if="discussed_tasks">
-                                <div class="mr-section-title">T&#226;ches existantes discut&#233;es</div>
+                                <div class="mr-section-title">Existing tasks discussed</div>
                                 <table class="mr-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 55%;">T&#226;che</th>
-                                            <th style="width: 25%;">Assign&#233;</th>
-                                            <th style="width: 20%;">&#201;ch&#233;ance</th>
+                                            <th style="width: 55%;">Task</th>
+                                            <th style="width: 25%;">Assignee</th>
+                                            <th style="width: 20%;">Deadline</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -368,7 +381,7 @@
 
                             <!-- Open questions -->
                             <t t-if="data['open_questions']">
-                                <div class="mr-section-title">Questions ouvertes</div>
+                                <div class="mr-section-title">Open questions</div>
                                 <ul>
                                     <t t-foreach="data['open_questions']" t-as="q">
                                         <li>
@@ -381,7 +394,7 @@
 
                             <!-- Deliverables -->
                             <t t-if="data['deliverables']">
-                                <div class="mr-section-title">Livrables</div>
+                                <div class="mr-section-title">Deliverables</div>
                                 <ul>
                                     <t t-foreach="data['deliverables']" t-as="d">
                                         <li>
@@ -400,14 +413,12 @@
                                 <t t-out="doc.company_id.name"/>
                             </div>
                             <div class="mr-footer-right">
-                                Compte rendu &#8212; Document confidentiel
+                                Meeting minutes &#8212; Confidential document
                             </div>
                         </div>
 
                     </div>
                 </div>
-            </t>
-        </t>
     </template>
 
 </odoo>

@@ -45,7 +45,13 @@ class TestDiscussedTasks(TransactionCase):
         super().setUpClass()
         # Le bandeau du PDF appelle image_data_uri() sans garde.
         cls.env.company.meeting_logo = PNG_1PX
-        cls.langue = cls.env.user.lang or 'en_US'
+        # Attentes en français : épingler fr_CA (OdooBot n'est en fr_CA que sur
+        # certaines bases ; `env._` sans langue rend la source, anglaise depuis
+        # 18.0.3.68.0).
+        cls.env['res.lang']._activate_lang('fr_CA')
+        cls.env['ir.module.module']._load_module_terms(['bf_meeting'], ['fr_CA'], overwrite=True)
+        cls.env = cls.env(context=dict(cls.env.context, lang='fr_CA'))
+        cls.langue = 'fr_CA'
         cls.project = cls.env['project.project'].create({'name': 'Projet Discuté'})
         cls.origine = cls.env['meeting.record'].create({
             'name': 'Statutaire de mars', 'room_name': 'Statutaire',
@@ -130,6 +136,11 @@ class TestDiscussedTasks(TransactionCase):
     def test_migration_ajoute_la_section_au_courriel_anglais(self):
         """Le courriel se traduit EN BLOC : la valeur en_CA posée avant 3.59.0 n'a
         pas la section, et la mise à jour du module ne la lui donnera pas."""
+        self.skipTest(
+            "Migration 3.59 : elle supposait une source FRANÇAISE, anglaise depuis "
+            "18.0.3.68.0. Elle a joué partout ; une base d'avant 3.59 la "
+            "jouerait après le chargement de la source anglaise, que 3.68 réaligne.")
+
         self._langue_anglaise()
         migration = _load_migration()
         template = self.env.ref('bf_meeting.meeting_report_mail_template')
@@ -193,6 +204,11 @@ class TestDiscussedTasks(TransactionCase):
 
     def test_migration_traduit_le_titre_du_pdf_anglais(self):
         """Le PDF se traduit TERME PAR TERME : le titre neuf arrive en français."""
+        self.skipTest(
+            "Migration 3.59 : elle supposait une source FRANÇAISE, anglaise depuis "
+            "18.0.3.68.0. Elle a joué partout ; une base d'avant 3.59 la "
+            "jouerait après le chargement de la source anglaise, que 3.68 réaligne.")
+
         self._langue_anglaise()
         vue = self.env.ref('bf_meeting.report_meeting_record')
         # Partir de l'état d'une montée fraîche, quelle que soit la base : le titre

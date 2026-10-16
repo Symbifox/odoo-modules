@@ -271,9 +271,14 @@ class TestMigrationCoquille(TransactionCase):
                     self.assertNotIn(parti, nouvelle)
                 self.assertFalse(re.search(r'(?<![\w-])(background|border-left):', nouvelle))
         self.assertIn('Hello,', self.post.retirer_coquille(cr_en))
-        # La source neuve EST le découpage de l'ancienne (aux blancs près).
-        source = self._valeurs(self.env.ref('bf_meeting.meeting_agenda_mail_template'))['en_US']
-        self.assertEqual(''.join(self.post.retirer_coquille(odj).split()), ''.join(source.split()))
+        # Le français livré EST le découpage de l'ancienne (aux blancs près). Depuis
+        # 18.0.3.68.0 la source est anglaise : le français vit en fr_CA.
+        self.env['res.lang']._activate_lang('fr_CA')
+        self.env['ir.module.module']._load_module_terms(['bf_meeting'], ['fr_CA'])
+        francais = self._valeurs(self.env.ref('bf_meeting.meeting_agenda_mail_template')).get('fr_CA')
+        self.assertTrue(francais, "le français du courriel doit exister en fr_CA")
+        self.assertEqual(''.join(self.post.retirer_coquille(odj).split()),
+                         ''.join(francais.split()))
 
     def test_les_styles_qui_ne_sont_pas_une_couleur_restent(self):
         for style in ('background: url(/x.png)', 'border-left:1px dashed #000',

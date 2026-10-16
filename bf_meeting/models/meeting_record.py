@@ -3,6 +3,7 @@ import logging
 import re
 import threading
 import unicodedata
+from collections import Counter
 from datetime import timedelta
 
 from markupsafe import Markup, escape
@@ -20,27 +21,84 @@ _logger = logging.getLogger(__name__)
 _SEUIL_SUR_FOND_SOMBRE = 3.0
 
 
-def _langue_de_repli(record):
-    """La langue d'envoi d'un compte rendu ou d'un ordre du jour.
+def _lecteurs_externes(record):
+    """Les personnes HORS de la maison qui lisent le document.
 
-    Dans l'ordre : celle de la fiche, celle du client, celle de la personne qui
-    travaille, celle de la société, puis la première langue active. Chaque
+    Une personne est de la maison si elle a un compte interne (actif ou non)
+    ou si c'est la fiche d'une société de la base. L'organisateur, ses
+    collègues et la société elle-même ne disent rien de la langue du client.
+    """
+    partenaires = record.sudo()._bf_lecteurs()
+    societes = record.env['res.company'].sudo().search([]).partner_id
+    return partenaires.filtered(
+        lambda p: p not in societes and not p.with_context(active_test=False)
+        .user_ids.filtered(lambda u: not u.share))
+
+
+def _langue_des_lecteurs(record, actives):
+    """La langue des lecteurs externes, ou False s'ils n'en disent rien.
+
+    Règle du 2026-10-16 : s'ils ont tous la même
+    langue, on la prend ; s'ils sont mélangés, on prend l'anglais. « La même
+    langue » se juge à la langue, pas au code : en_CA et en_US sont unanimes,
+    et on retient alors le code le plus fréquent parmi eux. Un lecteur sans
+    langue, ou dont la langue n'est pas active ici, ne compte pas.
+    """
+    codes = [p.lang for p in _lecteurs_externes(record) if p.lang in actives]
+    if not codes:
+        return False
+    if len({code.split('_')[0] for code in codes}) == 1:
+        return Counter(codes).most_common(1)[0][0]
+    anglais = [code for code in codes if code.startswith('en')]
+    if anglais:
+        return Counter(anglais).most_common(1)[0][0]
+    for code in ['en_US'] + [a for a in actives if a.startswith('en')]:
+        if code in actives:
+            return code
+    return False
+
+
+def _langue_automatique(record):
+    """La langue que le document prend tant qu'on ne l'a pas choisie à la main.
+
+    Dans l'ordre : celle du client du projet, celle des lecteurs externes
+    (`_langue_des_lecteurs`), celle de l'organisateur (sinon de qui a créé la
+    fiche), celle de la société, puis la première langue active. Chaque
     candidate n'est retenue que si elle est active dans la base.
+
+    ⚠️ Pas la langue de qui MODIFIE : la langue se recalcule à chaque
+    changement de lecteurs, et un collègue à l'interface anglaise (ou l'usager
+    de l'API) qui ajoute un participant ferait basculer un document interne.
+    Seule une fiche neuve, sans organisateur, prend la langue de qui la crée.
 
     ⚠️ Jamais une langue écrite en dur : le repli `fr_CA` d'avant levait
     « Invalid language code » à l'envoi sur toute base sans fr_CA.
     """
     actives = [code for code, _nom in record.env['res.lang'].get_installed()]
+    if record.partner_id.lang in actives:
+        return record.partner_id.lang
+    lecteurs = _langue_des_lecteurs(record, actives)
+    if lecteurs:
+        return lecteurs
     societe = record.sudo().company_id or record.env.company
-    for code in (
-        record.lang,
-        record.partner_id.lang if record.partner_id else False,
-        record.env.lang or record.env.user.lang,
-        societe.partner_id.lang,
-    ):
+    origine = record._origin
+    personne = record.sudo().organizer_id or (origine.sudo().create_uid if origine.id else False)
+    candidats = [personne.lang] if personne else []
+    if not origine.id:
+        candidats.append(record.env.lang or record.env.user.lang)
+    for code in candidats + [societe.partner_id.lang]:
         if code and code in actives:
             return code
     return actives[0] if actives else 'en_US'
+
+
+def _langue_de_repli(record):
+    """La langue d'envoi : celle de la fiche si elle est active, sinon la
+    langue automatique (`_langue_automatique`)."""
+    actives = [code for code, _nom in record.env['res.lang'].get_installed()]
+    if record.lang and record.lang in actives:
+        return record.lang
+    return _langue_automatique(record)
 
 
 def _rgb(hexa: str) -> tuple:
@@ -129,16 +187,21 @@ def _format_meeting_date_display(record):
         return escape(primary)
     secondary = tz_helper.to_tz(record.date, originator_tz_name).strftime(fmt)
     # Client time first (normal); originator time second, smaller and muted.
+    # Le séparateur suit la langue du lecteur (« Auckland : » en français,
+    # « Auckland: » en anglais) : `record` arrive épinglé dans cette langue.
+    second = record.env._('%(city)s: %(time)s', city=tz_helper.tz_city(originator_tz_name),
+                          time=secondary)
     return Markup(
-        '%s <span style="font-size:0.82em;color:#9CA3AF;">(%s : %s)</span>'
-    ) % (primary, tz_helper.tz_city(originator_tz_name), secondary)
+        '%s <span style="font-size:0.82em;color:#9CA3AF;">(%s)</span>'
+    ) % (primary, second)
 
 
 class MeetingRecord(models.Model):
     """Compte rendu structuré d'une réunion."""
     _name = 'meeting.record'
     _description = 'Compte rendu de réunion'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin',
+                'bf.meeting.lang.mixin']
     _order = 'date desc, id desc'
 
     name = fields.Char(
@@ -225,17 +288,37 @@ class MeetingRecord(models.Model):
         for rec in self:
             rec.meeting_type_icon = glyphs.get(rec.meeting_type, '')
 
-    @api.depends('partner_id')
+    @api.depends('partner_id', 'attendance_ids.partner_id', 'participant_ids',
+                 'report_recipient_ids', 'lang_manual')
     def _compute_lang(self):
         for rec in self:
-            if rec.lang:
+            # Envoyé : la langue reste celle que les destinataires ont reçue
+            # (le portail régénère le PDF à la lecture).
+            if rec.lang and (rec.lang_manual or rec.report_state == 'sent'):
                 continue
-            rec.lang = _langue_de_repli(rec)
+            rec.lang = _langue_automatique(rec)
+
+    _BF_CHAMPS_LANGUE = ('project_id', 'partner_id', 'attendance_ids', 'participant_ids',
+                         'report_recipient_ids')
+
+    def _bf_lecteurs(self):
+        self.ensure_one()
+        return (self.attendance_ids.partner_id | self.participant_ids
+                | self.report_recipient_ids)
 
     def _bf_langue_envoi(self):
         """La langue que lisent les gabarits de courriel et les rapports."""
         self.ensure_one()
         return _langue_de_repli(self)
+
+    def _bf_nom_fichier_pdf(self):
+        """Nom du PDF, dans la langue d'envoi (`print_report_name`)."""
+        self.ensure_one()
+        env = self.with_context(lang=self._bf_langue_envoi()).env
+        return env._(
+            'Minutes_%(name)s_%(date)s',
+            name=(self.room_name or '').replace(' ', '_') or env._('meeting'),
+            date=self.date.strftime('%Y-%m-%d') if self.date else 'draft')
     series_name = fields.Char(
         string='Série',
         help='Nom de la série récurrente (ex. Comité de direction mensuel)',

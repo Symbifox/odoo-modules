@@ -18,6 +18,7 @@ from .meeting_record import (
     _MAX_REFINE_MESSAGE,
     _REFINE_STALE_MINUTES,
     _format_meeting_date_display,
+    _langue_automatique,
     _langue_de_repli,
 )
 
@@ -104,7 +105,8 @@ class MeetingAgenda(models.Model):
     """Ordre du jour d'une réunion."""
     _name = 'meeting.agenda'
     _description = 'Ordre du jour'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin',
+                'bf.meeting.lang.mixin']
     _order = 'date desc, id desc'
 
     name = fields.Char(
@@ -181,17 +183,33 @@ class MeetingAgenda(models.Model):
         for rec in self:
             rec.meeting_type_icon = glyphs.get(rec.meeting_type, '')
 
-    @api.depends('partner_id')
+    @api.depends('partner_id', 'participant_ids', 'recipient_ids', 'lang_manual')
     def _compute_lang(self):
         for rec in self:
-            if rec.lang:
+            # Envoyé : la langue reste celle que les destinataires ont reçue.
+            if rec.lang and (rec.lang_manual or rec.email_sent_date):
                 continue
-            rec.lang = _langue_de_repli(rec)
+            rec.lang = _langue_automatique(rec)
+
+    _BF_CHAMPS_LANGUE = ('project_id', 'partner_id', 'participant_ids', 'recipient_ids')
+
+    def _bf_lecteurs(self):
+        self.ensure_one()
+        return self.participant_ids | self.recipient_ids
 
     def _bf_langue_envoi(self):
         """La langue que lisent les gabarits de courriel et les rapports."""
         self.ensure_one()
         return _langue_de_repli(self)
+
+    def _bf_nom_fichier_pdf(self):
+        """Nom du PDF, dans la langue d'envoi (`print_report_name`)."""
+        self.ensure_one()
+        env = self.with_context(lang=self._bf_langue_envoi()).env
+        return env._(
+            'Agenda_%(name)s_%(date)s',
+            name=(self.name or '').replace(' ', '_') or env._('agenda'),
+            date=self.date.strftime('%Y-%m-%d') if self.date else 'draft')
     series_name = fields.Char(
         string='Série',
         index=True,
@@ -1429,54 +1447,78 @@ class MeetingAgenda(models.Model):
         return self._render_changes_since_sent(diff) or ''
 
     def _render_changes_since_sent(self, diff):
-        """Le résumé lisible. Rien à afficher quand rien n'a bougé."""
+        """Le résumé lisible. Rien à afficher quand rien n'a bougé.
+
+        Les libellés se rendent ICI, dans la langue de `self` (celle du
+        courriel, ou de l'usager au formulaire) : le repère et l'écart
+        (`agenda_diff`) restent purs et ne portent que des clés.
+        """
         self.ensure_one()
         if not diff or not diff['count']:
             return False
+        _ = self.env._
+        head_labels = {
+            'name': _('Title'),
+            'date': _('Date'),
+            'duration': _('Planned duration'),
+            'location': _('Location'),
+            'participants': _('Participants'),
+            'objectives': _('Objectives'),
+            'preparation': _('Preparation'),
+            'context': _('Context'),
+        }
+        what_labels = {
+            'durée': _('duration'),
+            'intervenant': _('presenter'),
+            'contexte': _('context'),
+        }
+        empty = _('(empty)')
         lines = []
 
         def add(fragment):
             lines.append(Markup('<li>%s</li>') % fragment)
 
         for entry in diff['head']:
-            label = escape(entry['label'])
+            label = escape(head_labels.get(entry['key'], entry['label']))
             if entry['key'] == 'participants':
                 bits = []
                 if entry['added']:
-                    bits.append(Markup('ajouté%s : %s') % (
-                        's' if len(entry['added']) > 1 else '',
-                        escape(', '.join(entry['added']))))
+                    added = (_('added: %s') if len(entry['added']) == 1
+                             else _('added (several): %s'))
+                    bits.append(escape(added % ', '.join(entry['added'])))
                 if entry['removed']:
-                    bits.append(Markup('retiré%s : %s') % (
-                        's' if len(entry['removed']) > 1 else '',
-                        escape(', '.join(entry['removed']))))
-                add(Markup('<b>%s</b> : %s') % (label, Markup(' ; ').join(bits)))
+                    removed = (_('removed: %s') if len(entry['removed']) == 1
+                               else _('removed (several): %s'))
+                    bits.append(escape(removed % ', '.join(entry['removed'])))
+                add(Markup(_('<b>%(label)s</b>: %(change)s')) % {
+                    'label': label, 'change': Markup(' ; ').join(bits)})
             elif 'from' in entry:
                 old, new = entry['from'], entry['to']
                 if entry['key'] == 'date':
                     old = self._format_snapshot_date(old)
                     new = self._format_snapshot_date(new)
-                add(Markup('<b>%s</b> : %s → %s') % (
-                    label, escape(old or '(vide)'), escape(new or '(vide)')))
+                add(Markup(_('<b>%(label)s</b>: %(old)s → %(new)s')) % {
+                    'label': label, 'old': old or empty, 'new': new or empty})
             else:
-                add(Markup('<b>%s</b> : modifié') % label)
+                add(Markup(_('<b>%(label)s</b>: changed')) % {'label': label})
 
         for name in diff['topics_added']:
-            add(Markup('Sujet <b>ajouté</b> : « %s »') % escape(name))
+            add(Markup(_('Topic <b>added</b>: “%(name)s”')) % {'name': name})
         for name in diff['topics_removed']:
-            add(Markup('Sujet <b>retiré</b> : « %s »') % escape(name))
+            add(Markup(_('Topic <b>removed</b>: “%(name)s”')) % {'name': name})
         for item in diff['topics_renamed']:
-            add(Markup('Sujet <b>renommé</b> : « %s » → « %s »') % (
-                escape(item['from']), escape(item['to'])))
+            add(Markup(_('Topic <b>renamed</b>: “%(old)s” → “%(new)s”')) % {
+                'old': item['from'], 'new': item['to']})
         for item in diff['topics_changed']:
-            add(Markup('Sujet « %s » : %s') % (
-                escape(item['name']), escape(', '.join(item['what']))))
+            add(Markup(_('Topic “%(name)s”: %(what)s')) % {
+                'name': item['name'],
+                'what': ', '.join(what_labels.get(w, w) for w in item['what'])})
         if diff['topics_reordered']:
-            add(Markup("L'<b>ordre</b> des sujets a changé."))
+            add(Markup(_('The <b>order</b> of the topics changed.')))
         for name in diff['tasks_added']:
-            add(Markup("Élément d'action <b>ajouté</b> : « %s »") % escape(name))
+            add(Markup(_('Action item <b>added</b>: “%(name)s”')) % {'name': name})
         for name in diff['tasks_removed']:
-            add(Markup("Élément d'action <b>retiré</b> : « %s »") % escape(name))
+            add(Markup(_('Action item <b>removed</b>: “%(name)s”')) % {'name': name})
 
         # Style en ligne : le même balisage sert le formulaire ET le
         # courriel, où aucune feuille de style n'arrive.
@@ -1729,13 +1771,16 @@ class MeetingAgenda(models.Model):
                 'presenter': t.presenter_id.name if t.presenter_id else '',
                 'description': t.description or '',
             })
-        tag_labels = dict(self.env['project.task']._fields['bf_discuss_tag'].selection)
+        # Libellés dans la langue de lecture : `dict(…selection)` rendait la
+        # SOURCE, donc la colonne « Source » restait française pour tous.
+        tag_labels = dict(self.env['project.task']._fields['bf_discuss_tag']
+                          ._description_selection(self.env))
         tagged_tasks = []
         for idx, t in enumerate(self.agenda_task_ids, 1):
             if t.bf_discuss_tag:
                 source = tag_labels.get(t.bf_discuss_tag, '')
             elif t.bf_meeting_agenda_id:
-                source = 'Épinglée'
+                source = self.env._('Pinned')
             else:
                 source = ''
             tagged_tasks.append({
@@ -1775,7 +1820,10 @@ class MeetingAgenda(models.Model):
             'room_name': self.name,
             'location': self.location,
             'meeting_type': self.meeting_type,
+            # La langue de l'OdJ, figée seulement si l'OdJ l'était : sinon elle
+            # suit ensuite les présences et les destinataires du compte rendu.
             'lang': self.lang,
+            'lang_manual': self.lang_manual,
             'series_name': self.series_name,
             'organizer_id': self.organizer_id.id if self.organizer_id else False,
             'participant_ids': [(6, 0, self.participant_ids.ids)],
