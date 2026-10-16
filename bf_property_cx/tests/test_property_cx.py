@@ -253,7 +253,10 @@ class TestPropertyCxWearsTheBrand(TransactionCase):
         request.action_done()
         asked = request.message_ids.filtered(lambda m: m.rating_ids or "rate/" in (m.body or ""))
         self.assertTrue(asked)
-        self.assertEqual(asked[:1].email_layout_xmlid, "bluefox_branding.bf_mail_layout")
+        # ⚠️ La marque si bluefox_branding est là (les locataires), sinon le
+        # repli choisi par bf_mail_layout : ce module n'est pas une dépendance.
+        from odoo.addons.bf_property_core.models.mail_template import bf_mail_layout
+        self.assertEqual(asked[:1].email_layout_xmlid, bf_mail_layout(self.env))
 
 
 @tagged("post_install", "-at_install")

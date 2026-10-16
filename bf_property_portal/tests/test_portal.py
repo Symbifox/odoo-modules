@@ -471,10 +471,17 @@ class TestPropertyPortalPages(HttpCase):
         """🔴 Le formulaire lisait `_fields[…].selection` : la liste BRUTE, en
         langue source. Une occupante anglophone se voyait proposer « Plomberie »
         et « Partie commune générale » dans une page par ailleurs anglaise."""
-        self.env["res.lang"]._activate_lang("en_CA")
+        lang = self.env["res.lang"]._activate_lang("en_CA")
         self.env["ir.module.module"]._load_module_terms(
             ["bf_property_portal"], ["en_CA"], overwrite=True
         )
+        # ⚠️ Le site ne sert que ses langues : sans en_CA parmi elles, la page
+        # sortait en en_US (sans traduction, donc la source française), quelle
+        # que soit la langue de la personne. Les sites des locataires l'ont ;
+        # celui d'une base neuve n'a que en_US.
+        if "website" in self.env:
+            for site in self.env["website"].search([]):
+                site.language_ids |= lang
         self.owner_user.lang = "en_CA"
         self.authenticate("page_owner", "page_owner_pwd")
         response = self.url_open("/my/property/requests")
@@ -2403,9 +2410,22 @@ class TestEmailsWearTheCompanyBrand(HttpCase):
             return original(template_self, res_id, *args, **kwargs)
         return calls, patch.object(Template, "send_mail", autospec=True, side_effect=spy)
 
+    def _layout(self):
+        """La mise en page que `bf_mail_layout` retient sur CETTE base.
+
+        ⚠️ bluefox_branding n'est pas une dépendance : chez les locataires il
+        est installé et gagne, sur une base qui ne l'a pas (la CI), c'est la
+        mise en page légère d'Odoo, par choix du code. Les essais visaient la
+        constante de marque et échouaient là où le repli fait son travail.
+        """
+        from odoo.addons.bf_property_core.models.mail_template import bf_mail_layout
+        return bf_mail_layout(self.env)
+
     def test_the_branded_layout_is_the_first_choice(self):
         from odoo.addons.bf_property_core.models.mail_template import bf_mail_layout
-        self.assertTrue(self.env.ref(BRANDED, raise_if_not_found=False))
+        if not self.env.ref(BRANDED, raise_if_not_found=False):
+            self.assertEqual(bf_mail_layout(self.env), "mail.mail_notification_light")
+            return
         self.assertEqual(bf_mail_layout(self.env), BRANDED)
 
     def test_an_office_reply_wears_the_brand(self):
@@ -2413,7 +2433,7 @@ class TestEmailsWearTheCompanyBrand(HttpCase):
         message = request.message_post(
             body="Le plombier passe jeudi.", message_type="comment",
             subtype_xmlid="mail.mt_comment", partner_ids=self.occupant.ids)
-        self.assertEqual(message.email_layout_xmlid, BRANDED)
+        self.assertEqual(message.email_layout_xmlid, self._layout())
 
     def test_a_decision_to_the_occupant_wears_the_brand(self):
         request = self._request()
@@ -2421,7 +2441,7 @@ class TestEmailsWearTheCompanyBrand(HttpCase):
         request.action_done()
         sent = request.sudo().message_ids.filtered(
             lambda m: self.occupant in m.notified_partner_ids)
-        self.assertEqual(sent.mapped("email_layout_xmlid"), [BRANDED])
+        self.assertEqual(sent.mapped("email_layout_xmlid"), [self._layout()])
 
     def test_invitation_resend_and_welcome_wear_the_brand(self):
         calls, spy = self._spy_templates()
@@ -2433,7 +2453,7 @@ class TestEmailsWearTheCompanyBrand(HttpCase):
         ours = [(t, layout) for t, layout in calls
                 if t.get_external_id()[t.id].startswith(("bf_property", "bf_rental"))]
         self.assertEqual(len(ours), 3)
-        self.assertEqual({layout for _t, layout in ours}, {BRANDED})
+        self.assertEqual({layout for _t, layout in ours}, {self._layout()})
 
     def test_the_bodies_carry_the_company_colour(self):
         from html import unescape
