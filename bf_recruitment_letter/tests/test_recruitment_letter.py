@@ -99,7 +99,13 @@ class TestRecruitmentLetter(TransactionCase):
             "Le flottant brut part dans la lettre : « 68000.0 » dans une offre.",
         )
         action = applicant.with_user(self.recruiter).action_draft_offer_letter()
-        body = str(self.env["letter.document"].browse(action["res_id"]).body_html)
+        # ⚠️ Comparé au TEXTE : le corps écrit l'espace insécable du format
+        # (« $ 68,000.00 ») en `&nbsp;`, le champ en \xa0. Le HTML brut ne
+        # contient donc jamais le rendu, dès qu'un format a une espace
+        # insécable (en_US, la langue d'une base neuve).
+        import html
+        body = html.unescape(str(
+            self.env["letter.document"].browse(action["res_id"]).body_html))
         self.assertIn(rendu, body)
         self.assertNotIn("68000.0", body)
 
