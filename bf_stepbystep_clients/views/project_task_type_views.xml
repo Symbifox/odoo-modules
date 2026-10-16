@@ -15,6 +15,16 @@
                     <field name="progression_client_action_hint"
                            placeholder="Instruction shown to the client when the project reaches this stage…"/>
                 </group>
+                <group string="Documents the client deposits on the portal" name="bf_stepbystep_documents">
+                    <field name="progression_document_ids" nolabel="1" colspan="2">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="instructions"/>
+                            <field name="required"/>
+                        </list>
+                    </field>
+                </group>
             </xpath>
         </field>
     </record>

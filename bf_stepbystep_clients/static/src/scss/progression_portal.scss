@@ -1,0 +1,43 @@
+// Page publique du portail Progression : une colonne, lisible au téléphone.
+.o_progression_portal {
+    .container {
+        max-width: 720px;
+    }
+
+    .o_progression_portal_logo {
+        max-height: 48px;
+        max-width: 160px;
+        object-fit: contain;
+    }
+
+    .o_progression_portal_marker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border: 2px solid var(--bs-border-color, #dee2e6);
+        font-weight: 600;
+    }
+
+    .o_progression_portal_step_done .o_progression_portal_marker {
+        background: var(--bs-success, #198754);
+        border-color: var(--bs-success, #198754);
+        color: #fff;
+    }
+
+    .o_progression_portal_step_current .o_progression_portal_marker {
+        border-color: var(--bs-primary, #0d6efd);
+        color: var(--bs-primary, #0d6efd);
+    }
+
+    .o_progression_portal_step_upcoming {
+        color: var(--bs-secondary-color, #6c757d);
+    }
+
+    .o_progression_portal_hint div {
+        white-space: pre-line;
+    }
+}

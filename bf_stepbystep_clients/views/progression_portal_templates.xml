@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La page que le client ouvre sans compte. Ni menu, ni formulaire : où en est
+         le mandat, et ce qu'on attend de lui à l'étape en cours. Chaque étape porte
+         un `<div name="step_extra"/>` où un module pont s'accroche (pièces attendues,
+         dépôt) sans toucher à la garde du contrôleur. -->
+    <template id="progression_portal_page" name="Progression: client portal">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="title"><t t-out="project.name"/></t>
+
+            <div id="wrap" class="o_progression_portal">
+                <div class="container py-4">
+
+                    <header class="o_progression_portal_header d-flex align-items-center mb-4">
+                        <img t-attf-src="/web/binary/company_logo?company=#{company.id}"
+                             t-att-alt="company.name" class="o_progression_portal_logo me-3"/>
+                        <span class="text-muted" t-out="company.name"/>
+                    </header>
+
+                    <h1 class="h3 mb-1" t-out="project.name"/>
+                    <p t-if="partner" class="text-muted mb-4">
+                        Client: <span t-out="partner.commercial_partner_id.name"/>
+                    </p>
+
+                    <div t-if="message == 'received'" class="alert alert-success" role="status">
+                        Thank you, your document has been received.
+                    </div>
+                    <div t-elif="message == 'missing'" class="alert alert-warning" role="alert">
+                        Choose a file before sending.
+                    </div>
+                    <div t-elif="message == 'type'" class="alert alert-danger" role="alert">
+                        This type of file is not accepted. Send a PDF, a photo or an office document.
+                    </div>
+                    <div t-elif="message == 'empty'" class="alert alert-danger" role="alert">
+                        The file is empty.
+                    </div>
+                    <div t-elif="message == 'too_large'" class="alert alert-danger" role="alert">
+                        The file is too large (maximum <t t-out="max_upload_mb"/> MB).
+                    </div>
+                    <div t-elif="message == 'rate'" class="alert alert-danger" role="alert">
+                        Too many documents sent in the last hour. Try again later.
+                    </div>
+
+                    <t t-set="current" t-value="[s for s in steps if s['state'] == 'current']"/>
+                    <t t-if="not steps">
+                        <p class="alert alert-info">
+                            The progression of this mandate is not available yet.
+                        </p>
+                    </t>
+                    <t t-else="">
+                        <p t-if="current" class="lead mb-4">
+                            <!-- Un point médian plutôt qu'un deux-points : le français veut une
+                                 espace avant « : », l'anglais non, et le libellé est commun. -->
+                            Step <t t-out="steps.index(current[0]) + 1"/> of
+                            <t t-out="len(steps)"/>
+                            <span class="mx-1" aria-hidden="true">·</span>
+                            <strong t-out="current[0]['name']"/>
+                        </p>
+                        <p t-elif="steps[0]['state'] == 'done'" class="lead mb-4">
+                            All steps of this mandate are completed.
+                        </p>
+                        <p t-else="" class="lead mb-4">
+                            This mandate has not started yet.
+                        </p>
+
+                        <ol class="o_progression_portal_steps list-unstyled">
+                            <t t-foreach="steps" t-as="step">
+                                <li t-attf-class="o_progression_portal_step o_progression_portal_step_#{step['state']} mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="o_progression_portal_marker me-3" aria-hidden="true">
+                                            <t t-if="step['state'] == 'done'">✓</t>
+                                            <t t-else="" t-out="step_index + 1"/>
+                                        </span>
+                                        <span class="flex-grow-1 fw-semibold" t-out="step['name']"/>
+                                        <span t-if="step['state'] == 'done'" class="badge text-bg-success">Done</span>
+                                        <span t-elif="step['state'] == 'current'" class="badge text-bg-primary">In progress</span>
+                                        <span t-else="" class="badge text-bg-light">Upcoming</span>
+                                    </div>
+                                    <div t-if="step['state'] == 'current'" class="o_progression_portal_current ms-5 mt-2">
+                                        <div t-if="step['percent'] is not None" class="progress mb-2"
+                                             role="progressbar" t-att-aria-valuenow="step['percent']"
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar" t-attf-style="width: #{step['percent']}%"/>
+                                        </div>
+                                        <div t-if="step['hint']" class="o_progression_portal_hint alert alert-warning mb-0">
+                                            <strong>What we need from you</strong>
+                                            <div class="mt-1" t-out="step['hint']"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="step.get('documents')" class="o_progression_portal_documents ms-5 mt-2">
+                                        <div t-foreach="step['documents']" t-as="doc"
+                                             t-att-id="'doc-%s' % doc['id']"
+                                             class="o_progression_portal_document border rounded p-2 mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <span class="flex-grow-1">
+                                                    <span class="fw-semibold" t-out="doc['name']"/>
+                                                    <span t-if="not doc['required']" class="text-muted small">(optional)</span>
+                                                </span>
+                                                <span t-if="doc['count']" class="badge text-bg-success">Received</span>
+                                                <span t-else="" class="badge text-bg-warning">To send</span>
+                                            </div>
+                                            <div t-if="doc['instructions']" class="o_progression_portal_doc_hint small text-muted mt-1" t-out="doc['instructions']"/>
+                                            <form t-if="deposit_mode == 'direct'" method="post" enctype="multipart/form-data"
+                                                  t-attf-action="/progression/#{project.id}/#{token}/deposit/#{doc['id']}"
+                                                  class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                <input type="file" name="file" class="form-control form-control-sm flex-grow-1"
+                                                       accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.webp,.tif,.tiff,.doc,.docx,.odt,.rtf,.txt,.xls,.xlsx,.ods,.csv,image/*,application/pdf"/>
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <t t-if="doc['count']">Send another version</t>
+                                                    <t t-else="">Send</t>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div name="step_extra"/>
+                                </li>
+                            </t>
+                        </ol>
+                    </t>
+
+                    <p class="o_progression_portal_note text-muted small mt-5">
+                        This page follows the progress of your mandate as it is updated.
+                        Its address is personal: keep it private.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

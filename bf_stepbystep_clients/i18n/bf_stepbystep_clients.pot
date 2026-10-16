@@ -2,10 +2,10 @@
 # The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_stepbystep_clients 18.0.2.3.0\n"
+"Project-Id-Version: bf_stepbystep_clients 18.0.2.4.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 08:44+0000\n"
-"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"POT-Creation-Date: 2026-10-16 09:19+0000\n"
+"PO-Revision-Date: 2026-10-16 09:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,21 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
 msgid "%s d"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "(optional)"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "<strong>What we need from you</strong>"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__active
+msgid "Active"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -53,6 +68,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "All sectors ("
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "All steps of this mandate are completed."
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -99,6 +119,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Choose a file before sending."
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Clear filters"
@@ -107,6 +132,37 @@ msgstr ""
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_client_action_hint
 msgid "Client instruction"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Client portal"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/project_project.py:0
+msgid "Client portal address"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_portal_published
+msgid "Client portal published"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_portal_token
+msgid "Client portal token"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Client:"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -134,9 +190,26 @@ msgid "Contributor"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Copy the address"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Could not load the data. Please try again."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__create_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__create_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__create_date
+msgid "Created on"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -152,10 +225,14 @@ msgid "Critical (90-100%)"
 msgstr ""
 
 #. module: bf_stepbystep_clients
-#. modules: bf_attachment_version, bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Date"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__deposited_at
+msgid "Deposited on"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -165,8 +242,51 @@ msgid "Description"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__display_name
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__document_name
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__name
+msgid "Document"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+msgid ""
+"Document deposited by the client on the portal: %(doc)s (%(file)s, %(size)s "
+"KB)."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_deposit
+msgid "Document deposited on the client portal"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_deposit_ids
+msgid "Documents deposited"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_task_type_form_inherit
+msgid "Documents the client deposits on the portal"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_task_type__progression_document_ids
+msgid ""
+"Documents the client is asked to deposit on the portal when the project "
+"reaches this stage."
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "Done"
 msgstr ""
 
@@ -202,6 +322,31 @@ msgid "Error while loading the client record."
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__document_id
+msgid "Expected document"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_document
+msgid "Expected document of a progression step"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_document_ids
+msgid "Expected documents"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__attachment_id
+msgid "File"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__filename
+msgid "File name"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Hours"
@@ -214,9 +359,20 @@ msgid "Hours used"
 msgstr ""
 
 #. module: bf_stepbystep_clients
-#. modules: bf_editorial_genfox, bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__ip_address
+msgid "IP address"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "In progress"
 msgstr ""
 
@@ -245,6 +401,11 @@ msgid "Instruction shown to the client when the project reaches this stage…"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__instructions
+msgid "Instructions to the client"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
 msgid "Internal"
@@ -257,6 +418,18 @@ msgid "Internal ("
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__write_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__write_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Loading error"
@@ -266,6 +439,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Loading the dashboard..."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "MB)."
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -284,6 +462,16 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Mandate timeline"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_bf_progression_deposit__document_name
+msgid "Name of the expected document when it was deposited."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "New address"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -347,6 +535,13 @@ msgid "Open in Odoo"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_portal_published
+msgid ""
+"Opens the progression page to whoever holds its address. Unchecked, the "
+"address answers \"not found\", even with the right token."
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Over budget"
@@ -399,6 +594,12 @@ msgid "Progression step number"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_project_project
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__project_id
+msgid "Project"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-python
 #: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
 msgid "Project tasks"
@@ -411,6 +612,25 @@ msgid "Projects"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Publish"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/project_project.py:0
+msgid ""
+"Publishing the client portal makes the progression of this project readable "
+"without an account. This action requires the \"Project: Administrator\" "
+"group."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Received"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Recent activity"
@@ -420,6 +640,16 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Reload"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__required
+msgid "Required"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__checksum
+msgid "SHA-256"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -441,10 +671,37 @@ msgid "Search for a client..."
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Send"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Send another version"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_project_task_type__progression_step_name
 msgid ""
 "Short label shown in the linear view (e.g. \"Kickoff\", \"Initial audit\"). "
 "If empty, the stage name is used."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_bf_progression_document__instructions
+msgid ""
+"Shown under the document on the client portal (e.g. \"Both sides, all pages,"
+" less than 3 months old\")."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__file_size
+msgid "Size (bytes)"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -490,6 +747,16 @@ msgid "Sort: Progress"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__stage_id
+msgid "Stage"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Step"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-python
 #: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
 msgid "Step %(num)s: %(label)s"
@@ -521,13 +788,97 @@ msgstr ""
 #. module: bf_stepbystep_clients
 #. odoo-python
 #: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__task_id
 msgid "Task"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_project_task_type
+msgid "Task Stage"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Thank you, your document has been received."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/project_project.py:0
+msgid ""
+"The client portal token must be %(min)s to %(max)s printable ASCII "
+"characters, without spaces."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid ""
+"The client sees the name of the project, the stages marked\n"
+"                        \"Visible on client portal\", the progress of each one and the\n"
+"                        client instruction of the current stage, and deposits the documents\n"
+"                        expected at the current and completed stages. Each document becomes\n"
+"                        an attachment of the stage's task. No task name, assignee or\n"
+"                        timesheet is shown."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "The current address will stop working. Continue?"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "The file is empty."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "The file is too large (maximum"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+msgid "The file is too large (maximum %s MB)."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "The progression of this mandate is not available yet."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "This mandate has not started yet."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid ""
+"This page follows the progress of your mandate as it is updated.\n"
+"                        Its address is personal: keep it private."
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid ""
+"This type of file is not accepted. Send a PDF, a photo or an office "
+"document."
 msgstr ""
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Timesheet"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "To send"
 msgstr ""
 
 #. module: bf_stepbystep_clients
@@ -543,6 +894,13 @@ msgid "Tomorrow"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Too many documents sent in the last hour. Try again later."
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Total hours"
@@ -555,8 +913,14 @@ msgid "Try again"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Unpublish"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "Upcoming"
 msgstr ""
 
@@ -596,6 +960,11 @@ msgid "in %s d"
 msgstr ""
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "of"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "on the project stages to enable the view."
@@ -623,4 +992,9 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "⏸️ Paused projects ("
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "<span class=\"mx-1\" aria-hidden=\"true\">·</span>"
 msgstr ""

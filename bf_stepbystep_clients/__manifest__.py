@@ -6,7 +6,16 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.3.0",
+    # 18.0.2.4.0: le portail client que la fiche promettait. Une page
+    #   publique à jeton propre au portail (pas l'access_token du projet, qui
+    #   ouvre aussi les tâches par /my/projects), publiée depuis la fiche projet.
+    #   Le client y dépose les pièces attendues à l'étape (bf.progression.document) ;
+    #   chacune devient une pièce jointe de la tâche de l'étape (bf.progression.deposit).
+    # 18.0.2.4.1: la page du portail déclarée website=True ; sur un locataire qui a
+    #   le module website (la démo), elle rendait une 500 (KeyError 'website').
+    # 18.0.2.4.2: « Étape 2 sur 4: » n'avait pas d'espace avant le deux-points en
+    #   français ; séparateur neutre (point médian) entre le rang et le nom de l'étape.
+    "version": "18.0.2.4.2",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -18,18 +27,25 @@
         "base",
         "project",
         "hr_timesheet",
+        "portal",
     ],
     "data": [
         "security/ir.model.access.csv",
+        "security/progression_security.xml",
         "views/project_task_type_views.xml",
         "views/dashboard_views.xml",
         "views/dashboard_menu.xml",
+        "views/project_project_views.xml",
+        "views/progression_portal_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js",
             "bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml",
             "bf_stepbystep_clients/static/src/scss/dashboard.scss",
+        ],
+        "web.assets_frontend": [
+            "bf_stepbystep_clients/static/src/scss/progression_portal.scss",
         ],
     },
 }
