@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_area_user,Key area (read),model_bf_key_area,group_key_user,1,0,0,0
+access_area_manager,Key area (manage),model_bf_key_area,group_key_manager,1,1,1,1
+access_system_area,Master key system (read),model_bf_key_system,group_key_area_manager,1,0,0,0
+access_system_manager,Master key system (manage),model_bf_key_system,group_key_manager,1,1,1,1
+access_type_user,Key type (read),model_bf_key_type,group_key_user,1,0,0,0
+access_type_manager,Key type (manage),model_bf_key_type,group_key_manager,1,1,1,1
+access_door_user,Door (read),model_bf_key_door,group_key_user,1,0,0,0
+access_door_manager,Door (manage),model_bf_key_door,group_key_manager,1,1,1,1
+access_copy_user,Key copy (read),model_bf_key_copy,group_key_user,1,0,0,0
+access_copy_area,Key copy (area),model_bf_key_copy,group_key_area_manager,1,1,1,0
+access_copy_manager,Key copy (manage),model_bf_key_copy,group_key_manager,1,1,1,1
+access_assignment_user,Key hand-out (read),model_bf_key_assignment,group_key_user,1,0,0,0
+access_assignment_area,Key hand-out (area),model_bf_key_assignment,group_key_area_manager,1,1,1,0
+access_assignment_manager,Key hand-out (manage),model_bf_key_assignment,group_key_manager,1,1,1,1
+access_request_user,Key request (own),model_bf_key_request,group_key_user,1,1,1,0
+access_request_manager,Key request (manage),model_bf_key_request,group_key_manager,1,1,1,1
+access_incident_area,Key incident (area),model_bf_key_incident,group_key_area_manager,1,1,1,0
+access_incident_manager,Key incident (manage),model_bf_key_incident,group_key_manager,1,1,1,1
+access_audit_area,Key audit (read),model_bf_key_audit,group_key_area_manager,1,0,0,0
+access_audit_manager,Key audit (manage),model_bf_key_audit,group_key_manager,1,1,1,1
+access_audit_line_user,Key audit line (read),model_bf_key_audit_line,group_key_user,1,0,0,0
+access_audit_line_area,Key audit line (area),model_bf_key_audit_line,group_key_area_manager,1,1,0,0
+access_audit_line_manager,Key audit line (manage),model_bf_key_audit_line,group_key_manager,1,1,1,1
+access_dashboard_area,Keys overview,model_bf_key_dashboard,group_key_area_manager,1,1,1,0
+access_issue_wizard_area,Hand out a key,model_bf_key_issue_wizard,group_key_area_manager,1,1,1,0
+access_loss_wizard_user,Declare a key lost,model_bf_key_loss_wizard,group_key_area_manager,1,1,1,0

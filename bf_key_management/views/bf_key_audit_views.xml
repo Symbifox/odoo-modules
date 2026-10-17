@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_audit_list" model="ir.ui.view">
+        <field name="name">bf.key.audit.list</field>
+        <field name="model">bf.key.audit</field>
+        <field name="arch" type="xml">
+            <list string="Audits">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="scope"/>
+                <field name="area_id" optional="show"/>
+                <field name="line_count" string="Lines"/>
+                <field name="pending_count"/>
+                <field name="missing_count"/>
+                <field name="state" widget="badge" decoration-info="state == 'running'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_audit_form" model="ir.ui.view">
+        <field name="name">bf.key.audit.form</field>
+        <field name="model">bf.key.audit</field>
+        <field name="arch" type="xml">
+            <form string="Audit">
+                <header>
+                    <button name="action_start" type="object" string="Start" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="Close the audit" class="btn-primary"
+                            invisible="state != 'running'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="state != 'draft'"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="deadline" readonly="state == 'done'"/>
+                            <field name="area_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="scope" readonly="state != 'draft'"/>
+                            <field name="sample_percent" invisible="scope != 'sample'" readonly="state != 'draft'"/>
+                            <field name="pending_count"/>
+                            <field name="missing_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="state != 'draft'">
+                        Guides advise an audit once a year at least, on a quarter of the holders or
+                        more. Each holder with an account confirms from "Mine &gt; Keys to confirm".
+                    </div>
+                    <field name="line_ids" readonly="state == 'done'">
+                        <list create="false" delete="false" editable="bottom"
+                              decoration-danger="result == 'missing'" decoration-success="result in ('confirmed', 'sighted')">
+                            <field name="holder_label" readonly="1"/>
+                            <field name="copy_id" readonly="1"/>
+                            <field name="result" readonly="1"/>
+                            <field name="checked_by_id" optional="show"/>
+                            <field name="checked_on" optional="hide"/>
+                            <field name="note"/>
+                            <button name="action_sighted" type="object" string="Seen" icon="fa-eye"
+                                    invisible="result != 'pending'"/>
+                            <button name="action_missing" type="object" string="Missing" icon="fa-times"
+                                    invisible="result != 'pending'"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_audit" model="ir.actions.act_window">
+        <field name="name">Audits</field>
+        <field name="res_model">bf.key.audit</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Plan an audit</p>
+            <p>Check that every copy handed out is still where the register says. Holders confirm
+               from "Mine &gt; Keys to confirm"; what is left is a discrepancy.</p>
+        </field>
+    </record>
+
+    <!-- What a holder answers. -->
+    <record id="view_bf_key_audit_line_my_list" model="ir.ui.view">
+        <field name="name">bf.key.audit.line.my.list</field>
+        <field name="model">bf.key.audit.line</field>
+        <field name="arch" type="xml">
+            <list string="Keys to confirm" create="false" edit="false" delete="false">
+                <field name="copy_id"/>
+                <field name="result"/>
+                <field name="audit_state" column_invisible="1"/>
+                <button name="action_holder_confirm" type="object" string="I still have it" icon="fa-check"
+                        class="btn-primary" invisible="result != 'pending' or audit_state != 'running'"/>
+                <button name="action_holder_missing" type="object" string="I no longer have it" icon="fa-times"
+                        invisible="result != 'pending' or audit_state != 'running'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_key_audit_line_my" model="ir.actions.act_window">
+        <field name="name">Keys to confirm</field>
+        <field name="res_model">bf.key.audit.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_bf_key_audit_line_my_list"/>
+        <field name="domain">[('holder_user_id', '=', uid), ('audit_state', '=', 'running')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to confirm</p>
+            <p>During a key audit, the keys you hold appear here for you to confirm.</p>
+        </field>
+    </record>
+</odoo>

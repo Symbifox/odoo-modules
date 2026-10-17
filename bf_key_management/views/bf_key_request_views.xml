@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_request_list" model="ir.ui.view">
+        <field name="name">bf.key.request.list</field>
+        <field name="model">bf.key.request</field>
+        <field name="arch" type="xml">
+            <list string="Key requests">
+                <field name="create_date" string="Asked on" options="{'show_time': false}" width="105px"/>
+                <field name="employee_id"/>
+                <field name="type_id"/>
+                <field name="door_ids" widget="many2many_tags" optional="show"/>
+                <field name="area_id" optional="show"/>
+                <field name="date_until" optional="show"/>
+                <field name="state" widget="badge" decoration-warning="state == 'submitted'"
+                       decoration-success="state in ('approved', 'issued')" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_request_search" model="ir.ui.view">
+        <field name="name">bf.key.request.search</field>
+        <field name="model">bf.key.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="type_id"/>
+                <field name="door_ids"/>
+                <filter name="to_approve" string="To approve" domain="[('state', '=', 'submitted')]"/>
+                <filter name="to_issue" string="To hand out" domain="[('state', '=', 'approved')]"/>
+                <filter name="mine" string="Mine" domain="['|', ('requested_by_id', '=', uid), ('employee_id.user_id', '=', uid)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="by_area" string="Area" context="{'group_by': 'area_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bf_key_request_form" model="ir.ui.view">
+        <field name="name">bf.key.request.form</field>
+        <field name="model">bf.key.request</field>
+        <field name="arch" type="xml">
+            <form string="Key request">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            invisible="state != 'submitted'" groups="bf_key_management.group_key_area_manager"/>
+                    <button name="action_refuse" type="object" string="Refuse"
+                            invisible="state not in ('submitted', 'approved')" groups="bf_key_management.group_key_area_manager"/>
+                    <button name="action_issue" type="object" string="Hand out" class="btn-primary"
+                            invisible="state != 'approved'" groups="bf_key_management.group_key_area_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ('draft', 'submitted', 'approved')"/>
+                    <button name="action_reset_draft" type="object" string="Back to draft"
+                            invisible="state not in ('refused', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,issued"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not existing_access">
+                        <field name="existing_access"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="type_id" readonly="state != 'draft'" invisible="not type_id and state != 'draft'"/>
+                            <field name="door_ids" widget="many2many_tags" readonly="state != 'draft'"
+                                   invisible="not door_ids and state != 'draft'"/>
+                            <field name="date_until" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="requested_by_id"/>
+                            <field name="approver_ids" widget="many2many_avatar_user"/>
+                            <field name="approved_by_id" invisible="not approved_by_id"/>
+                            <field name="approved_on" invisible="not approved_on"/>
+                            <field name="assignment_id" invisible="not assignment_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <label for="reason"/>
+                    <field name="reason" readonly="state != 'draft'"
+                           placeholder="Why this access is needed. Least privilege: ask for the doors you need, not more."/>
+                    <group invisible="state != 'refused'">
+                        <field name="refusal_reason" readonly="1"/>
+                    </group>
+                    <!-- The approver writes the reason first, then presses Refuse. -->
+                    <group invisible="state != 'submitted'" groups="bf_key_management.group_key_area_manager">
+                        <field name="refusal_reason" placeholder="Only if you refuse: write the reason, then press Refuse."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_request" model="ir.actions.act_window">
+        <field name="name">Key requests</field>
+        <field name="res_model">bf.key.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_approve': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No request to process</p>
+            <p>Employees ask for a key from "My requests"; the person responsible for the area approves.</p>
+        </field>
+    </record>
+
+    <record id="action_bf_key_request_my" model="ir.actions.act_window">
+        <field name="name">My requests</field>
+        <field name="res_model">bf.key.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('requested_by_id', '=', uid), ('employee_id.user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ask for a key</p>
+            <p>Name the doors you need or the key, why, and until when.</p>
+        </field>
+    </record>
+</odoo>

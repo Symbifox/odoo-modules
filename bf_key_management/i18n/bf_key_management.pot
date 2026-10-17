@@ -1,0 +1,3260 @@
+# Translation template for Symbifox Keys.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_key_management 18.0.1.0.10\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-17 12:12+0000\n"
+"PO-Revision-Date: 2026-10-17 12:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid ""
+"%(copy)s is held by %(who)s. Record its return first: a copy never goes "
+"directly from one person to another."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_loss_wizard.py:0
+msgid ""
+"%(count)s doors open with this key. Decide whether to rekey them, and record"
+" the decision on the incident."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid ""
+"%(key)s and the key above it must belong to the same master key system."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "%(key)s is deeper than the %(levels)s levels of its master key system."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "%(who)s already holds %(what)s."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/hr_employee.py:0
+msgid "%(who)s is leaving (departure)."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "%s cannot be handed out."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "%s has already ended."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid ""
+"%s is already handed out. Record its return before handing it out again: a "
+"copy never goes directly from one person to another."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+msgid "%s is already marked %s."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+msgid "%s is handed out: record its return first."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "%s is marked %s and cannot be handed out."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+msgid "%s is not handed out."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_loss_wizard.py:0
+msgid "%s is not in use."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_area.py:0
+msgid ""
+"%s must be in the \"Area manager\" group to approve requests and see the "
+"keys of this area."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,print_report_name:bf_key_management.action_report_acknowledgement
+msgid "'Acknowledgement - %s' % (object.copy_id.label or '')"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,print_report_name:bf_key_management.action_report_door
+msgid "'Door access - %s' % object.name"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,print_report_name:bf_key_management.action_report_register
+msgid "'Hand-out register'"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,print_report_name:bf_key_management.action_report_holder
+msgid "'Keys held - %s' % object.name"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "(erased)"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_form
+msgid ". Bring it back to the key manager."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_system__levels__2
+msgid "2 levels"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__levels
+msgid ""
+"2: masters and change keys. 3: a grand master above the masters. 4: a great "
+"grand master above the grand masters. Security guides advise against more "
+"than four."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_system__levels__3
+msgid "3 levels"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_system__levels__4
+msgid "4 levels"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-clock-o fa-lg text-danger\" role=\"img\" aria-"
+"label=\"Overdue\" title=\"Overdue\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-exclamation-triangle fa-lg text-danger\" role=\"img\" aria-"
+"label=\"Open losses\" title=\"Open losses\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-id-card-o fa-lg text-warning\" role=\"img\" aria-"
+"label=\"Cards to deactivate\" title=\"Cards to deactivate\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-inbox fa-lg text-warning\" role=\"img\" aria-"
+"label=\"Requests to approve\" title=\"Requests to approve\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-key fa-lg text-primary\" role=\"img\" aria-label=\"Handed "
+"out\" title=\"Handed out\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-refresh fa-lg text-muted\" role=\"img\" aria-"
+"label=\"Systems to review\" title=\"Systems to review\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-sign-out fa-lg text-danger\" role=\"img\" aria-label=\"To "
+"recover (departures)\" title=\"To recover (departures)\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid ""
+"<i class=\"fa fa-sitemap fa-lg text-primary\" role=\"img\" aria-"
+"label=\"Master keys out\" title=\"Master keys out\"/>"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/res_company.py:0
+msgid ""
+"<p>I acknowledge receiving the item described above. I agree:</p><ul><li>to "
+"use it only for the purposes it was given for;</li><li>not to lend it, copy "
+"it or have it copied;</li><li>to report its loss or theft without "
+"delay;</li><li>to return it on request, when the need ends, and at the "
+"latest on my last day.</li></ul>"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+msgid ""
+"A \"Do not duplicate\" stamp does not stop copies. A restricted keyway, whose\n"
+"                        blanks only the manufacturer or an authorized locksmith sells, does."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_area
+msgid ""
+"A building, a floor, a wing. Its responsible people approve the key requests"
+" for it."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid ""
+"A hand-out cannot be changed: record the return, then hand the copy out "
+"again."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "A hand-out cannot be deleted: record its return instead."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "A hand-out cannot be duplicated: hand the copy out from its form."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "A hand-out is created open; its return is recorded later."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid ""
+"A hand-out needs an employee, or the name of the person who receives the "
+"item."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "A key cannot sit above itself in the master key system."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__external_name
+msgid "A person without an employee record: contractor, volunteer."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__approval_required
+msgid ""
+"A request for this key waits for the approval of the person responsible for "
+"the area. On by default for master keys."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit__scope__sample
+msgid "A sample"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "A submitted request can no longer be edited."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__existing_access
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__existing_access
+msgid "Access already held"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__kind__card
+msgid "Access card"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Access system"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid "Acknowledgement"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_res_company__bf_key_acknowledgement
+#: model:ir.model.fields,field_description:bf_key_management.field_res_config_settings__bf_key_acknowledgement
+msgid "Acknowledgement text"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_needaction
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__active
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__active
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__active
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__active
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_type_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_door
+msgid "Add a door"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_res_company__bf_key_retention_days
+#: model:ir.model.fields,help:bf_key_management.field_res_config_settings__bf_key_retention_days
+msgid ""
+"After this many days from the return, the name, phone and employer of a "
+"person without an account, and the signature, are erased (Quebec Law 25, s. "
+"23). Zero: never."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Already holds %s, which opens these doors."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__extra_type_ids
+msgid "Also opened by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__compromised_names
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+msgid "Among them"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_area.py:0
+msgid "An area cannot be part of itself."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_issue_wizard__holder_kind__employee
+msgid "An employee"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__anonymized
+msgid "Anonymized"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__deadline
+msgid "Answer by"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "Answered."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__approval_required
+msgid "Approval required"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Approve"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__approved
+msgid "Approved"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__approved_on
+msgid "Approved On"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Approved automatically: this key needs no approval."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__approved_by_id
+msgid "Approved by"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Approved."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__approver_ids
+msgid "Approvers"
+msgstr ""
+
+#. module: bf_key_management
+#: model:res.groups,comment:bf_key_management.group_key_area_manager
+msgid ""
+"Approves the requests of their areas, hands out and takes back their keys."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__area_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__area_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+msgid "Area"
+msgstr ""
+
+#. module: bf_key_management
+#: model:res.groups,name:bf_key_management.group_key_area_manager
+msgid "Area manager"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_area
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_areas
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_list
+msgid "Areas"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_request_my
+msgid "Ask for a key"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_list
+msgid "Asked on"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__assignment_id
+msgid "Assignment"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_attachment_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__audit_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid "Audit"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_audit
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_audits
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_list
+msgid "Audits"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__available
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+msgid "Available"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+msgid "Back in use."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Back to draft"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__restricted
+msgid ""
+"Blanks are sold only by the manufacturer or an authorized locksmith. This, "
+"and not a \"Do not duplicate\" stamp, is what prevents copies."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__blind_code
+msgid "Blind code"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__storage
+msgid "Cabinet or box where it returns when available."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid "Can open it"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_issue_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__card_reader
+msgid "Card reader"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__card_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Cards to deactivate"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Cards, fobs, remotes"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__level__change
+msgid "Change key"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_audit
+msgid ""
+"Check that every copy handed out is still where the register says. Holders confirm\n"
+"               from \"Mine &gt; Keys to confirm\"; what is left is a discrepancy."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_system.py:0
+msgid ""
+"Check the keys in circulation, the cylinders and the losses since the last "
+"rekeying. Record the date in \"Last rekeyed\" once done."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__checked_by_id
+msgid "Checked by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__checked_on
+msgid "Checked on"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "Choose the employee."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__circumstances
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__circumstances
+msgid "Circumstances"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid "Close the audit"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "Closed: %s."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__blind_code
+msgid ""
+"Code stamped on the copies with their number. It says nothing about the "
+"door, the level or the address."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__company_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__complete_name
+msgid "Complete Name"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__compromised_count
+msgid "Compromised Count"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__compromised_door_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_form
+msgid "Compromised doors"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "Confirm the keys you hold (%s)"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit_line__result__confirmed
+msgid "Confirmed by the holder"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_copy
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__copy_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__copy_ids
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_copies
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_list
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_list
+msgid "Copies"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__existing_access
+msgid "Copies the person already holds that open the doors requested."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__copy_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__copy_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__copy_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__copy_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__copy_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Copy"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__number
+msgid "Copy number"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__cost
+msgid "Cost"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_type
+msgid "Create a key type"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_area
+msgid "Create an area"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__create_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__create_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__cross_keyed
+msgid "Cross keyed"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid ""
+"Cross keyed: it opens doors outside its own branch. Guides advise against "
+"cross keying; check that it is intended."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid ""
+"Cross keyed: this cylinder also takes a key from another branch. Guides advise\n"
+"                        against it; check that it is intended."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__currency_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__currency_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__currency_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__current_assignment_id
+msgid "Current hand-out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__cylinder_ref
+msgid "Cylinder reference"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__date
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_search
+msgid "Date"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Dates"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid ""
+"Days after the return before the details of a person without an account, and"
+" the signature, are erased (Quebec Law 25). Zero: never."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_loss_wizard.py:0
+msgid "Deactivate %s in the access system"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__decision__deactivate
+msgid "Deactivate in the access system"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/hr_employee.py:0
+msgid "Deactivate it in the access system today, even if it comes back later."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__card_deactivated
+msgid "Deactivated in the access system"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_loss_wizard.py:0
+msgid "Decide: rekey after the loss of %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__decision
+msgid "Decision"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+msgid "Declare"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_loss_wizard
+msgid "Declare a key lost or stolen"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_incident
+msgid ""
+"Declare a loss from the copy: the doors it opened are listed for the "
+"decision."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+msgid "Declare lost or stolen"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__deposit_amount
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__deposit_amount
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__deposit
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Deposit"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "Deposit of %s to refund."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__deposit
+msgid "Deposit proposed at hand-out, refunded at return."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__deposit_refunded
+msgid "Deposit refunded"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__depth
+msgid "Depth"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_system
+msgid "Describe a master key system"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__end_reason__destroyed
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__disposition__destroyed
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__destroyed
+msgid "Destroyed"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "Discrepancies (%(count)s): %(items)s"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__display_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__disposition
+msgid "Disposition"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit__state__done
+msgid "Done"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid "Door"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,name:bf_key_management.action_report_door
+msgid "Door access"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_door
+msgid "Door or lock"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_system.py:0
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_door
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__door_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__door_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__door_ids
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_doors
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_list
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_list
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+msgid "Doors"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__compromised_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__opened_door_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__opened_door_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "Doors it opens"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__door_ids
+msgid "Doors needed"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit__state__draft
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_audit_line_my
+msgid "During a key audit, the keys you hold appear here for you to confirm."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_hr_employee
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__employee_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__employee_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__employee_id
+msgid "Employee"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_request
+msgid ""
+"Employees ask for a key from \"My requests\"; the person responsible for the"
+" area approves."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__external_employer
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__external_employer
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Employer"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__area_id
+msgid "Empty: every area."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__end_reason
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__state__closed
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Ended"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_type
+msgid ""
+"Every copy cut the same way, or one access card profile. Give it a blind code: it is\n"
+"               stamped on the copies with their number, and says nothing about the door."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__compromised_door_ids
+msgid "Every door this copy opened when it was declared."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit__scope__all
+msgid "Every hand-out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:res.groups,comment:bf_key_management.group_key_manager
+msgid "Everything: master key systems, doors, audits, settings."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__date_due
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__date_due
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__date_due
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Expected back"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_form
+msgid "Expected back on"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "Expected back on %s. Open the hand-out to see who holds it."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__max_days
+msgid "Expected return after (days)"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__failed_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__fee_charged
+msgid "Fee charged"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__kind__fob
+msgid "Fob"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_follower_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_partner_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__activity_type_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__employee_id
+msgid "For"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__card_deactivated
+msgid "For a card, fob or remote: switched off in the access control system."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__decision__found
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Found again"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__garage
+msgid "Garage or gate opener"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__level__grand
+msgid "Grand master key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__level__great
+msgid "Great grand master key"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid ""
+"Guides advise an audit once a year at least, on a quarter of the holders or\n"
+"                        more. Each holder with an account confirms from \"Mine &gt; Keys to confirm\"."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__review_months
+msgid ""
+"Guides advise reviewing the keys and cylinders at least every five years."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_issue_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Hand out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_issue_wizard
+msgid "Hand out a key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__assignment_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__assignment_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "Hand-out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,name:bf_key_management.action_report_register
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Hand-out register"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_assignment
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__assignment_ids
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_assignments
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_list
+msgid "Hand-outs"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__date_issued
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__held_count
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__issued
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__issued
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Handed out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__issued_by_id
+msgid "Handed out by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__external_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__holder_kind
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+msgid "Handed to"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__has_message
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__state__open
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+msgid "Held"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__holder_label
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__holder_label
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__holder_label
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__holder_label
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__holder_label
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Held by"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "History"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+msgid "Holder"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__employee_departed
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+msgid "Holder leaving"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__holder_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__holder_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__holder_user_id
+msgid "Holder's account"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__holder_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_list
+msgid "Holders"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_line_my_list
+msgid "I no longer have it"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_line_my_list
+msgid "I still have it"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__activity_exception_icon
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_needaction
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_has_sms_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_has_error
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__issued_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "In circulation"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__disposition__active
+msgid "In use"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__incident_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Incidents"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__ic_core
+msgid "Interchangeable core"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_is_follower
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "It was expected back on %s. Bring it back to the key manager."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+msgid "Item"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__symbol
+msgid ""
+"Its place in the master key system, in the standard notation: A (grand "
+"master), AA (master), AA1 (change key) in a three-level system. Never "
+"stamped on the key."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_res_company__bf_key_retention_days
+#: model:ir.model.fields,field_description:bf_key_management.field_res_config_settings__bf_key_retention_days
+msgid "Keep hand-out details (days)"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__storage
+msgid "Kept in"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__kind__key
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__parent_id
+msgid "Key above"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.report,name:bf_key_management.action_report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+msgid "Key acknowledgement"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_area
+msgid "Key area"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_audit
+msgid "Key audit"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "Key audit %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_audit_line
+msgid "Key audit line"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_copy
+msgid "Key copy"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_assignment
+msgid "Key hand-out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:res.groups,name:bf_key_management.group_key_user
+msgid "Key holder"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_res_company__bf_key_manager_id
+#: model:ir.model.fields,field_description:bf_key_management.field_res_config_settings__bf_key_manager_id
+#: model:res.groups,name:bf_key_management.group_key_manager
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid "Key manager"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_request
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Key request"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Key request to approve"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_request
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_list
+msgid "Key requests"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_type
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__type_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "Key type"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_system.py:0
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_type
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__type_count
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__type_ids
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_types
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_list
+msgid "Key types"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__keyed_type_id
+msgid "Keyed to"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__schedule_file
+msgid "Keying schedule"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_hr_employee__bf_key_count
+#: model:ir.module.category,name:bf_key_management.module_category_keys
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_root
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_employee_form_keys
+msgid "Keys"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__child_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "Keys below"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/hr_employee.py:0
+#: model:ir.actions.report,name:bf_key_management.action_report_holder
+#: model:ir.model.fields,field_description:bf_key_management.field_hr_employee__bf_key_assignment_ids
+msgid "Keys held"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+msgid "Keys held by"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model,name:bf_key_management.model_bf_key_dashboard
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Keys overview"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Keys that open it"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_audit_line_my
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_my_confirm
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_line_my_list
+msgid "Keys to confirm"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/hr_employee.py:0
+msgid "Keys to recover at departure: %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_my
+msgid "Keys, cards and remotes handed to you appear here."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.server,name:bf_key_management.cron_retention_ir_actions_server
+msgid "Keys: erase hand-out details past the retention period"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.server,name:bf_key_management.cron_review_ir_actions_server
+msgid "Keys: master key systems due for review"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.server,name:bf_key_management.cron_overdue_ir_actions_server
+msgid "Keys: reminders for overdue hand-outs"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__keyway
+msgid "Keyway"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__kind
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__kind
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__kind
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__kind
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Kind"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__label
+msgid "Label"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__write_uid
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__write_date
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__last_audit_date
+msgid "Last audit"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__last_rekey_date
+msgid "Last rekeyed"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__type_id
+msgid "Leave empty when you only know the doors."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__level
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Level"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__levels
+msgid "Levels"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__line_count
+msgid "Line Count"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_list
+msgid "Lines"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__lock_kind
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_search
+msgid "Lock"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__locksmith_id
+msgid "Locksmith"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__loss_fee
+msgid "Loss fee"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_hr_employee__bf_key_incident_count
+msgid "Losses in 12 months"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__end_reason__lost
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__disposition__lost
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__lost
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__incident_type__lost
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_loss_wizard__incident_type__lost
+msgid "Lost"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_incident
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_incidents
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_list
+msgid "Lost and stolen"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_form
+msgid ""
+"Lost it? Tell the key manager right away: the doors it opens\n"
+"                        may need new locks."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_form
+msgid "Lost or stolen"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_incident
+msgid "Lost or stolen key"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Mark destroyed"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_form
+msgid "Mark resolved"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Mark returned"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Mark this copy as destroyed?"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__is_master
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__level__master
+msgid "Master key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model,name:bf_key_management.model_bf_key_system
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__system_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__system_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Master key system"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_system
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_systems
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_list
+msgid "Master key systems"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_search
+msgid "Master keys"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__master_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Master keys out"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__mechanical
+msgid "Mechanical cylinder"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_content
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_has_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_search
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_content
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_search
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_mine
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+msgid "Mine"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__missing_count
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit_line__result__missing
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid "Missing"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_form
+msgid "My key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_my
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_my
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_list
+msgid "My keys"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_request_my
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_my_requests
+msgid "My requests"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__external_name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__name
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_request_my
+msgid "Name the doors you need or the key, why, and until when."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Name the key type or the doors needed."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__date_until
+msgid "Needed until"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_summary
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_type_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__next_review_date
+msgid "Next review"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_incident
+msgid "No loss reported"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_request
+msgid "No request to process"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__nmk
+msgid "Not master keyed"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Not signed."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__note
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "Notes"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_assignment
+msgid "Nothing is handed out"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "Nothing is handed out in this scope."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+msgid "Nothing is handed out to this person."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_audit_line_my
+msgid "Nothing to confirm"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_needaction_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__message_has_error_counter
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_copy
+msgid ""
+"One line per physical key, card or remote, with the number stamped on it. That\n"
+"               number is what proves which copy came back."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Only a draft request can be submitted."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "Only a key can sit above another key."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_copy.py:0
+msgid "Only a key manager can change the key type of a copy."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Only a request waiting for approval can be approved."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Only if you refuse: write the reason, then press Refuse."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__nmk
+msgid "Only the key it is keyed to opens it: no master does."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Only the person responsible for the area or a key manager can approve."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Only the person responsible for the area or a key manager can refuse."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__state__open
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid ""
+"Open \"Keys to confirm\" and confirm each item you still have, or mark it "
+"missing."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_assignment
+msgid "Open a copy and press \"Hand out\"."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__incident_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Open losses"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__opener_type_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid "Opened by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_ops
+msgid "Operations"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__other
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__kind__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__extra_type_ids
+msgid "Other keys (cross keying) or access card profiles that open this door."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__is_overdue
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__overdue_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Overdue"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "Overdue: %s"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.actions.server,name:bf_key_management.action_bf_key_overview
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_dashboard
+msgid "Overview"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_door__lock_kind__padlock
+msgid "Padlock"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__parent_path
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__parent_path
+msgid "Parent Path"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__parent_id
+msgid "Part of"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_search
+msgid "People without an employee record"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Person"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__external_phone
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__external_phone
+msgid "Phone"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_audit
+msgid "Plan an audit"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__police_report
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__police_report
+msgid "Police report number"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_premises
+msgid "Premises"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_my_form
+msgid "Print the acknowledgement"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid ""
+"Printed above the signature of each hand-out. Leave empty to print the "
+"standard text below, in the reader's language."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_res_company__bf_key_acknowledgement
+#: model:ir.model.fields,help:bf_key_management.field_res_config_settings__bf_key_acknowledgement
+msgid ""
+"Printed above the signature on the acknowledgement of each hand-out. Empty: "
+"the standard text, in the reader's language."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_res_config_settings__bf_key_acknowledgement_standard
+msgid "Printed when the field above is empty, in the reader's language."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__keyway
+msgid "Profile of the blanks (manufacturer's reference)."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__loss_fee
+msgid "Proposed on the incident when a copy is lost."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__max_days
+msgid ""
+"Proposed return date at hand-out: the end of the need. Zero: no date "
+"proposed."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__rating_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__reason
+msgid "Reason"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__refusal_reason
+msgid "Reason for refusal"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__received_by_id
+msgid "Received by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_res_company__bf_key_manager_id
+#: model:ir.model.fields,help:bf_key_management.field_res_config_settings__bf_key_manager_id
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid ""
+"Receives the departure, loss and overdue activities when no one closer can "
+"act."
+msgstr ""
+
+#. module: bf_key_management
+#: model:mail.activity.type,name:bf_key_management.activity_type_recover
+msgid "Recover a key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:mail.activity.type,summary:bf_key_management.activity_type_recover
+msgid "Recover at departure"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/hr_employee.py:0
+msgid "Recover: %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Refuse"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__refused
+msgid "Refused"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Refused."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_copy
+msgid "Register a copy"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__decision__rekey
+msgid "Rekey the doors"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__reminded
+msgid "Reminder sent"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__kind__remote
+msgid "Remote control"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_form
+msgid "Reopen"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_loss_wizard.py:0
+msgid ""
+"Reported %s. Switch it off now; it can be switched back on if it turns up."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__request_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__request_id
+msgid "Request"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__requested_by_id
+msgid "Requested by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_requests
+msgid "Requests"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__request_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Requests to approve"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__state__resolved
+msgid "Resolved"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__resolved_on
+msgid "Resolved on"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_incident.py:0
+msgid "Resolved."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__manager_ids
+msgid "Responsible"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__activity_user_id
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__all_manager_ids
+msgid "Responsible, inherited"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__restricted
+msgid "Restricted keyway"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__result
+msgid "Result"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.res_config_settings_view_form_keys
+msgid "Retention"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Retire"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_form
+msgid "Retire this copy? It will no longer be handed out."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__disposition__retired
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__retired
+msgid "Retired"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+msgid "Return received by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__date_returned
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__end_reason__returned
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Returned"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_holder
+msgid "Returned on"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__review_months
+msgid "Review every (months)"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_system.py:0
+msgid "Review the master key system"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__decision__accept
+msgid "Risk accepted"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit__state__running
+msgid "Running"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__sample_percent
+msgid "Sample (%)"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_door
+msgid ""
+"Say which key its cylinder is keyed to: every master above that key opens it too,\n"
+"               unless it is not master keyed."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__schedule_filename
+msgid "Schedule file name"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__scope
+msgid "Scope"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid "Seen"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit_line__result__sighted
+msgid "Seen by the key manager"
+msgstr ""
+
+#. module: bf_key_management
+#: model:res.groups,comment:bf_key_management.group_key_user
+msgid ""
+"Sees the keys they hold, confirms them during an audit, asks for a key."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.actions.act_window,name:bf_key_management.action_bf_key_settings
+#: model:ir.ui.menu,name:bf_key_management.menu_keys_settings
+msgid "Settings"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__signature
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__signature
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_acknowledgement
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_assignment_form
+msgid "Signature"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_register
+msgid "Signed"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__signed_by
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_issue_wizard__signed_by
+msgid "Signed by"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__signed_on
+msgid "Signed on"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__issued_since
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Since"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_type__level__single
+msgid "Single key"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_issue_wizard__holder_kind__external
+msgid "Someone without an employee record"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__number
+msgid ""
+"Stamped or printed on the copy. It is what proves which copy came back."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_res_config_settings__bf_key_acknowledgement_standard
+msgid "Standard text"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_audit_form
+msgid "Start"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__audit_state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__state
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__state
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_copy_search
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+msgid "State"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__activity_state
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_assignment__end_reason__stolen
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__disposition__stolen
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_copy__state__stolen
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__incident_type__stolen
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_loss_wizard__incident_type__stolen
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_search
+msgid "Stolen"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_area__child_ids
+msgid "Sub-areas"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid "Submit"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__symbol
+msgid "Symbol"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__symbol_warning
+msgid "Symbol check"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__review_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "Systems to review"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__employee_departed
+msgid ""
+"The employee is archived or has a departure date, past or coming: what they "
+"hold is to recover."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_issue_wizard__date_due
+msgid "The end of the need."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__date_until
+msgid "The end of the need. Leave empty for the duration of the job."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__date_due
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__date_due
+msgid "The end of the need. Past it, a reminder goes to the holder."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "The key has been handed out: record its return instead."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__keyed_type_id
+msgid ""
+"The key its cylinder is keyed to. Every master above that key opens it too."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__parent_id
+msgid "The key one level up in the master key system."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_system
+msgid ""
+"The keys of one keyway, in levels: grand master, masters, change keys. Attach the\n"
+"               locksmith's keying schedule. Single keys and cards need no system."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "The letters I, O and Q are not used in key symbols."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__area_id
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__area_id
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__area_id
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__area_id
+msgid ""
+"The people responsible for this area approve requests for this key and see "
+"its copies."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_area__manager_ids
+msgid ""
+"The people who approve the key requests for this area and its sub-areas, and"
+" see their keys."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "The request must be approved first."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "The return cannot come before the hand-out."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "The state of a request changes through its buttons only."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid ""
+"The symbol %(symbol)s does not follow the notation: expected %(expected)s."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "This audit has already started."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "This audit is closed."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.constraint,message:bf_key_management.constraint_bf_key_copy_number_unique
+msgid "This copy number already exists for this key type."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid ""
+"This key does not open every door of the request: hand out a key that "
+"matches what was approved."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "This request approved %s, not this key."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "This request cannot be refused any more."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "This request is for %s."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_request__state__submitted
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+msgid "To approve"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__pending_count
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_audit_line__result__pending
+msgid "To check"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields.selection,name:bf_key_management.selection__bf_key_incident__decision__pending
+msgid "To decide"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_search
+msgid "To hand out"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_dashboard.py:0
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_dashboard__departed_count
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_dashboard_form
+msgid "To recover (departures)"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_assignment.py:0
+msgid "To return: %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.constraint,message:bf_key_management.constraint_bf_key_type_symbol_unique
+msgid "Two key types of the same master key system cannot share a symbol."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__activity_exception_decoration
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_assignment__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_audit_line__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_copy__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_request__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_system__website_message_ids
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_type__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_assignment__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_audit_line__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_door__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_request__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_system__website_message_ids
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_type__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__incident_type
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_loss_wizard__incident_type
+msgid "What happened"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_copy__label
+msgid "What is stamped on the copy: blind code and number."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,help:bf_key_management.field_bf_key_incident__cost
+msgid "What rekeying or replacing cost."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_loss_wizard_form
+msgid "Where and when it was last seen."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.report_door
+msgid "Who can open"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_door.py:0
+msgid "Who can open %s"
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_door__holder_assignment_ids
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid "Who can open it"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_request_form
+msgid ""
+"Why this access is needed. Least privilege: ask for the doors you need, not "
+"more."
+msgstr ""
+
+#. module: bf_key_management
+#: model:ir.model.fields,field_description:bf_key_management.field_bf_key_incident__decision_note
+msgid "Why this decision"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_incident_form
+msgid "Why this decision: who else holds these doors, what they protect."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/wizard/bf_key_issue_wizard.py:0
+msgid "Write the name of the person who receives it."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_request.py:0
+msgid "Write the reason for the refusal first."
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_audit.py:0
+msgid "You can only answer for the keys you hold."
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.actions.act_window,help:bf_key_management.action_bf_key_my
+msgid "You hold no key"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "a number after the master's symbol (AA1)"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "a number before the master's symbol (1AA)"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "a single letter (A, B)"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_system_form
+msgid "e.g. Head office"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_area_form
+msgid "e.g. Main building, 2nd floor"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_type_form
+msgid "e.g. Office key, 2nd floor"
+msgstr ""
+
+#. module: bf_key_management
+#: model_terms:ir.ui.view,arch_db:bf_key_management.view_bf_key_door_form
+msgid "e.g. Server room"
+msgstr ""
+
+#. module: bf_key_management
+#. odoo-python
+#: code:addons/bf_key_management/models/bf_key_type.py:0
+msgid "the grand master's letter followed by a letter (AA, AB)"
+msgstr ""

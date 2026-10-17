@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_area_list" model="ir.ui.view">
+        <field name="name">bf.key.area.list</field>
+        <field name="model">bf.key.area</field>
+        <field name="arch" type="xml">
+            <list string="Areas">
+                <field name="complete_name"/>
+                <field name="manager_ids" widget="many2many_avatar_user"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_area_form" model="ir.ui.view">
+        <field name="name">bf.key.area.form</field>
+        <field name="model">bf.key.area</field>
+        <field name="arch" type="xml">
+            <form string="Area">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Main building, 2nd floor"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="manager_ids" widget="many2many_avatar_user"/>
+                            <field name="all_manager_ids" widget="many2many_avatar_user"
+                                   invisible="not parent_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Doors" name="doors">
+                            <field name="door_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="lock_kind"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_area" model="ir.actions.act_window">
+        <field name="name">Areas</field>
+        <field name="res_model">bf.key.area</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create an area</p>
+            <p>A building, a floor, a wing. Its responsible people approve the key requests for it.</p>
+        </field>
+    </record>
+</odoo>

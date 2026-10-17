@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_assignment_list" model="ir.ui.view">
+        <field name="name">bf.key.assignment.list</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="arch" type="xml">
+            <list string="Hand-outs" create="false" decoration-danger="is_overdue"
+                  decoration-muted="state == 'closed'">
+                <field name="holder_label"/>
+                <field name="copy_id"/>
+                <field name="kind" optional="hide"/>
+                <field name="area_id" optional="show"/>
+                <field name="date_issued" options="{'show_time': false}" width="105px"/>
+                <field name="date_due"/>
+                <field name="date_returned" optional="hide" options="{'show_time': false}" width="105px"/>
+                <field name="end_reason" optional="hide"/>
+                <field name="employee_departed" optional="hide"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_assignment_search" model="ir.ui.view">
+        <field name="name">bf.key.assignment.search</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="holder_label"/>
+                <field name="employee_id"/>
+                <field name="copy_id"/>
+                <field name="type_id"/>
+                <field name="area_id"/>
+                <filter name="open" string="Held" domain="[('date_returned', '=', False)]"/>
+                <filter name="overdue" string="Overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter name="departed" string="Holder leaving" domain="[('employee_departed', '=', True), ('date_returned', '=', False)]"/>
+                <filter name="external" string="People without an employee record" domain="[('employee_id', '=', False)]"/>
+                <filter name="cards" string="Cards, fobs, remotes" domain="[('kind', 'in', ['card', 'fob', 'remote'])]"/>
+                <separator/>
+                <filter name="date_issued" string="Handed out" date="date_issued"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_holder" string="Holder" context="{'group_by': 'holder_label'}"/>
+                    <filter name="by_type" string="Key type" context="{'group_by': 'type_id'}"/>
+                    <filter name="by_area" string="Area" context="{'group_by': 'area_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bf_key_assignment_form" model="ir.ui.view">
+        <field name="name">bf.key.assignment.form</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Hand-out" create="false">
+                <header>
+                    <button name="action_return" type="object" string="Mark returned" class="btn-primary"
+                            invisible="state != 'open'" groups="bf_key_management.group_key_area_manager"/>
+                    <button name="action_print_acknowledgement" type="object" string="Print the acknowledgement"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="copy_id" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not is_overdue">
+                        Expected back on <field name="date_due" readonly="1" class="oe_inline"/>.
+                    </div>
+                    <group>
+                        <group string="Held by">
+                            <field name="employee_id" readonly="1" invisible="not employee_id"/>
+                            <field name="external_name" readonly="1" invisible="employee_id"/>
+                            <field name="external_phone" readonly="1" invisible="employee_id"/>
+                            <field name="external_employer" readonly="1" invisible="employee_id"/>
+                            <field name="employee_departed" invisible="not employee_departed"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="date_issued" readonly="1" options="{'show_seconds': false}"/>
+                            <field name="issued_by_id" readonly="1"/>
+                            <field name="date_due" readonly="state != 'open'"/>
+                            <field name="date_returned" readonly="1" invisible="state == 'open'"/>
+                            <field name="received_by_id" readonly="1" invisible="state == 'open'"/>
+                            <field name="end_reason" readonly="1" invisible="state == 'open'"/>
+                        </group>
+                        <group string="Deposit" invisible="not deposit_amount" groups="bf_key_management.group_key_area_manager">
+                            <field name="deposit_amount" readonly="1"/>
+                            <field name="deposit_refunded"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Access system" invisible="kind not in ('card', 'fob', 'remote')" groups="bf_key_management.group_key_area_manager">
+                            <field name="card_deactivated"/>
+                        </group>
+                    </group>
+                    <group string="Signature">
+                        <field name="signature" widget="image" readonly="1" nolabel="1"
+                               invisible="not signature" options="{'size': [0, 90]}"/>
+                        <div invisible="signature or anonymized" class="text-muted">Not signed.</div>
+                        <field name="signed_by" readonly="1" invisible="not signature"/>
+                        <field name="signed_on" readonly="1" invisible="not signature"/>
+                    </group>
+                    <field name="kind" invisible="1"/>
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="anonymized" invisible="1"/>
+                    <field name="request_id" readonly="1" invisible="not request_id"/>
+                    <field name="note" placeholder="Notes"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_assignment" model="ir.actions.act_window">
+        <field name="name">Hand-outs</field>
+        <field name="res_model">bf.key.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing is handed out</p>
+            <p>Open a copy and press "Hand out".</p>
+        </field>
+    </record>
+
+    <!-- What a holder sees: read only, no buttons that need rights they do not have. -->
+    <record id="view_bf_key_assignment_my_list" model="ir.ui.view">
+        <field name="name">bf.key.assignment.my.list</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <list string="My keys" create="false" edit="false" delete="false" decoration-danger="is_overdue"
+                  decoration-muted="state == 'closed'">
+                <field name="copy_id"/>
+                <field name="kind"/>
+                <field name="date_issued" options="{'show_time': false}" width="105px"/>
+                <field name="date_due"/>
+                <field name="date_returned" optional="hide"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_assignment_my_form" model="ir.ui.view">
+        <field name="name">bf.key.assignment.my.form</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <form string="My key" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_print_acknowledgement" type="object" string="Print the acknowledgement"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="copy_id"/></h1></div>
+                    <div class="alert alert-danger" role="alert" invisible="not is_overdue">
+                        Expected back on <field name="date_due" class="oe_inline"/>. Bring it back to the key manager.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="date_issued"/>
+                            <field name="date_due"/>
+                        </group>
+                        <group>
+                            <field name="date_returned" invisible="state == 'open'"/>
+                            <field name="deposit_amount" invisible="not deposit_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="is_overdue" invisible="1"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">Lost it? Tell the key manager right away: the doors it opens
+                        may need new locks.</p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_my" model="ir.actions.act_window">
+        <field name="name">My keys</field>
+        <field name="res_model">bf.key.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_bf_key_assignment_my_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_bf_key_assignment_my_form')})]"/>
+        <field name="domain">[('holder_user_id', '=', uid)]</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">You hold no key</p>
+            <p>Keys, cards and remotes handed to you appear here.</p>
+        </field>
+    </record>
+</odoo>

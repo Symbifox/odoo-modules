@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_copy_list" model="ir.ui.view">
+        <field name="name">bf.key.copy.list</field>
+        <field name="model">bf.key.copy</field>
+        <field name="arch" type="xml">
+            <list string="Copies" decoration-muted="state in ('destroyed', 'retired')"
+                  decoration-danger="state in ('lost', 'stolen')" decoration-info="state == 'issued'">
+                <field name="type_id"/>
+                <field name="label"/>
+                <field name="kind" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'available'" decoration-info="state == 'issued'"
+                       decoration-danger="state in ('lost', 'stolen')"/>
+                <field name="holder_label"/>
+                <field name="issued_since" optional="show"/>
+                <field name="date_due" optional="show"/>
+                <field name="storage" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_copy_search" model="ir.ui.view">
+        <field name="name">bf.key.copy.search</field>
+        <field name="model">bf.key.copy</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="label"/>
+                <field name="type_id"/>
+                <field name="holder_label"/>
+                <filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
+                <filter name="issued" string="Handed out" domain="[('state', '=', 'issued')]"/>
+                <filter name="lost" string="Lost or stolen" domain="[('state', 'in', ['lost', 'stolen'])]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_type" string="Key type" context="{'group_by': 'type_id'}"/>
+                    <filter name="by_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bf_key_copy_form" model="ir.ui.view">
+        <field name="name">bf.key.copy.form</field>
+        <field name="model">bf.key.copy</field>
+        <field name="arch" type="xml">
+            <form string="Copy">
+                <header groups="bf_key_management.group_key_area_manager">
+                    <button name="action_issue" type="object" string="Hand out" class="btn-primary"
+                            invisible="state != 'available'"/>
+                    <button name="action_return" type="object" string="Mark returned" class="btn-primary"
+                            invisible="state != 'issued'"/>
+                    <button name="action_declare_loss" type="object" string="Declare lost or stolen"
+                            invisible="state not in ('issued', 'available')"/>
+                    <button name="action_reactivate" type="object" string="Found again"
+                            invisible="state not in ('lost', 'stolen')"/>
+                    <button name="action_retire" type="object" string="Retire" invisible="state != 'available'"
+                            confirm="Retire this copy? It will no longer be handed out."/>
+                    <button name="action_destroy" type="object" string="Mark destroyed" invisible="state != 'available'"
+                            confirm="Mark this copy as destroyed?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="available,issued"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="label"/>
+                        <h1><field name="label"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type_id"/>
+                            <field name="number"/>
+                            <field name="kind"/>
+                            <field name="storage"/>
+                        </group>
+                        <group>
+                            <field name="holder_label"/>
+                            <field name="issued_since"/>
+                            <field name="date_due"/>
+                            <field name="disposition" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook groups="bf_key_management.group_key_area_manager">
+                        <page string="History" name="history">
+                            <field name="assignment_ids" readonly="1">
+                                <list>
+                                    <field name="holder_label"/>
+                                    <field name="date_issued" options="{'show_time': false}" width="105px"/>
+                                    <field name="date_returned" options="{'show_time': false}" width="105px"/>
+                                    <field name="end_reason"/>
+                                    <field name="issued_by_id" optional="hide"/>
+                                    <field name="received_by_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Incidents" name="incidents">
+                            <field name="incident_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="incident_type"/>
+                                    <field name="decision"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_copy" model="ir.actions.act_window">
+        <field name="name">Copies</field>
+        <field name="res_model">bf.key.copy</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_by_type': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Register a copy</p>
+            <p>One line per physical key, card or remote, with the number stamped on it. That
+               number is what proves which copy came back.</p>
+        </field>
+    </record>
+</odoo>

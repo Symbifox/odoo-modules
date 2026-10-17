@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**245 modules are BUSL-1.1.** The source is published and auditable, and **you
+**246 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -233,6 +233,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_impersonate` | Impersonate a User | 18.0.1.0.4 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_job_search` | Job Search | 18.0.1.0.1 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
+| `bf_key_management` | Symbifox Keys | 18.0.1.0.11 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
@@ -437,7 +438,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **245 modules: BUSL-1.1.** Production use for your own internal business
+- **246 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

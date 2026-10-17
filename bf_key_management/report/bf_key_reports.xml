@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acknowledgement: what was handed out, the agreement, the signature. Never the doors. -->
+    <record id="action_report_acknowledgement" model="ir.actions.report">
+        <field name="name">Key acknowledgement</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_key_management.report_acknowledgement</field>
+        <field name="report_file">bf_key_management.report_acknowledgement</field>
+        <field name="print_report_name">'Acknowledgement - %s' % (object.copy_id.label or '')</field>
+        <field name="binding_model_id" ref="model_bf_key_assignment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_acknowledgement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="company" t-value="o.company_id"/>
+                    <div class="page">
+                        <h2>Key acknowledgement</h2>
+                        <table class="table table-sm table-borderless mt-4">
+                            <tr><th class="w-25">Item</th><td><span t-field="o.copy_id.type_id.name"/></td></tr>
+                            <tr><th>Copy</th><td><span t-field="o.copy_id.label"/></td></tr>
+                            <tr><th>Kind</th><td><span t-field="o.kind"/></td></tr>
+                            <tr><th>Handed to</th><td><span t-field="o.holder_label"/>
+                                <t t-if="o.external_phone"> · <span t-field="o.external_phone"/></t></td></tr>
+                            <tr><th>Handed out</th><td><span t-field="o.date_issued"/> · <span t-field="o.issued_by_id.name"/></td></tr>
+                            <tr t-if="o.date_due"><th>Expected back</th><td><span t-field="o.date_due"/></td></tr>
+                            <tr t-if="o.deposit_amount"><th>Deposit</th>
+                                <td><span t-field="o.deposit_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td></tr>
+                            <tr t-if="o.date_returned"><th>Returned</th><td><span t-field="o.date_returned"/> · <span t-field="o.end_reason"/></td></tr>
+                        </table>
+                        <div class="mt-4" t-out="o.company_id._bf_key_acknowledgement_text()"/>
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <t t-if="o.signature">
+                                    <img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                                </t>
+                                <div style="border-top: 1px solid #000; margin-top: 1cm;" t-if="not o.signature"/>
+                                <div>Signature<t t-if="o.signed_by">: <span t-field="o.signed_by"/></t></div>
+                                <div t-if="o.signed_on" class="text-muted"><span t-field="o.signed_on"/></div>
+                            </div>
+                            <div class="col-6">
+                                <div style="border-top: 1px solid #000; margin-top: 5cm;"/>
+                                <div>Return received by</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- What a person holds: for a departure or a change of job. -->
+    <record id="action_report_holder" model="ir.actions.report">
+        <field name="name">Keys held</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_key_management.report_holder</field>
+        <field name="report_file">bf_key_management.report_holder</field>
+        <field name="print_report_name">'Keys held - %s' % object.name</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('group_key_area_manager'))]"/>
+    </record>
+
+    <template id="report_holder">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Keys held by <span t-field="o.name"/></h2>
+                        <p t-if="not o.bf_key_assignment_ids">Nothing is handed out to this person.</p>
+                        <table class="table table-sm" t-if="o.bf_key_assignment_ids">
+                            <thead><tr><th>Item</th><th>Copy</th><th>Handed out</th><th>Expected back</th><th>Returned on</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.bf_key_assignment_ids" t-as="a">
+                                    <td><span t-field="a.copy_id.type_id.name"/></td>
+                                    <td><span t-field="a.copy_id.label"/></td>
+                                    <td><span t-field="a.date_issued" t-options="{'widget': 'date'}"/></td>
+                                    <td><span t-field="a.date_due"/></td>
+                                    <td style="width: 25%;"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Who can open a door: the keys that open it and who holds them. -->
+    <record id="action_report_door" model="ir.actions.report">
+        <field name="name">Door access</field>
+        <field name="model">bf.key.door</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_key_management.report_door</field>
+        <field name="report_file">bf_key_management.report_door</field>
+        <field name="print_report_name">'Door access - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_bf_key_door"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('group_key_area_manager'))]"/>
+    </record>
+
+    <template id="report_door">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Who can open <span t-field="o.name"/></h2>
+                        <p><span t-field="o.area_id.complete_name"/></p>
+                        <h4 class="mt-4">Keys that open it</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Key</th><th>Kind</th><th>Level</th><th>In circulation</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.opener_type_ids" t-as="t">
+                                    <td><span t-field="t.name"/></td>
+                                    <td><span t-field="t.kind"/></td>
+                                    <td><span t-field="t.level"/></td>
+                                    <td><span t-field="t.issued_count"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4 class="mt-4">Held by</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Person</th><th>Copy</th><th>Since</th><th>Expected back</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.holder_assignment_ids" t-as="a">
+                                    <td><span t-field="a.holder_label"/></td>
+                                    <td><span t-field="a.copy_id.display_name"/></td>
+                                    <td><span t-field="a.date_issued" t-options="{'widget': 'date'}"/></td>
+                                    <td><span t-field="a.date_due"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- The register of hand-outs, for the selected lines. -->
+    <record id="action_report_register" model="ir.actions.report">
+        <field name="name">Hand-out register</field>
+        <field name="model">bf.key.assignment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_key_management.report_register</field>
+        <field name="report_file">bf_key_management.report_register</field>
+        <field name="print_report_name">'Hand-out register'</field>
+        <field name="binding_model_id" ref="model_bf_key_assignment"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('group_key_area_manager'))]"/>
+    </record>
+
+    <template id="report_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Hand-out register</h2>
+                    <table class="table table-sm">
+                        <thead><tr>
+                            <th>Copy</th><th>Held by</th><th>Employer</th><th>Handed out</th>
+                            <th>Expected back</th><th>Returned</th><th>Ended</th><th>Signed</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="a">
+                                <td><span t-field="a.copy_id.display_name"/></td>
+                                <td><span t-field="a.holder_label"/></td>
+                                <td><span t-field="a.external_employer"/></td>
+                                <td><span t-field="a.date_issued" t-options="{'widget': 'date'}"/></td>
+                                <td><span t-field="a.date_due"/></td>
+                                <td><span t-field="a.date_returned" t-options="{'widget': 'date'}"/></td>
+                                <td><span t-field="a.end_reason"/></td>
+                                <td><t t-if="a.signature">✓</t></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_system_list" model="ir.ui.view">
+        <field name="name">bf.key.system.list</field>
+        <field name="model">bf.key.system</field>
+        <field name="arch" type="xml">
+            <list string="Master key systems">
+                <field name="name"/>
+                <field name="levels"/>
+                <field name="keyway"/>
+                <field name="restricted"/>
+                <field name="last_rekey_date"/>
+                <field name="next_review_date" decoration-danger="next_review_date and next_review_date &lt;= current_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_system_form" model="ir.ui.view">
+        <field name="name">bf.key.system.form</field>
+        <field name="model">bf.key.system</field>
+        <field name="arch" type="xml">
+            <form string="Master key system">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_types" type="object" class="oe_stat_button" icon="fa-key">
+                            <field name="type_count" widget="statinfo" string="Key types"/>
+                        </button>
+                        <button name="action_view_doors" type="object" class="oe_stat_button" icon="fa-building-o">
+                            <field name="door_count" widget="statinfo" string="Doors"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Head office"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="levels"/>
+                            <field name="keyway"/>
+                            <field name="restricted"/>
+                            <field name="locksmith_id"/>
+                        </group>
+                        <group>
+                            <field name="last_rekey_date"/>
+                            <field name="review_months"/>
+                            <field name="next_review_date"/>
+                            <field name="schedule_file" filename="schedule_filename"/>
+                            <field name="schedule_filename" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="restricted">
+                        A "Do not duplicate" stamp does not stop copies. A restricted keyway, whose
+                        blanks only the manufacturer or an authorized locksmith sells, does.
+                    </div>
+                    <notebook>
+                        <page string="Key types" name="types">
+                            <field name="type_ids" context="{'default_system_id': id}">
+                                <list>
+                                    <field name="symbol"/>
+                                    <field name="name"/>
+                                    <field name="level"/>
+                                    <field name="parent_id"/>
+                                    <field name="issued_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_system" model="ir.actions.act_window">
+        <field name="name">Master key systems</field>
+        <field name="res_model">bf.key.system</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Describe a master key system</p>
+            <p>The keys of one keyway, in levels: grand master, masters, change keys. Attach the
+               locksmith's keying schedule. Single keys and cards need no system.</p>
+        </field>
+    </record>
+</odoo>

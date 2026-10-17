@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_keys_root" name="Keys" sequence="72"
+              web_icon="bf_key_management,static/description/icon.png"
+              groups="group_key_user"/>
+
+    <menuitem id="menu_keys_mine" name="Mine" parent="menu_keys_root" sequence="5"/>
+    <menuitem id="menu_keys_my" name="My keys" parent="menu_keys_mine" action="action_bf_key_my" sequence="1"/>
+    <menuitem id="menu_keys_my_confirm" name="Keys to confirm" parent="menu_keys_mine"
+              action="action_bf_key_audit_line_my" sequence="2"/>
+    <menuitem id="menu_keys_my_requests" name="My requests" parent="menu_keys_mine"
+              action="action_bf_key_request_my" sequence="3"/>
+
+    <menuitem id="menu_keys_ops" name="Operations" parent="menu_keys_root" sequence="10" groups="bf_key_management.group_key_area_manager"/>
+    <menuitem id="menu_keys_dashboard" name="Overview" parent="menu_keys_ops" action="action_bf_key_overview" sequence="1"/>
+    <menuitem id="menu_keys_assignments" name="Hand-outs" parent="menu_keys_ops" action="action_bf_key_assignment" sequence="2"/>
+    <menuitem id="menu_keys_copies" name="Copies" parent="menu_keys_ops" action="action_bf_key_copy" sequence="3"/>
+    <menuitem id="menu_keys_requests" name="Requests" parent="menu_keys_ops" action="action_bf_key_request" sequence="4"/>
+    <menuitem id="menu_keys_incidents" name="Lost and stolen" parent="menu_keys_ops" action="action_bf_key_incident" sequence="5"/>
+    <menuitem id="menu_keys_audits" name="Audits" parent="menu_keys_ops" action="action_bf_key_audit" sequence="6" groups="bf_key_management.group_key_manager"/>
+
+    <menuitem id="menu_keys_premises" name="Premises" parent="menu_keys_root" sequence="20" groups="bf_key_management.group_key_area_manager"/>
+    <menuitem id="menu_keys_doors" name="Doors" parent="menu_keys_premises" action="action_bf_key_door" sequence="1"/>
+    <menuitem id="menu_keys_types" name="Key types" parent="menu_keys_premises" action="action_bf_key_type" sequence="2"/>
+    <menuitem id="menu_keys_systems" name="Master key systems" parent="menu_keys_premises" action="action_bf_key_system" sequence="3"/>
+    <menuitem id="menu_keys_areas" name="Areas" parent="menu_keys_premises" action="action_bf_key_area" sequence="4"/>
+
+    <menuitem id="menu_keys_config" name="Configuration" parent="menu_keys_root" sequence="90" groups="bf_key_management.group_key_manager"/>
+    <!-- Odoo's settings page needs Administration / Settings: a key manager who is not an
+         administrator would get an access error. Company-level choices stay with them. -->
+    <menuitem id="menu_keys_settings" name="Settings" parent="menu_keys_config" action="action_bf_key_settings"
+              sequence="1" groups="base.group_system"/>
+</odoo>

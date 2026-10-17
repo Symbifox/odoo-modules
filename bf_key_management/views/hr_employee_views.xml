@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ Every node carries groups=: the web client reads every field of a view, and an
+         employee form that reads bf.key.* without the right would not open at all. -->
+    <record id="view_employee_form_keys" model="ir.ui.view">
+        <field name="name">hr.employee.form.keys</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_bf_key_view" type="object" class="oe_stat_button" icon="fa-key"
+                        groups="bf_key_management.group_key_area_manager">
+                    <field name="bf_key_count" widget="statinfo" string="Keys"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Keys" name="bf_keys" groups="bf_key_management.group_key_area_manager">
+                    <field name="bf_key_incident_count" invisible="not bf_key_incident_count"/>
+                    <field name="bf_key_assignment_ids" readonly="1">
+                        <list decoration-danger="is_overdue">
+                            <field name="copy_id"/>
+                            <field name="kind"/>
+                            <field name="date_issued" options="{'show_time': false}" width="105px"/>
+                            <field name="date_due"/>
+                            <field name="is_overdue" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

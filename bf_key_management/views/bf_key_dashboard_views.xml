@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_dashboard_form" model="ir.ui.view">
+        <field name="name">bf.key.dashboard.form</field>
+        <field name="model">bf.key.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Keys overview" create="false" edit="false" delete="false">
+                <sheet>
+                    <!-- Tiles in the page, not stat buttons: the control panel shows four and
+                         hides the rest under "More". -->
+                    <div class="row g-3">
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_held" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-key fa-lg text-primary" role="img" aria-label="Handed out" title="Handed out"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="held_count"/></div>
+                                <div class="text-muted">Handed out</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_overdue" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-clock-o fa-lg text-danger" role="img" aria-label="Overdue" title="Overdue"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="overdue_count"/></div>
+                                <div class="text-muted">Overdue</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_departed" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-sign-out fa-lg text-danger" role="img" aria-label="To recover (departures)" title="To recover (departures)"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="departed_count"/></div>
+                                <div class="text-muted">To recover (departures)</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_cards" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-id-card-o fa-lg text-warning" role="img" aria-label="Cards to deactivate" title="Cards to deactivate"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="card_count"/></div>
+                                <div class="text-muted">Cards to deactivate</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_masters" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-sitemap fa-lg text-primary" role="img" aria-label="Master keys out" title="Master keys out"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="master_count"/></div>
+                                <div class="text-muted">Master keys out</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_incidents" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-exclamation-triangle fa-lg text-danger" role="img" aria-label="Open losses" title="Open losses"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="incident_count"/></div>
+                                <div class="text-muted">Open losses</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <button name="action_open_requests" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-inbox fa-lg text-warning" role="img" aria-label="Requests to approve" title="Requests to approve"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="request_count"/></div>
+                                <div class="text-muted">Requests to approve</div>
+                            </button>
+                        </div>
+                        <div class="col-6 col-lg-3" groups="bf_key_management.group_key_manager">
+                            <button name="action_open_reviews" type="object" class="btn btn-light border w-100 h-100 p-3 text-start">
+                                <i class="fa fa-refresh fa-lg text-muted" role="img" aria-label="Systems to review" title="Systems to review"/>
+                                <div class="fs-1 fw-bold mt-2"><field name="review_count"/></div>
+                                <div class="text-muted">Systems to review</div>
+                            </button>
+                        </div>
+                    </div>
+                    <group class="mt-4" groups="bf_key_management.group_key_manager" invisible="not last_audit_date">
+                        <field name="last_audit_date"/>
+                    </group>
+                    <field name="name" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_overview" model="ir.actions.server">
+        <field name="name">Overview</field>
+        <field name="model_id" ref="model_bf_key_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_overview()</field>
+        <field name="groups_id" eval="[(4, ref('group_key_area_manager'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_type_list" model="ir.ui.view">
+        <field name="name">bf.key.type.list</field>
+        <field name="model">bf.key.type</field>
+        <field name="arch" type="xml">
+            <list string="Key types">
+                <field name="system_id" groups="bf_key_management.group_key_area_manager" optional="show"/>
+                <field name="symbol" groups="bf_key_management.group_key_area_manager"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="level" groups="bf_key_management.group_key_area_manager" optional="show"/>
+                <field name="area_id" optional="show"/>
+                <field name="blind_code" optional="show"/>
+                <field name="copy_count" string="Copies"/>
+                <field name="issued_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_type_search" model="ir.ui.view">
+        <field name="name">bf.key.type.search</field>
+        <field name="model">bf.key.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="symbol" groups="bf_key_management.group_key_area_manager"/>
+                <field name="blind_code"/>
+                <field name="area_id"/>
+                <filter name="keys" string="Keys" domain="[('kind', '=', 'key')]"/>
+                <filter name="electronic" string="Cards, fobs, remotes" domain="[('kind', 'in', ['card', 'fob', 'remote'])]"/>
+                <filter name="masters" string="Master keys" domain="[('is_master', '=', True)]" groups="bf_key_management.group_key_area_manager"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_system" string="Master key system" context="{'group_by': 'system_id'}" groups="bf_key_management.group_key_area_manager"/>
+                    <filter name="by_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bf_key_type_form" model="ir.ui.view">
+        <field name="name">bf.key.type.form</field>
+        <field name="model">bf.key.type</field>
+        <field name="arch" type="xml">
+            <form string="Key type">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_copies" type="object" class="oe_stat_button" icon="fa-clone">
+                            <field name="copy_count" widget="statinfo" string="Copies"/>
+                        </button>
+                        <button name="action_view_doors" type="object" class="oe_stat_button" icon="fa-building-o"
+                                groups="bf_key_management.group_key_area_manager">
+                            <field name="opened_door_count" widget="statinfo" string="Doors it opens"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Office key, 2nd floor"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" groups="bf_key_management.group_key_area_manager" invisible="not symbol_warning">
+                        <field name="symbol_warning"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="area_id"/>
+                            <field name="blind_code"/>
+                            <field name="approval_required"/>
+                        </group>
+                        <group groups="bf_key_management.group_key_area_manager">
+                            <field name="system_id"/>
+                            <field name="symbol" invisible="not system_id"/>
+                            <field name="parent_id" invisible="not system_id"
+                                   domain="[('system_id', '=', system_id), ('id', '!=', id), ('kind', '=', 'key')]"/>
+                            <field name="level"/>
+                        </group>
+                        <group string="Hand-out">
+                            <field name="max_days"/>
+                            <field name="deposit"/>
+                            <field name="loss_fee"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="issued_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Doors it opens" name="doors" groups="bf_key_management.group_key_area_manager">
+                            <field name="opened_door_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="area_id"/>
+                                    <field name="keyed_type_id"/>
+                                    <field name="nmk"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Keys below" name="below" groups="bf_key_management.group_key_area_manager">
+                            <field name="child_ids" readonly="1">
+                                <list>
+                                    <field name="symbol"/>
+                                    <field name="name"/>
+                                    <field name="level"/>
+                                    <field name="issued_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_type" model="ir.actions.act_window">
+        <field name="name">Key types</field>
+        <field name="res_model">bf.key.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a key type</p>
+            <p>Every copy cut the same way, or one access card profile. Give it a blind code: it is
+               stamped on the copies with their number, and says nothing about the door.</p>
+        </field>
+    </record>
+</odoo>

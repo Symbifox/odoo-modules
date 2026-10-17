@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_keys" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.keys</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Keys" string="Keys" name="bf_key_management" groups="bf_key_management.group_key_manager">
+                    <block title="Keys" name="bf_key_settings">
+                        <setting string="Key manager" help="Receives the departure, loss and overdue activities when no one closer can act.">
+                            <field name="bf_key_manager_id"/>
+                        </setting>
+                        <setting string="Retention" help="Days after the return before the details of a person without an account, and the signature, are erased (Quebec Law 25). Zero: never.">
+                            <field name="bf_key_retention_days"/>
+                        </setting>
+                        <setting string="Acknowledgement" help="Printed above the signature of each hand-out. Leave empty to print the standard text below, in the reader's language.">
+                            <field name="bf_key_acknowledgement"/>
+                            <div invisible="bf_key_acknowledgement" class="text-muted mt-2">
+                                <field name="bf_key_acknowledgement_standard" readonly="1"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_key_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_key_management', 'bin_size': False}</field>
+    </record>
+</odoo>

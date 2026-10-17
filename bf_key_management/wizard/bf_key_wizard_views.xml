@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_issue_wizard_form" model="ir.ui.view">
+        <field name="name">bf.key.issue.wizard.form</field>
+        <field name="model">bf.key.issue.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Hand out">
+                <div class="alert alert-warning" role="alert" invisible="not existing_access">
+                    <field name="existing_access"/>
+                </div>
+                <group>
+                    <group>
+                        <field name="type_id" invisible="request_id"/>
+                        <field name="copy_id" options="{'no_create': True}"/>
+                        <field name="request_id" invisible="not request_id" readonly="1"/>
+                        <field name="holder_kind" widget="radio" invisible="request_id"/>
+                        <field name="employee_id" invisible="holder_kind != 'employee'"
+                               required="holder_kind == 'employee'"/>
+                        <field name="external_name" invisible="holder_kind != 'external'"
+                               required="holder_kind == 'external'"/>
+                        <field name="external_phone" invisible="holder_kind != 'external'"/>
+                        <field name="external_employer" invisible="holder_kind != 'external'"/>
+                    </group>
+                    <group>
+                        <field name="date_due"/>
+                        <field name="deposit_amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </group>
+                <field name="acknowledgement" readonly="1"/>
+                <group>
+                    <field name="signed_by"/>
+                    <field name="signature" widget="signature" options="{'full_name': 'signed_by'}"/>
+                </group>
+                <footer>
+                    <button name="action_issue" type="object" string="Hand out" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_key_loss_wizard_form" model="ir.ui.view">
+        <field name="name">bf.key.loss.wizard.form</field>
+        <field name="model">bf.key.loss.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Declare lost or stolen">
+                <group>
+                    <group>
+                        <field name="copy_id" readonly="1"/>
+                        <field name="holder_label"/>
+                        <field name="incident_type" widget="radio"/>
+                        <field name="date"/>
+                        <field name="police_report" invisible="incident_type != 'stolen'"/>
+                    </group>
+                    <group>
+                        <field name="compromised_count" string="Doors it opens"/>
+                        <field name="compromised_names" string="Among them" invisible="not compromised_count"/>
+                    </group>
+                </group>
+                <field name="circumstances" placeholder="Where and when it was last seen."/>
+                <footer>
+                    <button name="action_declare" type="object" string="Declare" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

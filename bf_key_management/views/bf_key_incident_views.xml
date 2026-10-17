@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_key_incident_list" model="ir.ui.view">
+        <field name="name">bf.key.incident.list</field>
+        <field name="model">bf.key.incident</field>
+        <field name="arch" type="xml">
+            <list string="Lost and stolen" create="false" decoration-muted="state == 'resolved'">
+                <field name="date"/>
+                <field name="copy_id"/>
+                <field name="holder_label"/>
+                <field name="incident_type"/>
+                <field name="compromised_count" string="Doors"/>
+                <field name="decision"/>
+                <field name="cost" optional="show"/>
+                <field name="state" widget="badge" decoration-danger="state == 'open'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_key_incident_search" model="ir.ui.view">
+        <field name="name">bf.key.incident.search</field>
+        <field name="model">bf.key.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="copy_id"/>
+                <field name="employee_id"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="stolen" string="Stolen" domain="[('incident_type', '=', 'stolen')]"/>
+                <filter name="date" string="Date" date="date"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bf_key_incident_form" model="ir.ui.view">
+        <field name="name">bf.key.incident.form</field>
+        <field name="model">bf.key.incident</field>
+        <field name="arch" type="xml">
+            <form string="Lost or stolen" create="false">
+                <header>
+                    <button name="action_resolve" type="object" string="Mark resolved" class="btn-primary"
+                            invisible="state != 'open' or decision == 'pending'"/>
+                    <button name="action_reopen" type="object" string="Reopen" invisible="state != 'resolved'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="copy_id" readonly="1"/>
+                            <field name="holder_label"/>
+                            <field name="incident_type"/>
+                            <field name="date"/>
+                            <field name="police_report" required="incident_type == 'stolen'"/>
+                        </group>
+                        <group>
+                            <field name="decision"/>
+                            <field name="cost"/>
+                            <field name="fee_charged"/>
+                            <field name="resolved_on" invisible="state != 'resolved'"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <label for="circumstances"/>
+                    <field name="circumstances"/>
+                    <label for="decision_note"/>
+                    <field name="decision_note" placeholder="Why this decision: who else holds these doors, what they protect."/>
+                    <notebook>
+                        <page string="Compromised doors" name="doors">
+                            <field name="compromised_door_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="area_id"/>
+                                    <field name="lock_kind"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="kind" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_key_incident" model="ir.actions.act_window">
+        <field name="name">Lost and stolen</field>
+        <field name="res_model">bf.key.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No loss reported</p>
+            <p>Declare a loss from the copy: the doors it opened are listed for the decision.</p>
+        </field>
+    </record>
+</odoo>
