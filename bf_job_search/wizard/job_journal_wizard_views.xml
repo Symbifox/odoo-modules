@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_journal_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.job.journal.wizard.form</field>
+        <field name="model">bf.job.journal.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Job search log">
+                <div class="text-muted mb-2">
+                    A dated record of your applications: date, employer, position, channel, result.
+                    Employment Insurance asks claimants to keep such a record for six years and to
+                    provide it on request.
+                </div>
+                <group string="Export">
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group invisible="not file_data">
+                        <field name="file_name" invisible="1"/>
+                        <field name="file_data" filename="file_name"/>
+                        <field name="line_count"/>
+                    </group>
+                </group>
+                <group string="Purge the details">
+                    <div class="text-muted" colspan="2">
+                        Removes the advert, salary, notes, files and interviews of applications closed
+                        before this date. Their log entries remain.
+                    </div>
+                    <field name="purge_before"/>
+                </group>
+                <footer>
+                    <button name="action_export" type="object" string="Export the log" class="btn-primary"/>
+                    <button name="action_purge" type="object" string="Purge the details"
+                            confirm="Remove the details of these closed applications? This cannot be undone."/>
+                    <button special="cancel" string="Close"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_job_journal_wizard_action" model="ir.actions.act_window">
+        <field name="name">Job search log</field>
+        <field name="res_model">bf.job.journal.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_referee_view_form" model="ir.ui.view">
+        <field name="name">bf.job.referee.form</field>
+        <field name="model">bf.job.referee</field>
+        <field name="arch" type="xml">
+            <form string="Referee">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="relationship"/>
+                            <field name="organisation"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                        </group>
+                        <group>
+                            <field name="consent_date"/>
+                            <field name="last_briefed"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="What they can speak to; anything to remind them of."/>
+                    <separator string="Named for"/>
+                    <field name="reference_ids" readonly="1">
+                        <list>
+                            <field name="application_id"/>
+                            <field name="state"/>
+                            <field name="date_named"/>
+                            <field name="date_called"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_job_referee_view_list" model="ir.ui.view">
+        <field name="name">bf.job.referee.list</field>
+        <field name="model">bf.job.referee</field>
+        <field name="arch" type="xml">
+            <list string="Referees">
+                <field name="name"/>
+                <field name="relationship"/>
+                <field name="consent_date"/>
+                <field name="last_briefed"/>
+                <field name="times_named"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_job_referee_action" model="ir.actions.act_window">
+        <field name="name">Referees</field>
+        <field name="res_model">bf.job.referee</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a referee</p>
+            <p>Ask before naming anyone, note when they agreed, and warn them before an employer calls.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_application_view_form" model="ir.ui.view">
+        <field name="name">bf.job.application.form</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <form string="Job application">
+                <header>
+                    <button name="action_followup_sent" type="object" string="Follow-up sent"
+                            class="btn-primary" invisible="stage != 'applied' or is_closed"/>
+                    <button name="action_response_received" type="object" string="Response received"
+                            invisible="stage != 'applied' or is_closed"/>
+                    <button name="action_warn_referees" type="object" string="Referees warned"
+                            invisible="stage not in ('interview', 'offer') or is_closed or not reference_ids"/>
+                    <button name="action_open_close_wizard" type="object" string="Close"
+                            invisible="is_closed"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="not outcome"/>
+                    <field name="stage" widget="statusbar" options="{'clickable': '1'}"
+                           readonly="is_closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_interviews" type="object" class="oe_stat_button"
+                                icon="fa-comments">
+                            <field name="interview_count" widget="statinfo" string="Interviews"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-secondary"
+                            invisible="not outcome"/>
+                    <widget name="web_ribbon" title="Hired" bg_color="text-bg-success"
+                            invisible="stage != 'accepted'"/>
+                    <div class="alert alert-warning" role="alert" invisible="not criteria_warning">
+                        <strong>Does not meet my criteria:</strong> <field name="criteria_warning" class="d-inline"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Systems Analyst"/></h1>
+                        <h3><field name="employer" placeholder="Employer"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="channel"/>
+                            <field name="recruiter" invisible="channel != 'recruiter'"/>
+                            <field name="referred_by" invisible="channel != 'referral'"/>
+                            <field name="source_url" widget="url"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="date_spotted"/>
+                            <field name="closing_date"/>
+                            <field name="date_applied"/>
+                            <field name="reply_promised_date"/>
+                            <field name="date_first_response"/>
+                            <field name="followup_count" invisible="not followup_count"/>
+                            <field name="outcome" invisible="not outcome"/>
+                            <field name="closed_by" invisible="closed_by == 'open'"/>
+                            <field name="date_closed" invisible="not date_closed"/>
+                            <field name="is_closed" invisible="1"/>
+                            <field name="user_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Advert" name="advert">
+                            <field name="posting" placeholder="Paste the full advert: job boards remove it within weeks."/>
+                        </page>
+                        <page string="Fit and pay" name="fit">
+                            <group>
+                                <group string="Pay and conditions">
+                                    <field name="currency_id" groups="base.group_multi_currency"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="salary_min"/>
+                                    <field name="salary_max"/>
+                                    <field name="salary_period"/>
+                                    <field name="hours_per_week"/>
+                                    <field name="duration_months"/>
+                                </group>
+                                <group string="What I sent">
+                                    <field name="cv_attachment_id" options="{'no_create': True}"/>
+                                    <field name="letter_attachment_id" options="{'no_create': True}"/>
+                                </group>
+                            </group>
+                            <field name="fit_note" placeholder="Why it fits, and the gaps to address."/>
+                        </page>
+                        <page string="Interviews" name="interviews">
+                            <field name="interview_ids" context="{'default_application_id': id}">
+                                <list>
+                                    <field name="date_start"/>
+                                    <field name="kind"/>
+                                    <field name="interviewers"/>
+                                    <field name="prep_progress" widget="progressbar"/>
+                                    <field name="thanked_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Referees" name="referees">
+                            <field name="reference_ids" context="{'default_application_id': id}">
+                                <list editable="bottom">
+                                    <field name="referee_id"/>
+                                    <field name="state"/>
+                                    <field name="date_named"/>
+                                    <field name="date_warned"/>
+                                    <field name="date_called"/>
+                                    <field name="note"/>
+                                    <button name="action_warned" type="object" string="Warned"
+                                            icon="fa-check" invisible="state != 'named'"/>
+                                    <button name="action_called" type="object" string="Called"
+                                            icon="fa-phone" invisible="state == 'called'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Offer" name="offer" invisible="stage not in ('offer', 'accepted') and not offer_date">
+                            <group>
+                                <group>
+                                    <field name="offer_date"/>
+                                    <field name="offer_deadline"/>
+                                    <field name="offer_salary"/>
+                                    <field name="offer_written"/>
+                                </group>
+                                <group>
+                                    <div class="text-muted" colspan="2">
+                                        Ask for the offer in writing and the date they need an answer by.
+                                        Negotiate before accepting. Do not resign from a current job
+                                        before the agreement is signed.
+                                    </div>
+                                </group>
+                            </group>
+                            <field name="offer_note" placeholder="Trial period, start date, checks, benefits."/>
+                        </page>
+                        <page string="Closing" name="closing" invisible="not outcome and not close_note">
+                            <field name="close_note"/>
+                            <div class="text-muted" invisible="not details_purged">
+                                <field name="details_purged" invisible="1"/>
+                                The details of this application were purged; its log entry remains.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_job_application_view_list" model="ir.ui.view">
+        <field name="name">bf.job.application.list</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <list string="Job applications" decoration-muted="is_closed" decoration-success="stage == 'accepted'">
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="name"/>
+                <field name="employer"/>
+                <field name="channel" optional="show"/>
+                <field name="stage"/>
+                <field name="date_applied" optional="show"/>
+                <field name="date_first_response" optional="hide"/>
+                <field name="response_days" optional="hide"/>
+                <field name="followup_count" optional="hide"/>
+                <field name="outcome" optional="show"/>
+                <field name="closed_by" optional="hide"/>
+                <field name="is_closed" column_invisible="1"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_job_application_view_kanban" model="ir.ui.view">
+        <field name="name">bf.job.application.kanban</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" records_draggable="true" quick_create="false"
+                    class="o_bf_job_kanban">
+                <field name="is_closed"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="name" class="fw-bold"/>
+                        <field name="employer"/>
+                        <div class="text-warning small" t-if="record.criteria_warning.raw_value">
+                            <i class="fa fa-exclamation-triangle" title="Does not meet my criteria"/>
+                            <field name="criteria_warning"/>
+                        </div>
+                        <footer>
+                            <field name="priority" widget="priority"/>
+                            <field name="outcome" class="badge text-bg-secondary ms-1" invisible="not outcome"/>
+                            <div class="ms-auto d-flex align-items-center gap-1">
+                                <field name="date_applied" class="small text-muted"/>
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="bf_job_application_view_search" model="ir.ui.view">
+        <field name="name">bf.job.application.search</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employer"/>
+                <field name="recruiter"/>
+                <filter name="open" string="Open" domain="[('is_closed', '=', False)]"/>
+                <filter name="closed" string="Closed" domain="[('is_closed', '=', True)]"/>
+                <separator/>
+                <filter name="waiting" string="Waiting for a reply"
+                        domain="[('stage', '=', 'applied'), ('is_closed', '=', False)]"/>
+                <filter name="interviewing" string="Interviewing"
+                        domain="[('stage', 'in', ('interview', 'offer')), ('is_closed', '=', False)]"/>
+                <separator/>
+                <filter name="applied_on" string="Applied on" date="date_applied"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="by_stage" string="Stage" context="{'group_by': 'stage'}"/>
+                    <filter name="by_channel" string="Channel" context="{'group_by': 'channel'}"/>
+                    <filter name="by_closed_by" string="Closed by" context="{'group_by': 'closed_by'}"/>
+                    <filter name="by_week" string="Week applied" context="{'group_by': 'date_applied:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_job_application_view_pivot" model="ir.ui.view">
+        <field name="name">bf.job.application.pivot</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <pivot string="Job applications" sample="1">
+                <field name="channel" type="row"/>
+                <field name="closed_by" type="col"/>
+                <field name="response_days" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_job_application_view_graph" model="ir.ui.view">
+        <field name="name">bf.job.application.graph</field>
+        <field name="model">bf.job.application</field>
+        <field name="arch" type="xml">
+            <graph string="Applications per week" type="bar" sample="1">
+                <field name="date_applied" interval="week"/>
+                <field name="stage" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="bf_job_application_action" model="ir.actions.act_window">
+        <field name="name">Applications</field>
+        <field name="res_model">bf.job.application</field>
+        <field name="view_mode">kanban,list,form,pivot,graph,activity</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Track your first job application</p>
+            <p>Paste the advert, note what you sent, and the follow-ups, interviews and
+               thank-you notes are scheduled for you. Only you can see your applications.</p>
+        </field>
+    </record>
+</odoo>

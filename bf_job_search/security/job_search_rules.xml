@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        🔴 Les règles d'isolation. GLOBALES (aucun groupe) : elles s'appliquent à
+        toute personne, administrateurs compris. Le superutilisateur n'y est pas
+        soumis, et un administrateur système peut modifier les règles elles-mêmes.
+
+        Les transitoires aussi : Odoo 18 ne les isole pas par lui-même, et un
+        tableau de bord, une fermeture ou un journal en cours se lisaient sinon
+        d'une personne à l'autre.
+
+        noupdate="0" VOULU : une règle de sécurité suit le code à chaque montée.
+    -->
+    <data noupdate="0">
+        <record id="rule_bf_job_application_own" model="ir.rule">
+            <field name="name">bf.job.application: own records only</field>
+            <field name="model_id" ref="model_bf_job_application"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_interview_own" model="ir.rule">
+            <field name="name">bf.job.interview: own records only</field>
+            <field name="model_id" ref="model_bf_job_interview"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_referee_own" model="ir.rule">
+            <field name="name">bf.job.referee: own records only</field>
+            <field name="model_id" ref="model_bf_job_referee"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_reference_own" model="ir.rule">
+            <field name="name">bf.job.reference: own records only</field>
+            <field name="model_id" ref="model_bf_job_reference"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_criteria_own" model="ir.rule">
+            <field name="name">bf.job.criteria: own records only</field>
+            <field name="model_id" ref="model_bf_job_criteria"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_stats_own" model="ir.rule">
+            <field name="name">bf.job.stats: own records only</field>
+            <field name="model_id" ref="model_bf_job_stats"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_close_wizard_own" model="ir.rule">
+            <field name="name">bf.job.close_wizard: own records only</field>
+            <field name="model_id" ref="model_bf_job_close_wizard"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="rule_bf_job_journal_wizard_own" model="ir.rule">
+            <field name="name">bf.job.journal_wizard: own records only</field>
+            <field name="model_id" ref="model_bf_job_journal_wizard"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- 🔴 ``mail.followers`` se lit par tout
+             interne, sans règle. La liste des abonnés d'une candidature disait qui
+             cherche un emploi, combien de candidatures et depuis quand. Une ligne qui
+             suit une candidature ne se lit que par la personne qu'elle abonne. -->
+        <record id="rule_mail_followers_bf_job_application" model="ir.rule">
+            <field name="name">Followers of a job application: own line only</field>
+            <field name="model_id" ref="mail.model_mail_followers"/>
+            <field name="domain_force">['|', ('res_model', '!=', 'bf.job.application'), ('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</odoo>

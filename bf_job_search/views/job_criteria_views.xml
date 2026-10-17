@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_criteria_view_form" model="ir.ui.view">
+        <field name="name">bf.job.criteria.form</field>
+        <field name="model">bf.job.criteria</field>
+        <field name="arch" type="xml">
+            <form string="My criteria" create="0" delete="0">
+                <sheet>
+                    <div class="text-muted mb-3">
+                        An application that does not meet these criteria is flagged, never dropped: you decide.
+                    </div>
+                    <group>
+                        <group string="What a job must offer">
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="salary_floor"/>
+                            <field name="salary_period"/>
+                            <field name="min_hours_week"/>
+                            <field name="min_duration_months"/>
+                        </group>
+                        <group string="Pace">
+                            <field name="weekly_goal"/>
+                            <field name="first_followup_days"/>
+                            <field name="next_followup_days"/>
+                            <field name="max_followups"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="excluded_employers"/>
+                        <field name="excluded_words"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_job_criteria_action" model="ir.actions.server">
+        <field name="name">My criteria</field>
+        <field name="model_id" ref="model_bf_job_criteria"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_my_criteria()</field>
+    </record>
+</odoo>

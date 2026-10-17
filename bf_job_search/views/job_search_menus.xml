@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_job_search_root" name="Job Search" sequence="45"
+              web_icon="bf_job_search,static/description/icon.png"/>
+    <menuitem id="menu_bf_job_application" name="Applications" parent="menu_bf_job_search_root"
+              action="bf_job_application_action" sequence="10"/>
+    <menuitem id="menu_bf_job_interview" name="Interviews" parent="menu_bf_job_search_root"
+              action="bf_job_interview_action" sequence="20"/>
+    <menuitem id="menu_bf_job_referee" name="Referees" parent="menu_bf_job_search_root"
+              action="bf_job_referee_action" sequence="30"/>
+    <menuitem id="menu_bf_job_stats" name="Dashboard" parent="menu_bf_job_search_root"
+              action="bf_job_stats_action" sequence="40"/>
+    <menuitem id="menu_bf_job_journal" name="Log" parent="menu_bf_job_search_root"
+              action="bf_job_journal_wizard_action" sequence="50"/>
+    <menuitem id="menu_bf_job_criteria" name="My criteria" parent="menu_bf_job_search_root"
+              action="bf_job_criteria_action" sequence="60"/>
+</odoo>

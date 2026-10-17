@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_stats_view_form" model="ir.ui.view">
+        <field name="name">bf.job.stats.form</field>
+        <field name="model">bf.job.stats</field>
+        <field name="arch" type="xml">
+            <form string="Dashboard" create="0" delete="0" edit="1" class="o_bf_job_stats">
+                <sheet>
+                    <group>
+                        <group string="This week">
+                            <field name="this_week"/>
+                            <field name="weekly_goal"/>
+                            <field name="open_count"/>
+                        </group>
+                        <group string="So far">
+                            <field name="applied_total"/>
+                            <field name="response_rate"/>
+                            <field name="interview_rate"/>
+                            <field name="median_response_days"/>
+                        </group>
+                    </group>
+                    <separator string="By channel"/>
+                    <field name="channels_html" nolabel="1"/>
+                    <div class="text-muted small mb-3">
+                        A referral leads to a hire far more often than a cold application: worth asking your network.
+                    </div>
+                    <group>
+                        <group string="Per week">
+                            <field name="weeks"/>
+                            <field name="weeks_html" nolabel="1" colspan="2"/>
+                        </group>
+                        <group string="Who closed">
+                            <field name="closed_html" nolabel="1" colspan="2"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_job_stats_action" model="ir.actions.server">
+        <field name="name">Dashboard</field>
+        <field name="model_id" ref="model_bf_job_stats"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_dashboard()</field>
+    </record>
+</odoo>

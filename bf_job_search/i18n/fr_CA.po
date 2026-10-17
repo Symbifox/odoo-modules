@@ -1,0 +1,2114 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_job_search
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 23:51+0000\n"
+"PO-Revision-Date: 2026-10-16 23:51+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "%s application(s) purged. Their log entries remain."
+msgstr "%s candidature(s) purgée(s). Leurs entrées au journal restent."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_kanban
+msgid "<i class=\"fa fa-exclamation-triangle\" title=\"Does not meet my criteria\"/>"
+msgstr ""
+"<i class=\"fa fa-exclamation-triangle\" title=\"Ne respecte pas mes "
+"critères\"/>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid ""
+"<p>Ask, briefly and politely, what would have made your application "
+"stronger. Not every employer answers; the ones who do are worth keeping in "
+"touch with.</p>"
+msgstr ""
+"<p>Demandez, brièvement et poliment, ce qui aurait rendu votre candidature "
+"plus forte. Tous les employeurs ne répondent pas ; ceux qui répondent valent"
+" la peine qu'on garde le contact.</p>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid ""
+"<p>No news yet: send a short follow-up to ask where the process stands and "
+"confirm your interest. Then click <b>Follow-up sent</b>.</p>"
+msgstr ""
+"<p>Pas encore de nouvelles : envoyez une courte relance pour savoir où en "
+"est le processus et confirmer votre intérêt. Cliquez ensuite sur <b>Relance "
+"envoyée</b>.</p>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid ""
+"<p>No reply after your follow-ups. Silence is common: close this application"
+" as <b>No response</b> and put your energy elsewhere.</p>"
+msgstr ""
+"<p>Aucune réponse après vos relances. Le silence est fréquent : fermez cette"
+" candidature comme <b>Sans réponse</b> et mettez votre énergie ailleurs.</p>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid ""
+"<p>Still no news after your follow-up: one more short message, then click "
+"<b>Follow-up sent</b>.</p>"
+msgstr ""
+"<p>Toujours pas de nouvelles après votre relance : un dernier message court,"
+" puis cliquez sur <b>Relance envoyée</b>.</p>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid ""
+"<p>Thank each interviewer by email: a few sentences, one point from the "
+"conversation, your interest. The interview holds a draft.</p>"
+msgstr ""
+"<p>Remerciez chaque personne qui vous a reçu en entrevue, par courriel : "
+"quelques phrases, un point de la conversation, votre intérêt. L'entrevue "
+"contient un brouillon.</p>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "<p>Warn your referees that they may be called soon: %s.</p>"
+msgstr ""
+"<p>Prévenez vos répondants qu'on pourrait les appeler bientôt : %s.</p>"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "<strong>Does not meet my criteria:</strong>"
+msgstr "<strong>Ne respecte pas mes critères :</strong>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid ""
+"<ul><li>Ask for the offer in writing, and the date they need an answer "
+"by.</li><li>Negotiate before accepting: many employers would pay more if "
+"asked.</li><li>Read the conditions: trial period, start date, "
+"checks.</li><li>Do not resign from a current job before the agreement is "
+"signed.</li></ul>"
+msgstr ""
+"<ul><li>Demandez l'offre par écrit, et la date à laquelle il faut "
+"répondre.</li><li>Négociez avant d'accepter : bien des employeurs paieraient"
+" davantage si on le leur demandait.</li><li>Lisez les conditions : période "
+"d'essai, date d'entrée en fonction, vérifications.</li><li>Ne démissionnez "
+"pas d'un emploi actuel avant que l'entente soit signée.</li></ul>"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid ""
+"<ul><li>Re-read the advert and what you sent.</li><li>Research the "
+"organisation and, if you can, the interviewers.</li><li>Prepare STAR stories"
+" for the main requirements.</li><li>Prepare two or three questions to ask "
+"them.</li><li>Warn your referees.</li><li>Check the place or link, and the "
+"time zone.</li></ul>"
+msgstr ""
+"<ul><li>Relisez l'annonce et ce que vous avez envoyé.</li><li>Renseignez-"
+"vous sur l'organisation et, si possible, sur les personnes qui vous "
+"recevront.</li><li>Préparez des récits STAR pour les principales "
+"exigences.</li><li>Préparez deux ou trois questions à leur "
+"poser.</li><li>Prévenez vos répondants.</li><li>Vérifiez le lieu ou le lien,"
+" et le fuseau horaire.</li></ul>"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__reply_promised_date
+msgid "A date the employer gave. Follow-ups wait until the day after it."
+msgstr ""
+"Une date donnée par l'employeur. Les relances attendent le lendemain de "
+"cette date."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid ""
+"A dated record of your applications: date, employer, position, channel, result.\n"
+"                    Employment Insurance asks claimants to keep such a record for six years and to\n"
+"                    provide it on request."
+msgstr ""
+"Un relevé daté de vos candidatures : date, employeur, poste, canal, résultat.\n"
+"                    L'assurance-emploi demande aux prestataires de garder un tel relevé six ans et de\n"
+"                    le fournir sur demande."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/private.py:0
+msgid "A job application is not sent by email."
+msgstr "Une candidature ne s'envoie pas par courriel."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/private.py:0
+msgid "A job search record is private to the person who keeps it."
+msgstr ""
+"Une fiche de recherche d'emploi est privée à la personne qui la tient."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_referee.py:0
+msgid "A referee can only be named for your own applications."
+msgstr "Un répondant ne peut être nommé que pour vos propres candidatures."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid ""
+"A referral leads to a hire far more often than a cold application: worth "
+"asking your network."
+msgstr ""
+"Une recommandation mène bien plus souvent à une embauche qu'une candidature "
+"spontanée : ça vaut la peine de solliciter votre réseau."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__accepted
+msgid "Accepted"
+msgstr "Acceptée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__active
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_mail_activity
+msgid "Activity"
+msgstr "Activité"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_referee_action
+msgid "Add a referee"
+msgstr "Ajouter un répondant"
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_interview_action
+msgid ""
+"Add one from its application: the preparation and the thank-you note are "
+"scheduled for you."
+msgstr ""
+"Ajoutez-en une depuis sa candidature : la préparation et le remerciement "
+"sont planifiés pour vous."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Add to my calendar"
+msgstr "Ajouter à mon agenda"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__posting
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Advert"
+msgstr "Annonce"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__closing_date
+msgid "Advert closes"
+msgstr "Fin d'affichage"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__source_url
+msgid "Advert link"
+msgstr "Lien de l'annonce"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_close_wizard__ask_feedback
+msgid ""
+"After a refusal: a short, polite request for what would have made the "
+"application stronger."
+msgstr ""
+"Après un refus : une demande courte et polie sur ce qui aurait rendu la "
+"candidature plus forte."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "After the interview"
+msgstr "Après l'entrevue"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__max_followups
+msgid ""
+"After this many follow-ups with no news, you are asked whether to close the "
+"application as 'no response'."
+msgstr ""
+"Après ce nombre de relances sans nouvelles, on vous demande s'il faut fermer"
+" la candidature comme « sans réponse »."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__consent_date
+msgid "Agreed on"
+msgstr "A accepté le"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/mail_activity.py:0
+msgid "An activity can only be placed on your own job search records."
+msgstr ""
+"Une activité ne se pose que sur vos propres fiches de recherche d'emploi."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/mail_activity.py:0
+msgid "An activity on a job search record stays with the person who keeps it."
+msgstr ""
+"Une activité sur une fiche de recherche d'emploi reste à la personne qui la "
+"tient."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_criteria_view_form
+msgid ""
+"An application that does not meet these criteria is flagged, never dropped: "
+"you decide."
+msgstr ""
+"Une candidature qui ne respecte pas ces critères est signalée, jamais "
+"écartée : vous décidez."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid "An interview can only belong to one of your applications."
+msgstr "Une entrevue ne peut appartenir qu'à l'une de vos candidatures."
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_offer
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_offer
+msgid "Answer the offer"
+msgstr "Répondre à l'offre"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__offer_deadline
+msgid "Answer the offer by"
+msgstr "Répondre à l'offre d'ici le"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+msgid "Answered"
+msgstr "Ont répondu"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__application_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__application_id
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Application"
+msgstr "Candidature"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: model:ir.actions.act_window,name:bf_job_search.bf_job_application_action
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__application_ids
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_application
+msgid "Applications"
+msgstr "Candidatures"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_graph
+msgid "Applications per week"
+msgstr "Candidatures par semaine"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__weekly_goal
+msgid "Applications per week (goal)"
+msgstr "Candidatures par semaine (objectif)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__applied_total
+msgid "Applications sent"
+msgstr "Candidatures envoyées"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__applied
+msgid "Applied"
+msgstr "Envoyée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__date_applied
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Applied on"
+msgstr "Envoyée le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__this_week
+msgid "Applied this week"
+msgstr "Envoyées cette semaine"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_referee_action
+msgid ""
+"Ask before naming anyone, note when they agreed, and warn them before an "
+"employer calls."
+msgstr ""
+"Demandez avant de nommer quelqu'un, notez quand la personne a accepté, et "
+"prévenez-la avant qu'un employeur l'appelle."
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_feedback
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_feedback
+msgid "Ask for feedback"
+msgstr "Demander une rétroaction"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid ""
+"Ask for the offer in writing and the date they need an answer by.\n"
+"                                        Negotiate before accepting. Do not resign from a current job\n"
+"                                        before the agreement is signed."
+msgstr ""
+"Demandez l'offre par écrit et la date à laquelle il faut répondre.\n"
+"                                        Négociez avant d'accepter. Ne démissionnez pas d'un emploi actuel\n"
+"                                        avant que l'entente soit signée."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__offer_written
+msgid "Ask for the offer in writing before accepting it."
+msgstr "Demandez l'offre par écrit avant de l'accepter."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__assessment
+msgid "Assessment or test"
+msgstr "Évaluation ou test"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__channels_html
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "By channel"
+msgstr "Par canal"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid ""
+"By email, the next day. A few sentences: thank them, recall one point,\n"
+"                                confirm your interest. Copy it into your mailbox and replace the brackets."
+msgstr ""
+"Par courriel, le lendemain. Quelques phrases : remerciez, rappelez un point,\n"
+"                                confirmez votre intérêt. Copiez-le dans votre messagerie et remplacez les crochets."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__cv_attachment_id
+msgid "CV sent"
+msgstr "CV envoyé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__calendar_event_id
+msgid "Calendar event"
+msgstr "Événement d'agenda"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Called"
+msgstr "Appelé"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_reference__state__called
+msgid "Called by the employer"
+msgstr "Appelé par l'employeur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__date_called
+msgid "Called on"
+msgstr "Appelé le"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_close_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__channel
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Channel"
+msgstr "Canal"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "Choose a date first."
+msgstr "Choisissez d'abord une date."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Choose a file attached to this application."
+msgstr "Choisissez un fichier joint à cette candidature."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_close_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_close_wizard
+msgid "Close a job application"
+msgstr "Fermer une candidature"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_close_wizard_view_form
+msgid "Close the application"
+msgstr "Fermer la candidature"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Closed"
+msgstr "Fermées"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__outcome
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__outcome
+msgid "Closed as"
+msgstr "Fermée comme"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__closed_by
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Closed by"
+msgstr "Fermée par"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__date_closed
+msgid "Closed on"
+msgstr "Fermée le"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Closed: %s."
+msgstr "Fermée : %s."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Closing"
+msgstr "Fermeture"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__close_note
+msgid "Closing note"
+msgstr "Note de fermeture"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_close_wizard_view_form
+msgid ""
+"Closing says who ended the application: the employer, you, or nobody.\n"
+"                    That is what makes your response rate readable."
+msgstr ""
+"Fermer, c'est dire qui a mis fin à la candidature : l'employeur, vous, ou personne.\n"
+"                    C'est ce qui rend votre taux de réponse lisible."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__color
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__duration_months
+msgid "Contract length (months)"
+msgstr "Durée du contrat (mois)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__first_followup_days
+msgid ""
+"Counted from the application date. When the employer promised a reply by a "
+"date, the follow-up waits until the day after it."
+msgstr ""
+"Compté à partir de la date de candidature. Quand l'employeur a promis une "
+"réponse pour une date, la relance attend le lendemain de cette date."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__letter_attachment_id
+msgid "Cover letter sent"
+msgstr "Lettre envoyée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__create_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__create_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__currency_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: model:ir.actions.server,name:bf_job_search.bf_job_stats_action
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_stats
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "Date applied"
+msgstr "Date de candidature"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__response_days
+msgid "Days to first response"
+msgstr "Jours avant la première réponse"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__details_purged
+msgid "Details purged"
+msgstr "Détails purgés"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__display_name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_mail_followers
+msgid "Document Followers"
+msgstr "Abonnés au document"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__criteria_warning
+msgid "Does not meet my criteria"
+msgstr "Ne respecte pas mes critères"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__duration
+msgid "Duration (hours)"
+msgstr "Durée (heures)"
+
+#. module: bf_job_search
+#: model:ir.model.constraint,message:bf_job_search.constraint_bf_job_criteria_user_unique
+msgid "Each person has one set of criteria."
+msgstr "Chaque personne a un seul jeu de critères."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "Assistant de rédaction de courriel"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__employer
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__employer
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Employer"
+msgstr "Employeur"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__employer_site
+msgid "Employer's website"
+msgstr "Site de l'employeur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__excluded_employers
+msgid "Employers to avoid"
+msgstr "Employeurs à éviter"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid "Export"
+msgstr "Exporter"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid "Export the log"
+msgstr "Exporter le journal"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__file_data
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__file_name
+msgid "File Name"
+msgstr "Nom de fichier"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__first_followup_days
+msgid "First follow-up after (days)"
+msgstr "Première relance après (jours)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__date_first_response
+msgid "First response on"
+msgstr "Première réponse le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__priority
+msgid "Fit"
+msgstr "Adéquation"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Fit and pay"
+msgstr "Adéquation et salaire"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__fit_note
+msgid "Fit note"
+msgstr "Note d'adéquation"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__min_duration_months
+msgid ""
+"Fixed-term roles shorter than this are flagged. Permanent roles always pass."
+msgstr ""
+"Les contrats à durée déterminée plus courts sont signalés. Un poste "
+"permanent passe toujours."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__salary_period
+msgid "Floor period"
+msgstr "Période du plancher"
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_followup
+msgid "Follow up"
+msgstr "Relancer"
+
+#. module: bf_job_search
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_followup
+msgid "Follow up on the application"
+msgstr "Relancer la candidature"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Follow-up %s sent."
+msgstr "Relance %s envoyée."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_criteria.py:0
+msgid "Follow-up delays are at least one day; counts cannot be negative."
+msgstr ""
+"Les délais de relance sont d'au moins un jour ; les nombres ne peuvent pas "
+"être négatifs."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Follow-up sent"
+msgstr "Relance envoyée"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Follow-ups are for applications waiting for a reply."
+msgstr "Les relances servent aux candidatures qui attendent une réponse."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__max_followups
+msgid "Follow-ups before closing"
+msgstr "Relances avant de fermer"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__followup_count
+msgid "Follow-ups sent"
+msgstr "Relances envoyées"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_referee__relationship
+msgid "For example: my manager at Acme, 2019-2023."
+msgstr "Par exemple : ma gestionnaire chez Acme, 2019-2023."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__date_from
+msgid "From"
+msgstr "Du"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+msgid "Goal"
+msgstr "Objectif"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__priority__2
+msgid "Good fit"
+msgstr "Bonne adéquation"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__closed_by__hired
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Hired"
+msgstr "Embauché"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__hours_per_week
+msgid "Hours per week"
+msgstr "Heures par semaine"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__in_person
+msgid "In person"
+msgstr "En personne"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__interview
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Interview"
+msgstr "Entrevue"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__interview_count
+msgid "Interview Count"
+msgstr "Nombre d'entrevues"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__interview_rate
+msgid "Interview rate (%)"
+msgstr "Taux d'entrevue (%)"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid "Interview: %s"
+msgstr "Entrevue : %s"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__interviewers
+msgid "Interviewers"
+msgstr "Personnes qui vous reçoivent"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Interviewing"
+msgstr "En entrevue"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+#: code:addons/bf_job_search/models/job_stats.py:0
+#: model:ir.actions.act_window,name:bf_job_search.bf_job_interview_action
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__interview_ids
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_interview
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_calendar
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_list
+msgid "Interviews"
+msgstr "Entrevues"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__is_closed
+msgid "Is Closed"
+msgstr "Est fermée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Jane Doe <jane@example.com>"
+msgstr "Jane Doe <jane@example.com>"
+
+#. module: bf_job_search
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_search_root
+msgid "Job Search"
+msgstr "Recherche d'emploi"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_application
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Job application"
+msgstr "Candidature"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_list
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_pivot
+msgid "Job applications"
+msgstr "Candidatures"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__job_board
+msgid "Job board"
+msgstr "Site d'emplois"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_interview
+msgid "Job interview"
+msgstr "Entrevue d'embauche"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_stats
+msgid "Job search dashboard"
+msgstr "Tableau de bord de la recherche d'emploi"
+
+#. module: bf_job_search
+#: model:ir.actions.act_window,name:bf_job_search.bf_job_journal_wizard_action
+#: model:ir.model,name:bf_job_search.model_bf_job_journal_wizard
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid "Job search log"
+msgstr "Journal de recherche d'emploi"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_private_name
+msgid "Job search: neutral name for whoever cannot read the record"
+msgstr "Recherche d'emploi : nom neutre pour qui ne peut pas lire la fiche"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_private_thread
+msgid "Job search: private thread (internal notes only)"
+msgstr "Recherche d'emploi : fil privé (notes internes seulement)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__write_uid
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__write_date
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__last_briefed
+msgid "Last briefed on"
+msgstr "Dernière mise au courant le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__last_followup_date
+msgid "Last follow-up on"
+msgstr "Dernière relance le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__duration_months
+msgid "Leave at 0 for a permanent role."
+msgstr "Laissez 0 pour un poste permanent."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__line_count
+msgid "Line Count"
+msgstr "Nombre de lignes"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__location
+msgid "Location"
+msgstr "Lieu"
+
+#. module: bf_job_search
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_journal
+msgid "Log"
+msgstr "Journal"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_logistics
+msgid "Logistics checked"
+msgstr "Logistique vérifiée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__salary_floor
+msgid ""
+"Lowest pay you would accept. Compared with an application's top of the "
+"range, only when both use the same currency and period."
+msgstr ""
+"Le plus bas salaire que vous accepteriez. Comparé au haut de la fourchette "
+"d'une candidature, seulement quand les deux sont dans la même devise et la "
+"même période."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__closed_by__me
+msgid "Me"
+msgstr "Moi"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__median_response_days
+msgid "Median days to a response"
+msgstr "Jours médians avant une réponse"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_search
+msgid "Message Search"
+msgstr "Recherche de messages"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à utiliser seulement dans les recherches"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de messages, à utiliser seulement dans les recherches"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__min_duration_months
+msgid "Minimum contract length (months)"
+msgstr "Durée minimale du contrat (mois)"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__min_hours_week
+msgid "Minimum hours per week"
+msgstr "Heures minimales par semaine"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__priority__1
+msgid "Moderate fit"
+msgstr "Adéquation moyenne"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_criteria.py:0
+#: model:ir.actions.server,name:bf_job_search.bf_job_criteria_action
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_criteria
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_criteria_view_form
+msgid "My criteria"
+msgstr "Mes critères"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_criteria
+msgid "My job search criteria"
+msgstr "Mes critères de recherche d'emploi"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__name
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_referee_view_form
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_reference__state__named
+msgid "Named"
+msgstr "Nommé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__reference_ids
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_referee_view_form
+msgid "Named for"
+msgstr "Nommé pour"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__date_named
+msgid "Named on"
+msgstr "Nommé le"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__network
+msgid "Network"
+msgstr "Réseau"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__next_followup_days
+msgid "Next follow-up after (days)"
+msgstr "Relance suivante après (jours)"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+msgid "No application sent yet."
+msgstr "Aucune candidature envoyée pour l'instant."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "No closed application to purge before this date."
+msgstr "Aucune candidature fermée à purger avant cette date."
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_interview_action
+msgid "No interview yet"
+msgstr "Pas encore d'entrevue"
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_no_news
+msgid "No news: close?"
+msgstr "Pas de nouvelles : fermer ?"
+
+#. module: bf_job_search
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_no_news
+msgid "No reply after your follow-ups"
+msgstr "Aucune réponse après vos relances"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__no_response
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__no_response
+msgid "No response"
+msgstr "Sans réponse"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__closed_by__nobody
+msgid "Nobody (no response)"
+msgstr "Personne (sans réponse)"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__not_pursued
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__not_pursued
+msgid "Not pursued"
+msgstr "Pas poursuivie"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__note
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__note
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__offer
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Offer"
+msgstr "Offre"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__offer_note
+msgid "Offer conditions"
+msgstr "Conditions de l'offre"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__declined
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__declined
+msgid "Offer declined"
+msgstr "Offre déclinée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__offer_date
+msgid "Offer received on"
+msgstr "Offre reçue le"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_close_wizard.py:0
+msgid "One of these applications is already closed."
+msgstr "Une de ces candidatures est déjà fermée."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "One or two points from the conversation, written right after."
+msgstr "Un ou deux points de la conversation, notés tout de suite après."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__excluded_words
+msgid ""
+"One per line, for example a sector. Matched in the position and the advert, "
+"ignoring case."
+msgstr ""
+"Un par ligne, par exemple un secteur. Cherché dans le poste et l'annonce, "
+"sans tenir compte de la casse."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_interview__interviewers
+msgid ""
+"One per line, with their email address when you have it: Jane Doe "
+"<jane@example.com>"
+msgstr ""
+"Une par ligne, avec son adresse courriel quand vous l'avez : Jane Doe "
+"<jane@example.com>"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__excluded_employers
+msgid "One per line. Matched anywhere in the employer's name, ignoring case."
+msgstr ""
+"Un par ligne. Cherché n'importe où dans le nom de l'employeur, sans tenir "
+"compte de la casse."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "Only applications closed more than 30 days ago can be purged."
+msgstr ""
+"Seules les candidatures fermées depuis plus de 30 jours peuvent être "
+"purgées."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Open"
+msgstr "Ouvertes"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__open_count
+msgid "Open applications"
+msgstr "Candidatures ouvertes"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__organisation
+msgid "Organisation"
+msgstr "Organisation"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__other
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_criteria_view_form
+msgid "Pace"
+msgstr "Rythme"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__panel
+msgid "Panel"
+msgstr "Comité"
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_application_action
+msgid ""
+"Paste the advert, note what you sent, and the follow-ups, interviews and\n"
+"               thank-you notes are scheduled for you. Only you can see your applications."
+msgstr ""
+"Collez l'annonce, notez ce que vous avez envoyé : les relances, les entrevues et\n"
+"               les remerciements sont planifiés pour vous. Vous seul voyez vos candidatures."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Paste the full advert: job boards remove it within weeks."
+msgstr ""
+"Collez l'annonce complète : les sites d'emplois la retirent en quelques "
+"semaines."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Pay and conditions"
+msgstr "Salaire et conditions"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__salary_period
+msgid "Pay period"
+msgstr "Période de paie"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__salary_period__hour
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_criteria__salary_period__hour
+msgid "Per hour"
+msgstr "Par heure"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__salary_period__month
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_criteria__salary_period__month
+msgid "Per month"
+msgstr "Par mois"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__weeks_html
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "Per week"
+msgstr "Par semaine"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__salary_period__year
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_criteria__salary_period__year
+msgid "Per year"
+msgstr "Par année"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__user_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__user_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__user_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__user_id
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__user_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__screening
+msgid "Phone screening"
+msgstr "Entrevue téléphonique"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__location
+msgid "Place or link"
+msgstr "Lieu ou lien"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_interview__prep_logistics
+msgid "Place or link, who to ask for, time zone."
+msgstr "Lieu ou lien, qui demander, fuseau horaire."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__name
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__position
+msgid "Position"
+msgstr "Poste"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__cancelled
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__cancelled
+msgid "Position cancelled"
+msgstr "Poste annulé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_activity_id
+msgid "Prep Activity"
+msgstr "Activité de préparation"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_progress
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Preparation"
+msgstr "Préparation"
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_prepare
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_prepare
+msgid "Prepare the interview"
+msgstr "Préparer l'entrevue"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Prepared"
+msgstr "Préparée"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__preparing
+msgid "Preparing"
+msgstr "En préparation"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/private.py:0
+msgid "Private record"
+msgstr "Fiche privée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__purge_before
+msgid "Purge details of applications closed before"
+msgstr "Purger les détails des candidatures fermées avant le"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid "Purge the details"
+msgstr "Purger les détails"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_questions
+msgid "Questions to ask them ready"
+msgstr "Questions à leur poser prêtes"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__recruiter
+msgid "Recruiter"
+msgstr "Recruteur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__recruiter
+msgid "Recruiter or agency"
+msgstr "Recruteur ou agence"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_referee
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__referee_id
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_referee_view_form
+msgid "Referee"
+msgstr "Répondant"
+
+#. module: bf_job_search
+#: model:ir.model,name:bf_job_search.model_bf_job_reference
+msgid "Referee named for an application"
+msgstr "Répondant nommé pour une candidature"
+
+#. module: bf_job_search
+#: model:ir.actions.act_window,name:bf_job_search.bf_job_referee_action
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__reference_ids
+#: model:ir.ui.menu,name:bf_job_search.menu_bf_job_referee
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_referee_view_list
+msgid "Referees"
+msgstr "Répondants"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_referees
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Referees warned"
+msgstr "Répondants prévenus"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__referral
+msgid "Referral"
+msgstr "Recommandation"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__referred_by
+msgid "Referred by"
+msgstr "Recommandé par"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__rejected
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__rejected
+msgid "Rejected by the employer"
+msgstr "Refusée par l'employeur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__relationship
+msgid "Relationship"
+msgstr "Lien"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_close_wizard__ask_feedback
+msgid "Remind me to ask for feedback"
+msgstr "Me rappeler de demander une rétroaction"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid ""
+"Remove the details of these closed applications? This cannot be undone."
+msgstr ""
+"Effacer les détails de ces candidatures fermées ? Cette action est "
+"irréversible."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_journal_wizard_view_form
+msgid ""
+"Removes the advert, salary, notes, files and interviews of applications closed\n"
+"                        before this date. Their log entries remain."
+msgstr ""
+"Efface l'annonce, le salaire, les notes, les fichiers et les entrevues des candidatures fermées\n"
+"                        avant cette date. Leurs entrées au journal restent."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Reopened."
+msgstr "Rouverte."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__reply_promised_date
+msgid "Reply promised by"
+msgstr "Réponse promise d'ici le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_research
+msgid "Researched the organisation"
+msgstr "Renseigné sur l'organisation"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+msgid "Response rate"
+msgstr "Taux de réponse"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__response_rate
+msgid "Response rate (%)"
+msgstr "Taux de réponse (%)"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Response received"
+msgstr "Réponse reçue"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "Response received."
+msgstr "Réponse reçue."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "Result"
+msgstr "Résultat"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "Result date"
+msgstr "Date du résultat"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__prep_star
+msgid "STAR stories ready"
+msgstr "Récits STAR prêts"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__salary_floor
+msgid "Salary floor"
+msgstr "Plancher salarial"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__salary_min
+msgid "Salary from"
+msgstr "Salaire à partir de"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__offer_salary
+msgid "Salary offered"
+msgstr "Salaire offert"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__salary_max
+msgid "Salary up to"
+msgstr "Salaire jusqu'à"
+
+#. module: bf_job_search
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_thanks
+msgid "Send a thank-you note"
+msgstr "Envoyer un remerciement"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid "Set the date and time of the interview first."
+msgstr "Fixez d'abord la date et l'heure de l'entrevue."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_criteria__weekly_goal
+msgid ""
+"Shown on the dashboard. Research links the intensity of a search to finding "
+"a job, and Employment Insurance expects a sustained search."
+msgstr ""
+"Affiché au tableau de bord. La recherche lie l'intensité de la recherche "
+"d'emploi à l'embauche, et l'assurance-emploi attend une recherche soutenue."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_interview__prep_star
+msgid "Situation, task, action, result, for the advert's main requirements."
+msgstr ""
+"Situation, tâche, action, résultat, pour les principales exigences de "
+"l'annonce."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "So far"
+msgstr "Jusqu'ici"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__stage__spotted
+msgid "Spotted"
+msgstr "Repérée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__date_spotted
+msgid "Spotted on"
+msgstr "Repérée le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__stage
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Stage"
+msgstr "Étape"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__state
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__closed_by__open
+msgid "Still open"
+msgstr "Toujours ouverte"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__priority__0
+msgid "Stretch"
+msgstr "Ambitieuse"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__priority__3
+msgid "Strong fit"
+msgstr "Forte adéquation"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid ""
+"Subject: Thank you - %(position)s\n"
+"\n"
+"Hello %(name)s,\n"
+"\n"
+"Thank you for your time today. I enjoyed our conversation, in particular [one point from the interview].\n"
+"\n"
+"It confirmed my interest in the %(position)s role, and I would be glad to answer any further question.\n"
+"\n"
+"Kind regards,"
+msgstr ""
+"Objet : Merci - %(position)s\n"
+"\n"
+"Bonjour %(name)s,\n"
+"\n"
+"Merci du temps que vous m'avez accordé aujourd'hui. J'ai apprécié notre conversation, en particulier [un point de l'entrevue].\n"
+"\n"
+"Elle a confirmé mon intérêt pour le poste de %(position)s, et je répondrai avec plaisir à toute autre question.\n"
+"\n"
+"Cordialement,"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__technical
+msgid "Technical or case"
+msgstr "Technique ou étude de cas"
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_thanks
+msgid "Thank the interviewers"
+msgstr "Remercier les personnes rencontrées"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__thank_you_draft
+msgid "Thank-you draft"
+msgstr "Brouillon de remerciement"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Thank-you draft, one per interviewer"
+msgstr "Brouillon de remerciement, un par personne rencontrée"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid "Thank-you note sent (%s)."
+msgstr "Remerciement envoyé (%s)."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_interview_view_form
+msgid "Thank-you sent"
+msgstr "Remerciement envoyé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__thanked_date
+msgid "Thank-you sent on"
+msgstr "Remerciement envoyé le"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__thanks_activity_id
+msgid "Thanks Activity"
+msgstr "Activité de remerciement"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__details_purged
+msgid ""
+"The advert, salary, notes and files were removed; the log entry remains."
+msgstr ""
+"L'annonce, le salaire, les notes et les fichiers ont été effacés ; l'entrée "
+"au journal reste."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "The details of this application were purged; its log entry remains."
+msgstr ""
+"Les détails de cette candidature ont été purgés ; son entrée au journal "
+"reste."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__closed_by__employer
+msgid "The employer"
+msgstr "L'employeur"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__cv_attachment_id
+msgid "The exact version you sent. Attach it to this application first."
+msgstr ""
+"La version exacte que vous avez envoyée. Joignez-la d'abord à cette "
+"candidature."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__date_first_response
+msgid "The first reply of any kind: refusal, interview, question."
+msgstr "La première réponse, quelle qu'elle soit : refus, entrevue, question."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__posting
+msgid ""
+"The full advert. Job boards remove it within weeks; keep it to prepare the "
+"interview."
+msgstr ""
+"L'annonce complète. Les sites d'emplois la retirent en quelques semaines ; "
+"gardez-la pour préparer l'entrevue."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_journal_wizard.py:0
+msgid "The start date is after the end date."
+msgstr "La date de début est postérieure à la date de fin."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/wizard/job_close_wizard.py:0
+msgid "There is no application of yours to close."
+msgstr "Vous n'avez aucune candidature à fermer."
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "This application is closed. Reopen it first."
+msgstr "Cette candidature est fermée. Rouvrez-la d'abord."
+
+#. module: bf_job_search
+#: model:ir.model.constraint,message:bf_job_search.constraint_bf_job_reference_referee_once
+msgid "This referee is already named for this application."
+msgstr "Ce répondant est déjà nommé pour cette candidature."
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "This week"
+msgstr "Cette semaine"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_referee__times_named
+msgid "Times Named"
+msgstr "Fois nommé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_journal_wizard__date_to
+msgid "To"
+msgstr "Jusqu'au"
+
+#. module: bf_job_search
+#: model_terms:ir.actions.act_window,help:bf_job_search.bf_job_application_action
+msgid "Track your first job application"
+msgstr "Suivez votre première candidature"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__offer_note
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Trial period, start date, checks, benefits."
+msgstr "Période d'essai, date d'entrée en fonction, vérifications, avantages."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__channel__unsolicited
+msgid "Unsolicited application"
+msgstr "Candidature spontanée"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_interview__kind__video
+msgid "Video call"
+msgstr "Appel vidéo"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Waiting for a reply"
+msgstr "En attente de réponse"
+
+#. module: bf_job_search
+#: model:mail.activity.type,name:bf_job_search.mail_act_job_referees
+#: model:mail.activity.type,summary:bf_job_search.mail_act_job_referees
+msgid "Warn your referees"
+msgstr "Prévenir vos répondants"
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_reference__state__warned
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Warned"
+msgstr "Prévenu"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_reference__date_warned
+msgid "Warned on"
+msgstr "Prévenu le"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_search
+msgid "Week applied"
+msgstr "Semaine de candidature"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_stats.py:0
+msgid "Week of"
+msgstr "Semaine du"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__weekly_goal
+msgid "Weekly goal"
+msgstr "Objectif hebdomadaire"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__weeks
+msgid "Weeks shown"
+msgstr "Semaines affichées"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "What I sent"
+msgstr "Ce que j'ai envoyé"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_criteria_view_form
+msgid "What a job must offer"
+msgstr "Ce qu'un emploi doit offrir"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_referee__note
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_referee_view_form
+msgid "What they can speak to; anything to remind them of."
+msgstr "Ce dont la personne peut témoigner ; ce qu'il faut lui rappeler."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__note
+msgid "What was discussed"
+msgstr "Ce qui a été discuté"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_interview__date_start
+msgid "When"
+msgstr "Quand"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_referee__consent_date
+msgid "When they agreed to be your referee. Ask before naming anyone."
+msgstr ""
+"Quand la personne a accepté d'être votre répondante. Demandez avant de "
+"nommer quelqu'un."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_stats__closed_html
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_stats_view_form
+msgid "Who closed"
+msgstr "Qui a fermé"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__closed_by
+msgid ""
+"Who ended the application. Reading the response rate depends on it: a role "
+"you dropped is not a refusal."
+msgstr ""
+"Qui a mis fin à la candidature. La lecture du taux de réponse en dépend : un"
+" poste que vous avez laissé tomber n'est pas un refus."
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_application__fit_note
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "Why it fits, and the gaps to address."
+msgstr "Pourquoi le poste vous convient, et les écarts à combler."
+
+#. module: bf_job_search
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_application__outcome__withdrawn
+#: model:ir.model.fields.selection,name:bf_job_search.selection__bf_job_close_wizard__outcome__withdrawn
+msgid "Withdrawn"
+msgstr "Retirée"
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_criteria__excluded_words
+msgid "Words to avoid"
+msgstr "Mots à éviter"
+
+#. module: bf_job_search
+#: model:ir.model.fields,help:bf_job_search.field_bf_job_interview__note
+msgid "Write one or two points right after: the thank-you note recalls one."
+msgstr ""
+"Notez un ou deux points tout de suite après : le remerciement en rappelle "
+"un."
+
+#. module: bf_job_search
+#: model:ir.model.fields,field_description:bf_job_search.field_bf_job_application__offer_written
+msgid "Written offer received"
+msgstr "Offre écrite reçue"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_interview.py:0
+msgid "[name]"
+msgstr "[nom]"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "contract shorter than my minimum"
+msgstr "contrat plus court que mon minimum"
+
+#. module: bf_job_search
+#: model_terms:ir.ui.view,arch_db:bf_job_search.bf_job_application_view_form
+msgid "e.g. Systems Analyst"
+msgstr "ex. Analyste de systèmes"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "employer on my list to avoid"
+msgstr "employeur sur ma liste à éviter"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "fewer hours than my minimum"
+msgstr "moins d'heures que mon minimum"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "mentions: %s"
+msgstr "mentionne : %s"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "pay below my floor"
+msgstr "salaire sous mon plancher"
+
+#. module: bf_job_search
+#. odoo-python
+#: code:addons/bf_job_search/models/job_application.py:0
+msgid "pay not compared (other currency or period)"
+msgstr "salaire non comparé (autre devise ou période)"

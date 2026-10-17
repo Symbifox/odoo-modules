@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les rappels d'une candidature. Liés au modèle : ils ne s'offrent pas ailleurs. -->
+    <data noupdate="1">
+        <record id="mail_act_job_followup" model="mail.activity.type">
+            <field name="name">Follow up</field>
+            <field name="summary">Follow up on the application</field>
+            <field name="icon">fa-reply</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="mail_act_job_no_news" model="mail.activity.type">
+            <field name="name">No news: close?</field>
+            <field name="summary">No reply after your follow-ups</field>
+            <field name="icon">fa-hourglass-end</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">51</field>
+        </record>
+        <record id="mail_act_job_prepare" model="mail.activity.type">
+            <field name="name">Prepare the interview</field>
+            <field name="summary">Prepare the interview</field>
+            <field name="icon">fa-list-ul</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">52</field>
+        </record>
+        <record id="mail_act_job_thanks" model="mail.activity.type">
+            <field name="name">Thank the interviewers</field>
+            <field name="summary">Send a thank-you note</field>
+            <field name="icon">fa-envelope-o</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">53</field>
+        </record>
+        <record id="mail_act_job_referees" model="mail.activity.type">
+            <field name="name">Warn your referees</field>
+            <field name="summary">Warn your referees</field>
+            <field name="icon">fa-phone</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">54</field>
+        </record>
+        <record id="mail_act_job_offer" model="mail.activity.type">
+            <field name="name">Answer the offer</field>
+            <field name="summary">Answer the offer</field>
+            <field name="icon">fa-handshake-o</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">55</field>
+        </record>
+        <record id="mail_act_job_feedback" model="mail.activity.type">
+            <field name="name">Ask for feedback</field>
+            <field name="summary">Ask for feedback</field>
+            <field name="icon">fa-comment-o</field>
+            <field name="res_model">bf.job.application</field>
+            <field name="sequence">56</field>
+        </record>
+    </data>
+</odoo>

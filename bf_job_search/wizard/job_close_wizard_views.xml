@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_job_close_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.job.close.wizard.form</field>
+        <field name="model">bf.job.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Close the application">
+                <field name="application_ids" invisible="1"/>
+                <group>
+                    <field name="outcome" widget="radio"/>
+                    <field name="ask_feedback" invisible="outcome != 'rejected'"/>
+                    <field name="note"/>
+                </group>
+                <div class="text-muted">
+                    Closing says who ended the application: the employer, you, or nobody.
+                    That is what makes your response rate readable.
+                </div>
+                <footer>
+                    <button name="action_close" type="object" string="Close" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
