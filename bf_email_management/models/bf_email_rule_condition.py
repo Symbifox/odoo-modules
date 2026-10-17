@@ -26,9 +26,10 @@ condition, ce qui lui donnait plus de droits qu'il n'en a. Trois gardes, chacune
 
 Two notes on what a clause can honestly see:
 
-- ``raw_headers`` is filled by the IMAP ingestion path. Chatter/gateway rows
-  usually have none, so a header clause simply does not match them — it never
-  raises. Same for ``body``: the engine reads ``body_text`` since. It
+- ``raw_headers`` is filled by the IMAP ingestion path, and by the gateway
+  projection when Odoo kept the original. A chatter row, or a gateway row
+  without its original, has none until the IMAP mirror sees its copy: a
+  header clause simply does not match it — it never raises. Same for ``body``: the engine reads ``body_text`` since. It
   used to read ``body_preview``, the first 300 characters, so a rule written on
   a word that appears in the second paragraph never fired, silently. The
   haystack is still capped below.
@@ -598,6 +599,13 @@ class BfEmailRuleCondition(models.Model):
         the way the sender wrote them — a continuation line starts with a space
         or a tab and belongs to the header above it.
         """
+        # Choix délibéré : une condition sur
+        # en-tête ne voit pas les courriels de la passerelle ni du chatter.
+        # Ils n'avaient pas d'en-têtes jusque-là ; les leur rendre aurait fait
+        # naître « Traité » (règle List-Unsubscribe) des courriels rangés sur
+        # une fiche. Les signaux et les gardes du transfert les lisent, eux.
+        if record.source in ("chatter", "gateway"):
+            return ""
         blob = record.raw_headers or ""
         if not self.header_name:
             return blob

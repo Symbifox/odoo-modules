@@ -4327,12 +4327,19 @@ class BfEmail(models.Model):
             thread_root = cursor.message_id
             cursor = cursor.parent_id
 
+        # La passerelle ne garde pas les en-têtes, mais les serveurs
+        # réglés « Garder l'original » joignent le message reçu. Et Odoo garde
+        # le pliage de l'objet (« …Consent\n Planner… ») et perd les lettres
+        # d'un objet 8 bits : on le déplie, et on le relit dans l'original.
+        raw_headers = self._bf_entetes_du_message(msg)
+
         return {
             "date": msg.date,
-            "email_from": msg.email_from or "",
+            "email_from": bf_email_imap.unfold_display(msg.email_from or ""),
             "email_to": email_to_str,
             "email_cc": email_cc_str,
-            "subject": msg.subject or "",
+            "subject": self._bf_objet_repare(msg.subject or "", raw_headers),
+            "raw_headers": raw_headers,
             "direction": direction,
             "source": "gateway" if msg.message_type == "email" else "chatter",
             "message_id_header": msg.message_id or False,
@@ -4352,6 +4359,132 @@ class BfEmail(models.Model):
             ),
             "company_id": self.env.company.id,
         }
+
+    @api.model
+    def _bf_entetes_du_message(self, message):
+        """En-têtes de l'original qu'Odoo joint à un message reçu, ou "".
+
+        Un serveur de réception réglé « Garder l'original » joint le message
+        reçu au ``mail.message`` sous le nom ``original_email.eml``, AVANT les
+        pièces du message (``_message_parse_extract_payload`` l'ajoute en tête
+        de liste, et toutes les pièces naissent d'un seul ``create``) : c'est
+        donc la pièce de ce nom à l'id le plus BAS. On ne lit qu'elle.
+
+        🔴 Un expéditeur peut joindre son propre ``original_email.eml``, avec
+        le Message-ID de son message et de faux résultats SPF ou DKIM (la
+        plainte de pourriel, ``_report_evidence``, les cite ; le désabonnement
+        en un clic poste vers l'URL lue). Il passe APRÈS celui d'Odoo, donc
+        jamais lu. Et si un serveur de réception actif ne garde pas
+        l'original, la seule pièce de ce nom peut être celle de l'expéditeur :
+        on n'en lit alors aucune. Mesuré sur une boîte réelle : des réponses portent 2 à 5
+        « originaux », le premier est le vrai.
+        """
+        if not message or message.message_type != "email":
+            return ""
+        wanted = bf_email_imap.normalize_message_id(message.message_id)
+        if not wanted or not self._bf_originaux_fiables():
+            return ""
+        # La toute PREMIÈRE pièce du message, et posée par la passerelle
+        # (`_process_attachments_for_post` y écrit `description` = nom). Le
+        # « Classer » d'une ligne IMAP (`_materialize_email_attachments`) et
+        # l'import par l'outil MCP créent les pièces du courriel sans
+        # description : une pièce « original_email.eml » de l'expéditeur y
+        # serait la seule de ce nom. Mesuré sur une boîte réelle : la quasi-totalité
+        # des originaux portent la description ; les exceptions viennent de ces
+        # imports.
+        first = message.sudo().attachment_ids.sorted("id")[:1]
+        if (not first or first.name != "original_email.eml"
+                or first.description != "original_email.eml"):
+            return ""
+        try:
+            headers = bf_email_imap.headers_text_from_bytes(
+                self._bf_tete_de_piece(first))
+        except Exception:  # noqa: BLE001 - fichier absent du filestore
+            _logger.debug("bf.email : original illisible (pièce %s)",
+                          first.id, exc_info=True)
+            return ""
+        found = bf_email_imap.normalize_message_id(
+            bf_email_imap.header_from_text(headers, "Message-ID"))
+        return headers if found == wanted else ""
+
+    @api.model
+    def _bf_originaux_fiables(self):
+        """Vrai quand chaque serveur de réception actif garde l'original."""
+        if "fetchmail.server" not in self.env:
+            return False
+        servers = self.env["fetchmail.server"].sudo().search(
+            [("active", "=", True)])
+        return bool(servers) and all(servers.mapped("original"))
+
+    @api.model
+    def _bf_domaines_maison(self):
+        """Domaines d'où Odoo envoie : alias, catchall, sociétés."""
+        domaines = set()
+        if "mail.alias.domain" in self.env:
+            domaines |= set(self.env["mail.alias.domain"].sudo().search(
+                []).mapped("name"))
+        catchall = self.env["ir.config_parameter"].sudo().get_param(
+            "mail.catchall.domain")
+        if catchall:
+            domaines.add(catchall)
+        for mail in self.env["res.company"].sudo().search([]).mapped("email"):
+            if mail and "@" in mail:
+                domaines.add(mail.rpartition("@")[2])
+        return {d.strip().lower() for d in domaines if d}
+
+    def _bf_expediteur_concorde(self, headers):
+        """Le From des en-têtes relus est-il plausible pour cette ligne ?
+
+        Le Message-ID ne suffit pas : un autre message peut porter le même
+        (une copie de liste, un relais qui le reprend). On exige la même
+        adresse, le même domaine, ou un domaine d'où Odoo envoie (une
+        notification part de « Nom <notifications@…> », la ligne garde l'auteur).
+
+        ⚠️ Garde contre une collision, PAS contre un faussaire : qui forge un
+        Message-ID forge aussi le From. Ce qui protège d'un faussaire, c'est
+        qu'on n'écrit jamais sur une ligne qui a déjà ses en-têtes, et que les
+        en-têtes d'un expéditeur n'engagent que son propre message.
+        """
+        self.ensure_one()
+        livre = parseaddr(bf_email_imap.header_from_text(
+            headers, "From"))[1].strip().lower()
+        if not livre:
+            return False
+        ligne = parseaddr(self.email_from or "")[1].strip().lower()
+        if not ligne or livre == ligne:
+            return True
+        domaine = livre.rpartition("@")[2]
+        return (domaine == ligne.rpartition("@")[2]
+                or domaine in self._bf_domaines_maison())
+
+    # Les en-têtes tiennent dans la tête du fichier ; l'original d'un
+    # courriel avec pièces pèse des mégaoctets, relu à chaque projection.
+    _BF_TETE_OCTETS = 256 * 1024
+
+    @api.model
+    def _bf_tete_de_piece(self, attachment):
+        """Les premiers octets d'une pièce, sans lire tout le fichier."""
+        if attachment.store_fname:
+            path = attachment._full_path(attachment.store_fname)
+            with open(path, "rb") as handle:
+                return handle.read(self._BF_TETE_OCTETS)
+        return (attachment.raw or b"")[:self._BF_TETE_OCTETS]
+
+    @api.model
+    def _bf_objet_repare(self, subject, raw_headers=""):
+        """Objet sur une ligne, lettres rendues.
+
+        Déplie toujours. Quand l'objet a perdu des lettres (U+FFFD) ou porte de
+        l'UTF-8 lu en latin-1, et que les en-têtes d'origine en donnent un
+        meilleur, on prend celui-là.
+        """
+        subject = bf_email_imap.unfold_display(subject or "")
+        if "\ufffd" in subject or (
+                bf_email_imap.repair_mojibake(subject) != subject):
+            origin = bf_email_imap.header_from_text(raw_headers, "Subject")
+            if origin and "\ufffd" not in origin:
+                subject = origin
+        return bf_email_imap.repair_mojibake(subject)
 
     @api.model
     def _detect_direction(self, msg):
@@ -5034,10 +5167,16 @@ class BfEmail(models.Model):
                 ("message_id_header", "in", list(by_mid)),
                 ("user_id", "=", account.user_id.id),
             ])
+            # Les lignes qu'on ancre ici sans en-têtes (passerelle,
+            # chatter) les reçoivent dans la même connexion, après la boucle.
+            sans_entetes = {}
             for row in rows:
                 uid = by_mid.get(row.message_id_header)
                 if not uid:
                     continue
+                if not row.raw_headers and not (
+                        row.account_id and row.account_id.id != account.id):
+                    sans_entetes[int(uid)] = row
                 if row.account_id and row.account_id.id != account.id:
                     _logger.info(
                         "bf.email IMAP mirror (%s) : #%s trouvée ici mais "
@@ -5073,7 +5212,51 @@ class BfEmail(models.Model):
                                      "reported_at": False})
                     returned += 1
                 row.write(vals)
+            if sans_entetes:
+                self._bf_ecrire_entetes_imap(conn, sans_entetes, account)
         return returned, anchored
+
+    def _bf_ecrire_entetes_imap(self, conn, rows_by_uid, account):
+        """Écrire ``raw_headers`` depuis le dossier SÉLECTIONNÉ.
+
+        ``rows_by_uid`` : ``{uid (int): bf.email}``. Lecture seule
+        (``BODY.PEEK``). Un UID ne vaut que dans son dossier : la ligne n'est
+        écrite que si l'en-tête lu porte SON Message-ID. Ne lève jamais :
+        une erreur ici ne doit pas faire tomber la passe du miroir.
+
+        Rend ``(écrites, uids qui ne portaient pas le message)``.
+        """
+        written, misses = 0, set()
+        uids = sorted(rows_by_uid)
+        for start in range(0, len(uids), 200):
+            chunk = uids[start:start + 200]
+            try:
+                fetched = bf_email_imap.fetch_full_headers_bulk(conn, chunk)
+            except Exception:  # noqa: BLE001
+                _logger.warning(
+                    "bf.email (%s) : en-têtes complets illisibles pour %s UID",
+                    account.display_name, len(chunk), exc_info=True)
+                continue
+            for uid in chunk:
+                row = rows_by_uid[uid]
+                if row.raw_headers:
+                    # Déjà écrite (par un autre UID du même message) : la
+                    # première copie gagne, jamais la suivante.
+                    continue
+                headers = bf_email_imap.headers_text_from_bytes(
+                    fetched.get(uid) or b"")
+                found = bf_email_imap.normalize_message_id(
+                    bf_email_imap.header_from_text(headers, "Message-ID"))
+                wanted = bf_email_imap.normalize_message_id(
+                    row.message_id_header)
+                if (not headers or not wanted or found != wanted
+                        or not row._bf_expediteur_concorde(headers)):
+                    misses.add(uid)
+                    continue
+                # L'objet se répare au passage (bf_email_entetes.py).
+                if row._bf_poser_entetes(headers):
+                    written += 1
+        return written, misses
 
     @api.model
     def _cron_imap_writeback_sweep(self, dry_run=False):
@@ -5272,6 +5455,15 @@ class BfEmail(models.Model):
                 })
             if not existing.account_id:
                 backfill["account_id"] = account.id
+            if not existing.raw_headers:
+                # Le message vient d'être analysé, ses en-têtes sont
+                # sous la main. Une ligne née de la passerelle ou du chatter
+                # n'en a pas : ce rattrapage était le seul chemin qui pouvait
+                # les lui donner, et il ne les écrivait pas. Seulement si la
+                # copie livrée vient du même expéditeur.
+                headers = bf_email_imap.headers_text(msg)
+                if headers and existing._bf_expediteur_concorde(headers):
+                    backfill["raw_headers"] = headers
             if not existing.raw_rfc822 and not existing.mail_message_id.sudo().body:
                 # La copie interne d'Odoo n'a PAS de corps : envoi construit en
                 # ``mail.mail`` direct, sans document (formulaire du site,
@@ -5322,6 +5514,14 @@ class BfEmail(models.Model):
                     "account_id": account.id,
                     "company_id": (account.company_id or account.user_id.company_id).id,
                 })
+                # La copie livrée donne les en-têtes quand l'original
+                # d'Odoo ne les a pas donnés, et seulement si elle vient du
+                # même expéditeur.
+                headers = bf_email_imap.headers_text(msg)
+                if (headers and not chatter_vals.get("raw_headers")
+                        and self.new({"email_from": chatter_vals.get(
+                            "email_from")})._bf_expediteur_concorde(headers)):
+                    chatter_vals["raw_headers"] = headers
                 # 🔴 La même règle que dans `_prepare_imap_email_vals`, et
                 # elle manquait ici. Ce chemin-ci sert quand Odoo porte déjà
                 # le `mail.message` : la rangée naît alors `source='chatter'`,
@@ -5374,10 +5574,13 @@ class BfEmail(models.Model):
     def _prepare_imap_email_vals(self, msg, raw_bytes, uid, folder, account):
         """Build a bf.email vals dict from a parsed RFC 2822 message."""
         message_id = str(msg.get("Message-ID", "")).strip() or False
-        subject = str(msg.get("Subject", ""))
-        email_from = str(msg.get("From", ""))
-        email_to = str(msg.get("To", ""))
-        email_cc = str(msg.get("Cc", ""))
+        # `first_header` rend les lettres d'un en-tête 8 bits en
+        # latin-1, là où `str(msg.get(...))` rend U+FFFD.
+        subject = bf_email_imap.repair_mojibake(
+            bf_email_imap.first_header(msg, "Subject"))
+        email_from = bf_email_imap.first_header(msg, "From")
+        email_to = bf_email_imap.first_header(msg, "To")
+        email_cc = bf_email_imap.first_header(msg, "Cc")
         date_str = bf_email_imap.parse_date(msg.get("Date"))
         in_reply_to, thread_root = bf_email_imap.parse_thread_headers(msg)
 
@@ -5410,13 +5613,8 @@ class BfEmail(models.Model):
             has_calendar = False
 
         # Extract raw headers for heuristic signals (List-Unsubscribe etc.).
-        raw_headers = ""
-        try:
-            raw_headers = "\n".join(
-                f"{k}: {v}" for k, v in msg.items()
-            )
-        except Exception:
-            raw_headers = ""
+        # Dépliés et décodés, une ligne par en-tête.
+        raw_headers = bf_email_imap.headers_text(msg)
 
         # ⚠️ Un message capté dans un dossier de classement n'est pas du
         # travail en attente : son propriétaire l'a déjà rangé, souvent des

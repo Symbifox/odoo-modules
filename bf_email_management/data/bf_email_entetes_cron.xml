@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Filet de nuit des en-têtes bruts. Le miroir IMAP les
+             donne aux lignes de la passerelle et du chatter au passage ; ce
+             cron rattrape celles de la semaine qu'il a manquées, par UID,
+             500 au plus. Lecture seule côté serveur. -->
+        <record id="ir_cron_rattraper_entetes" model="ir.cron">
+            <field name="name">Courriels : rattrapage des en-têtes</field>
+            <field name="model_id" ref="model_bf_email"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_rattraper_entetes()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=7, minute=20, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+    </data>
+</odoo>

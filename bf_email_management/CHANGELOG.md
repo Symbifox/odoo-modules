@@ -4,6 +4,68 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.4] - 2026-10-17
+
+### Fixed
+
+- **Raw headers for gateway and chatter rows.** `raw_headers` was only ever
+  written by the IMAP ingestion path. Rows projected from `mail.message` (mail
+  gateway, chatter) never had any, and neither did the three IMAP mirror paths
+  that find an existing row: the ingestion backfill, the row created from a
+  message Odoo already holds, and the INBOX UID adoption (which only fetched four
+  fields). All of them now write the headers when the row has none.
+- **Gateway rows read the original Odoo keeps.** When every active incoming mail
+  server has *Keep Original* set, the gateway attaches the received message as
+  `original_email.eml`. Odoo adds it **first**, before the message's own
+  attachments, and stamps its `description`. Only that very first attachment is
+  read, and only if its Message-ID is the message's: a sender who attaches their
+  own `original_email.eml` (or a row filed with *Classer*, whose attachments are
+  created without a description) cannot feed forged SPF/DKIM results to the spam
+  report or a forged one-click unsubscribe URL.
+- **Headers are unfolded, and 8-bit headers keep their letters.** One
+  `Name: value` line per header. Raw UTF-8 and raw Latin-1 headers are decoded
+  byte by byte (UTF-8, falling back to cp1252), including the
+  `=?unknown-8bit?…?=` words Odoo writes into the original. Surrogates, NULs and
+  Unicode line separators never reach the database or split a line.
+- **Subjects and senders from the gateway are unfolded** (one space per fold,
+  tabs included) and a subject that lost letters (U+FFFD) is read again from the
+  original headers; UTF-8 read as Latin-1 (`DerniÃ¨re`) is repaired. Unfolding the
+  sender keeps the row's `category`.
+- **Headers re-read from the IMAP server must belong to the row**: same
+  Message-ID and a plausible sender (same address, same domain, or a domain Odoo
+  sends from). A row that already has headers is never rewritten. This guards
+  against a collision such as a list copy, not against a forger.
+- **Backfill of existing rows**: `_bf_rattraper_entetes` (local copy, then the
+  stored UID checked by Message-ID, then, on demand, a Message-ID sweep of the
+  folders the reconciliation reads) and `_bf_reparer_objets`. Read-only on the
+  server (`EXAMINE`, `BODY.PEEK`); a row's folder and UID are never touched.
+  A nightly cron, *Courriels : rattrapage des en-têtes*, catches the week's rows
+  still without headers (by UID, 500 at most).
+
+### Unchanged on purpose
+
+- **Rules do not change.** A header condition still ignores chatter and gateway
+  rows, even now that they carry headers: otherwise a rule such as
+  "List-Unsubscribe → Marketing + Handled" would file away gateway mail attached
+  to a record. Signals (bulk, unsubscribe, sender's time zone), the auto-forward
+  guards and the out-of-office responder do read them.
+
+## [18.0.11.60.3] - 2026-10-16
+
+### Fixed
+
+- **A merged notice no longer snoozes a mail handled elsewhere.** *Reporter* and
+  *Traité* on a merged notice now act only on the mails still to handle. A mail
+  filed elsewhere while the notice was on screen (phone, another tab, a rule)
+  used to be snoozed with the others and came back to the inbox when the snooze
+  ran out.
+- The notice housekeeping drops mails handled elsewhere from a merged notice: a
+  later arrival of the same thread no longer counts them.
+- The group speaks with the last mail to **arrive**, even when the read of the
+  previous burst comes back after the read of the next one.
+- A burst keeps the longest of its durations.
+- JavaScript only.
+
 ## [18.0.11.60.2] - 2026-10-16
 
 ### Fixed

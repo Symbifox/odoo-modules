@@ -134,6 +134,12 @@ export const bfEmailPopupService = {
         let seq = 0;
         let pending = [];
         let pendingTimer = null;
+        // Rang d'arrivée par le bus, par courriel. C'est lui, et non l'ordre
+        // des lectures ORM, qui désigne le porte-parole d'un avis fondu : une
+        // rafale lue plus lentement que la suivante arrive à l'écran APRÈS
+        // elle, et ses courriels plus anciens passaient pour les plus récents.
+        const arrivalOf = new Map();
+        let arrivals = 0;
         let cleanupTimer = null;
         let expiredStreak = 0;
         let everShown = false;
@@ -424,8 +430,19 @@ export const bfEmailPopupService = {
          */
         async function runOnRows(method, ids, remove, failure) {
             try {
+                // Un courriel classé ailleurs pendant que l'avis était à
+                // l'écran (téléphone, autre onglet, règle) n'est plus à
+                // reporter ni à traiter : reporté, il reviendrait en boîte à
+                // l'échéance. Le ménage des avis le retire aussi, mais le
+                // clic peut arriver avant lui.
+                const todo = ids.length > 1
+                    ? await orm.search("bf.email", [
+                        ["id", "in", ids],
+                        ["is_handled", "=", false],
+                    ])
+                    : ids;
                 const results = await Promise.all(
-                    ids.map((id) => orm.call("bf.email", method, [id])));
+                    todo.map((id) => orm.call("bf.email", method, [id])));
                 remove();
                 return results[results.length - 1];
             } catch (error) {
@@ -578,6 +595,7 @@ export const bfEmailPopupService = {
             for (const id of entry.ids) {
                 if (byId.get(id) === entry) {
                     byId.delete(id);
+                    arrivalOf.delete(id);
                 }
             }
             byCls.delete(entry.cls);
@@ -712,6 +730,7 @@ export const bfEmailPopupService = {
                 // Contrôlé AVANT la lecture : un avis expiré ne vaut pas un
                 // aller-retour serveur, et un rejeu en apporte des dizaines.
                 if (remainingMs(payload) <= 0) {
+                    arrivalOf.delete(emailId);
                     noteExpired();
                     continue;
                 }
@@ -732,6 +751,11 @@ export const bfEmailPopupService = {
                 return;
             }
             const byRowId = new Map(rows.map((row) => [row.id, row]));
+            for (const payload of wanted) {
+                if (!byRowId.has(payload.email_id) && !byId.has(payload.email_id)) {
+                    arrivalOf.delete(payload.email_id);
+                }
+            }
 
             // Regroupés par fil ou par expéditeur et objet (voir `fusionKeys`),
             // dans l'ordre d'arrivée. Deux messages qui se ressemblent venus de
@@ -750,7 +774,7 @@ export const bfEmailPopupService = {
                 if (!row) {
                     continue;
                 }
-                rank.set(row.id, rank.size);
+                rank.set(row.id, arrivalOf.get(row.id) || rank.size);
                 payloadOf.set(row.id, payload);
                 const keys = fusionKeys(row, payload);
                 const hit = [...new Set(
@@ -781,6 +805,11 @@ export const bfEmailPopupService = {
                 // mêle l'ordre, d'où le tri sur le rang d'arrivée.
                 group.rows.sort((a, b) => rank.get(a.id) - rank.get(b.id));
                 group.payload = payloadOf.get(group.rows[group.rows.length - 1].id);
+                // La plus longue des durées de la rafale : un courriel d'un
+                // dossier suivi (30 s) ne perd pas sa durée parce qu'une
+                // arrivée ordinaire du même fil l'accompagne.
+                group.ttl = Math.max(...group.rows.map(
+                    (row) => ttlOf(payloadOf.get(row.id))));
             }
             for (const group of groups) {
                 // 🔴 La fusion ci-dessus ne voit que la rafale de
@@ -800,11 +829,14 @@ export const bfEmailPopupService = {
                     .filter((entry) => entry && entry.rows))];
                 const fresh = new Set(group.rows.map((row) => row.id));
                 const earlier = new Map();
-                let ttl = ttlOf(group.payload);
+                // Relu AVANT `entry.remove()`, qui oublie le rang d'arrivée.
+                const rankOf = new Map();
+                let ttl = group.ttl;
                 for (const entry of shown) {
                     for (const row of entry.rows) {
                         if (!fresh.has(row.id)) {
                             earlier.set(row.id, row);
+                            rankOf.set(row.id, arrivalOf.get(row.id) || 0);
                         }
                     }
                     for (const key of entry.keys) {
@@ -819,7 +851,10 @@ export const bfEmailPopupService = {
                     }
                     entry.remove();
                 }
-                const rowsOfGroup = [...earlier.values(), ...group.rows];
+                const arrival = (row) => rankOf.get(row.id)
+                    ?? arrivalOf.get(row.id) ?? 0;
+                const rowsOfGroup = [...earlier.values(), ...group.rows]
+                    .sort((a, b) => arrival(a) - arrival(b));
                 const lead = rowsOfGroup[rowsOfGroup.length - 1];
                 const payload = group.payload;
                 const sameThread = rowsOfGroup.every(
@@ -838,12 +873,19 @@ export const bfEmailPopupService = {
                     rows: rowsOfGroup,
                     keys: [...group.keys],
                 });
+                for (const row of rowsOfGroup) {
+                    arrivalOf.set(row.id, arrival(row));
+                }
             }
         }
 
         function onMail(payload) {
             if (!payload || !payload.email_id) {
                 return;
+            }
+            if (!arrivalOf.has(payload.email_id)) {
+                arrivals += 1;
+                arrivalOf.set(payload.email_id, arrivals);
             }
             pending.push(payload);
             browser.clearTimeout(pendingTimer);
@@ -1036,6 +1078,7 @@ export const bfEmailPopupService = {
                 return;
             }
             const ids = [...byId.keys()];
+            const asked = new Set(ids);
             let alive = [];
             try {
                 alive = await orm.search("bf.email", [
@@ -1046,10 +1089,32 @@ export const bfEmailPopupService = {
                 return;
             }
             const aliveSet = new Set(alive);
+            // Seuls les courriels relus comptent : un avis posé pendant la
+            // lecture porte des ids qu'elle n'a pas vus, ils ne sont pas morts.
+            const dead = (id) => asked.has(id) && !aliveSet.has(id);
             for (const entry of [...entries]) {
-                if (entry.ids.length
-                        && !entry.ids.some((id) => aliveSet.has(id))) {
+                if (!entry.ids.length) {
+                    continue;
+                }
+                if (entry.ids.every(dead)) {
                     entry.remove();
+                    continue;
+                }
+                // Un avis fondu garde ses courriels encore à traiter et
+                // lâche les autres : « Reporter » ne les fera pas revenir,
+                // et une fusion suivante ne les comptera plus.
+                const gone = entry.ids.filter(dead);
+                if (gone.length) {
+                    entry.ids = entry.ids.filter((id) => !dead(id));
+                    if (entry.rows) {
+                        entry.rows = entry.rows.filter((row) => !dead(row.id));
+                    }
+                    for (const id of gone) {
+                        if (byId.get(id) === entry) {
+                            byId.delete(id);
+                            arrivalOf.delete(id);
+                        }
+                    }
                 }
             }
         }

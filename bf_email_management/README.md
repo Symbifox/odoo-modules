@@ -182,6 +182,17 @@ as push endpoints (public addresses only); and a subscriptions panel does not
 clean an inbox whose bulk mail is already filed by rules — what remains is
 transactional machine mail, which carries no such header at all.
 
+**Headers on every row that has a reachable copy (11.60.4).** Until then only
+IMAP-ingested rows had `raw_headers`, so the banner, the bulk signal and the
+sender's time zone stayed silent on mail that came through the Odoo gateway or
+was born in a chatter. The IMAP mirror now writes the headers whenever it meets
+an existing row without them, the gateway projection reads them from the
+original Odoo keeps (only the first `original_email.eml`, posted by the gateway
+itself, and only when every active incoming server keeps originals), and a
+backfill (`_bf_rattraper_entetes`, read-only on the server) plus a nightly cron
+catch up the existing rows. Header conditions in rules still ignore chatter and
+gateway rows, on purpose.
+
 ### Small gestures (11.34+)
 
 - `z` undoes the last action (handled, snoozed, muted, trashed). ⚠️ Re-routing is
@@ -465,7 +476,9 @@ monitoring service sending *incident* and *recovered* under one subject no
 longer stacks two identical toasts. The newest mail speaks for the group. When
 an arrival merges into a notice on screen, the countdown starts over at the
 longer of the two durations; a mail that matches two notices folds both into
-one. *Traité* and *Reporter* act on every mail of the merged notice.
+one. *Traité* and *Reporter* act on every mail of the merged notice that is
+still to handle (11.60.3): one filed elsewhere meanwhile is left alone, and the
+group speaks with the last mail to arrive.
 
 **Snoozing re-announces (11.6)** — `_cron_imap_mirror` already woke rows whose
 `snoozed_until` had passed; it now asks for the notice again, flagged `wake`, so

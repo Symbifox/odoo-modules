@@ -6,7 +6,11 @@ ingestion path on the Odoo side stays consistent with the CLI tool.
 """
 
 import base64
+import codecs
 import email
+import email.header
+import email.parser
+import email.quoprimime
 import email.policy
 import fnmatch
 import html as html_mod
@@ -489,6 +493,219 @@ def normalize_message_id(value):
     text = "" if value is None else str(value)
     text = " ".join(text.split())
     return text.strip().lstrip("<").rstrip(">")
+
+
+
+# ---------------------------------------------------------------------------
+# En-têtes bruts
+# ---------------------------------------------------------------------------
+# Le dépliage RFC 5322 (§2.2.3) retire le CRLF et garde le blanc qui le suit.
+_FOLD_RE = re.compile(r"\r\n|\r|\n")
+# Les octets d'un en-tête 8 bits que le parseur n'a pas su décoder restent
+# dans la valeur brute en « surrogateescape » (U+DC80 à U+DCFF).
+_SURROGATE_RE = re.compile("[\udc80-\udcff]")
+# Pied du bloc d'en-têtes dans un message brut.
+_HEADER_END_RE = re.compile(rb"\r?\n\r?\n")
+# UTF-8 relu en latin-1 : « Ã¨ » pour « è ».
+_MOJIBAKE_RE = re.compile("[ÂÃ][\u0080-¿]")
+
+
+def unfold_header(value):
+    """Valeur d'en-tête sur une seule ligne, sans NUL (refusé par Postgres)."""
+    if not value:
+        return value or ""
+    return _FOLD_RE.sub("", str(value)).replace("\x00", "")
+
+
+def unfold_display(value):
+    """Objet ou expéditeur à afficher : chaque pli devient UNE espace.
+
+    Le dépliage RFC garde le blanc qui suit le saut de ligne, souvent une
+    tabulation (« …via SEEK\t<noreply@…> »). Pour un champ affiché, on le
+    ramène à une espace.
+    """
+    if not value:
+        return value or ""
+    return re.sub(r"[\r\n]+[ \t]*", " ", str(value)).replace("\x00", "")
+
+
+def _cp1252_fallback(exc):
+    """Gestionnaire ``codecs`` : l'octet que l'UTF-8 refuse, relu en cp1252."""
+    bad = exc.object[exc.start:exc.end]
+    return bad.decode("cp1252", errors="replace"), exc.end
+
+
+_CP1252_FALLBACK = "bf_email_cp1252_fallback"
+codecs.register_error(_CP1252_FALLBACK, _cp1252_fallback)
+
+
+def _recover_8bit(raw_value):
+    """Relire les octets bruts d'un en-tête 8 bits : UTF-8, sinon cp1252.
+
+    Un en-tête doit être en ASCII (RFC 2047 pour le reste). Des expéditeurs
+    postent de l'UTF-8 brut, d'autres du latin-1 ; le parseur rend alors
+    U+FFFD à la place des lettres. Les octets, eux, sont intacts.
+    """
+    data = raw_value.encode("ascii", "surrogateescape")
+    # Octet par octet : un en-tête peut mêler UTF-8 et latin-1.
+    return data.decode("utf-8", errors=_CP1252_FALLBACK)
+
+
+_UNKNOWN_8BIT_RE = re.compile(
+    r"=\?unknown-8bit\?([qb])\?([^?]*)\?=", re.IGNORECASE)
+# Séparateurs de ligne Unicode : `splitlines()` coupe dessus, et une valeur
+# qui en porte ferait lire une « ligne d'en-tête » de plus dans raw_headers.
+_LINE_SEPARATORS_RE = re.compile("[\x0b\x0c\x1c\x1d\x1e\x85\u2028\u2029]")
+_ANY_SURROGATE_RE = re.compile("[\ud800-\udfff]")
+
+
+def _reencode_unknown_8bit(raw_value):
+    """`=?unknown-8bit?q?Donn=E9es?=` → le même mot, en `=?utf-8?b?…?=`.
+
+    L'original qu'Odoo garde (`as_string()` d'un message lu en politique
+    SMTP) écrit ainsi un en-tête 8 bits, que le parseur rend en U+FFFD. On
+    relit les octets (UTF-8, sinon cp1252) et on réencode le MOT seul : le
+    reste de la valeur passe ensuite par l'analyse normale, adresses comprises.
+    """
+    def _one(match):
+        kind, payload = match.group(1).lower(), match.group(2)
+        try:
+            if kind == "q":
+                data = email.quoprimime.header_decode(payload).encode(
+                    "latin-1")
+            else:
+                data = base64.b64decode(payload + "=" * (-len(payload) % 4))
+        except Exception:  # noqa: BLE001 - mot illisible : le laisser
+            return match.group(0)
+        text = data.decode("utf-8", errors=_CP1252_FALLBACK)
+        return "=?utf-8?b?" + base64.b64encode(
+            text.encode("utf-8", errors="replace")).decode("ascii") + "?="
+    return _UNKNOWN_8BIT_RE.sub(_one, raw_value)
+
+
+def _clean_value(value):
+    """Ce qui ne doit jamais atteindre la base ni couper une ligne."""
+    value = _ANY_SURROGATE_RE.sub("�", value)
+    value = _LINE_SEPARATORS_RE.sub(" ", value)
+    return unfold_header(value).strip()
+
+
+def header_value(name, raw_value):
+    """Valeur décodée (RFC 2047 et 8 bits) et dépliée d'un en-tête brut."""
+    raw_value = raw_value if isinstance(raw_value, str) else str(raw_value or "")
+    if _SURROGATE_RE.search(raw_value):
+        raw_value = _recover_8bit(raw_value)
+    if _UNKNOWN_8BIT_RE.search(raw_value):
+        raw_value = _reencode_unknown_8bit(raw_value)
+    try:
+        value = str(email.policy.default.header_fetch_parse(name, raw_value))
+    except Exception:  # noqa: BLE001 - en-tête mal formé : garder le texte
+        value = raw_value
+    # L'original qu'Odoo garde (`as_string()` d'un message lu en politique
+    # SMTP) encode un en-tête 8 bits en `=?unknown-8bit?q?Donn=E9es?=` : le
+    # décodage rend alors des octets échappés, qu'on relit comme plus haut.
+    if _SURROGATE_RE.search(value):
+        value = value.encode("utf-8", "surrogateescape").decode(
+            "utf-8", errors=_CP1252_FALLBACK)
+    # Un en-tête mal formé, ou un mot dans un jeu de caractères piégé
+    # (`unicode_escape`), peut garder des surrogates : Postgres les refuse.
+    return _clean_value(value)
+
+
+def headers_text(msg):
+    """Bloc ``raw_headers`` d'un message : une ligne ``Nom: valeur`` par en-tête.
+
+    Dans l'ordre du message, doublons compris (``Received``). Ne lit que le
+    premier niveau, comme avant. Rend "" plutôt que de lever.
+    """
+    try:
+        return "\n".join(
+            "%s: %s" % (name, header_value(name, raw))
+            for name, raw in msg.raw_items()
+        )
+    except Exception:  # noqa: BLE001
+        _logger.debug("bf.email : en-têtes illisibles", exc_info=True)
+        return ""
+
+
+def first_header(msg, name):
+    """Première valeur décodée de ``name`` dans ``msg``, ou "".
+
+    Comme ``str(msg.get(name, ""))``, mais un en-tête 8 bits en latin-1 garde
+    ses lettres au lieu de U+FFFD.
+    """
+    wanted = name.lower()
+    try:
+        for key, raw in msg.raw_items():
+            if key.lower() == wanted:
+                return header_value(key, raw)
+    except Exception:  # noqa: BLE001
+        _logger.debug("bf.email : en-tête %s illisible", name, exc_info=True)
+    return ""
+
+
+def headers_text_from_bytes(raw_bytes):
+    """``headers_text`` d'un message brut, sans analyser le corps."""
+    if not raw_bytes:
+        return ""
+    end = _HEADER_END_RE.search(raw_bytes)
+    head = raw_bytes[:end.end()] if end else raw_bytes
+    try:
+        msg = email.parser.BytesHeaderParser(
+            policy=email.policy.default).parsebytes(head)
+    except Exception:  # noqa: BLE001
+        return ""
+    return headers_text(msg)
+
+
+def header_from_text(headers, name):
+    """Première valeur de ``name`` dans un bloc ``raw_headers``, ou ""."""
+    prefix = name.lower() + ":"
+    # `split("\n")`, pas `splitlines()` : celui-ci coupe aussi sur U+2028.
+    for line in (headers or "").split("\n"):
+        if line.lower().startswith(prefix):
+            return line[len(prefix):].strip()
+    return ""
+
+
+def repair_mojibake(value):
+    """« DerniÃ¨re » → « Dernière » ; rend la valeur intacte sinon.
+
+    Ne répare que si la chaîne entière se relit en UTF-8 strict : un vrai
+    « Ã » suivi d'un caractère latin-1 n'y survit pas.
+    """
+    if not value or not _MOJIBAKE_RE.search(value):
+        return value
+    try:
+        return value.encode("cp1252").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        try:
+            return value.encode("latin-1").decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            return value
+
+
+def fetch_full_headers_bulk(conn, uids):
+    """``{uid (int): octets de l'en-tête}`` pour des UID du dossier courant.
+
+    ``BODY.PEEK`` : ne pose pas ``\\Seen``. Lecture seule.
+    """
+    if not uids:
+        return {}
+    uid_set = ",".join(imap_uid_token(u) for u in uids)
+    status, data = conn.uid("FETCH", uid_set, "(UID BODY.PEEK[HEADER])")
+    if status != "OK" or not data:
+        return {}
+    out = {}
+    for item in data:
+        if not isinstance(item, tuple) or len(item) < 2:
+            continue
+        meta = item[0].decode("ascii", errors="ignore") if isinstance(
+            item[0], bytes) else str(item[0])
+        match = re.search(r"UID (\d+)", meta)
+        if match and isinstance(item[1], bytes):
+            out[int(match.group(1))] = item[1]
+    return out
 
 
 def uid_carries_message_id(conn, uid, message_id):
