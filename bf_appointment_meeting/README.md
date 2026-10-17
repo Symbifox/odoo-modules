@@ -56,10 +56,19 @@ agenda — that is, when they can read it before anyone else does.
 A type with the checkbox and no project anywhere produces no agenda. That is
 the safe state, and it is visible: the note on the booking names the type.
 
+## Anonymization of a booking (18.0.1.2.0)
+
+When `bf_appointment` anonymizes a booking under its retention rule RDV-001, this
+module removes what it copied onto the agenda: the topic seeded from the intake
+form (text, description, contributor name and email), the requester's name on any
+other topic they contributed, and the link to the requester
+(`bf_booking_partner_id`). The rest of the agenda is a meeting document, governed
+by the meeting-records retention rule, and stays.
+
 ## Requirements
 
-`bf_appointment` (18.0.2.60.0 or later, for the `bf_extra_links()` surface the
-four link renderings go through) and `bf_meeting` (18.0.3.58.0 or later, for
+`bf_appointment` (18.0.2.66.0 or later, for the `bf_extra_links()` surface the
+four link renderings go through and the anonymization hook) and `bf_meeting` (18.0.3.58.0 or later, for
 `contributions_preopened`, which opens the contribution window without waiting
 for an agenda email).
 

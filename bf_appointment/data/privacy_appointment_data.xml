@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Pont vie privée de la prise de rendez-vous (2.66.0).
+
+        ⚠️ Les consentements du formulaire public (enregistrement, infolettre)
+        reposent sur des finalités semées par `privacy_consent` : on ne les
+        redéclare pas. Ce qui manquait, c'est la réservation elle-même.
+    -->
+    <data noupdate="1">
+
+        <record id="purpose_appointment_booking" model="privacy.purpose">
+            <field name="code">appointment_booking</field>
+            <field name="name">Prise de rendez-vous</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Quand vous réservez un rendez-vous, nous recueillons votre
+                nom, votre adresse courriel, votre numéro de téléphone s'il est
+                demandé, vos réponses aux questions du formulaire et le nom des
+                personnes que vous invitez. Ces renseignements servent à
+                organiser la rencontre : vous confirmer le créneau, vous
+                rappeler la rencontre, la préparer et vous joindre en cas de
+                changement.</p>
+                <p>Trois ans après la rencontre, la réservation est anonymisée :
+                votre nom, vos coordonnées, vos réponses et vos invités sont
+                retirés. Seuls restent le type de rendez-vous, la date et la
+                durée, qui servent aux statistiques.</p>
+            ]]></field>
+            <!--
+                Pas de consentement à demander : organiser la rencontre que la
+                personne vient de demander est la fin même de la collecte.
+                Présenter un consentement qu'on ne pourrait pas refuser sans
+                que la réservation tombe vicierait les vrais consentements du
+                formulaire (enregistrement, infolettre).
+            -->
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">crm</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">24</field>
+        </record>
+
+        <!--
+            RDV-001. Règles retenues : trois ans après la fin
+            de la rencontre, puis anonymisation ; réponses et invités suivent
+            la même échéance ; purge allumée dès la pose.
+
+            Pas d'approbation : le cron l'applique chaque nuit et inscrit
+            chaque réservation au registre. La durée est LUE ici par le cron :
+            changer la règle change le comportement, l'archiver l'arrête.
+        -->
+        <record id="retention_appointment_booking" model="privacy.retention.calendar">
+            <field name="name">Rendez-vous — réservations, réponses d'accueil et invités</field>
+            <field name="code">RDV-001</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Réservations de rendez-vous (participants, titre, description, lieux, fil de discussion), réponses au questionnaire d'accueil, invités additionnels, et les mêmes renseignements sur l'événement d'agenda lié.</field>
+            <field name="legal_basis">Art. 23 LPRPSP : le renseignement personnel est détruit ou anonymisé lorsque la fin pour laquelle il a été recueilli est accomplie. La fin d'une réservation est accomplie à la rencontre ; trois ans couvrent la prescription de droit commun (art. 2925 C.c.Q.) pour un différend sur ce qui avait été convenu. Art. 3.2 LPRPSP : cadre de conservation et de destruction.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">anonymize</field>
+            <field name="destruction_method">anonymize</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">resource.booking</field>
+            <field name="notes">Appliquée chaque nuit par le cron « Rendez-vous : anonymisation des réservations échues (RDV-001) ». Échéance : fin de la rencontre ; une demande jamais placée à l'agenda compte depuis sa création. Restent : type, organisateur, ressources, date, durée, état. Non visés (repris dans chaque entrée du registre) : les fiches de contact et leurs consentements, le compte rendu et l'ordre du jour (RENC-001) hors ce que les satellites retirent, les visites et les touches de prospection liées, la conversation Talk (renommée seulement), le lien court de visio, les corbeilles et historiques de Nextcloud et de Google, les sauvegardes jusqu'à leur rotation, les copies des courriels dans les boîtes de messagerie et les journaux de SMS chez le fournisseur.</field>
+        </record>
+
+        <!--
+            Remplace les participants d'une réservation anonymisée : le champ
+            est obligatoire chez l'OCA.
+
+            ⚠️ Actif, et c'est voulu. Un contact archivé disparaît de la liste
+            des participants à la lecture (`active_test`) : la réservation
+            paraîtrait sans participant, et l'ouvrir puis l'enregistrer
+            buterait sur le champ obligatoire. Il n'a ni courriel ni
+            téléphone : rien ne peut lui être envoyé.
+        -->
+        <record id="partner_appointment_anonymized" model="res.partner">
+            <field name="name">Personne anonymisée</field>
+            <field name="type">contact</field>
+        </record>
+
+        <record id="ir_cron_appointment_privacy_anonymize" model="ir.cron">
+            <field name="name">Rendez-vous : anonymisation des réservations échues (RDV-001)</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_bf_privacy_anonymize()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

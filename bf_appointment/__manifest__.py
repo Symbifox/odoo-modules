@@ -413,7 +413,15 @@
     # 18.0.2.65.0: titre complet de la rencontre dans les courriels et le .ics ;
     #   titre public sur les pages à jeton ; portail OCA par jeton renvoyé aux
     #   pages du module ; clé de confirmation des invités ; fil fermé au jeton.
-    "version": "18.0.2.65.0",
+    # 18.0.2.66.0: pont vie privée de la prise de rendez-vous. Finalité
+    #   « Prise de rendez-vous » et règle RDV-001 au registre ; réservation
+    #   classifiable ; catégorie de RP par question d'accueil ; anonymisation
+    #   3 ans après la rencontre (réponses et invités compris) par un cron qui
+    #   inscrit chaque réservation au registre, copie d'agenda distante mise à
+    #   jour, salle Talk renommée, crochet `_bf_privacy_anonymize_extra()` pour
+    #   les satellites. Campagnes et demandes de destruction refusent
+    #   d'« anonymiser » une réservation.
+    "version": "18.0.2.66.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -425,6 +433,7 @@
         "security/ir.model.access.csv",
         "data/appointment_mail_templates.xml",
         "data/appointment_cron.xml",
+        "data/privacy_appointment_data.xml",
         "data/appointment_menu.xml",
         "data/bf_onboarding.xml",
         "templates/appointment_public.xml",
@@ -438,6 +447,7 @@
         "views/appointment_cancel_wizard_views.xml",
         "views/mail_compose_message_views.xml",
         "views/portal_home_templates.xml",
+        "views/privacy_appointment_views.xml",
     ],
     "assets": {
         "web.assets_frontend": [

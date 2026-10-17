@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pont vie privée (2.66.0) : la catégorie de RP se choisit à
+         la configuration de chaque question, et une question sans catégorie
+         est signalée sur le type de rendez-vous. -->
+    <record id="resource_booking_type_form_privacy" model="ir.ui.view">
+        <field name="name">resource.booking.type.form.bf_appointment.privacy</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="bf_appointment.resource_booking_type_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='intake_fields']/field[@name='intake_field_ids']" position="before">
+                <field name="bf_intake_unclassified_count" invisible="1"/>
+                <field name="bf_intake_sensitive_count" invisible="1"/>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not bf_intake_unclassified_count">
+                    <field name="bf_intake_unclassified_count" readonly="1" class="fw-bold"/>
+                    question(s) sans catégorie de renseignement personnel. Choisissez
+                    ce que chaque question recueille : rien ne déclare une question
+                    laissée vide.
+                </div>
+                <div class="alert alert-info" role="status"
+                     invisible="not bf_intake_sensitive_count">
+                    <field name="bf_intake_sensitive_count" readonly="1" class="fw-bold"/>
+                    question(s) recueillent un renseignement sensible. Demandez-vous
+                    si la rencontre en a vraiment besoin : un renseignement qu'on ne
+                    recueille pas n'a pas à être protégé.
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='intake_fields']//list/field[@name='required']" position="after">
+                <field name="bf_pi_category" required="1"/>
+                <field name="bf_pi_sensitive" readonly="1" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Une réservation anonymisée le dit, avec sa date. -->
+    <record id="resource_booking_form_privacy" model="ir.ui.view">
+        <field name="name">resource.booking.form.bf_appointment.privacy</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-secondary mb-0" role="status"
+                     invisible="not bf_privacy_anonymized_at">
+                    Réservation anonymisée le
+                    <field name="bf_privacy_anonymized_at" readonly="1"/>
+                    selon la règle de conservation RDV-001 : participants,
+                    réponses, invités et fil de discussion ont été retirés.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

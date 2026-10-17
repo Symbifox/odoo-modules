@@ -20,3 +20,4 @@ from . import test_limiteur_borne
 from . import test_mise_en_page
 from . import test_rencontre_sans_reservations
 from . import test_titre_complet
+from . import test_privacy_appointment

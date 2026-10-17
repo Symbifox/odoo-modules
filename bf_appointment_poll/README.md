@@ -139,10 +139,14 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-12, this version converts automatically to
+- **Change Date**: on 2030-10-17, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.18.0
+
+- **Anonymization of a booking.** When `bf_appointment` 18.0.2.66.0 or later anonymizes a booking under its retention rule RDV-001, the poll that produced it is deleted with its participants, their votes, its slots and its thread: its purpose ended when it produced the booking. The note it adds to the destruction register entry is written in French, like the rest of that entry.
 
 ### 18.0.1.17.0
 

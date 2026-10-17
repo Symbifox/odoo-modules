@@ -1,2 +1,3 @@
 from . import test_agenda_from_booking
 from . import test_reprise_rendez_vous
+from . import test_privacy_anonymize

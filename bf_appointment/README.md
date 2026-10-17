@@ -268,6 +268,75 @@ its own name. Values already stored on a database are not changed. The booking
 type description takes the site's text color instead of a forced white, which was
 invisible on a light site, and the portal breadcrumb says "Rendez-vous" in French.
 
+## Privacy: purpose, retention and anonymization (18.0.2.66.0)
+
+The module already depended on `privacy_consent` for the two consents of the
+public form (recording, newsletter). The booking itself was declared nowhere.
+
+- **Purpose** "Prise de rendez-vous" (`appointment_booking`) in the record of
+  processing, with a plain-language summary. No consent is asked: organizing the
+  meeting the person just requested is the reason for the collection.
+- **Retention rule RDV-001**: 3 years after the end of the meeting, then
+  anonymization. Intake answers and guests follow the same deadline. A request
+  never placed on the calendar counts from its creation. The duration is **read
+  on the rule**: changing RDV-001 changes the cron, archiving it stops it, and a
+  zero duration is refused.
+- **Anonymization**, applied every night by the cron "Rendez-vous :
+  anonymisation des réservations échues (RDV-001)", one booking at a time, each
+  committed on its own:
+  - what satellites copied is removed first, through the hook
+    `_bf_privacy_anonymize_extra()` (the agenda's seeded topic and requester in
+    `bf_appointment_meeting`, the originating poll in `bf_appointment_poll`);
+  - intake answers and guests are deleted, with the emails sent to guests;
+  - attendees are replaced by the contact "Personne anonymisée" (the field is
+    required by the OCA), which takes over the requester's response, so a
+    confirmed booking stays confirmed;
+  - title, description, cancellation reason, video link, tokens and source are
+    cleared, and the location goes back to the type's (an in-person booking
+    without a fixed place carried the address the requester typed);
+  - the chatter of the booking and of its calendar event (emails, notes,
+    tracking), their attachments, ratings, activities, followers and email
+    tracking are deleted;
+  - the calendar event loses its external attendees, description, locations and
+    the "before" values kept by `bf_calendar_invite`;
+  - the Nextcloud or Google copy of the event receives the anonymized version
+    (only a copy already pushed: nothing is created remotely), and the booking's
+    own Nextcloud Talk room is renamed (never the shared fallback room);
+  - classifications of the booking are archived and lose the old title.
+  Type, organizer, resources, date, duration and state remain for statistics.
+  Writes run without tracking, notification or `bf_calendar_invite` baseline, so
+  the old name is not written back anywhere and no invitation goes out. Outbound
+  calls come after the database writes and raise on failure: the booking is then
+  left intact and retried the next night.
+  Each anonymization writes a **partial** entry in the destruction register
+  (method "anonymize", the removed fields named in `res_field`), with no trace of
+  the old name, and the list of what is not covered.
+- **Not covered**, and said in each register entry: the contact records of the
+  requester, confirmed guests and poll participants, and their consents (own
+  regimes; a consent names the booking number); the meeting record and agenda
+  (rule RENC-001), except what satellites remove; linked visits and outreach
+  touches; the Talk conversation, its messages and guests (the room is only
+  renamed); the video short link; event tags; Nextcloud and Google trash and
+  history; backups until they rotate; copies of emails in mailboxes; SMS logs at
+  the provider.
+- A **destruction campaign** or **destruction request** cannot anonymize a
+  booking: the generic method archives it without removing anything and the
+  register would say "anonymization", so the campaign refuses and the request
+  lists the booking as not destroyed, with the reason. "Delete" goes to the base
+  as usual.
+- `bf_privacy_anonymized_at` is set only by the anonymization, which runs as
+  superuser (refused by hand, by RPC even with a forged context, and at
+  creation). The contact "Personne anonymisée" cannot be deleted, archived or
+  merged.
+- `resource.booking` is **classifiable** (`_privacy_classifiable_models()`). Its
+  answers and guests are not: they cascade from the booking, and a
+  classification on the booking covers them.
+- **Personal-information category per intake question**, chosen when the
+  question is configured. "Email" and "Phone" fields are pre-filled with
+  "Identification"; every other question stays empty until someone chooses,
+  since a label is not enough to guess. The booking type shows how many
+  questions have no category, and how many collect sensitive information.
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by

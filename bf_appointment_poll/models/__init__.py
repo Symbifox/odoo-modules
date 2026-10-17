@@ -5,3 +5,4 @@ from . import appointment_poll_vote
 from . import appointment_poll_schedule_wizard
 from . import resource_booking
 from . import mail_layout
+from . import privacy_appointment

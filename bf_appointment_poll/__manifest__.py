@@ -149,7 +149,10 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.17.0",
+    # 18.0.1.18.0: anonymisation d'une réservation (règle RDV-001 de
+    #   bf_appointment 18.0.2.66.0, exigée) : le sondage qui l'a fait naître
+    #   est supprimé avec ses participants, leurs votes et son fil.
+    "version": "18.0.1.18.0",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

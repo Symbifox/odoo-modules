@@ -3,3 +3,4 @@ from . import res_config_settings
 from . import resource_booking_type
 from . import resource_booking
 from . import meeting_agenda
+from . import privacy_appointment

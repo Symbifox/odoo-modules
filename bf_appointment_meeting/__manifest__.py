@@ -14,7 +14,11 @@
     #   vérifie pas l'adresse (relecture adverse).
     #   Le demandeur est retenu sur l'OdJ (`bf_booking_partner_id`) ; exige
     #   bf_meeting 18.0.3.65.0 (`bf_to_schedule`).
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: anonymisation d'une réservation (règle RDV-001 de
+    #   bf_appointment 18.0.2.66.0, exigée) : le sujet semé depuis le
+    #   formulaire d'accueil et le lien vers le demandeur quittent l'ordre du
+    #   jour ; le reste de l'ordre du jour relève de RENC-001.
+    "version": "18.0.1.2.0",
     "category": "Appointments",
     "summary": "Créer l'ordre du jour à la prise de rendez-vous et en donner "
                "le lien au demandeur",
