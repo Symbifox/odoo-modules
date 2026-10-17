@@ -387,6 +387,12 @@ def _apply_security_headers(response):
     headers["X-Frame-Options"] = "DENY"
     headers["X-Content-Type-Options"] = "nosniff"
     headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    # Pages à jeton : rien à indexer ni à suivre, elles portent le
+    # titre de la rencontre et les liens d'action. L'accueil et les pages de
+    # type passent aussi par ici et doivent rester indexables : on ne marque
+    # que les URL à jeton, reconnues comme le fait `_apply_locale_from_request`.
+    if "/appointment/b/" in (request.httprequest.path or ""):
+        headers["X-Robots-Tag"] = "noindex, nofollow"
     return response
 
 
@@ -708,6 +714,13 @@ class AppointmentController(Controller):
             tracking_disable=True,
             mail_notrack=True,
         )
+        # 🔴 Le nom de la réservation (agenda, courriels, qui partent
+        # à l'adresse) nomme l'organisation de la fiche retrouvée par
+        # l'adresse TAPÉE. Rien ne prouve que la personne possède cette
+        # adresse, et le navigateur part aussitôt vers la page du créneau avec
+        # le jeton : les pages à jeton et la salle Talk affichent donc un
+        # titre bâti sur ce qu'elle a tapé seulement, jamais sur la fiche.
+        qui_tape = company if (company and booking_type.collect_company) else name
         booking_vals = {
             "type_id": booking_type.id,
             "partner_ids": [(6, 0, [partner.id])],
@@ -716,6 +729,17 @@ class AppointmentController(Controller):
                 partner=partner,
                 booker_name=name,
                 lang=partner.lang or organizer_user.lang,
+            ),
+            # La langue du VISITEUR, pas celle de la fiche : un titre public en
+            # anglais sous une page en français dirait que l'adresse tapée est
+            # au carnet, et dans quelle langue. Ce POST n'a pas de
+            # préfixe de langue, d'où `_visitor_lang()` (URL, témoin, navigateur).
+            # Le nom de l'agenda, lui, garde la langue de la fiche.
+            "bf_public_title": Booking._bf_build_title(
+                booking_type,
+                partner=None,
+                booker_name=qui_tape,
+                lang=_visitor_lang(),
             ),
             "user_id": organizer_user.id,
         }
@@ -777,8 +801,11 @@ class AppointmentController(Controller):
         # Save custom field answers
         self._save_intake_answers(booking, booking_type, kwargs)
         # Invités additionnels : enregistrés EN ATTENTE, rien ne leur est
-        # envoyé. Seule la confirmation du demandeur, depuis sa boîte,
-        # déclenchera le moindre courriel.
+        # envoyé. 🔴 Le jeton que ce formulaire remet au navigateur ne
+        # suffit pas à les confirmer : il faut la clé de la demande de
+        # confirmation, qui ne part qu'à l'adresse du demandeur
+        # (`bf_guest_key`, route `appointment_guests`). Seule sa confirmation,
+        # depuis sa boîte, déclenchera le moindre courriel.
         self._bf_save_guests(booking, booking_type, kwargs, partner)
         # Generate access token
         booking._portal_ensure_token()
@@ -1398,13 +1425,25 @@ class AppointmentController(Controller):
         toutes seules, sans qu'un humain ait cliqué — c'est-à-dire exactement le
         pourriel que cette confirmation existe pour empêcher. Le GET montre donc
         la liste et demande; seul le POST agit.
+
+        🔴 Le jeton ne suffit pas, ni au GET ni au POST : le
+        formulaire public le remet au navigateur sur la seule adresse tapée.
+        Il faut la clé (`key`) de la demande de confirmation, partie à
+        l'adresse du demandeur (`bf_guest_key`), sauf pour une demande partie
+        avant 2.65.0 (`_bf_guests_for_key`). Sans elle : rien ne change, et une
+        page neutre qui ne dit rien de la réservation ni du carnet.
         """
         _apply_locale_from_request()
         booking_sudo = self._get_booking_sudo(booking_id, token)
         if not booking_sudo:
             return request.redirect("/appointment")
         ecarter = request.httprequest.path.endswith("/decline")
-        en_attente = booking_sudo._bf_pending_guests()
+        en_attente, par_la_cle = booking_sudo._bf_guests_for_key(kwargs.get("key"))
+        if not par_la_cle and not en_attente:
+            return _apply_security_headers(
+                request.render("bf_appointment.appointment_guests_link_invalid", {}))
+        # Reportée dans les formulaires de la page, pour que le POST la porte.
+        guest_key = kwargs.get("key") if par_la_cle else ""
 
         # ⚠️ `!= "POST"`, PAS `== "GET"`. Werkzeug ajoute HEAD d'office à toute
         # règle qui accepte GET, mais `httprequest.method` vaut alors "HEAD" :
@@ -1420,6 +1459,7 @@ class AppointmentController(Controller):
                 {
                     "booking_sudo": booking_sudo,
                     "access_token": token,
+                    "guest_key": guest_key,
                     "guests": en_attente,
                     "decline": ecarter,
                     "done": not en_attente,
@@ -1439,7 +1479,9 @@ class AppointmentController(Controller):
             {
                 "booking_sudo": booking_sudo,
                 "access_token": token,
-                "guests": booking_sudo.guest_ids,
+                "guest_key": guest_key,
+                # Sans la clé (demande d'avant 2.65.0), ceux qu'elle visait seulement.
+                "guests": booking_sudo.guest_ids if par_la_cle else en_attente,
                 "decline": ecarter,
                 "done": True,
             },

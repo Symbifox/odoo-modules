@@ -437,12 +437,12 @@
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             <t t-call="bf_appointment.appointment_brand_style"/>
             <t t-set="_en" t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
-            <t t-set="additional_title" t-value="('Pick a time — ' if _en else 'Choisir un créneau — ') + (booking_sudo.type_id.name or '')"/>
+            <t t-set="additional_title" t-value="booking_sudo.bf_page_title()"/>
             <div class="bf-appointment-schedule">
                 <div class="bf-section-header text-center">
                     <h3 t-out="'Pick your time' if _en else 'Choisissez votre créneau'"/>
                     <p>
-                        <t t-esc="booking_sudo.type_id.name"/>
+                        <t t-esc="booking_sudo.bf_page_title()"/>
                         -
                         <t t-esc="booking_sudo.get_duration_display()"/>
                     </p>
@@ -854,7 +854,7 @@
                         <tbody>
                             <tr>
                                 <td><t t-out="'Meeting' if _en else 'Rencontre'"/></td>
-                                <td><strong t-out="booking_sudo.type_id.name"/></td>
+                                <td><strong t-out="booking_sudo.bf_page_title()"/></td>
                             </tr>
                             <tr t-if="booking_sudo.start">
                                 <td><t t-out="'Date' if _en else 'Date'"/></td>
@@ -975,7 +975,7 @@
                         <p>
                             <t t-out="'You asked to invite them to ' if _en
                                       else 'Vous avez demandé à les convier à '"/>
-                            <strong t-out="booking_sudo.type_id.name"/>.
+                            <strong t-out="booking_sudo.bf_page_title()"/>.
                             <t t-out="' Nothing has been sent yet.' if _en
                                       else ' Rien ne leur a encore été envoyé.'"/>
                         </p>
@@ -984,6 +984,8 @@
                         </ul>
                         <form method="post"
                               t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/guests/confirm">
+                            <input t-if="guest_key" type="hidden" name="key"
+                                   t-att-value="guest_key"/>
                             <input type="hidden" name="csrf_token"
                                    t-att-value="request.csrf_token()"/>
                             <button type="submit" class="btn bf-btn-accent">
@@ -993,6 +995,8 @@
                         </form>
                         <form method="post" class="mt-2"
                               t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/guests/decline">
+                            <input t-if="guest_key" type="hidden" name="key"
+                                   t-att-value="guest_key"/>
                             <input type="hidden" name="csrf_token"
                                    t-att-value="request.csrf_token()"/>
                             <button type="submit" class="btn btn-link ps-0">
@@ -1001,6 +1005,56 @@
                             </button>
                         </form>
                     </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Fil d'Ariane du portail. L'OCA y nomme la réservation par son
+         nom, le titre complet que le formulaire public bâtit sur la fiche
+         retrouvée par l'adresse tapée. Les pages à jeton de ce module passent
+         `booking_sudo` au gabarit du portail : ce nom s'affichait au-dessus de
+         chacune, dès 2.64.2. Le fil porte le même titre que le reste de la
+         page (`bf_page_title`). Ces pages ne posent pas `page_name` : seule
+         la branche du nom s'y affiche. -->
+    <template id="portal_breadcrumbs_titre_public" inherit_id="resource_booking.portal_breadcrumbs">
+        <xpath expr="//t[@t-out='booking_sudo.name']" position="attributes">
+            <attribute name="t-out">booking_sudo.bf_page_title()</attribute>
+        </xpath>
+        <!-- « Bookings » : l'OCA n'en livre aucune traduction (msgstr vide dans
+             son fr.po). Les pages de ce module disent leur langue par ternaire,
+             comme ici ; le .po de l'OCA ne se touche pas. -->
+        <xpath expr="//a[@t-attf-href='/my/bookings?{{ keep_query() }}']" position="attributes">
+            <attribute name="t-out">'Bookings' if (env.context.get('lang') or 'fr_CA').lower().startswith('en') else 'Rendez-vous'</attribute>
+        </xpath>
+        <xpath expr="//a[@t-attf-href='/my/bookings?{{ keep_query() }}']/following-sibling::t[1]" position="attributes">
+            <attribute name="t-out">'Bookings' if (env.context.get('lang') or 'fr_CA').lower().startswith('en') else 'Rendez-vous'</attribute>
+        </xpath>
+    </template>
+
+    <!-- Lien des invités sans la clé de la demande de confirmation.
+         Ne dit rien de la réservation ni du carnet : pas de `booking_sudo`,
+         donc pas de fil d'Ariane qui la nommerait. -->
+    <template id="appointment_guests_link_invalid" name="Guests Link Not Valid">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title"
+               t-value="'Link not valid' if _en else 'Lien non valide'"/>
+            <div class="bf-appointment-confirmation bf-guests-link-invalid">
+                <div class="bf-confirmation-card">
+                    <div class="bf-section-header mb-3">
+                        <h2>
+                            <t t-out="'This link cannot confirm guests' if _en
+                                      else 'Ce lien ne permet pas de confirmer des invités'"/>
+                        </h2>
+                    </div>
+                    <p>
+                        <t t-out="'To confirm or decline guests, use the link in the “Confirm your guests” email.' if _en
+                                  else 'Pour confirmer ou écarter des invités, utilisez le lien du courriel « Confirmez vos invités ».'"/>
+                    </p>
                 </div>
             </div>
         </t>

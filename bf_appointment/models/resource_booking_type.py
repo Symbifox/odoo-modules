@@ -142,7 +142,8 @@ class ResourceBookingType(models.Model):
         default=False,
         help="Ajoute un champ « Autres invités » au formulaire public. Rien "
              "n'est envoyé à ces personnes tant que le demandeur ne l'a pas "
-             "confirmé depuis sa boîte de réception.",
+             "confirmé par le lien du courriel reçu à son adresse : le lien de "
+             "la réservation seul ne suffit pas.",
     )
     max_guests = fields.Integer(
         string="Invités additionnels au maximum",

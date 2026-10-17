@@ -216,11 +216,11 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
     }
 }
 
-// Inside-type description (`/appointment/<slug>`). The BF site body is
-// dark (`--body-bg: #212529`), so the legacy `#495057` gray was barely
-// visible. White + slightly larger, per the brand review 2026-05-04.
+// Inside-type description (`/appointment/<slug>`). It takes the site's own
+// text color: light on a dark site (where the legacy `#495057` gray was
+// barely visible), dark on a light site (where a forced white vanished).
 .bf-description {
-    color: rgba(255, 255, 255, 0.92);
+    color: inherit;
     font-size: 1.05rem;
     line-height: 1.65;
 
@@ -233,7 +233,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
     }
 
     strong {
-        color: #ffffff;
+        color: inherit;
     }
 
     a {

@@ -44,6 +44,14 @@ def _migration():
     return module
 
 
+def _migration_titre():
+    chemin = RACINE / "migrations" / "18.0.2.65.0" / "post-migration.py"
+    spec = importlib.util.spec_from_file_location("bf_appointment_migration_2_65_0", chemin)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def _norme(corps):
     corps = re.sub(r"<!--.*?-->", "", html.unescape(corps or "").replace("\xa0", " "), flags=re.S)
     return re.sub(r"\s+", " ", re.sub(r">\s+<", "><", corps)).strip()
@@ -185,6 +193,9 @@ class TestMiseEnPage(TransactionCase):
         xml = (RACINE / "data" / "appointment_mail_templates.xml").read_text(encoding="utf-8")
         source = re.search(r'<record id="mail_template_appointment_confirmation".*?<!\[CDATA\[(.*?)\]\]>',
                            xml, re.S).group(1)
+        # 2.65.0 nomme ensuite la rencontre par son titre complet : la chaîne
+        # des deux migrations rend la source.
+        nouveau = _migration_titre().remplacer_corps(nouveau)[0]
         self.assertEqual(_norme(nouveau), _norme(source))
         self.assertFalse(migration.a_une_coquille(nouveau))
 

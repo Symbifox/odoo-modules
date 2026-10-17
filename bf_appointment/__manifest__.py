@@ -410,7 +410,10 @@
     #   pose dans le formulaire de rencontre est réservé au groupe Réservations
     #   (views/calendar_event_booking_access.xml). Sans lui, un compte interne
     #   sans ce groupe ne pouvait ouvrir aucune rencontre enregistrée.
-    "version": "18.0.2.64.2",
+    # 18.0.2.65.0: titre complet de la rencontre dans les courriels et le .ics ;
+    #   titre public sur les pages à jeton ; portail OCA par jeton renvoyé aux
+    #   pages du module ; clé de confirmation des invités ; fil fermé au jeton.
+    "version": "18.0.2.65.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -1,4 +1,5 @@
 import base64
+import hmac
 import logging
 import re
 import uuid
@@ -13,6 +14,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import hmac as hmac_base
 
 from odoo.addons.resource_booking.models.resource_booking import (
     _availability_is_fitting,
@@ -169,6 +171,18 @@ class ResourceBooking(models.Model):
         help="Enregistrement d'origine, au format « modele,id ». Résolu à la "
              "demande — ce n'est PAS un champ relationnel, pour que "
              "bf_appointment reste installable sans ses satellites.",
+    )
+
+    # --- Titre public (2.65.0) ----------------------------------------------
+    # Ce que les pages à jeton et la salle Talk affichent d'une réservation
+    # prise au formulaire public : bâti sur ce que la personne a TAPÉ, jamais
+    # sur la fiche que son adresse a retrouvée. Voir `bf_page_title()`.
+    bf_public_title = fields.Char(
+        string="Titre public",
+        copy=False,
+        help="Titre affiché sur les pages publiques de la réservation et dans "
+             "le nom de la salle Talk, bâti au formulaire public sur la société "
+             "ou le nom tapé. Vide : le titre complet de la réservation.",
     )
 
     # --- Fuseau du visiteur (2.56.0) ---------------------------------------
@@ -1115,16 +1129,18 @@ class ResourceBooking(models.Model):
             import pytz
             import requests
 
-            booker = self.partner_id or (self.partner_ids[:1] if self.partner_ids else False)
-            booker_name = (booker.name if booker else "").strip() or "Invité"
             tz_name = self._get_booker_display_tz()
             local_start = ""
             if self.start:
                 local_start = pytz.utc.localize(self.start).astimezone(
                     pytz.timezone(tz_name)
                 ).strftime("%Y-%m-%d %H:%M")
-            type_name = (self.type_id.name or "Rendez-vous").strip()
-            room_name = " | ".join(p for p in (type_name, booker_name, local_start) if p)
+            # Le titre que les pages à jeton affichent : le lien de la salle
+            # part avec elles. Le type seul (« Rencontre flexible ») ne disait
+            # pas de quelle rencontre il s'agissait, et le nom de la fiche que
+            # le formulaire public retrouve par l'adresse n'a rien à faire là
+            # (voir `bf_page_title`).
+            room_name = " | ".join(p for p in (self.bf_page_title(), local_start) if p)
             # Nextcloud caps room names at 200 chars
             room_name = room_name[:200]
 
@@ -1416,6 +1432,53 @@ class ResourceBooking(models.Model):
         if who:
             return f"{type_name} - {who}"
         return type_name
+
+    @api.private
+    def bf_title(self):
+        """Titre complet de la rencontre, celui que l'agenda affiche.
+
+        Le nom de la réservation est recopié sur l'événement d'agenda à chaque
+        écriture (`_sync_meeting` de l'OCA), et le SUMMARY du .ics le reprend :
+        c'est le titre que l'organisateur lit dans son agenda et que la
+        personne voit dans le sien. Les courriels et le .ics disent la même
+        chose. Ils nommaient le TYPE (« Rencontre flexible »), plus court et
+        générique, qui ne dit ni de quelle rencontre il s'agit ni avec qui.
+
+        ⚠️ Les pages à jeton et la salle Talk passent par `bf_page_title()` :
+        ce titre-ci peut nommer l'organisation du carnet, et une réservation
+        du formulaire public est retrouvée par la seule adresse tapée.
+
+        Sans underscore : les gabarits de courriel l'appellent, et le QWeb d'un
+        `mail.template` refuse une méthode privée. `api.private` la retire du
+        RPC : le portail n'a rien à y appeler.
+        """
+        self.ensure_one()
+        titre = (
+            self.name
+            or self.meeting_id.name
+            or self._bf_build_title(self.type_id, partner=self.partner_id)
+        )
+        return (titre or "").strip()
+
+    @api.private
+    def bf_page_title(self):
+        """Titre des pages à jeton et de la salle Talk.
+
+        🔴 Le formulaire public retrouve la fiche par l'adresse TAPÉE, sans
+        preuve que la personne la possède, et le navigateur part aussitôt vers
+        la page du créneau avec le jeton. Le nom de la réservation, bâti sur
+        cette fiche, nomme l'organisation du carnet : l'afficher là livrerait
+        à quiconque connaît une adresse le nom de la société qui s'y rattache.
+        Le contrôleur pose donc `bf_public_title`, bâti sur ce que la personne
+        a tapé seulement (la société tapée, sinon le nom tapé), et ces pages
+        l'affichent. L'agenda, les courriels (qui partent à l'adresse) et le
+        .ics gardent `bf_title()`.
+
+        Vide (lien personnel, réservation faite par l'équipe) : le titre
+        complet, celui que l'organisateur a choisi d'envoyer.
+        """
+        self.ensure_one()
+        return (self.bf_public_title or "").strip() or self.bf_title()
 
     # ---- Description de l'événement d'agenda ----
 
@@ -1735,7 +1798,7 @@ class ResourceBooking(models.Model):
         cancel_url = f"{booking_url}/cancel"
         schedule_url = f"{booking_url}/schedule"
         # Build description with all pertinent info
-        desc_parts = [self.type_id.name or _("Rendez-vous")]
+        desc_parts = [self.bf_title()]
         desc_parts.append("")
         # `strftime("%A %d %B %Y")` suit la locale du PROCESSUS, pas celle du
         # destinataire : un .ics par ailleurs francophone sortait « Thursday 30
@@ -1804,7 +1867,7 @@ class ResourceBooking(models.Model):
             dtstart_line = f"DTSTART:{self.start.strftime('%Y%m%dT%H%M%S')}Z\r\n"
             dtend_line = f"DTEND:{stop.strftime('%Y%m%dT%H%M%S')}Z\r\n"
         summary = _escape_ics(
-            self.name or self._bf_build_title(self.type_id, partner=self.partner_id)
+            self.bf_title()
         )
         # Organizer/Attendee: METHOD:REQUEST requires an ORGANIZER (RFC 5546);
         # ATTENDEE makes the invite RSVP-able in Outlook / Google / Apple Mail.
@@ -1813,7 +1876,7 @@ class ResourceBooking(models.Model):
             or "service@example.com"
         )
         organizer_name = _escape_ics_param(
-            self.env.company.name or "Blue Fox"
+            self.env.company.name
         )
         ics = (
             "BEGIN:VCALENDAR\r\n"
@@ -2679,6 +2742,77 @@ class ResourceBooking(models.Model):
     def _bf_pending_guests(self):
         self.ensure_one()
         return self.guest_ids.filtered(lambda g: g.state == "pending")
+
+    @api.private
+    def bf_guest_key(self):
+        """Clé de confirmation des invités (2.65.0).
+
+        🔴 Le jeton de la réservation ne prouve rien : le formulaire public
+        retrouve la fiche par l'adresse TAPÉE et remet aussitôt le jeton au
+        navigateur. S'il suffisait à confirmer les invités, n'importe qui
+        taperait l'adresse d'un tiers, mettrait la sienne (ou n'importe
+        laquelle) en invitée et ferait partir les invitations sans posséder
+        aucune adresse : le formulaire servirait de relais d'envoi.
+
+        Cette clé ne part que dans la demande de confirmation, adressée au
+        demandeur (`mail_template_guest_confirmation_request`). Elle est
+        dérivée du secret de la base (`database.secret`) et de la réservation :
+        rien n'est stocké, donc rien ne se lit par RPC, export ou fil, et elle
+        existe dès qu'une réservation existe, quel que soit le chemin qui crée
+        ses invités. Distincte par réservation : celle d'une réservation n'en
+        ouvre aucune autre.
+
+        Sans underscore : le gabarit l'appelle. `api.private` la retire du RPC.
+        """
+        self.ensure_one()
+        return hmac_base(self.env(su=True), "bf_appointment.guest_confirmation", self.id)
+
+    def _bf_guests_for_key(self, cle):
+        """Invités en attente que cette requête peut confirmer ou écarter.
+
+        Rend (invités, la clé est-elle bonne). Comparaison en temps constant,
+        sur des octets : `hmac.compare_digest` refuse deux `str` non ASCII.
+
+        Sans la clé, seuls les invités marqués par la migration 18.0.2.65.0
+        (`bf_confirm_by_token`) : leur demande était partie avant la pose, avec
+        un lien sans clé. Population finie, que personne ne peut agrandir (un
+        invité créé ensuite n'est jamais marqué), et seulement tant que la
+        rencontre n'est pas passée.
+        """
+        self.ensure_one()
+        en_attente = self._bf_pending_guests()
+        attendue = self.bf_guest_key().encode("ascii")
+        if cle and hmac.compare_digest(attendue, str(cle).encode("utf-8")):
+            return en_attente, True
+        if self.stop and self.stop > fields.Datetime.now():
+            return en_attente.filtered("bf_confirm_by_token"), False
+        return en_attente.browse(), False
+
+    # --- Fil de la réservation au portail (2.65.0) ----------------------------
+
+    @api.model
+    def _get_thread_with_access(self, thread_id, mode="read", **kwargs):
+        """🔴 Le jeton (ni la signature `hash`/`pid`) n'ouvre plus le fil.
+
+        Le portail d'Odoo ouvre le fil d'un enregistrement à qui présente son
+        `access_token` (ou la signature `hash`/`pid` des liens de notification) :
+        `/portal/chatter_init`, `/mail/chatter_fetch`, `/mail/thread/data`,
+        `/mail/message/post`, les réactions, l'envoi de pièces jointes et
+        l'avatar des messages passent tous par ici. Pour une réservation, ce
+        jeton est celui que le formulaire public remet au navigateur sur la
+        seule adresse tapée : il livrait le nom et l'avatar du `partner_id`
+        (la fiche du carnet, que l'OCA désigne par `_mail_get_partner_fields`)
+        et laissait publier sous son nom.
+
+        Fermé ici, au modèle, plutôt que route par route : seul l'accès propre
+        (droits et règles de la personne connectée) ouvre le fil. Le demandeur
+        connecté et l'équipe gardent le leur. Les pages à jeton de ce module
+        n'affichent pas de fil, et le portail de l'OCA ouvert par le jeton
+        renvoie à elles (`controllers/portal.py`).
+        """
+        for cle in ("token", "hash", "pid"):
+            kwargs.pop(cle, None)
+        return super()._get_thread_with_access(thread_id, mode, **kwargs)
 
     def action_bf_confirm_guests(self):
         """Confirme les invités depuis le back-office (même effet que le lien)."""

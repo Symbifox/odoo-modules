@@ -194,6 +194,80 @@ invisible ones included, so an internal user without the Bookings group got an
 access error when opening any saved meeting. The field is now restricted to that
 group (`views/calendar_event_booking_access.xml`).
 
+## Meeting title, token pages and guests (18.0.2.65.0)
+
+Every booking email names the meeting by its full title, the one the organizer's
+calendar shows and the attached .ics carries: `resource.booking.bf_title()` (the
+booking name, else the calendar event name, else the generated "Type - Organisation
+x Brand"). It is the subject of the sixteen templates and the "Rencontre" row of
+their body, in place of the booking type name ("Rencontre flexible"), which said
+neither which meeting it was nor with whom. The .ics summary and description use
+the same title.
+
+The pages reached by the booking token (pick-a-time, confirmation, cancel, guests,
+their page title, which a link preview shows when a booking link is pasted, and the
+portal breadcrumb above them) and the Nextcloud Talk room name use
+`bf_page_title()` instead. The public form
+finds the contact by the email address typed, with no proof that the visitor owns
+it, and sends the browser straight to the token pages: the full title, built on
+the organisation of that contact, would show it to anyone who knows an address. A
+booking made on the public form therefore stores `bf_public_title`, built on what
+the visitor typed only (the typed company when the type collects it, else the
+typed name), and those pages show it. The calendar, the emails (sent to the
+address) and the .ics keep the full title. Personal links and bookings made by the
+team have no public title: their pages show the full title. Bookings made before
+2.65 without a source (the public form, but also bookings made by the team in the
+backend) get the booking type name, as their pages showed it. Token
+pages answer with `X-Robots-Tag: noindex, nofollow`; the landing and booking type
+pages stay indexable. Both methods are `api.private`: templates call them, RPC
+cannot.
+
+The templates are `noupdate`: migration 18.0.2.65.0 rewrites every stored language,
+replacing only the type-name expression and the label of the row that shows it, so
+a subject or body customised on a tenant keeps its wording. A body's language is
+read from its content, not its key ("Meeting" when it holds no French). Templates
+created by hand, without an xmlid of this module, are left untouched.
+
+The guest invitation goes to an address typed by the booker: it carries
+`bf_page_title()` too.
+
+Guests are confirmed with a key, not with the booking token alone. The public form
+hands the token to the browser on the typed address only, so up to 2.64.2 anyone
+could type someone else's address, add guests and send them invitations. The
+confirmation request, sent to the booker's address, now carries
+`bf_guest_key()` (an HMAC of the booking id with the database secret, nothing
+stored), and `/guests/confirm` and `/guests/decline` check it in constant time on
+GET and POST. Without it nothing changes and a neutral page says nothing about the
+booking. Migration 18.0.2.65.0 adds the key to both links of the stored template
+(left as is, with a warning, when it was customised) and marks the pending guests
+whose request was already sent (`bf_confirm_by_token`): their old link keeps
+working until the meeting ends, and no guest created later is ever marked.
+
+The booking token also opens the `resource_booking` portal
+(`/my/bookings/<id>?access_token=…`), which has none of the guards of the token
+pages: it shows the full title and the participants as they are in the address
+book, and its `/confirm` and `/cancel` act on a plain GET, without the link expiry
+check, the on-screen consents or this module's emails. When the token is the only
+thing that opens the booking to the visitor, those four routes (page, schedule,
+confirm, cancel) now redirect to the matching page of this module and do nothing
+else. A signed-in user who can open the booking by their own rights keeps the
+portal, links with a token included.
+
+The token no longer opens the booking's message thread either: Odoo's portal
+chatter routes (`/portal/chatter_init`, `/mail/chatter_fetch`, `/mail/message/post`,
+reactions, attachment upload, message avatars) accept the record token, or the
+`hash`/`pid` signature, and showed the name and avatar of the contact found by the
+typed address, or posted under it. `resource.booking._get_thread_with_access`
+ignores both: only the visitor's own access rights open the thread. A signed-in
+user with access keeps the chatter; the token pages of this module show none.
+
+No brand is built in any more: the `appointment_brand_*` fields of the company have
+no Blue Fox default (name, logo, website, privacy and terms links, tagline), and
+the .ics organizer is the company name. A company that sets nothing sends under
+its own name. Values already stored on a database are not changed. The booking
+type description takes the site's text color instead of a forced white, which was
+invisible on a light site, and the portal breadcrumb says "Rendez-vous" in French.
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by
@@ -217,5 +291,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-17, this version converts automatically to
   **LGPL-3.0-or-later**.

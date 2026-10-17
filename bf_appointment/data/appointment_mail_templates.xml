@@ -9,7 +9,7 @@
         <record id="mail_template_intake_acknowledgement" model="mail.template">
             <field name="name">Rendez-vous : Accusé de réception</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -37,8 +37,8 @@
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 8px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
                         <tbody>
                             <tr>
-                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type de rencontre</td>
-                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td>
                             </tr>
                             <tr>
                                 <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Durée prévue</td>
@@ -75,7 +75,7 @@
         <record id="mail_template_appointment_confirmation" model="mail.template">
             <field name="name">Rendez-vous : Confirmation</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -94,8 +94,8 @@
                                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td>
-                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''">Consultation</t></td>
+                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td>
+                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()">Consultation</t></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td>
@@ -146,7 +146,7 @@
         <record id="mail_template_reminder_2d" model="mail.template">
             <field name="name">Rendez-vous : Rappel 2 jours</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -162,7 +162,7 @@
                                                 </p>
                                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
                                                     <tbody>
-                                                        <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                                                        <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
                                                         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
                                                         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/><t t-if="object.get_timezone_label()"><span style="font-weight:400; color:#6B7280;"> (<t t-out="object.get_timezone_label()"/>)</span></t></td></tr>
                                                         <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre</a></td></tr></t>
@@ -185,7 +185,7 @@
         <record id="mail_template_reminder_1d" model="mail.template">
             <field name="name">Rendez-vous : Rappel 1 jour</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -198,7 +198,7 @@
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Votre rendez-vous est <strong>demain</strong>.</p>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
-                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
                             <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
                             <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/><t t-if="object.get_timezone_label()"><span style="font-weight:400; color:#6B7280;"> (<t t-out="object.get_timezone_label()"/>)</span></t></td></tr>
                             <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre</a></td></tr></t>
@@ -216,7 +216,7 @@
         <record id="mail_template_reminder_2h" model="mail.template">
             <field name="name">Rendez-vous : Rappel 2 heures</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -243,7 +243,7 @@
         <record id="mail_template_reminder_1h" model="mail.template">
             <field name="name">Rendez-vous : Rappel 1 heure</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -261,7 +261,7 @@
                         </t>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
                             <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Heure</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/><t t-if="object.get_timezone_label()"><span style="font-weight:400; color:#6B7280;"> (<t t-out="object.get_timezone_label()"/>)</span></t></td></tr>
-                            <tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Type</td><td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                            <tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Rencontre</td><td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
                         </tbody></table>
                         <t t-out="object.bf_extra_cta_html()"/>
 ]]></field>
@@ -274,7 +274,7 @@
         <record id="mail_template_followup_immediate" model="mail.template">
             <field name="name">Rendez-vous : Suivi imm&#233;diat</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -286,7 +286,7 @@
 <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Merci!</p>
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-                            Merci d'avoir pris le temps de nous rencontrer pour <strong><t t-out="object.type_id.name or ''"/></strong>.
+                            Merci d'avoir pris le temps de nous rencontrer pour <strong><t t-out="object.bf_title()"/></strong>.
                         </p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
                             Si vous avez des questions ou si vous souhaitez planifier un suivi, n'h&#233;sitez pas &#224; nous contacter.
@@ -305,7 +305,7 @@
         <record id="mail_template_followup_1h" model="mail.template">
             <field name="name">Rendez-vous : Suivi 1 heure apr&#232;s</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -334,7 +334,7 @@
         <record id="mail_template_followup_2h" model="mail.template">
             <field name="name">Rendez-vous : Suivi 2 heures apr&#232;s</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -346,7 +346,7 @@
 <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Suivi</p>
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-                            Suite &#224; votre rendez-vous <strong><t t-out="object.type_id.name or ''"/></strong>,
+                            Suite &#224; votre rendez-vous <strong><t t-out="object.bf_title()"/></strong>,
                             nous vous remercions de votre confiance.
                         </p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
@@ -367,7 +367,7 @@
         <record id="mail_template_organizer_new_booking" model="mail.template">
             <field name="name">Rendez-vous : Notification organisateur</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.user_id.partner_id.email or object.user_id.login }}</field>
             <field name="lang">{{ object.user_id.lang }}</field>
@@ -379,7 +379,7 @@
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.user_id.name or ''"/>,</p>
                         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Un nouveau rendez-vous a &#233;t&#233; pris par <strong><t t-out="object.partner_id.name or ''"/></strong>.</p>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
-                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
                             <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Client</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.partner_id.name or ''"/> (<t t-out="object.partner_id.email or ''"/>)</td></tr>
                             <t t-if="object.partner_id.phone"><tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">T&#233;l&#233;phone</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.partner_id.phone or ''"/></td></tr></t>
                             <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
@@ -407,7 +407,7 @@
         <record id="mail_template_appointment_reminder" model="mail.template">
             <field name="name">Rendez-vous : Rappel (ancien)</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -424,7 +424,7 @@
         <record id="mail_template_appointment_cancellation" model="mail.template">
             <field name="name">Rendez-vous : Annulation (client)</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -443,8 +443,8 @@
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
                         <tbody>
                             <tr>
-                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td>
-                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Rencontre</td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.bf_title()"/></td>
                             </tr>
                             <t t-set="was" t-value="object.get_cancelled_start_display()"/>
                             <t t-if="was and was[0]">
@@ -504,7 +504,7 @@
         <record id="mail_template_organizer_reschedule" model="mail.template">
             <field name="name">Rendez-vous : D&#233;plac&#233; (organisateur)</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.user_id.partner_id.email or object.user_id.email }}</field>
             <field name="lang">{{ object.user_id.lang }}</field>
@@ -519,8 +519,8 @@
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:12px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
         <tr><td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px; width:30%;">Client</td>
             <td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.partner_id.name or ''"/> (<t t-out="object.partner_id.email or ''"/>)</td></tr>
-        <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Type</td>
-            <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+        <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Rencontre</td>
+            <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
         <t t-set="was" t-value="object.bf_previous_start_display()"/>
         <t t-if="was and was[0]">
             <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Date pr&#233;vue</td>
@@ -544,7 +544,7 @@
         <record id="mail_template_organizer_cancellation" model="mail.template">
             <field name="name">Rendez-vous : Annulation (organisateur)</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="subject">{{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.user_id.partner_id.email or object.user_id.email }}</field>
             <field name="lang">{{ object.user_id.lang }}</field>
@@ -559,8 +559,8 @@
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:12px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
         <tr><td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px; width:30%;">Client</td>
             <td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.partner_id.name or ''"/> (<t t-out="object.partner_id.email or ''"/>)</td></tr>
-        <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Type</td>
-            <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+        <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Rencontre</td>
+            <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.bf_title()"/></td></tr>
         <t t-set="was" t-value="object.get_cancelled_start_display()"/>
         <t t-if="was and was[0]">
             <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Date pr&#233;vue</td>
@@ -585,7 +585,7 @@
         <record id="mail_template_guest_invitation" model="mail.template">
             <field name="name">Rendez-vous : Invitation à un participant additionnel</field>
             <field name="model_id" ref="model_resource_booking_guest"/>
-            <field name="subject">Invitation : {{ object.booking_id.type_id.name }}</field>
+            <field name="subject">Invitation : {{ object.booking_id.bf_page_title() }}</field>
             <field name="email_from">{{ (object.booking_id.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="lang">{{ object.partner_id.lang or object.booking_id.user_id.lang }}</field>
@@ -598,7 +598,7 @@
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
         <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">
           <strong><t t-out="object.booking_id.partner_id.name or ''"/></strong> vous convie &#224; une rencontre&#160;:
-          <strong><t t-out="object.booking_id.type_id.name or ''"/></strong>.
+          <strong><t t-out="object.booking_id.bf_page_title()"/></strong>.
         </p>
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
          <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;">Date</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.booking_id.start_date_local"/> <t t-out="object.booking_id.start_time_local"/><t t-if="object.booking_id.get_timezone_label()"><span style="font-weight:400; color:#6B7280;"> (<t t-out="object.booking_id.get_timezone_label()"/>)</span></t></td></tr>
@@ -619,7 +619,7 @@
         <record id="mail_template_guest_confirmation_request" model="mail.template">
             <field name="name">Rendez-vous : Confirmer les invités additionnels</field>
             <field name="model_id" ref="resource_booking.model_resource_booking"/>
-            <field name="subject">Confirmez vos invités — {{ object.type_id.name }}</field>
+            <field name="subject">Confirmez vos invités : {{ object.bf_title() }}</field>
             <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang }}</field>
@@ -643,10 +643,10 @@
           Confirmez-vous que ces personnes doivent recevoir l'invitation&#160;?
         </p>
         <p style="text-align:center; margin:20px 0 8px 0;">
-         <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}/guests/confirm" t-attf-style="background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;">Oui, les inviter</a>
+         <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}/guests/confirm?key={{ object.bf_guest_key() }}" t-attf-style="background-color:{{ brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;">Oui, les inviter</a>
         </p>
         <p style="text-align:center; margin:0 0 4px 0;">
-         <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}/guests/decline" style="color:#6B7280; font-size:13px;">Non, ne pas les contacter</a>
+         <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}/guests/decline?key={{ object.bf_guest_key() }}" style="color:#6B7280; font-size:13px;">Non, ne pas les contacter</a>
         </p>
         <p style="font-size:12px; line-height:20px; color:#9CA3AF; margin:16px 0 0 0;">
           Ces liens ouvrent une page qui vous redemandera confirmation&#160;: rien

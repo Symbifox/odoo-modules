@@ -2,10 +2,18 @@
 """Invités saisis par le demandeur sur le formulaire public.
 
 Le demandeur peut nommer des personnes à convier. **Rien ne leur est envoyé
-tant qu'il ne l'a pas confirmé depuis sa boîte**, en cliquant dans le courriel
-qu'il reçoit à la réservation. C'est ce qui empêche le formulaire de servir de
-tremplin : il faut posséder l'adresse du demandeur pour que la moindre
-invitation parte.
+tant qu'il ne l'a pas confirmé depuis sa boîte** : la demande de confirmation,
+envoyée à son adresse une fois le créneau choisi, porte une clé
+(`resource.booking.bf_guest_key()`) que rien d'autre ne livre, et la page des
+invités l'exige au GET comme au POST. C'est ce qui empêche le formulaire de
+servir de relais d'envoi : il faut posséder l'adresse du demandeur pour que la
+moindre invitation parte.
+
+🔴 Jusqu'à 2.64.2, le jeton de la réservation y suffisait, alors que le
+formulaire public le remet au navigateur sur la seule adresse tapée.
+Il ne suffit plus. Seules les demandes parties avant 2.65.0 gardent leur lien
+sans clé (`bf_confirm_by_token`, posé par la migration), jusqu'à la fin de la
+rencontre.
 
 ⚠️ Un `res.partner` n'est créé qu'à la confirmation. Tant qu'une adresse n'est
 pas validée, elle reste une simple chaîne : un formulaire public ne doit pas
@@ -54,6 +62,16 @@ class ResourceBookingGuest(models.Model):
     )
     confirmed_at = fields.Datetime(readonly=True)
     declined_at = fields.Datetime(readonly=True)
+    # Demande de confirmation partie AVANT 2.65.0, avec un lien sans clé :
+    # posé par la migration seulement, jamais par un autre chemin.
+    bf_confirm_by_token = fields.Boolean(
+        string="Confirmable par le lien d'avant 2.65.0",
+        copy=False,
+        readonly=True,
+        help="La demande de confirmation de cet invité est partie avant la "
+             "version 2.65.0, avec un lien sans clé : ce lien reste valable "
+             "jusqu'à la fin de la rencontre.",
+    )
 
     _sql_constraints = [
         (

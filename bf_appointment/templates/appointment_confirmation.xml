@@ -6,7 +6,7 @@
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             <t t-call="bf_appointment.appointment_brand_style"/>
             <t t-set="_en" t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
-            <t t-set="additional_title" t-value="('Your appointment — ' if _en else 'Votre rendez-vous — ') + (booking_sudo.type_id.name or '')"/>
+            <t t-set="additional_title" t-value="booking_sudo.bf_page_title()"/>
             
 <t t-set="brand_primary" t-value="(env.company and env.company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#212529'"/>
@@ -59,7 +59,7 @@
                 <div class="card bf-confirmation-card mx-auto">
                     <div class="card-body p-4">
                         <h5 class="fw-semibold mb-4" style="color: #ffffff;">
-                            <t t-esc="booking_sudo.type_id.name"/>
+                            <t t-esc="booking_sudo.bf_page_title()"/>
                         </h5>
                         <div class="d-flex flex-column gap-3">
                             <t t-if="booking_sudo.start">
