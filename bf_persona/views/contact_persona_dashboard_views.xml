@@ -13,8 +13,8 @@
                 <field name="addressing_style"/>
                 <field name="tone_summary"/>
                 <field name="our_tone_summary"/>
-                <field name="payer_quality"/>
-                <field name="avg_payment_delay_days"/>
+                <field name="payer_quality" groups="bf_persona.group_persona_manager"/>
+                <field name="avg_payment_delay_days" groups="bf_persona.group_persona_manager"/>
                 <field name="last_interaction_date"/>
                 <field name="health_reason"/>
                 <field name="unanswered_count"/>
@@ -36,7 +36,7 @@
                             <span>Style : <field name="addressing_style"/></span>
                             <span class="ms-2" t-if="record.unanswered_count.raw_value">Sans réponse : <field name="unanswered_count"/></span>
                         </div>
-                        <div class="text-muted small">
+                        <div class="text-muted small" groups="bf_persona.group_persona_manager">
                             <span>Payeur : <field name="payer_quality"/></span>
                             <span t-if="record.avg_payment_delay_days.raw_value" class="ms-2">
                                 (<field name="avg_payment_delay_days" widget="float" digits="[8,0]"/>j)

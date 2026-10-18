@@ -1,5 +1,14 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.35.1 - 2026-10-18
+
+### Le persona n'arrive à Gen qu'avec le rôle persona
+
+- Le bloc persona d'une fiche (registre, ton, relation, règles de copie) est lu
+  en sudo pour Gen. Il n'est plus envoyé pour un usager qui n'a pas le rôle
+  persona : celui-ci obtenait par Gen ce que la fiche persona lui refuse.
+- Le bloc lui-même ne porte plus la cote de payeur (`bf_persona` 18.0.3.3.0).
+
 ## 18.0.1.35.0 - 2026-10-08
 
 ### Fin de conversation, historique d'une fiche, roue et compteurs

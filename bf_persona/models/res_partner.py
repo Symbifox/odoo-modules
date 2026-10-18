@@ -4,18 +4,26 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    # Not readable without the role: a portal user read these two on their own
+    # contact. The composer banner and the letter writer still read the
+    # persona in sudo for whoever writes, without the payer rating.
     persona_id = fields.Many2one(
         "contact.persona",
         compute="_compute_persona_id",
         compute_sudo=True,
+        groups="bf_persona.group_persona_user",
         string="Persona",
     )
     has_persona = fields.Boolean(
         compute="_compute_persona_id", compute_sudo=True, store=False,
+        groups="bf_persona.group_persona_user",
         string="A un persona",
     )
+    # The persona form is behind the persona role; its mirror on the partner,
+    # which portal users could read on their own record, must be too.
     persona_summary = fields.Text(
         related="persona_id.claude_context_summary",
+        groups="bf_persona.group_persona_user",
         string="Résumé persona",
         readonly=True,
     )

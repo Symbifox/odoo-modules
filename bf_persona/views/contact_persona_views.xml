@@ -94,7 +94,7 @@
                                 <field name="tone_last_assessed"/>
                             </group>
                         </page>
-                        <page string="Payeur" name="payer">
+                        <page string="Payeur" name="payer" groups="bf_persona.group_persona_manager">
                             <group>
                                 <group>
                                     <field name="payer_quality"/>
@@ -148,8 +148,8 @@
                 <field name="our_words_median" optional="hide"/>
                 <field name="tone_summary" optional="hide"/>
                 <field name="our_tone_summary" optional="hide"/>
-                <field name="payer_quality" optional="show"/>
-                <field name="avg_payment_delay_days" optional="hide"/>
+                <field name="payer_quality" optional="show" groups="bf_persona.group_persona_manager"/>
+                <field name="avg_payment_delay_days" optional="hide" groups="bf_persona.group_persona_manager"/>
                 <field name="tone_last_assessed" optional="hide"/>
             </list>
         </field>
@@ -185,7 +185,8 @@
                 <filter string="Ton tendu" name="filter_tense"
                         domain="[('tone_summary','=','tense')]"/>
                 <filter string="Payeur lent ou mauvais" name="filter_slow_payer"
-                        domain="[('payer_quality','in',('slow','poor'))]"/>
+                        domain="[('payer_quality','in',('slow','poor'))]"
+                        groups="bf_persona.group_persona_manager"/>
                 <filter string="Style à compléter (auto)" name="filter_addressing_auto"
                         domain="[('addressing_style','=','auto')]"/>
                 <separator/>
@@ -199,7 +200,8 @@
                     <filter string="Leur ton"
                             name="group_tone" context="{'group_by': 'tone_summary'}"/>
                     <filter string="Payeur"
-                            name="group_payer" context="{'group_by': 'payer_quality'}"/>
+                            name="group_payer" context="{'group_by': 'payer_quality'}"
+                            groups="bf_persona.group_persona_manager"/>
                 </group>
             </search>
         </field>

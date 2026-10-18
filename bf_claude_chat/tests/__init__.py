@@ -10,3 +10,4 @@ from . import test_fermeture
 from . import test_envoyer_vers_gen
 from . import test_non_lu
 from . import test_retouches
+from . import test_persona_role

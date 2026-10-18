@@ -268,6 +268,7 @@ five modules. If that is what you need, [talk to us](https://symbifox.com).
 
 | Version | Change |
 |---|---|
+| 18.0.4.15.6 | The payer rating mirrored on the ticket is for persona managers only, like on the persona itself; it can no longer be searched or counted by a plain persona user (a related field is searched as superuser unless it sets `compute_sudo=False`). |
 | 18.0.4.15.5 | The root menu is labelled "Helpdesk" (it read "Helpdesk Blue Fox" for English-speaking users); the French label stays "Assistance". |
 | 18.0.4.15.4 | Client 360 shows the client's last survey answer from the native survey too (it read only the legacy `survey` mode and stayed empty in native mode), still limited to the tickets the agent can see. |
 | 18.0.4.15.3 | Removing the company of a help article (which would show it on the help center of every company) is limited to helpdesk managers. |

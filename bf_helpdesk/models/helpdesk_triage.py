@@ -579,7 +579,12 @@ class HelpdeskTicketInternalFields(models.Model):
     # Le persona est réservé au rôle que lui donne son module : l'agent qui ne
     # l'a pas ne voit ni la fiche ni ce que le billet en recopie.
     persona_id = fields.Many2one(groups="bf_persona.group_persona_user")
-    persona_payer_quality = fields.Selection(groups="bf_persona.group_persona_user")
+    # La cote de payeur est au gestionnaire persona seul, comme sur sa fiche.
+    # Sans compute_sudo, Odoo cherche un related en sudo : le groupe ne tenait pas
+    # à la recherche, et un utilisateur persona comptait les billets par payeur.
+    persona_payer_quality = fields.Selection(
+        groups="bf_persona.group_persona_manager", compute_sudo=False,
+    )
     persona_addressing_style = fields.Selection(groups="bf_persona.group_persona_user")
     persona_preferred_salutation = fields.Char(groups="bf_persona.group_persona_user")
     persona_closing_formula = fields.Char(groups="bf_persona.group_persona_user")

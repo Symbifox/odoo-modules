@@ -2,3 +2,4 @@ from . import test_composer_hint
 from . import test_recipients_and_rules
 from . import test_measure
 from . import test_couleur_libre
+from . import test_vie_privee

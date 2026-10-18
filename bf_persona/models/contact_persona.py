@@ -6,6 +6,7 @@ from collections import Counter, defaultdict
 from datetime import date, timedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -136,14 +137,8 @@ TONE_LABELS = {
     "na": "n/d",
 }
 
-PAYER_LABELS = {
-    "excellent": "excellent",
-    "good": "bon",
-    "average": "moyen",
-    "slow": "lent",
-    "poor": "mauvais",
-    "na": "n/d",
-}
+# Reserved to the persona manager: see payer_quality below.
+PAYER_FIELDS = {"payer_quality", "payer_notes", "avg_payment_delay_days"}
 
 # Above this many words, a message stops being read. The composer and Gen are
 # told when our recent messages to a contact run past it.
@@ -207,6 +202,9 @@ class ContactPersona(models.Model):
     )
 
     # --- Payer behavior ---------------------------------------------------
+    # An appraisal of a named person's solvency: the persona manager
+    # only, like personal_details. A related field elsewhere copies the group,
+    # but searches in sudo unless it sets compute_sudo=False.
     payer_quality = fields.Selection(
         [
             ("excellent", "Excellent"),
@@ -217,11 +215,16 @@ class ContactPersona(models.Model):
             ("na", "N/D"),
         ],
         default="na", tracking=True,
+        groups="bf_persona.group_persona_manager",
         string="Payeur",
     )
-    payer_notes = fields.Text(string="Notes sur le paiement")
+    payer_notes = fields.Text(
+        groups="bf_persona.group_persona_manager",
+        string="Notes sur le paiement",
+    )
     avg_payment_delay_days = fields.Float(
         compute="_compute_avg_payment_delay_days", store=True,
+        groups="bf_persona.group_persona_manager",
         help="Délai moyen entre la date de facture et la date de paiement (jours).",
         string="Délai moyen de paiement (jours)",
     )
@@ -455,11 +458,6 @@ class ContactPersona(models.Model):
         close = self.closing_formula or "aucune"
         tone = TONE_LABELS.get(self.tone_summary or "na", "n/d")
         our_tone = TONE_LABELS.get(self.our_tone_summary or "na", "n/d")
-        payer = PAYER_LABELS.get(self.payer_quality or "na", "n/d")
-        delay = (
-            f" (moy. {self.avg_payment_delay_days:.0f}j)"
-            if self.avg_payment_delay_days else ""
-        )
         head = (
             f"[Persona {self.partner_id.display_name or '?'} : "
             f"{addressing}, salutation: \"{salut}\", clôture: \"{close}\", "
@@ -491,7 +489,6 @@ class ContactPersona(models.Model):
             )
         if self.our_tone_summary and self.our_tone_summary != "na":
             lines.append(f"Notre ton: {our_tone}.")
-        lines.append(f"Payeur: {payer}{delay}.")
         rules = []
         for rule in self.cc_rule_ids.filtered(lambda r: r.state == "active"):
             names = ", ".join(p.display_name for p in rule.cc_partner_ids)
@@ -516,6 +513,15 @@ class ContactPersona(models.Model):
     # --- Cache invalidation on res.partner ------------------------------
     @api.model_create_multi
     def create(self, vals_list):
+        # Odoo checks field groups on write, not on create: without this, a
+        # persona user could set the payer rating that they cannot read.
+        if not self.env.su and not self.env.user.has_group("bf_persona.group_persona_manager"):
+            posed = PAYER_FIELDS & {key for vals in vals_list for key in vals}
+            # The context defaults are applied inside super().create, after this check.
+            posed |= {f for f in PAYER_FIELDS if f"default_{f}" in self.env.context}
+            if posed:
+                raise AccessError(_("La cote de payeur est réservée au gestionnaire persona : %s.")
+                                  % ", ".join(sorted(posed)))
         records = super().create(vals_list)
         partners = records.mapped("partner_id")
         if partners:

@@ -20,4 +20,19 @@
         <field name="comment">Accès complet, incluant les détails personnels sensibles.</field>
     </record>
 
+    <!-- La comptabilité donne un KPI de délai de paiement, c'est-à-dire la
+         cote de payeur sous un autre nom. Réservé au gestionnaire, comme le champ. -->
+    <record id="rule_persona_kpi_user_no_account" model="ir.rule">
+        <field name="name">KPI persona : sans la comptabilité pour l'utilisateur</field>
+        <field name="model_id" ref="model_contact_persona_kpi"/>
+        <field name="domain_force">[('source', '!=', 'account')]</field>
+        <field name="groups" eval="[(4, ref('group_persona_user'))]"/>
+    </record>
+    <record id="rule_persona_kpi_manager_all" model="ir.rule">
+        <field name="name">KPI persona : tout pour le gestionnaire</field>
+        <field name="model_id" ref="model_contact_persona_kpi"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_persona_manager'))]"/>
+    </record>
+
 </odoo>

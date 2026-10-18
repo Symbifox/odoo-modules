@@ -351,6 +351,10 @@ def _resolve_persona_summary(env, model, res_id):
     """
     if not model or not res_id or "contact.persona" not in env or model not in env:
         return ""
+    # The persona is read in sudo below: without its role, the caller would get
+    # through Gen what the persona form itself refuses them.
+    if not env.user.has_group("bf_persona.group_persona_user"):
+        return ""
     try:
         # Enforce the CALLER's read access on the record before any sudo, so a
         # crafted context (arbitrary model/res_id) cannot surface a record the

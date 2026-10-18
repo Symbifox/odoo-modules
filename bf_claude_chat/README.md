@@ -441,6 +441,10 @@ the text of `result` is not.
   caller's ACL, record rules and multi-company are enforced on the (model,
   res_id) pair, so a crafted context cannot have a record summarised that the
   caller may not read
+- **The contact's persona reaches the bridge only for a persona user** (1.35.1):
+  with `bf_persona` installed, the persona block of a record is read as superuser,
+  so it is withheld from a caller without `bf_persona.group_persona_user`. The
+  block itself carries no payer rating (`bf_persona` 18.0.3.3.0)
 - Assistant output is sanitised before rendering (tag/attribute allowlist,
   `javascript:`/`data:` hrefs dropped) on both the client and the server
 - Headers sent to the bridge refuse CR/LF: the HTTP request is built by hand, so

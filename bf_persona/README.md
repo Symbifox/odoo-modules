@@ -17,7 +17,7 @@ A `contact.persona` extends `res.partner` with:
 | What to know before writing | Free text repeated in the composer and in the AI context: the address to use, attachments rather than links, why this person is on first-name terms |
 | Copy rules | Who goes in copy with this contact, and who must never be put in copy |
 | Relationship, measured | Last message each way, volumes over 90 days, messages of ours left unanswered, median length of our last ten messages |
-| Payer behaviour | Average payment delay computed from `account.move` history |
+| Payer behaviour | Average payment delay computed from `account.move` history; persona managers only |
 | Tone and KPIs | Observed tone both ways, custom KPIs, knowledge-matrix items shared with the contact |
 
 A persona can be kept on a person or on a company; a company persona covers
@@ -89,6 +89,16 @@ messages.
 `claude_context_summary` is computed on read and hands an assistant the register,
 the forms, what to know before writing, the copy rules and the measured facts in
 a few lines.
+It carries no payer rating, and the chat assistant only receives it for a user
+who holds the persona role.
+
+### Who sees what
+
+| Data | Readable by |
+|---|---|
+| Persona form, its mirror on the contact (`persona_summary`), the ticket panel | Persona user |
+| Payer rating, payment notes, average payment delay, accounting KPIs | Persona manager only |
+| Personal details | Persona manager only |
 
 ## Dependencies
 
@@ -103,6 +113,17 @@ a few lines.
 `bf_persona_cx` plugs the customer-experience module in when both are installed.
 
 ## Changelog
+
+### 18.0.3.3.0
+- The contact's mirror of the persona (`persona_summary`) is restricted to the
+  persona role. It used to be readable by any internal user and, through RPC, by a
+  portal user on their own contact.
+- Payer rating, payment notes and average payment delay are restricted to persona
+  managers, like personal details, in every view and in search.
+- So is the payment-delay KPI drawn from accounting, the same rating under
+  another name; a persona user can no longer set the payer rating when creating
+  a persona.
+- The AI context no longer carries the payer rating.
 
 ### 18.0.3.2.1
 - The category list shows the *Couleur affichée* (displayed color), which opens
@@ -155,5 +176,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-18, this version converts automatically to
   **LGPL-3.0-or-later**.

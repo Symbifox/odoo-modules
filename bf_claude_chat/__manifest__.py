@@ -1,6 +1,6 @@
 {
     "name": "Gen",
-    "version": "18.0.1.35.0",
+    "version": "18.0.1.35.1",
     "category": "Productivity",
     "summary": "Chat with Gen, the AI assistant, directly inside Odoo",
     "website": "https://symbifox.com",

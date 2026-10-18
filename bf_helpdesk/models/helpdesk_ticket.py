@@ -936,7 +936,9 @@ class HelpdeskTicket(models.Model):
         # rôle persona comptait les clients par qualité de payeur ou par ton.
         if not self.env.su and not self.env.user.has_group("bf_persona.group_persona_user"):
             raise AccessError(_("La recherche par persona est réservée au rôle persona."))
-        Persona = self.env["contact.persona"].sudo()
+        # Avec les droits de l'appelant, pas en sudo : un champ réservé au
+        # gestionnaire (la cote de payeur) ne doit pas servir à compter.
+        Persona = self.env["contact.persona"]
         domain = [("id", operator, value)] if operator in ("=", "!=", "in", "not in") else [("id", operator, value)]
         partners = Persona.search(domain).mapped("partner_id")
         return [("partner_id", "in", partners.ids)]

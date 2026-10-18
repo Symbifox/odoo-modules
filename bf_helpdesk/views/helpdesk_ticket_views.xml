@@ -271,6 +271,7 @@
                      decoration-warning="persona_our_tone_summary == 'tense'"
                      invisible="not persona_id"/>
               <field name="persona_payer_quality" readonly="1"
+                     groups="bf_persona.group_persona_manager"
                      widget="badge"
                      decoration-success="persona_payer_quality == 'excellent'"
                      decoration-info="persona_payer_quality == 'good'"

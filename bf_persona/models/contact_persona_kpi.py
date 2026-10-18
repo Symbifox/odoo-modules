@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 
 class ContactPersonaKpi(models.Model):
@@ -27,3 +28,23 @@ class ContactPersonaKpi(models.Model):
         string="Source",
     )
     notes = fields.Text(string="Notes")
+
+    # An accounting KPI is the payer rating under another name: a rule
+    # hides it from the persona user, but rules are checked before a write, not
+    # after, so a persona user could still turn any line into one.
+    def _check_account_source(self, vals_list):
+        if self.env.su or self.env.user.has_group("bf_persona.group_persona_manager"):
+            return
+        if any(vals.get("source") == "account" for vals in vals_list) \
+                or self.env.context.get("default_source") == "account":
+            raise AccessError(_("Les indicateurs tirés de la comptabilité sont réservés "
+                                "au gestionnaire persona."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_account_source(vals_list)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self._check_account_source([vals])
+        return super().write(vals)

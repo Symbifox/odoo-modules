@@ -611,7 +611,7 @@ class TestReviewFixes(TransactionCase):
                 {"triage_log_ids": [[0, "v1", {"ticket_id": foreign.id}]]}, ["triage_log_ids"],
                 {"triage_log_ids": {"fields": name_spec}})
 
-    # Recherche par persona : réservée au rôle persona
+    # Recherche par persona : réservée au rôle persona, la cote de payeur au gestionnaire
     def test_persona_search_needs_persona_role(self):
         portal = new_test_user(self.env, login="portail-persona-recherche",
                                email="persona.recherche@example.com", groups="base.group_portal")
@@ -624,7 +624,16 @@ class TestReviewFixes(TransactionCase):
         role = new_test_user(self.env, login="agent-persona-role", email="persona.role@example.com",
                              groups="base.group_user,helpdesk_mgmt.group_helpdesk_user,"
                                     "bf_persona.group_persona_user")
-        self.Ticket.with_user(role).search_count([("persona_payer_quality", "=", "poor")])
+        self.Ticket.with_user(role).search_count([("persona_tone_summary", "=", "tense")])
+        for domaine in ([("persona_payer_quality", "=", "poor")],
+                        [("persona_id.payer_quality", "=", "poor")]):
+            with self.subTest(domaine=domaine), self.assertRaises(AccessError):
+                self.Ticket.with_user(role).search_count(domaine)
+        manager = new_test_user(self.env, login="agent-persona-gestion",
+                                email="persona.gestion@example.com",
+                                groups="base.group_user,helpdesk_mgmt.group_helpdesk_user,"
+                                       "bf_persona.group_persona_manager")
+        self.Ticket.with_user(manager).search_count([("persona_payer_quality", "=", "poor")])
 
     # Ligne de temps neuve : le client d'un billet illisible ne sort pas
     def test_new_timesheet_line_hides_unreadable_ticket_client(self):
