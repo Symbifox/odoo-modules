@@ -8,3 +8,4 @@ from . import bf_mail_connector
 from . import bf_clawback
 from . import bf_security_dashboard
 from . import res_partner
+from . import link_tracker

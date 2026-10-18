@@ -5,3 +5,4 @@ from . import test_clawback
 from . import test_securite_correctifs
 from . import test_robots_liens
 from . import test_corps_leurre_nettoye
+from . import test_apercu_liens_odoo

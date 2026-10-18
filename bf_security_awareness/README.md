@@ -127,6 +127,14 @@ request) are recorded neither as clicks nor as reports, so campaign results
 reflect people. It is a filter, not a proof: a scanner that imitates a real
 browser still gets through.
 
+**Odoo does not visit its own lures** (since 18.0.2.0.4). When a campaign is
+sent, Email Marketing shortens every link and Link Tracking fetches each page to
+read its title, which made the server itself open every `/phish/<token>` link
+(a possible false click, assigned training and false report per recipient).
+Simulation links of this database now get a fixed title with no network
+request, and any request carrying Odoo's `Odoo-Link-Preview` header is treated
+as a scanner: no click, open, submission or report is recorded.
+
 **Lure bodies are sanitized on save** (Odoo's outgoing-email mode): the tracked
 link and the formatting survive, scripts do not. Lures written before 18.0.2.0.3
 are sanitized once at upgrade, in every language, and each changed record is

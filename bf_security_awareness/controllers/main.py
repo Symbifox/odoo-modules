@@ -42,10 +42,21 @@ _ROBOT_UA = re.compile(
     re.IGNORECASE)
 
 
+def _apercu_odoo():
+    """Vrai quand la requête vient de l'outil d'aperçu de liens d'Odoo lui-même.
+
+    🔴 À l'envoi, mass_mailing raccourcit chaque lien du courriel et
+    `link.tracker` va chercher la page pour en lire le titre : le serveur visite
+    alors ses propres liens piégés, avec un agent Firefox ordinaire. Seul
+    l'en-tête `Odoo-Link-Preview` le trahit.
+    """
+    return "Odoo-Link-Preview" in request.httprequest.headers
+
+
 def _visite_de_robot():
     """Vrai quand la requête vient vraisemblablement d'un robot, pas d'une personne."""
     requete = request.httprequest
-    if requete.method == "HEAD":
+    if requete.method == "HEAD" or _apercu_odoo():
         return True
     agent = (requete.headers.get("User-Agent") or "").strip()
     return not agent or bool(_ROBOT_UA.search(agent))
@@ -150,6 +161,10 @@ class BfSecurityAwarenessController(http.Controller):
         result = self._result_by_token(token)
         if not result:
             return self._render_lesson(request.env["bf.phishing.result"])
+        # Route en POST seulement, donc hors de portée de l'aperçu d'Odoo
+        # (un GET) ; la garde reste au cas où un aperçu changerait de méthode.
+        if _apercu_odoo():
+            return request.redirect("/phish/%s/lesson" % token)
 
         username_len = password_len = None
         if result.campaign_id.template_id.capture_field_lengths:
@@ -177,7 +192,9 @@ class BfSecurityAwarenessController(http.Controller):
                 sitemap=False)
     def phish_open(self, token, **kw):
         result = self._result_by_token(token)
-        if result:
+        # Le pixel ne filtre pas les agents (une messagerie charge les images
+        # par son propre proxy) ; seul l'aperçu d'Odoo est écarté.
+        if result and not _apercu_odoo():
             try:
                 result.register_open()
             except Exception:  # noqa: BLE001 - tracking must never error out
