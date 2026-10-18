@@ -433,6 +433,27 @@ addons_path = /path/to/odoo/addons,/path/to/odoo-modules
 
 Then install individual modules from the Odoo Apps menu.
 
+### Dependencies outside this repository
+
+Some modules depend on modules published elsewhere. They must be on the
+`addons_path` too, or the install stops with a missing dependency. CI tests
+against the commits pinned in
+[`.github/actions/oca-addons/action.yml`](.github/actions/oca-addons/action.yml).
+
+| Module | Source | Required by |
+|---|---|---|
+| `om_account_followup` | [Odoo Mates](https://github.com/odoomates/odooapps) (LGPL-3) | `bluefox_branding`, and so everything built on it (`hosting_management`, `bf_gamification`, the `bf_school_*` and `privacy_*` families, among others) |
+| `helpdesk_mgmt` | [OCA/helpdesk](https://github.com/OCA/helpdesk) | `bf_helpdesk`, `bluefox_branding`, `bf_gamification`, `bf_chatter_chronological`, `bf_color_helpdesk`, `bf_cx_helpdesk`, `bf_nfc_helpdesk` |
+| `helpdesk_mgmt_project` | [OCA/helpdesk](https://github.com/OCA/helpdesk) | `bf_helpdesk` |
+| `helpdesk_mgmt_merge`, `helpdesk_ticket_related` | [OCA/helpdesk](https://github.com/OCA/helpdesk) | `bf_helpdesk_merge` |
+| `contract` | [OCA/contract](https://github.com/OCA/contract) | `bluefox_branding`, `hosting_management` |
+| `donation`, `donation_base` | [OCA/donation](https://github.com/OCA/donation) | `bf_fundraising_core` |
+| `mail_composer_cc_bcc` | [OCA/mail](https://github.com/OCA/mail) | `bf_email_management`, `bf_persona` |
+| `mail_quoted_reply` | [OCA/mail](https://github.com/OCA/mail) | `bf_email_management` |
+| `mail_tracking` | [OCA/mail](https://github.com/OCA/mail) | `privacy_breach_notice_mail_tracking` |
+| `resource_booking`, `web_calendar_slot_duration` | [OCA/calendar](https://github.com/OCA/calendar), [OCA/web](https://github.com/OCA/web) | `bf_appointment` (the second through the first) |
+| `collabora_odoo` | [Collabora Productivity](https://github.com/CollaboraOnline/collabora_odoo) (MPL-2.0) | `bf_collabora_online` |
+
 ## Compatibility
 
 All modules target **Odoo 18.0 Community Edition**.
