@@ -1,6 +1,6 @@
 {
     "name": "Registre des incidents de confidentialité (Loi 25)",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Privacy/Compliance",
     "summary": "Déclaration, évaluation et registre des incidents de confidentialité",
     "description": """

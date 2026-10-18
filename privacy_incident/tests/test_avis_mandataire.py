@@ -14,7 +14,7 @@ class TestAvisMandataire(TransactionCase):
         super().setUpClass()
         cls.processor = cls.env["res.partner"].create({"name": "Hébergeur Essai", "is_company": True})
         cls.officer = cls.env["res.users"].with_context(no_reset_password=True).create({
-            "name": "RPRP Essai", "login": "rprp-essai@essai.invalid",
+            "name": "RPRP Essai", "login": "rprp-essai@essai.invalid", "email": "rprp-essai@essai.invalid",
             "groups_id": [(6, 0, [cls.env.ref("base.group_user").id,
                                   cls.env.ref("privacy_consent.group_privacy_officer").id])]})
         cls.Incident = cls.env["privacy.incident"].with_user(cls.officer)
@@ -173,12 +173,120 @@ class TestAvisMandataire(TransactionCase):
         Attachment = self.env["ir.attachment"].with_user(self.officer).with_context(
             default_res_field="processor_notice_pdf", default_res_model="privacy.incident",
             default_res_id=incident.id)
+        # Une seule issue, avec ou sans `bf_sign` : la création force `res_field` à vide quand
+        # l'appelant ne le donne pas, donc `default_res_field` ne s'applique jamais. La pièce est
+        # créée, détachée du champ, et le PDF de la fiche ne change pas.
         piece = Attachment.create({"name": "faux.pdf", "raw": b"%PDF faux"})
-        # Mesuré : Odoo n'applique pas `default_res_field` à une pièce jointe. La pièce reste
-        # détachée du champ, et le PDF de la fiche n'a pas changé. (La vérification après
-        # création, dans la garde, reste un filet si ce comportement changeait.)
+        self.assertTrue(piece)
         self.assertFalse(piece.sudo().res_field)
         self.assertFalse(incident.processor_notice_pdf)
+
+    def test_une_piece_du_fil_ne_devient_pas_le_pdf(self):
+        """🔴 `message_post` crée ses pièces EN SUDO avec les défauts de l'appelant : par le contexte
+        (`default_res_field`) ou par un défaut personnel, la pièce d'un message devenait le PDF d'une
+        fiche qui n'en avait pas, sans empreinte ni verrou de provenance."""
+        incident = self.Incident.create({"title": "Sans PDF, fil"})
+        incident.with_context(default_res_field="processor_notice_pdf").message_post(
+            body="Pièce par le contexte", message_type="comment", subtype_xmlid="mail.mt_note",
+            attachments=[("faux.pdf", b"%PDF faux")])
+        self.env["ir.default"].with_user(self.officer).set(
+            "ir.attachment", "res_field", "processor_notice_pdf", user_id=True)
+        incident.message_post(
+            body="Pièce par un défaut personnel", message_type="comment", subtype_xmlid="mail.mt_note",
+            attachments=[("faux2.pdf", b"%PDF faux 2")])
+        self.env.invalidate_all()
+        self.assertFalse(incident.processor_notice_pdf)
+        self.assertFalse(self.env["ir.attachment"].sudo().search([
+            ("res_model", "=", "privacy.incident"), ("res_id", "=", incident.id), ("res_field", "!=", False)]))
+        self.assertEqual(len(incident.sudo().message_ids.attachment_ids), 2, "les pièces restent au fil")
+        # Le chemin légitime, par la fiche, rattache toujours le PDF.
+        incident.write({"processor_notice_pdf": base64.b64encode(self.pdf)})
+        self.assertEqual(base64.b64decode(incident.processor_notice_pdf), self.pdf)
+        self.assertEqual(incident.processor_notice_sha256, self.pdf_sha)
+
+    def test_les_abonnes_du_registre_restent_caches_a_cote_d_une_regle_rivale(self):
+        """🔴 Odoo combine par OU les règles de groupe d'un même modèle : celle d'un module voisin
+        sur mail.followers (le registre des membres, par exemple) rouvrait les abonnés d'une fiche
+        du registre à tout employé, et au rôle hors des sociétés de la fiche."""
+        Followers = self.env["mail.followers"]
+        self.env["ir.rule"].create({  # ce que ferait n'importe quel module voisin
+            "name": "Règle rivale (essai)", "model_id": self.env.ref("mail.model_mail_followers").id,
+            "groups": [(4, self.env.ref("base.group_user").id)],
+            "domain_force": "[('res_model', 'not like', 'x.autre')]"})
+        Users = self.env["res.users"].with_context(no_reset_password=True)
+        interne = Users.create({
+            "name": "Interne registre", "login": "interne-registre-essai@essai.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        autre = self.env["res.company"].create({"name": "Autre société registre"})
+        lecteur_b = Users.create({
+            "name": "Lecteur B registre", "login": "lecteur-b-registre-essai@essai.invalid",
+            "company_id": autre.id, "company_ids": [(6, 0, autre.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("privacy_consent.group_privacy_user").id])]})
+        incident = self.Incident.create({"title": "Abonnés du registre"})
+        # L'employé abonné lui-même : comme avant, le rôle seul lit les abonnés d'une fiche.
+        incident.sudo().message_subscribe(partner_ids=(self.processor | interne.partner_id).ids)
+        domaine = [("res_model", "=", "privacy.incident"), ("res_id", "=", incident.id)]
+        ligne = Followers.search(domaine + [("partner_id", "=", self.processor.id)])
+        self.assertTrue(ligne)
+        self.assertFalse(Followers.with_user(interne).search(domaine))
+        self.assertFalse(ligne.with_user(interne).has_access("read"))
+        self.assertFalse(Followers.with_user(lecteur_b).search(domaine))
+        self.assertFalse(ligne.with_user(lecteur_b).has_access("read"))
+        self.assertIn(ligne, Followers.with_user(self.officer).search(domaine))
+        self.assertTrue(ligne.with_user(self.officer).has_access("read"))
+        self.processor.message_subscribe(partner_ids=interne.partner_id.ids)
+        self.assertTrue(Followers.with_user(interne).search(
+            [("res_model", "=", "res.partner"), ("res_id", "=", self.processor.id)]))  # le reste inchangé
+
+    def test_les_notifications_du_registre_restent_cachees_a_cote_d_une_regle_rivale(self):
+        """🔴 Tout employé lisait les notifications d'un message du registre, qui nomment ses
+        destinataires ; la règle de groupe d'un module voisin rouvrirait aussi une règle de groupe."""
+        Notifications = self.env["mail.notification"]
+        self.env["ir.rule"].create({  # ce que ferait n'importe quel module voisin
+            "name": "Règle rivale (essai)", "model_id": self.env.ref("mail.model_mail_notification").id,
+            "groups": [(4, self.env.ref("base.group_user").id)],
+            "domain_force": "[('mail_message_id.model', 'not like', 'x.autre')]", "perm_write": False,
+            "perm_create": False, "perm_unlink": False})
+        Users = self.env["res.users"].with_context(no_reset_password=True)
+        interne = Users.create({
+            "name": "Interne avisé registre", "login": "interne-avise-registre@essai.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        autre = self.env["res.company"].create({"name": "Autre société notifications registre"})
+        lecteur_b = Users.create({
+            "name": "Lecteur B notifications registre", "login": "lecteur-b-notif-registre@essai.invalid",
+            "company_id": autre.id, "company_ids": [(6, 0, autre.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("privacy_consent.group_privacy_user").id])]})
+        abonne = self.env["res.partner"].create({"name": "RPRP avisé", "email": "rprp@registre.invalid"})
+        incident = self.Incident.create({"title": "Notifications du registre"})
+        message = incident.message_post(body="Pour le RPRP", message_type="comment",
+                                        subtype_xmlid="mail.mt_comment",
+                                        partner_ids=(abonne | interne.partner_id).ids)
+
+        def notification(partner):
+            return Notifications.search(
+                [("mail_message_id", "=", message.id), ("res_partner_id", "=", partner.id)]) or \
+                Notifications.create({"mail_message_id": message.id, "res_partner_id": partner.id,
+                                      "notification_type": "inbox"})
+        celle_du_rprp, la_sienne = notification(abonne), notification(interne.partner_id)
+        self.env.flush_all()
+        du_message = [("mail_message_id", "=", message.id)]
+        # L'employé avisé lit la sienne, et elle seule.
+        self.assertEqual(Notifications.with_user(interne).search(du_message), la_sienne)
+        self.assertFalse(Notifications.with_user(interne).search([("res_partner_id", "=", abonne.id)]))
+        self.assertFalse(celle_du_rprp.with_user(interne).has_access("read"))
+        # Le rôle, dans la société de la fiche seulement.
+        self.assertFalse(Notifications.with_user(lecteur_b).search(du_message))
+        self.assertFalse(celle_du_rprp.with_user(lecteur_b).has_access("read"))
+        self.assertIn(celle_du_rprp, Notifications.with_user(self.officer).search(du_message))
+        self.assertTrue(celle_du_rprp.with_user(self.officer).has_access("read"))
+        # Le reste du système inchangé.
+        autre_message = self.processor.message_post(body="Ailleurs", message_type="comment",
+                                                    subtype_xmlid="mail.mt_comment", partner_ids=abonne.ids)
+        ailleurs = Notifications.search([("mail_message_id", "=", autre_message.id)]) or Notifications.create({
+            "mail_message_id": autre_message.id, "res_partner_id": abonne.id, "notification_type": "inbox"})
+        self.assertTrue(ailleurs.with_user(interne).has_access("read"))
 
     def test_la_fusion_ne_change_pas_le_mandataire_d_un_avis_consigne(self):
         incident = self.Incident.sudo()._create_from_processor_notice(self.processor, self._data())

@@ -78,13 +78,32 @@ No entry is added to `/my`: opening the portal to clients is the instance's deci
   a whitelist of seven fields; the organisation and the provenance are set server-side.
 - The followers of a register record are visible to the privacy role only, within the
   record's company, and notifications only reach the people named on a message and the
-  record's followers.
+  record's followers. The rule is global, with the role exception in its domain: Odoo
+  combines group rules on one model with OR, and another module's group rule on
+  followers would reopen them. The notifications of a register message, which name its
+  recipients, follow the same global rule; anyone still reads their own.
+- A provider's PDF is attached to its record through the record only. An attachment never
+  receives a binary field from a default (context or personal), even when Odoo creates it
+  as superuser, as it does for the files of a chatter message.
 
 ## Not done yet
 
 - The notices to the Commission (s. 3) and to the person concerned (s. 5) are not
   generated as documents; their fields are there.
 - No register export beyond Odoo's standard export.
+
+## Changelog
+
+- **18.0.1.1.1**: the followers of a register record or a breach notice stay hidden
+  whatever other modules are installed. The rule that hid them was a group rule, which
+  Odoo combines with OR: next to another module's group rule on followers (a member
+  register, for one), every employee read them again, and the privacy role read them
+  outside its companies. It is now a global rule with the role exception in its domain.
+  The notifications of a register record's or a notice's messages, which every employee
+  could read, follow the same global rule; anyone still reads their own.
+  A file posted in a record's chatter, which Odoo creates as superuser with the caller's
+  defaults, could become the record's provider PDF through a `default_res_field` or a
+  personal default; an attachment now never takes its binary field from a default.
 
 ## Dependencies
 
