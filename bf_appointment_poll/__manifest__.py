@@ -152,7 +152,11 @@
     # 18.0.1.18.0: anonymisation d'une réservation (règle RDV-001 de
     #   bf_appointment 18.0.2.66.0, exigée) : le sondage qui l'a fait naître
     #   est supprimé avec ses participants, leurs votes et son fil.
-    "version": "18.0.1.18.0",
+    # 18.0.1.18.1: la note au registre ne force plus fr_CA quand la langue
+    #   n'est pas active : sur une base en_US seule, `env.lang` levait et
+    #   l'anonymisation d'une réservation qui a un sondage tombait, cron
+    #   compris. Repli sur la langue de l'environnement, sinon l'anglais.
+    "version": "18.0.1.18.1",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

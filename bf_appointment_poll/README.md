@@ -144,6 +144,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.1.18.1
+
+- **Anonymization on a base without French.** The note added to the destruction register entry forced `fr_CA`; on a database where that language is not active (English only), Odoo raised "Invalid language code: fr_CA" and anonymizing a booking that has a poll failed, scheduled job included. The note is written in French when `fr_CA` is active, otherwise in the environment's language if active, otherwise in English.
+
 ### 18.0.1.18.0
 
 - **Anonymization of a booking.** When `bf_appointment` 18.0.2.66.0 or later anonymizes a booking under its retention rule RDV-001, the poll that produced it is deleted with its participants, their votes, its slots and its thread: its purpose ended when it produced the booking. The note it adds to the destruction register entry is written in French, like the rest of that entry.

@@ -38,7 +38,8 @@ class TestPollPrivacy(TransactionCase):
         cls.client = cls.env["res.partner"].create({
             "name": "Zébulon Quatremare", "email": "zq@test.invalid"})
 
-    def test_poll_of_the_booking_is_deleted_and_registered(self):
+    def _booking_with_poll(self):
+        """Une réservation née d'un sondage, et un autre sondage sans elle."""
         now = fields.Datetime.context_timestamp(
             self.env["resource.booking"], fields.Datetime.now())
         slot = self.booking_type._bf_candidate_slots(
@@ -53,9 +54,9 @@ class TestPollPrivacy(TransactionCase):
         poll.write({"booking_id": booking.id})
         other = self.env["appointment.poll"].create({
             "name": "Sans rendez-vous", "type_id": self.booking_type.id, "max_slots": 2})
+        return booking, poll, other
 
-        booking._bf_privacy_anonymize()
-
+    def _assert_poll_deleted(self, booking, poll, other):
         self.assertFalse(poll.exists())
         self.assertTrue(other.exists(), "un sondage sans cette réservation reste")
         self.assertFalse(self.env["appointment.poll.participant"].search([
@@ -64,5 +65,40 @@ class TestPollPrivacy(TransactionCase):
             ("model", "=", "appointment.poll"), ("res_id", "=", poll.id)]))
         entry = self.env["privacy.destruction.register"].sudo().search([
             ("res_model", "=", "resource.booking"), ("res_id", "=", booking.id)])
+        self.assertEqual(len(entry), 1)
+        return entry
+
+    def test_poll_of_the_booking_is_deleted_and_registered(self):
+        # La note suit le français du registre quand fr_CA est active : l'essai
+        # l'active lui-même, une base d'essai neuve n'a que en_US.
+        self.addCleanup(self.env.registry.clear_cache)
+        self.env["res.lang"]._activate_lang("fr_CA")
+        booking, poll, other = self._booking_with_poll()
+
+        booking._bf_privacy_anonymize()
+
+        entry = self._assert_poll_deleted(booking, poll, other)
         self.assertIn("sondage de disponibilités n° %s" % poll.id,
+                      entry.document_description)
+
+    def test_poll_deleted_on_a_base_without_french(self):
+        """Sans fr_CA active (un locataire n'a que en_US), rien ne lève.
+
+        `with_context(lang="fr_CA")` faisait lever `env.lang` (« Invalid
+        language code: fr_CA ») et l'anonymisation tombait, cron compris.
+        fr_CA est éteinte ici quoi qu'aient fait les autres essais ou la base,
+        et en SQL : l'ORM refuse d'éteindre une langue qu'un usager porte.
+        """
+        booking, poll, other = self._booking_with_poll()
+        self.addCleanup(self.env.registry.clear_cache)
+        self.env.cr.execute("UPDATE res_lang SET active = false WHERE code = 'fr_CA'")
+        self.env["res.lang"].invalidate_model(["active"])
+        self.env.registry.clear_cache()
+        self.assertFalse(self.env["res.lang"]._get_data(code="fr_CA").code,
+                         "fr_CA est encore active : l'essai ne prouverait rien")
+
+        booking._bf_privacy_anonymize()
+
+        entry = self._assert_poll_deleted(booking, poll, other)
+        self.assertIn("availability poll no. %s" % poll.id,
                       entry.document_description)

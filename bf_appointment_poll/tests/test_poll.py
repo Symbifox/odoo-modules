@@ -804,6 +804,9 @@ class TestAppointmentPoll(TransactionCase):
         module parent.
         """
         slots = self._add_slots(1)
+        # Les deux langues lues, que seule une base de locataire a d'office.
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_CA")
         jour_fr = slots[0].with_context(lang="fr_CA").display_day()
         jour_en = slots[0].with_context(lang="en_CA").display_day(en=True)
         self.assertTrue(jour_fr and jour_en)

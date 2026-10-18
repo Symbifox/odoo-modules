@@ -32,9 +32,24 @@ class ResourceBooking(models.Model):
         # note suit, quelle que soit la langue de l'usager du cron (en_US chez
         # certains locataires), pour ne pas laisser une entrée immuable à moitié
         # anglaise.
-        notes.append(self.with_context(lang="fr_CA").env._(
+        notes.append(self.with_context(lang=self._bf_poll_register_lang()).env._(
             "availability poll no. %(ids)s deleted with its %(count)s "
             "participant(s), their votes and its thread",
             ids=ids, count=count,
         ))
         return notes
+
+    def _bf_poll_register_lang(self):
+        """La langue de la note au registre : le français, s'il est actif ici.
+
+        🔴 `with_context(lang="fr_CA")` sur une base où fr_CA n'est pas active
+        (un locataire n'a que en_US) fait lever `env.lang` (« Invalid language
+        code: fr_CA ») : l'anonymisation d'une réservation qui a un sondage
+        tombait, travail planifié compris. Sans fr_CA, la note suit la langue
+        de l'environnement si elle est active, sinon l'anglais de la source.
+        """
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        if "fr_CA" in installees:
+            return "fr_CA"
+        lang = self.env.context.get("lang")
+        return lang if lang in installees else "en_US"
