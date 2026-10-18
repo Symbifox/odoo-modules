@@ -15,6 +15,7 @@ Ce que ces essais tiennent en place, et pourquoi chacun a été écrit :
 * une tâche par écart, pas une par passage du cron.
 """
 
+import unittest
 from datetime import timedelta
 from unittest.mock import patch
 
@@ -28,6 +29,13 @@ class TestSondeAvisRdv(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # La sonde lit deux modules que celui-ci ne déclare pas : calendar_nextcloud_sync
+        # (la copie distante, une vraie fiche d'agenda à créer) et bf_calendar_invite
+        # (les avis dus, `bf_change_notice_due`). Sans l'un des deux, rien à éprouver ici :
+        # la CI les range dans des lots différents, la suite ne tourne qu'au banc.
+        if ("nextcloud.calendar.sync.config" not in cls.env
+                or "bf_change_notice_due" not in cls.env["calendar.event"]._fields):
+            raise unittest.SkipTest("calendar_nextcloud_sync et bf_calendar_invite requis")
         cls.invite = cls.env["res.partner"].create({
             "name": "Invité Externe",
             "email": "externe@example.org",

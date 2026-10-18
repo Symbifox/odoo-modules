@@ -139,8 +139,14 @@ class TestBackupResticAPI(HttpCase):
         snap = run.line_ids[0].snapshot_ids
         self.assertFalse(snap.repository_id)
 
-    def test_restic_run_state_partial_when_exit_code_nonzero(self):
-        """A line with status=success but exit_code!=0 should make the run partial."""
+    def test_restic_partial_line_with_snapshot_is_warning(self):
+        """A partial line that still produced a snapshot is a warning, not a success.
+
+        The agent never reports `success` with a non-zero exit: it sends `partial`
+        (some containers skipped, main data captured). This test used to post
+        `success` + exit 1 and expect `partial`, a payload no agent sends and a
+        state the restic branch of `_compute_state` never gives.
+        """
         payload = {
             "report_type": "restic",
             "timestamp": "2026-04-30 04:02:01",
@@ -148,7 +154,7 @@ class TestBackupResticAPI(HttpCase):
             "results": [
                 {
                     "service": "Multi",
-                    "status": "success",
+                    "status": "partial",
                     "duration": "1s",
                     "exit_code": 1,
                     "snapshots": [
@@ -165,7 +171,7 @@ class TestBackupResticAPI(HttpCase):
         self.assertEqual(resp.status_code, 200)
         body = resp.json()
         run = self.env["hosting.backup.run"].browse(body["backup_run_id"])
-        self.assertEqual(run.state, "partial")
+        self.assertEqual(run.state, "warning")
 
     def test_restic_multi_snapshot_per_line(self):
         """Multiple snapshots in a single line (Nextcloud app+db+tenant pattern)."""

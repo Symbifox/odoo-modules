@@ -663,6 +663,10 @@ Hosting
 
 ## Changelog
 
+### Version 18.0.2.62.1
+- Fix: the "booking change notices" health check read `nextcloud.calendar.sync.config` one line before checking that the model exists. Without `calendar_nextcloud_sync` it raised a `KeyError` instead of reporting that the independent half was not measured.
+- Tests: the restic test posts what the agent really sends (`partial` with a non-zero exit) and expects `warning`; the notices check skips unless both `calendar_nextcloud_sync` and `bf_calendar_invite` are installed.
+
 ### Version 18.0.2.62.0
 - Change: the seven email templates (backup report, digest and the five client templates) keep only their content. The shared layout (`bf_onboarding_base.bf_mail_layout`, which `bluefox_branding`, a dependency, replaces with its own) wraps them with the company's logo, colours and footer. The old header title becomes a small heading above the content; the "generated automatically" note stays in small print. The digest sent by the scheduled job is built in code and is not affected yet.
 - Migration 18.0.2.62.0 strips the old wrapper from every stored language, all or nothing per template: text it does not recognise outside the content makes it leave the template untouched rather than lose it.

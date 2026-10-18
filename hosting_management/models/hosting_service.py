@@ -1428,10 +1428,12 @@ class HostingService(models.Model):
             )
 
         # --- Moitié 2 : la copie distante, lue du dehors --------------------
-        Config = self.env["nextcloud.calendar.sync.config"].sudo()
+        # 🔴 La garde d'abord : sans calendar_nextcloud_sync, `self.env[...]` lève
+        # KeyError, et la sonde tombait au lieu de dire ce qu'elle n'a pas mesuré.
         if "nextcloud.calendar.sync.config" not in self.env:
-            configs = None
+            Config = configs = None
         else:
+            Config = self.env["nextcloud.calendar.sync.config"].sudo()
             configs = Config.search([
                 ("active", "=", True), ("backend_type", "=", "nextcloud"),
                 ("sync_direction", "in", ("both", "nc_to_odoo")),
