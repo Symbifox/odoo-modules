@@ -564,6 +564,59 @@ class TestAccess(MembershipCase):
             self.assertFalse(self.env[model].with_user(self.employee).search(domain), model)
             self.assertTrue(self.env[model].with_user(self.agent).search(domain), model)
 
+    def test_followers_stay_hidden_next_to_a_rival_group_rule(self):
+        """🔴 Odoo combine par OU les règles de groupe d'un même modèle : la règle de
+        groupe d'un module voisin sur les abonnés (un registre de vie privée, par
+        exemple) rouvrait à tout employé ceux de chaque adhésion, et le rôle d'une
+        association lisait ceux des autres."""
+        for model in ("mail.model_mail_followers", "mail.model_mail_notification"):
+            # Ce que ferait n'importe quel module voisin.
+            self.env["ir.rule"].create({
+                "name": "Règle rivale (essai)", "model_id": self.env.ref(model).id,
+                "groups": [(4, self.env.ref("base.group_user").id)],
+                "domain_force": "[('res_model', 'not like', 'x.autre')]" if model.endswith("followers")
+                else "[('mail_message_id.model', 'not like', 'x.autre')]",
+                "perm_write": False, "perm_create": False, "perm_unlink": False,
+            })
+        membership = self._membership(self.alice, payment_state="paid")
+        moi = self.employee.partner_id
+        membership.message_subscribe(partner_ids=(self.alice | moi).ids)
+        membership.message_post(body="Bonjour", partner_ids=(self.alice | moi).ids,
+                                message_type="comment", subtype_xmlid="mail.mt_comment")
+        other, agent_b = self._two_associations()
+        other_type = self.type_person.copy({"company_id": other.id, "code": "B-ABO"})
+        membership_b = self.env["bf.membership"].create({
+            "partner_id": self.bruno.id, "type_id": other_type.id, "company_id": other.id})
+        membership_b.message_subscribe(partner_ids=self.bruno.ids)
+        self.env.flush_all()
+        self.env.invalidate_all()
+        Followers, Notifications = self.env["mail.followers"], self.env["mail.notification"]
+        of_a = [("res_model", "=", "bf.membership"), ("res_id", "=", membership.id)]
+        of_b = [("res_model", "=", "bf.membership"), ("res_id", "=", membership_b.id)]
+
+        # L'employé sans rôle : rien, sauf sa propre ligne.
+        seen = Followers.with_user(self.employee).search(of_a)
+        self.assertEqual(seen.partner_id, moi, "la personne lit toujours les siens")
+        self.assertFalse(Followers.with_user(self.employee).search(of_b))
+        alice_line = Followers.search(of_a + [("partner_id", "=", self.alice.id)])
+        self.assertFalse(alice_line.with_user(self.employee).has_access("read"))
+        self.assertFalse(Notifications.with_user(self.employee).search([("res_partner_id", "=", self.alice.id)]))
+        self.assertTrue(Notifications.with_user(self.employee).search([("res_partner_id", "=", moi.id)]))
+
+        # Le rôle, dans ses sociétés seulement.
+        self.assertLessEqual(self.alice | moi, Followers.with_user(self.agent).search(of_a).partner_id)
+        self.assertFalse(Followers.with_user(self.agent).search(of_b))
+        self.assertFalse(Followers.with_user(agent_b).search(of_a))
+        self.assertTrue(Followers.with_user(agent_b).search(of_b))
+        self.assertFalse(alice_line.with_user(agent_b).has_access("read"))
+        self.assertTrue(Notifications.with_user(self.agent).search([("res_partner_id", "=", self.alice.id)]))
+        self.assertFalse(Notifications.with_user(agent_b).search([("res_partner_id", "=", self.alice.id)]))
+
+        # Le reste du système inchangé.
+        self.bruno.message_subscribe(partner_ids=self.alice.ids)
+        self.assertTrue(Followers.with_user(self.employee).search(
+            [("res_model", "=", "res.partner"), ("res_id", "=", self.bruno.id)]))
+
     def _two_associations(self):
         other = self.env["res.company"].create({"name": "Autre association (droits)"})
         agent_b = new_test_user(

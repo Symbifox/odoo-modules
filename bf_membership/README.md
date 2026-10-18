@@ -290,6 +290,13 @@ person who welcomes members is not necessarily the one who keeps the books.
   field but would let a search such as « has a membership » through, and a
   search must not list the members that reading hides.
 * Categories and memberships are scoped per company by global record rules.
+* Odoo lets every employee read the followers and notifications of any
+  record, and those of a membership name the member. For the association's
+  models (`bf.membership*`), only the Members roles read them, within their
+  own companies; anyone still reads their own. These are global record rules
+  carrying the role exception in their domain: Odoo combines group rules on
+  one model with OR, so a group rule from any neighbouring module on
+  `mail.followers` would otherwise reopen them.
 * The office fields of a membership (the decision note, the withdrawal
   reason, the last reminder sent, the import source and reference,
   the payment reference, the notes) are restricted to agents at field level,
@@ -400,6 +407,14 @@ odoo -d <database> -u bf_membership --test-enable \
 
 ## Changelog
 
+- **18.0.1.0.5**: the followers and notifications of the association's
+  records stay hidden whatever other modules are installed. The rules that
+  hid them were group rules, which Odoo combines with OR: next to another
+  module's group rule on followers (a privacy register, for one), every
+  employee read who follows each membership, and the Members role read the
+  followers that module hid. They are now global rules with the role
+  exception in their domain, and the role reads them within its own
+  companies only.
 - **18.0.1.0.4**: first public release.
 
 ## License

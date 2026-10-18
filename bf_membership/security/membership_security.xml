@@ -53,41 +53,34 @@
     <!-- 🔴 Le courrier d'Odoo nomme les personnes : tout employé lit les abonnés
          (mail.followers) et les notifications (mail.notification) de n'importe
          quel enregistrement. Pour les modèles de l'association (bf.membership*),
-         seul le rôle Membres les lit ; une personne lit toujours les siens. -->
+         seul le rôle Membres les lit, dans ses sociétés ; une personne lit
+         toujours les siens.
+         🔴 Règles GLOBALES, l'exception du rôle dans le domaine : Odoo combine
+         par OU les règles de groupe d'un même modèle, et la règle de groupe de
+         n'importe quel module voisin (les registres de vie privée, par exemple)
+         rouvrait ces abonnés à tout employé. Une règle globale se combine par ET
+         avec toutes les autres. Le cache des domaines dépend de l'usager, et
+         Odoo le vide quand ses groupes changent. `groups` se vide
+         explicitement : sans cela, la mise à jour garderait l'ancien groupe. -->
     <record id="rule_mail_followers_membership_hidden" model="ir.rule">
-        <field name="name">Abonnés : ceux de l'association réservés au rôle Membres</field>
+        <field name="name">Abonnés : ceux de l'association réservés au rôle Membres, dans ses sociétés</field>
         <field name="model_id" ref="mail.model_mail_followers"/>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-        <field name="domain_force">['|', ('res_model', 'not like', 'bf.membership'), ('partner_id', '=', user.partner_id.id)]</field>
-        <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-    <record id="rule_mail_followers_membership_role" model="ir.rule">
-        <field name="name">Abonnés : le rôle Membres les lit tous</field>
-        <field name="model_id" ref="mail.model_mail_followers"/>
-        <field name="groups" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[Command.clear()]"/>
+        <field name="domain_force">['|', '|', ('res_model', 'not like', 'bf.membership'), ('partner_id', '=', user.partner_id.id), ('membership_out_of_company', '=', False) if user.has_group('bf_membership.group_membership_user') else (0, '=', 1)]</field>
         <field name="perm_write" eval="False"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
     <record id="rule_mail_notification_membership_hidden" model="ir.rule">
-        <field name="name">Notifications : celles de l'association réservées au rôle Membres</field>
+        <field name="name">Notifications : celles de l'association réservées au rôle Membres, dans ses sociétés</field>
         <field name="model_id" ref="mail.model_mail_notification"/>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-        <field name="domain_force">['|', ('mail_message_id.model', 'not like', 'bf.membership'), ('res_partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[Command.clear()]"/>
+        <field name="domain_force">['|', '|', ('res_partner_id', '=', user.partner_id.id), ('membership_registre', '=', False), ('membership_out_of_company', '=', False) if user.has_group('bf_membership.group_membership_user') else (0, '=', 1)]</field>
         <field name="perm_write" eval="False"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
-    <record id="rule_mail_notification_membership_role" model="ir.rule">
-        <field name="name">Notifications : le rôle Membres les lit toutes</field>
-        <field name="model_id" ref="mail.model_mail_notification"/>
-        <field name="groups" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
+    <!-- Les anciennes règles « rôle » (rule_mail_followers_membership_role,
+         rule_mail_notification_membership_role) n'ont plus d'objet : hors bloc
+         noupdate, Odoo les supprime à la fin de la mise à jour. -->
 </odoo>
