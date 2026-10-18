@@ -64,6 +64,8 @@ class TestMiseEnPage(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True, tz="UTC"))
+        # Le client écrit en fr_CA, que seule une base de locataire a d'office.
+        cls.env["res.lang"]._activate_lang("fr_CA")
         cls.env.company.name = "Société Principale Essai"
         cls.societe = cls.env["res.company"].create({
             "name": "Société Rendez-vous Essai", "email": "bonjour@societe-rdv.invalid",

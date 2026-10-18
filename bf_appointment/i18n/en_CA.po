@@ -159,3 +159,15 @@ msgstr ""
 #: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Un gestionnaire des rendez-vous peut les déplacer quand même."
 msgstr "An appointment manager can still move them."
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_resource.py:0
+msgid ""
+"Cette modification ferait sortir des rendez-vous déjà placés des "
+"disponibilités de la ressource, ou les placerait sur une ressource déjà "
+"prise. Demandez à un gestionnaire des rendez-vous de les déplacer d'abord."
+msgstr ""
+"This change would move appointments already scheduled outside the "
+"resource's availability, or onto a resource that is already taken. Ask an "
+"appointment manager to move them first."

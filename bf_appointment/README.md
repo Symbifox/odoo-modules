@@ -337,6 +337,24 @@ public form (recording, newsletter). The booking itself was declared nowhere.
   since a label is not enough to guess. The booking type shows how many
   questions have no category, and how many collect sensitive information.
 
+## Resources and schedules editable without the Bookings group (18.0.2.66.1)
+
+The OCA `resource_booking` module checks, whenever a resource's schedule, time
+zone, type or linked user changes (and whenever a working schedule's hours or
+time zone change), that no scheduled booking falls outside its availability. It
+searched the bookings as the current user, so a user without a Bookings group
+had no read access and got an access error: creating an employee, changing a
+resource's time zone or schedule, or creating a company failed for an HR
+manager or a second administrator. The administrator and OdooBot never saw it,
+since they are made Bookings managers on install.
+
+The check (`_check_bookings_scheduling` on `resource.resource` and
+`resource.calendar`) now runs in full as superuser, on every booking concerned,
+not only on those the user can see. A real conflict is still refused. The
+refusal names the conflicting bookings (their customer and subject) only to a
+user who can read all of them; anyone else gets a generic message asking an
+appointment manager to move them first.
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by

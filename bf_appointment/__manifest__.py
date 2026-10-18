@@ -421,7 +421,14 @@
     #   jour, salle Talk renommée, crochet `_bf_privacy_anonymize_extra()` pour
     #   les satellites. Campagnes et demandes de destruction refusent
     #   d'« anonymiser » une réservation.
-    "version": "18.0.2.66.0",
+    # 18.0.2.66.1: le contrôle de planification d'OCA sur les ressources et
+    #   les horaires (`_check_bookings_scheduling`) cherchait les réservations
+    #   au nom de l'usager courant : sans groupe Réservations, créer un
+    #   employé, changer le fuseau ou l'horaire d'une ressource, créer une
+    #   société levait une AccessError. Il est rejoué en sudo, entier ; qui ne
+    #   peut pas lire les réservations en conflit reçoit un refus qui ne les
+    #   nomme pas.
+    "version": "18.0.2.66.1",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

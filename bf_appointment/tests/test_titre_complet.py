@@ -84,6 +84,9 @@ class TestTitreComplet(TransactionCase):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True,
                                        no_mail_to_attendees=True))
+        # La personne lit en fr_CA, que seule une base de locataire a d'office : le titre
+        # se bâtit dans sa langue.
+        cls.env["res.lang"]._activate_lang("fr_CA")
         cls.type_rdv = _type_rdv(cls.env, "Rencontre flexible essai", "titre-complet-essai")
         cls.personne = cls.env["res.partner"].create({
             "name": "Personne Essai", "email": "personne-titre@test.invalid",
@@ -685,6 +688,8 @@ class TestRenvois26641(TransactionCase):
 
     def test_le_fil_d_ariane_dit_rendez_vous(self):
         """La branche sans réservation (portail de l'OCA) ; l'autre est lue au vrai chemin."""
+        # Le portail en fr_CA, que seule une base de locataire a d'office.
+        self.env["res.lang"]._activate_lang("fr_CA")
         for langue, attendu, absent in (("fr_CA", "Rendez-vous", "Bookings"),
                                         ("en_US", "Bookings", "Rendez-vous")):
             with self.subTest(langue=langue):

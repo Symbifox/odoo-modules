@@ -26,9 +26,28 @@ from odoo import api, fields, models
 from odoo.addons.resource.models.utils import Intervals
 from odoo.addons.resource_booking.models.resource_calendar import Busy
 
+from .resource_resource import check_bookings_as_sudo
+
 
 class ResourceCalendar(models.Model):
     _inherit = "resource.calendar"
+
+    @api.constrains("attendance_ids", "global_leave_ids", "leave_ids", "tz")
+    def _check_bookings_scheduling(self):
+        """Même contrôle qu'OCA, rejoué en sudo : voir `resource_resource.py`.
+
+        Sans lui, créer une société (qui crée son horaire) ou retoucher un
+        horaire de travail levait une AccessError pour un administrateur
+        sans groupe Réservations.
+        """
+        return check_bookings_as_sudo(
+            self,
+            lambda records: super(
+                ResourceCalendar, records)._check_bookings_scheduling(),
+            ["|",
+             ("combination_id.forced_calendar_id", "in", self.ids),
+             ("combination_id.resource_ids.calendar_id", "in", self.ids)],
+        )
 
     @api.model
     def _calendar_event_busy_intervals(
