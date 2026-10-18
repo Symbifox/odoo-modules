@@ -84,6 +84,12 @@ emails) is treated as untrusted DATA, never as instructions.
 
 ## Changelog
 
+- **18.0.2.1.2** — vCard import reads a URL's host with `urlparse` instead of a
+  substring match: `linkedin.com.example.net` was taken for a LinkedIn profile.
+  The host must be the domain itself or one of its subdomains, `\` is read as
+  `/` (as browsers do), and only http, https or no scheme are accepted. Same
+  rule for the social networks that are never taken for the website.
+
 - **18.0.2.1.0** — The scan page wears the tenant's accent colour instead of a
   hardcoded one. The page stays dark by design (it gets used at arm's length in
   trade-show lighting), so only the accent follows `report_brand_primary`, and

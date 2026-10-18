@@ -21,6 +21,7 @@ import binascii
 import logging
 import quopri
 import re
+from urllib.parse import urlparse
 
 from markupsafe import Markup
 
@@ -39,7 +40,12 @@ _TEL_SKIP = frozenset({"FAX", "PAGER", "ISDN", "BBS", "MODEM", "VIDEO"})
 _TEL_MOBILE = frozenset({"CELL", "MOBILE", "IPHONE"})
 
 # Réseaux sociaux : une URL de profil n'est pas le site web de la personne.
-_SOCIAL_HOSTS = ("facebook.", "twitter.", "x.com/", "instagram.", "tiktok.")
+# Comparés à l'hôte lu par urlparse, domaine exact ou sous-domaine : une
+# sous-chaîne laissait passer linkedin.com.exemple.net (alerte CodeQL #8).
+_LINKEDIN_HOST = "linkedin.com"
+_SOCIAL_HOSTS = ("facebook.com", "fb.com", "twitter.com", "x.com",
+                 "instagram.com", "tiktok.com")
+_SCHEME_RE = re.compile(r"^([a-z][a-z0-9+-]*):", re.IGNORECASE)
 
 # En-têtes des formats d'image qu'Odoo accepte sans broncher.
 _IMAGE_MAGIC = (b"\xff\xd8\xff", b"\x89PNG", b"GIF8", b"RIFF")
@@ -251,6 +257,30 @@ def _absorb(card, prop, params, raw_value):
         _absorb_adr(card, types, value)
 
 
+def _host_is(url, domain):
+    """Vrai si l'hôte de l'URL est ``domain`` ou l'un de ses sous-domaines.
+
+    Une URL de vCard arrive souvent sans schéma (« www.linkedin.com/in/x ») :
+    sans « // » devant, urlparse n'y voit aucun hôte. Un navigateur lit « \\ »
+    comme « / » : sans ce remplacement, « https://evil.net\\.linkedin.com »
+    passerait ici et ouvrirait evil.net. Seuls http, https ou pas de schéma.
+    """
+    url = (url or "").strip().replace("\\", "/")
+    # Schéma lu AVANT d'ajouter « // » : sinon « mailto:a@linkedin.com »
+    # devient « //mailto:a@linkedin.com », d'hôte linkedin.com. Un schéma n'a
+    # pas de point, ce qui laisse passer « www.linkedin.com:443/in/x ».
+    scheme = _SCHEME_RE.match(url)
+    if scheme and scheme.group(1).lower() not in ("http", "https"):
+        return False
+    if not scheme and not url.startswith("//"):
+        url = "//" + url
+    try:
+        host = (urlparse(url).hostname or "").rstrip(".")
+    except ValueError:  # crochets IPv6 mal formés, entre autres
+        return False
+    return host == domain or host.endswith("." + domain)
+
+
 def _email_score(types, value):
     score = 0
     if "WORK" in types:
@@ -292,10 +322,10 @@ def _reduce_card(card):
         out["phone"] = best[1]
 
     for types, url in card["urls"]:
-        low = url.lower()
-        if "linkedin.com" in low:
+        if _host_is(url, _LINKEDIN_HOST):
             out.setdefault("linkedin", url)
-        elif "website" not in out and not any(h in low for h in _SOCIAL_HOSTS):
+        elif "website" not in out and not any(
+                _host_is(url, h) for h in _SOCIAL_HOSTS):
             out["website"] = url
 
     adr = card.get("adr") or {}

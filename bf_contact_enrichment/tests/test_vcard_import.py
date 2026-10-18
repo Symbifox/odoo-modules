@@ -169,3 +169,53 @@ END:VCARD\r
         from odoo.exceptions import UserError
         with self.assertRaises(UserError):
             self._run("ceci n'est pas une vCard")
+
+    def test_hote_lu_et_non_sous_chaine(self):
+        """🔴 Alerte CodeQL #8 : « linkedin.com » dans l'URL ne suffit plus.
+
+        L'hôte est lu par urlparse et doit être linkedin.com ou un de ses
+        sous-domaines ; même règle pour les réseaux sociaux qu'on refuse de
+        prendre pour le site web."""
+        from odoo.addons.bf_contact_enrichment.wizard.bf_contact_vcard_wizard import (
+            _host_is,
+        )
+        for url in ("https://www.linkedin.com/in/x", "www.linkedin.com/in/x",
+                    "https://ca.linkedin.com/in/x", "HTTPS://LINKEDIN.COM/in/x",
+                    "https://www.linkedin.com./in/x", "www.linkedin.com:443/in/x",
+                    "www.linkedin.com/in/x?trk=https://a.b"):
+            self.assertTrue(_host_is(url, "linkedin.com"), url)
+        for url in ("https://linkedin.com.exemple.net/in/x",
+                    "https://exemple.net/?r=linkedin.com",
+                    "https://notlinkedin.com/in/x",
+                    "https://exemple.net/linkedin.com/in/x",
+                    "https://[::1/x", "",
+                    "https://evil.net\\.linkedin.com/in/x",
+                    "https://evil.net\\@linkedin.com/in/x",
+                    "mailto:a@linkedin.com",
+                    "javascript://linkedin.com/%0aalert(1)"):
+            self.assertFalse(_host_is(url, "linkedin.com"), url)
+
+    def test_faux_linkedin_devient_site_web(self):
+        self._run("BEGIN:VCARD\r\nFN:Faux Profil\r\nEMAIL:faux@exemple.test\r\n"
+                  "URL:https://linkedin.com.exemple.net/in/faux\r\n"
+                  "END:VCARD\r\n")
+        partner = self.env["res.partner"].search([("email", "=", "faux@exemple.test")])
+        if "x_linkedin_url" in self.env["res.partner"]._fields:
+            self.assertFalse(partner.x_linkedin_url)
+        self.assertEqual(partner.website, "https://linkedin.com.exemple.net/in/faux")
+
+    def test_reseau_social_n_est_pas_le_site_web(self):
+        self._run("BEGIN:VCARD\r\nFN:Social Seul\r\nEMAIL:seul@exemple.test\r\n"
+                  "URL:https://m.facebook.com/seul\r\n"
+                  "URL:https://www.seul-conseil.test\r\n"
+                  "END:VCARD\r\n")
+        partner = self.env["res.partner"].search([("email", "=", "seul@exemple.test")])
+        self.assertEqual(partner.website, "https://www.seul-conseil.test")
+
+    def test_site_qui_contient_un_nom_de_reseau_reste_le_site(self):
+        """« x.com » est dans « fedex.com » : seul l'hôte compte, pas le texte."""
+        self._run("BEGIN:VCARD\r\nFN:Livreur Rapide\r\nEMAIL:livreur@exemple.test\r\n"
+                  "URL:https://www.fedex.com\r\n"
+                  "END:VCARD\r\n")
+        partner = self.env["res.partner"].search([("email", "=", "livreur@exemple.test")])
+        self.assertEqual(partner.website, "https://www.fedex.com")
