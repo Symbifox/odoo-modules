@@ -302,6 +302,10 @@ class TestTuileDevops(TransactionCase):
         self.assertNotIn(
             "state", champs,
             "le domaine ne doit pas filtrer sur l'état de la fiche")
+        # Le décompte vit dans la tuile DevOps, gardée sur `bf.devops.advisory` :
+        # sans bf_devops, `hosting_management` seul n'a pas de tuile à compter.
+        if self.env.get("bf.devops.advisory") is None:
+            self.skipTest("bf_devops absent sur cette base")
         données = self.env["bf.dashboard"].get_dashboard_data()["devops"]
         self.assertEqual(données["updates_pending"],
                          Service.sudo().search_count(action["domain"]))

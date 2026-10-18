@@ -281,6 +281,9 @@ class TestAttendanceFrench(AttendanceCase):
     def test_email_renders_in_french(self):
         """🔴 The French body is a separate translation: a wrong one crashes only in French."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French body comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_attendance"], ["fr_CA"])
         self.p.partner_id.lang = "fr_CA"
         am = self._session()
         self._line(am, self.a).status = "absent"

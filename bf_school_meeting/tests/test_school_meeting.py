@@ -191,6 +191,9 @@ class TestMeetingFrench(MeetingCase):
     def test_email_renders_in_french(self):
         """🔴 The French body is a separate translation: a wrong one crashes only in French."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_meeting"], ["fr_CA"])
         self.p.partner_id.lang = "fr_CA"
         self.slot(self.t1)._school_book(self.a, self.p.partner_id)
         mail = self.env["mail.mail"].sudo().search([("recipient_ids", "in", self.p.partner_id.ids)])

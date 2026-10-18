@@ -238,6 +238,9 @@ class TestFrench(SchoolMessageCase):
     def test_email_renders_in_french(self):
         """🔴 The French body is a separate translation: a wrong one crashes only in French."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_message"], ["fr_CA"])
         self.parent_a.partner_id.lang = "fr_CA"
         self._post(school_group_ids=[(6, 0, self.g301.ids)])
         mail = self._mails_to(self.parent_a)

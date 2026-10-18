@@ -261,6 +261,13 @@ class TestSchoolDevice(HttpCase):
             accounts.action_sync()
             action = alpha.action_new_password()
         wizard = self.env["bf.school.account.password"].browse(action["res_id"])
+        # create_date is the test transaction's clock, stopped when the class
+        # began: after five minutes of earlier tests (a slow CI lot), the wizard
+        # would be born already expired. Date it from the wall clock, as _compute_expired does.
+        self.env.cr.execute(
+            "UPDATE bf_school_account_password SET create_date = %s WHERE id = %s",
+            (fields.Datetime.now(), wizard.id))
+        wizard.invalidate_recordset()
         password = wizard.with_user(self.office).read(["password"])[0]["password"]
         self.assertEqual(fake.passwords[alpha.directory_pk], password)
         self.assertRegex(password, r"^[a-z]+-[a-z]+-\d{4}$")

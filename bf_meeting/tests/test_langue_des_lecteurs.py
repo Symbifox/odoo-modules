@@ -183,7 +183,9 @@ class TestLangueDesLecteurs(TransactionCase):
     def test_qui_modifie_ne_donne_pas_sa_langue(self):
         """Un OdJ interne créé en français ne bascule pas quand un collègue à
         l'interface anglaise (ou l'usager de l'API) lui ajoute un participant."""
-        odj = self._odj(self.collegue)
+        # Organisé par le collègue francophone : OdooBot, organisateur par défaut,
+        # n'est en fr_CA que sur certaines bases.
+        odj = self._odj(self.collegue, organizer_id=self.collegue.user_ids.id)
         self.assertEqual(odj.lang, 'fr_CA')
         autre = self.env['res.users'].create({
             'name': 'Collègue EN', 'login': 'collegue-en2-25549@essai.test', 'lang': 'en_CA',

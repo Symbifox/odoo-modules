@@ -355,6 +355,8 @@ class TestPortal(ReportCardCase):
         env = cls.env
         cls.mother = new_test_user(env, login="rc_mother", name="Maman Essai", email="maman.rc@example.invalid",
                                    groups="base.group_portal")
+        # The mother reads in fr_CA, which only a tenant's database has from the start.
+        env["res.lang"]._activate_lang("fr_CA")
         cls.mother.partner_id.lang = "fr_CA"
         cls.grandma = new_test_user(env, login="rc_grandma", name="Mamie Essai", email="mamie.rc@example.invalid",
                                     groups="base.group_portal")
@@ -528,6 +530,9 @@ class TestCommunications(ReportCardCase):
             "student_id": self.alpha.id, "year_id": self.year.id, "kind": "first", "body": "x"})
         self.assertEqual(item.display_name, "%s, First written communication" % self.alpha.name)
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_report_card"], ["fr_CA"])
         self.assertEqual(item.with_context(lang="fr_CA").display_name,
                          "%s, Première communication écrite" % self.alpha.name)
 

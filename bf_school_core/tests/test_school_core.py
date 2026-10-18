@@ -176,6 +176,12 @@ class TestAccess(SchoolCase):
 class TestSchoolMail(TransactionCase):
     """Every school email leaves in the tenant's layout, its links in the recipient's language."""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # A blank database has only en_US: sending in fr_CA needs it active.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+
     def _send(self, **ctx):
         template = self.env["mail.template"].create({
             "name": "Essai lien", "model_id": self.env.ref("base.model_res_partner").id,

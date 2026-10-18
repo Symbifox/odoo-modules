@@ -905,9 +905,12 @@ class TestAgendaMobileV3(TransactionCase):
             self.skipTest("calendar_nextcloud_sync absent")
         Config = self.env["nextcloud.calendar.sync.config"].sudo()
         base = {"nextcloud_base_url": "https://nc.example.org", "nextcloud_user": "x"}
-        mienne = Config.create(dict(base, name="Banc mienne", calendar_owner_id=self.user.id))
-        autre = Config.create(dict(base, name="Banc autre", calendar_owner_id=self.autre.id))
-        libre = Config.create(dict(base, name="Banc libre"))
+        mienne = Config.create(dict(base, name="Banc mienne", calendar_owner_id=self.user.id,
+                                    caldav_path="/remote.php/dav/calendars/x/mienne/"))
+        autre = Config.create(dict(base, name="Banc autre", calendar_owner_id=self.autre.id,
+                                   caldav_path="/remote.php/dav/calendars/x/autre/"))
+        libre = Config.create(dict(base, name="Banc libre",
+                                   caldav_path="/remote.php/dav/calendars/x/libre/"))
         ids = [c["id"] for c in self.Event.with_user(self.user).mobile_calendars()]
         self.assertIn(mienne.id, ids)
         self.assertIn(libre.id, ids)

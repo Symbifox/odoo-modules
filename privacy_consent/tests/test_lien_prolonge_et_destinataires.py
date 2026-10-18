@@ -71,7 +71,9 @@ class TestLienProlongeEtDestinataires(HttpCase, RefusalFixture):
 
     def _mineur(self, adresse_enfant=True, adresses_responsables=(True, True)):
         responsables = self.env["res.partner"].create([
-            {"name": f"Responsable {i}", "email": f"resp{i}@example.invalid" if a else False}
+            # En français, comme un contact de locataire : une base neuve crée en en_US.
+            {"name": f"Responsable {i}", "email": f"resp{i}@example.invalid" if a else False,
+             "lang": "fr_CA"}
             for i, a in enumerate(adresses_responsables, 1)])
         enfant = self.env["res.partner"].create({
             "name": "Enfant Essai", "email": "enfant@example.invalid" if adresse_enfant else False,

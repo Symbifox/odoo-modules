@@ -32,7 +32,9 @@ TRACES = ("#F8FAFC", 'width="600"', "/brand/logo/", "<!-- Footer -->")
 # Dans un courriel ENVOYÉ, la mise en page commune porte elle-même un fond #F8FAFC,
 # un pied et un logo : seules ces marques-ci n'appartiennent qu'à l'ancienne coquille.
 TRACES_ENVOI = ("<!-- Accent Line -->", "<!-- Bottom Accent -->")
-LOGO_ANCIEN = re.compile(r"/brand/logo/\d+/brand")
+# Depuis 88facddc (2026-10-03), la mise en page commune porte ce logo elle aussi : un
+# courriel envoyé en compte un, deux trahissent l'ancienne coquille restée dans le contenu.
+LOGO = re.compile(r"/brand/logo/\d+/brand")
 RACINE = Path(__file__).resolve().parent.parent
 
 
@@ -158,7 +160,7 @@ class TestMiseEnPage(TransactionCase):
         self.assertEqual(courriel.body_html.count(CARTE), 1, "une carte, la commune")
         for trace in TRACES_ENVOI:
             self.assertNotIn(trace, courriel.body_html)
-        self.assertFalse(LOGO_ANCIEN.search(courriel.body_html))
+        self.assertEqual(len(LOGO.findall(courriel.body_html)), 1, "un logo, celui de la commune")
         self.assertNotIn("utm_medium=email", courriel.body_html)
 
     def test_la_migration_5_4_rend_la_source_de_chaque_gabarit(self):

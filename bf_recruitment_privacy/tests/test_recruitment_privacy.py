@@ -462,9 +462,10 @@ class TestRecruitmentPrivacy(TransactionCase):
 
         self.assertEqual(line.state, "done", line.error_message or "")
         self.assertFalse(
-            partner.active,
-            "Le socle archive un modèle qui porte `active` : c'est son "
-            "comportement, et le relais doit le laisser s'appliquer.",
+            partner.exists(),
+            "Le socle supprime pour de bon, `active` ou pas (privacy_consent "
+            "18.0.5.0.0 : « Suppression » archivait) : c'est son comportement, "
+            "et le relais doit le laisser s'appliquer.",
         )
 
     def test_classifiable_models_compose(self):

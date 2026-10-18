@@ -7,7 +7,7 @@ qui avale les fins de semaine, la combinaison par courtier, la plage retirée
 sous une visite confirmée, et le registre qui se ferme.
 """
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import pytz
 
@@ -56,7 +56,10 @@ class TestVisites(TransactionCase):
             "calendar_id": cls.cal_courtier.id,
             "tz": "America/Toronto",
         })
-        cls.samedi = datetime(2026, 9, 12)
+        # Un samedi à venir, à deux semaines au moins : un samedi fixe (le
+        # 2026-09-12 du banc) passe, et un créneau passé n'est plus offert.
+        jour = date.today() + timedelta(days=(5 - date.today().weekday()) % 7 + 14)
+        cls.samedi = datetime(jour.year, jour.month, jour.day)
 
     # ------------------------------------------------------------------
     def _inscription(self, **extra):
@@ -85,8 +88,8 @@ class TestVisites(TransactionCase):
         })
 
     def _creneaux(self, inscription):
-        debut = self.tz.localize(datetime(2026, 9, 12, 0, 0))
-        fin = self.tz.localize(datetime(2026, 9, 13, 0, 0))
+        debut = self.tz.localize(self.samedi)
+        fin = self.tz.localize(self.samedi + timedelta(days=1))
         return [
             s.strftime("%H:%M")
             for s in inscription.booking_type_id._bf_candidate_slots(
@@ -94,8 +97,14 @@ class TestVisites(TransactionCase):
             )
         ]
 
+    def _utc(self, heure, minute=0):
+        """Le samedi d'essai à `heure` de Toronto, en UTC naïf : 13 h y vaut
+        17 h UTC l'été, 18 h l'hiver."""
+        local = self.tz.localize(self.samedi.replace(hour=heure, minute=minute))
+        return local.astimezone(pytz.utc).replace(tzinfo=None)
+
     def _demander_visite(self, inscription, heure_utc=None):
-        heure_utc = heure_utc or datetime(2026, 9, 12, 17, 0)
+        heure_utc = heure_utc or self._utc(13)
         reservation = inscription.booking_type_id._bf_create_booking(
             heure_utc, partners=self.visiteur
         )
@@ -431,7 +440,7 @@ class TestVisites(TransactionCase):
         inscription.action_publish()
         presente = self._demander_visite(inscription)
         absente = self._demander_visite(
-            inscription, heure_utc=datetime(2026, 9, 12, 17, 30)
+            inscription, heure_utc=self._utc(13, 30)
         )
         presente.action_mark_arrived()
         passe = datetime.now() - timedelta(hours=4)
@@ -467,14 +476,11 @@ class TestVisites(TransactionCase):
         nouvelle, ok = migration.vue_sans_coquille(avant)
         self.assertTrue(ok)
         self.assertEqual(migration.vue_sans_coquille(nouvelle), (None, False))
-        # Un samedi à venir : le samedi fixe des autres essais est passé.
-        from datetime import date, datetime, timedelta
-        jour = date.today() + timedelta(days=(5 - date.today().weekday()) % 7 + 14)
-        samedi = datetime(jour.year, jour.month, jour.day)
+        jour = self.samedi.date()
         inscription = self._inscription()
         self._plage(inscription, date=jour)
         inscription.action_publish()
-        visite = self._demander_visite(inscription, heure_utc=samedi.replace(hour=17))
+        visite = self._demander_visite(inscription, heure_utc=self._utc(13))
         with patch("odoo.addons.mail.models.mail_mail.MailMail.send", lambda s, *a, **k: None):
             avant_ids = self.env["mail.mail"].sudo().search([]).ids
             self.env.ref("bf_appointment_visit.mail_visit_approved").send_mail(visite.id, force_send=False)

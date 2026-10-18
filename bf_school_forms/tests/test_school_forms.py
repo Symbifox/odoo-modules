@@ -248,6 +248,9 @@ class TestFormFrench(SchoolFormsCase):
     def test_email_renders_in_french(self):
         """🔴 The French body is a separate translation: a wrong one crashes only in French."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_forms"], ["fr_CA"])
         self.dad.lang = "fr_CA"
         self._sent()
         mail = self.env["mail.mail"].sudo().search([("recipient_ids", "in", self.dad.ids)])

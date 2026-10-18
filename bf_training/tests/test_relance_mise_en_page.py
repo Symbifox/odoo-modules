@@ -69,9 +69,15 @@ class TestRelanceMiseEnPage(TransactionCase):
             self.assertEqual(self.env["bf.training.assignment"]._mise_en_page_relance(), ODOO)
 
     def test_sans_la_maison_la_relance_part_dans_la_mise_en_page_d_odoo(self):
+        # ⚠️ `bluefox_branding` habille aussi la mise en page légère d'Odoo (fond
+        # #F8FAFC, bandeau, pied) : ni le fond ni le nom de la société ne départagent
+        # les deux. La signature par défaut de la société, si : seule la mise en page
+        # maison la lit (l'essai voisin la retrouve avec elle), la carte légère non.
+        if "brand_email_signature_default" in self.societe._fields:
+            self.societe.brand_email_signature_default = "<p>Signature maison QA-6641</p>"
         with self._sans_la_maison():
             corps = self._relance()
-        self.assertNotIn("#F8FAFC", corps, "le fond de la mise en page maison")
+        self.assertNotIn("Signature maison QA-6641", corps, "la signature de la mise en page maison")
         self.assertIn("Société Essai Marque", corps)
 
     def test_avec_la_maison_la_relance_porte_le_bandeau_de_marque(self):

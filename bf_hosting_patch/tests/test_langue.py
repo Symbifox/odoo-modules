@@ -21,6 +21,9 @@ class TestLangue(TransactionCase):
         super().setUpClass()
         for code in ("en_US", "fr_CA"):
             cls.env["res.lang"]._activate_lang(code)
+        # Activer la langue ne charge pas les termes : sur une base neuve, le libellé de la portée
+        # vient de fr_CA.po (sans effet là où il est déjà chargé).
+        cls.env["ir.module.module"]._load_module_terms(["bf_hosting_patch"], ["fr_CA"])
         cls.partner = cls.env["res.partner"].create({
             "name": "Client de langue", "is_company": True,
         })

@@ -170,6 +170,9 @@ class TestConductFrench(ConductCase):
     def test_emails_render_in_french(self):
         """🔴 Each French body is a separate translation: a wrong one crashes only in French."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # Activating a language loads no terms: on a blank database the French comes from
+        # fr_CA.po (no effect where it is already loaded).
+        self.env["ir.module.module"]._load_module_terms(["bf_school_conduct"], ["fr_CA"])
         self.p.partner_id.lang = "fr_CA"
         self._incident().action_inform_parents()
         followup = self.env["bf.school.followup"].create(

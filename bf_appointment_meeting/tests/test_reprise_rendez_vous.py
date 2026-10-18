@@ -135,6 +135,10 @@ class TestRepriseDuRendezVous(TestAgendaFromBooking):
         rendez-vous : l'OdJ de l'intrus ne doit pas servir, car il en connaît
         le jeton."""
         public = self.env.ref("base.public_user")
+        # L'intrus annule lui-même, sans être gestionnaire : le verrou de
+        # bf_appointment (2 h par défaut) bloquerait le premier créneau, qui
+        # tombe toujours à moins de deux heures.
+        self.type.modification_lock_hours = 0.0
         intrus = self.type.with_user(public).sudo()._bf_create_booking(
             self._slot(0), partners=self.client, confirm=False)
         intrus.action_confirm()

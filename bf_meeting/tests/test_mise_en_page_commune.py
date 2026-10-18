@@ -81,8 +81,14 @@ class TestMiseEnPageCommune(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Surtitres attendus en français : un lecteur en fr_CA, la langue active et ses
+        # termes chargés (sans effet là où ils le sont déjà). Sinon la langue retombe sur
+        # OdooBot, qui n'est en fr_CA que sur certaines bases, et la source est anglaise
+        # depuis 18.0.3.68.0.
+        cls.env['res.lang']._activate_lang('fr_CA')
+        cls.env['ir.module.module']._load_module_terms(['bf_meeting'], ['fr_CA'])
         cls.destinataire = cls.env['res.partner'].create({
-            'name': 'Destinataire du banc', 'email': 'dest@essai.test'})
+            'name': 'Destinataire du banc', 'email': 'dest@essai.test', 'lang': 'fr_CA'})
         cls.projet = cls.env['project.project'].create({'name': 'Projet du banc'})
         # Un sujet et le lien de contribution : l'en-tête du tableau et le bouton
         # sortaient en blanc sur blanc par le composeur.

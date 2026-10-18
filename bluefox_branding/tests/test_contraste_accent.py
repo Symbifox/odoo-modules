@@ -101,7 +101,7 @@ class TestContrasteAccent(TransactionCase):
         self.assertEqual(societe._brand_primary_on_white(), "#714B67")
 
     def test_la_feuille_de_style_pointe_la_variante(self):
-        """Les fonds sous du texte blanc lisent `-on-white`, pas l'accent brut.
+        """Le compteur et la barre de progression lisent `-on-white` ; le bouton, l'accent brut.
 
         Le défaut d'origine n'était pas une couleur fausse, c'était la mauvaise
         variable au bon endroit : un test sur la valeur seule l'aurait manqué.
@@ -117,7 +117,13 @@ class TestContrasteAccent(TransactionCase):
         import re
         scss = (pathlib.Path(__file__).resolve().parent.parent
                 / "static" / "src" / "scss" / "branding.scss").read_text()
-        for bloc in (".btn-primary", ".badge-primary", ".progress-bar", ".o-discuss-badge"):
+        # `.btn-primary` et `.badge-primary` reprennent l'accent brut depuis
+        # e2c219f1 (2026-09-13) : la marque prime là, arbitrage du propriétaire
+        # de la marque écrit dans le SCSS. Restent ceux où le blanc est du texte.
+        for bloc in (".btn-primary", ".badge-primary"):
+            self.assertNotIn("--brand-primary-on-white", self._bloc(scss, bloc),
+                             "%s : l'arbitrage veut l'accent de la marque" % bloc)
+        for bloc in (".progress-bar", ".o-discuss-badge"):
             corps = self._bloc(scss, bloc)
             self.assertIn("--brand-primary-on-white", corps,
                           "%s ne lit pas la variante lisible" % bloc)
@@ -133,8 +139,16 @@ class TestContrasteAccent(TransactionCase):
 
     @staticmethod
     def _bloc(scss, selecteur):
-        """Le corps de la règle, accolades appariées, imbrications comprises."""
-        debut = scss.index(selecteur + ",") if (selecteur + ",") in scss else scss.index(selecteur)
+        """Le corps de la règle, accolades appariées, imbrications comprises.
+
+        Le sélecteur est cherché en tête de règle, pas n'importe où : le SCSS
+        nomme `.progress-bar` dans un commentaire, au-dessus du bloc des badges.
+        """
+        import re
+        trouve = re.search(r"(?m)^[ \t]*" + re.escape(selecteur) + r"\s*[,{]", scss)
+        if not trouve:
+            raise ValueError("règle introuvable : " + selecteur)
+        debut = trouve.start()
         ouvrante = scss.index("{", debut)
         profondeur, i = 0, ouvrante
         while i < len(scss):
