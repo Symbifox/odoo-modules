@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La grille : le pictogramme du type devant le titre (block_calendar.js),
+         la couleur par la règle « Plages de travail » (bf_color). -->
+    <record id="view_calendar_event_calendar_block" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.bf_block</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//calendar" position="inside">
+                <field name="bf_block_glyph" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- La création rapide : le type en premier, un clic. Il donne le titre, la
+         disponibilité et la confidentialité du type (onchange) ; recliquer le
+         type choisi le retire. -->
+    <record id="view_calendar_event_form_quick_create_block" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.bf_block</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_row')]" position="before">
+                <field name="bf_block_type_id" widget="bf_block_badges" nolabel="1"
+                       options="{'size': 'sm'}"/>
+                <field name="show_as" invisible="1" force_save="1"/>
+                <field name="privacy" invisible="1" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_calendar_event_form_block" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf_block</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_ids']" position="before">
+                <field name="bf_block_type_id" options="{'no_create': True, 'no_open': True}"
+                       readonly="not user_can_edit"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_calendar_event_search_block" model="ir.ui.view">
+        <field name="name">calendar.event.search.bf_block</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="bf_work_blocks" string="Work blocks"
+                        domain="[('bf_block_type_id', '!=', False)]"/>
+                <filter name="bf_group_block_type" string="Work block"
+                        context="{'group_by': 'bf_block_type_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

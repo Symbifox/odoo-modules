@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_calendar_share_link_view_form_nextcloud" model="ir.ui.view">
+        <field name="name">bf.calendar.share.link.form.nextcloud</field>
+        <field name="model">bf.calendar.share.link</field>
+        <field name="inherit_id" ref="bf_calendar_share.bf_calendar_share_link_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='portee']" position="inside">
+                <field name="nc_config_ids" widget="many2many_checkboxes"/>
+                <field name="include_odoo_only"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="nextcloud_sync_config_form_bf_share" model="ir.ui.view">
+        <field name="name">nextcloud.calendar.sync.config.form.bf_share</field>
+        <field name="model">nextcloud.calendar.sync.config</field>
+        <field name="inherit_id" ref="calendar_nextcloud_sync.view_nextcloud_sync_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Calendar sharing links">
+                    <field name="bf_share_default"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

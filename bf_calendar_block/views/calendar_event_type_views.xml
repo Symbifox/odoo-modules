@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les types de plage se règlent là où vivent les étiquettes d'agenda
+         (Agenda > Configuration > Types de rendez-vous) : une plage de travail
+         est une étiquette qui en dit plus. -->
+    <record id="calendar_event_type_list_bf_block" model="ir.ui.view">
+        <field name="name">calendar.event.type.list.bf_block</field>
+        <field name="model">calendar.event.type</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_type_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_is_block" optional="show"/>
+                <!-- Pas de poignée : glisser une ligne réécrivait l'ordre de toutes
+                     les étiquettes affichées. -->
+                <field name="bf_block_sequence" optional="hide" invisible="not bf_is_block"/>
+                <field name="bf_block_glyph" optional="show" invisible="not bf_is_block"/>
+                <field name="bf_block_show_as" optional="show" invisible="not bf_is_block"/>
+                <field name="bf_block_privacy" optional="hide" invisible="not bf_is_block"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La grille : la plage dit pour quelle rencontre elle est retenue, dans
+         la bulle, et la bulle a besoin du champ pour offrir « Choisir ». -->
+    <record id="view_calendar_event_calendar_hold" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.bf_hold</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//calendar" position="inside">
+                <field name="bf_hold_for_id" invisible="not bf_hold_for_id"
+                       options="{'icon': 'fa fa-share'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- La création rapide de la grille ne porte que ses propres champs : sans
+         celui-ci, la plage tracée en mode « retenir » n'envoyait pas son lien, et
+         create() ne le reprend plus du contexte (une copie ou une création côté
+         serveur faite sous ce contexte devenait une plage). -->
+    <record id="view_calendar_event_form_quick_create_hold" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.bf_hold</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='videocall_source']" position="after">
+                <field name="bf_hold_for_id" invisible="1" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_calendar_event_form_hold" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf_hold</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_bf_hold_slots" type="object" icon="fa-calendar-plus-o"
+                        string="Hold slots" invisible="not id or bf_hold_for_id or not user_can_edit"
+                        help="Open the calendar on this meeting's week: each slot drawn there is held for this meeting."/>
+                <button name="action_bf_hold_list" type="object" icon="fa-share"
+                        invisible="not bf_hold_count">
+                    <field name="bf_hold_count" widget="statinfo" string="Held slots"/>
+                </button>
+            </xpath>
+            <!-- « Annuler la rencontre » (bf_calendar_invite) propose de prévenir des
+                 invités : une plage n'en a pas, elle se libère. -->
+            <xpath expr="//button[@name='action_bf_cancel']" position="attributes">
+                <attribute name="invisible">not user_can_edit or bf_event_status == 'cancelled' or bf_hold_for_id</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2 mb-0"
+                     role="status" invisible="not bf_hold_for_id">
+                    <!-- Une étiquette et non un <span> : Odoo regroupe le texte d'éléments
+                         en ligne voisins en UN terme HTML, qu'aucune entrée simple du
+                         .po ne rejoint (le bandeau restait en anglais). -->
+                    <label for="bf_hold_for_id" string="Held slot for" class="mb-0"/>
+                    <field name="bf_hold_for_id" readonly="1" force_save="1" class="fw-bold"/>
+                    <button name="action_bf_hold_choose" type="object" class="btn btn-primary btn-sm"
+                            string="Choose this slot" invisible="not user_can_edit"
+                            help="Move the meeting here and release its other held slots."/>
+                    <button name="action_bf_hold_release" type="object" class="btn btn-secondary btn-sm"
+                            string="Release" invisible="not user_can_edit"/>
+                </div>
+            </xpath>
+            <xpath expr="//sheet/group" position="after">
+                <group string="Held slots" name="bf_hold_slots" invisible="not bf_hold_ids">
+                    <field name="bf_hold_ids" nolabel="1" colspan="2" readonly="1">
+                        <!-- Dans l'ordre du calendrier, à la minute : l'ordre par défaut des
+                             événements est « start desc », et les secondes n'y disent rien. -->
+                        <list create="0" delete="0" default_order="start">
+                            <field name="start" string="From" options="{'show_seconds': false}"/>
+                            <field name="stop" string="To" options="{'show_seconds': false}"/>
+                            <field name="allday" column_invisible="1"/>
+                            <button name="action_bf_hold_choose" type="object" icon="fa-check"
+                                    string="Choose this slot" class="btn-link"/>
+                            <button name="action_bf_hold_release" type="object" icon="fa-times"
+                                    string="Release" class="btn-link"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

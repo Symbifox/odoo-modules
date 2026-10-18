@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="calendar_event_type_list_bf_block_booking" model="ir.ui.view">
+        <field name="name">calendar.event.type.list.bf_block_booking</field>
+        <field name="model">calendar.event.type</field>
+        <field name="inherit_id" ref="bf_calendar_block.calendar_event_type_list_bf_block"/>
+        <field name="arch" type="xml">
+            <field name="bf_block_show_as" position="after">
+                <field name="bf_opens_booking" optional="show" invisible="not bf_is_block"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,136 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 00:59+0000\n"
+"PO-Revision-Date: 2026-10-15 00:59+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_show_as
+msgid ""
+"Availability given to a new block of this type. A busy block is not offered "
+"for online booking."
+msgstr ""
+"Disponibilité donnée à une nouvelle plage de ce type. Une plage occupée "
+"n'est pas offerte à la prise de rendez-vous en ligne."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_show_as__free
+msgid "Available"
+msgstr "Disponible"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_sequence
+msgid "Block order"
+msgstr "Ordre des plages"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_show_as__busy
+msgid "Busy"
+msgstr "Occupé"
+
+#. module: bf_calendar_block
+#: model:ir.model,name:bf_calendar_block.model_calendar_event
+msgid "Calendar Event"
+msgstr "Événement du calendrier"
+
+#. module: bf_calendar_block
+#: model:ir.model,name:bf_calendar_block.model_calendar_event_type
+msgid "Event Meeting Type"
+msgstr "Type de rendez-vous"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_is_block
+msgid ""
+"Events with this tag are blocks of time booked for a kind of work (focus, "
+"production, catch-up…): they show its pictogram and colour in the calendar."
+msgstr ""
+"Les événements qui portent cette étiquette sont des plages de temps "
+"réservées à un type de travail (concentration, production, rattrapage…) : "
+"ils en montrent le pictogramme et la couleur dans le calendrier."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_privacy__confidential
+msgid "Only internal users"
+msgstr "Utilisateurs internes seulement"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_sequence
+msgid ""
+"Order of the block types in the quick-create dialog. When an event carries "
+"several block tags, the first one is its type."
+msgstr ""
+"Ordre des types de plage dans la création rapide. Quand un événement porte "
+"plusieurs étiquettes de plage, la première donne son type."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event__bf_block_glyph
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_glyph
+msgid "Pictogram"
+msgstr "Pictogramme"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_privacy
+msgid "Privacy"
+msgstr "Confidentialité"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_privacy
+msgid ""
+"Privacy given to a new block of this type. Empty: the organizer's default "
+"privacy."
+msgstr ""
+"Confidentialité donnée à une nouvelle plage de ce type. Vide : la "
+"confidentialité par défaut de l'organisateur."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_privacy__private
+msgid "Private"
+msgstr "Privée"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_privacy__public
+msgid "Public"
+msgstr "Publique"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_show_as
+msgid "Shown as"
+msgstr "Afficher comme"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event__bf_block_glyph
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_glyph
+msgid "Shown before the title of the block in the calendar."
+msgstr "Affiché devant le titre de la plage dans le calendrier."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event__bf_block_type_id
+msgid ""
+"The kind of work this block of time is booked for. Stored as one of the "
+"event's tags, so that it reaches other calendars."
+msgstr ""
+"Le type de travail pour lequel cette plage de temps est réservée. Gardé "
+"comme une des étiquettes de l'événement, pour qu'il parvienne aux autres "
+"calendriers."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event__bf_block_type_id
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_is_block
+#: model_terms:ir.ui.view,arch_db:bf_calendar_block.view_calendar_event_search_block
+msgid "Work block"
+msgstr "Plage de travail"
+
+#. module: bf_calendar_block
+#: model:bf.color.rule,name:bf_calendar_block.bf_color_rule_block
+#: model_terms:ir.ui.view,arch_db:bf_calendar_block.view_calendar_event_search_block
+msgid "Work blocks"
+msgstr "Plages de travail"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- La couleur des plages de travail : celle de leur type.
+     Séquence 6 : après les plages retenues (5, bf_calendar_hold), avant
+     « Événements selon le calendrier Nextcloud » (100), sinon la plage prendrait la
+     couleur de son calendrier comme n'importe quel événement. Sans lignes et sans
+     « valeurs listées seulement » : chaque type donne sa propre couleur (celle de
+     l'étiquette), et un événement sans type garde celle qu'il aurait sans cette
+     règle. Modifiable, jamais réécrite. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_block" model="bf.color.rule">
+        <field name="name">Work blocks</field>
+        <field name="sequence">6</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="field_id" ref="bf_calendar_block.field_calendar_event__bf_block_type_id"/>
+        <field name="only_listed" eval="False"/>
+    </record>
+</odoo>

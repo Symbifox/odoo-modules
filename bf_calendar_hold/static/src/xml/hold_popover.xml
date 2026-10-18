@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Ancré sur le même `t-if` que « Relancer » de bf_calendar_invite : une
+         ancre précise échoue bruyamment à la construction des assets si le
+         cœur la déplace, au lieu de disparaître en silence. -->
+    <t t-name="bf_calendar_hold.PopoverChoose"
+       t-inherit="calendar.AttendeeCalendarCommonPopover.footer"
+       t-inherit-mode="extension">
+        <!-- « Relancer » s'adresse aux invités absents : une plage n'en a pas.
+             bf_calendar_invite est une dépendance, son extension est donc déjà
+             appliquée quand celle-ci l'est. -->
+        <xpath expr="//a[hasclass('o_cw_popover_bf_poke')]" position="attributes">
+            <attribute name="t-if">isEventEditable and !bfHoldFor</attribute>
+        </xpath>
+        <xpath expr="//t[@t-if='isEventDeletable']" position="before">
+            <a t-if="bfHoldFor and isEventEditable" href="#"
+               class="btn btn-primary o_cw_popover_bf_hold_choose"
+               t-on-click.prevent="bfChooseHold">Choose this slot</a>
+        </xpath>
+    </t>
+
+</templates>

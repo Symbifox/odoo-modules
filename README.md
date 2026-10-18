@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**86 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**90 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -116,10 +116,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.1.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
+| `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.0.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
+| `bf_calendar_block_appointment` | BF Calendar Work Blocks - Online Booking | 18.0.1.0.1 | LGPL-3 | Meeting slots booked in your calendar open online booking times, on top of your working hours. |
+| `bf_calendar_hold` | BF Calendar Held Slots | 18.0.1.0.2 | LGPL-3 | Hold several candidate slots for a meeting that has to move, see them on the meeting and in their own colour, and move the meeting to the one that is chosen: the others are released. |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.6.2.2 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.8.1 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_calendar_share` | BF Calendar Sharing | 18.0.1.1.4 | LGPL-3 | Choose what each colleague sees of your calendar: availability only, titles and locations, all details, or the right to edit. |
+| `bf_calendar_share_nextcloud` | BF Calendar Sharing - Nextcloud calendars | 18.0.1.0.0 | LGPL-3 | Choose which Nextcloud calendars a calendar sharing link shows. |
 | `bf_calendar_subscribe` | BF Calendar Subscriptions | 18.0.1.0.2 | LGPL-3 | Show calendars published elsewhere (Outlook, Google, Apple) in the Odoo calendar, read only, and keep their busy times out of online booking. |
 | `bf_calendar_subscribe_absence` | BF Calendar Subscriptions - Out of office | 18.0.1.0.0 | LGPL-3 | Repeated events of a subscribed calendar (public holidays) do not turn on the out-of-office replies. |
 | `bf_calendar_trash` | BF Calendar — trash | 18.0.1.0.1 | LGPL-3 | Deleted and archived meetings go to a trash, where they can be restored or deleted for good. A meeting moved to the trash leaves Nextcloud with it, and comes back there when restored. |

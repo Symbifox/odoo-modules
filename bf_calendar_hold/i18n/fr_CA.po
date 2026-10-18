@@ -1,0 +1,152 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calendar_hold
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 07:00+0000\n"
+"PO-Revision-Date: 2026-10-11 07:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_calendar_hold
+#: model:ir.model.fields,field_description:bf_calendar_hold.field_calendar_event__bf_hold_for_id
+msgid "Held for"
+msgstr "Retenue pour"
+
+#. module: bf_calendar_hold
+#: model:ir.model.fields,help:bf_calendar_hold.field_calendar_event__bf_hold_for_id
+msgid ""
+"The meeting this slot is held for. Choosing the slot moves that meeting here"
+" and releases its other held slots."
+msgstr ""
+"La rencontre pour laquelle cette plage est retenue. Choisir la plage y "
+"déplace la rencontre et libère ses autres plages retenues."
+
+#. module: bf_calendar_hold
+#: model:bf.color.rule,name:bf_calendar_hold.bf_color_rule_hold
+#: model:ir.model.fields,field_description:bf_calendar_hold.field_calendar_event__bf_hold_ids
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "Held slots"
+msgstr "Plages retenues"
+
+#. module: bf_calendar_hold
+#: model:ir.model.fields,help:bf_calendar_hold.field_calendar_event__bf_hold_ids
+msgid "Candidate slots held to move this meeting."
+msgstr "Les plages candidates retenues pour déplacer cette rencontre."
+
+#. module: bf_calendar_hold
+#: model:ir.model.fields,field_description:bf_calendar_hold.field_calendar_event__bf_hold_count
+msgid "Held slot count"
+msgstr "Nombre de plages retenues"
+
+#. module: bf_calendar_hold
+#: model:ir.model.fields,field_description:bf_calendar_hold.field_calendar_event__bf_is_hold
+msgid "Held slot"
+msgstr "Plage retenue"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "Held slot for"
+msgstr "Plage retenue pour"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "Hold slots"
+msgstr "Retenir des plages"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid ""
+"Open the calendar on this meeting's week: each slot drawn there is held for "
+"this meeting."
+msgstr ""
+"Ouvre le calendrier sur la semaine de cette rencontre : chaque plage qu'on y "
+"trace est retenue pour elle."
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+#. odoo-javascript
+#: code:addons/bf_calendar_hold/static/src/xml/hold_popover.xml:0
+msgid "Choose this slot"
+msgstr "Choisir cette plage"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "Move the meeting here and release its other held slots."
+msgstr "Déplace la rencontre ici et libère ses autres plages retenues."
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "Release"
+msgstr "Libérer"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "From"
+msgstr "Début"
+
+#. module: bf_calendar_hold
+#: model_terms:ir.ui.view,arch_db:bf_calendar_hold.view_calendar_event_form_hold
+msgid "To"
+msgstr "Fin"
+
+#. module: bf_calendar_hold
+#: model:ir.actions.server,name:bf_calendar_hold.ir_cron_bf_hold_cleanup_ir_actions_server
+msgid "Calendar: release held slots whose time has passed"
+msgstr "Calendrier : libérer les plages retenues dont l'heure est passée"
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "A slot cannot be held for itself."
+msgstr "Une plage ne peut pas être retenue pour elle-même."
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "A slot cannot be held for another held slot."
+msgstr "Une plage ne peut pas être retenue pour une autre plage."
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "A meeting with held slots cannot itself be a held slot."
+msgstr "Une rencontre qui a des plages retenues ne peut pas être une plage."
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "A held slot cannot repeat."
+msgstr "Une plage retenue ne se répète pas."
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "Slots are held for a meeting, not for another held slot."
+msgstr "On retient des plages pour une rencontre, pas pour une autre plage."
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "Hold slots: %s"
+msgstr "Retenir des plages : %s"
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "Held slots: %s"
+msgstr "Plages retenues : %s"
+
+#. module: bf_calendar_hold
+#. odoo-python
+#: code:addons/bf_calendar_hold/models/calendar_event.py:0
+msgid "This event is not a held slot."
+msgstr "Cet événement n'est pas une plage retenue."

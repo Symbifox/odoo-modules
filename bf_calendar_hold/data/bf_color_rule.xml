@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Couleur dédiée des plages retenues (arbitrage du 2026-10-11).
+     Séquence 5 : avant « Événements selon le calendrier Nextcloud » (100), sinon
+     la plage prendrait la couleur de son calendrier comme n'importe quel
+     événement. « Valeurs listées seulement » : les autres événements gardent la
+     couleur qu'ils auraient sans cette règle. Modifiable, jamais réécrite. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_hold" model="bf.color.rule">
+        <field name="name">Held slots</field>
+        <field name="sequence">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="field_id" ref="bf_calendar_hold.field_calendar_event__bf_is_hold"/>
+        <field name="only_listed" eval="True"/>
+    </record>
+    <record id="bf_color_rule_hold_line" model="bf.color.rule.line">
+        <field name="rule_id" ref="bf_color_rule_hold"/>
+        <field name="value_char">True</field>
+        <field name="color_hex">#E8912D</field>
+    </record>
+</odoo>
