@@ -10,8 +10,8 @@
                 <field name="scope"/>
                 <field name="area_id" optional="show"/>
                 <field name="line_count" string="Lines"/>
-                <field name="pending_count"/>
-                <field name="missing_count"/>
+                <field name="pending_count" width="110px"/>
+                <field name="missing_count" width="115px"/>
                 <field name="state" widget="badge" decoration-info="state == 'running'" decoration-success="state == 'done'"/>
             </list>
         </field>
@@ -57,8 +57,8 @@
                             <field name="holder_label" readonly="1"/>
                             <field name="copy_id" readonly="1"/>
                             <field name="result" readonly="1"/>
-                            <field name="checked_by_id" optional="show"/>
-                            <field name="checked_on" optional="hide"/>
+                            <field name="checked_by_id" optional="show" width="150px"/>
+                            <field name="checked_on" width="120px" optional="hide"/>
                             <field name="note"/>
                             <button name="action_sighted" type="object" string="Seen" icon="fa-eye"
                                     invisible="result != 'pending'"/>

@@ -5,12 +5,12 @@
         <field name="model">bf.key.request</field>
         <field name="arch" type="xml">
             <list string="Key requests">
-                <field name="create_date" string="Asked on" options="{'show_time': false}" width="105px"/>
+                <field name="create_date" string="Asked on" options="{'show_time': false}" width="135px"/>
                 <field name="employee_id"/>
                 <field name="type_id"/>
                 <field name="door_ids" widget="many2many_tags" optional="show"/>
                 <field name="area_id" optional="show"/>
-                <field name="date_until" width="150px" optional="show"/>
+                <field name="date_until" width="180px" optional="show"/>
                 <field name="state" widget="badge" decoration-warning="state == 'submitted'"
                        decoration-success="state in ('approved', 'issued')" decoration-danger="state == 'refused'"/>
             </list>

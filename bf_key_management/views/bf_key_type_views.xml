@@ -5,14 +5,14 @@
         <field name="model">bf.key.type</field>
         <field name="arch" type="xml">
             <list string="Key types">
-                <field name="system_id" groups="bf_key_management.group_key_area_manager" optional="show"/>
-                <field name="symbol" groups="bf_key_management.group_key_area_manager"/>
+                <field name="system_id" width="220px" groups="bf_key_management.group_key_area_manager" optional="show"/>
+                <field name="symbol" width="105px" groups="bf_key_management.group_key_area_manager"/>
                 <field name="name"/>
                 <field name="kind"/>
                 <field name="level" groups="bf_key_management.group_key_area_manager" optional="show"/>
                 <field name="area_id" optional="show"/>
-                <field name="blind_code" optional="show"/>
-                <field name="copy_count" width="105px" string="Copies"/>
+                <field name="blind_code" width="140px" optional="show"/>
+                <field name="copy_count" width="130px" string="Copies"/>
                 <field name="issued_count" width="120px"/>
             </list>
         </field>
@@ -103,7 +103,7 @@
                         <page string="Keys below" name="below" groups="bf_key_management.group_key_area_manager">
                             <field name="child_ids" readonly="1">
                                 <list>
-                                    <field name="symbol"/>
+                                    <field name="symbol" width="105px"/>
                                     <field name="name"/>
                                     <field name="level"/>
                                     <field name="issued_count" width="120px"/>
