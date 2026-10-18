@@ -9,7 +9,7 @@
                 <field name="name"/>
                 <field name="lock_kind"/>
                 <field name="keyed_type_id" groups="bf_key_management.group_key_area_manager"/>
-                <field name="nmk" groups="bf_key_management.group_key_area_manager" optional="hide"/>
+                <field name="nmk" width="140px" groups="bf_key_management.group_key_area_manager" optional="hide"/>
                 <field name="holder_count" width="105px" groups="bf_key_management.group_key_area_manager" string="Holders"/>
             </list>
         </field>
@@ -86,7 +86,7 @@
                                     <field name="holder_label"/>
                                     <field name="copy_id"/>
                                     <field name="date_issued" options="{'show_time': false}" width="105px"/>
-                                    <field name="date_due" width="110px"/>
+                                    <field name="date_due" width="125px"/>
                                 </list>
                             </field>
                         </page>

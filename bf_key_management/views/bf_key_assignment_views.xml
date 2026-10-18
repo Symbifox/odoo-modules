@@ -11,7 +11,7 @@
                 <field name="kind" optional="hide"/>
                 <field name="area_id" optional="show"/>
                 <field name="date_issued" options="{'show_time': false}" width="105px"/>
-                <field name="date_due" width="110px"/>
+                <field name="date_due" width="125px"/>
                 <field name="date_returned" optional="hide" options="{'show_time': false}" width="105px"/>
                 <field name="end_reason" optional="hide"/>
                 <field name="employee_departed" optional="hide"/>
@@ -130,7 +130,7 @@
                 <field name="copy_id"/>
                 <field name="kind"/>
                 <field name="date_issued" options="{'show_time': false}" width="105px"/>
-                <field name="date_due" width="110px"/>
+                <field name="date_due" width="125px"/>
                 <field name="date_returned" optional="hide"/>
                 <field name="is_overdue" column_invisible="1"/>
                 <field name="state" column_invisible="1"/>
