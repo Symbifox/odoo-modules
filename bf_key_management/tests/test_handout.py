@@ -4,7 +4,7 @@ from unittest.mock import patch
 from psycopg2 import IntegrityError
 
 from odoo import fields
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 

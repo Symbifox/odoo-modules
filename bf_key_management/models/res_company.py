@@ -1,6 +1,6 @@
 from markupsafe import Markup
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 def default_acknowledgement(env):

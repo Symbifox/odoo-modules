@@ -14,10 +14,10 @@
                         <setting string="Retention" help="Days after the return before the details of a person without an account, and the signature, are erased (Quebec Law 25). Zero: never.">
                             <field name="bf_key_retention_days"/>
                         </setting>
-                        <setting string="Acknowledgement" help="Printed above the signature of each hand-out. Leave empty to print the standard text below, in the reader's language.">
-                            <field name="bf_key_acknowledgement"/>
+                        <setting string="Acknowledgement" class="col-lg-12" help="Printed above the signature of each hand-out. Leave empty to print the standard text below, in the reader's language.">
+                            <field name="bf_key_acknowledgement" class="w-100"/>
                             <div invisible="bf_key_acknowledgement" class="text-muted mt-2">
-                                <field name="bf_key_acknowledgement_standard" readonly="1"/>
+                                <field name="bf_key_acknowledgement_standard" readonly="1" class="w-100"/>
                             </div>
                         </setting>
                     </block>
