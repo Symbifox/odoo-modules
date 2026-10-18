@@ -89,8 +89,8 @@ single meeting goes both ways through invitations (iMIP, `bf_calendar_invite`).
 | 18.0.1.1.3 | 2026-10-15 | Web page of a link: the doctype was escaped and showed as text at the top of the page; the example in the link name is now generic |
 | 18.0.1.1.2 | 2026-10-15 | French: the link form said the access log is kept 90 days; it is kept one year by default (`bf_calendar_share.access_retention_days`) |
 | 18.0.1.1.1 | 2026-10-15 | System parameter `bf_calendar_share.base_url`: the public address used in links, when it differs from `web.base.url` (a `www.` address that redirects with a 308 is followed badly by some calendar clients) |
-| 18.0.1.1.0 | 2026-10-14 | Links outside the company (lot 5): iCalendar subscription, free/busy and web page, filtered by level on the server, expiry, reminders, access log |
-| 18.0.1.0.0 | 2026-10-14 | Sharing with colleagues by level (lot 4) |
+| 18.0.1.1.0 | 2026-10-14 | Links outside the company: iCalendar subscription, free/busy and web page, filtered by level on the server, expiry, reminders, access log |
+| 18.0.1.0.0 | 2026-10-14 | Sharing with colleagues by level |
 
 ## License
 

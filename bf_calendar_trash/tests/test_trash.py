@@ -12,7 +12,7 @@ from datetime import datetime
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
 from odoo.addons.calendar_nextcloud_sync.models import caldav_backend as cb
@@ -520,19 +520,31 @@ class TestTrash(BaseRetouche):
         self.assertEqual(lu["bf_trash_origin"], "odoo")
 
     def test_101_purge_refused_before_anything_leaves_nextcloud(self):
+        """Refused by the record rules: nothing has left Nextcloud either.
+
+        A rule that refuses only the deletion, so that everything the removal
+        reads stays readable: without the check up front, the resource left
+        Nextcloud and the meeting stayed in Odoo.
+        """
         magasin = self._magasin(**{self.url_simple: SIMPLE})
-        a, b = self._deux_usagers()
-        privee = self._simple_nextcloud()
-        privee.with_context(skip_nc_sync=True).write({
-            "privacy": "private", "user_id": a.id, "partner_ids": [(6, 0, a.partner_id.ids)]})
-        privee.with_context(bf_trash_bypass=True, skip_nc_sync=True).action_archive()
-        privee.flush_recordset()
+        _a, b = self._deux_usagers()
+        event = self._simple_nextcloud()
+        event.with_context(bf_trash_bypass=True, skip_nc_sync=True).action_archive()
+        event.flush_recordset()
         _bf_trash_existing_archives(self.env)
-        privee.invalidate_recordset()
-        with self.assertRaises(Exception):
-            self.env["calendar.event"].with_user(b).browse(privee.id).action_bf_purge()
-        self.assertIn(self.url_simple, magasin.ressources)
-        self.assertTrue(privee.exists())
+        event.invalidate_recordset()
+        self.env["ir.rule"].create({
+            "name": "Corbeille : suppression refusée (essai)",
+            "model_id": self.env["ir.model"]._get_id("calendar.event"),
+            "domain_force": "[('id', '!=', %d)]" % event.id,
+            "perm_read": False, "perm_write": False, "perm_create": False, "perm_unlink": True,
+        })
+        with self.assertRaises(AccessError):
+            self.env["calendar.event"].with_user(b).browse(event.id).action_bf_purge()
+        self.assertEqual(magasin.ressources.get(self.url_simple), SIMPLE)
+        self.assertTrue(event.exists())
+        event.action_bf_purge()
+        self.assertNotIn(self.url_simple, magasin.ressources)
 
     def test_101_series_dates_sort_by_start(self):
         vue = self.env.ref("bf_calendar_trash.bf_calendar_trash_view_list")
