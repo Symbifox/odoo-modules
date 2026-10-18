@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_calendar_event_cancel_view_form_trash" model="ir.ui.view">
+        <field name="name">bf.calendar.event.cancel.form.trash</field>
+        <field name="model">bf.calendar.event.cancel</field>
+        <field name="inherit_id" ref="bf_calendar_invite.bf_calendar_event_cancel_view_form"/>
+        <field name="arch" type="xml">
+            <field name="reason" position="after">
+                <field name="bf_trash"/>
+            </field>
+        </field>
+    </record>
+</odoo>

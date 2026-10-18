@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_calendar_trash_view_list" model="ir.ui.view">
+        <field name="name">calendar.event.trash.list</field>
+        <field name="model">calendar.event</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="Trash" create="0" edit="0" delete="0" default_order="bf_trashed_at desc">
+                <header>
+                    <button name="action_bf_restore" type="object" string="Restore"
+                            class="btn-primary"/>
+                    <button name="action_bf_purge" type="object" string="Delete for good"
+                            confirm="Delete these meetings for good? They cannot be restored afterwards."/>
+                </header>
+                <field name="name"/>
+                <field name="start"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="partner_ids" widget="many2many_tags" optional="hide"/>
+                <field name="recurrency" optional="hide"/>
+                <field name="bf_trashed_at"/>
+                <field name="bf_trashed_by" widget="many2one_avatar_user" optional="show"/>
+                <field name="bf_trash_origin" optional="show"/>
+                <field name="bf_trash_nc_state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_calendar_trash_view_search" model="ir.ui.view">
+        <field name="name">calendar.event.trash.search</field>
+        <field name="model">calendar.event</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <search string="Trash">
+                <field name="name"/>
+                <field name="partner_ids"/>
+                <filter name="mine" string="My meetings" domain="[('user_id', '=', uid)]"/>
+                <filter name="from_nextcloud" string="Deleted in Nextcloud"
+                        domain="[('bf_trash_origin', '=', 'nextcloud')]"/>
+                <separator/>
+                <filter name="trashed_at" string="Moved to trash on" date="bf_trashed_at"/>
+                <group>
+                    <filter name="group_trashed_at" string="Moved to trash on"
+                            context="{'group_by': 'bf_trashed_at:day'}"/>
+                    <filter name="group_trashed_by" string="Moved to trash by"
+                            context="{'group_by': 'bf_trashed_by'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_calendar_trash_action" model="ir.actions.act_window">
+        <field name="name">Trash</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="bf_calendar_trash_view_list"/>
+        <field name="search_view_id" ref="bf_calendar_trash_view_search"/>
+        <field name="domain">[('active', '=', False), ('bf_trashed_at', '!=', False)]</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">The trash is empty</p>
+            <p>Meetings deleted or archived from the calendar land here, with the
+               ones deleted in Nextcloud. Restore one to put it back in every
+               calendar it was in.</p>
+        </field>
+    </record>
+
+    <menuitem id="bf_calendar_trash_menu"
+              name="Trash"
+              parent="calendar.mail_menu_calendar"
+              action="bf_calendar_trash_action"
+              sequence="90"/>
+</odoo>

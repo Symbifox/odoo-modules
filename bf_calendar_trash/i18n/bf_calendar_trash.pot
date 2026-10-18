@@ -1,0 +1,278 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calendar_trash
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-18 00:36+0000\n"
+"PO-Revision-Date: 2026-10-18 00:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_calendar_trash
+#: model:ir.model,name:bf_calendar_trash.model_mail_activity
+msgid "Activity"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model,name:bf_calendar_trash.model_calendar_event
+msgid "Calendar Event"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model,name:bf_calendar_trash.model_calendar_popover_delete_wizard
+msgid "Calendar Popover Delete Wizard"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model,name:bf_calendar_trash.model_bf_calendar_event_cancel
+msgid "Cancel a meeting"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_mode__exdate
+msgid "Dates excluded"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_state__edited
+msgid "Dates removed from the series in Nextcloud"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_list
+msgid "Delete for good"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_list
+msgid "Delete these meetings for good? They cannot be restored afterwards."
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_mode__delete
+msgid "Deleted"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_origin
+msgid "Deleted from"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_mode__google
+msgid "Deleted from Google"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_search
+msgid "Deleted in Nextcloud"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_recurrence_end
+msgid "End of the series before the trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.actions.act_window,help:bf_calendar_trash.bf_calendar_trash_action
+msgid ""
+"Meetings deleted or archived from the calendar land here, with the\n"
+"               ones deleted in Nextcloud. Restore one to put it back in every\n"
+"               calendar it was in."
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_bf_calendar_event_cancel__bf_trash
+msgid "Move to trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trashed_by
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_search
+msgid "Moved to trash by"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trashed_at
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_search
+msgid "Moved to trash on"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_search
+msgid "My meetings"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_state
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_origin__nextcloud
+msgid "Nextcloud"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_url
+msgid "Nextcloud address"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_ics
+msgid "Nextcloud copy"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_etag
+msgid "Nextcloud version after the trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_origin__odoo
+msgid "Odoo"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,help:bf_calendar_trash.field_bf_calendar_event_cancel__bf_trash
+msgid ""
+"Once cancelled, the meeting leaves the agenda and goes to the trash "
+"(Calendar > Trash), from where it can be restored. A meeting kept in "
+"Nextcloud leaves it too. On a series, the same dates as the cancellation."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid "Only meetings in the trash can be deleted for good."
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_state__deleted
+msgid "Removed from Nextcloud"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_mode
+msgid "Removed from the calendar by"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_list
+msgid "Restore"
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid "Restored in Odoo only"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_nc_rrule
+msgid "Rule written by the trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_recurrence_id
+msgid "Series before the trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_mode__until
+msgid "Series ended"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields.selection,name:bf_calendar_trash.selection__calendar_event__bf_trash_nc_state__failed
+msgid "Still in Nextcloud"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model_terms:ir.actions.act_window,help:bf_calendar_trash.bf_calendar_trash_action
+msgid "The trash is empty"
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid "These meetings are not in the trash."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"This event comes from a subscribed external calendar: it cannot be deleted "
+"here."
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.actions.act_window,name:bf_calendar_trash.bf_calendar_trash_action
+#: model:ir.ui.menu,name:bf_calendar_trash.bf_calendar_trash_menu
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_list
+#: model_terms:ir.ui.view,arch_db:bf_calendar_trash.bf_calendar_trash_view_search
+msgid "Trash"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,field_description:bf_calendar_trash.field_calendar_event__bf_trash_batch
+msgid "Trash gesture"
+msgstr ""
+
+#. module: bf_calendar_trash
+#: model:ir.model.fields,help:bf_calendar_trash.field_calendar_event__bf_trash_nc_state
+msgid ""
+"What became of the meeting in Nextcloud (or Google) when it was moved to the"
+" trash. Restoring puts back what was removed."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid "“%s” comes from an appointment: cancel the appointment instead."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"“%s” could not be removed from Nextcloud, so it was not deleted for good: it"
+" would come back with the next synchronisation. It is still in the trash; "
+"try again later."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"“%s” is back in Odoo only: another meeting already holds its place in your "
+"other calendars."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"“%s” is back in Odoo, but could not be put back in your other calendars."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"“%s” is back in Odoo, but it was not put back in your other calendars: "
+"Nextcloud has changed since it was moved to the trash, and was left as it "
+"is."
+msgstr ""
+
+#. module: bf_calendar_trash
+#. odoo-python
+#: code:addons/bf_calendar_trash/models/calendar_event.py:0
+msgid ""
+"“%s” is back in Odoo, but its series no longer exists in Nextcloud: your "
+"other calendars will not show it."
+msgstr ""
