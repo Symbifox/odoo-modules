@@ -141,6 +141,12 @@ class TestBreachNotice(BreachNoticeCase):
 
     def test_un_vrai_pdf(self):
         """Hors mode essai, le rapport rend un PDF, et c'est lui qu'on empreinte."""
+        # ⚠️ Même parade que bf_celebrations : wkhtmltopdf va chercher ses feuilles
+        # de style au serveur d'essai lui-même, dont la requête attend le verrou
+        # que la passe tient. Blocage mutuel, sans délai (un lot local tenait
+        # 76 min). Une adresse fermée fait échouer la récupération tout de suite ;
+        # le PDF sort quand même, sans styles.
+        self.env["ir.config_parameter"].sudo().set_param("report.url", "http://127.0.0.1:9")
         notice = self._breach()
         notice.with_context(force_report_rendering=True).action_send()
         self.assertTrue(notice.sudo().pdf_attachment_id.raw.startswith(b"%PDF"))
@@ -905,6 +911,10 @@ class TestBreachNoticeRegistre(BreachNoticeCase):
             message.with_user(self.manager).sudo().write({"body": "<p>Plus tard</p>"})
 
     def test_copie_et_copie_cachee_restent_destinataires(self):
+        # La copie vient de mail_composer_cc_bcc (OCA), que ce module ne déclare pas : sans lui,
+        # personne ne l'ajoute, et il n'y a rien à garder.
+        if "recipient_cc_ids" not in self.env["mail.message"]._fields:
+            self.skipTest("mail_composer_cc_bcc n'est pas installé")
         notice = self._breach()
         notice.action_send()
         copie = self.env["res.partner"].create({"name": "En copie", "email": "copie@client.invalid"})
@@ -944,6 +954,90 @@ class TestBreachNoticeRegistre(BreachNoticeCase):
         domaine = [("res_model", "=", notice._name), ("res_id", "=", notice.id)]
         self.assertFalse(self.env["mail.followers"].with_user(lecteur_b).search(domaine))
         self.assertTrue(self.env["mail.followers"].with_user(self.reader).search(domaine))
+
+    def test_les_abonnes_restent_caches_a_cote_d_une_regle_rivale(self):
+        """🔴 Odoo combine par OU les règles de groupe d'un même modèle : celle d'un module voisin
+        sur mail.followers (le registre des membres, par exemple) rouvrait les abonnés d'un avis à
+        tout employé, et à un lecteur hors des sociétés de l'avis."""
+        Followers = self.env["mail.followers"]
+        self.env["ir.rule"].create({  # ce que ferait n'importe quel module voisin
+            "name": "Règle rivale (essai)", "model_id": self.env.ref("mail.model_mail_followers").id,
+            "groups": [(4, self.env.ref("base.group_user").id)],
+            "domain_force": "[('res_model', 'not like', 'x.autre')]"})
+        Users = self.env["res.users"].with_context(no_reset_password=True)
+        interne = Users.create({
+            "name": "Interne rivale", "login": "interne-rivale-essai@essai.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        autre = self.env["res.company"].create({"name": "Autre société rivale"})
+        lecteur_b = Users.create({
+            "name": "Lecteur B rivale", "login": "lecteur-b-rivale-essai@essai.invalid",
+            "company_id": autre.id, "company_ids": [(6, 0, autre.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("privacy_consent.group_privacy_user").id])]})
+        notice = self._breach()
+        # L'employé abonné lui-même : comme avant, le rôle seul lit les abonnés d'un avis.
+        notice.message_subscribe(partner_ids=(self.rprp | interne.partner_id).ids)
+        domaine = [("res_model", "=", notice._name), ("res_id", "=", notice.id)]
+        self.assertFalse(Followers.with_user(interne).search(domaine))
+        ligne = Followers.search(domaine + [("partner_id", "=", self.rprp.id)])
+        self.assertTrue(ligne)
+        self.assertFalse(ligne.with_user(interne).has_access("read"))
+        self.assertFalse(Followers.with_user(lecteur_b).search(domaine))
+        self.assertFalse(ligne.with_user(lecteur_b).has_access("read"))
+        self.assertIn(ligne, Followers.with_user(self.reader).search(domaine))
+        self.assertTrue(ligne.with_user(self.reader).has_access("read"))
+        self.org.message_subscribe(partner_ids=self.rprp.ids)
+        self.assertTrue(Followers.with_user(interne).search(
+            [("res_model", "=", "res.partner"), ("res_id", "=", self.org.id)]))  # le reste du système inchangé
+
+    def test_les_notifications_restent_cachees_a_cote_d_une_regle_rivale(self):
+        """🔴 Tout employé lisait les notifications d'un message d'avis, qui nomment ses
+        destinataires ; la règle de groupe d'un module voisin rouvrirait aussi une règle de groupe."""
+        Notifications = self.env["mail.notification"]
+        self.env["ir.rule"].create({  # ce que ferait n'importe quel module voisin
+            "name": "Règle rivale (essai)", "model_id": self.env.ref("mail.model_mail_notification").id,
+            "groups": [(4, self.env.ref("base.group_user").id)],
+            "domain_force": "[('mail_message_id.model', 'not like', 'x.autre')]", "perm_write": False,
+            "perm_create": False, "perm_unlink": False})
+        Users = self.env["res.users"].with_context(no_reset_password=True)
+        interne = Users.create({
+            "name": "Interne avisé", "login": "interne-avise-essai@essai.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        autre = self.env["res.company"].create({"name": "Autre société notifications"})
+        lecteur_b = Users.create({
+            "name": "Lecteur B notifications", "login": "lecteur-b-notif-essai@essai.invalid",
+            "company_id": autre.id, "company_ids": [(6, 0, autre.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("privacy_consent.group_privacy_user").id])]})
+        notice = self._breach()
+        notice.action_send()
+        message = notice.with_user(self.manager).message_post(
+            body=Markup("<p>Pour le RPRP</p>"), message_type="comment", subtype_xmlid="mail.mt_comment",
+            partner_ids=(self.rprp | interne.partner_id).ids)
+
+        def notification(partner):
+            return Notifications.search(
+                [("mail_message_id", "=", message.id), ("res_partner_id", "=", partner.id)]) or \
+                Notifications.create({"mail_message_id": message.id, "res_partner_id": partner.id,
+                                      "notification_type": "inbox"})
+        celle_du_rprp, la_sienne = notification(self.rprp), notification(interne.partner_id)
+        self.env.flush_all()
+        du_message = [("mail_message_id", "=", message.id)]
+        # L'employé avisé lit la sienne, et elle seule.
+        self.assertEqual(Notifications.with_user(interne).search(du_message), la_sienne)
+        self.assertFalse(Notifications.with_user(interne).search([("res_partner_id", "=", self.rprp.id)]))
+        self.assertFalse(celle_du_rprp.with_user(interne).has_access("read"))
+        # Le rôle, dans la société de l'avis seulement.
+        self.assertFalse(Notifications.with_user(lecteur_b).search(du_message))
+        self.assertFalse(celle_du_rprp.with_user(lecteur_b).has_access("read"))
+        self.assertIn(celle_du_rprp, Notifications.with_user(self.reader).search(du_message))
+        self.assertTrue(celle_du_rprp.with_user(self.reader).has_access("read"))
+        # Le reste du système inchangé.
+        autre_message = self.org.message_post(body=Markup("<p>Ailleurs</p>"), message_type="comment",
+                                              subtype_xmlid="mail.mt_comment", partner_ids=self.rprp.ids)
+        ailleurs = Notifications.search([("mail_message_id", "=", autre_message.id)]) or Notifications.create({
+            "mail_message_id": autre_message.id, "res_partner_id": self.rprp.id, "notification_type": "inbox"})
+        self.assertTrue(ailleurs.with_user(interne).has_access("read"))
 
     def test_une_reaction_est_au_registre(self):
         notice = self._breach()

@@ -82,6 +82,13 @@ matter for the contract between the provider and its client.
 Read: *Privacy / User*. Draft, sign, send: *Privacy / Manager*. The official email
 template can only be changed by an administrator.
 
+The followers of a notice (and of a register record, with `privacy_incident`) are read by
+the privacy role only, within the notice's company. The rule is global, with the role
+exception in its domain: Odoo combines group rules on one model with OR, and another
+module's group rule on followers would reopen them. The notifications of a notice's
+messages, which name its recipients, follow the same global rule; anyone still reads
+their own.
+
 ## Companion modules
 
 Installed automatically when their dependency is present:
@@ -94,6 +101,16 @@ Installed automatically when their dependency is present:
 
 Installed on demand: `bf_federation_privacy`, so that the notice also lands in the register
 of a paired client (`bf_federation`).
+
+## Changelog
+
+- **18.0.1.0.1**: the followers of a notice stay hidden whatever other modules are
+  installed. The rule that hid them was a group rule, which Odoo combines with OR: next
+  to another module's group rule on followers (a member register, for one), every
+  employee read them again, and the privacy role read them outside its companies. It is
+  now a global rule with the role exception in its domain. The notifications of a
+  notice's messages, which every employee could read, follow the same global rule;
+  anyone still reads their own.
 
 ## Dependencies
 

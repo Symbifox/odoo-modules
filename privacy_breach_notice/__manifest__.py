@@ -1,6 +1,6 @@
 {
     "name": "Vie privée : avis de violation au responsable",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Privacy/Compliance",
     "summary": "Le mandataire avise le responsable de la protection des renseignements "
                "personnels de son client : daté, versionné, avec un accusé qui prouve "

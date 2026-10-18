@@ -523,6 +523,7 @@ msgstr "Facts useful to your assessment"
 
 #. module: privacy_breach_notice
 #: model:ir.model.fields,field_description:privacy_breach_notice.field_mail_followers__privacy_in_company
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_mail_notification__privacy_in_company
 msgid "Fiche Vie privée dans mes sociétés"
 msgstr "Privacy record in my companies"
 
@@ -797,6 +798,11 @@ msgstr "Read the notice (PDF)"
 #: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
 msgid "Mandataire"
 msgstr "Service provider"
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_mail_notification__privacy_registre
+msgid "Message d'un avis ou du registre"
+msgstr "Message of a notice or of the register"
 
 #. module: privacy_breach_notice
 #: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form

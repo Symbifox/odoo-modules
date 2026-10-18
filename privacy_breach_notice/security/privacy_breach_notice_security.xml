@@ -12,19 +12,39 @@
     </record>
 
     <!-- Les abonnés d'un avis ou d'une fiche du registre révèlent l'avis et le client (le RPRP
-         qui répond y entre) : réservés au rôle Vie privée. Mêmes domaines dans
-         privacy_breach_notice et privacy_incident : les règles de groupe s'additionnent, deux
-         listes différentes rouvriraient chacune ce que l'autre ferme. -->
+         qui répond y entre) : réservés au rôle Vie privée, dans les sociétés de la fiche.
+         🔴 Règle GLOBALE, l'exception du rôle dans le domaine : Odoo combine par OU les règles de
+         groupe d'un même modèle, et la règle de groupe de n'importe quel module voisin sur
+         mail.followers (le registre des membres, par exemple) rouvrait ces abonnés à tout employé,
+         et ses lecteurs les lisaient hors de leurs sociétés. Une règle globale se combine par ET
+         avec toutes les autres. Même règle dans privacy_breach_notice et privacy_incident (chacun
+         s'installe seul) : deux domaines égaux combinés par ET. `groups` se vide explicitement :
+         sans cela, la mise à jour garderait l'ancien groupe. L'ancienne règle « rôle » n'a plus
+         d'objet : hors bloc noupdate, Odoo la supprime à la fin de la mise à jour. -->
+    <!-- ⚠️ Volontairement SANS l'exception « sa propre ligne » des notifications : un abonné
+         hors rôle ne lit pas son abonnement à une fiche du registre. La ligne nomme la fiche
+         (modèle et id), donc l'existence de l'avis ou de l'incident, et ne lui sert à rien :
+         la liste des abonnés est un outil interne du rôle, et le lien de désabonnement du
+         courriel passe en sudo. La notification, elle, doit rester lisible pour sa boîte de
+         réception. -->
     <record id="rule_followers_hide_privacy_avis" model="ir.rule">
-        <field name="name">Abonnés : avis et registre cachés hors du rôle (avis)</field>
+        <field name="name">Abonnés : avis et registre réservés au rôle Vie privée, dans ses sociétés (avis)</field>
         <field name="model_id" ref="mail.model_mail_followers"/>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-        <field name="domain_force">[('res_model', 'not in', ['privacy.breach.notice', 'privacy.incident'])]</field>
+        <field name="groups" eval="[Command.clear()]"/>
+        <field name="domain_force">['|', ('res_model', 'not in', ['privacy.breach.notice', 'privacy.incident']), ('privacy_in_company', '=', True) if user.has_group('privacy_consent.group_privacy_user') else (0, '=', 1)]</field>
     </record>
-    <record id="rule_followers_privacy_role_avis" model="ir.rule">
-        <field name="name">Abonnés : avis et registre pour le rôle Vie privée, dans ses sociétés (avis)</field>
-        <field name="model_id" ref="mail.model_mail_followers"/>
-        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
-        <field name="domain_force">[('res_model', 'in', ['privacy.breach.notice', 'privacy.incident']), ('privacy_in_company', '=', True)]</field>
+    <!-- Les notifications d'un message d'avis ou du registre nomment ses destinataires (le RPRP,
+         le client) : même règle, globale pour la même raison, en lecture seulement. Chacun lit
+         toujours la sienne : une personne avisée sur le fil la retrouve dans sa boîte et la marque
+         comme lue. L'écriture reste bornée par la règle d'Odoo (sa propre notification) et par la
+         garde du fil ; le moteur de courriel crée et met à jour les notifications en sudo. -->
+    <record id="rule_notifications_hide_privacy_avis" model="ir.rule">
+        <field name="name">Notifications : avis et registre réservées au rôle Vie privée, dans ses sociétés (avis)</field>
+        <field name="model_id" ref="mail.model_mail_notification"/>
+        <field name="groups" eval="[Command.clear()]"/>
+        <field name="domain_force">['|', '|', ('res_partner_id', '=', user.partner_id.id), ('privacy_registre', '=', False), ('privacy_in_company', '=', True) if user.has_group('privacy_consent.group_privacy_user') else (0, '=', 1)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
     </record>
 </odoo>
