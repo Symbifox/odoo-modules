@@ -36,7 +36,12 @@
     #   ou supprime que les siennes, et n'en change pas le propriétaire.
     #   Les colonnes `res_name` restent en base,
     #   inutilisées, pour qu'un retour à la 4.1.0 sans -u ne casse rien.
-    "version": "18.0.4.2.0",
+    # 18.0.4.3.0 : « Hors Gen » (`gen_excluded`). Les passes de Gen sur les
+    #   notes la laissent de côté (toute routine d'assistant qui lit les
+    #   notes). Œil barré sur la carte, au kanban comme à /notes ; champ, gestes
+    #   `gen_exclude`/`gen_include` et capacité `gen_excluded` au contrat mobile. Une
+    #   règle des passes, pas un verrou.
+    "version": "18.0.4.3.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

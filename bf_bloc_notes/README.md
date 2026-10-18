@@ -42,6 +42,17 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
 - Private by default (`is_shared=False`): only the author sees it.
 - Toggling "Shared" makes it readable by all internal users; only the author can still edit.
 
+### Not for Gen (18.0.4.3.0)
+- **Not for Gen** (`gen_excluded`): any AI pass over notes (an assistant routine that reads
+  them) is expected to leave the note aside, even when it is ticked while a pass
+  is running.
+- Toggled by the crossed-out eye on the card (faint when off, solid when on), in the kanban and on the
+  `/notes` page. In the kanban the faint eye SETS the flag and the solid eye clears it
+  (`action_gen_exclude`, `action_gen_include`), so a stale card never clears it while trying to set it.
+  Also on the form, in the list, in the `/notes` actions menu and as a "Not for Gen" filter. Independent
+  of pinning and sharing. Only the author can change it.
+- ⚠️ It is a rule those passes follow, not a lock: anyone who can read the note still reads it.
+
 ### On the phone (18.0.3.0.0)
 A note taken on a phone has to be written in a second, or it ends up in another app, far from the records it belongs to.
 - **Installable `/notes` page**: opens straight on the text field, keyboard up. Works on Android and iPhone, installs to the home screen, and offers a **New** shortcut on a long press.
@@ -118,6 +129,12 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
 
 ## Changelog
+
+### 18.0.4.3.0
+- **Not for Gen:** a `gen_excluded` flag on the note, with an eye button on the card (kanban and `/notes`),
+  the form, the list and a filter. Mobile API: `gen_excluded` on the note, accepted on create and update
+  as a JSON boolean only (a missing key leaves it unchanged, so an older app never clears it), actions
+  `gen_exclude` / `gen_include`, and `gen_excluded` announced in the ping's `features`.
 
 ### 18.0.4.2.0
 - **Security:** the name of a linked record is no longer stored. It is computed under the access rights

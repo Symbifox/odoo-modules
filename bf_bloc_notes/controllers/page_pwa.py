@@ -209,6 +209,10 @@ def _mots():
         "offline": _("Offline: your notes stay on this device."),
         "pin": _("Pin"),
         "unpin": _("Unpin"),
+        # « Hors Gen ».
+        "gen_exclude": _("Not for Gen"),
+        "gen_include": _("Back to Gen"),
+        "gen_excluded_hint": _("Not for Gen: Gen's passes over your notes leave it alone"),
         "today": _("Reminder today"),
         "tomorrow": _("Reminder tomorrow"),
         "task": _("Make it a task"),

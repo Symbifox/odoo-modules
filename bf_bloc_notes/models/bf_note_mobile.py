@@ -38,7 +38,9 @@ from odoo.tools import format_date, html2plaintext
 from odoo.addons.bf_color.models.color_utils import normalize_hex
 
 #: Gestes rapides offerts au téléphone et sur la carte kanban.
-ACTIONS = ("archive", "unarchive", "pin", "unpin", "activity", "task", "reroute")
+ACTIONS = ("archive", "unarchive", "pin", "unpin", "activity", "task", "reroute",
+           # « Hors Gen ».
+           "gen_exclude", "gen_include")
 
 #: Délais de rappel offerts, en jours (aujourd'hui, demain, +2 j, +1 sem.).
 ACTIVITY_DAYS = (0, 1, 2, 7)
@@ -260,6 +262,8 @@ class BfNote(models.Model):
             "text": self._mobile_html_to_text(self.body),
             "editable": self._mobile_html_is_plain(self.body),
             "pinned": bool(self.pinned),
+            # Les passes de Gen laissent cette note de côté.
+            "gen_excluded": bool(self.gen_excluded),
             # `color` reste pour les versions installées de l'application ;
             # `color_hex` est la couleur résolue pour l'appelant.
             "color": self.color or 0,
@@ -346,6 +350,14 @@ class BfNote(models.Model):
             raise UserError(_("The device identifier is not a valid UUID."))
 
     @api.model
+    def _mobile_clean_gen_excluded(self, value):
+        """« Hors Gen » : un vrai booléen JSON, ou un refus. ``bool("false")`` vaut
+        ``True`` : une chaîne cocherait la note au lieu de la décocher."""
+        if not isinstance(value, bool):
+            raise UserError(_("“Not for Gen” must be true or false."))
+        return value
+
+    @api.model
     def _mobile_create(self, vals):
         """Crée la note, ou rend celle que ce ``client_uuid`` a déjà créée."""
         vals = vals or {}
@@ -365,6 +377,7 @@ class BfNote(models.Model):
             "user_id": self.env.uid,
             "body": self._mobile_text_to_html(text),
             "pinned": bool(vals.get("pinned")),
+            "gen_excluded": self._mobile_clean_gen_excluded(vals.get("gen_excluded", False)),
         }
         # Pas de `color` par défaut ici : posé avec `color_hex`, il empêcherait
         # l'index de suivre la couleur libre (champ par défaut : 0).
@@ -544,7 +557,7 @@ class BfNote(models.Model):
         return {"note": self._mobile_payload()}
 
     def _mobile_update(self, vals):
-        """Modifie titre, texte, épingle ou couleur. Refuse sur conflit."""
+        """Modifie titre, texte, épingle, « Hors Gen » ou couleur. Refuse sur conflit."""
         self.ensure_one()
         vals = vals or {}
         seen = vals.get("write_date")
@@ -570,6 +583,8 @@ class BfNote(models.Model):
             values["name"] = title
         if "pinned" in vals:
             values["pinned"] = bool(vals["pinned"])
+        if "gen_excluded" in vals:
+            values["gen_excluded"] = self._mobile_clean_gen_excluded(vals["gen_excluded"])
         values.update(self._mobile_color_values(vals))
         if values:
             # L'écriture passe par les droits de l'appelant : la règle
@@ -601,6 +616,11 @@ class BfNote(models.Model):
         elif action in ("pin", "unpin"):
             self.pinned = action == "pin"
             result["message"] = _("Note pinned.") if self.pinned else _("Note unpinned.")
+        elif action in ("gen_exclude", "gen_include"):
+            self.gen_excluded = action == "gen_exclude"
+            result["message"] = (
+                _("Not for Gen: Gen's passes over your notes will leave it alone.")
+                if self.gen_excluded else _("Gen's passes over your notes can process it again."))
         elif action == "activity":
             try:
                 days = int(params.get("days", 0))

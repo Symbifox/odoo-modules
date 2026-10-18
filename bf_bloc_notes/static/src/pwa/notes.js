@@ -393,9 +393,47 @@
                 ouvrirGestes(note);
             });
             li.appendChild(menu);
+            // L'œil dans la gouttière, sous le menu (il ne prend rien au titre).
+            li.appendChild(boutonHorsGen(note));
+            li.classList.add("avec-oeil");
             li.addEventListener("click", function () { ouvrirNote(note); });
         }
         return li;
+    }
+
+    /* « Hors Gen », toujours sur la carte :
+       pâle décoché, plein coché ; un toucher bascule, sans ouvrir la note.
+       Dans la gouttière de droite, sous le menu ⋮ : en tête, à côté du titre,
+       il le coupait en plein mot (cartes de 9,5 rem au téléphone). */
+    var SVG = "http://www.w3.org/2000/svg";
+    function oeilBarre() {
+        var svg = document.createElementNS(SVG, "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("aria-hidden", "true");
+        [["path", { d: "M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" }],
+         ["circle", { cx: "12", cy: "12", r: "3" }],
+         ["line", { x1: "3", y1: "3", x2: "21", y2: "21" }]].forEach(function (f) {
+            var el = document.createElementNS(SVG, f[0]);
+            Object.keys(f[1]).forEach(function (k) { el.setAttribute(k, f[1][k]); });
+            svg.appendChild(el);
+        });
+        return svg;
+    }
+
+    function boutonHorsGen(note) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "hors-gen" + (note.gen_excluded ? " actif" : "");
+        b.setAttribute("aria-pressed", note.gen_excluded ? "true" : "false");
+        b.setAttribute("aria-label", dire("gen_exclude"));
+        b.title = dire("gen_excluded_hint");
+        b.appendChild(oeilBarre());
+        b.addEventListener("click", function (ev) {
+            ev.stopPropagation();
+            geste(note, note.gen_excluded ? "gen_include" : "gen_exclude")
+                .then(function (r) { toast(r.message); }, signalerErreur);
+        });
+        return b;
     }
 
     /* ── Saisie ─────────────────────────────────────────────────────── */
@@ -656,6 +694,9 @@
         };
         grille.appendChild(bouton(note.pinned ? dire("unpin") : dire("pin"), "", fermerEt(function () {
             geste(note, note.pinned ? "unpin" : "pin").then(function (r) { toast(r.message); }, signalerErreur);
+        })));
+        grille.appendChild(bouton(note.gen_excluded ? dire("gen_include") : dire("gen_exclude"), "", fermerEt(function () {
+            geste(note, note.gen_excluded ? "gen_include" : "gen_exclude").then(function (r) { toast(r.message); }, signalerErreur);
         })));
         grille.appendChild(bouton(dire("today"), "", fermerEt(function () {
             geste(note, "activity", { days: 0 }).then(function (r) { toast(r.message); }, signalerErreur);

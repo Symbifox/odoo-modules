@@ -68,7 +68,7 @@
     border-color: color-mix(in srgb, var(--bf-note-bg) 80%, #000);
     // Le texte secondaire suit la couleur lisible au lieu du gris d'Odoo,
     // illisible sur un fond foncé.
-    .text-muted, .o_bf_note_card_body, .o_bf_note_pin_btn, .dropdown-toggle {
+    .text-muted, .o_bf_note_card_body, .o_bf_note_pin_btn, .o_bf_note_gen_btn, .dropdown-toggle {
         color: var(--bf-note-fg) !important;
     }
     .text-muted, .o_bf_note_card_body { opacity: 0.8; }

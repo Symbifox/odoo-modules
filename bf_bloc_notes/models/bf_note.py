@@ -51,6 +51,16 @@ class BfNote(models.Model):
         default=False,
         help="If checked, other internal users can see this note.",
     )
+    # « Hors Gen ». Les passes de Gen sur les notes (toute routine d'assistant
+    # qui lit les notes) la
+    # laissent de côté. C'est une règle de ces passes, pas un verrou : qui lit
+    # la note la lit toujours.
+    gen_excluded = fields.Boolean(
+        string="Not for Gen",
+        default=False,
+        help="Gen's passes over your notes leave this note alone. It is a rule "
+             "those passes follow, not a lock: whoever can read the note still can.",
+    )
     deadline_date = fields.Date(string="Due date")
     tag_ids = fields.Many2many("bf.note.tag", string="Tags")
 
@@ -229,6 +239,16 @@ class BfNote(models.Model):
     def action_toggle_pinned(self):
         for note in self:
             note.pinned = not note.pinned
+        return True
+
+    # POSER la valeur, jamais l'inverser. Une carte affichée avant un changement fait
+    # ailleurs (téléphone, autre onglet) ne doit pas décocher la note quand on clique « exclure ».
+    def action_gen_exclude(self):
+        self.filtered(lambda n: not n.gen_excluded).write({"gen_excluded": True})
+        return True
+
+    def action_gen_include(self):
+        self.filtered("gen_excluded").write({"gen_excluded": False})
         return True
 
     def action_open_record(self):

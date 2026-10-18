@@ -1899,3 +1899,56 @@ msgstr ""
 #: code:addons/bf_bloc_notes/models/bf_note_tag.py:0
 msgid "The owner of a tag cannot be changed."
 msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__gen_excluded
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Not for Gen"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Back to Gen"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Gen's passes over your notes can process it again."
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__gen_excluded
+msgid ""
+"Gen's passes over your notes leave this note alone. It is a rule those "
+"passes follow, not a lock: whoever can read the note still can."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Not for Gen: Gen's passes over your notes leave it alone"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Not for Gen: click to give it back to Gen"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Not for Gen: Gen's passes over your notes will leave it alone."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "“Not for Gen” must be true or false."
+msgstr ""

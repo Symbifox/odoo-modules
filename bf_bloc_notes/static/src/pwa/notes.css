@@ -149,6 +149,35 @@ button.danger { color: var(--danger); border-color: var(--danger); }
 .carte-note .tete { display: flex; gap: .4rem; align-items: baseline; }
 .carte-note .tete strong { flex: 1; overflow-wrap: anywhere; }
 
+/* « Hors Gen ». L'œil vit dans la gouttière de droite, sous le menu ⋮ :
+   il ne prend rien au titre. La carte garde la hauteur des deux cibles de 44 px. */
+.carte-note .hors-gen {
+    position: absolute;
+    top: calc(.2rem + 44px);
+    right: .2rem;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    padding: 0;
+    opacity: .35;
+    cursor: pointer;
+}
+.carte-note .hors-gen.actif { opacity: 1; color: var(--text); }
+.carte-note .hors-gen svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+}
+/* La gouttière (2,4 rem) était plus étroite que les cibles (44 px) : le titre passait dessous. */
+.carte-note.avec-oeil { min-height: calc(.4rem + 88px); padding-right: calc(.2rem + 44px); }
+
 .carte-note .texte {
     margin: .35rem 0 0;
     color: var(--muted);
@@ -289,6 +318,7 @@ button.danger { color: var(--danger); border-color: var(--danger); }
 .carte-note.coloree .texte,
 .carte-note.coloree .liens,
 .carte-note.coloree .menu { color: var(--note-fg); opacity: .85; }
+.carte-note.coloree .hors-gen { color: var(--note-fg); }
 
 .couleur-lisere .carte-note.coloree {
     background: var(--surface);
@@ -298,6 +328,7 @@ button.danger { color: var(--danger); border-color: var(--danger); }
 .couleur-lisere .carte-note.coloree .texte,
 .couleur-lisere .carte-note.coloree .liens,
 .couleur-lisere .carte-note.coloree .menu { color: var(--muted); opacity: 1; }
+.couleur-lisere .carte-note.coloree .hors-gen { color: var(--muted); }
 
 .carte-note .etiquettes { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .4rem; }
 .carte-note .etiquette {
@@ -343,6 +374,9 @@ button.danger { color: var(--danger); border-color: var(--danger); }
     color: var(--muted);
     opacity: 1;
 }
+/* Une ligne : l'œil à gauche du menu, la ligne garde sa hauteur. */
+.mise-minimal .carte-note.avec-oeil { min-height: 44px; padding-right: calc(.4rem + 88px); }
+.mise-minimal .carte-note .hors-gen { top: 50%; transform: translateY(-50%); right: calc(.2rem + 44px); }
 .mise-minimal .carte-note .liens,
 .mise-minimal .carte-note .etiquettes { display: none; }
 

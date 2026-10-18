@@ -105,6 +105,7 @@
                         <group>
                             <field name="is_shared"/>
                             <field name="pinned"/>
+                            <field name="gen_excluded"/>
                         </group>
                     </group>
                     <notebook>
@@ -151,6 +152,7 @@
                   multi_edit="1">
                 <field name="pinned" widget="boolean_toggle"/>
                 <field name="is_shared" widget="boolean_toggle" optional="hide"/>
+                <field name="gen_excluded" widget="boolean_toggle" optional="hide"/>
                 <field name="name"/>
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
                 <field name="res_name" string="Linked to"/>
@@ -173,6 +175,7 @@
                 <field name="color_text"/>
                 <field name="pinned"/>
                 <field name="is_shared"/>
+                <field name="gen_excluded"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -206,6 +209,27 @@
                                 <strong class="flex-grow-1">
                                     <field name="name"/>
                                 </strong>
+                                <!-- « Hors Gen », même aspect que l'épingle (pâle
+                                     décoché, plein coché), mais chaque bouton POSE sa valeur :
+                                     un écran périmé ne décoche jamais en voulant cocher. -->
+                                <button t-if="!record.gen_excluded.raw_value"
+                                        class="btn btn-link p-0 ms-1 o_bf_note_gen_btn"
+                                        type="object"
+                                        name="action_gen_exclude"
+                                        title="Not for Gen: Gen's passes over your notes leave it alone"
+                                        aria-label="Not for Gen"
+                                        t-attf-style="opacity: 0.35;">
+                                    <i class="fa fa-eye-slash"/>
+                                </button>
+                                <button t-else=""
+                                        class="btn btn-link p-0 ms-1 o_bf_note_gen_btn"
+                                        type="object"
+                                        name="action_gen_include"
+                                        title="Not for Gen: click to give it back to Gen"
+                                        aria-label="Back to Gen"
+                                        t-attf-style="opacity: 1;">
+                                    <i class="fa fa-eye-slash"/>
+                                </button>
                                 <button class="btn btn-link p-0 ms-1 o_bf_note_pin_btn"
                                         type="object"
                                         name="action_toggle_pinned"
@@ -297,6 +321,7 @@
                 <filter name="my_notes" string="My notes" domain="[('user_id', '=', uid)]"/>
                 <filter name="pinned" string="Pinned" domain="[('pinned', '=', True)]"/>
                 <filter name="shared" string="Shared" domain="[('is_shared', '=', True)]"/>
+                <filter name="gen_excluded" string="Not for Gen" domain="[('gen_excluded', '=', True)]"/>
                 <filter name="linked" string="Linked to a record" domain="[('link_ids', '!=', False)]"/>
                 <separator/>
                 <filter name="filter_today" string="Modified today"

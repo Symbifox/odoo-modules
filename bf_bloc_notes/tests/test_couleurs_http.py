@@ -27,7 +27,8 @@ class TestNoteCouleursHttp(HttpCase):
     def test_le_ping_annonce_les_capacites(self):
         charge = self.url_open(f"{BASE}/ping").json()
         self.assertEqual(charge["api"], 2)  # pièces jointes
-        self.assertEqual(set(charge["features"]), {"color_hex", "tags", "prefs"})
+        # `gen_excluded` (« Hors Gen ») s'ajoute à la liste.
+        self.assertEqual(set(charge["features"]), {"color_hex", "tags", "prefs", "gen_excluded"})
 
     def test_prefs_exige_un_jeton(self):
         self.assertEqual(self.url_open(f"{BASE}/prefs").status_code, 401)

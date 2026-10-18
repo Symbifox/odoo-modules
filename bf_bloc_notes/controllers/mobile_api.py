@@ -147,7 +147,9 @@ class BfNoteMobileApi(http.Controller):
             # ajouts compatibles, sans changer le numéro d'API.
             # L'application n'envoie `color_hex` et ne lit `/prefs` que si
             # elle les voit ici.
-            "features": ["color_hex", "tags", "prefs"],
+            # `gen_excluded` (« Hors Gen ») sur chaque note, gestes
+            # `gen_exclude` et `gen_include`.
+            "features": ["color_hex", "tags", "prefs", "gen_excluded"],
         })
 
     @http.route(f"{BASE}/notes", type="http", auth="public", methods=["GET", "POST"],
