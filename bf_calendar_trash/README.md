@@ -12,6 +12,12 @@ next sync that touched it brought it back into Odoo, active and busy. The forms
 and lists, on the other hand, erased a meeting for good, with its history.
 Cancelling a meeting and then throwing it away took two gestures.
 
+## Requirements
+
+- `calendar_nextcloud_sync` 18.0.2.27.0 or later (its two hooks).
+- `bf_calendar_invite` 18.0.6.2.0 or later (the series scope of the cancellation
+  dialog, which "Move to trash" follows).
+
 ## How it works
 
 - **Calendar > Trash** lists the meetings in the trash: when, by whom, and
@@ -77,4 +83,7 @@ Cancelling a meeting and then throwing it away took two gestures.
 
 ## Version history
 
+- 18.0.1.0.1: the trash fields of someone else's private meeting are readable;
+  deleting for good checks the right to delete before anything leaves Nextcloud or
+  Google; a series' dates sort by start.
 - 18.0.1.0.0: first version.

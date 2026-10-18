@@ -122,6 +122,18 @@ class CalendarEvent(models.Model):
         string="End of the series before the trash", readonly=True, copy=False,
         groups="base.group_system")
 
+    def _get_public_fields(self):
+        """When and by whom a meeting went to the trash is not the meeting.
+
+        A private meeting of someone else reads as « Busy » with every
+        non-public field emptied: in the trash, its date, author and origin
+        came out blank. They say nothing of what the meeting is about.
+        """
+        return super()._get_public_fields() | {
+            "bf_trashed_at", "bf_trashed_by", "bf_trash_batch", "bf_trash_origin",
+            "bf_trash_nc_state",
+        }
+
     # ------------------------------------------------------------------
     # The doors
     # ------------------------------------------------------------------
@@ -543,6 +555,11 @@ class CalendarEvent(models.Model):
         new by the next pull. If it cannot be removed there, it is not deleted
         here either: said, and left in the trash.
         """
+        # The right to delete first: the remote removal below happens before
+        # `unlink`, which is where the record rules would otherwise speak. A
+        # private meeting of someone else must not leave Nextcloud and then
+        # fail to leave Odoo.
+        self.check_access("unlink")
         caldav = self._push_via_caldav_enabled()
         backend = self.env["calendar.caldav.backend"]
         gone = self.sudo().filtered(lambda e: e.bf_trash_nc_state in ("deleted", "edited"))

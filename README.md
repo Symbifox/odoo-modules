@@ -122,7 +122,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_share` | BF Calendar Sharing | 18.0.1.1.4 | LGPL-3 | Choose what each colleague sees of your calendar: availability only, titles and locations, all details, or the right to edit. |
 | `bf_calendar_subscribe` | BF Calendar Subscriptions | 18.0.1.0.2 | LGPL-3 | Show calendars published elsewhere (Outlook, Google, Apple) in the Odoo calendar, read only, and keep their busy times out of online booking. |
 | `bf_calendar_subscribe_absence` | BF Calendar Subscriptions - Out of office | 18.0.1.0.0 | LGPL-3 | Repeated events of a subscribed calendar (public holidays) do not turn on the out-of-office replies. |
-| `bf_calendar_trash` | BF Calendar — trash | 18.0.1.0.0 | LGPL-3 | Deleted and archived meetings go to a trash, where they can be restored or deleted for good. A meeting moved to the trash leaves Nextcloud with it, and comes back there when restored. |
+| `bf_calendar_trash` | BF Calendar — trash | 18.0.1.0.1 | LGPL-3 | Deleted and archived meetings go to a trash, where they can be restored or deleted for good. A meeting moved to the trash leaves Nextcloud with it, and comes back there when restored. |
 | `bf_capture` | Captation audio | 18.0.1.4.2 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |

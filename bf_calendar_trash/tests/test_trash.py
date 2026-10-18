@@ -495,6 +495,49 @@ class TestTrash(BaseRetouche):
         self.assertTrue(event.exists())
         self.assertTrue(event.bf_trashed_at)
 
+    # -- 18.0.1.0.1 ------------------------------------------------------------
+
+    def _deux_usagers(self):
+        from odoo.tests.common import new_test_user
+        a = new_test_user(self.env, login="corbeille_a", groups="base.group_user")
+        b = new_test_user(self.env, login="corbeille_b", groups="base.group_user")
+        return a, b
+
+    def test_101_private_of_someone_else_shows_its_trash_fields(self):
+        a, b = self._deux_usagers()
+        privee = self.env["calendar.event"].with_user(a).create({
+            "name": "Privée de A", "privacy": "private", "user_id": a.id,
+            "start": datetime(2026, 10, 21, 14, 0), "stop": datetime(2026, 10, 21, 15, 0),
+            "partner_ids": [(6, 0, a.partner_id.ids)]})
+        privee.with_context(bf_trash_door=True).action_archive()
+        privee.flush_recordset()
+        self.env.invalidate_all()  # le masquage agit à la lecture en base, pas sur le cache de A
+        vue = self.env["calendar.event"].with_user(b).with_context(active_test=False).browse(privee.id)
+        lu = vue.read(["name", "bf_trashed_at", "bf_trashed_by", "bf_trash_origin"])[0]
+        self.assertNotEqual(lu["name"], "Privée de A")
+        self.assertTrue(lu["bf_trashed_at"])
+        self.assertEqual(lu["bf_trashed_by"][0], a.id)
+        self.assertEqual(lu["bf_trash_origin"], "odoo")
+
+    def test_101_purge_refused_before_anything_leaves_nextcloud(self):
+        magasin = self._magasin(**{self.url_simple: SIMPLE})
+        a, b = self._deux_usagers()
+        privee = self._simple_nextcloud()
+        privee.with_context(skip_nc_sync=True).write({
+            "privacy": "private", "user_id": a.id, "partner_ids": [(6, 0, a.partner_id.ids)]})
+        privee.with_context(bf_trash_bypass=True, skip_nc_sync=True).action_archive()
+        privee.flush_recordset()
+        _bf_trash_existing_archives(self.env)
+        privee.invalidate_recordset()
+        with self.assertRaises(Exception):
+            self.env["calendar.event"].with_user(b).browse(privee.id).action_bf_purge()
+        self.assertIn(self.url_simple, magasin.ressources)
+        self.assertTrue(privee.exists())
+
+    def test_101_series_dates_sort_by_start(self):
+        vue = self.env.ref("bf_calendar_trash.bf_calendar_trash_view_list")
+        self.assertIn('default_order="bf_trashed_at desc, start"', vue.arch_db)
+
     def test_m9_google_meeting_leaves_google_and_comes_back(self):
         google = self.env["nextcloud.calendar.sync.config"].create({
             "name": "Google essai", "backend_type": "google", "sync_direction": "both",

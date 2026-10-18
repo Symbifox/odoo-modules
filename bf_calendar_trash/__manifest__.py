@@ -11,7 +11,12 @@
     #   is kept) and the copy is put back when the meeting is restored. A meeting
     #   deleted in Nextcloud or Thunderbird lands in the trash too. Nothing is
     #   purged on its own: deleting for good is done by hand, from the trash.
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1: the trash fields of a private meeting of someone else are
+    #   readable (they came out blank); deleting for good checks the right to
+    #   delete BEFORE removing anything from Nextcloud or Google; the dates of a
+    #   series sort by start within one gesture. Requires bf_calendar_invite
+    #   18.0.6.2.0 or later (the series scope of the cancellation dialog).
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

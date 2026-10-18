@@ -5,7 +5,7 @@
         <field name="model">calendar.event</field>
         <field name="priority">100</field>
         <field name="arch" type="xml">
-            <list string="Trash" create="0" edit="0" delete="0" default_order="bf_trashed_at desc">
+            <list string="Trash" create="0" edit="0" delete="0" default_order="bf_trashed_at desc, start">
                 <header>
                     <button name="action_bf_restore" type="object" string="Restore"
                             class="btn-primary"/>
