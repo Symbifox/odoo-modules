@@ -1007,6 +1007,39 @@ export class BfEmailInbox extends Component {
         }
     }
 
+    /** « Toujours pour cet expéditeur » (`sender`) ou « … ce domaine ». */
+    async allowRemoteImages(kind) {
+        await this._remoteImagesGesture("inbox_allow_remote_images", { kind });
+    }
+
+    /** « Ne plus afficher automatiquement ». */
+    async forgetRemoteImages() {
+        await this._remoteImagesGesture("inbox_forget_remote_images", {});
+    }
+
+    async _remoteImagesGesture(method, kwargs) {
+        const id = this.state.selectedId;
+        if (!id || this.state.acting) {
+            return;
+        }
+        this.state.acting = true;
+        try {
+            await this.orm.call("bf.email", method, [], { email_id: id, ...kwargs });
+        } catch (err) {
+            this.notification.add(
+                _t("Action impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+            return;
+        } finally {
+            this.state.acting = false;
+        }
+        // Relire sous la nouvelle règle, sans la clé « cette fois ».
+        if (this.state.selectedId === id) {
+            await this._fetchPreview(id, false);
+        }
+    }
+
     async _fetchPreview(id, loadImages = false) {
         this.state.loadingPreview = true;
         // Un résumé appartient au message qu'on vient de quitter.

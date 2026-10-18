@@ -30,6 +30,7 @@ from . import test_bf_dnd
 from . import test_signaux_fuseau
 from . import test_fuseau_expediteur
 from . import test_images_distantes
+from . import test_images_autorisees
 from . import test_invitations_et_robots
 from . import test_recherche_plein_texte
 from . import test_sourdine_et_relances

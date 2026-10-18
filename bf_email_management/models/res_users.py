@@ -91,6 +91,23 @@ class ResUsers(models.Model):
         string="Dernier état connu", default=False, copy=False,
     )
 
+    # La préférence est PAR USAGER, et le
+    # réglage d'instance reste le défaut de qui n'a rien choisi. Une valeur
+    # absente vaut « instance » : un `-u` ne change rien pour personne.
+    bf_email_remote_images = fields.Selection(
+        selection=[
+            ("instance", "Selon le réglage de l'entreprise"),
+            ("always", "Toujours afficher"),
+            ("block", "Toujours bloquer"),
+        ],
+        string="Images distantes des courriels",
+        default="instance",
+        help="Une image chargée depuis le serveur de l'expéditeur lui dit que "
+             "le message a été lu, quand, et depuis quelle adresse IP.\n"
+             "« Toujours bloquer » ignore aussi vos expéditeurs autorisés ; "
+             "« Toujours afficher » les rend inutiles.",
+    )
+
     bf_dnd_active = fields.Boolean(
         string="En ce moment", compute="_compute_bf_dnd_now",
     )
@@ -257,12 +274,14 @@ class ResUsers(models.Model):
             "bf_absence_from_calendar",
             "bf_dnd_active", "bf_dnd_reason", "bf_dnd_until",
             "bf_dnd_last_state",
+            "bf_email_remote_images",
         ] + self.BF_DND_SELF_FIELDS
 
     @property
     def SELF_WRITEABLE_FIELDS(self):
         return super().SELF_WRITEABLE_FIELDS + [
             "bf_absence_from_calendar",
+            "bf_email_remote_images",
         ] + self.BF_DND_SELF_FIELDS
 
     # ------------------------------------------------------------------

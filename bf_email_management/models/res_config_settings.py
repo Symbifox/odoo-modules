@@ -71,6 +71,9 @@ class ResConfigSettings(models.TransientModel):
              "le message a été lu, quand, et depuis quelle adresse IP. Le "
              "téléphone les parque depuis toujours ; cette case fait de même "
              "au poste, avec un bouton « Afficher les images » par message.\n\n"
+             "C'est le défaut de l'entreprise : chaque personne peut choisir "
+             "autrement dans ses Préférences, et autoriser des expéditeurs ou "
+             "des domaines un à un.\n\n"
              "⚠️ Contrairement aux autres réglages du module, l'absence de la "
              "clé vaut OUI : le défaut d'une protection est la protection.",
     )

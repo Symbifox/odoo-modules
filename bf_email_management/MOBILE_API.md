@@ -420,6 +420,32 @@ Message = {
 `body_html` is meant for a WebView. Remote images are blocked until the reader
 asks (`load_images=1`), and `blocked_images` is how many were parked — show the
 "load images" bar only when it's non-zero.
+
+Since 18.0.11.60.5 full payloads also carry why images were let through, for the
+reader (not the mailbox owner):
+
+```json
+{
+  "images_reason": "sender",      // "" parked, "once", "user", "instance", "sender", "domain"
+  "images_sender": "alerts@example.com",
+  "images_domain": "example.com",
+  "images_domain_allowed": true,  // false for public webmail and public suffixes
+  "images_refused": "",           // a listed sender that did NOT count: "dmarc" (our
+                                  // receiving server saw dmarc=fail) or "headers"
+                                  // (the message lacks its original headers)
+  "remote_images": 3              // remote images in the body, parked or not
+}
+```
+
+A non-empty `images_reason` means the server restored the original sources: the
+WebView may let those requests through. An empty one means it must not.
+
+### `POST /images/allow` (auth) `{"email_id": 42, "kind": "sender"|"domain"}` → `Message` (full)
+Always show remote images from this message's sender (or its domain) for the
+caller. 400 `missing_parameters`; the message must be the caller's.
+
+### `POST /images/forget` (auth) `{"email_id": 42}` → `Message` (full)
+Remove the sender and every domain that covers it from the caller's list.
 In full payloads `attachment_count` is the number actually downloadable now,
 which can be lower than the ingest-time count if the raw message left the
 filestore.

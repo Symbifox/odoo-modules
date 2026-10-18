@@ -4,6 +4,51 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.5] - 2026-10-17
+
+### Added
+
+- **Remote images per person.** Preferences › *Courriels* now offers *Selon le
+  réglage de l'entreprise* (the default), *Toujours afficher* and *Toujours
+  bloquer*. The company setting (*Bloquer les images distantes à la lecture*)
+  stays the default for anyone who has not chosen.
+- **Allowed senders and domains.** The "remote images blocked" banner offers
+  *Toujours pour cet expéditeur* and *Toujours pour ce domaine*. The list
+  (`bf.email.image.sender`) belongs to the reader, is protected by a record rule
+  and an owner guard, and is reviewed under Courriels › Configuration ›
+  *Images autorisées*. A domain covers its subdomains. Public webmail domains
+  (gmail.com, outlook.com…) and public suffixes (co.nz, com.au, qc.ca…) cannot be
+  allowed as a whole, only an address.
+- **When the list does not count.** A listed sender is ignored, and the banner
+  says why, when our receiving server recorded `dmarc=fail` in the topmost
+  `Authentication-Results` header, when the message carries no original headers
+  (a gateway row without its original, an old import), or when `From` is
+  ambiguous (several addresses, more than one `@`, or Odoo's and Python's
+  address parsers disagree).
+- A discreet banner names the sender or domain whose images are shown, with
+  *Ne plus afficher automatiquement*, which removes the address and every domain
+  that covers it.
+- Same rules in the form, the OWL inbox, the IMAP browser and the phone:
+  `POST /images/allow`, `POST /images/forget`, and `images_*` keys on full
+  message payloads (see MOBILE_API.md).
+
+### Fixed
+
+- **Remote images that loaded under a "blocked" banner.** Parking used a regular
+  expression on `<img src="http…">`. CSS backgrounds (`url(…)` in a `style`
+  attribute), `background=`, `srcset`, `poster`, audio and video sources,
+  scheme-less (`//host`) and backslash (`https:\\host`) URLs, CSS escapes
+  (`u\72l(`, `\68ttps`), `image-set`, CSS variables and SVG presentation
+  attributes (`filter`, `mask`, `cursor`) still loaded and told the sender the
+  message was read. Parking now walks the HTML tree
+  (`models/bf_email_images.py`): each attribute is normalised the way a browser
+  reads it, and only the offending CSS declaration is removed, so nothing can run
+  past the attribute it lives in. A body with nothing remote is returned as is.
+- **The IMAP browser served the raw message body**, remote images included. It
+  is now sanitized, then parked, with the same *Afficher les images* button.
+- *Afficher les images* in the form applied to the next message of the pager as
+  well; it now applies to that message only.
+
 ## [18.0.11.60.4] - 2026-10-17
 
 ### Fixed

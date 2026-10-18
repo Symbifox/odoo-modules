@@ -700,6 +700,28 @@ its CalDAV copy keeps `PARTSTAT=NEEDS-ACTION`. For a **series** pulled from
 Nextcloud, the pull deletes and recreates every occurrence when the series
 changes there, and a per-occurrence answer is lost with it.
 
+### Remote images: per person, per sender, per domain (11.60.5+)
+
+A remote image tells the sender that the message was opened, when, and from
+which IP address, so remote images are parked when a message is read. Each person
+chooses in Preferences › *Courriels*: follow the company setting (the default),
+always show, or always block. In the banner, *Toujours pour cet expéditeur* and
+*Toujours pour ce domaine* add to a personal list (Courriels › Configuration ›
+*Images autorisées*); a domain covers its subdomains, while public webmail
+domains and public suffixes can only be allowed address by address.
+
+The list is ignored when our receiving server recorded `dmarc=fail`, when the
+message lacks its original headers, or when `From` is ambiguous: a tracker can
+forge a sender you trust. One decision (`bf.email._reading_body`) serves the
+form, the OWL inbox, the IMAP browser and the phone, for the person reading, not
+the mailbox owner.
+
+Parking walks the HTML tree (`models/bf_email_images.py`) rather than the text:
+`src`, `srcset`, `poster`, `background`, `data`, SVG `href` and presentation
+attributes, and remote CSS declarations, after normalising each URL the way a
+browser reads it (whitespace and control characters dropped, `\` read as `/`,
+CSS escapes decoded). `cid:`, `data:` and relative URLs stay.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
@@ -836,7 +858,7 @@ The OWL client action calls these `@api.model` methods on `bf.email`. Each opens
 
 - `imap_browser_get_folders()` — `LIST` + per-folder `STATUS (MESSAGES UNSEEN)`. Returns `[{name, has_children, noselect, total_count, unread_count}]`.
 - `imap_browser_get_messages(folder, offset, limit)` — `SELECT readonly` + `UID SEARCH ALL` + `fetch_headers_bulk` (one round-trip for the page). Returns `{folder, messages: [{uid, date, from, sender_name, subject, message_id, seen, already_in_bf_email}], total, offset, limit}`. Dedups against existing `bf.email` rows by Message-ID in a single SQL query.
-- `imap_browser_get_body(folder, uid)` — full `UID FETCH RFC822` for one UID; returns `{subject, from, to, date, body_html, already_in_bf_email, bf_email_id, message_id}`.
+- `imap_browser_get_body(folder, uid, load_images=False)` — full `UID FETCH RFC822` for one UID; returns `{subject, from, to, date, body_html, blocked_images, images_reason, images_refused, already_in_bf_email, bf_email_id, message_id}`. The body is sanitized, then its remote images are parked under the same rules as the inbox (11.60.5+).
 - `imap_browser_ingest(folder, uid)` — fetch + `_ingest_rfc822` (dedup-safe). Returns `{bf_email_id}`.
 - `imap_browser_ingest_and_reroute(folder, uid)` — ingest + return an `act_window` action opening the Reroute wizard with the new row pre-loaded.
 - `imap_browser_reply(folder, uid)` / `imap_browser_reply_all` / `imap_browser_forward` — ingest if needed, then return the composer action via `action_reply` / `action_reply_all` / `action_forward` on the resulting `bf.email`.
@@ -849,7 +871,8 @@ The inbox client action calls these `@api.model` methods on `bf.email`. They sta
 
 - `inbox_get_folders()` — `[{key, label, icon, parent, selectable, count, unread_count}]`. A parent (`selectable: False`) sums its children.
 - `inbox_get_messages(folder, offset, limit, search)` — `{folder, messages, total, offset, limit}`, newest first, page size capped at 500. Unknown or non-selectable folder keys raise.
-- `inbox_get_body(email_id)` — sanitized `body_html_display`, headers and attachments, and flips `new` → `read` for rows the user may actually write.
+- `inbox_get_body(email_id, load_images=False)` — sanitized `body_html_display` with remote images parked unless the reader's preference or allowed senders say otherwise, the `images_*` keys that draw the banner, headers and attachments; flips `new` → `read` for rows the user may actually write.
+- `inbox_allow_remote_images(email_id, kind)` / `inbox_forget_remote_images(email_id)` (11.60.5+) — add the message's sender (`kind='sender'`) or domain (`'domain'`) to the caller's allowed list, or remove it and every domain that covers it. The message must be readable by the caller.
 - `inbox_run_action(action, email_ids)` — named actions only, through `_INBOX_ACTIONS`: the method name comes from the browser, so the server decides what is nameable. Window actions returned here get an explicit `views` key, because `call_kw` — unlike `call_button` — never runs them through `clean_action()`, and without it the web client maps over `undefined` and the dialog silently never opens.
 - `inbox_compose()` / `inbox_close_compose(shell_id)` — open the composer on a fresh unattached row, then adopt or delete that row when the dialog closes.
 - `_inbox_imap_folder_defs()` / `_inbox_imap_counts(defs)` (11.1+) — build the IMAP subtree from each account's cached `LIST` and count its rows in two grouped queries. Neither opens a connection; `bf.email.account.get_imap_folders(force=False)` owns the cache and the refresh.
@@ -987,7 +1010,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-17, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog

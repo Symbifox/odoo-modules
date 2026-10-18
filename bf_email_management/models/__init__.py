@@ -11,6 +11,7 @@ from . import bf_email_absence
 from . import bf_email_rule
 # Surface RPC de l'action cliente « Boîte de réception » — _inherit bf.email.
 from . import bf_email_thread_mute
+from . import bf_email_image_sender
 from . import bf_email_unsubscribe
 from . import bf_email_awaiting
 from . import bf_email_gestes

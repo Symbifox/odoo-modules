@@ -279,7 +279,11 @@ class BfEmailMobile(models.Model):
         # ce n'est pas un déménagement cosmétique : le poste ne l'avait pas, et
         # deux implémentations auraient divergé une deuxième fois. Le contrat
         # de l'app ne bouge pas.
-        return self._body_html_blocked(load_images=load_images)
+        # La DÉCISION aussi passe par `_reading_body` (préférence du
+        # lecteur, réglage d'instance, expéditeurs autorisés). Le contrat de
+        # l'app ne bouge pas ; les clés `images_*` s'ajoutent.
+        body, blocked, _info = self._reading_body(load_images=load_images)
+        return body, blocked
 
     # ------------------------------------------------------------------
     # Attachments (listed without materializing ir.attachment rows)
@@ -405,7 +409,8 @@ class BfEmailMobile(models.Model):
         }
         if not full:
             return data
-        body, blocked = self._mobile_body_html(load_images=load_images)
+        body, blocked, images = self._reading_body(load_images=load_images)
+        data.update(images)
         attachments = self._mobile_attachments()
         data.update({
             "to": self.email_to or "",
@@ -606,6 +611,36 @@ class BfEmailMobile(models.Model):
             "messages": messages,
             "truncated": truncated,
         }
+
+    @api.model
+    def mobile_allow_remote_images(self, email_id, kind):
+        """« Toujours pour cet expéditeur / ce domaine », depuis le téléphone.
+
+        Rend le message relu sous la nouvelle règle, sans le marquer lu une
+        seconde fois : l'app remplace la carte qu'elle affiche.
+        """
+        rec = self._mobile_own_email(email_id)
+        self.inbox_allow_remote_images(rec.id, kind)
+        return rec._mobile_message_dict(full=True)
+
+    @api.model
+    def mobile_forget_remote_images(self, email_id):
+        """« Ne plus afficher automatiquement », depuis le téléphone."""
+        rec = self._mobile_own_email(email_id)
+        self.inbox_forget_remote_images(rec.id)
+        return rec._mobile_message_dict(full=True)
+
+    @api.model
+    def _mobile_own_email(self, email_id):
+        """Un courriel DE l'appelant, comme `get_mobile_message` l'exige."""
+        try:
+            email_id = int(email_id)
+        except (TypeError, ValueError):
+            raise UserError(_("Courriel introuvable."))
+        rec = self.browse(email_id).exists()
+        if not rec or rec.user_id.id != self.env.uid:
+            raise UserError(_("Courriel introuvable."))
+        return rec
 
     @api.model
     def get_mobile_message(self, email_id, load_images=False):

@@ -254,7 +254,11 @@
                     <notebook>
                         <page string="Corps" name="body">
                             <field name="blocked_image_count" invisible="1"/>
-                            <div class="alert alert-info d-flex align-items-center gap-2 mb-2"
+                            <field name="remote_image_count" invisible="1"/>
+                            <field name="remote_images_reason" invisible="1"/>
+                            <field name="remote_images_domain_allowed" invisible="1"/>
+                            <field name="remote_images_refused" invisible="1"/>
+                            <div class="alert alert-info d-flex flex-wrap align-items-center gap-2 mb-2"
                                  role="status"
                                  invisible="blocked_image_count == 0">
                                 <i class="fa fa-eye-slash" aria-hidden="true"/>
@@ -264,9 +268,46 @@
                                     image(s) distante(s) bloquée(s). Les charger
                                     annonce la lecture à l'exp&#233;diteur.
                                 </span>
-                                <button name="action_load_remote_images" type="object"
-                                        class="btn btn-sm btn-secondary ms-auto"
-                                        string="Afficher les images"/>
+                                <span class="text-danger w-100" invisible="remote_images_refused != 'dmarc'">
+                                    Cet exp&#233;diteur fait partie de vos images autoris&#233;es,
+                                    mais l'authentification de ce message a &#233;chou&#233;
+                                    (DMARC)&#160;: ses images restent bloqu&#233;es.
+                                </span>
+                                <span class="text-muted w-100" invisible="remote_images_refused != 'headers'">
+                                    Cet exp&#233;diteur fait partie de vos images autoris&#233;es,
+                                    mais ce courriel n'a pas ses en-t&#234;tes d'origine&#160;:
+                                    rien ne dit qu'il vient bien de lui.
+                                </span>
+                                <div class="ms-auto d-flex flex-wrap gap-2">
+                                    <button name="action_load_remote_images" type="object"
+                                            class="btn btn-sm btn-secondary"
+                                            string="Afficher les images"/>
+                                    <button name="action_allow_remote_images_sender" type="object"
+                                            class="btn btn-sm btn-link"
+                                            invisible="remote_images_refused or not remote_images_sender"
+                                            string="Toujours pour cet exp&#233;diteur"/>
+                                    <button name="action_allow_remote_images_domain" type="object"
+                                            class="btn btn-sm btn-link"
+                                            invisible="remote_images_refused or not remote_images_domain_allowed"
+                                            string="Toujours pour ce domaine"/>
+                                </div>
+                            </div>
+                            <div class="alert alert-light d-flex align-items-center gap-2 mb-2 small"
+                                 role="status"
+                                 invisible="remote_image_count == 0 or remote_images_reason not in ('sender', 'domain')">
+                                <i class="fa fa-picture-o" aria-hidden="true"/>
+                                <span invisible="remote_images_reason != 'sender'">
+                                    Images affich&#233;es&#160;:
+                                    <field name="remote_images_sender" nolabel="1" readonly="1" class="d-inline"/>
+                                    fait partie de vos exp&#233;diteurs autoris&#233;s.
+                                </span>
+                                <span invisible="remote_images_reason != 'domain'">
+                                    Images affich&#233;es&#160;: @<field name="remote_images_domain" nolabel="1" readonly="1" class="d-inline"/>
+                                    fait partie de vos domaines autoris&#233;s.
+                                </span>
+                                <button name="action_forget_remote_images" type="object"
+                                        class="btn btn-sm btn-link ms-auto"
+                                        string="Ne plus afficher automatiquement"/>
                             </div>
                             <field name="body_html_reading" readonly="1" nolabel="1"/>
                         </page>

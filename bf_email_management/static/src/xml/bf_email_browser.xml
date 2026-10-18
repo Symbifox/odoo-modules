@@ -417,6 +417,23 @@
                                 </span>
                             </div>
                         </div>
+                        <div t-if="state.preview.blocked_images"
+                             class="px-3 py-2 border-bottom d-flex align-items-center gap-2 small"
+                             style="background: #fff8e1;">
+                            <i class="fa fa-eye-slash text-muted"/>
+                            <span class="flex-grow-1">
+                                <t t-esc="state.preview.blocked_images"/>
+                                image(s) distante(s) bloquée(s). Les charger annonce
+                                la lecture à l'expéditeur.
+                                <t t-if="state.preview.images_refused === 'dmarc'">
+                                    L'authentification de ce message a échoué (DMARC).
+                                </t>
+                            </span>
+                            <button class="btn btn-sm btn-secondary"
+                                    t-on-click="() => this.loadRemoteImages()">
+                                Afficher les images
+                            </button>
+                        </div>
                         <iframe class="flex-grow-1 border-0 w-100"
                                 style="background: white;"
                                 sandbox="allow-same-origin"

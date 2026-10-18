@@ -812,8 +812,10 @@ class BfEmail(models.Model):
             raise UserError(_("Courriel introuvable (#%s).", email_id))
         rec.check_access("read")
         data = rec._inbox_row(with_thread=True)
-        show = bool(load_images) or not rec._block_remote_images_enabled()
-        body, blocked = rec._body_html_blocked(load_images=show)
+        # Préférence du lecteur, réglage d'instance et expéditeurs
+        # autorisés décident ici comme au formulaire et au téléphone.
+        body, blocked, images = rec._reading_body(load_images=bool(load_images))
+        data.update(images)
         data.update({
             "body_html": body,
             "blocked_images": blocked,

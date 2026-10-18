@@ -330,13 +330,20 @@ export class BfEmailBrowser extends Component {
         this._fetchPreview(uid);
     }
 
-    async _fetchPreview(uid) {
+    /** Le corps du message ouvert, images distantes cette fois. */
+    async loadRemoteImages() {
+        if (this.state.preview && this.state.selectedUid) {
+            await this._fetchPreview(this.state.selectedUid, true);
+        }
+    }
+
+    async _fetchPreview(uid, loadImages = false) {
         this.state.loadingPreview = true;
         this.state.preview = null;
         try {
             this.state.preview = await this.orm.call(
                 "bf.email", "imap_browser_get_body", [],
-                { folder: this.state.currentFolder, uid }
+                { folder: this.state.currentFolder, uid, load_images: !!loadImages }
             );
             // Mark as seen locally so the row un-bolds immediately.
             const m = this.state.messages.find(x => x.uid === uid);

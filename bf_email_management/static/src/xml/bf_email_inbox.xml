@@ -1063,7 +1063,7 @@
                             </button>
                         </div>
                         <div t-if="state.preview.blocked_images"
-                             class="px-3 py-2 border-bottom d-flex align-items-center gap-2 small"
+                             class="px-3 py-2 border-bottom d-flex flex-wrap align-items-center gap-2 small"
                              style="background: #fff8e1;">
                             <i class="fa fa-eye-slash text-muted"/>
                             <span class="flex-grow-1">
@@ -1074,6 +1074,48 @@
                             <button class="btn btn-sm btn-secondary"
                                     t-on-click="() => this.loadRemoteImages()">
                                 Afficher les images
+                            </button>
+                            <t t-if="!state.preview.images_refused and state.preview.images_sender">
+                                <button class="btn btn-sm btn-link px-1"
+                                        t-att-disabled="state.acting"
+                                        t-att-title="state.preview.images_sender"
+                                        t-on-click="() => this.allowRemoteImages('sender')">
+                                    Toujours pour cet expéditeur
+                                </button>
+                                <button t-if="state.preview.images_domain_allowed"
+                                        class="btn btn-sm btn-link px-1"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.allowRemoteImages('domain')">
+                                    Toujours pour @<t t-esc="state.preview.images_domain"/>
+                                </button>
+                            </t>
+                            <span t-if="state.preview.images_refused === 'dmarc'" class="w-100 text-danger">
+                                Cet expéditeur fait partie de vos images autorisées, mais
+                                l'authentification de ce message a échoué (DMARC) : ses
+                                images restent bloquées.
+                            </span>
+                            <span t-if="state.preview.images_refused === 'headers'" class="w-100 text-muted">
+                                Cet expéditeur fait partie de vos images autorisées, mais ce
+                                courriel n'a pas ses en-têtes d'origine : rien ne dit qu'il
+                                vient bien de lui.
+                            </span>
+                        </div>
+                        <div t-elif="state.preview.remote_images and ['sender', 'domain'].includes(state.preview.images_reason)"
+                             class="px-3 py-1 border-bottom d-flex align-items-center gap-2 small text-muted">
+                            <i class="fa fa-picture-o"/>
+                            <span class="flex-grow-1">
+                                Images affichées :
+                                <t t-if="state.preview.images_reason === 'domain'">
+                                    @<t t-esc="state.preview.images_domain"/> fait partie de vos domaines autorisés.
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="state.preview.images_sender"/> fait partie de vos expéditeurs autorisés.
+                                </t>
+                            </span>
+                            <button class="btn btn-sm btn-link px-1"
+                                    t-att-disabled="state.acting"
+                                    t-on-click="() => this.forgetRemoteImages()">
+                                Ne plus afficher automatiquement
                             </button>
                         </div>
                         <iframe class="flex-grow-1 border-0 w-100"

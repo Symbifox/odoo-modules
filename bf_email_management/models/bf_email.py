@@ -1,6 +1,7 @@
 import base64
 import email as email_mod
 import email.message
+import email.parser
 import email.policy
 import email.utils
 import logging
@@ -24,6 +25,8 @@ from odoo.http import request
 
 from . import bf_email_imap
 from . import imip
+from . import bf_email_image_sender
+from . import bf_email_images
 from .subject_utils import dedup_subject_prefix
 
 
@@ -79,10 +82,26 @@ _INVITATION_SUBJECT_RE = re.compile(
 # ; le poste les chargeait encore. Mesuré sur BF le 2026-09-13 : 7 189
 # reçus portent une image distante et 172 des 250 plus récents portent une
 # image de 1 pixel.
-_REMOTE_IMG_RE = re.compile(
-    r"""(<img\b[^>]*?\s)src\s*=\s*(["\'])(\s*https?://[^"\']*)\2""",
-    re.IGNORECASE,
-)
+# Le parcage lui-même vit dans `bf_email_images` : il parcourt l'arbre HTML au
+# lieu d'y appliquer une expression régulière, qui ratait `srcset`, `poster`,
+# `https:\\hôte` et les fonds CSS, et qui, étendue aux fonds, avalait du texte
+# jusqu'à la prochaine parenthèse.
+
+
+def dmarc_failed_in(headers):
+    """Vrai si NOTRE serveur de réception a noté ``dmarc=fail``.
+
+    ``headers`` : un ``email.message.Message``, ou le texte des en-têtes
+    (``raw_headers``). Même règle que l'iMIP : seul le PREMIER
+    ``Authentication-Results`` compte, les suivants ont voyagé avec le message
+    et se forgent.
+    """
+    if not headers:
+        return False
+    if isinstance(headers, str):
+        headers = email_mod.parser.HeaderParser(
+            policy=email.policy.compat32).parsestr(headers)
+    return imip.dmarc_failed(headers)
 
 # Marque posée sur les ``ir.attachment`` extraites du RFC 2822 d'une ligne
 # IMAP. Une ligne née du chatter porte ses pièces sur son ``mail.message`` ;
@@ -256,6 +275,35 @@ class BfEmail(models.Model):
     blocked_image_count = fields.Integer(
         string="Images bloquées",
         compute="_compute_body_html_reading",
+    )
+    # Ce qui a décidé, pour la bannière. Calculés avec le corps, pour
+    # le LECTEUR (préférence et liste sont les siennes, pas celles du
+    # propriétaire de la boîte).
+    remote_image_count = fields.Integer(
+        string="Images distantes",
+        compute="_compute_body_html_reading",
+    )
+    remote_images_reason = fields.Char(
+        string="Images affichées parce que",
+        compute="_compute_body_html_reading",
+    )
+    remote_images_sender = fields.Char(
+        string="Expéditeur (images)",
+        compute="_compute_body_html_reading",
+    )
+    remote_images_domain = fields.Char(
+        string="Domaine (images)",
+        compute="_compute_body_html_reading",
+    )
+    remote_images_domain_allowed = fields.Boolean(
+        string="Domaine autorisable",
+        compute="_compute_body_html_reading",
+    )
+    remote_images_refused = fields.Char(
+        string="Expéditeur autorisé, mais non vérifiable",
+        compute="_compute_body_html_reading",
+        help="« dmarc » : notre serveur de réception a noté un échec DMARC. "
+             "« headers » : le courriel n'a pas ses en-têtes d'origine.",
     )
     body_html_display = fields.Html(
         string="Corps (affichage)",
@@ -924,24 +972,31 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     # Images distantes : le corps rendu, et ce qu'on en retire
     # ------------------------------------------------------------------
-    @api.depends("body_html_display")
+    @api.depends("body_html_display", "email_from", "raw_headers")
+    @api.depends_context("uid", "bf_load_images")
     def _compute_body_html_reading(self):
         """Le corps tel que le FORMULAIRE le rend, images parquées.
 
         Le contexte `bf_load_images` le débloque, et c'est le bouton
         « Afficher les images » de l'en-tête qui le pose : un champ calculé lit
-        le contexte, donc rouvrir la fiche avec la clé suffit, sans colonne de
-        plus ni réglage par usager.
+        le contexte, donc rouvrir la fiche avec la clé suffit. La préférence
+        du lecteur et ses expéditeurs autorisés décident aussi,
+        par `_reading_body`, comme la boîte et le téléphone.
         """
-        show_all = bool(self.env.context.get("bf_load_images"))
+        once = self.env.context.get("bf_load_images")
         for rec in self:
-            if show_all or not rec._block_remote_images_enabled():
-                rec.body_html_reading = rec.body_html_display
-                rec.blocked_image_count = 0
-            else:
-                body, blocked = rec._body_html_blocked()
-                rec.body_html_reading = body
-                rec.blocked_image_count = blocked
+            # La clé porte l'id du courriel : posée à `True`, elle restait dans le contexte de l'action, et le courriel
+            # SUIVANT du pager s'ouvrait images chargées.
+            show_once = once is True or (bool(once) and once == rec.id)
+            body, blocked, info = rec._reading_body(load_images=show_once)
+            rec.body_html_reading = body
+            rec.blocked_image_count = blocked
+            rec.remote_image_count = info["remote_images"]
+            rec.remote_images_reason = info["images_reason"]
+            rec.remote_images_sender = info["images_sender"]
+            rec.remote_images_domain = info["images_domain"]
+            rec.remote_images_domain_allowed = info["images_domain_allowed"]
+            rec.remote_images_refused = info["images_refused"]
 
     def action_load_remote_images(self):
         """Rouvre la fiche en autorisant les images, pour cette vue seulement."""
@@ -953,8 +1008,66 @@ class BfEmail(models.Model):
             "view_mode": "form",
             "views": [[False, "form"]],
             "target": "current",
-            "context": dict(self.env.context, bf_load_images=True),
+            "context": dict(self.env.context, bf_load_images=self.id),
         }
+
+    def _reopen_form(self):
+        """Rouvre la fiche SANS la clé « cette fois » : la règle seule décide."""
+        context = dict(self.env.context)
+        context.pop("bf_load_images", None)
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "views": [[False, "form"]],
+            "target": "current",
+            "context": context,
+        }
+
+    def action_allow_remote_images_sender(self):
+        """« Toujours pour cet expéditeur »."""
+        self.ensure_one()
+        self.inbox_allow_remote_images(self.id, "sender")
+        return self._reopen_form()
+
+    def action_allow_remote_images_domain(self):
+        """« Toujours pour ce domaine »."""
+        self.ensure_one()
+        self.inbox_allow_remote_images(self.id, "domain")
+        return self._reopen_form()
+
+    def action_forget_remote_images(self):
+        """« Ne plus afficher automatiquement »."""
+        self.ensure_one()
+        self.inbox_forget_remote_images(self.id)
+        return self._reopen_form()
+
+    @api.model
+    def inbox_allow_remote_images(self, email_id, kind):
+        """Autorise, POUR SOI, les images de l'expéditeur de ce courriel.
+
+        Le courriel doit être lisible par l'appelant : on n'autorise pas
+        l'expéditeur d'un message qu'on ne voit pas (et la règle d'accès de
+        `bf.email` le refuse à un usager du portail).
+        """
+        rec = self.browse(int(email_id)).exists()
+        if not rec:
+            raise UserError(_("Courriel introuvable (#%s).", email_id))
+        rec.check_access("read")
+        self.env["bf.email.image.sender"]._allow_address(
+            rec.sudo().email_from, kind)
+        return True
+
+    @api.model
+    def inbox_forget_remote_images(self, email_id):
+        """Retire, POUR SOI, l'expéditeur de ce courriel et ses domaines."""
+        rec = self.browse(int(email_id)).exists()
+        if not rec:
+            raise UserError(_("Courriel introuvable (#%s).", email_id))
+        rec.check_access("read")
+        return self.env["bf.email.image.sender"]._forget_address(
+            rec.sudo().email_from)
 
     # ------------------------------------------------------------------
     # Sourdine
@@ -1108,14 +1221,103 @@ class BfEmail(models.Model):
         body = self.body_html_display or ""
         if load_images:
             return body, 0
-        blocked = [0]
+        return bf_email_images.park_remote_images(body)
 
-        def _park(match):
-            blocked[0] += 1
-            return "%sdata-blocked-src=%s%s%s" % (
-                match.group(1), match.group(2), match.group(3), match.group(2))
+    # ------------------------------------------------------------------
+    # Images distantes : qui décide
+    # ------------------------------------------------------------------
+    @api.model
+    def _remote_images_decision(self, address, headers=None):
+        """Pourquoi le LECTEUR (``env.user``) verrait d'office ces images.
 
-        return _REMOTE_IMG_RE.sub(_park, body), blocked[0]
+        Rend ``(raison, ligne, refus)``. ``raison`` : ``""`` (parquées),
+        ``"user"`` (sa préférence « toujours »), ``"instance"`` (Paramètres),
+        ``"sender"`` / ``"domain"`` (sa liste). ``refus`` dit pourquoi une
+        ligne de la liste n'a PAS joué : ``"dmarc"`` ou ``"headers"``.
+        Ordre de décision :
+
+        1. préférence « toujours bloquer » : rien, liste comprise ;
+        2. préférence « toujours afficher » : tout, sans regarder DMARC
+           (c'est son choix, pas une confiance en l'expéditeur) ;
+        3. préférence « selon l'entreprise » et entreprise à « afficher » ;
+        4. sa liste, SAUF si le courriel n'a pas ses en-têtes d'origine
+           (passerelle sans original, vieux imports : rien ne dit d'où il
+           vient), ou si notre MX a noté ``dmarc=fail``.
+
+        ``address`` doit venir de ``strict_sender`` : un ``From`` ambigu
+        arrive vide, et ne fait jamais jouer la liste.
+        """
+        Sender = self.env["bf.email.image.sender"]
+        pref = self.env.user.sudo().bf_email_remote_images or "instance"
+        if pref == "block":
+            return "", Sender, ""
+        if pref == "always":
+            return "user", Sender, ""
+        if not self._block_remote_images_enabled():
+            return "instance", Sender, ""
+        row = Sender._match(address)
+        if not row:
+            return "", Sender, ""
+        if not headers or (isinstance(headers, str) and not headers.strip()):
+            return "", row, "headers"
+        if dmarc_failed_in(headers):
+            return "", row, "dmarc"
+        return row.kind, row, ""
+
+    def _remote_images_info(self, address, reason, refused, body):
+        """Les clés `images_*` que les trois surfaces dessinent."""
+        domain = address.rsplit("@", 1)[1] if "@" in address else ""
+        # « Toujours bloquer » ignore la liste : offrir « Toujours pour… »
+        # serait un bouton qui ne change rien à l'écran. Sans expéditeur, les
+        # surfaces le masquent ; un expéditeur ambigu n'en a pas non plus.
+        listable = (self.env.user.sudo().bf_email_remote_images or "instance") != "block"
+        return {
+            "images_reason": reason,
+            "images_sender": address if listable else "",
+            "images_domain": domain,
+            "images_domain_allowed": bool(listable and address)
+            and bf_email_image_sender.is_listable_domain(domain),
+            "images_refused": refused,
+            "remote_images": bf_email_images.count_remote_images(body),
+        }
+
+    def _reading_body(self, load_images=False):
+        """Le corps à servir au lecteur, et de quoi dessiner sa bannière.
+
+        Rend ``(html, bloquées, info)``. Une seule porte pour le formulaire,
+        la boîte OWL et le téléphone : une défense écrite deux fois finit par
+        diverger.
+        """
+        self.ensure_one()
+        sudo = self.sudo()
+        address = bf_email_images.strict_sender(sudo.email_from)
+        reason, _row, refused = self._remote_images_decision(
+            address, sudo.raw_headers or "")
+        if not reason and load_images:
+            reason = "once"
+        body, blocked = self._body_html_blocked(load_images=bool(reason))
+        info = self._remote_images_info(
+            address, reason, refused, self.body_html_display)
+        return body, blocked, info
+
+    @api.model
+    def _imap_browser_reading(self, body, msg, load_images=False):
+        """Le corps du navigateur IMAP, sous la même décision que la boîte.
+
+        ⚠️ Ce corps arrive BRUT du serveur IMAP. Il est assaini d'abord, comme
+        `body_html_display` : parquer du HTML brut laissait passer `<link>`,
+        `@import`, `<object>`, `<iframe>`, des schémas en entités et des
+        attributs sans guillemets.
+        """
+        body = tools.html_sanitize(body or "")
+        address = bf_email_images.strict_sender(str(msg.get("From", "")))
+        reason, _row, refused = self._remote_images_decision(address, msg)
+        if not reason and load_images:
+            reason = "once"
+        blocked = 0
+        if not reason:
+            body, blocked = bf_email_images.park_remote_images(body)
+        return body, blocked, reason, refused
 
     def _block_remote_images_enabled(self):
         """L'interrupteur d'instance, à l'état SÛR par défaut.
@@ -6543,8 +6745,8 @@ class BfEmail(models.Model):
         }
 
     @api.model
-    def imap_browser_get_body(self, folder, uid):
-        """Return ``{subject, from, to, date, body_html, already_in_bf_email, bf_email_id}``."""
+    def imap_browser_get_body(self, folder, uid, load_images=False):
+        """Return ``{subject, from, to, date, body_html, blocked_images, already_in_bf_email, bf_email_id}``."""
         self._imap_browser_check_folder(folder)
         if not uid:
             raise UserError(_("UID manquant."))
@@ -6566,8 +6768,12 @@ class BfEmail(models.Model):
         msg = bf_email_imap.parse_rfc822(raw)
         body_html, body_plain = bf_email_imap.extract_body(msg)
         body = body_html or (
-            "<pre>%s</pre>" % (body_plain or "") if body_plain else ""
+            "<pre>%s</pre>" % html.escape(body_plain or "") if body_plain else ""
         )
+        # Le navigateur IMAP servait le corps tel quel, images distantes
+        # comprises, alors que la boîte les parquait.
+        body, blocked, reason, refused = self._imap_browser_reading(
+            body, msg, load_images=load_images)
         mid = str(msg.get("Message-ID", "")).strip() or None
         bf_email = False
         if mid:
@@ -6582,6 +6788,9 @@ class BfEmail(models.Model):
             "to": str(msg.get("To", ""))[:255],
             "date": parsed_date or False,
             "body_html": body,
+            "blocked_images": blocked,
+            "images_reason": reason,
+            "images_refused": refused,
             "already_in_bf_email": bool(bf_email),
             "bf_email_id": bf_email.id if bf_email else False,
             "message_id": mid,

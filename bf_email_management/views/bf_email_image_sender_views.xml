@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+      Images distantes : préférence par usager et expéditeurs autorisés.
+
+      La préférence vit dans les PRÉFÉRENCES, à côté du « ne pas déranger » :
+      c'est un choix de la personne, pas de sa boîte IMAP. La liste se remplit
+      surtout depuis la bannière d'un courriel ; l'écran ci-dessous sert à la
+      relire et à en retirer.
+    -->
+    <record id="view_users_form_simple_modif_bf_email_images" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.bf.email.images</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="inside">
+                <group string="Courriels" name="bf_email_images">
+                    <field name="bf_email_remote_images" readonly="0" widget="radio"/>
+                    <div colspan="2" class="text-muted small">
+                        Vos exp&#233;diteurs autoris&#233;s se g&#232;rent dans
+                        Courriels &#8250; Configuration &#8250; Images autoris&#233;es.
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_email_image_sender_view_list" model="ir.ui.view">
+        <field name="name">bf.email.image.sender.list</field>
+        <field name="model">bf.email.image.sender</field>
+        <field name="arch" type="xml">
+            <list string="Images autorisées" editable="bottom">
+                <field name="kind"/>
+                <field name="value"/>
+                <field name="create_date" string="Depuis" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_image_sender_view_search" model="ir.ui.view">
+        <field name="name">bf.email.image.sender.search</field>
+        <field name="model">bf.email.image.sender</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="value"/>
+                <filter name="kind_sender" string="Expéditeurs"
+                        domain="[('kind', '=', 'sender')]"/>
+                <filter name="kind_domain" string="Domaines"
+                        domain="[('kind', '=', 'domain')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_email_image_sender_action" model="ir.actions.act_window">
+        <field name="name">Images autorisées</field>
+        <field name="res_model">bf.email.image.sender</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun expéditeur autorisé pour l'instant
+            </p>
+            <p>
+                Les images distantes d'un courriel restent bloquées tant que
+                vous ne les demandez pas : les charger dit à l'expéditeur que
+                vous l'avez lu, quand, et d'où. Dans la bannière d'un courriel,
+                « Toujours pour cet expéditeur » ou « … pour ce domaine »
+                l'ajoute ici.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_email_image_senders"
+              name="Images autoris&#233;es"
+              parent="menu_bf_email_config"
+              action="bf_email_image_sender_action"
+              sequence="9"/>
+
+</odoo>

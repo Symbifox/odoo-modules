@@ -498,6 +498,28 @@ class BfEmailMobileApi(http.Controller):
         return _json(request.env["bf.email"].get_mobile_message(
             int(kw["id"]), load_images=_flag(kw.get("load_images"))))
 
+    @http.route(f"{BASE}/images/allow", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def images_allow(self, device, **kw):
+        """« Toujours afficher les images » de cet expéditeur."""
+        data = _body(**kw)
+        if not data.get("email_id") or data.get("kind") not in ("sender", "domain"):
+            return _json({"error": "missing_parameters"}, 400)
+        return _json(request.env["bf.email"].mobile_allow_remote_images(
+            data["email_id"], data["kind"]))
+
+    @http.route(f"{BASE}/images/forget", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def images_forget(self, device, **kw):
+        """Retire l'expéditeur et son domaine des images autorisées."""
+        data = _body(**kw)
+        if not data.get("email_id"):
+            return _json({"error": "missing_parameters"}, 400)
+        return _json(request.env["bf.email"].mobile_forget_remote_images(
+            data["email_id"]))
+
     @http.route(f"{BASE}/attachment", type="http", auth="public",
                 methods=["GET"], csrf=False, save_session=False)
     @_authed
