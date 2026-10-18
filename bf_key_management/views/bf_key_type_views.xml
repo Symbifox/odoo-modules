@@ -12,8 +12,8 @@
                 <field name="level" groups="bf_key_management.group_key_area_manager" optional="show"/>
                 <field name="area_id" optional="show"/>
                 <field name="blind_code" optional="show"/>
-                <field name="copy_count" string="Copies"/>
-                <field name="issued_count"/>
+                <field name="copy_count" width="105px" string="Copies"/>
+                <field name="issued_count" width="120px"/>
             </list>
         </field>
     </record>
@@ -106,7 +106,7 @@
                                     <field name="symbol"/>
                                     <field name="name"/>
                                     <field name="level"/>
-                                    <field name="issued_count"/>
+                                    <field name="issued_count" width="120px"/>
                                 </list>
                             </field>
                         </page>

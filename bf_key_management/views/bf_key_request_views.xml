@@ -10,7 +10,7 @@
                 <field name="type_id"/>
                 <field name="door_ids" widget="many2many_tags" optional="show"/>
                 <field name="area_id" optional="show"/>
-                <field name="date_until" optional="show"/>
+                <field name="date_until" width="150px" optional="show"/>
                 <field name="state" widget="badge" decoration-warning="state == 'submitted'"
                        decoration-success="state in ('approved', 'issued')" decoration-danger="state == 'refused'"/>
             </list>

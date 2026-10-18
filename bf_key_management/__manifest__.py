@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Keys",
-    "version": "18.0.1.0.12",
+    "version": "18.0.1.0.13",
     "category": "Human Resources",
     "summary": "Who holds which key, card or remote of the premises, which doors each one "
                "opens, and nothing forgotten when someone leaves",

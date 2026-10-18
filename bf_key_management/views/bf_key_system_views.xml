@@ -9,8 +9,8 @@
                 <field name="levels"/>
                 <field name="keyway"/>
                 <field name="restricted"/>
-                <field name="last_rekey_date"/>
-                <field name="next_review_date" decoration-danger="next_review_date and next_review_date &lt;= current_date"/>
+                <field name="last_rekey_date" width="140px"/>
+                <field name="next_review_date" width="150px" decoration-danger="next_review_date and next_review_date &lt;= current_date"/>
             </list>
         </field>
     </record>
@@ -63,7 +63,7 @@
                                     <field name="name"/>
                                     <field name="level"/>
                                     <field name="parent_id"/>
-                                    <field name="issued_count"/>
+                                    <field name="issued_count" width="120px"/>
                                 </list>
                             </field>
                         </page>

@@ -10,7 +10,7 @@
                 <field name="lock_kind"/>
                 <field name="keyed_type_id" groups="bf_key_management.group_key_area_manager"/>
                 <field name="nmk" groups="bf_key_management.group_key_area_manager" optional="hide"/>
-                <field name="holder_count" groups="bf_key_management.group_key_area_manager" string="Holders"/>
+                <field name="holder_count" width="105px" groups="bf_key_management.group_key_area_manager" string="Holders"/>
             </list>
         </field>
     </record>
@@ -76,7 +76,7 @@
                                     <field name="name"/>
                                     <field name="kind"/>
                                     <field name="level"/>
-                                    <field name="issued_count"/>
+                                    <field name="issued_count" width="120px"/>
                                 </list>
                             </field>
                         </page>
