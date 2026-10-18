@@ -13,13 +13,23 @@ from markupsafe import escape as _esc
 from odoo import _, api, fields, models
 
 MAX_ROWS = 12
-RENDERED_KEY = "bf_helpdesk_digest.rendered_items"
+RENDERED_CTX = "bf_helpdesk_rendered"
 SLA_ORDER = {"breached": 0, "at_risk": 1, "ok": 2, "paused": 3, "none": 4, "met": 5}
 SLA_BADGE = {
     "breached": ("#B42318", "SLA dépassé"),
     "at_risk": ("#8A4B00", "SLA à risque"),
     "paused": ("#4B5563", "En pause"),
 }
+
+
+class _Rendus:
+    """Éléments rendus pendant UN envoi. Égalité par identité, pas par valeur :
+    Odoo réutilise un env dont le contexte est égal, et deux ensembles vides le
+    sont, ce qui ferait remplir l'ensemble d'un autre envoi."""
+    __slots__ = ("ids",)
+
+    def __init__(self):
+        self.ids = set()
 
 
 class DailyDigestConfig(models.Model):
@@ -113,17 +123,21 @@ class DailyDigestConfig(models.Model):
             # HTML5 la sort de la table de l'enveloppe.
             block = f'<tr><td style="padding:0 24px 24px 24px;">{section}</td></tr>'
             html = html.replace("<!-- Divider -->", block + "<!-- Divider -->", 1)
-            if items:
-                # Retenus pour ce passage ; marqués par _send_digest_to après l'envoi.
-                self.env.cr.precommit.data.setdefault(RENDERED_KEY, set()).update(items.ids)
+            rendus = self.env.context.get(RENDERED_CTX)
+            if items and rendus is not None:
+                # Retenus pour cet envoi ; marqués par _send_digest_to après. Hors
+                # envoi (aperçu), pas de porteur au contexte : rien n'est retenu.
+                rendus.ids.update(items.ids)
         return html
 
     def _send_digest_to(self, user):
-        self.env.cr.precommit.data[RENDERED_KEY] = set()
-        res = super()._send_digest_to(user)
-        rendered = self.env.cr.precommit.data.pop(RENDERED_KEY, set())
-        if rendered:
-            self.env["helpdesk.agent.notify.item"].sudo().browse(list(rendered)).write({"sent": True})
+        # Porteur au contexte, pas cr.precommit.data : un point de sauvegarde
+        # ouvert pendant l'envoi (bf_email_management en ouvre un) lance les
+        # précommit, qui vident ce dictionnaire avant qu'on le relise.
+        rendus = _Rendus()
+        res = super(DailyDigestConfig, self.with_context(**{RENDERED_CTX: rendus}))._send_digest_to(user)
+        if rendus.ids:
+            self.env["helpdesk.agent.notify.item"].sudo().browse(list(rendus.ids)).write({"sent": True})
         return res
 
 

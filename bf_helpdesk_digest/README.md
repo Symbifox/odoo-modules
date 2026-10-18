@@ -55,6 +55,7 @@ modules published under the Business Source License 1.1; see their READMEs.
 
 | Version | Change |
 |---|---|
+| 18.0.1.0.3 | Daily notifications are marked as sent again when another installed module opens a savepoint while the digest email goes out: they no longer come back in the next digest, nor get sent a second time by the 26-hour safety net. |
 | 18.0.1.0.2 | Test only: the 26-hour safety-net test no longer depends on the time of day it runs. |
 | 18.0.1.0.1 | Notification items are marked as sent only once the digest actually goes out: a preview of the digest no longer consumes them. |
 | 18.0.1.0.0 | First release: Helpdesk section in the morning digest (open tickets of the reader, SLA first, and daily email notifications from the agent notification matrix), with a 26-hour safety net. |

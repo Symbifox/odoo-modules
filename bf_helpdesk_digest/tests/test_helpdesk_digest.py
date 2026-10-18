@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from freezegun import freeze_time
 
@@ -68,6 +69,30 @@ class TestHelpdeskDigest(TransactionCase):
         self.assertIn("Réponse de Kim", html)
         self.assertFalse(item.sent, "un aperçu ne consomme pas les éléments")
         self.config._send_digest_to(self.agent)
+        self.assertTrue(item.sent)
+
+    def test_marked_even_when_sending_runs_precommit(self):
+        """Un point de sauvegarde ouvert pendant l'envoi (bf_email_management en
+        ouvre un) lance les précommit, qui vident cr.precommit.data : les
+        éléments rendus doivent quand même être marqués envoyés."""
+        ticket = self._ticket()
+        item = self.Item.create({
+            "user_id": self.agent.id, "ticket_id": ticket.id, "event": "client_reply",
+            "channel": "email", "mode": "daily", "summary": "Réponse pendant l'envoi",
+        })
+        cr = self.env.cr
+        seen = []
+
+        def send(mails, *args, **kwargs):
+            cr.precommit.add(lambda: None)
+            with cr.savepoint():
+                pass
+            # Le piège a bien joué : le dictionnaire des précommit est vide.
+            seen.append(dict(cr.precommit.data))
+
+        with patch.object(type(self.env["mail.mail"]), "send", send):
+            self.config._send_digest_to(self.agent)
+        self.assertEqual(seen, [{}], "l'envoi est passé par le point de sauvegarde")
         self.assertTrue(item.sent)
 
     def test_safety_net_after_26_hours(self):
