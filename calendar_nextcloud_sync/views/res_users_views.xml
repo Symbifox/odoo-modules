@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Google Calendar" name="google_calendar">
+                <page string="Google Calendar" name="google_calendar" groups="base.group_user">
                     <group>
                         <group string="Status">
                             <field name="x_google_oauth_connected" widget="boolean_toggle"
@@ -65,7 +65,7 @@ jusqu'a ce que vous vous reconnectiez."/>
         <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Google Calendar" name="google_calendar_preferences">
+                <page string="Google Calendar" name="google_calendar_preferences" groups="base.group_user">
                     <group>
                         <group string="Status">
                             <field name="x_google_oauth_connected" widget="boolean_toggle"

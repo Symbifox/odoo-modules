@@ -3,6 +3,7 @@
 import io
 import json
 import logging
+import os
 import re
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -14,12 +15,15 @@ from dateutil import parser as dt_parser
 from dateutil.tz import tzical
 
 from odoo import api, fields, models
+from odoo.tools import config
 from odoo.addons.bf_timezone.tools import tz as tz_tools
+
+from . import caldav_backend
 
 _logger = logging.getLogger(__name__)
 
 try:
-    from cryptography.fernet import Fernet, InvalidToken
+    from cryptography.fernet import Fernet, InvalidToken, MultiFernet
 except ImportError:
     Fernet = None
     InvalidToken = Exception
@@ -244,12 +248,38 @@ class NextcloudCalendarSyncConfig(models.Model):
 
     # === Encryption Methods ===
 
+    # la clé se range hors de la base (odoo.conf, puis variable
+    # d'environnement), comme celle du coffre bf_credentials. C'est la MÊME clé que
+    # l'ancien paramètre système, reprise telle quelle : rien n'est re-chiffré. Sans
+    # clé hors base, on retombe sur le paramètre en base, avec un avertissement.
+    _CLE_ENV = "BF_CALENDAR_NEXTCLOUD_SYNC_FERNET_KEY"
+    _CLE_CONF = "calendar_nextcloud_sync_fernet_key"
+    _CLE_PARAM = "calendar_nextcloud_sync.encryption_key"
+
+    def _cle_hors_base(self):
+        cle = config.get(self._CLE_CONF) or os.environ.get(self._CLE_ENV)
+        return cle.encode() if cle else None
+
+    def _fernet_lecture(self):
+        """Déchiffre avec la clé hors base, puis avec l'ancienne clé en base."""
+        cles = [self._get_encryption_key()]
+        ancienne = self.env["ir.config_parameter"].sudo().get_param(self._CLE_PARAM)
+        if ancienne and ancienne.encode() not in cles:
+            cles.append(ancienne.encode())
+        return MultiFernet([Fernet(c) for c in cles])
+
     def _get_encryption_key(self):
-        """Get or generate encryption key from system parameters."""
+        """Clé de chiffrement : hors base d'abord, sinon le paramètre système."""
         if not Fernet:
             return None
+        hors_base = self._cle_hors_base()
+        if hors_base:
+            return hors_base
         ICP = self.env["ir.config_parameter"].sudo()
         key = ICP.get_param("calendar_nextcloud_sync.encryption_key")
+        _logger.warning(
+            "Clé de chiffrement lue dans le paramètre système %s : rangez-la dans "
+            "%s de odoo.conf.", self._CLE_PARAM, self._CLE_CONF)
         if not key:
             key = Fernet.generate_key().decode()
             ICP.set_param("calendar_nextcloud_sync.encryption_key", key)
@@ -285,7 +315,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         if not key:
             return encrypted_value
         try:
-            f = Fernet(key)
+            f = self._fernet_lecture()
             return f.decrypt(encrypted_value.encode()).decode()
         except InvalidToken:
             # Distinguish "looks like Fernet but key mismatch" from
@@ -954,6 +984,22 @@ class NextcloudCalendarSyncConfig(models.Model):
         return {"mesure": True, "erreur": None, "ecarts": ecarts,
                 "vus": len(distants)}
 
+    def _bf_nc_rattraper_sans_casser(self, event, ev_data):
+        """Le rattrapage de CLASS / CATEGORIES, isolé dans un point de reprise.
+
+        Une erreur (course sur le nom d'une étiquette, droit refusé quand la
+        lecture est lancée à la main) faisait échouer toute la lecture et
+        laissait le curseur en échec pour les configurations suivantes du cron
+. Elle est journalisée, et
+        l'événement passe pour sauté.
+        """
+        try:
+            with self.env.cr.savepoint():
+                return event._bf_nc_rattraper_classe(ev_data)
+        except Exception as e:  # noqa: BLE001 (journalisé ; la lecture continue)
+            _logger.error("Rattrapage CLASS/CATEGORIES de %s en échec : %s", event.id, e)
+            return False
+
     def action_pull_from_nextcloud(self):
         """Pull all events from Nextcloud via CalDAV REPORT and upsert."""
         self.ensure_one()
@@ -1083,6 +1129,11 @@ class NextcloudCalendarSyncConfig(models.Model):
                         # l'agenda existant. La condition s'éteint d'elle-même
                         # dès que l'alarme est posée.
                         pass  # fall through to create_from_nextcloud
+                    elif ev and self._bf_nc_rattraper_sans_casser(ev, ev_data):
+                        # Rattrapage de CLASS / CATEGORIES, sans relire toute
+                        # la ressource.
+                        skipped += 1
+                        continue
                     else:
                         # Fix color if it doesn't match the config
                         if ev and ev.color != target_color:
@@ -1434,6 +1485,26 @@ class NextcloudCalendarSyncConfig(models.Model):
             if not uid:
                 errors += 1
                 continue
+            # 🔴 L'écho de notre propre écriture. Après un PUT, l'ETag que
+            # Nextcloud rend est stocké ; la ressource revient pourtant dans la
+            # lecture incrémentale suivante, et la réécrire depuis Nextcloud
+            # défaisait ce qu'Odoo seul connaît : participant sans courriel ou
+            # ajouté dans Odoo, lieu, description HTML, rappel courriel
+            #. La lecture complète sautait
+            # déjà un ETag inchangé ; la voici alignée, avec les mêmes deux
+            # rattrapages.
+            nouvel_etag = CalendarEvent._normalize_caldav_etag(ev_data.get("etag"))
+            if nouvel_etag:
+                connu = CalendarEvent.search([
+                    ("x_nc_uid", "=", uid), ("x_nc_calendar_id", "=", self.id),
+                ], limit=1)
+                if (
+                    connu
+                    and CalendarEvent._normalize_caldav_etag(connu.x_caldav_etag) == nouvel_etag
+                    and not (ev_data.get("rrule") and not connu.recurrency)
+                    and not (ev_data.get("alarms") and not connu.alarm_ids)
+                ):
+                    continue
             try:
                 with self.env.cr.savepoint():
                     res = CalendarEvent.create_from_nextcloud(ev_data, self.id)
@@ -1600,6 +1671,58 @@ class NextcloudCalendarSyncConfig(models.Model):
         return events
 
     def _parse_ics_vevent(self, ics_text):
+        """Le VEVENT maître d'une ressource, avec ses exceptions de série.
+
+        Une série déplacée ou annulée pour UNE date porte, dans la même
+        ressource, un second VEVENT à ``RECURRENCE-ID`` (RFC 5545 §3.8.4.4).
+        Jusqu'à la 2.24 seul le premier VEVENT était lu : l'occurrence déplacée
+        dans Nextcloud restait à son heure d'origine dans Odoo, et selon l'ordre
+        du fichier l'exception pouvait même passer pour la série entière.
+
+        Rend le maître (le VEVENT sans RECURRENCE-ID) tel que
+        ``_parse_ics_vevent_un`` le lit, plus ``overrides`` : la liste de ses
+        exceptions, chacune lue de la même façon et portant ``recurrence_id``.
+        Une ressource à un seul VEVENT se lit exactement comme avant.
+        """
+        lignes = caldav_backend.deplier(ics_text)
+        blocs = caldav_backend.blocs_vevent(lignes)
+        if len(blocs) <= 1:
+            return self._parse_ics_vevent_un(ics_text)
+        # Le .ics réduit à UN VEVENT : tout ce qui n'est dans aucun VEVENT
+        # (en-tête, VTIMEZONE), puis ce bloc. Calculé une fois : refaire le tri
+        # pour chaque bloc coûtait un temps cubique (400 exceptions : 33 s).
+        dans_un_bloc = set()
+        for debut, fin in blocs:
+            dans_un_bloc.update(range(debut, fin + 1))
+        hors = [ligne for i, ligne in enumerate(lignes)
+                if i not in dans_un_bloc and ligne.strip().upper() != "END:VCALENDAR"]
+        lus = [
+            self._parse_ics_vevent_un("\r\n".join(
+                hors + lignes[debut:fin + 1] + ["END:VCALENDAR"]))
+            for debut, fin in blocs
+        ]
+        maitre = next((v for v in lus if v and not v.get("recurrence_id")), None)
+        if maitre is None:
+            # Que des exceptions (invitation à une seule date d'une série
+            # d'autrui) : la première se lit comme un événement simple.
+            return next((v for v in lus if v), None)
+        exceptions = []
+        for lu in lus:
+            if not lu or not lu.get("recurrence_id"):
+                continue
+            if lu.get("recurrence_id_range"):
+                # RANGE=THISANDFUTURE déplace « celle-ci et les suivantes » :
+                # l'appliquer à une seule occurrence serait faux, et Odoo ne
+                # sait pas le représenter. Écartée, et dit.
+                _logger.warning(
+                    "Exception %s (RANGE=%s) de la série %s ignorée",
+                    lu["recurrence_id"], lu["recurrence_id_range"], maitre.get("uid"))
+                continue
+            exceptions.append(lu)
+        maitre["overrides"] = exceptions
+        return maitre
+
+    def _parse_ics_vevent_un(self, ics_text):
         """Parse ICS text and extract the first VEVENT data.
 
         Handles line folding (RFC 5545 §3.1) and common date formats.
@@ -1611,7 +1734,8 @@ class NextcloudCalendarSyncConfig(models.Model):
         """
         # Unfold lines: continuation lines start with space or tab
         unfolded = re.sub(r"\r?\n[ \t]", "", ics_text)
-        lines = unfolded.splitlines()
+        # Pas splitlines() : voir caldav_backend.deplier (U+2028 et voisins).
+        lines = re.split(r"\r?\n", unfolded)
 
         in_vevent = False
         in_nested = 0  # depth counter for VALARM, VTIMEZONE, etc.
@@ -1660,8 +1784,12 @@ class NextcloudCalendarSyncConfig(models.Model):
             if ":" not in stripped:
                 continue
 
-            # Split on first colon, but handle params with semicolons
-            prop_part, _, value = stripped.partition(":")
+            # Split on first colon, but handle params with semicolons. Le premier
+            # « : » hors guillemets : un ALTREP="http://…" coupait sinon le titre.
+            separateur = caldav_backend._separateur(stripped)
+            if separateur < 0:
+                continue
+            prop_part, value = stripped[:separateur], stripped[separateur + 1:]
             prop_name = prop_part.split(";")[0].upper()
             params_str = prop_part[len(prop_name):]
 
@@ -1683,8 +1811,17 @@ class NextcloudCalendarSyncConfig(models.Model):
                 props["description"] = self._unescape_ics(value)
             elif prop_name == "STATUS":
                 props["status"] = value
+            elif prop_name == "CLASS":
+                props["classe"] = value.strip().upper()
+            elif prop_name == "CATEGORIES":
+                # Plusieurs lignes CATEGORIES sont permises (RFC 5545 §3.8.1.2).
+                props.setdefault("categories", []).extend(
+                    caldav_backend.decouper_liste(value))
             elif prop_name == "RRULE":
                 props["rrule"] = value
+            elif prop_name == "RECURRENCE-ID":
+                props["rid_raw"] = value
+                props["rid_params"] = params_str
             elif prop_name == "EXDATE":
                 exdates_raw = props.setdefault("exdates_raw", [])
                 exdates_raw.append((value, params_str))
@@ -1730,13 +1867,21 @@ class NextcloudCalendarSyncConfig(models.Model):
         # Extract event timezone from DTSTART params for recurring events
         event_tz = None
         tzid_match = re.search(
-            r"TZID=([^;:]+)", props.get("start_params", ""), re.IGNORECASE
+            r'TZID=("[^"]*"|[^;:]+)', props.get("start_params", ""), re.IGNORECASE
         )
         if tzid_match:
-            event_tz = self._normalize_timezone(tzid_match.group(1))
+            event_tz = self._normalize_timezone(tzid_match.group(1).strip('"'))
 
         # Parse EXDATE values
         exdates = self._parse_exdates(props.get("exdates_raw", []), vtimezones)
+
+        recurrence_id, recurrence_id_allday = (None, False)
+        recurrence_id_range = False
+        if props.get("rid_raw"):
+            recurrence_id, recurrence_id_allday = self._parse_ics_datetime(
+                props["rid_raw"], props.get("rid_params", ""), vtimezones)
+            portee = re.search(r"RANGE=([A-Z-]+)", props.get("rid_params", ""), re.IGNORECASE)
+            recurrence_id_range = portee.group(1).upper() if portee else False
 
         # Format for Odoo
         if allday:
@@ -1770,6 +1915,15 @@ class NextcloudCalendarSyncConfig(models.Model):
             # .ics ne dit rien du statut », donc ne touche pas à ce qu'Odoo a,
             # tandis qu'une valeur écrase.
             "status": props.get("status"),
+            # Même règle que STATUS : absent veut dire « ce .ics n'en dit
+            # rien », et Odoo garde ce qu'il a.
+            "classe": props.get("classe"),
+            "categories": props.get("categories"),
+            # Heure d'origine de l'occurrence qu'une exception remplace (UTC
+            # naïf), absente d'un VEVENT ordinaire.
+            "recurrence_id": recurrence_id,
+            "recurrence_id_allday": recurrence_id_allday,
+            "recurrence_id_range": recurrence_id_range,
         }
 
     def _parse_valarms(self, alarm_blocks):
@@ -1847,8 +2001,10 @@ class NextcloudCalendarSyncConfig(models.Model):
 
         params_upper = params_str.upper() if params_str else ""
 
-        # All-day event: VALUE=DATE or 8-digit date
-        if "VALUE=DATE" in params_upper or (len(value) == 8 and value.isdigit()):
+        # All-day event: VALUE=DATE or 8-digit date. ⚠️ Pas `"VALUE=DATE" in` :
+        # VALUE=DATE-TIME, explicite mais valide, le contient, et l'heure lue
+        # comme une date levait : l'événement était perdu.
+        if re.search(r"VALUE=DATE(?![-\w])", params_upper) or (len(value) == 8 and value.isdigit()):
             try:
                 dt = datetime.strptime(value, "%Y%m%d")
                 return dt, True
@@ -1858,20 +2014,25 @@ class NextcloudCalendarSyncConfig(models.Model):
         # Extract TZID if present
         tzid = None
         raw_tzid = None
-        tzid_match = re.search(r"TZID=([^;:]+)", params_str or "", re.IGNORECASE)
+        # Entre guillemets (RFC 5545 §3.2 le permet), le TZID était lu
+        # guillemets compris, introuvable, et l'heure locale prise pour de l'UTC.
+        tzid_match = re.search(r'TZID=("[^"]*"|[^;:]+)', params_str or "", re.IGNORECASE)
         if tzid_match:
             # ⚠️ Les deux formes sont gardées : le nom NORMALISÉ sert à
             # interroger tzdata, le nom BRUT à retrouver le bloc VTIMEZONE, qui
             # est indexé par le TZID tel que l'expéditeur l'a écrit.
-            raw_tzid = tzid_match.group(1).strip()
+            raw_tzid = tzid_match.group(1).strip().strip('"')
             tzid = self._normalize_timezone(raw_tzid)
 
         try:
             # UTC indicator
             if value.endswith("Z"):
-                dt = datetime.strptime(value, "%Y%m%dT%H%M%SZ")
-                dt = dt.replace(tzinfo=timezone.utc)
-                return dt, False
+                # Naïve, comme toutes les autres branches : Odoo stocke de l'UTC
+                # naïf, et un datetime avec fuseau faisait lever les comparaisons
+                # (`_apply_exdates`, `_meme_instant`) et l'écriture d'un champ
+                # Datetime. Un RECURRENCE-ID ou un EXDATE en `Z` cassait la série
+                #.
+                return datetime.strptime(value, "%Y%m%dT%H%M%SZ"), False
 
             # Try basic ISO format first (no separators)
             if "T" in value and len(value) == 15:

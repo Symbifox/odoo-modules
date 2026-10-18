@@ -13,7 +13,8 @@ import secrets
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import email_normalize, escape_psql
 
 _logger = logging.getLogger(__name__)
 
@@ -49,17 +50,24 @@ class ResUsers(models.Model):
         groups="base.group_system",
         copy=False,
     )
+    # Les cinq champs Google lisibles (expiration, portées, courriel, booléen
+    # « connecté », alias) sont réservés aux usagers internes : la base donne
+    # la lecture de res.users au portail, qui les lisait par RPC sur toutes
+    # les fiches.
     x_google_oauth_expiry = fields.Datetime(
         string="Google OAuth Token Expiry",
+        groups="base.group_user",
         copy=False,
     )
     x_google_oauth_scope = fields.Char(
         string="Google OAuth Scopes",
+        groups="base.group_user",
         copy=False,
         help="Space-separated list of scopes consented by the user",
     )
     x_google_email = fields.Char(
         string="Google Account Email",
+        groups="base.group_user",
         copy=False,
         help="Email of the Google account connected by this user",
     )
@@ -84,13 +92,21 @@ class ResUsers(models.Model):
         "user record as a fallback when request.session is rotated between "
         "initiate() and callback() (e.g., after intermediate login/TOTP).",
     )
+    # compute_sudo : le calcul lit le jeton de rafraîchissement, réservé à
+    # base.group_system. Sans sudo, quiconque n'est pas administrateur et
+    # lisait ce booléen (onglet Google Calendar de « Mon profil », fiche
+    # d'un usager) recevait une « Erreur d'accès » sur le jeton. Seul le
+    # booléen sort; le jeton reste illisible.
     x_google_oauth_connected = fields.Boolean(
         string="Google Calendar Connected",
         compute="_compute_google_oauth_connected",
+        compute_sudo=True,
         store=False,
+        groups="base.group_user",
     )
     x_google_self_addresses = fields.Text(
         string="Google Self-Addresses (aliases)",
+        groups="base.group_user",
         copy=False,
         help="Comma- or newline-separated extra email addresses that "
         "resolve to the same Google account as the OAuth-connected one "
@@ -101,6 +117,92 @@ class ResUsers(models.Model):
         "Google from sending a courtesy invitation back to the calendar "
         "owner under a different identity.",
     )
+
+    # Champs que l'onglet Google Calendar met dans « Mon profil »
+    # (base.view_users_form_simple_modif, donc aussi hr.res_users_view_form_profile).
+    # Odoo ne lit le profil en sudo que si TOUS ses champs sont « lisibles par
+    # soi » : un seul champ hors liste et la lecture se fait avec les droits de
+    # l'usager, ce qui refuse les champs privés de hr (adresse, NAS...) à tout
+    # employé qui n'est pas agent RH. Les jetons, le state et le vérificateur
+    # PKCE n'y sont PAS : ils restent réservés à base.group_system.
+    _GOOGLE_PROFILE_FIELDS = [
+        "x_google_oauth_connected",
+        "x_google_email",
+        "x_google_oauth_expiry",
+        "x_google_self_addresses",
+    ]
+
+    # Réservé aux usagers internes, comme les champs eux-mêmes : la liste
+    # « lisible par soi » fait lire en sudo, elle rouvrirait ces champs au
+    # portail sur sa propre fiche.
+    # 🔴 `_is_internal()` lit les groupes de l'usager quand leur cache est
+    # froid; cette lecture repasse par SELF_READABLE_FIELDS (récursion sans
+    # fin). La clé de contexte suit l'usager jusqu'à cette
+    # lecture imbriquée (sudo() garde le contexte), qui n'a pas besoin des
+    # champs Google et sort à vide. Aucun état global : une exception ne
+    # laisse rien derrière elle.
+    def _google_self_fields(self, fnames):
+        if self.env.context.get("_bf_google_garde"):
+            return []
+        user = self.env.user
+        if not user:
+            return []
+        return fnames if user.with_context(
+            _bf_google_garde=True)._is_internal() else []
+
+    @property
+    def SELF_READABLE_FIELDS(self):
+        return super().SELF_READABLE_FIELDS + self._google_self_fields(
+            self._GOOGLE_PROFILE_FIELDS)
+
+    @property
+    def SELF_WRITEABLE_FIELDS(self):
+        # Les alias sont éditables dans le profil; sans cette ligne, enregistrer
+        # le profil après les avoir changés était refusé (écriture sur res.users).
+        return super().SELF_WRITEABLE_FIELDS + self._google_self_fields(
+            ["x_google_self_addresses"])
+
+    @api.model
+    def _split_google_self_addresses(self, raw):
+        """Les alias tels que la poussée Google les lit : séparés par des
+        virgules, des points-virgules ou des sauts de ligne, en minuscules."""
+        return [
+            token.strip().lower()
+            for token in (raw or "").replace("\n", ",").replace(";", ",").split(",")
+            if token.strip()
+        ]
+
+    @api.constrains("x_google_self_addresses")
+    def _check_google_self_addresses(self):
+        """Un alias ne peut pas être l'adresse d'un AUTRE usager.
+
+        La poussée Google retire des invités toute adresse de la liste
+        (`_get_google_self_addresses`), et la lecture suivante remplace les
+        participants de l'événement Odoo par ce que porte la copie Google.
+        L'adresse d'un ou d'une collègue inscrite en alias faisait donc
+        disparaître cette personne des événements, en silence. Ses propres
+        adresses secondaires restent permises.
+        """
+        Users = self.env["res.users"].sudo().with_context(active_test=False)
+        for user in self:
+            for alias in self._split_google_self_addresses(
+                    user.sudo().x_google_self_addresses):
+                # « Nom <x@y> » se compare aussi par son adresse nue.
+                normalise = email_normalize(alias) or alias
+                autre = Users.search([
+                    ("id", "!=", user.id),
+                    "|", "|",
+                    ("login", "=ilike", escape_psql(alias)),
+                    ("login", "=ilike", escape_psql(normalise)),
+                    ("partner_id.email_normalized", "=", normalise),
+                ], limit=1)
+                if autre:
+                    raise ValidationError(_(
+                        "%(address)s is the address of another account: it "
+                        "cannot be used as a Google alias. Only list your own "
+                        "secondary addresses here.",
+                        address=alias,
+                    ))
 
     @api.depends(
         "x_google_oauth_refresh_token_encrypted", "x_google_oauth_expiry"
@@ -137,8 +239,8 @@ class ResUsers(models.Model):
         _add(self.email)
         if self.partner_id:
             _add(self.partner_id.email)
-        raw = self.x_google_self_addresses or ""
-        for token in raw.replace("\n", ",").replace(";", ",").split(","):
+        for token in self._split_google_self_addresses(
+                self.x_google_self_addresses):
             _add(token)
         return result
 

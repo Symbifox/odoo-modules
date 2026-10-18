@@ -90,7 +90,50 @@
     #   est ouverte, exige qu'elle soit celle du propriétaire du state. Seul
     #   l'usager lui-même ou un administrateur peut déconnecter un agenda
     #   Google.
-    "version": "18.0.2.19.2",
+    # 18.0.2.19.3: la clé de chiffrement des secrets se lit hors de la base
+    #   (odoo.conf `calendar_nextcloud_sync_fernet_key`, ou la variable
+    #   d'environnement) ; l'ancienne clé rangée en base est encore lue pour
+    #   déchiffrer, et un avertissement invite à la déplacer.
+    # 18.0.2.20.0 à 18.0.2.23.0: couleurs d'agenda (`bf_color`). Un agenda
+    #   Nextcloud garde la couleur que Nextcloud lui donne, au lieu de la plus
+    #   proche des douze d'Odoo ; règle de couleur par agenda, et l'agenda des
+    #   participants suit la couleur résolue.
+    # 18.0.2.24.0: les écritures CalDAV d'Odoo (PUT et DELETE) portent
+    #   `x-nc-scheduling: false` : le greffon de planification de Nextcloud ne
+    #   poste plus rien aux invités. Chaque rencontre créée dans Odoo partait
+    #   deux fois (l'invitation d'Odoo, puis celle de Nextcloud), et une
+    #   suppression envoyait le CANCEL de Nextcloud même avec l'avis
+    #   d'annulation d'Odoo décoché. La liste d'invités part toujours.
+    # 18.0.2.24.1: « Mon profil » s'ouvre pour qui n'est pas administrateur
+    #   (calcul du jeton Google en compute_sudo, champs Google du profil dans
+    #   SELF_READABLE_FIELDS, alias dans SELF_WRITEABLE_FIELDS). Un alias qui
+    #   est la connexion ou le courriel d'un autre usager est refusé. Les champs
+    #   Google lisibles sont réservés aux usagers internes ; jetons, state et
+    #   vérificateur PKCE restent réservés aux administrateurs.
+    # 18.0.2.25.0: ce qu'Odoo modifie sur un événement déjà dans Nextcloud y
+    #   repart, occurrences de série comprises. Heure, titre et statut sont
+    #   RETOUCHÉS dans la ressource (lecture, remplacement de ces seules
+    #   propriétés, écriture en If-Match), jamais réécrits depuis les champs
+    #   d'Odoo : alarmes de téléphone, propriétés X- et exceptions restent.
+    #   Une occurrence déplacée ou annulée devient une exception RECURRENCE-ID ;
+    #   supprimée, un EXDATE. À la lecture, les exceptions d'une série sont
+    #   lues, et une série inchangée n'est plus rasée et recréée à chaque
+    #   passage (empreinte du VEVENT maître, `x_nc_serie_sig`). 🔴 Une adresse
+    #   de ressource hors de la collection de la configuration est refusée :
+    #   `x_caldav_href` s'écrit par tout usager interne, et une adresse vers
+    #   un autre hôte recevait le mot de passe d'application.
+    # 18.0.2.26.0: CLASS et CATEGORIES dans les deux sens. La confidentialité
+    #   est relue à l'import ; rendre privé dans Odoo un événement venu de
+    #   Nextcloud y repart en CLASS. Les étiquettes d'agenda voyagent en
+    #   CATEGORIES, créées au besoin à l'import, sans recréer la série.
+    # 18.0.2.27.0: une rencontre archivée dans Odoo n'est plus recréée par la
+    #   lecture tant que Nextcloud la garde (elle revenait, neuve, active et
+    #   « occupée ») ; son adresse et son ETag sont tenus à jour. Deux crochets
+    #   pour la corbeille de `bf_calendar_trash` : `_bf_nc_retirer_exclues`
+    #   (une date exclue dans Nextcloud, série inchangée) et
+    #   `_bf_nc_archivee_revient` (une rencontre supprimée dans Nextcloud puis
+    #   restaurée là-bas). Sans ce module, rien ne change.
+    "version": "18.0.2.27.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -98,6 +141,7 @@
     "application": False,
     "installable": True,
     "depends": [
+        "bf_color",
         "calendar",
         "base_automation",
         "bf_timezone",
@@ -120,6 +164,7 @@
         # Data (automated actions + cron)
         "data/ir_actions_server.xml",
         "data/nextcloud_sync_cron.xml",
+        "data/bf_color_rules.xml",
     ],
     "assets": {
         "web.assets_backend": [

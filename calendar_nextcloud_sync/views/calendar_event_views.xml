@@ -52,6 +52,9 @@
             <xpath expr="//calendar" position="attributes">
                 <attribute name="color">color</attribute>
             </xpath>
+            <xpath expr="//calendar" position="inside">
+                <field name="color_resolved" invisible="1"/>
+            </xpath>
         </field>
     </record>
 
@@ -62,6 +65,7 @@
         <field name="arch" type="xml">
             <calendar string="Nextcloud Events" date_start="start" date_stop="stop"
                 all_day="allday" color="color" event_open_popup="true" quick_create="false">
+                <field name="color_resolved" invisible="1"/>
                 <field name="location" invisible="not location" options="{'icon': 'fa fa-map-marker'}"/>
                 <field name="partner_ids" options="{'block': True, 'icon': 'fa fa-users'}"
                     widget="many2manyattendeeexpandable"/>

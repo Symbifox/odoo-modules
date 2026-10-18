@@ -13,11 +13,16 @@ Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDA
 - **Catch-up cron**: Configurable scheduled sync (default 15 min) as safety net for missed webhooks
 - **Full resync cron**: Periodic consistency safety net (every 6 hours) clears sync tokens and re-pulls all events
 - **Multi-calendar support**: Configure multiple Nextcloud calendars with independent sync settings
-- **Calendar coloring**: Each Nextcloud calendar can be assigned an Odoo color (0-11 palette) applied to its events
+- **Calendar coloring**: Each Nextcloud calendar keeps the color Nextcloud gives it, through `bf_color` (since 18.0.2.20.0); the 0-11 `odoo_color` palette remains as a fallback
+- **Odoo edits travel back without rewriting the resource** (18.0.2.25.0): time, title and status changed in Odoo are *retouched* in the existing `.ics` (read, replace those properties only, write back under `If-Match`), so phone alarms, `X-` properties and exceptions survive. A moved or cancelled occurrence becomes a `RECURRENCE-ID` exception, a deleted one an `EXDATE`
+- **Series kept in place** (18.0.2.25.0): a series whose master `VEVENT` did not change is no longer razed and recreated on every pull (fingerprint in `x_nc_serie_sig`); its occurrences keep their ids, and with them whatever is attached to them. Exceptions (`RECURRENCE-ID`) are read
+- **Privacy and tags** (18.0.2.26.0): `CLASS` and `CATEGORIES` travel both ways
+- **Archived stays archived** (18.0.2.27.0): a meeting archived in Odoo is no longer recreated by the next pull while the server still holds it
+- **No duplicate invitations** (18.0.2.24.0): Odoo's CalDAV writes carry `x-nc-scheduling: false`, so the Nextcloud scheduling plugin does not send its own invitation or cancellation on top of Odoo's
 - **ETag change detection**: Skips unchanged events during pull sync to avoid unnecessary writes
 - **Anti-loop protection**: `x_sync_source` field prevents infinite sync loops
 - **Orphan detection**: Events deleted in Nextcloud are automatically removed from Odoo during pull sync
-- **Encrypted credentials**: App passwords and webhook secrets stored with Fernet symmetric encryption
+- **Encrypted credentials**: App passwords and webhook secrets stored with Fernet symmetric encryption; the key is read outside the database (`calendar_nextcloud_sync_fernet_key` in `odoo.conf`, or the `BF_CALENDAR_NEXTCLOUD_SYNC_FERNET_KEY` environment variable) since 18.0.2.19.3, the former in-database key still being read to decrypt
 - **Instance-level defaults**: Webhook URL and secret configured once in Settings, auto-applied to new calendars
 - **Attendee mapping**: Maps ICS `ATTENDEE` mailto: addresses to Odoo partners
 - **Recurring events (RRULE)**: NC → Odoo: parses RRULE/EXDATE from ICS, creates Odoo `calendar.recurrence` with occurrence instances
@@ -351,9 +356,9 @@ Since v18.0.1.16.0, **Nextcloud → Odoo** sync fully supports recurring events:
 - **EXDATE support**: Deleted occurrences (ICS `EXDATE`) are removed from Odoo after instance generation
 - **Timezone handling**: `TZID` from `DTSTART` is mapped to `event_tz` for correct DST transitions; Windows timezone names (e.g., "Eastern Standard Time") are normalized to IANA
 - **Instance post-processing**: Generated instances inherit `x_nc_calendar_id`, `x_sync_source`, `color`, and `partner_ids` from the base event (since `copy=False` fields are not auto-copied by `_apply_recurrence`)
-- **Delete + recreate strategy**: When a recurring event changes in Nextcloud (etag differs), the entire recurrence and all instances are deleted and recreated from scratch
+- **Recreate only when the series changed**: When the master `VEVENT` of a recurring event changes in Nextcloud (rule, time, title, attendees…), the recurrence and its instances are recreated. When only its `EXDATE`s or exceptions change, they are applied in place (since 18.0.2.25.0)
 - **VALARM filtering**: The ICS parser skips nested `BEGIN:VALARM` blocks to prevent alarm properties (e.g., `SUMMARY:Alarm notification`) from overwriting the actual event summary
-- **Outbound sync remains blocked**: Odoo → Nextcloud sync of recurring events is not supported (the `recurrency=False` filter on create/write/unlink overrides is preserved)
+- **Outbound changes to occurrences**: an occurrence moved, cancelled or deleted in Odoo is sent as a `RECURRENCE-ID` exception or an `EXDATE` (since 18.0.2.25.0). Rewriting a whole series from Odoo is not pushed: the series is marked to be recreated from Nextcloud at the next pull
 
 ### Calendar Owner
 
@@ -363,12 +368,12 @@ Falls back to matching `nextcloud_user` against Odoo login if `calendar_owner_id
 
 ## Limitations
 
-1. **Recurring events (outbound)**: Odoo → Nextcloud sync of recurring events is not supported
-2. **RECURRENCE-ID overrides**: Modified single instances in Nextcloud (ICS `RECURRENCE-ID`) are not synced — only the base VEVENT with RRULE is used
+1. **Recurring events (outbound)**: a series rewritten as a whole in Odoo is not pushed; single occurrences are (exception or `EXDATE`)
+2. **RANGE=THISANDFUTURE**: an exception that moves "this and the following" occurrences is ignored (Odoo cannot represent it), and logged
 3. **Attendee creation**: If an attendee email doesn't exist in `res.partner`, it's skipped (not auto-created)
 4. **Nextcloud webhook latency**: Default 5 minutes (requires dedicated Nextcloud worker to reduce)
 5. **Single Odoo calendar**: Odoo has no concept of named calendars; `x_nc_calendar_id` is the closest grouping
-6. **Color palette**: Odoo supports only 12 colors (0-11), not arbitrary hex codes
+6. **Color palette**: without `bf_color`'s resolved colors, Odoo's own palette has 12 colors (0-11)
 
 ## Troubleshooting
 
@@ -391,6 +396,13 @@ Falls back to matching `nextcloud_user` against Odoo login if `calendar_owner_id
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.2.27.0 | 2026-10-17 | A meeting archived in Odoo is no longer recreated by the pull while Nextcloud still holds it: the lookup by UID only searched active records, so an archived meeting looked unknown and came back new, active and busy. It stays archived; its address and ETag are kept up to date. Two hooks for `bf_calendar_trash`: `_bf_nc_retirer_exclues` (a date excluded in Nextcloud on an unchanged series) and `_bf_nc_archivee_revient` (a meeting deleted in Nextcloud, then restored there). Without that module nothing changes |
+| 18.0.2.26.0 | 2026-10-15 | `CLASS` and `CATEGORIES` both ways. Privacy is read on import (a meeting made private in Nextcloud came back without it); `CONFIDENTIAL` maps to `private` unless Odoo already had `confidential`. Making private in Odoo a meeting that came from Nextcloud is retouched there as `CLASS`. Calendar tags travel as `CATEGORIES`, created on import when missing. Neither enters the series fingerprint: applied in place, without recreating the series |
+| 18.0.2.25.0 | 2026-10-11 | Odoo edits reach Nextcloud. An event that had been through the pull was never pushed again, and an occurrence never was. Time, title and status are now retouched in the resource under `If-Match`, never rewritten from Odoo's fields; a moved or cancelled occurrence becomes a `RECURRENCE-ID` exception, a deleted one an `EXDATE`, and the occurrence's original time is kept (`x_nc_recurrence_id`). On pull, a series' exceptions are read, and an unchanged series is no longer razed and recreated. **Security:** a resource address outside the configuration's collection is refused: `x_caldav_href` is writable by internal users, and an address on another host received the configuration's app password |
+| 18.0.2.24.1 | 2026-10-11 | "My profile" opens for non-administrators (Google token computed in sudo, the profile's Google fields in `SELF_READABLE_FIELDS`, aliases in `SELF_WRITEABLE_FIELDS`). An alias that is another user's login or email is refused. Readable Google fields are restricted to internal users; tokens, state and PKCE verifier stay administrator-only |
+| 18.0.2.24.0 | 2026-10-05 | Odoo's CalDAV `PUT` and `DELETE` carry `x-nc-scheduling: false`: the Nextcloud scheduling plugin no longer sends its own invitation a second after Odoo's, nor a cancellation when Odoo's cancellation notice is unticked. The attendee list still travels in the `VEVENT` |
+| 18.0.2.20.0 to 18.0.2.23.0 | 2026-10-02 | Calendar colors through `bf_color` (new dependency): a Nextcloud calendar keeps the color Nextcloud gives it instead of the closest of Odoo's twelve, with a color rule per calendar, and the attendee calendar follows the resolved color |
+| 18.0.2.19.3 | 2026-09-28 | The Fernet key is read outside the database (`odoo.conf` or environment variable); the former key stored in a system parameter is still read to decrypt, with a warning to move it |
 | 18.0.2.19.2 | 2026-09-27 | The Google push writes the sync status on the configuration with elevated rights, like the Nextcloud push: an ordinary user only reads the configuration, so the status write used to fail and surface an access error on save |
 | 18.0.2.19.1 | 2026-09-27 | **Security.** The Nextcloud app password and webhook secret (and their encrypted columns) are restricted to administrators: any internal user could read them in clear through the ORM; the sync engine reads them through dedicated helpers. The Google OAuth callback now requires a single-use, 10-minute state bound to the user who started the flow (and to the browser session when there is one): a colleague could otherwise send their own consent URL to a victim and receive the victim's tokens. Only the user or an administrator can disconnect a user's Google Calendar |
 | 18.0.2.19.0 | 2026-09-21 | A change pulled from another calendar is no longer silent by construction. The pull writes under `no_mail_to_attendees` / `tracking_disable` / `dont_notify`, which was complete silence while the remote server was the one writing to guests; the pull (Nextcloud and Google alike) now also sets the `bf_remote_change` context key, so `bf_calendar_invite` (6.0.0+) can announce a meeting moved in Thunderbird, on a phone or in the web calendar — only when that module's `auto_change_notice` parameter is armed. Soft link: a tenant without `bf_calendar_invite` ignores the key. New read-only probe `bf_ecarts_non_rapatries()` on a Nextcloud sync config: a bounded CalDAV `REPORT` asking only for `etag` and last-modified, which lists what the server holds that Odoo never pulled (missing event, or ETag moved since). It answers the question an Odoo-side check cannot — *did a change happen without Odoo learning of it* — and returns `mesure = False` with the reason when it could not look, so "nothing found" is never confused with "nothing checked" |

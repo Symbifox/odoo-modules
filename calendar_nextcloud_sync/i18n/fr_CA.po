@@ -1,0 +1,88 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 05:27+0000\n"
+"PO-Revision-Date: 2026-10-02 05:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: calendar_nextcloud_sync
+#: model:bf.color.rule,name:calendar_nextcloud_sync.bf_color_rule_event_nc_calendar
+msgid "Events by Nextcloud calendar"
+msgstr "Événements selon le calendrier Nextcloud"
+
+#. module: calendar_nextcloud_sync
+#. odoo-python
+#: code:addons/calendar_nextcloud_sync/models/res_users.py:0
+msgid ""
+"%(address)s is the address of another account: it cannot be used as a Google"
+" alias. Only list your own secondary addresses here."
+msgstr ""
+"%(address)s est l'adresse d'un autre compte : elle ne peut pas servir "
+"d'alias Google. N'inscrivez ici que vos propres adresses secondaires."
+
+#. module: calendar_nextcloud_sync
+#. odoo-python
+#: code:addons/calendar_nextcloud_sync/models/calendar_event.py:0
+msgid "Not sent to Nextcloud"
+msgstr "Non transmis à Nextcloud"
+
+#. module: calendar_nextcloud_sync
+#. odoo-python
+#: code:addons/calendar_nextcloud_sync/models/calendar_event.py:0
+msgid ""
+"“%s” was saved in Odoo, but the change could not be sent to Nextcloud. "
+"Change it in Nextcloud too, or try again."
+msgstr ""
+"« %s » est enregistré dans Odoo, mais la modification n'a pas pu être "
+"transmise à Nextcloud. Faites-la aussi dans Nextcloud, ou réessayez."
+
+#. module: calendar_nextcloud_sync
+#. odoo-python
+#: code:addons/calendar_nextcloud_sync/models/calendar_event.py:0
+msgid ""
+"Changes to all or following occurrences of “%s” are not sent to Nextcloud. "
+"The series will be restored from Nextcloud the next time it changes there. "
+"Make the change in Nextcloud instead."
+msgstr ""
+"Les modifications de toutes les occurrences, ou des suivantes, de « %s » ne "
+"sont pas transmises à Nextcloud. La série reprendra la version de Nextcloud "
+"la prochaine fois qu'elle y changera. Faites plutôt la modification dans "
+"Nextcloud."
+
+#. module: calendar_nextcloud_sync
+#: model:ir.model.fields,field_description:calendar_nextcloud_sync.field_calendar_event__x_nc_recurrence_id
+msgid "Original occurrence time"
+msgstr "Heure d'origine de l'occurrence"
+
+#. module: calendar_nextcloud_sync
+#: model:ir.model.fields,help:calendar_nextcloud_sync.field_calendar_event__x_nc_recurrence_id
+msgid ""
+"For an occurrence of a series synced with Nextcloud: the time the series "
+"rule gives it. It identifies the occurrence in Nextcloud (RECURRENCE-ID) "
+"even after it has been moved."
+msgstr ""
+"Pour une occurrence d'une série synchronisée avec Nextcloud : l'heure que la "
+"règle de la série lui donne. Elle identifie l'occurrence dans Nextcloud "
+"(RECURRENCE-ID), même après un déplacement."
+
+#. module: calendar_nextcloud_sync
+#: model:ir.model.fields,field_description:calendar_nextcloud_sync.field_calendar_event__x_nc_serie_sig
+msgid "Nextcloud series fingerprint"
+msgstr "Empreinte de la série Nextcloud"
+
+#. module: calendar_nextcloud_sync
+#: model:ir.model.fields,help:calendar_nextcloud_sync.field_calendar_event__x_nc_serie_sig
+msgid ""
+"Fingerprint of the series as Nextcloud last gave it, to recognise an "
+"unchanged series on the next pull instead of recreating it."
+msgstr ""
+"Empreinte de la série telle que Nextcloud l'a donnée à la dernière lecture, "
+"pour reconnaître une série inchangée au lieu de la recréer."

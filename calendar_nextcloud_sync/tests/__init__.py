@@ -6,3 +6,9 @@ from . import test_etag_normalisation
 from . import test_ics_vtimezone_extensions
 from . import test_ics_sequence
 from . import test_securite_correctifs
+from . import test_cle_hors_base
+from . import test_couleur_calendrier
+from . import test_sans_planification_nc
+from . import test_profil
+from . import test_retouche
+from . import test_classe_categories

@@ -29,8 +29,10 @@ peuvent déjà exister côté serveur.
 """
 
 import logging
+import re
 from datetime import timedelta
 
+import pytz
 import requests
 
 from odoo import api, fields, models
@@ -41,11 +43,216 @@ _logger = logging.getLogger(__name__)
 # l'appelant journalise et le cron de reprise repassera.
 CALDAV_TIMEOUT = 30
 
+# Nextcloud ne poste aucun courriel de planification (iMIP) pour une écriture
+# qui porte cet en-tête : `Schedule\Plugin::calendarObjectChange` et
+# `beforeUnbind` sortent tout de suite (apps/dav, NC 34.0.4, comparaison
+# stricte à la chaîne « false »). Sans lui, chaque rencontre créée dans Odoo
+# partait DEUX fois chez ses invités : l'invitation d'Odoo, puis celle du
+# greffon de Nextcloud une seconde plus tard (constaté en production). Même
+# décision que le dos Google, qui écrit en `sendUpdates="none"` : Odoo est le
+# seul à parler aux invités.
+NO_SCHEDULING_HEADERS = {"x-nc-scheduling": "false"}
+
 # VTIMEZONE sérialisés, par nom IANA. Les règles d'un fuseau ne changent qu'à
 # la mise à jour de la base tzdata, donc au redémarrage du processus : un cache
 # de processus n'a pas besoin d'invalidation. `None` mémorise un fuseau dont la
 # sérialisation a échoué, pour ne pas la retenter à chaque poussée.
 _VTIMEZONE_CACHE = {}
+
+# ----------------------------------------------------------------------
+# Retouche d'un .ics déjà dans Nextcloud
+#
+# Un événement né dans Nextcloud porte ce qu'Odoo ne modélise pas : alarmes
+# posées au téléphone, propriétés X- des clients, CREATED, pièces jointes,
+# exceptions d'une série. Le réécrire depuis les champs d'Odoo (`build_ics`)
+# les effacerait. Une retouche relit donc la ressource, ne remplace QUE les
+# propriétés qu'elle vise et garde tout le reste, octet pour octet à part le
+# pliage des lignes.
+# ----------------------------------------------------------------------
+
+# Ce qu'une retouche réécrit dans un VEVENT. DURATION y est parce qu'un DTEND
+# posé à côté d'un DURATION resté en place rendrait le VEVENT invalide
+# (RFC 5545 §3.6.1 : l'un OU l'autre).
+RETOUCHE_PROPS = ("DTSTART", "DTEND", "DURATION", "SUMMARY", "STATUS",
+                  "TRANSP", "SEQUENCE", "DTSTAMP", "LAST-MODIFIED")
+
+# Ce qu'une exception ne recopie pas de sa série : une instance surchargée n'a
+# pas de règle (RFC 5545 §3.8.5.3), et son RECURRENCE-ID est le sien.
+PROPS_DE_SERIE = ("RRULE", "RDATE", "EXDATE", "EXRULE", "RECURRENCE-ID")
+
+
+# Confidentialité d'Odoo -> CLASS du VEVENT (RFC 5545 §3.8.1.3). La lecture
+# fait l'inverse dans `calendar.event._bf_nc_vals_classe`.
+CLASSE_DE_CONFIDENTIALITE = {
+    "public": "PUBLIC", "private": "PRIVATE", "confidential": "CONFIDENTIAL"}
+
+
+def decouper_liste(valeur):
+    """Les éléments d'une valeur TEXT multiple (``CATEGORIES:a,b\\,c``).
+
+    RFC 5545 §3.3.11 : la virgule sépare, ``\\,`` en est une dans un élément.
+    Couper sur toutes les virgules faisait deux étiquettes de « Suivi, client ».
+    Chaque élément sort déséchappé et sans espaces autour ; les vides tombent.
+    """
+    elements, courant, i = [], [], 0
+    valeur = valeur or ""
+    while i < len(valeur):
+        car = valeur[i]
+        if car == "\\" and i + 1 < len(valeur):
+            suivant = valeur[i + 1]
+            courant.append("\n" if suivant in "nN" else suivant)
+            i += 2
+            continue
+        if car == ",":
+            elements.append("".join(courant))
+            courant = []
+        else:
+            courant.append(car)
+        i += 1
+    elements.append("".join(courant))
+    return [e.strip() for e in elements if e.strip()]
+
+
+def deplier(texte):
+    """Lignes logiques d'un .ics (RFC 5545 §3.1), sans fin de ligne.
+
+    ⚠️ Coupé sur CRLF/LF seulement, jamais par ``splitlines()`` : celui-ci coupe
+    aussi sur U+2028, U+2029 et U+0085, qu'une description collée depuis un
+    traitement de texte peut porter. La retouche réécrivait alors la moitié de
+    la description en propriété parasite, ou la faisait refuser (relecture
+    adverse de #essai, M1). Les lignes vides, qui ne sont pas des lignes de
+    contenu, sont écartées.
+    """
+    texte = re.sub(r"\r?\n[ \t]", "", texte or "")
+    return [ligne for ligne in re.split(r"\r?\n", texte) if ligne]
+
+
+def _separateur(ligne):
+    """Index du « : » qui sépare la tête de la valeur, ou -1.
+
+    Le premier hors guillemets : une valeur de paramètre entre guillemets peut
+    en porter (``SUMMARY;ALTREP="http://…":Titre``), et couper au premier
+    cassait la ligne réécrite.
+
+    Un guillemet n'ouvre une valeur que juste après « = » ou « , » (RFC 5545
+    §3.2) ; ailleurs (``X-NOTE=a"b``, ``CN="O\"Hara"``) il n'est qu'un caractère.
+    Sans « : » hors guillemets, le premier « : » : une ligne mal formée se lit
+    comme avant, au lieu d'être sautée.
+    """
+    entre = False
+    for i, car in enumerate(ligne):
+        if entre:
+            if car == '"':
+                entre = False
+        elif car == '"' and i and ligne[i - 1] in "=,":
+            entre = True
+        elif car == ":":
+            return i
+    return ligne.find(":")
+
+
+def nom_prop(ligne):
+    i = _separateur(ligne)
+    tete = ligne[:i] if i >= 0 else ligne
+    return tete.split(";", 1)[0].strip().upper()
+
+
+def params_prop(ligne):
+    i = _separateur(ligne)
+    tete = ligne[:i] if i >= 0 else ligne
+    return tete[len(tete.split(";", 1)[0]):]
+
+
+def valeur_prop(ligne):
+    i = _separateur(ligne)
+    return ligne[i + 1:] if i >= 0 else ""
+
+
+def blocs_vevent(lignes):
+    """``[(début, fin)]`` des VEVENT de premier niveau, bornes comprises.
+
+    Un VALARM imbriqué porte lui aussi des BEGIN/END : seule la profondeur dit
+    lequel des END ferme le VEVENT.
+    """
+    blocs, debut, profondeur = [], None, 0
+    for i, ligne in enumerate(lignes):
+        s = ligne.strip().upper()
+        if debut is None:
+            if s == "BEGIN:VEVENT":
+                debut, profondeur = i, 0
+            continue
+        if s.startswith("BEGIN:"):
+            profondeur += 1
+        elif s.startswith("END:"):
+            if profondeur == 0:
+                if s == "END:VEVENT":
+                    blocs.append((debut, i))
+                debut = None
+            else:
+                profondeur -= 1
+    return blocs
+
+
+def props_de_tete(bloc):
+    """``[(index, ligne)]`` des propriétés du VEVENT lui-même, hors VALARM."""
+    out, profondeur = [], 0
+    for i, ligne in enumerate(bloc[1:-1], start=1):
+        s = ligne.strip().upper()
+        if s.startswith("BEGIN:"):
+            profondeur += 1
+        elif s.startswith("END:"):
+            profondeur = max(0, profondeur - 1)
+        elif profondeur == 0:
+            out.append((i, ligne))
+    return out
+
+
+def retoucher_bloc(bloc, nouvelles, retirer):
+    """Le VEVENT ``bloc`` sans ses propriétés ``retirer``, plus ``nouvelles``.
+
+    Les nouvelles lignes se placent juste après UID (sinon après BEGIN) ; les
+    composants imbriqués et toutes les autres propriétés restent où ils sont.
+    """
+    retirer = {n.upper() for n in retirer}
+    a_retirer = {i for i, ligne in props_de_tete(bloc) if nom_prop(ligne) in retirer}
+    garde = [ligne for i, ligne in enumerate(bloc) if i not in a_retirer]
+    position = 1
+    for i, ligne in props_de_tete(garde):
+        if nom_prop(ligne) == "UID":
+            position = i + 1
+            break
+    return garde[:position] + list(nouvelles) + garde[position:]
+
+
+class RessourceInattendue(Exception):
+    """La ressource Nextcloud n'a pas la forme qu'Odoo lui prête.
+
+    Une série là où Odoo voit un événement simple, un événement simple là où
+    il voit une occurrence, une ressource sans maître. Rien n'est écrit, et ce
+    n'est PAS « rien à changer » : l'appelant le dit à l'usager (relecture
+    adverse de #essai, M5 : ces cas passaient pour des succès).
+    """
+
+
+def garder_params(bloc, nouvelles, noms=("SUMMARY",)):
+    """Reporte sur les lignes neuves les paramètres des lignes qu'elles remplacent.
+
+    Un SUMMARY;LANGUAGE=fr-CA réécrit sans son paramètre perdait sa langue.
+    """
+    anciens = {nom_prop(ligne): params_prop(ligne) for _i, ligne in props_de_tete(bloc)
+               if nom_prop(ligne) in noms}
+    sortie = []
+    for ligne in nouvelles:
+        nom = nom_prop(ligne)
+        if nom in anciens and anciens[nom] and not params_prop(ligne):
+            ligne = "%s%s:%s" % (nom, anciens[nom], valeur_prop(ligne))
+        sortie.append(ligne)
+    return sortie
+
+
+def journee_de(params):
+    """La série est-elle en dates entières (DTSTART;VALUE=DATE) ?"""
+    return "VALUE=DATE" in (params or "").upper() and "VALUE=DATE-TIME" not in (params or "").upper()
 
 
 class CalDavBackend(models.AbstractModel):
@@ -76,14 +283,51 @@ class CalDavBackend(models.AbstractModel):
         href = event.x_caldav_href
         if href:
             if href.startswith("http"):
-                return href, href
-            base = (config.nextcloud_base_url or "").rstrip("/")
-            return base + href, href
+                url = href
+            else:
+                url = (config.nextcloud_base_url or "").rstrip("/") + href
+            return (url, href) if self._url_de_la_collection(config, url) else (None, None)
         name = self._resource_name(event)
         if not name or not config.caldav_url:
             return None, None
         url = config.caldav_url.rstrip("/") + "/" + name
-        return url, None
+        return (url, None) if self._url_de_la_collection(config, url) else (None, None)
+
+    @api.model
+    def _url_de_la_collection(self, config, url):
+        """L'URL désigne-t-elle une ressource de la collection de ``config`` ?
+
+        🔴 `x_caldav_href` et `x_nc_uid` s'écrivent par tout usager interne, et
+        chaque requête vers cette URL porte le mot de passe d'application de la
+        configuration. Une adresse absolue vers un autre hôte le livrait à qui
+        l'avait posée. Même hôte, même schéma, sous
+        le chemin de la collection, sans segment « . » ni « .. ».
+        """
+        from urllib.parse import unquote, urlsplit
+
+        base = urlsplit((config.nextcloud_base_url or "").rstrip("/"))
+        cible = urlsplit(url or "")
+        # Comparés décodés : Nextcloud rend les href encodés (%20, %C3%A9), la
+        # configuration garde le chemin tel qu'on l'a saisi. Et sans la casse :
+        # Nextcloud rend celle de la requête, et changer la casse de
+        # `caldav_path` aurait fait refuser tous les href déjà stockés. L'hôte
+        # est la vraie frontière : le mot de passe vaut pour tout le compte.
+        collection = unquote(base.path.rstrip("/") + "/" + (config.caldav_path or "").strip("/") + "/").lower()
+        chemin = unquote(cible.path).lower()
+        segments = [unquote(s) for s in cible.path.split("/")]
+        sure = (
+            bool(base.netloc)
+            and (cible.scheme.lower(), cible.netloc.lower()) == (base.scheme.lower(), base.netloc.lower())
+            and chemin.startswith(collection)
+            and len(chemin) > len(collection)
+            and not cible.query and not cible.fragment
+            and not any(s in (".", "..") or "/" in s or "\\" in s for s in segments)
+        )
+        if not sure:
+            _logger.warning(
+                "Config %s : adresse de ressource hors de la collection refusée (%s)",
+                config.display_name, url)
+        return sure
 
     # ------------------------------------------------------------------
     # Fabrication du VEVENT
@@ -314,6 +558,8 @@ class CalDavBackend(models.AbstractModel):
         privacy = (data.get("privacy") or "").upper()
         if privacy in ("PUBLIC", "PRIVATE", "CONFIDENTIAL"):
             lines.append("CLASS:%s" % privacy)
+        if data.get("categories"):
+            lines.append(self._ligne_categories(data["categories"]))
 
         # STATUS n'est écrit que si Odoo en a un à dire. Un VEVENT sans STATUS
         # est « non précisé » en RFC 5545, ce qui est exactement l'état d'une
@@ -421,7 +667,10 @@ class CalDavBackend(models.AbstractModel):
         response = requests.put(
             url,
             data=body.encode("utf-8"),
-            headers={"Content-Type": "text/calendar; charset=utf-8"},
+            headers={
+                "Content-Type": "text/calendar; charset=utf-8",
+                **NO_SCHEDULING_HEADERS,
+            },
             auth=auth,
             timeout=CALDAV_TIMEOUT,
         )
@@ -462,9 +711,411 @@ class CalDavBackend(models.AbstractModel):
                 "supprimer." % config.display_name
             )
 
-        response = requests.delete(url, auth=auth, timeout=CALDAV_TIMEOUT)
+        # Une suppression qui part d'Odoo ne doit pas non plus déclencher le
+        # METHOD:CANCEL de Nextcloud : l'avis d'annulation d'Odoo est décoché
+        # par défaut, et le greffon passait outre cette case.
+        response = requests.delete(
+            url, headers=dict(NO_SCHEDULING_HEADERS), auth=auth,
+            timeout=CALDAV_TIMEOUT,
+        )
         if response.status_code == 404:
             _logger.info("CalDAV: %s déjà absent côté Nextcloud", url)
             return True
         response.raise_for_status()
         return True
+
+    # ------------------------------------------------------------------
+    # Retouche d'une ressource existante
+    # ------------------------------------------------------------------
+
+    @api.model
+    def _fetch(self, config, url):
+        """GET de la ressource : ``(texte, etag)``, ou ``(None, None)`` si absente.
+
+        L'ETag est rendu tel que le serveur l'écrit, guillemets compris : c'est
+        la forme que ``If-Match`` attend (RFC 9110 §13.1.1).
+        """
+        if not url:
+            # `_resource_url` a refusé l'adresse, ou n'en a pas : rien ne part.
+            raise RessourceInattendue(
+                "Config %s : adresse de la ressource absente ou hors de la "
+                "collection." % config.display_name)
+        auth = self._auth(config)
+        if not auth:
+            raise ValueError(
+                "Config %s: identifiants Nextcloud absents, lecture CalDAV "
+                "impossible." % config.display_name
+            )
+        response = requests.get(url, auth=auth, timeout=CALDAV_TIMEOUT)
+        if response.status_code == 404:
+            return None, None
+        response.raise_for_status()
+        response.encoding = "utf-8"
+        return response.text, (response.headers.get("ETag") or "").strip() or False
+
+    @api.model
+    def _retoucher(self, config, url, transformer):
+        """Lire, transformer, réécrire sous condition. Rend l'ETag neuf, ou False.
+
+        ``transformer(texte)`` rend le texte neuf, ou ``None`` quand il n'y a
+        rien à changer : la ressource n'est alors pas réécrite.
+
+        ⚠️ ``If-Match`` et non le ``PUT`` nu de ``push``. Entre notre lecture
+        et notre écriture, un téléphone ou un autre client a pu modifier la
+        ressource ; sans condition, notre version écraserait la sienne en
+        silence. Le serveur refuse alors en 412 : on relit et on rejoue UNE
+        fois, sur la version fraîche. Un second 412 lève, et l'appelant le dit.
+        """
+        for essai in (1, 2):
+            texte, etag = self._fetch(config, url)
+            if texte is None:
+                raise LookupError("CalDAV : %s absent côté Nextcloud" % url)
+            neuf = transformer(texte)
+            if neuf is None or neuf == texte:
+                return False
+            headers = {
+                "Content-Type": "text/calendar; charset=utf-8",
+                **NO_SCHEDULING_HEADERS,
+            }
+            if etag:
+                headers["If-Match"] = etag
+            response = requests.put(
+                url, data=neuf.encode("utf-8"), headers=headers,
+                auth=self._auth(config), timeout=CALDAV_TIMEOUT,
+            )
+            if response.status_code == 412 and essai == 1:
+                _logger.info("CalDAV : %s modifié entre lecture et écriture, relecture", url)
+                continue
+            response.raise_for_status()
+            return (response.headers.get("ETag") or "").strip() or False
+        return False
+
+    @api.model
+    def _assembler(self, lignes):
+        return "\r\n".join(self._fold(ligne) for ligne in lignes) + "\r\n"
+
+    @api.model
+    def _ligne_date(self, prop, params_serie, valeur, journee, vtimezones=None):
+        """``PROP…:valeur`` écrite comme l'écrit le DTSTART de la série.
+
+        Une heure locale dans le TZID de la série, et non de l'UTC : c'est la
+        forme qu'un client d'agenda attend pour un RECURRENCE-ID (même type de
+        valeur que DTSTART, RFC 5545 §3.8.4.4), et la VTIMEZONE est déjà dans
+        le fichier. Un TZID qu'on ne sait pas résoudre retombe sur l'UTC, que
+        Nextcloud compare à l'instant près.
+        """
+        if journee:
+            jour = fields.Date.to_date(valeur)
+            return "%s;VALUE=DATE:%s" % (prop, jour.strftime("%Y%m%d"))
+        valeur = fields.Datetime.to_datetime(valeur)
+        trouve = re.search(r'TZID=("[^"]*"|[^;:]+)', params_serie or "", re.IGNORECASE)
+        if trouve:
+            brut = trouve.group(1)
+            nom = self.env["nextcloud.calendar.sync.config"]._normalize_timezone(
+                brut.strip('"'))
+            tz = None
+            try:
+                tz = pytz.timezone(nom)
+            except (pytz.UnknownTimeZoneError, AttributeError):
+                tz = (vtimezones or {}).get(nom) or (vtimezones or {}).get(brut.strip('"'))
+            if tz is not None:
+                local = pytz.utc.localize(valeur).astimezone(tz)
+                return "%s;TZID=%s:%s" % (prop, brut, local.strftime("%Y%m%dT%H%M%S"))
+        return "%s:%s" % (prop, valeur.strftime("%Y%m%dT%H%M%SZ"))
+
+    @api.model
+    def _lignes_retouche(self, event, params_serie, vtimezones, sequence, props):
+        """Les propriétés que l'écriture d'Odoo a touchées, et elles seules.
+
+        ``props`` ⊂ {"DATES", "SUMMARY", "STATUS", "TRANSP", "CLASS", "CATEGORIES"} : ce que les champs
+        écrits disent. Réécrire aussi ce qu'on n'a pas touché ramènerait dans
+        Nextcloud la vue d'Odoo, peut-être périmée : une annulation faite au
+        téléphone depuis la dernière lecture serait défaite par un simple
+        renommage dans Odoo.
+
+        STATUS n'est écrit que si Odoo en a un (``bf_event_status``, lien mou).
+        SEQUENCE monte d'un cran sur celui du VEVENT, ou rejoint celui des
+        courriels d'Odoo s'il est plus haut.
+        """
+        maintenant = fields.Datetime.now().strftime("%Y%m%dT%H%M%SZ")
+        lignes = []
+        if "DATES" in props and event.allday:
+            debut = event.start_date or event.start
+            fin = fields.Date.to_date(event.stop_date or event.stop) + timedelta(days=1)
+            lignes += [
+                self._ligne_date("DTSTART", params_serie, debut, True),
+                self._ligne_date("DTEND", params_serie, fin, True),
+            ]
+        elif "DATES" in props:
+            lignes += [
+                self._ligne_date("DTSTART", params_serie, event.start, False, vtimezones),
+                self._ligne_date("DTEND", params_serie, event.stop, False, vtimezones),
+            ]
+        if "SUMMARY" in props:
+            lignes.append("SUMMARY:%s" % self._escape_ics(event.name or ""))
+        statut = event._bf_ics_status() if "bf_event_status" in event._fields else False
+        if "STATUS" in props and statut:
+            lignes.append("STATUS:%s" % statut)
+        if "TRANSP" in props:
+            lignes.append("TRANSP:%s" % ("TRANSPARENT" if event.show_as == "free" else "OPAQUE"))
+        # CLASS et CATEGORIES : sans valeur dans Odoo, la propriété est RETIRÉE
+        # (voir `_a_retirer`), pas laissée à son ancienne valeur. Une étiquette
+        # enlevée dans Odoo restait sinon dans Nextcloud, et revenait à la
+        # lecture suivante.
+        if "CLASS" in props and event.privacy in CLASSE_DE_CONFIDENTIALITE:
+            lignes.append("CLASS:%s" % CLASSE_DE_CONFIDENTIALITE[event.privacy])
+        if "CATEGORIES" in props and event.categ_ids:
+            lignes.append(self._ligne_categories(event.categ_ids.mapped("name")))
+        sequence = (sequence or 0) + 1
+        if "bf_ics_sequence" in event._fields:
+            sequence = max(sequence, event.bf_ics_sequence or 0)
+        lignes += [
+            "SEQUENCE:%d" % sequence,
+            "DTSTAMP:%s" % maintenant,
+            "LAST-MODIFIED:%s" % maintenant,
+        ]
+        return lignes
+
+    @staticmethod
+    def _a_retirer(nouvelles, props=()):
+        """Les propriétés remplacées : celles qu'on écrit, plus DURATION avec DTEND.
+
+        Plus CLASS et CATEGORIES dès qu'Odoo les a touchées, même sans ligne
+        neuve : c'est ainsi qu'une confidentialité ou une étiquette retirée
+        dans Odoo disparaît aussi de Nextcloud. Toutes les lignes CATEGORIES
+        partent (RFC 5545 en permet plusieurs), pour n'en garder qu'une.
+        """
+        noms = {nom_prop(ligne) for ligne in nouvelles}
+        if "DTEND" in noms:
+            noms.add("DURATION")
+        noms |= set(props) & {"CLASS", "CATEGORIES"}
+        return noms
+
+    def _ligne_categories(self, noms):
+        """``CATEGORIES:`` d'une liste de noms, chacun échappé (``\\,`` compris)."""
+        return "CATEGORIES:%s" % ",".join(self._escape_ics(nom) for nom in noms if nom)
+
+    @staticmethod
+    def _sequence(bloc):
+        for _i, ligne in props_de_tete(bloc):
+            if nom_prop(ligne) == "SEQUENCE":
+                try:
+                    return int(valeur_prop(ligne).strip())
+                except ValueError:
+                    return 0
+        return 0
+
+    @staticmethod
+    def _equivalents(avant, apres):
+        """Même contenu, à l'horodatage et au numéro de révision près."""
+        volatiles = {"DTSTAMP", "LAST-MODIFIED", "SEQUENCE"}
+
+        def cle(bloc):
+            return sorted(ligne for _i, ligne in props_de_tete(bloc)
+                          if nom_prop(ligne) not in volatiles)
+        return cle(avant) == cle(apres)
+
+    @api.model
+    def _meme_instant(self, ligne, cible, journee, vtimezones):
+        """La ligne de date ``ligne`` désigne-t-elle l'instant ``cible`` ?"""
+        dt, jour = self.env["nextcloud.calendar.sync.config"]._parse_ics_datetime(
+            valeur_prop(ligne), params_prop(ligne), vtimezones)
+        if not dt:
+            return False
+        cible = fields.Datetime.to_datetime(cible)
+        if journee or jour:
+            return dt.date() == cible.date()
+        return abs((dt - cible).total_seconds()) < 60
+
+    @api.model
+    def _decouper(self, texte):
+        """``(lignes, maître, exceptions)`` : les VEVENT d'une ressource.
+
+        Le maître est le VEVENT sans RECURRENCE-ID ; les exceptions sont
+        ``[(début, fin, ligne RECURRENCE-ID)]``.
+        """
+        lignes = deplier(texte)
+        maitre, exceptions = None, []
+        for debut, fin in blocs_vevent(lignes):
+            tete = props_de_tete(lignes[debut:fin + 1])
+            rid = next((ligne for _i, ligne in tete if nom_prop(ligne) == "RECURRENCE-ID"), None)
+            if rid is None:
+                if maitre is None:
+                    maitre = (debut, fin)
+            else:
+                exceptions.append((debut, fin, rid))
+        return lignes, maitre, exceptions
+
+    @api.model
+    def _retoucher_evenement(self, config, url, event, props):
+        """Réécrit, dans un événement simple, les propriétés ``props`` seulement."""
+        sync_config = self.env["nextcloud.calendar.sync.config"]
+
+        def transformer(texte):
+            lignes, maitre, _exceptions = self._decouper(texte)
+            if maitre is None:
+                raise RessourceInattendue("ressource sans VEVENT maître")
+            debut, fin = maitre
+            bloc = lignes[debut:fin + 1]
+            tete = props_de_tete(bloc)
+            # Une série ne passe pas par ici : la retoucher comme un événement
+            # simple déplacerait TOUTES ses occurrences.
+            if any(nom_prop(ligne) == "RRULE" for _i, ligne in tete):
+                raise RessourceInattendue("une série là où Odoo voit un événement simple")
+            params = next((params_prop(ligne) for _i, ligne in tete
+                           if nom_prop(ligne) == "DTSTART"), "")
+            nouvelles = garder_params(bloc, self._lignes_retouche(
+                event, params, sync_config._ics_vtimezones(texte), self._sequence(bloc), props))
+            neuf = retoucher_bloc(bloc, nouvelles, self._a_retirer(nouvelles, props))
+            if self._equivalents(bloc, neuf):
+                return None
+            return self._assembler(lignes[:debut] + neuf + lignes[fin + 1:])
+
+        return self._retoucher(config, url, transformer)
+
+    @api.model
+    def _retoucher_occurrence(self, config, url, event, origine, journee, props):
+        """Pose ou met à jour l'exception RECURRENCE-ID d'une occurrence.
+
+        ``origine`` est l'heure d'origine de l'occurrence (UTC naïf), celle que
+        la règle de la série lui donne : c'est elle qui l'identifie, pas son
+        heure actuelle. Une exception neuve part d'une copie du maître (alarmes
+        et participants compris) sans ses propriétés de série.
+        """
+        sync_config = self.env["nextcloud.calendar.sync.config"]
+
+        def transformer(texte):
+            lignes, maitre, exceptions = self._decouper(texte)
+            if maitre is None:
+                raise RessourceInattendue("ressource sans VEVENT maître")
+            vtz = sync_config._ics_vtimezones(texte)
+            m_debut, m_fin = maitre
+            m_bloc = lignes[m_debut:m_fin + 1]
+            m_tete = props_de_tete(m_bloc)
+            if not any(nom_prop(ligne) == "RRULE" for _i, ligne in m_tete):
+                raise RessourceInattendue("pas de série là où Odoo voit une occurrence")
+            params = next((params_prop(ligne) for _i, ligne in m_tete
+                           if nom_prop(ligne) == "DTSTART"), "")
+            # Le type du RECURRENCE-ID est celui du DTSTART de la série
+            # (RFC 5545 §3.8.4.4), pas celui de l'occurrence telle qu'Odoo la
+            # voit APRÈS l'écriture (passée en « toute la journée », par exemple).
+            serie_en_jours = journee_de(params)
+            # une exception sans CLASS
+            # hérite de celle du maître à la lecture. Retirer la confidentialité
+            # d'une seule occurrence sous un maître qui n'est pas PUBLIC se dit
+            # donc par un CLASS:PUBLIC explicite.
+            classe_maitre = next((valeur_prop(ligne).strip().upper() for _i, ligne in m_tete
+                                  if nom_prop(ligne) == "CLASS"), "")
+
+            def public_explicite(lignes_neuves):
+                if "CLASS" in props and not event.privacy and classe_maitre \
+                        and classe_maitre != "PUBLIC":
+                    return list(lignes_neuves) + ["CLASS:PUBLIC"]
+                return lignes_neuves
+
+            for debut, fin, rid in exceptions:
+                if self._meme_instant(rid, origine, serie_en_jours, vtz):
+                    bloc = lignes[debut:fin + 1]
+                    nouvelles = public_explicite(garder_params(bloc, self._lignes_retouche(
+                        event, params, vtz, self._sequence(bloc), props)))
+                    neuf = retoucher_bloc(bloc, nouvelles, self._a_retirer(nouvelles, props))
+                    if self._equivalents(bloc, neuf):
+                        return None
+                    return self._assembler(lignes[:debut] + neuf + lignes[fin + 1:])
+            rid_ligne = self._ligne_date("RECURRENCE-ID", params, origine, serie_en_jours, vtz)
+            copie = retoucher_bloc(m_bloc, [rid_ligne], PROPS_DE_SERIE)
+            # Une exception neuve porte toujours SA date : celle copiée du
+            # maître serait la première de la série.
+            nouvelles = public_explicite(garder_params(m_bloc, self._lignes_retouche(
+                event, params, vtz, self._sequence(m_bloc), set(props) | {"DATES"})))
+            neuf = retoucher_bloc(copie, nouvelles, self._a_retirer(nouvelles, props))
+            dernier = max([m_fin] + [fin for _d, fin, _r in exceptions])
+            return self._assembler(lignes[:dernier + 1] + neuf + lignes[dernier + 1:])
+
+        return self._retoucher(config, url, transformer)
+
+    @api.model
+    def _retoucher_serie_classe(self, config, url, event, props):
+        """CLASS et CATEGORIES sur TOUS les VEVENT d'une série : maître et exceptions.
+
+        Le seul changement de série entière qu'Odoo renvoie : rendre privée une série « pour tous les
+        événements » ne partait pas, et la confidentialité se perdait à la
+        recréation suivante depuis Nextcloud. Les heures, la règle et le reste
+        ne bougent pas : seules ces deux propriétés sont posées ou retirées,
+        dans chaque VEVENT, parce que « tous les événements » vaut aussi pour
+        les occurrences déjà déplacées.
+        """
+        props = set(props) & {"CLASS", "CATEGORIES"}
+        sync_config = self.env["nextcloud.calendar.sync.config"]
+
+        def transformer(texte):
+            lignes, maitre, exceptions = self._decouper(texte)
+            if maitre is None:
+                raise RessourceInattendue("ressource sans VEVENT maître")
+            vtz = sync_config._ics_vtimezones(texte)
+            sortie = list(lignes)
+            change = False
+            # De la fin vers le début : les index des blocs précédents restent bons.
+            blocs = sorted([maitre] + [(d, f) for d, f, _r in exceptions], reverse=True)
+            for debut, fin in blocs:
+                bloc = sortie[debut:fin + 1]
+                params = next((params_prop(ligne) for _i, ligne in props_de_tete(bloc)
+                               if nom_prop(ligne) == "DTSTART"), "")
+                nouvelles = self._lignes_retouche(event, params, vtz, self._sequence(bloc), props)
+                neuf = retoucher_bloc(bloc, nouvelles, self._a_retirer(nouvelles, props))
+                if not self._equivalents(bloc, neuf):
+                    sortie[debut:fin + 1] = neuf
+                    change = True
+            return self._assembler(sortie) if change else None
+
+        return self._retoucher(config, url, transformer)
+
+    @api.model
+    def _exclure_occurrence(self, config, url, origines, journee):
+        """Ajoute l'EXDATE d'occurrences supprimées, et retire leurs exceptions.
+
+        Toutes les occurrences d'une même série en UNE retouche : une lecture,
+        une écriture, au lieu d'une par occurrence.
+        """
+        sync_config = self.env["nextcloud.calendar.sync.config"]
+
+        def transformer(texte):
+            lignes, maitre, exceptions = self._decouper(texte)
+            if maitre is None:
+                raise RessourceInattendue("ressource sans VEVENT maître")
+            vtz = sync_config._ics_vtimezones(texte)
+            m_debut, m_fin = maitre
+            m_bloc = lignes[m_debut:m_fin + 1]
+            m_tete = props_de_tete(m_bloc)
+            if not any(nom_prop(ligne) == "RRULE" for _i, ligne in m_tete):
+                raise RessourceInattendue("pas de série là où Odoo voit une occurrence")
+            params = next((params_prop(ligne) for _i, ligne in m_tete
+                           if nom_prop(ligne) == "DTSTART"), "")
+            journee = journee_de(params)
+            existantes = []
+            for _i, ligne in m_tete:
+                if nom_prop(ligne) == "EXDATE":
+                    existantes += ["EXDATE%s:%s" % (params_prop(ligne), v.strip())
+                                   for v in valeur_prop(ligne).split(",") if v.strip()]
+            neuves = [o for o in origines if not any(
+                self._meme_instant(ex, o, journee, vtz) for ex in existantes)]
+            a_jeter = {(d, f) for d, f, rid in exceptions
+                       if any(self._meme_instant(rid, o, journee, vtz) for o in origines)}
+            if not neuves and not a_jeter:
+                return None
+            sortie = [ligne for i, ligne in enumerate(lignes)
+                      if not any(d <= i <= f for d, f in a_jeter)]
+            # Les exceptions jetées sont avant ou après le maître, jamais dedans :
+            # seules celles d'avant décalent ses bornes.
+            decalage = sum(f - d + 1 for d, f in a_jeter if f < m_debut)
+            debut, fin = m_debut - decalage, m_fin - decalage
+            bloc = sortie[debut:fin + 1]
+            if neuves:
+                bloc = retoucher_bloc(
+                    bloc,
+                    [self._ligne_date("EXDATE", params, o, journee, vtz) for o in neuves],
+                    (),
+                )
+            return self._assembler(sortie[:debut] + bloc + sortie[fin + 1:])
+
+        return self._retoucher(config, url, transformer)
