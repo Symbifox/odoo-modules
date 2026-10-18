@@ -28,6 +28,12 @@ along without anyone touching it.
   afterwards never duplicates the interaction.
 - The reconciliation is best-effort: a failure is logged and swallowed, because a
   convenience must never make a client's booking fail.
+- It runs as the system (v18.0.1.1.1). Whoever books or moves a booking needs no
+  Outreach rights: before this version, the target search ran with theirs, and a user
+  without the Outreach groups could no longer create or move a booking at all. The
+  company rule is put back in the search: the booking type's company, or the user's
+  active companies when the type has none. Each step runs in its own savepoint, so a
+  failed reconciliation never leaves the booking's transaction aborted.
 
 ## Languages (v18.0.1.1.0)
 
@@ -50,5 +56,5 @@ odoo -d <db> -u bf_outreach_appointment --test-enable --test-tags bf_outreach --
 ```
 
 Covers the interaction and the stage change, the no-duplicate guarantee on edit, the
-refusal to touch an unrelated contact or a closed target, and the booking URL exposed
-from the campaign.
+refusal to touch an unrelated contact or a closed target, the booking URL exposed
+from the campaign, and a booking made by someone without Outreach rights.

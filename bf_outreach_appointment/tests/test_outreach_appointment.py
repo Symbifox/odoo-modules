@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
+from unittest.mock import patch
+
+import psycopg2.errors
 
 from odoo import fields
 from odoo.tests.common import TransactionCase, tagged
+from odoo.tools import mute_logger
 
 
 @tagged("post_install", "-at_install", "bf_outreach")
@@ -169,3 +173,64 @@ class TestOutreachAppointmentBridge(TransactionCase):
         self.target.user_id = False
         self._book_as(organizer=fr)
         self.assertEqual(self.target.touch_ids.summary, "Rendez-vous : Découverte 30 min")
+
+    def test_booking_by_someone_without_outreach_rights(self):
+        """🔴 Booking without the Outreach groups: the booking goes through, the touch is logged.
+
+        The target search ran with the booker's rights, outside the ``try``: their
+        AccessError refused the booking itself (18.0.1.1.0).
+        """
+        booker = self.env["res.users"].create({
+            "name": "Booker without outreach", "login": "booker.outreach@example.test",
+            # Booking manager, as whoever books from the back office: a plain booking
+            # user may only create the bookings they attend (OCA rule).
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("resource_booking.group_manager").id])],
+        })
+        self.assertFalse(booker.has_group("bf_outreach.group_bf_outreach_user"))
+        booking = self.env["resource.booking"].with_user(booker).create({
+            "type_id": self.booking_type.id,
+            "partner_ids": [(6, 0, self.partner.ids)],
+            "start": self.now + timedelta(days=3),
+            "duration": 0.5,
+        })
+        self.assertIn(booking.state, ("scheduled", "confirmed"))
+        self.assertEqual(self.target.touch_ids.booking_id, booking)
+        self.assertEqual(self.target.stage_id, self.stage_meeting)
+
+    def test_booking_never_logs_into_another_company(self):
+        """The sync runs as the system, so the company rule is put back in the domain."""
+        other = self.env["res.company"].create({"name": "Other outreach company"})
+        self.campaign.company_id = other
+        self.booking_type.company_id = self.env.company
+        self._book()
+        self.assertEqual(self.target.company_id, other)
+        self.assertEqual(self.target.touch_count, 0, "a booking of A logged into B's outreach")
+        self.assertNotEqual(self.target.stage_id, self.stage_meeting)
+
+    def test_a_sql_error_in_the_sync_does_not_break_the_booking(self):
+        """A swallowed SQL error without a savepoint left the transaction aborted."""
+        def broken(records, *args, **kwargs):
+            records.env.cr.execute("SELECT 1/0")
+        Touch = type(self.env["bf.outreach.touch"])
+        with patch.object(Touch, "create", broken), mute_logger(
+                "odoo.addons.bf_outreach_appointment.models.resource_booking", "odoo.sql_db"):
+            booking = self._book()
+        self.env.cr.execute("SELECT 1")
+        self.assertIn(booking.state, ("scheduled", "confirmed"))
+        self.assertEqual(self.target.touch_count, 0)
+
+    def test_the_caller_error_is_not_swallowed(self):
+        """An invalid write left pending by the caller surfaces as itself.
+
+        The first savepoint flushes everything on entry: without the flush before
+        the ``try``, the caller's error was logged as "target search impossible"
+        and the request died later on an opaque aborted transaction.
+        """
+        booking = self._book()
+        ontario = self.env.ref("base.state_ca_on")
+        self.env.flush_all()
+        # Inside the block: assertRaises opens a savepoint, which flushes on entry.
+        with self.assertRaises(psycopg2.errors.UniqueViolation), mute_logger("odoo.sql_db"):
+            ontario.write({"code": "QC"})  # UNIQUE(country_id, code), raised at flush
+            booking.write({"duration": 1.0})

@@ -5,7 +5,12 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: qui n'a pas les droits Démarchage pouvait ne plus créer ni
+    #   déplacer un rendez-vous : la recherche des cibles tournait avec ses
+    #   droits, hors du `try`. Rapprochement en sudo, entièrement sous le `try`,
+    #   un point de sauvegarde par essai ; la règle de société remise dans le
+    #   domaine (société du type, à défaut les sociétés actives).
+    "version": "18.0.1.1.1",
     "category": "Sales/CRM",
     "summary": "Un rendez-vous pris fait avancer la cible de démarchage toute seule",
     "description": """
