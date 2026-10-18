@@ -3,7 +3,7 @@
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
     # 18.0.11.60.1: bf_email.last_sync_date ne passe plus par set_param, qui vidait le
     #   cache de tous les processus à chaque courriel synchronisé.
-    "version": "18.0.11.60.5",
+    "version": "18.0.11.60.6",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

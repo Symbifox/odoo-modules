@@ -4,6 +4,13 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.60.6] - 2026-10-17
+
+### Changed
+
+- No functional change. The deployed source now carries the same comments as
+  this public copy, so both share one version number.
+
 ## [18.0.11.60.5] - 2026-10-17
 
 ### Added
