@@ -20,6 +20,17 @@ class TestClosingAndLog(JobCase):
             dict({"application_ids": [(6, 0, app.ids)], "outcome": outcome}, **kw))
         wiz.action_close()
 
+    def test_bandeau_ferme_au_singulier_en_francais(self):
+        # Le bandeau d'une candidature fermée ne reprend plus le pluriel du filtre « Fermées ».
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_job_search"], ["fr_CA"], overwrite=True)
+        V = self.env["ir.ui.view"].with_context(lang="fr_CA")
+        form = V.browse(self.env.ref("bf_job_search.bf_job_application_view_form").id).arch_db
+        search = V.browse(self.env.ref("bf_job_search.bf_job_application_view_search").id).arch_db
+        self.assertIn('title="FERMÉE"', form)
+        self.assertNotIn('title="Fermées"', form)
+        self.assertIn('string="Fermées"', search)
+
     @freeze_time("2031-03-10")
     def test_qui_a_ferme(self):
         cases = {"rejected": "employer", "cancelled": "employer", "not_pursued": "me",

@@ -26,7 +26,9 @@
                             <field name="interview_count" widget="statinfo" string="Interviews"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-secondary"
+                    <!-- En capitales comme le bandeau l'affiche : une chaîne à part du filtre « Closed »,
+                         pour qu'elle se traduise au singulier (une candidature fermée). -->
+                    <widget name="web_ribbon" title="CLOSED" bg_color="text-bg-secondary"
                             invisible="not outcome"/>
                     <widget name="web_ribbon" title="Hired" bg_color="text-bg-success"
                             invisible="stage != 'accepted'"/>
