@@ -17,21 +17,21 @@ from odoo.exceptions import UserError
 
 class EditorialWaiver(models.TransientModel):
     _name = "bf.editorial.waiver"
-    _description = "Signature d'une dérogation éditoriale"
+    _description = "Editorial waiver signature"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", readonly=True,
     )
     problems = fields.Text(
-        string="Ce que vous signez", readonly=True,
-        help="Les motifs de refus que cette dérogation couvrira, tels qu'ils"
-             " se lisent maintenant. Ils sont figés à la signature : un motif"
-             " qui change de texte ensuite n'est plus couvert.",
+        string="What you are signing", readonly=True,
+        help="The refusal reasons this waiver will cover, as they read "
+             "now. They are frozen at signing: a reason whose text "
+             "changes afterwards is no longer covered.",
     )
     reason = fields.Text(
-        string="Raison", required=True,
-        help="Pourquoi ces motifs sont acceptables sur cet article-là.",
+        string="Reason", required=True,
+        help="Why these reasons are acceptable on this particular article.",
     )
 
     def action_sign(self):
@@ -39,8 +39,8 @@ class EditorialWaiver(models.TransientModel):
         raison = (self.reason or "").strip()
         if not raison:
             raise UserError(_(
-                "Une dérogation sans raison écrite ne se relit pas. Dites"
-                " pourquoi ces motifs sont acceptables ici."
+                "A waiver without a written reason cannot be reviewed "
+                "later. Say why these reasons are acceptable here."
             ))
         self.entry_id._sign_waiver(raison)
         return {"type": "ir.actions.act_window_close"}

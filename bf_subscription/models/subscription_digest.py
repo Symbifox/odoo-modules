@@ -12,32 +12,33 @@ _logger = logging.getLogger(__name__)
 
 class SubscriptionDigest(models.Model):
     _name = 'subscription.digest'
-    _description = "Récapitulatif des abonnements"
+    _description = "Subscription digest"
     _order = 'name'
 
-    name = fields.Char(required=True, default="Récapitulatif des abonnements")
+    name = fields.Char(required=True, default=lambda self: _("Subscription digest"))
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     user_ids = fields.Many2many(
         'res.users', 'subscription_digest_user_rel', 'digest_id', 'user_id',
-        string="Destinataires",
+        string="Recipients",
     )
     auto_send = fields.Boolean(
-        string="Envoi automatique", default=True,
-        help="Si décoché, la configuration sert uniquement à générer le rapport "
-             "PDF sur demande (aucun envoi planifié).",
+        string="Automatic sending", default=True,
+        help="If unchecked, the setup is used only to generate the PDF "
+             "report on demand (no scheduled sending).",
     )
     frequency = fields.Selection([
-        ('weekly', 'Hebdomadaire'),
-        ('monthly', 'Mensuel'),
+        ('weekly', "Weekly"),
+        ('monthly', "Monthly"),
     ], default='weekly', required=True)
     renewal_horizon_days = fields.Integer(
-        string="Horizon renouvellements (jours)", default=30,
+        string="Renewal horizon (days)", default=30,
     )
-    include_spend_summary = fields.Boolean(string="Inclure le sommaire de dépense", default=True)
-    include_renewals = fields.Boolean(string="Inclure les renouvellements", default=True)
-    include_dormant = fields.Boolean(string="Inclure les abonnements dormants", default=True)
-    include_managed_clients = fields.Boolean(string="Inclure le coût par client géré", default=True)
+    include_spend_summary = fields.Boolean(string="Include the spend summary", default=True)
+    include_renewals = fields.Boolean(string="Include renewals", default=True)
+    include_dormant = fields.Boolean(string="Include dormant subscriptions", default=True)
+    include_managed_clients = fields.Boolean(string="Include the cost per "
+                                                    "managed client", default=True)
     last_sent = fields.Datetime(readonly=True)
 
     @api.constrains('auto_send', 'user_ids')
@@ -45,8 +46,9 @@ class SubscriptionDigest(models.Model):
         for rec in self:
             if rec.auto_send and not rec.user_ids:
                 raise UserError(_(
-                    "Renseignez au moins un destinataire, ou désactivez l'envoi automatique "
-                    "(la configuration « %s » servira alors uniquement au rapport sur demande)."
+                    "Enter at least one recipient, or turn off automatic "
+                    "sending (the \"%s\" setup will then be used only for "
+                    "the on-demand report)."
                 ) % rec.name)
 
     # ------------------------------------------------------------------
@@ -81,23 +83,23 @@ class SubscriptionDigest(models.Model):
     def action_send_now(self):
         self.ensure_one()
         if not self.user_ids:
-            raise UserError(_("Aucun destinataire configuré."))
+            raise UserError(_("No recipient configured."))
         self._send_digest()
         self.last_sent = fields.Datetime.now()
-        return self._notify(_("Récapitulatif envoyé à %s.") % ', '.join(self.user_ids.mapped('name')))
+        return self._notify(_("Digest sent to %s.") % ', '.join(self.user_ids.mapped('name')))
 
     def action_send_test(self):
         self.ensure_one()
         user = self.env.user
         if not user.email:
-            raise UserError(_("Votre utilisateur n'a pas d'adresse courriel."))
+            raise UserError(_("Your user has no email address."))
         self._send_digest(test_user=user)
-        return self._notify(_("Récapitulatif test envoyé à %s.") % user.email)
+        return self._notify(_("Test digest sent to %s.") % user.email)
 
     def _notify(self, message):
         return {
             'type': 'ir.actions.client', 'tag': 'display_notification',
-            'params': {'title': _("Récapitulatif"), 'message': message, 'type': 'success', 'sticky': False},
+            'params': {'title': _("Digest"), 'message': message, 'type': 'success', 'sticky': False},
         }
 
     # ------------------------------------------------------------------
@@ -130,34 +132,41 @@ class SubscriptionDigest(models.Model):
                 return
         sender = self.company_id.email or self.env.user.email_formatted
 
-        # Generate the branded PDF once and attach it to every email.
-        attachment_ids = []
-        try:
-            pdf = self._get_pdf_binary()
-            att = self.env['ir.attachment'].sudo().create({
-                'name': "Rapport_abonnements_%s.pdf" % fields.Date.today().isoformat(),
-                'type': 'binary',
-                'datas': base64.b64encode(pdf),
-                'mimetype': 'application/pdf',
-                'res_model': self._name,
-                'res_id': self.id,
-            })
-            attachment_ids = [att.id]
-        except Exception:
-            _logger.exception("subscription digest %s: PDF generation failed", self.name)
-
+        # Un rendu par LANGUE de destinataire : le sujet, le corps et le PDF sont lus par chacun dans la
+        # sienne, et la tâche planifiée n'en a pas (elle écrirait pour tous dans la langue d'OdooBot).
+        # Le PDF est produit une fois par langue, pas une fois par personne.
+        par_langue = {}
         for user in recipients:
-            if not user.email:
-                continue
-            body = self._generate_html(data)
-            mail = self.env['mail.mail'].sudo().create({
-                'subject': _("Récapitulatif des abonnements — %s") % fields.Date.today().strftime('%Y-%m-%d'),
-                'email_from': sender,
-                'email_to': user.email,
-                'body_html': body,
-                'attachment_ids': [(6, 0, attachment_ids)] if attachment_ids else False,
-            })
-            mail.send()
+            if user.email:
+                lang = user.lang or self.company_id.partner_id.lang or "en_US"
+                par_langue.setdefault(lang, []).append(user)
+        for lang, users in par_langue.items():
+            lu = self.with_context(lang=lang)
+            attachment_ids = []
+            try:
+                pdf = lu._get_pdf_binary()
+                att = self.env['ir.attachment'].sudo().create({
+                    'name': lu.env._("Subscription_report_%s.pdf") % fields.Date.today().isoformat(),
+                    'type': 'binary',
+                    'datas': base64.b64encode(pdf),
+                    'mimetype': 'application/pdf',
+                    'res_model': self._name,
+                    'res_id': self.id,
+                })
+                attachment_ids = [att.id]
+            except Exception:
+                _logger.exception("subscription digest %s: PDF generation failed", self.name)
+            subject = lu.env._("Subscription digest: %s") % fields.Date.today().strftime('%Y-%m-%d')
+            for user in users:
+                body = lu._generate_html(data)
+                mail = self.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'email_from': sender,
+                    'email_to': user.email,
+                    'body_html': body,
+                    'attachment_ids': [(6, 0, attachment_ids)] if attachment_ids else False,
+                })
+                mail.send()
 
     # ------------------------------------------------------------------
     # Data
@@ -256,15 +265,15 @@ class SubscriptionDigest(models.Model):
         parts = []
 
         if self.include_spend_summary:
-            parts.append(tpl.section_title(_("Sommaire"), company))
+            parts.append(tpl.section_title(_("Summary"), company))
             parts.append(tpl.info_card([
-                (_("Abonnements actifs"), str(data['active_count'])),
-                (_("Dépense mensualisée"), self._fmt(data['monthly'], cur)),
-                (_("Dépense annualisée"), self._fmt(data['annual'], cur)),
+                (_("Active subscriptions"), str(data['active_count'])),
+                (_("Monthly spend"), self._fmt(data['monthly'], cur)),
+                (_("Annual spend"), self._fmt(data['annual'], cur)),
             ], company))
 
         if self.include_renewals:
-            parts.append(tpl.section_title(_("Renouvellements à venir (%d j)") % (self.renewal_horizon_days or 30), company))
+            parts.append(tpl.section_title(_("Upcoming renewals (%d days)") % (self.renewal_horizon_days or 30), company))
             if data['renewals']:
                 rows = []
                 from dateutil.relativedelta import relativedelta
@@ -278,24 +287,27 @@ class SubscriptionDigest(models.Model):
                         esc(self._fmt(s.cycle_amount, cur)),
                     ])
                 parts.append(tpl.data_table(
-                    [_("Abonnement"), _("Fournisseur"), _("Renouvellement"), _("À annuler avant"), _("Montant")],
+                    [_("Subscription"), _("Vendor"), _("Renewal"), _("Cancel "
+                                                                               "before"), _("Amount")],
                     rows, company))
             else:
-                parts.append(tpl.empty_note(_("Aucun renouvellement dans l'horizon.")))
+                parts.append(tpl.empty_note(_("No renewal within the horizon.")))
 
         if self.include_dormant:
-            parts.append(tpl.section_title(_("Abonnements dormants"), company))
+            parts.append(tpl.section_title(_("Dormant subscriptions"), company))
             if data['dormant']:
+                # Hors de la compréhension : avant Python 3.12, _() y perd la langue (piège 41).
+                aucune = _("None")
                 rows = [[esc(s.name), esc(s.vendor_id.name or ''),
-                         esc(str(s.last_vendor_bill_date or _("aucune")))]
+                         esc(str(s.last_vendor_bill_date or aucune))]
                         for s in data['dormant']]
                 parts.append(tpl.data_table(
-                    [_("Abonnement"), _("Fournisseur"), _("Dernière facture")], rows, company))
+                    [_("Subscription"), _("Vendor"), _("Last bill")], rows, company))
             else:
-                parts.append(tpl.empty_note(_("Aucun abonnement dormant.")))
+                parts.append(tpl.empty_note(_("No dormant subscription.")))
 
         if self.include_managed_clients and data['managed']:
-            parts.append(tpl.section_title(_("Coût par client géré"), company))
+            parts.append(tpl.section_title(_("Cost per managed client"), company))
             rows = []
             for partner, m in sorted(data['managed'].items(), key=lambda kv: kv[1]['monthly'], reverse=True):
                 rows.append([
@@ -305,6 +317,8 @@ class SubscriptionDigest(models.Model):
                     esc(self._fmt(m['margin'], cur)),
                 ])
             parts.append(tpl.data_table(
-                [_("Client"), _("# Abonnements"), _("Coût mensualisé"), _("Marge (vie)")], rows, company))
+                [_("Client"), _("# Subscriptions"), _("Monthly cost"), _("Margin "
+                                                                          "(lifetime)")], rows, company))
 
-        return tpl.wrapper(_("Récapitulatif des abonnements"), "".join(parts), company)
+        return tpl.wrapper(_("Subscription digest"), "".join(parts), company,
+                           footer=_("Automatic subscription digest."))

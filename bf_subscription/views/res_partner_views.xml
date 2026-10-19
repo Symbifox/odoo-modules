@@ -12,14 +12,14 @@
                         icon="fa-repeat"
                         invisible="managed_subscription_count == 0">
                     <field name="managed_subscription_count" widget="statinfo"
-                           string="Abonnements gérés"/>
+                           string="Managed subscriptions"/>
                 </button>
                 <button class="oe_stat_button" type="object"
                         name="action_view_own_subscriptions"
                         icon="fa-credit-card"
                         invisible="own_subscription_count == 0">
                     <field name="own_subscription_count" widget="statinfo"
-                           string="Abonnements"/>
+                           string="Subscriptions"/>
                 </button>
             </div>
         </field>

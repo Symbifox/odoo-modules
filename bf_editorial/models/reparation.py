@@ -104,17 +104,16 @@ def corriger(html):
     return resultat, rapport
 
 
-def rapport_lisible(rapport, _traduire=lambda texte, *args: texte % args):
-    """Une phrase française à partir du compte, ou rien s'il n'y a rien."""
+def rapport_lisible(rapport, phrases):
+    """Une phrase à partir du compte, ou rien s'il n'y a rien.
+
+    `phrases` : {"titres_vides": …, "portees": …}, des modèles à un `%s` déjà traduits par l'appelant.
+    Ils ne peuvent pas l'être ici : une fonction sans `self` n'a pas de langue, et un `_()` passé en
+    argument n'est jamais extrait (ces deux phrases sont restées sans traduction jusque-là).
+    """
     morceaux = []
     if rapport.get("titres_vides"):
-        morceaux.append(_traduire(
-            "%s titre(s) vide(s) remplacé(s) par un espacement",
-            rapport["titres_vides"],
-        ))
+        morceaux.append(phrases["titres_vides"] % rapport["titres_vides"])
     if rapport.get("portees"):
-        morceaux.append(_traduire(
-            "%s portée(s) posée(s) sur des en-têtes de tableau",
-            rapport["portees"],
-        ))
+        morceaux.append(phrases["portees"] % rapport["portees"])
     return ", ".join(morceaux)

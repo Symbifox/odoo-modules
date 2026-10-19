@@ -4,7 +4,7 @@
         <field name="name">subscription.rebill.wizard.form</field>
         <field name="model">subscription.rebill.wizard</field>
         <field name="arch" type="xml">
-            <form string="Refacturer au client">
+            <form string="Rebill to client">
                 <sheet>
                     <group>
                         <group string="Source">
@@ -14,7 +14,7 @@
                             <field name="company_id" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
-                        <group string="Refacturation">
+                        <group string="Rebilling">
                             <field name="mode" widget="radio"/>
                             <field name="cost_amount"
                                    invisible="mode == 'fixed_amount'"/>
@@ -25,7 +25,7 @@
                             <field name="final_amount" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Ligne de facture">
+                    <group string="Invoice line">
                         <field name="line_description"/>
                         <field name="product_id"/>
                         <field name="invoice_date"/>
@@ -34,15 +34,15 @@
                 </sheet>
                 <footer>
                     <button name="action_create_invoice" type="object"
-                            string="Créer la facture client" class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                            string="Create the customer invoice" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_subscription_rebill_wizard" model="ir.actions.act_window">
-        <field name="name">Refacturer au client</field>
+        <field name="name">Rebill to client</field>
         <field name="res_model">subscription.rebill.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

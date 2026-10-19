@@ -24,8 +24,7 @@
             Scan.$("done-name").textContent = resultat.name || "";
             var phrase = phraseDeLecture(resultat.lecture);
             if (resultat.au_fil === false) {
-                phrase = "La pièce est jointe à la facture, mais le fil n'a " +
-                         "pas accepté le message. " + phrase;
+                phrase = Scan.texte("piece-sans-fil") + " " + phrase;
             }
             Scan.$("done-lecture").textContent = phrase;
             Scan.$("done-link").setAttribute("href", resultat.url || "#");
@@ -43,21 +42,20 @@
      * ne peut pas tenir. */
     function phraseDeLecture(lecture) {
         if (lecture === "done") {
-            return "La facture a été lue : vérifiez les montants dans Odoo.";
+            return Scan.texte("lecture-faite");
         }
         if (lecture === "en_attente") {
             // Ce cas ne veut PAS dire « ça s'en vient » : il veut dire que la
             // lecture installée ici ne sait pas lire cette pièce. Sur une
             // instance dont le module ne lit que les PDF, une photo y reste
             // pour toujours, et promettre un prochain passage serait faux.
-            return "Ici, la lecture automatique ne lit pas encore les " +
-                   "photos. La facture et sa pièce sont déposées.";
+            return Scan.texte("lecture-photos");
         }
         if (lecture === "absent") {
-            return "La lecture automatique n'est pas installée ici.";
+            return Scan.texte("lecture-absente");
         }
         if (lecture === "error" || lecture === "echec") {
-            return "La lecture a échoué; la pièce, elle, est bien déposée.";
+            return Scan.texte("lecture-echec");
         }
         return "";
     }

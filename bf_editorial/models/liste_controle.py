@@ -11,50 +11,50 @@ from odoo import _, api, fields, models
 
 class EditorialChecklistTemplate(models.Model):
     _name = "bf.editorial.checklist.template"
-    _description = "Gabarit de liste de contrôle"
+    _description = "Checklist template"
     _order = "sequence, id"
 
-    name = fields.Char(string="Intitulé", required=True, translate=True)
-    sequence = fields.Integer(string="Séquence", default=10)
+    name = fields.Char(string="Title", required=True, translate=True)
+    sequence = fields.Integer(string="Sequence", default=10)
     pillar_ids = fields.Many2many(
-        "blog.tag.category", string="Piliers",
+        "blog.tag.category", string="Pillars",
         domain=[("is_pillar", "=", True)],
-        help="Vide, la ligne s'applique à tous les piliers.",
+        help="When empty, the line applies to all pillars.",
     )
     kind = fields.Selection(
         [
-            ("blog", "Article de blogue"),
-            ("social", "Publication sociale"),
-            ("newsletter", "Infolettre"),
-            ("video", "Vidéo"),
+            ("blog", "Blog article"),
+            ("social", "Social post"),
+            ("newsletter", "Newsletter"),
+            ("video", "Video"),
         ],
-        string="Nature",
-        help="Vide, la ligne s'applique à toutes les natures.",
+        string="Kind",
+        help="When empty, the line applies to all kinds.",
     )
     is_blocking = fields.Boolean(
-        string="Bloquante", default=True,
-        help="Bloquante, elle empêche la publication tant qu'elle est ouverte.",
+        string="Blocking", default=True,
+        help="When blocking, it prevents publishing as long as it is open.",
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
 
 class EditorialChecklist(models.Model):
     _name = "bf.editorial.checklist"
-    _description = "Ligne de liste de contrôle"
+    _description = "Checklist line"
     _order = "sequence, id"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
-    name = fields.Char(string="Intitulé", required=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    is_blocking = fields.Boolean(string="Bloquante", default=True)
-    done = fields.Boolean(string="Fait", copy=False)
+    name = fields.Char(string="Title", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    is_blocking = fields.Boolean(string="Blocking", default=True)
+    done = fields.Boolean(string="Done", copy=False)
     done_by = fields.Many2one(
-        "res.users", string="Fait par", readonly=True, copy=False,
+        "res.users", string="Done by", readonly=True, copy=False,
     )
-    done_date = fields.Datetime(string="Fait le", readonly=True, copy=False)
+    done_date = fields.Datetime(string="Done on", readonly=True, copy=False)
     note = fields.Char(string="Note")
 
     def write(self, vals):
@@ -78,7 +78,9 @@ class EditorialChecklist(models.Model):
         ])
         existing = set(entry.checklist_ids.mapped("name"))
         created = self.browse()
-        for template in templates:
+        # Le nom est copié dans un champ non traduisible : toujours dans la langue canonique, sinon deux
+        # personnes de langues différentes poseraient chacune le même gabarit (dédoublonné par nom).
+        for template in templates.with_context(lang=entry._canon_lang()):
             if template.name in existing:
                 continue
             created |= self.create({

@@ -55,7 +55,7 @@
         if (!groupes.length) {
             var vide = document.createElement("p");
             vide.className = "lede";
-            vide.textContent = "Aucune fiche trouvée.";
+            vide.textContent = Scan.texte("aucune-fiche");
             boite.appendChild(vide);
             return;
         }
@@ -72,7 +72,7 @@
                     (fiche.detail ? " · " + fiche.detail : "");
                 bouton.addEventListener("click", function () {
                     etat.cible = {model: groupe.model, id: fiche.id};
-                    Scan.$("cible-choisie").textContent = "Fiche : " + fiche.name;
+                    Scan.$("cible-choisie").textContent = Scan.texte("fiche") + " " + fiche.name;
                     Scan.$("cible-choisie").classList.remove("hidden");
                     boite.innerHTML = "";
                     Scan.$("recherche").value = "";
@@ -84,7 +84,7 @@
 
     function deposer() {
         if (!etat.b64) {
-            Scan.echouer("Reprenez la photo : rien n'a été lu.");
+            Scan.echouer(Scan.texte("reprendre"));
             return;
         }
         var charge = {
@@ -99,8 +99,8 @@
         Scan.montrer(ETAPES, "step-working");
         Scan.appeler("/scan/document/deposer", charge).then(function (res) {
             Scan.$("done-title").textContent = res.destination === "fiche"
-                ? "Document joint à la fiche"
-                : "Document au bloc-notes";
+                ? Scan.texte("joint-fiche")
+                : Scan.texte("bloc-notes");
             Scan.$("done-name").textContent = phraseFinale(res);
             Scan.$("done-link").setAttribute("href", res.url || "#");
             Scan.montrer(ETAPES, "step-done");
@@ -114,11 +114,11 @@
         var phrase = res.destination === "fiche" ? (res.name || "")
                                                  : (res.name || "");
         if (res.destination !== "fiche") {
-            if (res.lien) { phrase += " · lié à " + res.lien; }
-            if (res.rappel) { phrase += " · rappel posé"; }
+            if (res.lien) { phrase += " · " + Scan.texte("lie-a") + " " + res.lien; }
+            if (res.rappel) { phrase += " · " + Scan.texte("rappel-pose"); }
         }
         if (res.au_fil === false) {
-            phrase += " · pièce jointe sans message au fil";
+            phrase += " · " + Scan.texte("sans-message");
         }
         return phrase;
     }

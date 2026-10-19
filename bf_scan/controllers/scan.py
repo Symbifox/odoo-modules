@@ -79,20 +79,20 @@ def _type_de_piece(octets):
             return mimetype, extension
     if tete[4:8] == b"ftyp" and any(m in tete for m in MARQUES_HEIC):
         raise UserError(_(
-            "Cette photo est au format HEIC, que le serveur ne sait pas lire. "
-            "Reprenez-la avec l'appareil photo de la page plutôt qu'en la "
-            "choisissant dans la galerie."))
+            "This photo is in HEIC format, which the server cannot read. "
+            "Retake it with the page's camera instead of picking it from "
+            "the gallery."))
     if tete.startswith(b"RIFF") and tete[8:12] == b"WEBP":
         return "image/webp", "webp"
     raise UserError(_(
-        "Ce fichier n'est ni une photo (JPEG, PNG, WEBP) ni un PDF."))
+        "This file is neither a photo (JPEG, PNG, WEBP) nor a PDF."))
 
 
 def _octets(image_b64):
     """Décode la charge reçue, avec ses deux refus explicites."""
     charge = (image_b64 or "").strip()
     if not charge:
-        raise UserError(_("Aucune image reçue."))
+        raise UserError(_("No image received."))
     # Une page peut envoyer la forme « data:image/jpeg;base64,… » ; la couper
     # ici évite un décodage qui réussirait à moitié.
     if charge.startswith("data:"):
@@ -100,13 +100,13 @@ def _octets(image_b64):
     try:
         octets = base64.b64decode(charge, validate=True)
     except (binascii.Error, ValueError):
-        raise UserError(_("L'image reçue est illisible."))
+        raise UserError(_("The received image is unreadable."))
     if not octets:
-        raise UserError(_("L'image reçue est vide."))
+        raise UserError(_("The received image is empty."))
     if len(octets) > TAILLE_MAX:
         raise UserError(_(
-            "Le fichier dépasse %s Mo. Reprenez-le en photo plutôt que de "
-            "l'envoyer tel quel.") % (TAILLE_MAX // (1024 * 1024)))
+            "The file exceeds %s MB. Retake it as a photo instead of "
+            "sending it as is.") % (TAILLE_MAX // (1024 * 1024)))
     return octets
 
 
@@ -157,18 +157,18 @@ class ScanEtendu(BfContactScanPortal):
     def _garde_facture(cls):
         if not request.env.user.has_group(GROUPE_FACTURE):
             raise AccessError(_(
-                "Votre compte n'a pas accès à la facturation."))
+                "Your account does not have access to invoicing."))
         if not request.env["account.move"].has_access("create"):
             raise AccessError(_(
-                "Votre compte peut lire les factures, mais pas en créer."))
+                "Your account can read invoices, but not create them."))
 
     @classmethod
     def _garde_document(cls):
         if not request.env.user._is_internal():
-            raise AccessError(_("Cette page est réservée aux comptes internes."))
+            raise AccessError(_("This page is reserved for internal accounts."))
         if not request.env["bf.note"].has_access("create"):
             raise AccessError(_(
-                "Votre compte ne peut pas créer de note."))
+                "Your account cannot create a note."))
 
     # ── La page d'accueil ───────────────────────────────────────────
 
@@ -186,24 +186,26 @@ class ScanEtendu(BfContactScanPortal):
             tuiles.append({
                 "url": "/scan/carte",
                 "ico": "📇",
-                "titre": _("Carte d'affaires"),
-                "detail": _("Lue, corrigée, puis enregistrée en contact."),
+                "titre": _("Business card"),
+                "detail": _("Read, corrected, then saved as a contact."),
             })
         if self._peut_facture():
             tuiles.append({
                 "url": "/scan/facture",
                 "ico": "🧾",
-                "titre": _("Facture"),
-                "detail": _("Crée un brouillon de facture fournisseur."),
+                "titre": _("Invoice"),
+                "detail": _("Creates a draft vendor bill."),
             })
         if self._peut_document():
             tuiles.append({
                 "url": "/scan/document",
                 "ico": "📄",
                 "titre": _("Document"),
-                "detail": _("Au bloc-notes avec un rappel, ou au fil d'une fiche."),
+                "detail": _("To the notepad with a reminder, or to a "
+                            "record's chatter."),
             })
         return request.render("bf_scan.page_menu", {
+            "lang_html": (request.env.lang or "en_US").replace("_", "-"),
             "tuiles": tuiles,
             "user_name": request.env.user.name,
             "accent": accent,
@@ -234,6 +236,7 @@ class ScanEtendu(BfContactScanPortal):
     def page_facture(self, **kw):
         accent, encre = _accent()
         return request.render("bf_scan.page_facture", {
+            "lang_html": (request.env.lang or "en_US").replace("_", "-"),
             "has_access": self._peut_facture(),
             "user_name": request.env.user.name,
             "societe": request.env.company.name,
@@ -256,9 +259,9 @@ class ScanEtendu(BfContactScanPortal):
             octets = _octets(image_b64)
             mimetype, extension = _type_de_piece(octets)
         except AccessError as exc:
-            return _json_erreur(exc, _("Accès refusé."))
+            return _json_erreur(exc, _("Access denied."))
         except UserError as exc:
-            return _json_erreur(exc, _("Pièce refusée."))
+            return _json_erreur(exc, _("File rejected."))
 
         Move = request.env["account.move"]
         try:
@@ -267,14 +270,14 @@ class ScanEtendu(BfContactScanPortal):
                 mail_create_nolog=True,
             ).create({"move_type": "in_invoice"})
         except AccessError:
-            return {"error": _("Votre compte n'a pas le droit de créer cette "
-                               "facture.")}
+            return {"error": _("Your account is not allowed to create "
+                               "this invoice.")}
         except Exception:  # noqa: BLE001 — jamais de trace sur un téléphone
             _logger.exception("Dépôt de facture refusé pour %s",
                               request.env.user.login)
-            return {"error": _("La facture n'a pas pu être créée.")}
+            return {"error": _("The invoice could not be created.")}
 
-        nom = _nom_de_piece(filename, extension, _("facture"))
+        nom = _nom_de_piece(filename, extension, _("invoice"))
         piece = request.env["ir.attachment"].create({
             "name": nom,
             "datas": base64.b64encode(octets),
@@ -283,7 +286,7 @@ class ScanEtendu(BfContactScanPortal):
             "res_id": facture.id,
         })
         au_fil = self._poster(
-            facture, _("Photographiée depuis la page Numériser."), piece)
+            facture, _("Photographed from the Scan page."), piece)
 
         return {
             "move_id": facture.id,
@@ -319,7 +322,7 @@ class ScanEtendu(BfContactScanPortal):
         nom = (facture.name or "").strip()
         if nom and nom != "/":
             return nom
-        return _("Brouillon n° %s") % facture.id
+        return _("Draft #%s") % facture.id
 
     @staticmethod
     def _lecture_si_possible(facture):
@@ -367,6 +370,7 @@ class ScanEtendu(BfContactScanPortal):
     def page_document(self, **kw):
         accent, encre = _accent()
         return request.render("bf_scan.page_document", {
+            "lang_html": (request.env.lang or "en_US").replace("_", "-"),
             "has_access": self._peut_document(),
             "user_name": request.env.user.name,
             "accent": accent,
@@ -386,7 +390,7 @@ class ScanEtendu(BfContactScanPortal):
         try:
             self._garde_document()
         except AccessError as exc:
-            return _json_erreur(exc, _("Accès refusé."))
+            return _json_erreur(exc, _("Access denied."))
         groupes = request.env["bf.chatter.target"].search_targets(query, limit=5)
         return {"groupes": groupes}
 
@@ -401,9 +405,9 @@ class ScanEtendu(BfContactScanPortal):
             octets = _octets(image_b64)
             mimetype, extension = _type_de_piece(octets)
         except AccessError as exc:
-            return _json_erreur(exc, _("Accès refusé."))
+            return _json_erreur(exc, _("Access denied."))
         except UserError as exc:
-            return _json_erreur(exc, _("Pièce refusée."))
+            return _json_erreur(exc, _("File rejected."))
 
         cible = cible or {}
         fiche = None
@@ -411,12 +415,12 @@ class ScanEtendu(BfContactScanPortal):
             fiche = request.env["bf.chatter.target"]._browse_if_allowed(
                 cible["model"], int(cible["id"]))
             if not fiche:
-                return {"error": _("Cette fiche n'existe plus, ou vous n'y "
-                                   "avez pas accès.")}
+                return {"error": _("This record no longer exists, or you "
+                                   "do not have access to it.")}
 
         if destination == "fiche":
             if not fiche:
-                return {"error": _("Choisissez la fiche avant d'envoyer.")}
+                return {"error": _("Choose the record before sending.")}
             return self._deposer_au_fil(fiche, octets, mimetype, extension,
                                         filename, titre)
         return self._deposer_au_tampon(octets, mimetype, extension, filename,
@@ -442,7 +446,7 @@ class ScanEtendu(BfContactScanPortal):
         try:
             fiche.check_access("write")
         except AccessError:
-            return {"error": _("Vous pouvez lire « %s », mais pas y écrire.")
+            return {"error": _("You can read \"%s\", but not write to it.")
                              % fiche.display_name}
 
         nom = _nom_de_piece(filename, extension, _("document"))
@@ -455,16 +459,16 @@ class ScanEtendu(BfContactScanPortal):
                 "res_id": fiche.id,
             })
         except AccessError:
-            return {"error": _("Vous pouvez lire « %s », mais pas y écrire.")
+            return {"error": _("You can read \"%s\", but not write to it.")
                              % fiche.display_name}
         texte = (titre or "").strip() or _(
-            "Document numérisé depuis la page Numériser.")
+            "Document scanned from the Scan page.")
         try:
             fiche.message_post(body=Markup("<p>%s</p>") % texte,
                                attachment_ids=[piece.id])
         except AccessError:
             piece.unlink()
-            return {"error": _("Vous pouvez lire « %s », mais pas y écrire.")
+            return {"error": _("You can read \"%s\", but not write to it.")
                              % fiche.display_name}
         except Exception:  # noqa: BLE001
             _logger.exception("Message refusé sur %s %s", fiche._name, fiche.id)
@@ -493,9 +497,9 @@ class ScanEtendu(BfContactScanPortal):
         """
         nom = _nom_de_piece(filename, extension, _("document"))
         valeurs = {
-            "name": (titre or "").strip() or _("Document numérisé"),
+            "name": (titre or "").strip() or _("Scanned document"),
             "body": Markup("<p>%s</p>") % _(
-                "Déposé depuis la page Numériser."),
+                "Submitted from the Scan page."),
         }
         if fiche is not None:
             valeurs["link_ids"] = [(0, 0, {
@@ -568,13 +572,13 @@ class ScanEtendu(BfContactScanPortal):
                 {"src": "%s/icon-maskable-512.png" % icones, "sizes": "512x512",
                  "type": "image/png", "purpose": "maskable"},
             ],
-            "name": _("Numériser"),
-            "short_name": _("Numériser"),
-            "description": _("Une carte, une facture ou un document, "
-                             "photographiés et classés."),
+            "name": _("Scan"),
+            "short_name": _("Scan"),
+            "description": _("A card, an invoice or a document, "
+                             "photographed and filed."),
             "shortcuts": [
-                {"name": _("Carte d'affaires"), "url": "/scan/carte"},
-                {"name": _("Facture"), "url": "/scan/facture"},
+                {"name": _("Business card"), "url": "/scan/carte"},
+                {"name": _("Invoice"), "url": "/scan/facture"},
                 {"name": _("Document"), "url": "/scan/document"},
             ],
         })
@@ -582,7 +586,7 @@ class ScanEtendu(BfContactScanPortal):
             json.dumps(fiche, ensure_ascii=False),
             headers=[("Content-Type",
                       "application/manifest+json; charset=utf-8"),
-                     ("Cache-Control", "public, max-age=3600")],
+                     ("Cache-Control", "private, max-age=3600")],
         )
 
     @http.route("/scan/sw.js", type="http", auth="public", methods=["GET"],
@@ -590,10 +594,10 @@ class ScanEtendu(BfContactScanPortal):
     def scan_service_worker(self, **kw):
         """L'agent de service du parent, plus les fichiers de ce module.
 
-        Le nom du cache change avec le contenu (``v3``) : un agent qui garde
+        Le nom du cache change avec le contenu (``v4`` : textes des scripts passés à la page) : un agent qui garde
         l'ancien nom servirait la coquille d'hier à une page qui n'existe plus.
         """
-        source = SERVICE_WORKER.replace("'bf-scan-v2'", "'bf-scan-v3'")
+        source = SERVICE_WORKER.replace("'bf-scan-v2'", "'bf-scan-v4'")
         source = source.replace(
             "  OFFLINE,\n];",
             "  OFFLINE,\n"

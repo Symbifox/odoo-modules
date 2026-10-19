@@ -2,7 +2,11 @@
 {
     "name": "Hébergement — Mises à jour système : section du digest",
     "summary": "L'état de mise à jour du parc dans le digest quotidien",
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.0",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

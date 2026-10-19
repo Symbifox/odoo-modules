@@ -8,10 +8,10 @@ class BlogPost(models.Model):
     _inherit = "blog.post"
 
     editorial_entry_ids = fields.One2many(
-        "bf.editorial.entry", "post_id", string="Entrées éditoriales",
+        "bf.editorial.entry", "post_id", string="Editorial entries",
     )
     editorial_entry_count = fields.Integer(
-        string="Entrées", compute="_compute_editorial_entry_count",
+        string="Entries", compute="_compute_editorial_entry_count",
     )
 
     @api.depends("editorial_entry_ids")
@@ -31,7 +31,7 @@ class BlogPost(models.Model):
             }
         return {
             "type": "ir.actions.act_window",
-            "name": _("Nouvelle entrée éditoriale"),
+            "name": _("New editorial entry"),
             "res_model": "bf.editorial.entry",
             "view_mode": "form",
             "context": {
@@ -58,7 +58,7 @@ class BlogPost(models.Model):
                 entries.write({"qa_state": "todo"})
                 for entry in entries:
                     entry.message_post(body=_(
-                        "Le contenu du billet a changé : la QA éditoriale est"
-                        " à repasser."
+                        "The post content has changed: the editorial QA "
+                        "needs to be run again."
                     ))
         return result

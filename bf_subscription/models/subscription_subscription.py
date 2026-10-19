@@ -1,6 +1,8 @@
 import logging
 from dateutil.relativedelta import relativedelta
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -21,15 +23,15 @@ CYCLE_MONTHS = {
 
 class Subscription(models.Model):
     _name = 'subscription.subscription'
-    _description = "Abonnement"
+    _description = "Subscription"
     _inherit = ['mail.thread', 'mail.activity.mixin', 'analytic.mixin']
     _order = 'state, next_billing_date, name'
 
     # ---- Identity ----
     name = fields.Char(required=True, tracking=True)
     code = fields.Char(
-        string="Référence", copy=False, readonly=True, index=True,
-        default=lambda self: _("Nouveau"),
+        string="Reference", copy=False, readonly=True, index=True,
+        default=lambda self: _("New"),
     )
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
@@ -43,172 +45,176 @@ class Subscription(models.Model):
 
     # ---- Parties ----
     vendor_id = fields.Many2one(
-        'res.partner', string="Fournisseur", required=True, tracking=True,
+        'res.partner', string="Vendor", required=True, tracking=True,
         domain="[('supplier_rank', '>', 0)]",
-        help="Le fournisseur qui facture l'abonnement.",
+        help="The vendor that bills the subscription.",
     )
     managed_for_id = fields.Many2one(
-        'res.partner', string="Géré pour le client", tracking=True,
+        'res.partner', string="Managed for client", tracking=True,
         domain="[('is_company', '=', True)]",
-        help="Si renseigné : l'abonnement est administré par Blue Fox au nom de ce client.",
+        help="If set: the subscription is administered by Blue Fox on "
+             "behalf of this client.",
     )
     is_managed_for_client = fields.Boolean(
         compute='_compute_is_managed_for_client', store=True,
     )
     responsible_id = fields.Many2one(
-        'res.users', string="Responsable", tracking=True,
+        'res.users', string="Assignee", tracking=True,
         default=lambda self: self.env.user,
         domain="[('share', '=', False)]",
     )
 
     # ---- Classification ----
     category = fields.Selection([
-        ('software_saas', 'Logiciel SaaS'),
-        ('corporate_membership', 'Membership corporatif'),
+        ('software_saas', "SaaS software"),
+        ('corporate_membership', "Corporate membership"),
         ('infrastructure', 'Infrastructure'),
-        ('professional_service', 'Service professionnel récurrent'),
-        ('domain_name', 'Nom de domaine'),
-        ('certificate', 'Certificat'),
-        ('hosting', 'Hébergement'),
-        ('other', 'Autre'),
+        ('professional_service', "Recurring professional service"),
+        ('domain_name', "Domain name"),
+        ('certificate', "Certificate"),
+        ('hosting', "Hosting"),
+        ('other', "Other"),
     ], default='software_saas', required=True, tracking=True)
-    tag_ids = fields.Many2many('subscription.tag', string="Étiquettes")
+    tag_ids = fields.Many2many('subscription.tag', string="Tags")
 
     # ---- State ----
     state = fields.Selection([
-        ('draft', 'Brouillon'),
-        ('active', 'Actif'),
-        ('paused', 'Suspendu'),
-        ('cancelled', 'Résilié'),
-        ('expired', 'Expiré'),
+        ('draft', "Draft"),
+        ('active', "Active"),
+        ('paused', "Paused"),
+        ('cancelled', "Canceled"),
+        ('expired', "Expired"),
     ], default='draft', required=True, tracking=True, index=True)
 
     # ---- Cycle & Amount ----
     cycle = fields.Selection([
-        ('monthly', 'Mensuel'),
-        ('quarterly', 'Trimestriel'),
-        ('semi_annual', 'Semestriel'),
-        ('annual', 'Annuel'),
-        ('biennial', 'Biennal'),
-        ('triennial', 'Triennal'),
-        ('one_time', 'Unique'),
-        ('on_demand', 'À la demande'),
+        ('monthly', "Monthly"),
+        ('quarterly', "Quarterly"),
+        ('semi_annual', "Semiannual"),
+        ('annual', "Annual"),
+        ('biennial', "Biennial"),
+        ('triennial', "Triennial"),
+        ('one_time', "One-time"),
+        ('on_demand', "On demand"),
     ], default='monthly', required=True, tracking=True)
     cycle_amount = fields.Monetary(
-        string="Montant par cycle", tracking=True,
+        string="Amount per cycle", tracking=True,
         currency_field='currency_id',
     )
     monthly_equivalent = fields.Monetary(
         compute='_compute_monthly_equivalent', store=True,
         currency_field='currency_id',
-        string="Coût mensualisé",
-        help="cycle_amount normalisé en équivalent mensuel pour les agrégats.",
+        string="Monthly cost",
+        help="cycle_amount normalized to a monthly equivalent for aggregates.",
     )
 
     # ---- Dates ----
     start_date = fields.Date(required=True, default=fields.Date.context_today, tracking=True)
-    end_date = fields.Date(string="Fin prévue", tracking=True)
+    end_date = fields.Date(string="Planned end", tracking=True)
     next_billing_date = fields.Date(
         compute='_compute_next_billing_date', store=True,
-        string="Prochain renouvellement", index=True,
+        string="Next renewal", index=True,
     )
     auto_renew = fields.Boolean(default=True, tracking=True)
     notice_period_days = fields.Integer(
-        string="Préavis (jours)", default=30,
-        help="Combien de jours d'avance pour annuler avant le renouvellement automatique.",
+        string="Notice period (days)", default=30,
+        help="How many days ahead to cancel before the automatic renewal.",
     )
     renewal_decision_date = fields.Date(
-        string="Renouvellement confirmé pour le", copy=False, readonly=True, tracking=True,
-        help="Renouvellement pour lequel la décision « on garde » a été prise. Tant qu'elle "
-             "vise le prochain renouvellement, aucune relance n'est levée ; au cycle suivant "
-             "la question se repose d'elle-même.",
+        string="Renewal confirmed for", copy=False, readonly=True, tracking=True,
+        help="Renewal for which the \"keep it\" decision was made. As "
+             "long as it targets the next renewal, no reminder is raised; "
+             "at the next cycle the question comes up again by itself.",
     )
     renewal_decision_needed = fields.Boolean(
         compute='_compute_renewal_decision_needed',
-        string="Décision de renouvellement attendue",
+        string="Renewal decision needed",
     )
 
     # ---- Rebilling ----
     rebilled = fields.Boolean(
-        string="Refacturé au client", tracking=True,
-        help="Si coché : Blue Fox facture le client (managed_for_id) en plus de payer le fournisseur.",
+        string="Rebilled to client", tracking=True,
+        help="If checked: Blue Fox bills the client (managed_for_id) on "
+             "top of paying the vendor.",
     )
     rebill_mode = fields.Selection([
-        ('at_cost', 'Au coût'),
-        ('markup_percent', 'Coût + markup %'),
-        ('fixed_amount', 'Montant fixe'),
+        ('at_cost', "At cost"),
+        ('markup_percent', "Cost + markup %"),
+        ('fixed_amount', "Fixed amount"),
     ], default='at_cost')
     rebill_markup_percent = fields.Float(string="Markup (%)", default=0.0)
     rebill_fixed_amount = fields.Monetary(
-        string="Montant fixe refacturé", currency_field='currency_id',
+        string="Fixed amount rebilled", currency_field='currency_id',
     )
     rebill_product_id = fields.Many2one(
-        'product.product', string="Produit de refacturation",
-        help="Produit utilisé par défaut lorsque le wizard de refacturation crée une facture client. "
-             "Sinon, un libellé générique est utilisé.",
+        'product.product', string="Rebilling product",
+        help="Product used by default when the rebilling wizard creates a "
+             "customer invoice. Otherwise, a generic label is used.",
     )
     price_alert_threshold_pct = fields.Float(
-        string="Seuil d'alerte hausse (%)", default=15.0,
-        help="Si une facture fournisseur liée dépasse le montant par cycle de "
-             "ce pourcentage, une alerte est postée sur le fil de discussion.",
+        string="Price increase alert threshold (%)", default=15.0,
+        help="If a linked vendor bill exceeds the amount per cycle by "
+             "this percentage, an alert is posted in the chatter.",
     )
 
     # ---- Invoice correlation ----
     vendor_bill_ids = fields.One2many(
         'account.move', 'subscription_id',
         domain=[('move_type', 'in', ['in_invoice', 'in_refund'])],
-        string="Factures fournisseur",
+        string="Vendor bills",
     )
     vendor_bill_count = fields.Integer(
-        compute='_compute_invoice_counts', string="# Factures fournisseur",
+        compute='_compute_invoice_counts', string="# Vendor bills",
     )
     customer_invoice_ids = fields.One2many(
         'account.move', 'subscription_id',
         domain=[('move_type', 'in', ['out_invoice', 'out_refund'])],
-        string="Factures client",
+        string="Customer invoices",
     )
     customer_invoice_count = fields.Integer(
-        compute='_compute_invoice_counts', string="# Factures client",
+        compute='_compute_invoice_counts', string="# Customer invoices",
     )
     total_paid_lifetime = fields.Monetary(
         compute='_compute_totals', currency_field='currency_id',
-        string="Total payé (vie)",
+        string="Total paid (lifetime)",
     )
     total_rebilled_lifetime = fields.Monetary(
         compute='_compute_totals', currency_field='currency_id',
-        string="Total refacturé (vie)",
+        string="Total rebilled (lifetime)",
     )
     rebill_margin = fields.Monetary(
         compute='_compute_margin', currency_field='currency_id',
-        string="Marge (vie)",
-        help="Total refacturé au client moins total payé au fournisseur.",
+        string="Margin (lifetime)",
+        help="Total rebilled to the client minus total paid to the vendor.",
     )
     rebill_margin_pct = fields.Float(
-        compute='_compute_margin', string="Marge (%)",
+        compute='_compute_margin', string="Margin (%)",
     )
     last_vendor_bill_date = fields.Date(
         compute='_compute_last_vendor_bill_date', store=True,
-        string="Dernière facture fournisseur",
+        string="Last vendor bill",
     )
     is_dormant = fields.Boolean(
         compute='_compute_is_dormant', search='_search_is_dormant',
         string="Dormant",
-        help="Abonnement actif à cycle facturable sans facture fournisseur "
-             "récente (au-delà de 1,5× la période du cycle).",
+        help="Active subscription with a billable cycle and no recent "
+             "vendor bill (beyond 1.5× the cycle period).",
     )
 
     # ---- Misc ----
     # analytic_distribution (+ analytic_precision) provided by analytic.mixin
     external_reference = fields.Char(
-        string="Référence fournisseur",
-        help="Numéro de contrat, ID compte, ou tout identifiant côté fournisseur.",
+        string="Vendor reference",
+        help="Contract number, account ID, or any identifier on the "
+             "vendor side.",
     )
     external_url = fields.Char(
-        string="URL portail fournisseur",
+        string="Vendor portal URL",
     )
     payment_method_label = fields.Char(
-        string="Méthode de paiement",
-        help="Libellé libre : « Visa BF *4242 », « Prélèvement DD compte 1 », etc.",
+        string="Payment method",
+        help="Free-form label: \"Visa BF *4242\", \"Direct debit account "
+             "1\", etc.",
     )
     notes = fields.Html(string="Notes")
 
@@ -218,7 +224,7 @@ class Subscription(models.Model):
 
     _sql_constraints = [
         ('code_unique', 'unique(code, company_id)',
-         "La référence d'abonnement doit être unique par société."),
+         "The subscription reference must be unique per company."),
     ]
 
     # ------------------------------------------------------------------
@@ -228,10 +234,10 @@ class Subscription(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get('code') or vals['code'] == _("Nouveau"):
+            if not vals.get('code') or vals['code'] == _("New"):
                 vals['code'] = self.env['ir.sequence'].next_by_code(
                     'subscription.subscription'
-                ) or _("Nouveau")
+                ) or _("New")
         return super().create(vals_list)
 
     # ------------------------------------------------------------------
@@ -366,7 +372,7 @@ class Subscription(models.Model):
 
     def _search_is_dormant(self, operator, value):
         if operator not in ('=', '!=') or not isinstance(value, bool):
-            raise UserError(_("Filtre 'dormant' non supporté."))
+            raise UserError(_("The 'dormant' filter is not supported."))
         want_dormant = (operator == '=' and value) or (operator == '!=' and not value)
         candidates = self.search([('state', '=', 'active')])
         dormant_ids = candidates.filtered('is_dormant').ids
@@ -383,8 +389,9 @@ class Subscription(models.Model):
         if self.rebilled and not self.is_managed_for_client:
             return {
                 'warning': {
-                    'title': _("Refacturation impossible"),
-                    'message': _("Il faut d'abord renseigner « Géré pour le client » avant d'activer la refacturation."),
+                    'title': _("Rebilling not possible"),
+                    'message': _("First fill in \"Managed for client\" "
+                                 "before turning on rebilling."),
                 }
             }
 
@@ -395,7 +402,8 @@ class Subscription(models.Model):
     def action_activate(self):
         for rec in self:
             if not rec.cycle_amount and rec.cycle not in ('on_demand', 'one_time'):
-                raise UserError(_("Renseignez le montant par cycle avant d'activer l'abonnement « %s ».") % rec.name)
+                raise UserError(_("Enter the amount per cycle before "
+                                  "activating the subscription \"%s\".") % rec.name)
             rec.state = 'active'
         return True
 
@@ -429,11 +437,12 @@ class Subscription(models.Model):
         for rec in self:
             if not rec.next_billing_date:
                 raise UserError(
-                    _("L'abonnement « %s » n'a pas de prochain renouvellement à confirmer.") % rec.name
+                    _("The subscription \"%s\" has no upcoming renewal to "
+                      "confirm.") % rec.name
                 )
             rec.renewal_decision_date = rec.next_billing_date
         self.activity_feedback(
-            [RENEWAL_ACTIVITY_XMLID], feedback=_("Renouvellement confirmé."),
+            [RENEWAL_ACTIVITY_XMLID], feedback=_("Renewal confirmed."),
         )
         return True
 
@@ -450,7 +459,7 @@ class Subscription(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Factures fournisseur"),
+            'name': _("Vendor bills"),
             'res_model': 'account.move',
             'view_mode': 'list,form',
             'domain': [('id', 'in', self.vendor_bill_ids.ids)],
@@ -465,7 +474,7 @@ class Subscription(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Factures client"),
+            'name': _("Customer invoices"),
             'res_model': 'account.move',
             'view_mode': 'list,form',
             'domain': [('id', 'in', self.customer_invoice_ids.ids)],
@@ -479,7 +488,7 @@ class Subscription(models.Model):
     def action_open_external_url(self):
         self.ensure_one()
         if not self.external_url:
-            raise UserError(_("Aucune URL fournisseur configurée."))
+            raise UserError(_("No vendor URL configured."))
         return {
             'type': 'ir.actions.act_url',
             'url': self.external_url,
@@ -504,14 +513,20 @@ class Subscription(models.Model):
         if bill.amount_total <= ceiling:
             return False
         increase_pct = (bill.amount_total / self.cycle_amount - 1.0) * 100.0
-        self.message_post(
-            body=_(
-                "<b>Hausse de prix détectée</b> sur la facture "
-                "<a href='#' data-oe-model='account.move' data-oe-id='%(bid)d'>%(bname)s</a> : "
-                "%(amount).2f %(cur)s contre %(cycle).2f %(cur)s au cycle "
-                "(+%(pct).1f %%, seuil %(thr).0f %%)."
-            ) % {
-                'bid': bill.id, 'bname': bill.name or _("Brouillon"),
+        # Écrite pour le responsable, qui devra agir : dans sa langue (un lien de facture peut venir d'un
+        # courriel entrant ou d'une automatisation, sans personne derrière).
+        lu = self.with_context(lang=self.responsible_id.lang or self.company_id.partner_id.lang or self.env.lang)
+        # Markup : le corps porte du HTML (sinon message_post l'échappe et le fil montre les balises) ;
+        # les valeurs, dont le nom de la facture, sont échappées par `%`.
+        lu.message_post(
+            body=Markup(lu.env._(
+                "<b>Price increase detected</b> on bill <a href='#' "
+                "data-oe-model='account.move' "
+                "data-oe-id='%(bid)d'>%(bname)s</a>: %(amount).2f %(cur)s "
+                "against %(cycle).2f %(cur)s per cycle (+%(pct).1f %%, "
+                "threshold %(thr).0f %%)."
+            )) % {
+                'bid': bill.id, 'bname': bill.name or lu.env._("Draft"),
                 'amount': bill.amount_total, 'cycle': self.cycle_amount,
                 'cur': self.currency_id.name or '', 'pct': increase_pct,
                 'thr': threshold,
@@ -522,10 +537,10 @@ class Subscription(models.Model):
         ActivityType = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
         if ActivityType:
             try:
-                self.activity_schedule(
+                lu.activity_schedule(
                     activity_type_id=ActivityType.id,
                     date_deadline=fields.Date.context_today(self),
-                    summary=_("Vérifier la hausse de prix — %s") % self.name,
+                    summary=lu.env._("Check the price increase: %s") % self.name,
                     user_id=(self.responsible_id or self.env.user).id,
                 )
             except Exception:
@@ -586,19 +601,22 @@ class Subscription(models.Model):
             ], limit=1)
             if standing:
                 continue
+            # Le travail planifié n'a pas de langue : la relance part au responsable, dans la sienne.
+            lu = sub.with_context(lang=sub.responsible_id.lang or sub.company_id.partner_id.lang or 'en_US')
             try:
-                sub.activity_schedule(
+                lu.activity_schedule(
                     activity_type_id=ActivityType.id,
                     date_deadline=cutoff,
-                    summary=_("Renouvellement à venir — %s") % sub.name,
-                    note=_(
-                        "L'abonnement <b>%(name)s</b> chez <b>%(vendor)s</b> "
-                        "se renouvelle le <b>%(date)s</b> (préavis : %(notice)d jours, "
-                        "à décider avant <b>%(cutoff)s</b>).<br/>"
-                        "Montant cycle : %(amount)s %(currency)s.<br/><br/>"
-                        "On garde ? Bouton <b>Renouvellement confirmé</b> sur la fiche : "
-                        "la relance se tait jusqu'au cycle suivant. On coupe ? Décocher "
-                        "<b>Renouvellement automatique</b>."
+                    summary=lu.env._("Upcoming renewal: %s") % sub.name,
+                    note=lu.env._(
+                        "The subscription <b>%(name)s</b> with "
+                        "<b>%(vendor)s</b> renews on <b>%(date)s</b> "
+                        "(notice: %(notice)d days, decide before "
+                        "<b>%(cutoff)s</b>).<br/>Cycle amount: %(amount)s "
+                        "%(currency)s.<br/><br/>Keep it? Click <b>Renewal "
+                        "confirmed</b> on the record: the reminder stays "
+                        "quiet until the next cycle. Cancel it? Uncheck "
+                        "<b>Auto Renew</b>."
                     ) % {
                         'name': sub.name,
                         'vendor': sub.vendor_id.name,

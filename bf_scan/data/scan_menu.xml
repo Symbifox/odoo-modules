@@ -7,7 +7,7 @@
          ne se voit qu'en jouant le parcours dans le rôle visé. Piège déjà payé
          par une autre tuile de la maison, dont celle-ci reprend la forme. -->
     <record id="action_ouvrir_scan" model="ir.actions.act_url">
-        <field name="name">Numériser</field>
+        <field name="name">Scan</field>
         <field name="url">/scan</field>
         <field name="target">new</field>
     </record>
@@ -17,7 +17,7 @@
          Tout interne voit au moins la tuile Document, puisqu'elle ne demande
          que le droit de créer une note. -->
     <menuitem id="menu_scan_root"
-              name="Numériser"
+              name="Scan"
               action="action_ouvrir_scan"
               web_icon="bf_scan,static/description/icon.png"
               groups="base.group_user"

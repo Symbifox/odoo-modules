@@ -15,19 +15,20 @@ class ContactPersona(models.Model):
     _inherit = "contact.persona"
 
     cx_feedback_ids = fields.Many2many(
-        "bf.cx.feedback", compute="_compute_cx", string="Retours d'expérience",
+        "bf.cx.feedback", compute="_compute_cx", string="Experience feedback",
     )
     cx_complaint_ids = fields.Many2many(
-        "bf.cx.complaint", compute="_compute_cx", string="Plaintes",
+        "bf.cx.complaint", compute="_compute_cx", string="Complaints",
     )
     cx_last_feedback_id = fields.Many2one(
-        "bf.cx.feedback", compute="_compute_cx", string="Dernier retour",
+        "bf.cx.feedback", compute="_compute_cx", string="Last feedback",
     )
-    cx_open_complaint_count = fields.Integer(compute="_compute_cx", string="Plaintes ouvertes")
+    cx_open_complaint_count = fields.Integer(compute="_compute_cx", string="Open "
+                                                                           "complaints")
     # Not a related field: older bf_cx releases have no exclusion field at all,
     # and a related field on a missing one stops the registry from loading.
     cx_excluded = fields.Boolean(
-        compute="_compute_cx_excluded", string="Ne pas solliciter",
+        compute="_compute_cx_excluded", string="Do not solicit",
     )
 
     @api.depends("partner_id")
@@ -101,18 +102,18 @@ class ContactPersona(models.Model):
         for complaint in open_complaints[:2]:
             cx.append((
                 "degraded",
-                _("plainte ouverte depuis le %(date)s : %(subject)s") % {
+                _("open complaint since %(date)s: %(subject)s") % {
                     "date": fields.Date.to_string(complaint.date_received.date()) if complaint.date_received else "?",
                     "subject": self._cx_excerpt(complaint.name),
                 },
             ))
         last = self.sudo().cx_last_feedback_id
         if last and last.score_max and self._cx_is_low(last):
-            reason = _("%(score)s le %(date)s") % {
+            reason = _("%(score)s on %(date)s") % {
                 "score": self._cx_score_label(last), "date": fields.Date.to_string(last.date),
             }
             if last.comment:
-                reason += " : « %s »" % self._cx_excerpt(last.comment)
+                reason += _(": \"%s\"") % self._cx_excerpt(last.comment)
             cx.append(("watch", reason))
         # Most severe first, across base and bridge signals.
         return sorted(cx + signals, key=lambda s: 0 if s[0] == "degraded" else 1)
@@ -122,12 +123,12 @@ class ContactPersona(models.Model):
         self.ensure_one()
         last = self.sudo().cx_last_feedback_id
         if last and not (last.score_max and self._cx_is_low(last)):
-            line = "Expérience client : "
-            line += self._cx_score_label(last) if last.score_max else "commentaire"
-            line += f" le {fields.Date.to_string(last.date)}"
+            what = self._cx_score_label(last) if last.score_max else _("comment")
+            line = _("Customer experience: %(what)s on %(date)s") % {
+                "what": what, "date": fields.Date.to_string(last.date)}
             if last.comment:
-                line += f" : « {self._cx_excerpt(last.comment)} »"
+                line += _(": \"%s\"") % self._cx_excerpt(last.comment)
             lines.append(line + ".")
         if self.cx_excluded:
-            lines.append("Ne pas solliciter (sondages, témoignages).")
+            lines.append(_("Do not solicit (surveys, testimonials)."))
         return lines

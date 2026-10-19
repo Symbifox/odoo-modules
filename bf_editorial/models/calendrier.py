@@ -17,101 +17,101 @@ RATIO_WINDOW = 10
 
 class EditorialCalendar(models.Model):
     _name = "bf.editorial.calendar"
-    _description = "Calendrier éditorial"
+    _description = "Editorial calendar"
     _inherit = ["mail.thread"]
     _order = "sequence, id"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company, required=True, index=True,
     )
     website_id = fields.Many2one(
-        "website", string="Site web",
-        help="Le site dont ce calendrier alimente le blogue. Vide pour un flux"
-             " qui ne publie pas d'article.",
+        "website", string="Website",
+        help="The site whose blog this calendar feeds. Empty for a flow "
+             "that does not publish articles.",
     )
-    blog_id = fields.Many2one("blog.blog", string="Blogue")
+    blog_id = fields.Many2one("blog.blog", string="Blog")
     user_id = fields.Many2one(
-        "res.users", string="Responsable", default=lambda self: self.env.user,
+        "res.users", string="Assignee", default=lambda self: self.env.user,
         tracking=True,
     )
     kind = fields.Selection(
-        [("blog", "Blogue"), ("social", "Réseaux seulement"), ("mixed", "Mixte")],
-        string="Nature", default="blog", required=True,
+        [("blog", "Blog"), ("social", "Social networks only"), ("mixed", "Mixed")],
+        string="Kind", default="blog", required=True,
     )
 
     # --- règles -----------------------------------------------------------
     cadence_days = fields.Integer(
-        string="Cadence (jours)", default=4,
-        help="Nombre de jours visé entre deux publications. Zéro désactive le"
-             " calcul de créneau.",
+        string="Cadence (days)", default=4,
+        help="Target number of days between two publications. Zero turns "
+             "off the slot calculation.",
     )
     lang_ids = fields.Many2many(
-        "res.lang", string="Langues publiées",
-        help="Les langues qu'une entrée de ce calendrier doit livrer. Vide,"
-             " la langue du site fait foi.",
+        "res.lang", string="Published languages",
+        help="The languages an entry of this calendar must deliver. When "
+             "empty, the site's language rules.",
     )
     require_all_langs = fields.Selection(
         [
-            ("default", "Suivre le réglage général"),
-            ("yes", "Oui — toutes les langues avant de compter comme publié"),
-            ("no", "Non — la langue source suffit"),
+            ("default", "Follow the general setting"),
+            ("yes", "Yes: all languages before counting as published"),
+            ("no", "No: the source language is enough"),
         ],
-        string="Exiger toutes les langues", default="default", required=True,
-        help="Surcharge, pour ce calendrier, la politique multilingue générale"
-             " définie dans les paramètres.",
+        string="Require all languages", default="default", required=True,
+        help="Overrides, for this calendar, the general multilingual "
+             "policy set in the settings.",
     )
     word_floor = fields.Integer(
-        string="Plancher de mots", default=1900,
-        help="En deçà, une entrée ne peut pas passer la garde de pré-vol.",
+        string="Word floor", default=1900,
+        help="Below this, an entry cannot pass the preflight guard.",
     )
     pillar_ids = fields.Many2many(
-        "blog.tag.category", string="Piliers",
+        "blog.tag.category", string="Pillars",
         domain=[("is_pillar", "=", True)],
     )
-    campaign_id = fields.Many2one("utm.campaign", string="Campagne par défaut")
-    medium_id = fields.Many2one("utm.medium", string="Médium par défaut")
+    campaign_id = fields.Many2one("utm.campaign", string="Default campaign")
+    medium_id = fields.Many2one("utm.medium", string="Default medium")
 
     # --- dérivé -----------------------------------------------------------
     entry_ids = fields.One2many(
-        "bf.editorial.entry", "calendar_id", string="Entrées",
+        "bf.editorial.entry", "calendar_id", string="Entries",
     )
     entry_count = fields.Integer(
-        string="Nombre d'entrées", compute="_compute_stats",
+        string="Number of entries", compute="_compute_stats",
     )
     last_published_date = fields.Datetime(
-        string="Dernière publication", compute="_compute_stats",
+        string="Last publication", compute="_compute_stats",
     )
     days_since_last = fields.Integer(
-        string="Jours depuis", compute="_compute_stats",
+        string="Days since", compute="_compute_stats",
     )
     slot_due = fields.Boolean(
-        string="Créneau dû", compute="_compute_stats",
-        help="Vrai quand le délai depuis la dernière publication atteint la"
-             " cadence visée.",
+        string="Publishing slot due", compute="_compute_stats",
+        help="True when the time since the last publication reaches the "
+             "target cadence.",
     )
     ratio_summary = fields.Text(
-        string="Ratio récent", compute="_compute_stats",
-        help="Répartition par pilier sur les dernières publications, comparée"
-             " aux cibles.",
+        string="Recent ratio", compute="_compute_stats",
+        help="Breakdown by pillar over the latest publications, compared "
+             "with the targets.",
     )
     blocked_count = fields.Integer(
-        string="Entrées bloquées", compute="_compute_stats",
+        string="Number of blocked entries", compute="_compute_stats",
     )
 
     _sql_constraints = [
         (
             "cadence_positive",
             "CHECK (cadence_days >= 0)",
-            "La cadence ne peut pas être négative.",
+            "The cadence cannot be negative.",
         ),
         (
             "word_floor_positive",
             "CHECK (word_floor >= 0)",
-            "Le plancher de mots ne peut pas être négatif.",
+            "The word floor cannot be negative.",
         ),
     ]
 
@@ -120,8 +120,9 @@ class EditorialCalendar(models.Model):
         for calendar in self:
             if calendar.require_all_langs == "yes" and not calendar.lang_ids:
                 raise ValidationError(_(
-                    "Exiger toutes les langues n'a pas de sens sans langue"
-                    " publiée : ajoutez au moins une langue au calendrier « %s ».",
+                    "Requiring all languages makes no sense without a "
+                    "published language: add at least one language to the "
+                    "\"%s\" calendar.",
                     calendar.name,
                 ))
 
@@ -133,6 +134,7 @@ class EditorialCalendar(models.Model):
         "cadence_days",
         "pillar_ids.target_share",
     )
+    @api.depends_context("lang")
     def _compute_stats(self):
         now = fields.Datetime.now()
         for calendar in self:
@@ -167,28 +169,27 @@ class EditorialCalendar(models.Model):
         self.ensure_one()
         window = published[:RATIO_WINDOW]
         if not window:
-            return _("Aucune publication à ce jour.")
+            return _("No publication so far.")
 
         total = len(window)
         counts = {}
         for entry in window:
-            key = entry.pillar_id.name or _("Sans pilier")
+            key = entry.pillar_id.name or _("No pillar")
             counts[key] = counts.get(key, 0) + 1
 
         targets = {p.name: p.target_share for p in self.pillar_ids}
-        lines = [_("Sur les %s dernières publications :", total)]
+        lines = [_("Over the last %s publications:", total)]
         for name, count in sorted(counts.items(), key=lambda kv: -kv[1]):
             share = 100.0 * count / total
             target = targets.get(name)
             if target:
                 gap = share - target
-                lines.append(
-                    "  %s : %d (%.0f %%) — cible %.0f %%, écart %+.0f" % (
-                        name, count, share, target, gap,
-                    )
-                )
+                lines.append(_(
+                    "  %(name)s: %(count)d (%(share).0f%%), target %(target).0f%%, gap %(gap)+.0f"
+                ) % {"name": name, "count": count, "share": share, "target": target, "gap": gap})
             else:
-                lines.append("  %s : %d (%.0f %%)" % (name, count, share))
+                lines.append(_("  %(name)s: %(count)d (%(share).0f%%)") % {
+                    "name": name, "count": count, "share": share})
         return "\n".join(lines)
 
     # --- politique multilingue -------------------------------------------
@@ -225,7 +226,7 @@ class EditorialCalendar(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Entrées"),
+            "name": _("Entries"),
             "res_model": "bf.editorial.entry",
             "view_mode": "kanban,list,calendar,form",
             "domain": [("calendar_id", "=", self.id)],

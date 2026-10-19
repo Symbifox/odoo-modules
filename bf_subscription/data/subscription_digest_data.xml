@@ -3,7 +3,7 @@
     <data noupdate="1">
         <!-- Default report config: on-demand PDF ready out of the box, no auto-send. -->
         <record id="digest_default" model="subscription.digest">
-            <field name="name">Rapport des abonnements</field>
+            <field name="name">Subscription report</field>
             <field name="auto_send" eval="False"/>
             <field name="frequency">monthly</field>
             <field name="renewal_horizon_days">30</field>

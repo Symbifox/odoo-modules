@@ -5,23 +5,23 @@
         <field name="name">subscription.digest.form</field>
         <field name="model">subscription.digest</field>
         <field name="arch" type="xml">
-            <form string="Récapitulatif des abonnements">
+            <form string="Subscription digest">
                 <header>
                     <button name="action_print_report" type="object"
-                            string="Imprimer le rapport (PDF)" class="btn-primary"
+                            string="Print the report (PDF)" class="btn-primary"
                             icon="fa-file-pdf-o"/>
                     <button name="action_send_now" type="object"
-                            string="Envoyer maintenant"
+                            string="Send now"
                             icon="fa-envelope-o"/>
                     <button name="action_send_test" type="object"
-                            string="Envoyer un test"/>
+                            string="Send a test"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="ex. Récapitulatif hebdomadaire"/></h1>
+                        <h1><field name="name" placeholder="e.g. Weekly digest"/></h1>
                     </div>
                     <group>
-                        <group string="Diffusion">
+                        <group string="Sending">
                             <field name="auto_send"/>
                             <field name="frequency" invisible="not auto_send"/>
                             <field name="user_ids" widget="many2many_tags"
@@ -32,7 +32,7 @@
                             <field name="active" invisible="1"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string="Contenu">
+                        <group string="Content">
                             <field name="include_spend_summary"/>
                             <field name="include_renewals"/>
                             <field name="renewal_horizon_days"
@@ -50,7 +50,7 @@
         <field name="name">subscription.digest.list</field>
         <field name="model">subscription.digest</field>
         <field name="arch" type="xml">
-            <list string="Récapitulatifs">
+            <list string="Digests">
                 <field name="name"/>
                 <field name="auto_send" widget="boolean_toggle"/>
                 <field name="frequency"/>
@@ -61,7 +61,7 @@
     </record>
 
     <record id="action_subscription_digest" model="ir.actions.act_window">
-        <field name="name">Récapitulatifs</field>
+        <field name="name">Digests</field>
         <field name="res_model">subscription.digest</field>
         <field name="view_mode">list,form</field>
     </record>

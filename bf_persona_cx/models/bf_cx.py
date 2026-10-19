@@ -13,7 +13,7 @@ class _PersonaRefreshMixin(models.AbstractModel):
     """
 
     _name = "bf.persona.cx.refresh.mixin"
-    _description = "Rafraîchit le persona à chaque retour d'expérience"
+    _description = "Refreshes the persona on each experience feedback"
 
     def _bf_persona_refresh(self):
         try:
@@ -28,7 +28,11 @@ class _PersonaRefreshMixin(models.AbstractModel):
                 personas.invalidate_recordset([
                     "cx_feedback_ids", "cx_complaint_ids", "cx_last_feedback_id", "cx_open_complaint_count",
                 ])
-                personas._refresh_relationship_facts()
+                # The stored reason is read by the team: write it in the company's language,
+                # not in the language of whoever moved the record (a portal client, an
+                # employee set to another language).
+                lang = self.env.company.partner_id.lang or "en_US"
+                personas.with_context(lang=lang)._refresh_relationship_facts()
         except Exception as e:
             _logger.warning("persona refresh after %s change failed: %s", self._name, e)
 

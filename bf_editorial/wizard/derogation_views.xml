@@ -5,17 +5,14 @@
         <field name="name">bf.editorial.waiver.form</field>
         <field name="model">bf.editorial.waiver</field>
         <field name="arch" type="xml">
-            <form string="Signer une dérogation">
+            <form string="Sign a waiver">
                 <field name="entry_id" invisible="1"/>
                 <div class="alert alert-warning" role="alert">
                     <p>
-                        La QA continue de dire ce qu'elle voit. Ce que vous
-                        signez, c'est le refus de publier : il cède sur les
-                        motifs ci-dessous, et sur ceux-là seulement.
+                        The QA keeps saying what it sees. What you are signing is the refusal to publish: it gives way on the reasons below, and on those only.
                     </p>
                     <p class="mb-0">
-                        Dès que le texte de l'article bouge, la dérogation
-                        cesse de couvrir quoi que ce soit et la garde reprend.
+                        As soon as the article text changes, the waiver stops covering anything and the guard resumes.
                     </p>
                 </div>
                 <group>
@@ -24,12 +21,12 @@
                 </group>
                 <group>
                     <field name="reason" nolabel="1" colspan="2"
-                           placeholder="Pourquoi ces motifs sont acceptables sur cet article."/>
+                           placeholder="Why these reasons are acceptable on this article."/>
                 </group>
                 <footer>
-                    <button name="action_sign" type="object" string="Signer"
+                    <button name="action_sign" type="object" string="Sign"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary"
+                    <button string="Cancel" class="btn-secondary"
                             special="cancel"/>
                 </footer>
             </form>

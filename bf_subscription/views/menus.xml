@@ -2,25 +2,25 @@
 <odoo>
 
     <menuitem id="menu_subscription_root"
-              name="Abonnements"
+              name="Subscriptions"
               web_icon="bf_subscription,static/description/icon.png"
               sequence="95"
               groups="bf_subscription.group_subscription_user"/>
 
     <menuitem id="menu_subscription_main"
-              name="Abonnements"
+              name="Subscriptions"
               parent="menu_subscription_root"
               action="action_subscription_subscription"
               sequence="10"/>
 
     <menuitem id="menu_subscription_renewals"
-              name="Renouvellements à venir"
+              name="Upcoming renewals"
               parent="menu_subscription_root"
               action="action_subscription_renewals_30d"
               sequence="20"/>
 
     <menuitem id="menu_subscription_dashboard"
-              name="Tableau de bord"
+              name="Dashboard"
               parent="menu_subscription_root"
               action="action_subscription_dashboard"
               sequence="30"/>
@@ -32,13 +32,13 @@
               groups="bf_subscription.group_subscription_manager"/>
 
     <menuitem id="menu_subscription_tags"
-              name="Étiquettes"
+              name="Tags"
               parent="menu_subscription_config"
               action="action_subscription_tag"
               sequence="10"/>
 
     <menuitem id="menu_subscription_digests"
-              name="Rapports et envois automatiques"
+              name="Reports and automatic emails"
               parent="menu_subscription_config"
               action="action_subscription_digest"
               sequence="20"/>

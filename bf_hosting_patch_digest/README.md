@@ -65,6 +65,10 @@ switch, no section without hosting access, only the recipient's clients named,
 name escaping (including past the eight-name limit), and the table-row
 insertion.
 
+## Languages (18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The fleet section of the daily digest is rendered in each recipient's language, like the rest of the digest.
+
 ## Licence
 
 LGPL-3.0-or-later. See `LICENSE`.

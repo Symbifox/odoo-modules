@@ -35,6 +35,12 @@
 
     function effacerErreur() { $("error").classList.add("hidden"); }
 
+    /* Un texte de la page, dans la langue de la page : le gabarit les porte (#textes), traduits côté serveur. */
+    function texte(id) {
+        var noeud = $("t-" + id);
+        return noeud ? noeud.textContent.trim() : "";
+    }
+
     function appeler(route, params) {
         var abandon = new AbortController();
         var minuteur = setTimeout(function () { abandon.abort(); }, TIMEOUT_MS);
@@ -46,10 +52,10 @@
         }).then(function (reponse) {
             clearTimeout(minuteur);
             if (reponse.status === 401 || reponse.status === 403) {
-                throw new Error("Votre session Odoo a expiré. Rechargez la page.");
+                throw new Error(texte("session"));
             }
             if (!reponse.ok) {
-                throw new Error("Le serveur a répondu " + reponse.status + ".");
+                throw new Error(texte("serveur") + " " + reponse.status + ".");
             }
             return reponse.json();
         }).then(function (charge) {
@@ -58,7 +64,7 @@
             if (charge.error) {
                 var data = charge.error.data || {};
                 throw new Error(data.message || charge.error.message ||
-                                "Erreur inattendue du serveur.");
+                                texte("erreur-serveur"));
             }
             var resultat = charge.result || {};
             if (resultat.error) { throw new Error(resultat.error); }
@@ -66,7 +72,7 @@
         }, function (err) {
             clearTimeout(minuteur);
             if (err.name === "AbortError") {
-                throw new Error("L'envoi a été trop long. Réessayez.");
+                throw new Error(texte("trop-long"));
             }
             throw err;
         });
@@ -111,9 +117,7 @@
             };
             img.onerror = function () {
                 URL.revokeObjectURL(url);
-                rejeter(new Error("Ce fichier n'est pas une image que ce " +
-                                  "téléphone sait ouvrir. Reprenez-le avec " +
-                                  "l'appareil photo."));
+                rejeter(new Error(texte("pas-une-image")));
             };
             img.src = url;
         });
@@ -138,5 +142,6 @@
         appeler: appeler,
         reduire: reduire,
         apercu: apercu,
+        texte: texte,
     };
 })(window);

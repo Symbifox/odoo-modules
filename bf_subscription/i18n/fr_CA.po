@@ -1,0 +1,1870 @@
+# Translation of Abonnements - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_subscription 18.0.1.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 08:36+0000\n"
+"PO-Revision-Date: 2026-10-12 08:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid " Source vendor bill: %s."
+msgstr " Facture fournisseur source : %s."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_res_partner__own_subscription_count
+#: model:ir.model.fields,field_description:bf_subscription.field_res_users__own_subscription_count
+msgid "# Billed subscriptions"
+msgstr "# Abonnements facturés"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__customer_invoice_count
+msgid "# Customer invoices"
+msgstr "# Factures client"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_res_partner__managed_subscription_count
+#: model:ir.model.fields,field_description:bf_subscription.field_res_users__managed_subscription_count
+msgid "# Managed subscriptions"
+msgstr "# Abonnements gérés"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "# Subscriptions"
+msgstr "# Abonnements"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__vendor_bill_count
+msgid "# Vendor bills"
+msgstr "# Factures fournisseur"
+
+#. module: bf_subscription
+#: model:ir.actions.report,print_report_name:bf_subscription.action_report_subscription
+msgid "'Subscription_report_%s' % (time.strftime('%Y-%m-%d'))"
+msgstr "'Rapport_abonnements_%s' % (time.strftime('%Y-%m-%d'))"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "- generated on"
+msgstr "— généré le"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid ""
+"<b>Price increase detected</b> on bill <a href='#' data-oe-"
+"model='account.move' data-oe-id='%(bid)d'>%(bname)s</a>: %(amount).2f "
+"%(cur)s against %(cycle).2f %(cur)s per cycle (+%(pct).1f %%, threshold "
+"%(thr).0f %%)."
+msgstr ""
+"<b>Hausse de prix détectée</b> sur la facture <a href='#' data-oe-"
+"model='account.move' data-oe-id='%(bid)d'>%(bname)s</a> : %(amount).2f "
+"%(cur)s contre %(cycle).2f %(cur)s au cycle (+%(pct).1f %%, seuil %(thr).0f "
+"%%)."
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_kanban
+msgid "<i class=\"fa fa-calendar\"/> Next:"
+msgstr "<i class=\"fa fa-calendar\"/> Prochain :"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid ""
+"<span class=\"o_stat_text\">Vendor</span>\n"
+"                                <span class=\"o_stat_text\">portal</span>"
+msgstr ""
+"<span class=\"o_stat_text\">Portail</span>\n"
+"                                <span class=\"o_stat_text\">fournisseur</span>"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Accounting"
+msgstr "Comptabilité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Activate"
+msgstr "Activer"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__active
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__active
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Active only"
+msgstr "Actifs"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__is_dormant
+msgid ""
+"Active subscription with a billable cycle and no recent vendor bill (beyond "
+"1.5× the cycle period)."
+msgstr ""
+"Abonnement actif à cycle facturable sans facture fournisseur récente (au-"
+"delà de 1,5× la période du cycle)."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Active subscriptions"
+msgstr "Abonnements actifs"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__cycle_amount
+msgid "Amount per cycle"
+msgstr "Montant par cycle"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__analytic_distribution
+msgid "Analytic Distribution"
+msgstr "Distribution analytique"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__analytic_precision
+msgid "Analytic Precision"
+msgstr "Précision analytique"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__annual
+msgid "Annual"
+msgstr "Annuel"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Annual spend"
+msgstr "Dépense annualisée"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Archived"
+msgstr "Archivés"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__responsible_id
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Assignee"
+msgstr "Responsable"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_rebill_wizard__mode__at_cost
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__rebill_mode__at_cost
+msgid "At cost"
+msgstr "Au coût"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__auto_renew
+msgid "Auto Renew"
+msgstr "Renouvellement automatique"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__auto_send
+msgid "Automatic sending"
+msgstr "Envoi automatique"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Automatic subscription digest."
+msgstr "Récapitulatif automatique des abonnements."
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "BF subscriptions (own)"
+msgstr "Abonnements BF (propres)"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__biennial
+msgid "Biennial"
+msgstr "Biennal"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Cancel before"
+msgstr "À annuler avant"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Cancel subscription"
+msgstr "Résilier"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__cancelled
+msgid "Canceled"
+msgstr "Résilié"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Canceled only"
+msgstr "Résiliés"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__category
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__certificate
+#: model:subscription.tag,name:bf_subscription.tag_certificate
+msgid "Certificate"
+msgstr "Certificat"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "Check the price increase: %s"
+msgstr "Vérifier la hausse de prix — %s"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,title:bf_subscription.bf_onb_step_renewals
+msgid "Check upcoming renewals"
+msgstr "Vérifier les renouvellements à venir"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Classification"
+msgstr "Classification"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_tag__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+"Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
+"comprennent que 0 à 11."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_tag_list
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color_source
+msgid "Color Source"
+msgstr "Source de la couleur"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_tag__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_tag__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
+"les règles automatiques."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__company_id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__company_id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Confirm the cancellation of this subscription?"
+msgstr "Confirmer la résiliation de cet abonnement ?"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Content"
+msgstr "Contenu"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__external_reference
+msgid "Contract number, account ID, or any identifier on the vendor side."
+msgstr "Numéro de contrat, ID compte, ou tout identifiant côté fournisseur."
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__corporate_membership
+msgid "Corporate membership"
+msgstr "Membership corporatif"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__cost_amount
+msgid "Cost (vendor bill)"
+msgstr "Coût (facture fournisseur)"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_rebill_wizard__mode__markup_percent
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__rebill_mode__markup_percent
+msgid "Cost + markup %"
+msgstr "Coût + markup %"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Cost per managed client"
+msgstr "Coût par client géré"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+msgid "Create the customer invoice"
+msgstr "Créer la facture client"
+
+#. module: bf_subscription
+#: model_terms:ir.actions.act_window,help:bf_subscription.action_subscription_subscription
+msgid "Create the first subscription"
+msgstr "Créer le premier abonnement"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__create_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__create_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__create_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__create_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__create_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_subscription
+#: model:subscription.tag,name:bf_subscription.tag_critical
+msgid "Critical"
+msgstr "Critique"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__currency_id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__customer_invoice_ids
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Customer invoices"
+msgstr "Factures client"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__cycle
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Cycle"
+msgstr "Cycle"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Cycle & amount"
+msgstr "Cycle & Montant"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_list
+msgid "Cycle total"
+msgstr "Total cycle"
+
+#. module: bf_subscription
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_dashboard
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Digest"
+msgstr "Récapitulatif"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Digest sent to %s."
+msgstr "Récapitulatif envoyé à %s."
+
+#. module: bf_subscription
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_digest
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_list
+msgid "Digests"
+msgstr "Récapitulatifs"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__display_name
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__display_name
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__display_name
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color_resolved
+msgid "Displayed color"
+msgstr "Couleur affichée"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__distribution_analytic_account_ids
+msgid "Distribution Analytic Account"
+msgstr "Compte analytique de distribution"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__domain_name
+#: model:subscription.tag,name:bf_subscription.tag_domain
+msgid "Domain name"
+msgstr "Nom de domaine"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__is_dormant
+msgid "Dormant"
+msgstr "Dormant"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Dormant only"
+msgstr "Dormants"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Dormant subscriptions"
+msgstr "Abonnements dormants"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Drafts"
+msgstr "Brouillons"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid ""
+"Enter at least one recipient, or turn off automatic sending (the \"%s\" "
+"setup will then be used only for the on-demand report)."
+msgstr ""
+"Renseignez au moins un destinataire, ou désactivez l'envoi automatique (la "
+"configuration « %s » servira alors uniquement au rapport sur demande)."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "Enter the amount per cycle before activating the subscription \"%s\"."
+msgstr "Renseignez le montant par cycle avant d'activer l'abonnement « %s »."
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__expired
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__final_amount
+msgid "Final rebilled amount"
+msgstr "Montant final refacturé"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "First fill in \"Managed for client\" before turning on rebilling."
+msgstr ""
+"Il faut d'abord renseigner « Géré pour le client » avant d'activer la "
+"refacturation."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__fixed_amount
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_rebill_wizard__mode__fixed_amount
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__rebill_mode__fixed_amount
+msgid "Fixed amount"
+msgstr "Montant fixe"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_fixed_amount
+msgid "Fixed amount rebilled"
+msgstr "Montant fixe refacturé"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__payment_method_label
+msgid "Free-form label: \"Visa BF *4242\", \"Direct debit account 1\", etc."
+msgstr "Libellé libre : « Visa BF *4242 », « Prélèvement DD compte 1 », etc."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__frequency
+msgid "Frequency"
+msgstr "Fréquence"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Group by"
+msgstr "Grouper par"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__hosting
+msgid "Hosting"
+msgstr "Hébergement"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__notice_period_days
+msgid "How many days ahead to cancel before the automatic renewal."
+msgstr ""
+"Combien de jours d'avance pour annuler avant le renouvellement automatique."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__price_alert_threshold_pct
+msgid ""
+"If a linked vendor bill exceeds the amount per cycle by this percentage, an "
+"alert is posted in the chatter."
+msgstr ""
+"Si une facture fournisseur liée dépasse le montant par cycle de ce "
+"pourcentage, une alerte est postée sur le fil de discussion."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_has_error
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__rebilled
+msgid ""
+"If checked: Blue Fox bills the client (managed_for_id) on top of paying the "
+"vendor."
+msgstr ""
+"Si coché : Blue Fox facture le client (managed_for_id) en plus de payer le "
+"fournisseur."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__managed_for_id
+msgid ""
+"If set: the subscription is administered by Blue Fox on behalf of this "
+"client."
+msgstr ""
+"Si renseigné : l'abonnement est administré par Blue Fox au nom de ce client."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_digest__auto_send
+msgid ""
+"If unchecked, the setup is used only to generate the PDF report on demand "
+"(no scheduled sending)."
+msgstr ""
+"Si décoché, la configuration sert uniquement à générer le rapport PDF sur "
+"demande (aucun envoi planifié)."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__include_dormant
+msgid "Include dormant subscriptions"
+msgstr "Inclure les abonnements dormants"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__include_renewals
+msgid "Include renewals"
+msgstr "Inclure les renouvellements"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__include_managed_clients
+msgid "Include the cost per managed client"
+msgstr "Inclure le coût par client géré"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__include_spend_summary
+msgid "Include the spend summary"
+msgstr "Inclure le sommaire de dépense"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__infrastructure
+#: model:subscription.tag,name:bf_subscription.tag_infrastructure
+msgid "Infrastructure"
+msgstr "Infrastructure"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__invoice_date
+msgid "Invoice date"
+msgstr "Date de facturation"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+msgid "Invoice line"
+msgstr "Ligne de facture"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__is_managed_for_client
+msgid "Is Managed For Client"
+msgstr "Géré pour un client"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__journal_id
+msgid "Journal"
+msgstr "Journal"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__last_sent
+msgid "Last Sent"
+msgstr "Dernier envoi"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__write_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__write_uid
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__write_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__write_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__write_date
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Last bill"
+msgstr "Dernière facture"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__last_vendor_bill_date
+msgid "Last vendor bill"
+msgstr "Dernière facture fournisseur"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Lifetime totals"
+msgstr "Totaux à vie"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__line_description
+msgid "Line description"
+msgstr "Description de ligne"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,title:bf_subscription.bf_onb_step_list
+msgid "List your active subscriptions"
+msgstr "Lister vos abonnements actifs"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__managed_for_id
+msgid "Managed For"
+msgstr "Géré pour"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Managed client"
+msgstr "Client géré"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Managed for a client"
+msgstr "Géré pour client"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__managed_for_id
+msgid "Managed for client"
+msgstr "Géré pour le client"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Managed for clients"
+msgstr "Gérés pour clients"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.view_partner_form_subscription
+msgid "Managed subscriptions"
+msgstr "Abonnements gérés"
+
+#. module: bf_subscription
+#: model:ir.module.category,description:bf_subscription.module_category_bf_subscription
+msgid "Management of Blue Fox paid subscriptions"
+msgstr "Gestion des abonnements payants Blue Fox"
+
+#. module: bf_subscription
+#: model:res.groups,name:bf_subscription.group_subscription_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_margin_pct
+msgid "Margin (%)"
+msgstr "Marge (%)"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_margin
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Margin (lifetime)"
+msgstr "Marge (vie)"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__markup_percent
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_markup_percent
+msgid "Markup (%)"
+msgstr "Markup (%)"
+
+#. module: bf_subscription
+#: model:subscription.tag,name:bf_subscription.tag_membership
+msgid "Membership"
+msgstr "Membership"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Metadata"
+msgstr "Métadonnées"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__mode
+msgid "Mode"
+msgstr "Mode"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_digest__frequency__monthly
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__monthly
+msgid "Monthly"
+msgstr "Mensuel"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__monthly_equivalent
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Monthly cost"
+msgstr "Coût mensualisé"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_graph
+msgid "Monthly cost by category"
+msgstr "Coût mensualisé par catégorie"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Monthly spend"
+msgstr "Dépense mensualisée"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_list
+msgid "Monthly total"
+msgstr "Total mensualisé"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__name
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__name
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__next_billing_date
+msgid "Next renewal"
+msgstr "Prochain renouvellement"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "No dormant subscription."
+msgstr "Aucun abonnement dormant."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "No recipient configured."
+msgstr "Aucun destinataire configuré."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "No renewal within the horizon."
+msgstr "Aucun renouvellement dans l'horizon."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "No sales journal found for company %s."
+msgstr "Aucun journal de vente trouvé pour la société %s."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/account_move.py:0
+msgid "No subscription linked to this bill."
+msgstr "Aucun abonnement lié à cette facture."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "No target client: fill in \"managed_for\" on the subscription."
+msgstr "Aucun client cible — renseignez « managed_for » sur l'abonnement."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "No vendor URL configured."
+msgstr "Aucune URL fournisseur configurée."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "None"
+msgstr "aucune"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__notes
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__notice_period_days
+msgid "Notice period (days)"
+msgstr "Préavis (jours)"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__on_demand
+msgid "On demand"
+msgstr "À la demande"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,step_image_alt:bf_subscription.bf_onb_step_list
+#: model:onboarding.onboarding.step,step_image_alt:bf_subscription.bf_onb_step_managed_for
+#: model:onboarding.onboarding.step,step_image_alt:bf_subscription.bf_onb_step_renewals
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__one_time
+msgid "One-time"
+msgstr "Unique"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,button_text:bf_subscription.bf_onb_step_list
+msgid "Open Subscriptions"
+msgstr "Ouvrir Abonnements"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_rebill_wizard__product_id
+msgid "Optional: otherwise a free-form line is created."
+msgstr "Optionnel — sinon une ligne libre est créée."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_rebill_wizard__vendor_bill_id
+msgid ""
+"Original vendor bill. Optional: leave empty to create a rebill without an "
+"upstream bill (e.g. flat fee)."
+msgstr ""
+"Facture fournisseur d'origine. Optionnel : laisser vide pour créer une "
+"refacturation sans facture amont (ex. forfait fixe)."
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color_hex
+msgid "Own color"
+msgstr "Couleur propre"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Parties"
+msgstr "Parties"
+
+#. module: bf_subscription
+#. modules: bf_meeting_timer, bf_subscription
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Pause"
+msgstr "Suspendre"
+
+#. module: bf_subscription
+#. modules: bf_meeting_timer, bf_subscription
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__paused
+msgid "Paused"
+msgstr "Suspendu"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Paused only"
+msgstr "Suspendus"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__payment_method_label
+msgid "Payment method"
+msgstr "Méthode de paiement"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__end_date
+msgid "Planned end"
+msgstr "Fin prévue"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_rebill_wizard__cost_amount
+msgid "Pre-filled from the vendor bill if one is given."
+msgstr "Pré-rempli depuis la facture fournisseur si fournie."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__price_alert_threshold_pct
+msgid "Price increase alert threshold (%)"
+msgstr "Seuil d'alerte hausse (%)"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Print the report (PDF)"
+msgstr "Imprimer le rapport (PDF)"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__rebill_product_id
+msgid ""
+"Product used by default when the rebilling wizard creates a customer "
+"invoice. Otherwise, a generic label is used."
+msgstr ""
+"Produit utilisé par défaut lorsque le wizard de refacturation crée une "
+"facture client. Sinon, un libellé générique est utilisé."
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__quarterly
+msgid "Quarterly"
+msgstr "Trimestriel"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_mode
+msgid "Rebill Mode"
+msgstr "Mode de refacturation"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "Rebill invoice"
+msgstr "Facture de refacturation"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid ""
+"Rebill invoice created: <a href='#' data-oe-model='account.move' data-oe-"
+"id='%(id)d'>%(name)s</a>, %(amount).2f %(currency)s (mode: %(mode)s)."
+msgstr ""
+"Facture de refacturation créée : <a href='#' data-oe-model='account.move' "
+"data-oe-id='%(id)d'>%(name)s</a> — %(amount).2f %(currency)s (mode : "
+"%(mode)s)."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/account_move.py:0
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_rebill_wizard
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_subscription.view_move_form_rebill_button
+msgid "Rebill to client"
+msgstr "Refacturer au client"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Rebilled"
+msgstr "Refacturés"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebilled
+msgid "Rebilled to client"
+msgstr "Refacturé au client"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Rebilling"
+msgstr "Refacturation"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/account_move.py:0
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "Rebilling is not turned on for the subscription \"%s\"."
+msgstr "L'abonnement « %s » n'a pas la refacturation activée."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "Rebilling not possible"
+msgstr "Refacturation impossible"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "Rebilling of subscription %(name)s (ref. %(code)s).%(bill_ref)s"
+msgstr "Refacturation de l'abonnement %(name)s (réf. %(code)s).%(bill_ref)s"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__rebill_product_id
+msgid "Rebilling product"
+msgstr "Produit de refacturation"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,done_text:bf_subscription.bf_onb_step_managed_for
+msgid "Rebilling set up"
+msgstr "Refacturation configurée"
+
+#. module: bf_subscription
+#: model:ir.model,name:bf_subscription.model_subscription_rebill_wizard
+msgid "Rebilling wizard for a subscription managed for a client"
+msgstr "Wizard de refacturation d'un abonnement géré pour client"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "Rebilling: %s"
+msgstr "Refacturation – %s"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Rebills"
+msgstr "Refacturations"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__user_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Reconsider the decision"
+msgstr "Revenir sur la décision"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__professional_service
+msgid "Recurring professional service"
+msgstr "Service professionnel récurrent"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__code
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Renewal"
+msgstr "Renouvellement"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Renewal < 30 days"
+msgstr "Renouvellement < 30j"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Renewal confirmed"
+msgstr "Renouvellement confirmé"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__renewal_decision_date
+msgid "Renewal confirmed for"
+msgstr "Renouvellement confirmé pour le"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "Renewal confirmed."
+msgstr "Renouvellement confirmé."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__renewal_decision_needed
+msgid "Renewal decision needed"
+msgstr "Décision de renouvellement attendue"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__renewal_decision_date
+msgid ""
+"Renewal for which the \"keep it\" decision was made. As long as it targets "
+"the next renewal, no reminder is raised; at the next cycle the question "
+"comes up again by itself."
+msgstr ""
+"Renouvellement pour lequel la décision « on garde » a été prise. Tant "
+"qu'elle vise le prochain renouvellement, aucune relance n'est levée ; au "
+"cycle suivant la question se repose d'elle-même."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_digest__renewal_horizon_days
+msgid "Renewal horizon (days)"
+msgstr "Horizon renouvellements (jours)"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,done_text:bf_subscription.bf_onb_step_renewals
+msgid "Renewals reviewed"
+msgstr "Renouvellements survolés"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Report"
+msgstr "Rapport"
+
+#. module: bf_subscription
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_digests
+msgid "Reports and automatic emails"
+msgstr "Rapports et envois automatiques"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Reset to draft"
+msgstr "Repasser en brouillon"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_subscription
+#: model:subscription.tag,name:bf_subscription.tag_saas
+msgid "SaaS"
+msgstr "SaaS"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__category__software_saas
+msgid "SaaS software"
+msgstr "Logiciel SaaS"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__semi_annual
+msgid "Semiannual"
+msgstr "Semestriel"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Send a test"
+msgstr "Envoyer un test"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Send now"
+msgstr "Envoyer maintenant"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Sending"
+msgstr "Diffusion"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,title:bf_subscription.bf_onb_step_managed_for
+msgid "Set up rebilling for clients"
+msgstr "Configurer la refacturation pour les clients"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_rebill_wizard_form
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__start_date
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__state
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model:ir.model,name:bf_subscription.model_subscription_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_account_bank_statement_line__subscription_id
+#: model:ir.model.fields,field_description:bf_subscription.field_account_move__subscription_id
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__subscription_id
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Subscription"
+msgstr "Abonnement"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_pivot
+msgid "Subscription cost"
+msgstr "Coût des abonnements"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model:ir.model,name:bf_subscription.model_subscription_digest
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "Subscription digest"
+msgstr "Récapitulatif des abonnements"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Subscription digest: %s"
+msgstr "Récapitulatif des abonnements — %s"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Subscription portfolio"
+msgstr "Portefeuille d'abonnements"
+
+#. module: bf_subscription
+#: model:mail.activity.type,name:bf_subscription.mail_activity_type_renewal
+msgid "Subscription renewal"
+msgstr "Renouvellement d'abonnement"
+
+#. module: bf_subscription
+#: model:ir.actions.report,name:bf_subscription.action_report_subscription
+msgid "Subscription report"
+msgstr "Rapport des abonnements"
+
+#. module: bf_subscription
+#: model:ir.model,name:bf_subscription.model_subscription_tag
+msgid "Subscription tag"
+msgstr "Étiquette d'abonnement"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_tag_list
+msgid "Subscription tags"
+msgstr "Étiquettes d'abonnement"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_account_bank_statement_line__subscription_id
+#: model:ir.model.fields,help:bf_subscription.field_account_move__subscription_id
+msgid ""
+"Subscription this invoice is linked to. For a vendor bill, it is the "
+"underlying contract. For a customer invoice, it is the matching rebill."
+msgstr ""
+"Abonnement auquel cette facture est rattachée. Pour une facture fournisseur,"
+" c'est le contrat sous-jacent. Pour une facture client, c'est la "
+"refacturation correspondante."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Subscription_report_%s.pdf"
+msgstr "Rapport_abonnements_%s.pdf"
+
+#. module: bf_subscription
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_subscription
+#: model:ir.module.category,name:bf_subscription.module_category_bf_subscription
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_main
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_root
+#: model:onboarding.onboarding,name:bf_subscription.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_list
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+#: model_terms:ir.ui.view,arch_db:bf_subscription.view_partner_form_subscription
+msgid "Subscriptions"
+msgstr "Abonnements"
+
+#. module: bf_subscription
+#: model:res.groups,name:bf_subscription.group_subscription_user
+msgid "Subscriptions / User"
+msgstr "Abonnements / Utilisateur"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_res_partner__own_subscription_ids
+#: model:ir.model.fields,field_description:bf_subscription.field_res_users__own_subscription_ids
+msgid "Subscriptions billed by this vendor"
+msgstr "Abonnements facturés par ce fournisseur"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,done_text:bf_subscription.bf_onb_step_list
+msgid "Subscriptions listed"
+msgstr "Abonnements listés"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/res_partner.py:0
+msgid "Subscriptions managed for %s"
+msgstr "Abonnements gérés pour %s"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_res_partner__managed_subscription_ids
+#: model:ir.model.fields,field_description:bf_subscription.field_res_users__managed_subscription_ids
+msgid "Subscriptions managed for this client"
+msgstr "Abonnements gérés pour ce client"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/res_partner.py:0
+msgid "Subscriptions with %s"
+msgstr "Abonnements chez %s"
+
+#. module: bf_subscription
+#: model:ir.actions.server,name:bf_subscription.cron_subscription_renewal_alerts_ir_actions_server
+msgid "Subscriptions: Renewal reminders"
+msgstr "Abonnements : Relances de renouvellement"
+
+#. module: bf_subscription
+#: model:ir.actions.server,name:bf_subscription.cron_subscription_digest_ir_actions_server
+msgid "Subscriptions: Send digests"
+msgstr "Abonnements : Envoi des récapitulatifs"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Summary"
+msgstr "Sommaire"
+
+#. module: bf_subscription
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_tag
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__tag_ids
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_tags
+msgid "Tags"
+msgstr "Étiquettes"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Test digest sent to %s."
+msgstr "Récapitulatif test envoyé à %s."
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_tag__color_text
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "The 'dormant' filter is not supported."
+msgstr "Filtre 'dormant' non supporté."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid "The amount to rebill must be greater than zero."
+msgstr "Le montant à refacturer doit être supérieur à zéro."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "The subscription \"%s\" has no upcoming renewal to confirm."
+msgstr "L'abonnement « %s » n'a pas de prochain renouvellement à confirmer."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid ""
+"The subscription <b>%(name)s</b> with <b>%(vendor)s</b> renews on "
+"<b>%(date)s</b> (notice: %(notice)d days, decide before "
+"<b>%(cutoff)s</b>).<br/>Cycle amount: %(amount)s %(currency)s.<br/><br/>Keep"
+" it? Click <b>Renewal confirmed</b> on the record: the reminder stays quiet "
+"until the next cycle. Cancel it? Uncheck <b>Auto Renew</b>."
+msgstr ""
+"L'abonnement <b>%(name)s</b> chez <b>%(vendor)s</b> se renouvelle le "
+"<b>%(date)s</b> (préavis : %(notice)d jours, à décider avant "
+"<b>%(cutoff)s</b>).<br/>Montant cycle : %(amount)s %(currency)s.<br/><br/>On"
+" garde ? Bouton <b>Renouvellement confirmé</b> sur la fiche : la relance se "
+"tait jusqu'au cycle suivant. On coupe ? Décocher <b>Renouvellement "
+"automatique</b>."
+
+#. module: bf_subscription
+#: model:ir.model.constraint,message:bf_subscription.constraint_subscription_subscription_code_unique
+msgid "The subscription reference must be unique per company."
+msgstr "La référence d'abonnement doit être unique par société."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__vendor_id
+msgid "The vendor that bills the subscription."
+msgstr "Le fournisseur qui facture l'abonnement."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/wizard/subscription_rebill_wizard.py:0
+msgid ""
+"This subscription is not marked as managed for a client: first fill in "
+"\"Managed for client\" on the subscription \"%s\"."
+msgstr ""
+"Cet abonnement n'est pas marqué comme géré pour un client : renseignez "
+"d'abord « Géré pour le client » sur l'abonnement « %s »."
+
+#. module: bf_subscription
+#: model:ir.model.constraint,message:bf_subscription.constraint_subscription_tag_name_unique
+msgid "This tag already exists."
+msgstr "Cette étiquette existe déjà."
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__total_paid_lifetime
+msgid "Total paid (lifetime)"
+msgstr "Total payé (vie)"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__total_rebilled_lifetime
+msgid "Total rebilled (lifetime)"
+msgstr "Total refacturé (vie)"
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__rebill_margin
+msgid "Total rebilled to the client minus total paid to the vendor."
+msgstr "Total refacturé au client moins total payé au fournisseur."
+
+#. module: bf_subscription
+#: model_terms:ir.actions.act_window,help:bf_subscription.action_subscription_subscription
+msgid ""
+"Tracking of paid subscriptions: SaaS, memberships, infrastructure. "
+"Optionally managed on behalf of a client with rebilling."
+msgstr ""
+"Suivi des abonnements payants : SaaS, memberships, infrastructure.\n"
+"                Optionnellement gérés au nom d'un client avec refacturation."
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__triennial
+msgid "Triennial"
+msgstr "Triennal"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+msgid "Upcoming renewal: %s"
+msgstr "Renouvellement à venir — %s"
+
+#. module: bf_subscription
+#: model:ir.ui.menu,name:bf_subscription.menu_subscription_renewals
+msgid "Upcoming renewals"
+msgstr "Renouvellements à venir"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "Upcoming renewals ("
+msgstr "Renouvellements à venir ("
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Upcoming renewals (%d days)"
+msgstr "Renouvellements à venir (%d j)"
+
+#. module: bf_subscription
+#: model:ir.actions.act_window,name:bf_subscription.action_subscription_renewals_30d
+msgid "Upcoming renewals (30 days)"
+msgstr "Renouvellements à venir (30j)"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__vendor_id
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_search
+msgid "Vendor"
+msgstr "Fournisseur"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_rebill_wizard__vendor_bill_id
+msgid "Vendor bill"
+msgstr "Facture fournisseur"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_subscription.py:0
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__vendor_bill_ids
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "Vendor bills"
+msgstr "Factures fournisseur"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__external_url
+msgid "Vendor portal URL"
+msgstr "URL portail fournisseur"
+
+#. module: bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__external_reference
+msgid "Vendor reference"
+msgstr "Référence fournisseur"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,button_text:bf_subscription.bf_onb_step_renewals
+msgid "View renewals"
+msgstr "Voir les renouvellements"
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,button_text:bf_subscription.bf_onb_step_managed_for
+msgid "View subscriptions"
+msgstr "Voir les abonnements"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,field_description:bf_subscription.field_subscription_subscription__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_subscription
+#. modules: bf_editorial, bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_digest__frequency__weekly
+msgid "Weekly"
+msgstr "Hebdomadaire"
+
+#. module: bf_subscription
+#. odoo-python
+#: code:addons/bf_subscription/models/subscription_digest.py:0
+msgid "Your user has no email address."
+msgstr "Votre utilisateur n'a pas d'adresse courriel."
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,description:bf_subscription.bf_onb_step_renewals
+msgid ""
+"[action:bf_subscription.action_subscription_renewals_30d] A quick look at "
+"the subscriptions coming due in the next 30 days."
+msgstr ""
+"[action:bf_subscription.action_subscription_renewals_30d] Survol des "
+"abonnements qui arrivent à échéance dans les 30 prochains jours."
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,description:bf_subscription.bf_onb_step_list
+msgid ""
+"[action:bf_subscription.action_subscription_subscription] Create a record "
+"for each recurring subscription: SaaS, memberships, infrastructure."
+msgstr ""
+"[action:bf_subscription.action_subscription_subscription] Créez une fiche "
+"pour chaque abonnement récurrent : SaaS, memberships, infrastructure."
+
+#. module: bf_subscription
+#: model:onboarding.onboarding.step,description:bf_subscription.bf_onb_step_managed_for
+msgid ""
+"[action:bf_subscription.action_subscription_subscription] For each "
+"subscription managed on behalf of a client, check \"Managed "
+"for client\" and turn on rebilling."
+msgstr ""
+"[action:bf_subscription.action_subscription_subscription] Pour chaque "
+"abonnement géré au nom d'un client, cochez « Géré pour le "
+"client » et activez la refacturation."
+
+#. module: bf_subscription
+#: model:ir.model.fields,help:bf_subscription.field_subscription_subscription__monthly_equivalent
+msgid "cycle_amount normalized to a monthly equivalent for aggregates."
+msgstr "cycle_amount normalisé en équivalent mensuel pour les agrégats."
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "days)"
+msgstr "j)"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_subscription_form
+msgid "e.g. Anthropic API (production)"
+msgstr "ex. Anthropic API – Production"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.subscription_digest_form
+msgid "e.g. Weekly digest"
+msgstr "ex. Récapitulatif hebdomadaire"
+
+#. module: bf_subscription
+#: model_terms:ir.ui.view,arch_db:bf_subscription.report_subscription
+msgid "none"
+msgstr "aucune"

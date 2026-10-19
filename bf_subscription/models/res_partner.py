@@ -6,19 +6,19 @@ class ResPartner(models.Model):
 
     managed_subscription_ids = fields.One2many(
         'subscription.subscription', 'managed_for_id',
-        string="Abonnements gérés pour ce client",
+        string="Subscriptions managed for this client",
     )
     managed_subscription_count = fields.Integer(
         compute='_compute_subscription_counts',
-        string="# Abonnements gérés",
+        string="# Managed subscriptions",
     )
     own_subscription_ids = fields.One2many(
         'subscription.subscription', 'vendor_id',
-        string="Abonnements facturés par ce fournisseur",
+        string="Subscriptions billed by this vendor",
     )
     own_subscription_count = fields.Integer(
         compute='_compute_subscription_counts',
-        string="# Abonnements facturés",
+        string="# Billed subscriptions",
     )
 
     @api.depends('managed_subscription_ids', 'own_subscription_ids')
@@ -31,7 +31,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Abonnements gérés pour %s") % self.name,
+            'name': _("Subscriptions managed for %s") % self.name,
             'res_model': 'subscription.subscription',
             'view_mode': 'list,form,kanban',
             'domain': [('managed_for_id', '=', self.id)],
@@ -42,7 +42,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Abonnements chez %s") % self.name,
+            'name': _("Subscriptions with %s") % self.name,
             'res_model': 'subscription.subscription',
             'view_mode': 'list,form,kanban',
             'domain': [('vendor_id', '=', self.id)],

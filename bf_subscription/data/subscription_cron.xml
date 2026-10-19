@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="1">
         <record id="cron_subscription_renewal_alerts" model="ir.cron">
-            <field name="name">Abonnements : Relances de renouvellement</field>
+            <field name="name">Subscriptions: Renewal reminders</field>
             <field name="model_id" ref="model_subscription_subscription"/>
             <field name="state">code</field>
             <field name="code">model._cron_renewal_alerts()</field>
@@ -14,7 +14,7 @@
         </record>
 
         <record id="cron_subscription_digest" model="ir.cron">
-            <field name="name">Abonnements : Envoi des récapitulatifs</field>
+            <field name="name">Subscriptions: Send digests</field>
             <field name="model_id" ref="model_subscription_digest"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_digests()</field>

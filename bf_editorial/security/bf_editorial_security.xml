@@ -3,22 +3,22 @@
     <data noupdate="1">
 
         <record id="module_category_editorial" model="ir.module.category">
-            <field name="name">Atelier éditorial</field>
-            <field name="description">Calendrier éditorial et diffusion</field>
+            <field name="name">Editorial workshop</field>
+            <field name="description">Editorial calendar and publishing</field>
             <field name="sequence">22</field>
         </record>
 
         <record id="group_editorial_user" model="res.groups">
-            <field name="name">Rédaction</field>
+            <field name="name">Writing</field>
             <field name="category_id" ref="module_category_editorial"/>
-            <field name="comment">Écrit, prépare et fait avancer les entrées, sans pouvoir publier.</field>
+            <field name="comment">Writes, prepares and moves entries forward, without being able to publish.</field>
         </record>
 
         <record id="group_editorial_manager" model="res.groups">
-            <field name="name">Direction éditoriale</field>
+            <field name="name">Editorial management</field>
             <field name="category_id" ref="module_category_editorial"/>
             <field name="implied_ids" eval="[(4, ref('group_editorial_user'))]"/>
-            <field name="comment">Règle les calendriers, approuve les dates et publie.</field>
+            <field name="comment">Sets up calendars, approves dates and publishes.</field>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
 

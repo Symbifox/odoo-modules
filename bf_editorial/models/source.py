@@ -14,29 +14,29 @@ TOLERATED_STATUS = (200, 201, 202, 203, 204, 301, 302, 307, 308, 403, 405)
 
 class EditorialSource(models.Model):
     _name = "bf.editorial.source"
-    _description = "Source citée"
+    _description = "Cited source"
     _order = "sequence, id"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
-    sequence = fields.Integer(string="Séquence", default=10)
-    name = fields.Char(string="Nom", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    name = fields.Char(string="Name", required=True)
     url = fields.Char(string="URL", required=True)
     lang_id = fields.Many2one(
-        "res.lang", string="Langue",
-        help="Le créneau français cite la page française quand elle existe.",
+        "res.lang", string="Language",
+        help="The French slot cites the French page when one exists.",
     )
     description = fields.Char(string="Description")
-    http_status = fields.Integer(string="Dernier code HTTP")
-    checked_date = fields.Date(string="Vérifiée le")
+    http_status = fields.Integer(string="Last HTTP code")
+    checked_date = fields.Date(string="Checked on")
     is_dead = fields.Boolean(
-        string="Morte", compute="_compute_is_dead", store=True,
+        string="Dead", compute="_compute_is_dead", store=True,
     )
     archive_url = fields.Char(
-        string="Copie archivée",
-        help="Instantané Wayback à citer quand l'original a disparu.",
+        string="Archived copy",
+        help="Wayback snapshot to cite when the original is gone.",
     )
 
     @api.depends("http_status", "archive_url")
@@ -52,6 +52,6 @@ class EditorialSource(models.Model):
         (
             "url_not_empty",
             "CHECK (url <> '')",
-            "Une source doit porter une URL.",
+            "A source must carry a URL.",
         ),
     ]

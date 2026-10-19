@@ -80,6 +80,10 @@ response instead of acting twice. The same identifier reused for a *different*
 gesture is refused rather than answered with another gesture's result. Receipts are
 kept per user for thirty days.
 
+## Languages (18.0.1.4.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The scanning pages carry the user's language (`lang` attribute) and the messages their scripts show, so an English-speaking user reads errors and confirmations in English. The offline cache of the installed app is renamed, so a phone that installed an earlier version loads the new scripts instead of keeping the French ones.
+
 ## Requirements
 
 `bf_contact_enrichment`, `bf_bloc_notes` and `account`. Reading is optional:

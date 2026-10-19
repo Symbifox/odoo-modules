@@ -33,6 +33,10 @@ infrastructure, certificates, domain names, recurring professional services.
 
 `base`, `mail`, `account`, `analytic`, `bf_onboarding_base`, `bf_color`.
 
+## Languages (18.0.1.7.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written for its reader. The price-increase alert and the renewal-notice activity are in the language of the subscription's responsible person, or the company's when there is none. The digest is rendered once per recipient language: subject, body, footer and PDF. A rebill invoice's description and note are in the language of the client it is issued to, while the line left on the subscription's chatter is in the language of whoever issued it. The alert and the rebill line keep their link and emphasis in the chatter instead of showing the HTML tags.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
@@ -42,10 +46,16 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-02, this version converts automatically to
+- **Change Date**: on 2030-10-18, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.7.0
+
+- **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`. See the Languages section.
+- **Each reader's language** for the price-increase alert, the renewal notice, the digest and the rebill invoice.
+- **The chatter shows the alert and the rebill line as formatted text**, not as raw HTML tags.
 
 ### 18.0.1.6.0
 

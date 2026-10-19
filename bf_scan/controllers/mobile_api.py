@@ -95,27 +95,27 @@ def _image():
     """
     upload = request.httprequest.files.get("image")
     if upload is None:
-        raise UserError(_("Aucune image reçue."))
+        raise UserError(_("No image received."))
     octets = upload.read(TAILLE_MAX + 1)
     if len(octets) > TAILLE_MAX:
         raise UserError(_(
-            "Le fichier dépasse %s Mo. Reprenez-le en photo plutôt que de "
-            "l'envoyer tel quel.") % (TAILLE_MAX // (1024 * 1024)))
+            "The file exceeds %s MB. Retake it as a photo instead of "
+            "sending it as is.") % (TAILLE_MAX // (1024 * 1024)))
     return base64.b64encode(octets).decode(), upload.filename or None
 
 
 def _corps():
     data = request.httprequest.get_data(cache=False) or b""
     if len(data) > MAX_JSON:
-        raise UserError(_("Requête trop volumineuse."))
+        raise UserError(_("Request too large."))
     if not data.strip():
         return {}
     try:
         corps = json.loads(data.decode("utf-8"))
     except (UnicodeDecodeError, ValueError):
-        raise UserError(_("JSON illisible."))
+        raise UserError(_("Unreadable JSON."))
     if not isinstance(corps, dict):
-        raise UserError(_("Un objet JSON est attendu."))
+        raise UserError(_("A JSON object is expected."))
     return corps
 
 
@@ -241,7 +241,7 @@ class BfScanMobileApi(http.Controller):
                 try:
                     cible = {"model": kw["cible_model"], "id": int(kw["cible_id"])}
                 except (TypeError, ValueError):
-                    raise UserError(_("Fiche cible invalide."))
+                    raise UserError(_("Invalid target record."))
             return _rendre(self._page().document_deposer(
                 image_b64=image_b64, filename=nom, titre=kw.get("titre"),
                 destination=kw.get("destination") or "tampon", cible=cible,

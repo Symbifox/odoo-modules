@@ -1,0 +1,645 @@
+# Translation of Numériser depuis le téléphone - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_scan 18.0.1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 08:36+0000\n"
+"PO-Revision-Date: 2026-10-12 08:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid ". Nothing is posted: the draft is waiting for you in Odoo."
+msgstr ""
+". Rien n'est\n"
+"                        comptabilisé : le brouillon vous attend dans Odoo."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "<span class=\"ico\">📷</span> Take a photo"
+msgstr "<span class=\"ico\">📷</span> Prendre en photo"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "<span class=\"tuile-fleche\">›</span>"
+msgstr "<span class=\"tuile-fleche\">›</span>"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+msgid "A JSON object is expected."
+msgstr "Un objet JSON est attendu."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "A card, an invoice or a document, photographed and filed."
+msgstr "Une carte, une facture ou un document, photographiés et classés."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Access denied."
+msgstr "Accès refusé."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Access required"
+msgstr "Accès requis"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "Ask an administrator for the permission you are missing."
+msgstr "Demandez le droit qui vous manque à un administrateur."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Automatic reading is not installed here."
+msgstr "La lecture automatique n'est pas installée ici."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Back"
+msgstr "Retour"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Business card"
+msgstr "Carte d'affaires"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Choose an existing file"
+msgstr "Choisir un fichier existant"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Choose the record before sending."
+msgstr "Choisissez la fiche avant d'envoyer."
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Creates a draft vendor bill."
+msgstr "Crée un brouillon de facture fournisseur."
+
+#. module: bf_scan
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__client_uuid
+msgid "Device identifier"
+msgstr "Identifiant de l'appareil"
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Document attached to the record"
+msgstr "Document joint à la fiche"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Document in the notepad"
+msgstr "Document au bloc-notes"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Document scanned from the Scan page."
+msgstr "Document numérisé depuis la page Numériser."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Document submitted"
+msgstr "Document déposé"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Draft #%s"
+msgstr "Brouillon n° %s"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Draft created"
+msgstr "Brouillon créé"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "File rejected."
+msgstr "Pièce refusée."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid ""
+"Here, automatic reading does not read photos yet. The invoice and its "
+"attachment are filed."
+msgstr ""
+"Ici, la lecture automatique ne lit pas encore les photos. La facture et sa "
+"pièce sont déposées."
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "In a record's chatter"
+msgstr "Dans le fil d'une fiche"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+msgid "Invalid target record."
+msgstr "Fiche cible invalide."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: bf_scan
+#: model:ir.model.fields,help:bf_scan.field_bf_scan_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr "Corps JSON rendu la première fois, rendu de nouveau au rejeu."
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan, bf_subscription
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_scan
+#: model:ir.model,name:bf_scan.model_bf_scan_mobile_receipt
+msgid "Mobile idempotency receipt (scan)"
+msgstr "Accusé d'idempotence mobile (numérisation)"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "No image received."
+msgstr "Aucune image reçue."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "No record found."
+msgstr "Aucune fiche trouvée."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid ""
+"None of the three actions is open to your account: the business card needs "
+"contact enrichment, the invoice needs invoicing, and the document needs an "
+"internal account."
+msgstr ""
+"Aucun des trois gestes n'est ouvert à votre compte :\n"
+"                        la carte d'affaires demande l'enrichissement de\n"
+"                        contacts, la facture demande la facturation, et le\n"
+"                        document demande un compte interne."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "Nothing to scan here"
+msgstr "Rien à numériser ici"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Open in Odoo"
+msgstr "Ouvrir dans Odoo"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Photographed document"
+msgstr "Document photographié"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Photographed from the Scan page."
+msgstr "Photographiée depuis la page Numériser."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Photographed invoice"
+msgstr "Facture photographiée"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Read, corrected, then saved as a contact."
+msgstr "Lue, corrigée, puis enregistrée en contact."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Reading failed; the attachment itself is filed."
+msgstr "La lecture a échoué; la pièce, elle, est bien déposée."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Record"
+msgstr "Fiche"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Record:"
+msgstr "Fiche :"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid ""
+"Reminder\n"
+"                            <select id=\"rappel\">\n"
+"                                <option value=\"aucun\">None</option>\n"
+"                                <option value=\"aujourdhui\">Today</option>\n"
+"                                <option value=\"demain\">Tomorrow</option>\n"
+"                                <option value=\"semaine\">In a week</option>\n"
+"                            </select>"
+msgstr ""
+"Rappel\n"
+"                            <select id=\"rappel\">\n"
+"                                <option value=\"aucun\">Aucun</option>\n"
+"                                <option value=\"aujourdhui\">Aujourd'hui</option>\n"
+"                                <option value=\"demain\">Demain</option>\n"
+"                                <option value=\"semaine\">Dans une semaine</option>\n"
+"                            </select>"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+msgid "Request too large."
+msgstr "Requête trop volumineuse."
+
+#. module: bf_scan
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__response
+msgid "Response"
+msgstr "Réponse"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Retake the photo"
+msgstr "Reprendre la photo"
+
+#. module: bf_scan
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__route
+msgid "Route"
+msgstr "Route"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+#: model:ir.actions.act_url,name:bf_scan.action_ouvrir_scan
+#: model:ir.ui.menu,name:bf_scan.menu_scan_root
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "Scan"
+msgstr "Numériser"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Scan a document"
+msgstr "Numériser un document"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Scan an invoice"
+msgstr "Numériser une facture"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Scan another document"
+msgstr "Numériser un autre document"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Scan another invoice"
+msgstr "Numériser une autre facture"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Scanned document"
+msgstr "Document numérisé"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "Signed in as"
+msgstr "Connecté comme"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Submit"
+msgstr "Déposer"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Submitted from the Scan page."
+msgstr "Déposé depuis la page Numériser."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid ""
+"Submitting a document requires an <strong>internal account</strong> and the "
+"permission to create a note."
+msgstr ""
+"Déposer un document demande un <strong>compte\n"
+"                        interne</strong> et le droit de créer une note."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid ""
+"Submitting an invoice requires the <strong>invoicing</strong> permission and"
+" the permission to create a vendor bill. Ask an administrator for them."
+msgstr ""
+"Déposer une facture demande le droit de\n"
+"                        <strong>facturation</strong> et celui de créer une\n"
+"                        facture fournisseur. Demandez-les à un\n"
+"                        administrateur."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Submitting the document…"
+msgstr "Dépôt du document…"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "Submitting the invoice…"
+msgstr "Dépôt de la facture…"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Take the photo again: nothing was read."
+msgstr "Reprenez la photo : rien n'a été lu."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_menu
+msgid "Take the photo, the rest files itself."
+msgstr ""
+"Prenez la photo, le reste se range\n"
+"                tout seul."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Task, contact, invoice, or a pasted link"
+msgstr "Tâche, contact, facture, ou un lien collé"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid ""
+"The attachment is on the invoice, but the thread did not accept the message."
+msgstr ""
+"La pièce est jointe à la facture, mais le fil n'a pas accepté le message."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid ""
+"The file exceeds %s MB. Retake it as a photo instead of sending it as is."
+msgstr ""
+"Le fichier dépasse %s Mo. Reprenez-le en photo plutôt que de l'envoyer tel "
+"quel."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "The invoice could not be created."
+msgstr "La facture n'a pas pu être créée."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "The invoice was read: check the amounts in Odoo."
+msgstr "La facture a été lue : vérifiez les montants dans Odoo."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "The photo creates a draft vendor bill in"
+msgstr ""
+"La photo crée un brouillon de facture\n"
+"                        fournisseur dans"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "The received image is empty."
+msgstr "L'image reçue est vide."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "The received image is unreadable."
+msgstr "L'image reçue est illisible."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "The server answered"
+msgstr "Le serveur a répondu"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "The upload took too long. Try again."
+msgstr "L'envoi a été trop long. Réessayez."
+
+#. module: bf_scan
+#: model:ir.model.constraint,message:bf_scan.constraint_bf_scan_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
+msgstr "Cet identifiant d'appareil a déjà servi à cet usager."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "This file is neither a photo (JPEG, PNG, WEBP) nor a PDF."
+msgstr "Ce fichier n'est ni une photo (JPEG, PNG, WEBP) ni un PDF."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid ""
+"This file is not an image this phone can open. Take it again with the "
+"camera."
+msgstr ""
+"Ce fichier n'est pas une image que ce téléphone sait ouvrir. Reprenez-le "
+"avec l'appareil photo."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "This page is reserved for internal accounts."
+msgstr "Cette page est réservée aux comptes internes."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid ""
+"This photo is in HEIC format, which the server cannot read. Retake it with "
+"the page's camera instead of picking it from the gallery."
+msgstr ""
+"Cette photo est au format HEIC, que le serveur ne sait pas lire. Reprenez-la"
+" avec l'appareil photo de la page plutôt qu'en la choisissant dans la "
+"galerie."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "This record no longer exists, or you do not have access to it."
+msgstr "Cette fiche n'existe plus, ou vous n'y avez pas accès."
+
+#. module: bf_scan
+#. modules: bf_editorial, bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "To the notepad with a reminder, or straight into a record's chatter."
+msgstr ""
+"Au bloc-notes avec un rappel, ou\n"
+"                        directement dans le fil d'une fiche."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "To the notepad with a reminder, or to a record's chatter."
+msgstr "Au bloc-notes avec un rappel, ou au fil d'une fiche."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "To the notepad, to file later"
+msgstr "Au bloc-notes, pour classer plus tard"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Unexpected server error."
+msgstr "Erreur inattendue du serveur."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/mobile_api.py:0
+msgid "Unreadable JSON."
+msgstr "JSON illisible."
+
+#. module: bf_scan
+#: model:ir.model.fields,field_description:bf_scan.field_bf_scan_mobile_receipt__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+msgid "Where does this document go?"
+msgstr "Où va ce document ?"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "You can read \"%s\", but not write to it."
+msgstr "Vous pouvez lire « %s », mais pas y écrire."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "Your Odoo session has expired. Reload the page."
+msgstr "Votre session Odoo a expiré. Rechargez la page."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Your account can read invoices, but not create them."
+msgstr "Votre compte peut lire les factures, mais pas en créer."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Your account cannot create a note."
+msgstr "Votre compte ne peut pas créer de note."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Your account does not have access to invoicing."
+msgstr "Votre compte n'a pas accès à la facturation."
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "Your account is not allowed to create this invoice."
+msgstr "Votre compte n'a pas le droit de créer cette facture."
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "attachment without a message on the thread"
+msgstr "pièce jointe sans message au fil"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "document"
+msgstr "document"
+
+#. module: bf_scan
+#. odoo-python
+#: code:addons/bf_scan/controllers/scan.py:0
+msgid "invoice"
+msgstr "facture"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "linked to"
+msgstr "lié à"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.coque
+msgid "reminder set"
+msgstr "rappel posé"
+
+#. module: bf_scan
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_document
+#: model_terms:ir.ui.view,arch_db:bf_scan.page_facture
+msgid "‹ Scan"
+msgstr "‹ Numériser"

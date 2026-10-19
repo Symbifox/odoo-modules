@@ -62,7 +62,7 @@ _FR_THIN_COLON_RE = re.compile(r"</a>\s+:\s")
 
 class EditorialQA(models.AbstractModel):
     _name = "bf.editorial.qa"
-    _description = "Contrôles éditoriaux déterministes"
+    _description = "Deterministic editorial checks"
 
     # --- point d'entrée ---------------------------------------------------
     @api.model
@@ -73,7 +73,7 @@ class EditorialQA(models.AbstractModel):
             lambda v: v.lang_code not in IGNORED_SLOTS
         )
         if not versions and not entry.post_id:
-            return [_("Aucun créneau de langue à contrôler.")]
+            return [_("No language slot to check.")]
 
         per_version = {}
         for version in versions:
@@ -95,15 +95,15 @@ class EditorialQA(models.AbstractModel):
         """Les contrôles qui ne regardent qu'une langue."""
         findings = []
         if not content:
-            return [_("Créneau vide.")]
+            return [_("Empty slot.")]
 
         lowered = content.lower()
         text = text_from_html(content)
 
         if EMDASH in content:
             findings.append(_(
-                "%s tiret(s) cadratin. À remplacer par deux-points, virgule,"
-                " parenthèses ou point.", content.count(EMDASH),
+                "%s em dash(es). Replace with a colon, comma, parentheses "
+                "or period.", content.count(EMDASH),
             ))
 
         for prefix, phrases in BANNED.items():
@@ -111,37 +111,36 @@ class EditorialQA(models.AbstractModel):
                 continue
             for phrase in phrases:
                 if phrase in lowered:
-                    findings.append(_("Formule bannie : « %s ».", phrase))
+                    findings.append(_("Banned phrase: \"%s\".", phrase))
 
         empty = len(_H2_EMPTY_RE.findall(content))
         if empty:
-            findings.append(_("%s titre(s) H2 vide(s).", empty))
+            findings.append(_("%s empty H2 heading(s).", empty))
 
         no_scope = len(_TH_RE.findall(content))
         if no_scope:
             findings.append(_(
-                "%s en-tête(s) de tableau sans attribut « scope ».", no_scope,
+                "%s table header(s) without a \"scope\" attribute.", no_scope,
             ))
 
         no_alt = len(_IMG_NO_ALT_RE.findall(content))
         if no_alt:
-            findings.append(_("%s image(s) sans texte alternatif.", no_alt))
+            findings.append(_("%s image(s) without alt text.", no_alt))
 
         for color in LOW_CONTRAST:
             if color.lower() in lowered:
                 findings.append(_(
-                    "Couleur en ligne à faible contraste : %s.", color,
+                    "Inline color with low contrast: %s.", color,
                 ))
                 break
 
         for marker in MARKERS:
             if marker.lower() in lowered:
-                findings.append(_("Marqueur de rédaction resté : %s.", marker))
+                findings.append(_("Writing marker left in: %s.", marker))
 
         if (lang_code or "").startswith("en_") and _FR_THIN_COLON_RE.search(content):
             findings.append(_(
-                "Ponctuation française (espace avant deux-points) dans un"
-                " créneau anglais."
+                "French punctuation (space before a colon) in an English slot."
             ))
 
         return findings
@@ -183,14 +182,13 @@ class EditorialQA(models.AbstractModel):
             h2 = len(_H2_RE.findall(content))
             if roots != source_roots:
                 findings.append(_(
-                    "[%(lang)s] Structure différente de la source :"
-                    " %(a)s éléments contre %(b)s. Traduction probablement"
-                    " partielle.",
+                    "[%(lang)s] Structure differs from the source: %(a)s "
+                    "elements against %(b)s. Translation probably partial.",
                     lang=version.lang_id.name, a=roots, b=source_roots,
                 ))
             if h2 != source_h2:
                 findings.append(_(
-                    "[%(lang)s] %(a)s titres H2 contre %(b)s dans la source.",
+                    "[%(lang)s] %(a)s H2 headings against %(b)s in the source.",
                     lang=version.lang_id.name, a=h2, b=source_h2,
                 ))
 
@@ -200,8 +198,8 @@ class EditorialQA(models.AbstractModel):
                 for href in _HREF_RE.findall(content):
                     if "articles-de-blue-fox" in href:
                         findings.append(_(
-                            "[%(lang)s] Lien interne vers un slug français :"
-                            " %(href)s",
+                            "[%(lang)s] Internal link to a French slug: "
+                            "%(href)s",
                             lang=version.lang_id.name, href=href,
                         ))
                         break

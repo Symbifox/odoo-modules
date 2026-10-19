@@ -11,11 +11,11 @@ class AccountMove(models.Model):
 
     subscription_id = fields.Many2one(
         'subscription.subscription',
-        string="Abonnement",
+        string="Subscription",
         copy=False, index=True, ondelete='set null', tracking=True,
-        help="Abonnement auquel cette facture est rattachée. "
-             "Pour une facture fournisseur, c'est le contrat sous-jacent. "
-             "Pour une facture client, c'est la refacturation correspondante.",
+        help="Subscription this invoice is linked to. For a vendor bill, "
+             "it is the underlying contract. For a customer invoice, it "
+             "is the matching rebill.",
     )
 
     # ------------------------------------------------------------------
@@ -91,14 +91,14 @@ class AccountMove(models.Model):
     def action_open_rebill_wizard(self):
         self.ensure_one()
         if not self.subscription_id:
-            raise UserError(_("Aucun abonnement lié à cette facture."))
+            raise UserError(_("No subscription linked to this bill."))
         if not self.subscription_id.rebilled:
             raise UserError(_(
-                "L'abonnement « %s » n'a pas la refacturation activée."
+                "Rebilling is not turned on for the subscription \"%s\"."
             ) % self.subscription_id.name)
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Refacturer au client"),
+            'name': _("Rebill to client"),
             'res_model': 'subscription.rebill.wizard',
             'view_mode': 'form',
             'target': 'new',

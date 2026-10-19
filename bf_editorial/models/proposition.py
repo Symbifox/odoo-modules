@@ -24,23 +24,23 @@ W_MAX_SHORT = 45        # pénalité maximale pour un texte très court
 
 class EditorialProposal(models.TransientModel):
     _name = "bf.editorial.proposal"
-    _description = "Proposition du prochain article"
+    _description = "Next article proposal"
 
     calendar_id = fields.Many2one(
-        "bf.editorial.calendar", string="Calendrier", required=True,
+        "bf.editorial.calendar", string="Calendar", required=True,
         default=lambda self: self._default_calendar(),
     )
     cadence_note = fields.Text(string="Cadence", readonly=True)
     ratio_note = fields.Text(string="Ratio", readonly=True)
     owed_pillar_id = fields.Many2one(
-        "blog.tag.category", string="Pilier dû", readonly=True,
+        "blog.tag.category", string="Pillar owed", readonly=True,
     )
-    recommendation = fields.Text(string="Recommandation", readonly=True)
+    recommendation = fields.Text(string="Recommendation", readonly=True)
     line_ids = fields.One2many(
-        "bf.editorial.proposal.line", "proposal_id", string="Candidats",
+        "bf.editorial.proposal.line", "proposal_id", string="Candidates",
         readonly=True,
     )
-    blocked_note = fields.Text(string="Écartées", readonly=True)
+    blocked_note = fields.Text(string="Set aside", readonly=True)
 
     @api.model
     def _default_calendar(self):
@@ -65,8 +65,8 @@ class EditorialProposal(models.TransientModel):
         calendar = self._default_calendar()
         if not calendar:
             raise UserError(_(
-                "Aucun calendrier éditorial n'est défini : il n'y a rien à"
-                " proposer. Créez-en un sous Atelier éditorial > Calendriers."
+                "No editorial calendar is defined: there is nothing to "
+                "propose. Create one under Editorial workshop > Calendars."
             ))
         proposal = self.create({"calendar_id": calendar.id})
         proposal.action_compute()
@@ -77,7 +77,7 @@ class EditorialProposal(models.TransientModel):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Proposition"),
+            "name": _("Proposal"),
             "res_model": "bf.editorial.proposal",
             "res_id": self.id,
             "view_mode": "form",
@@ -124,15 +124,15 @@ class EditorialProposal(models.TransientModel):
     # --- éléments de décision --------------------------------------------
     def _cadence_note(self, calendar):
         if not calendar.cadence_days:
-            return _("Aucune cadence définie pour ce calendrier.")
+            return _("No cadence defined for this calendar.")
         if not calendar.last_published_date:
-            return _("Aucune publication à ce jour : le créneau est ouvert.")
+            return _("No publication so far: the publishing slot is open.")
         return _(
-            "Dernière publication il y a %(days)s jour(s), cadence visée"
-            " %(cadence)s. Créneau %(state)s.",
+            "Last publication %(days)s day(s) ago, target cadence "
+            "%(cadence)s. Publishing slot %(state)s.",
             days=calendar.days_since_last,
             cadence=calendar.cadence_days,
-            state=_("dû") if calendar.slot_due else _("pas encore dû"),
+            state=_("due") if calendar.slot_due else _("not yet due"),
         )
 
     def _owed_pillar(self, calendar):
@@ -181,18 +181,18 @@ class EditorialProposal(models.TransientModel):
 
         if owed and entry.pillar_id == owed:
             score += W_PILLAR_OWED
-            reasons.append(_("Comble le pilier en retard (%s).", owed.name))
+            reasons.append(_("Fills the lagging pillar (%s).", owed.name))
 
         if entry.preflight_ok:
             score += W_READY
-            reasons.append(_("Garde de pré-vol verte."))
+            reasons.append(_("Preflight guard green."))
         elif (
             calendar.word_floor
             and entry.word_count >= calendar.word_floor
         ):
             score += W_NEAR_READY
             reasons.append(_(
-                "Plancher de mots atteint (%s), reste des points de contrôle.",
+                "Word floor reached (%s), check items remain.",
                 entry.word_count,
             ))
         elif calendar.word_floor:
@@ -205,63 +205,64 @@ class EditorialProposal(models.TransientModel):
             score -= penalty
             if entry.word_count < 50:
                 reasons.append(_(
-                    "Quasiment vide : %s mots. C'est un titre réservé, pas un"
-                    " brouillon.", entry.word_count,
+                    "Almost empty: %s words. It is a reserved title, not "
+                    "a draft.", entry.word_count,
                 ))
             else:
                 reasons.append(_(
-                    "Sous le plancher : %(a)s mots contre %(b)s.",
+                    "Below the floor: %(a)s words against %(b)s.",
                     a=entry.word_count, b=calendar.word_floor,
                 ))
 
         today = fields.Date.context_today(self)
         if entry.planned_date and entry.planned_date <= today:
             score += W_PLANNED_DUE
-            reasons.append(_("Date prévue atteinte (%s).", entry.planned_date))
+            reasons.append(_("Planned date reached (%s).", entry.planned_date))
 
         waiting = entry.blocks_ids.filtered(lambda e: not e.stage_id.is_closing)
         if waiting:
             score += W_UNBLOCKS
             reasons.append(_(
-                "Débloque %s autre(s) entrée(s).", len(waiting),
+                "Unblocks %s other entry(ies).", len(waiting),
             ))
 
         if entry.create_date:
             age_days = (fields.Datetime.now() - entry.create_date).days
             if age_days > 60:
                 score += W_STALE_DRAFT
-                reasons.append(_("Brouillon en attente depuis %s jours.", age_days))
+                reasons.append(_("Draft waiting for %s days.", age_days))
 
         if entry.version_drift:
             score -= W_READY
             reasons.append(_(
-                "⚠️ Le module documenté a bougé (%(a)s → %(b)s) : à refact-checker"
-                " avant de sortir.",
+                "⚠️ The documented module has changed (%(a)s → %(b)s): "
+                "fact-check again before it goes out.",
                 a=entry.source_version, b=entry.current_version,
             ))
 
         if not reasons:
-            reasons.append(_("Aucun signal particulier."))
+            reasons.append(_("No particular signal."))
         return score, reasons
 
     def _recommendation(self, scored, calendar, owed):
         if not scored:
             return _(
-                "Aucun candidat publiable. Toutes les entrées ouvertes sont"
-                " bloquées, ou le calendrier est vide. Il faut écrire du neuf."
+                "No publishable candidate. All open entries are blocked, "
+                "or the calendar is empty. Something new needs to be "
+                "written."
             )
         score, entry, _reasons = scored[0]
-        lines = [_("Recommandation : %s", entry.name)]
+        lines = [_("Recommendation: %s", entry.name)]
         if not calendar.slot_due:
             lines.append(_(
-                "⚠️ Le créneau n'est pas encore dû. Rien n'oblige à publier"
-                " aujourd'hui."
+                "⚠️ The publishing slot is not due yet. Nothing requires "
+                "publishing today."
             ))
         if owed:
-            lines.append(_("Le ratio réclame un billet « %s ».", owed.name))
+            lines.append(_("The ratio calls for a \"%s\" post.", owed.name))
         if not entry.preflight_ok:
             lines.append(_(
-                "Elle n'est pas prête telle quelle :\n%s",
+                "It is not ready as is:\n%s",
                 entry.preflight_summary,
             ))
         return "\n".join(lines)
@@ -269,17 +270,17 @@ class EditorialProposal(models.TransientModel):
 
 class EditorialProposalLine(models.TransientModel):
     _name = "bf.editorial.proposal.line"
-    _description = "Candidat à la publication"
+    _description = "Publication candidate"
     _order = "sequence, id"
 
     proposal_id = fields.Many2one(
-        "bf.editorial.proposal", string="Proposition", required=True,
+        "bf.editorial.proposal", string="Proposal", required=True,
         ondelete="cascade",
     )
-    sequence = fields.Integer(string="Rang")
-    entry_id = fields.Many2one("bf.editorial.entry", string="Entrée")
-    score = fields.Integer(string="Note")
-    rationale = fields.Text(string="Motifs")
+    sequence = fields.Integer(string="Rank")
+    entry_id = fields.Many2one("bf.editorial.entry", string="Entry")
+    score = fields.Integer(string="Score")
+    rationale = fields.Text(string="Reasons")
 
     def action_open_entry(self):
         self.ensure_one()

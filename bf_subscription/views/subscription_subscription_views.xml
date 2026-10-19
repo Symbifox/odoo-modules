@@ -6,26 +6,26 @@
         <field name="name">subscription.subscription.form</field>
         <field name="model">subscription.subscription</field>
         <field name="arch" type="xml">
-            <form string="Abonnement">
+            <form string="Subscription">
                 <header>
                     <button name="action_activate" type="object"
-                            string="Activer" class="btn-primary"
+                            string="Activate" class="btn-primary"
                             invisible="state in ('active',)"/>
                     <button name="action_pause" type="object"
-                            string="Suspendre"
+                            string="Pause"
                             invisible="state != 'active'"/>
                     <button name="action_cancel" type="object"
-                            string="Résilier"
+                            string="Cancel subscription"
                             invisible="state in ('cancelled', 'expired')"
-                            confirm="Confirmer la résiliation de cet abonnement ?"/>
+                            confirm="Confirm the cancellation of this subscription?"/>
                     <button name="action_set_draft" type="object"
-                            string="Repasser en brouillon"
+                            string="Reset to draft"
                             invisible="state == 'draft'"/>
                     <button name="action_confirm_renewal" type="object"
-                            string="Renouvellement confirmé" class="btn-primary"
+                            string="Renewal confirmed" class="btn-primary"
                             invisible="not renewal_decision_needed"/>
                     <button name="action_reopen_renewal" type="object"
-                            string="Revenir sur la décision"
+                            string="Reconsider the decision"
                             invisible="renewal_decision_needed or not renewal_decision_date"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,active,paused,cancelled"/>
@@ -36,30 +36,30 @@
                                 name="action_view_vendor_bills" type="object"
                                 invisible="vendor_bill_count == 0">
                             <field name="vendor_bill_count" widget="statinfo"
-                                   string="Factures fournisseur"/>
+                                   string="Vendor bills"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-money"
                                 name="action_view_customer_invoices" type="object"
                                 invisible="customer_invoice_count == 0">
                             <field name="customer_invoice_count" widget="statinfo"
-                                   string="Refacturations"/>
+                                   string="Rebills"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-external-link"
                                 name="action_open_external_url" type="object"
                                 invisible="not external_url">
                             <div class="o_stat_info">
-                                <span class="o_stat_text">Portail</span>
-                                <span class="o_stat_text">fournisseur</span>
+                                <span class="o_stat_text">Vendor</span>
+                                <span class="o_stat_text">portal</span>
                             </div>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Géré pour client"
+                    <widget name="web_ribbon" title="Managed for a client"
                             invisible="not is_managed_for_client"
                             bg_color="text-bg-info"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="ex. Anthropic API – Production"/>
+                            <field name="name" placeholder="e.g. Anthropic API (production)"/>
                         </h1>
                         <div>
                             <field name="code" readonly="1"/>
@@ -83,7 +83,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Cycle &amp; Montant" name="cycle">
+                        <page string="Cycle &amp; amount" name="cycle">
                             <group>
                                 <group>
                                     <field name="cycle"/>
@@ -106,7 +106,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Refacturation" name="rebill"
+                        <page string="Rebilling" name="rebill"
                               invisible="not is_managed_for_client">
                             <group>
                                 <field name="rebilled"/>
@@ -120,7 +120,7 @@
                                 <field name="rebill_product_id"
                                        invisible="not rebilled"/>
                             </group>
-                            <separator string="Totaux à vie"/>
+                            <separator string="Lifetime totals"/>
                             <group>
                                 <field name="total_paid_lifetime" readonly="1"/>
                                 <field name="total_rebilled_lifetime" readonly="1"
@@ -131,7 +131,7 @@
                                        invisible="not rebilled"/>
                             </group>
                         </page>
-                        <page string="Factures fournisseur" name="vendor_bills">
+                        <page string="Vendor bills" name="vendor_bills">
                             <field name="vendor_bill_ids" readonly="1">
                                 <list>
                                     <field name="name"/>
@@ -142,7 +142,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Factures client" name="customer_invoices"
+                        <page string="Customer invoices" name="customer_invoices"
                               invisible="not rebilled">
                             <field name="customer_invoice_ids" readonly="1">
                                 <list>
@@ -154,14 +154,14 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Métadonnées" name="meta">
+                        <page string="Metadata" name="meta">
                             <group>
-                                <group string="Fournisseur">
+                                <group string="Vendor">
                                     <field name="external_reference"/>
                                     <field name="external_url" widget="url"/>
                                     <field name="payment_method_label"/>
                                 </group>
-                                <group string="Comptabilité">
+                                <group string="Accounting">
                                     <field name="analytic_distribution"
                                            widget="analytic_distribution"
                                            groups="analytic.group_analytic_accounting"
@@ -183,7 +183,7 @@
         <field name="name">subscription.subscription.list</field>
         <field name="model">subscription.subscription</field>
         <field name="arch" type="xml">
-            <list string="Abonnements"
+            <list string="Subscriptions"
                   decoration-muted="state in ('cancelled', 'expired')"
                   decoration-info="state == 'paused'"
                   decoration-success="state == 'active'">
@@ -193,9 +193,9 @@
                 <field name="managed_for_id" optional="show"/>
                 <field name="category" optional="show"/>
                 <field name="cycle" optional="show"/>
-                <field name="cycle_amount" sum="Total cycle"/>
+                <field name="cycle_amount" sum="Cycle total"/>
                 <field name="currency_id" invisible="1"/>
-                <field name="monthly_equivalent" sum="Total mensualisé"/>
+                <field name="monthly_equivalent" sum="Monthly total"/>
                 <field name="next_billing_date"/>
                 <field name="responsible_id" optional="hide"/>
                 <field name="rebilled" optional="hide"/>
@@ -247,7 +247,7 @@
                                     / <field name="cycle"/>
                                 </div>
                                 <div t-if="record.next_billing_date.raw_value">
-                                    <i class="fa fa-calendar"/> Prochain : <field name="next_billing_date"/>
+                                    <i class="fa fa-calendar"/> Next: <field name="next_billing_date"/>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +262,7 @@
         <field name="name">subscription.subscription.pivot</field>
         <field name="model">subscription.subscription</field>
         <field name="arch" type="xml">
-            <pivot string="Coût des abonnements">
+            <pivot string="Subscription cost">
                 <field name="vendor_id" type="row"/>
                 <field name="category" type="col"/>
                 <field name="monthly_equivalent" type="measure"/>
@@ -276,7 +276,7 @@
         <field name="name">subscription.subscription.graph</field>
         <field name="model">subscription.subscription</field>
         <field name="arch" type="xml">
-            <graph string="Coût mensualisé par catégorie" type="bar">
+            <graph string="Monthly cost by category" type="bar">
                 <field name="category"/>
                 <field name="monthly_equivalent" type="measure"/>
             </graph>
@@ -288,49 +288,49 @@
         <field name="name">subscription.subscription.search</field>
         <field name="model">subscription.subscription</field>
         <field name="arch" type="xml">
-            <search string="Abonnements">
+            <search string="Subscriptions">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="vendor_id"/>
                 <field name="managed_for_id"/>
                 <field name="tag_ids"/>
                 <separator/>
-                <filter name="filter_active" string="Actifs"
+                <filter name="filter_active" string="Active only"
                         domain="[('state', '=', 'active')]"/>
-                <filter name="filter_draft" string="Brouillons"
+                <filter name="filter_draft" string="Drafts"
                         domain="[('state', '=', 'draft')]"/>
-                <filter name="filter_paused" string="Suspendus"
+                <filter name="filter_paused" string="Paused only"
                         domain="[('state', '=', 'paused')]"/>
-                <filter name="filter_cancelled" string="Résiliés"
+                <filter name="filter_cancelled" string="Canceled only"
                         domain="[('state', '=', 'cancelled')]"/>
                 <separator/>
-                <filter name="filter_renewals_30d" string="Renouvellement &lt; 30j"
+                <filter name="filter_renewals_30d" string="Renewal &lt; 30 days"
                         domain="[('next_billing_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
                                  ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')),
                                  ('state', '=', 'active')]"/>
-                <filter name="filter_managed_for_client" string="Gérés pour clients"
+                <filter name="filter_managed_for_client" string="Managed for clients"
                         domain="[('managed_for_id', '!=', False)]"/>
-                <filter name="filter_rebilled" string="Refacturés"
+                <filter name="filter_rebilled" string="Rebilled"
                         domain="[('rebilled', '=', True)]"/>
-                <filter name="filter_own" string="Abonnements BF (propres)"
+                <filter name="filter_own" string="BF subscriptions (own)"
                         domain="[('managed_for_id', '=', False)]"/>
-                <filter name="filter_dormant" string="Dormants"
+                <filter name="filter_dormant" string="Dormant only"
                         domain="[('is_dormant', '=', True)]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivés"
+                <filter name="filter_archived" string="Archived"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
-                    <filter name="group_vendor" string="Fournisseur"
+                <group expand="0" string="Group by">
+                    <filter name="group_vendor" string="Vendor"
                             context="{'group_by': 'vendor_id'}"/>
-                    <filter name="group_managed_for" string="Client géré"
+                    <filter name="group_managed_for" string="Managed client"
                             context="{'group_by': 'managed_for_id'}"/>
-                    <filter name="group_category" string="Catégorie"
+                    <filter name="group_category" string="Category"
                             context="{'group_by': 'category'}"/>
                     <filter name="group_cycle" string="Cycle"
                             context="{'group_by': 'cycle'}"/>
-                    <filter name="group_state" string="État"
+                    <filter name="group_state" string="State"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_responsible" string="Responsable"
+                    <filter name="group_responsible" string="Assignee"
                             context="{'group_by': 'responsible_id'}"/>
                 </group>
             </search>
@@ -339,24 +339,23 @@
 
     <!-- Actions -->
     <record id="action_subscription_subscription" model="ir.actions.act_window">
-        <field name="name">Abonnements</field>
+        <field name="name">Subscriptions</field>
         <field name="res_model">subscription.subscription</field>
         <field name="view_mode">list,kanban,form,pivot,graph</field>
         <field name="search_view_id" ref="subscription_subscription_search"/>
         <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créer le premier abonnement
+                Create the first subscription
             </p>
             <p>
-                Suivi des abonnements payants : SaaS, memberships, infrastructure.
-                Optionnellement gérés au nom d'un client avec refacturation.
+                Tracking of paid subscriptions: SaaS, memberships, infrastructure. Optionally managed on behalf of a client with rebilling.
             </p>
         </field>
     </record>
 
     <record id="action_subscription_renewals_30d" model="ir.actions.act_window">
-        <field name="name">Renouvellements à venir (30j)</field>
+        <field name="name">Upcoming renewals (30 days)</field>
         <field name="res_model">subscription.subscription</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="subscription_subscription_search"/>
@@ -364,7 +363,7 @@
     </record>
 
     <record id="action_subscription_dashboard" model="ir.actions.act_window">
-        <field name="name">Tableau de bord</field>
+        <field name="name">Dashboard</field>
         <field name="res_model">subscription.subscription</field>
         <field name="view_mode">pivot,graph,list</field>
         <field name="search_view_id" ref="subscription_subscription_search"/>

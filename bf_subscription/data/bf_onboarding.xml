@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_list" model="onboarding.onboarding.step">
-        <field name="title">Lister vos abonnements actifs</field>
-        <field name="description">[action:bf_subscription.action_subscription_subscription] Créez une fiche pour chaque abonnement récurrent : SaaS, memberships, infrastructure.</field>
-        <field name="button_text">Ouvrir Abonnements</field>
-        <field name="done_text">Abonnements listés</field>
+        <field name="title">List your active subscriptions</field>
+        <field name="description">[action:bf_subscription.action_subscription_subscription] Create a record for each recurring subscription: SaaS, memberships, infrastructure.</field>
+        <field name="button_text">Open Subscriptions</field>
+        <field name="done_text">Subscriptions listed</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_managed_for" model="onboarding.onboarding.step">
-        <field name="title">Configurer la refacturation pour les clients</field>
-        <field name="description">[action:bf_subscription.action_subscription_subscription] Pour chaque abonnement géré au nom d'un client, cochez « Géré pour le client » et activez la refacturation.</field>
-        <field name="button_text">Voir les abonnements</field>
-        <field name="done_text">Refacturation configurée</field>
+        <field name="title">Set up rebilling for clients</field>
+        <field name="description">[action:bf_subscription.action_subscription_subscription] For each subscription managed on behalf of a client, check "Managed for client" and turn on rebilling.</field>
+        <field name="button_text">View subscriptions</field>
+        <field name="done_text">Rebilling set up</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onb_step_renewals" model="onboarding.onboarding.step">
-        <field name="title">Vérifier les renouvellements à venir</field>
-        <field name="description">[action:bf_subscription.action_subscription_renewals_30d] Survol des abonnements qui arrivent à échéance dans les 30 prochains jours.</field>
-        <field name="button_text">Voir les renouvellements</field>
-        <field name="done_text">Renouvellements survolés</field>
+        <field name="title">Check upcoming renewals</field>
+        <field name="description">[action:bf_subscription.action_subscription_renewals_30d] A quick look at the subscriptions coming due in the next 30 days.</field>
+        <field name="button_text">View renewals</field>
+        <field name="done_text">Renewals reviewed</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">3</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Abonnements</field>
+        <field name="name">Subscriptions</field>
         <field name="route_name">bf_subscription_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_subscription</field>
         <field name="step_ids" eval="[

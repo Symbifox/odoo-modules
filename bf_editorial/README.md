@@ -113,6 +113,10 @@ Depends on `bf_color`, `mail`, `website_blog`, `utm`, `link_tracker`, `project`.
 After installing, define at least one calendar, flag the tag categories that
 act as pillars, and give each one a target share.
 
+## Languages (18.0.1.11.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. What the workshop writes for someone reads in that person's language: the language-slot status lines, the mix report of a calendar, the repair report and the note left when slots move in one action (sentence and status in the same language, even from an XML-RPC call). When the scheduled job refuses a planned publication, the activity and the chatter message are written in the language of the entry's owner, not the job's. What the workshop freezes and compares is computed in the company's language (English when the company has none): the QA findings, the problems a waiver covers, and the checklist lines copied from templates. A waiver signed in one language therefore still covers when someone else, or the scheduled job, re-reads the entry in another, and re-applying the templates does not duplicate a line already copied.
+
 ## Licence
 
 BUSL-1.1. Internal use is free; providing a product or service to third parties

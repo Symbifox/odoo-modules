@@ -17,17 +17,18 @@ class BlogTagCategory(models.Model):
     _inherit = "blog.tag.category"
 
     is_pillar = fields.Boolean(
-        string="Pilier éditorial",
-        help="Coché, cette catégorie compte dans le ratio d'un calendrier.",
+        string="Editorial pillar",
+        help="When checked, this category counts in a calendar's ratio.",
     )
     target_share = fields.Float(
-        string="Cible (%)",
-        help="Part visée de la production, en pourcentage. La somme des cibles"
-             " d'un calendrier devrait faire 100, sans quoi le ratio se lit mal.",
+        string="Target (%)",
+        help="Target share of production, as a percentage. The sum of a "
+             "calendar's targets should be 100, otherwise the ratio reads "
+             "poorly.",
     )
-    color = fields.Integer(string="Couleur")
+    color = fields.Integer(string="Color")
     entry_count = fields.Integer(
-        string="Entrées", compute="_compute_entry_count",
+        string="Entries", compute="_compute_entry_count",
     )
 
     @api.depends("tag_ids.post_ids")
@@ -46,7 +47,7 @@ class BlogTag(models.Model):
     _inherit = "blog.tag"
 
     entry_count = fields.Integer(
-        string="Entrées", compute="_compute_entry_count",
+        string="Entries", compute="_compute_entry_count",
     )
 
     def _compute_entry_count(self):

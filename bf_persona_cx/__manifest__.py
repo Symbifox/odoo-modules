@@ -1,7 +1,11 @@
 {
     "name": "Persona des contacts - expérience client",
     "summary": "Le persona montre les notes, commentaires et plaintes d'expérience client du contact",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Sales/CRM",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -374,7 +374,9 @@ class EssaiScan(HttpCase):
         self.assertEqual(fiche["id"], "/scan")
         self.assertEqual(fiche["start_url"], "/scan")
         self.assertEqual(fiche["scope"], "/scan")
-        self.assertEqual(fiche["name"], "Numériser")
+        # Le nom suit la langue servie à une requête sans session : celle de la base par
+        # défaut (anglais là où en_US est actif, la source), sinon le français livré.
+        self.assertIn(fiche["name"], ("Scan", "Numériser"))
         self.assertEqual({r["url"] for r in fiche["shortcuts"]},
                          {"/scan/carte", "/scan/facture", "/scan/document"})
         self.assertTrue(all(i["src"].startswith("/bf_scan/static/")
@@ -382,7 +384,7 @@ class EssaiScan(HttpCase):
 
     def test_agent_de_service_couvre_les_deux_modules(self):
         source = self.url_open("/scan/sw.js").text
-        self.assertIn("bf-scan-v3", source)
+        self.assertIn("bf-scan-v4", source)
         self.assertIn("/bf_scan/static/src/scan/facture.js", source)
         self.assertIn("/bf_contact_enrichment/static/", source)
         self.assertIn("/bf_scan/static/", source)

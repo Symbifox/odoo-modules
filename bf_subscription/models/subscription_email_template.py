@@ -16,7 +16,7 @@ def _brand_dark(company=None):
     return (company and getattr(company, 'report_brand_dark', None)) or DARK
 
 
-def wrapper(title, content, company=None):
+def wrapper(title, content, company=None, footer=''):
     dark = _brand_dark(company)
     logo = '<img src="/web/image/res.company/%d/logo" alt="" style="height:42px;width:auto;display:block;border:0;"/>' % company.id if company else ''
     return f'''<!DOCTYPE html>
@@ -33,7 +33,7 @@ def wrapper(title, content, company=None):
     </td></tr>
     <tr><td style="padding:24px;">{content}</td></tr>
     <tr><td style="padding:16px 24px;border-top:1px solid #e5e7eb;color:#9CA3AF;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;">
-      Récapitulatif automatique des abonnements.
+      {_esc(footer)}
     </td></tr>
   </tbody></table>
 </td></tr></tbody></table>

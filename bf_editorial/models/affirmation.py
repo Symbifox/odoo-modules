@@ -11,38 +11,38 @@ from odoo import _, api, fields, models
 
 class EditorialClaim(models.Model):
     _name = "bf.editorial.claim"
-    _description = "Affirmation vérifiable"
+    _description = "Verifiable claim"
     _order = "sequence, id"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
-    sequence = fields.Integer(string="Séquence", default=10)
-    name = fields.Text(string="Affirmation", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    name = fields.Text(string="Claim", required=True)
     source_id = fields.Many2one(
         "bf.editorial.source", string="Source",
         domain="[('entry_id', '=', entry_id)]",
     )
     verdict = fields.Selection(
         [
-            ("todo", "À vérifier"),
-            ("ok", "Exacte"),
-            ("imprecise", "Imprécise"),
-            ("false", "Fausse"),
+            ("todo", "To verify"),
+            ("ok", "Accurate"),
+            ("imprecise", "Imprecise"),
+            ("false", "False"),
         ],
         string="Verdict", default="todo", required=True,
     )
-    correction = fields.Text(string="Correction appliquée")
-    verdict_by = fields.Many2one("res.users", string="Verdict par")
-    verdict_date = fields.Date(string="Verdict du")
+    correction = fields.Text(string="Correction applied")
+    verdict_by = fields.Many2one("res.users", string="Verdict by")
+    verdict_date = fields.Date(string="Verdict on")
     is_machine_proposed = fields.Boolean(
-        string="Proposé par la machine", readonly=True,
-        help="Un verdict proposé automatiquement n'est pas un verdict rendu :"
-             " il attend une confirmation humaine.",
+        string="Proposed by the machine", readonly=True,
+        help="An automatically proposed verdict is not a delivered "
+             "verdict: it awaits human confirmation.",
     )
     confirmed = fields.Boolean(
-        string="Confirmé", compute="_compute_confirmed", store=True,
+        string="Confirmed", compute="_compute_confirmed", store=True,
     )
 
     @api.depends("verdict", "is_machine_proposed")

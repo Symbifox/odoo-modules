@@ -1,0 +1,110 @@
+# Translation of Persona des contacts - expérience client - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_persona_cx 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 08:36+0000\n"
+"PO-Revision-Date: 2026-10-12 08:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "%(kind)s %(score)s"
+msgstr "%(kind)s %(score)s"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "%(score)s on %(date)s"
+msgstr "%(score)s le %(date)s"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid ": \"%s\""
+msgstr " : « %s »"
+
+#. module: bf_persona_cx
+#: model:ir.model.fields,field_description:bf_persona_cx.field_contact_persona__cx_complaint_ids
+#: model_terms:ir.ui.view,arch_db:bf_persona_cx.view_contact_persona_form_cx
+msgid "Complaints"
+msgstr "Plaintes"
+
+#. module: bf_persona_cx
+#: model_terms:ir.ui.view,arch_db:bf_persona_cx.view_contact_persona_form_cx
+msgid "Customer experience"
+msgstr "Expérience client"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "Customer experience: %(what)s on %(date)s"
+msgstr "Expérience client : %(what)s le %(date)s"
+
+#. module: bf_persona_cx
+#: model:ir.model.fields,field_description:bf_persona_cx.field_contact_persona__cx_excluded
+msgid "Do not solicit"
+msgstr "Ne pas solliciter"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "Do not solicit (surveys, testimonials)."
+msgstr "Ne pas solliciter (sondages, témoignages)."
+
+#. module: bf_persona_cx
+#: model:ir.model.fields,field_description:bf_persona_cx.field_contact_persona__cx_feedback_ids
+msgid "Experience feedback"
+msgstr "Retours d'expérience"
+
+#. module: bf_persona_cx
+#: model_terms:ir.ui.view,arch_db:bf_persona_cx.view_contact_persona_form_cx
+msgid "Feedback"
+msgstr "Retours"
+
+#. module: bf_persona_cx
+#: model:ir.model.fields,field_description:bf_persona_cx.field_contact_persona__cx_last_feedback_id
+msgid "Last feedback"
+msgstr "Dernier retour"
+
+#. module: bf_persona_cx
+#: model_terms:ir.ui.view,arch_db:bf_persona_cx.view_contact_persona_form_cx
+msgid "Last feedback (12 months)"
+msgstr "Dernier retour (12 mois)"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "NPS %(score)s (%(bucket)s)"
+msgstr "NPS %(score)s (%(bucket)s)"
+
+#. module: bf_persona_cx
+#: model:ir.model.fields,field_description:bf_persona_cx.field_contact_persona__cx_open_complaint_count
+msgid "Open complaints"
+msgstr "Plaintes ouvertes"
+
+#. module: bf_persona_cx
+#: model:ir.model,name:bf_persona_cx.model_bf_persona_cx_refresh_mixin
+msgid "Refreshes the persona on each experience feedback"
+msgstr "Rafraîchit le persona à chaque retour d'expérience"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "comment"
+msgstr "commentaire"
+
+#. module: bf_persona_cx
+#. odoo-python
+#: code:addons/bf_persona_cx/models/contact_persona.py:0
+msgid "open complaint since %(date)s: %(subject)s"
+msgstr "plainte ouverte depuis le %(date)s : %(subject)s"

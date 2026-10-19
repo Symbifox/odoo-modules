@@ -5,8 +5,8 @@
          même feuille de style, même fond sombre, même fiche d'application, et
          surtout la même largeur de pouce. Ce qui change d'une page à l'autre
          tient dans le titre, le script et le corps. -->
-    <template id="coque" name="Coquille des pages de numérisation">
-        <html lang="fr-CA">
+    <template id="coque" name="Shell of the scan pages">
+        <html t-att-lang="lang_html or 'en'">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport"
@@ -15,7 +15,7 @@
                 <meta name="mobile-web-app-capable" content="yes"/>
                 <meta name="apple-mobile-web-app-capable" content="yes"/>
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-                <meta name="apple-mobile-web-app-title" content="Numériser"/>
+                <meta name="apple-mobile-web-app-title" content="Scan"/>
                 <title><t t-esc="titre"/></title>
                 <link rel="manifest" href="/scan/manifest.webmanifest"/>
                 <link rel="apple-touch-icon"
@@ -33,6 +33,29 @@
                     <t t-out="0"/>
                     <div id="error" class="error hidden" role="alert"></div>
                 </main>
+                <!-- Les textes des scripts de la page. Les scripts sont des fichiers statiques, hors du
+                     client web : ils n'ont pas de `_t`. Ces nœuds de texte sont traduits côté serveur,
+                     dans la langue de la page, et les scripts les lisent par `Scan.texte`. -->
+                <div id="textes" class="hidden" hidden="hidden" aria-hidden="true">
+                    <p id="t-session">Your Odoo session has expired. Reload the page.</p>
+                    <p id="t-serveur">The server answered</p>
+                    <p id="t-erreur-serveur">Unexpected server error.</p>
+                    <p id="t-trop-long">The upload took too long. Try again.</p>
+                    <p id="t-pas-une-image">This file is not an image this phone can open. Take it again with the camera.</p>
+                    <p id="t-piece-sans-fil">The attachment is on the invoice, but the thread did not accept the message.</p>
+                    <p id="t-lecture-faite">The invoice was read: check the amounts in Odoo.</p>
+                    <p id="t-lecture-photos">Here, automatic reading does not read photos yet. The invoice and its attachment are filed.</p>
+                    <p id="t-lecture-absente">Automatic reading is not installed here.</p>
+                    <p id="t-lecture-echec">Reading failed; the attachment itself is filed.</p>
+                    <p id="t-aucune-fiche">No record found.</p>
+                    <p id="t-fiche">Record:</p>
+                    <p id="t-reprendre">Take the photo again: nothing was read.</p>
+                    <p id="t-joint-fiche">Document attached to the record</p>
+                    <p id="t-bloc-notes">Document in the notepad</p>
+                    <p id="t-lie-a">linked to</p>
+                    <p id="t-rappel-pose">reminder set</p>
+                    <p id="t-sans-message">attachment without a message on the thread</p>
+                </div>
                 <t t-if="script">
                     <script type="text/javascript"
                             src="/bf_scan/static/src/scan/commun.js"></script>
@@ -43,21 +66,17 @@
     </template>
 
     <!-- L'accueil : trois tuiles, et rien d'autre. -->
-    <template id="page_menu" name="Numériser">
+    <template id="page_menu" name="Scan">
         <t t-call="bf_scan.coque">
-            <t t-set="titre">Numériser</t>
-            <h1>Numériser</h1>
-            <p class="lede" t-if="tuiles">Prenez la photo, le reste se range
-                tout seul.</p>
+            <t t-set="titre">Scan</t>
+            <h1>Scan</h1>
+            <p class="lede" t-if="tuiles">Take the photo, the rest files itself.</p>
 
             <t t-if="not tuiles">
                 <div class="card denied">
-                    <h2>Rien à numériser ici</h2>
-                    <p>Aucun des trois gestes n'est ouvert à votre compte :
-                        la carte d'affaires demande l'enrichissement de
-                        contacts, la facture demande la facturation, et le
-                        document demande un compte interne.</p>
-                    <p>Demandez le droit qui vous manque à un administrateur.</p>
+                    <h2>Nothing to scan here</h2>
+                    <p>None of the three actions is open to your account: the business card needs contact enrichment, the invoice needs invoicing, and the document needs an internal account.</p>
+                    <p>Ask an administrator for the permission you are missing.</p>
                 </div>
             </t>
 
@@ -73,67 +92,62 @@
                 </a>
             </nav>
 
-            <p class="signed-in">Connecté comme <strong t-esc="user_name"/></p>
+            <p class="signed-in">Signed in as <strong t-esc="user_name"/></p>
         </t>
     </template>
 
     <!-- La facture : une photo, un brouillon. -->
-    <template id="page_facture" name="Numériser une facture">
+    <template id="page_facture" name="Scan an invoice">
         <t t-call="bf_scan.coque">
-            <t t-set="titre">Numériser une facture</t>
+            <t t-set="titre">Scan an invoice</t>
             <t t-set="script" t-value="'/bf_scan/static/src/scan/facture.js'"/>
 
             <t t-if="not has_access">
                 <div class="card denied">
-                    <h1>Accès requis</h1>
-                    <p>Déposer une facture demande le droit de
-                        <strong>facturation</strong> et celui de créer une
-                        facture fournisseur. Demandez-les à un
-                        administrateur.</p>
-                    <p><a class="btn btn-ghost" href="/scan">Retour</a></p>
+                    <h1>Access required</h1>
+                    <p>Submitting an invoice requires the <strong>invoicing</strong> permission and the permission to create a vendor bill. Ask an administrator for them.</p>
+                    <p><a class="btn btn-ghost" href="/scan">Back</a></p>
                 </div>
             </t>
 
             <t t-else="">
                 <section id="step-capture" class="step">
-                    <a class="retour" href="/scan">‹ Numériser</a>
-                    <h1>Numériser une facture</h1>
-                    <p class="lede">La photo crée un brouillon de facture
-                        fournisseur dans <strong t-esc="societe"/>. Rien n'est
-                        comptabilisé : le brouillon vous attend dans Odoo.</p>
+                    <a class="retour" href="/scan">‹ Scan</a>
+                    <h1>Scan an invoice</h1>
+                    <p class="lede">The photo creates a draft vendor bill in <strong t-esc="societe"/>. Nothing is posted: the draft is waiting for you in Odoo.</p>
 
                     <label class="btn btn-primary" for="shot">
-                        <span class="ico">📷</span> Prendre en photo
+                        <span class="ico">📷</span> Take a photo
                     </label>
                     <input id="shot" type="file" accept="image/*"
                            capture="environment" hidden="hidden"/>
 
                     <label class="btn btn-ghost" for="pick">
-                        Choisir un fichier existant
+                        Choose an existing file
                     </label>
                     <input id="pick" type="file" accept="image/*,application/pdf"
                            hidden="hidden"/>
 
-                    <p class="signed-in">Connecté comme
+                    <p class="signed-in">Signed in as
                         <strong t-esc="user_name"/></p>
                 </section>
 
                 <section id="step-working" class="step hidden">
                     <div class="spinner"></div>
-                    <h2>Dépôt de la facture…</h2>
-                    <img id="preview" alt="Facture photographiée" class="preview"/>
+                    <h2>Submitting the invoice…</h2>
+                    <img id="preview" alt="Photographed invoice" class="preview"/>
                 </section>
 
                 <section id="step-done" class="step hidden">
                     <div class="tick">✓</div>
-                    <h2>Brouillon créé</h2>
+                    <h2>Draft created</h2>
                     <p class="lede" id="done-name"></p>
                     <p class="lede" id="done-lecture"></p>
                     <a id="done-link" class="btn btn-primary" href="#">
-                        Ouvrir dans Odoo
+                        Open in Odoo
                     </a>
                     <button id="again" class="btn btn-ghost" type="button">
-                        Numériser une autre facture
+                        Scan another invoice
                     </button>
                 </section>
             </t>
@@ -141,102 +155,100 @@
     </template>
 
     <!-- Le document : au tampon, ou au fil d'une fiche. -->
-    <template id="page_document" name="Numériser un document">
+    <template id="page_document" name="Scan a document">
         <t t-call="bf_scan.coque">
-            <t t-set="titre">Numériser un document</t>
+            <t t-set="titre">Scan a document</t>
             <t t-set="script" t-value="'/bf_scan/static/src/scan/document.js'"/>
 
             <t t-if="not has_access">
                 <div class="card denied">
-                    <h1>Accès requis</h1>
-                    <p>Déposer un document demande un <strong>compte
-                        interne</strong> et le droit de créer une note.</p>
-                    <p><a class="btn btn-ghost" href="/scan">Retour</a></p>
+                    <h1>Access required</h1>
+                    <p>Submitting a document requires an <strong>internal account</strong> and the permission to create a note.</p>
+                    <p><a class="btn btn-ghost" href="/scan">Back</a></p>
                 </div>
             </t>
 
             <t t-else="">
                 <section id="step-capture" class="step">
-                    <a class="retour" href="/scan">‹ Numériser</a>
-                    <h1>Numériser un document</h1>
-                    <p class="lede">Au bloc-notes avec un rappel, ou
-                        directement dans le fil d'une fiche.</p>
+                    <a class="retour" href="/scan">‹ Scan</a>
+                    <h1>Scan a document</h1>
+                    <p class="lede">To the notepad with a reminder, or straight into a record's chatter.</p>
 
                     <label class="btn btn-primary" for="shot">
-                        <span class="ico">📷</span> Prendre en photo
+                        <span class="ico">📷</span> Take a photo
                     </label>
                     <input id="shot" type="file" accept="image/*"
                            capture="environment" hidden="hidden"/>
 
                     <label class="btn btn-ghost" for="pick">
-                        Choisir un fichier existant
+                        Choose an existing file
                     </label>
                     <input id="pick" type="file" accept="image/*,application/pdf"
                            hidden="hidden"/>
 
-                    <p class="signed-in">Connecté comme
+                    <p class="signed-in">Signed in as
                         <strong t-esc="user_name"/></p>
                 </section>
 
                 <section id="step-review" class="step hidden">
-                    <h2>Où va ce document ?</h2>
-                    <img id="preview" alt="Document photographié" class="preview"/>
+                    <h2>Where does this document go?</h2>
+                    <img id="preview" alt="Photographed document" class="preview"/>
 
-                    <label>Titre
+                    <label>Title
                         <input id="titre" type="text"
-                               placeholder="Document numérisé"/></label>
+                               placeholder="Scanned document"/></label>
 
                     <div class="choice">
                         <label>
                             <input type="radio" name="destination" value="tampon"
                                    checked="checked"/>
-                            Au bloc-notes, pour classer plus tard
+                            To the notepad, to file later
                         </label>
                         <label>
                             <input type="radio" name="destination" value="fiche"/>
-                            Dans le fil d'une fiche
+                            In a record's chatter
                         </label>
                     </div>
 
-                    <label>Fiche
+                    <label>Record
                         <input id="recherche" type="text" autocomplete="off"
-                               placeholder="Tâche, contact, facture, ou un lien collé"/></label>
+                               placeholder="Task, contact, invoice, or a pasted link"/></label>
                     <div id="resultats" class="resultats"></div>
                     <p id="cible-choisie" class="cible hidden"></p>
 
                     <div id="bloc-rappel">
-                        <label>Rappel
+                        <label>Reminder
                             <select id="rappel">
-                                <option value="aucun">Aucun</option>
-                                <option value="aujourdhui">Aujourd'hui</option>
-                                <option value="demain">Demain</option>
-                                <option value="semaine">Dans une semaine</option>
+                                <option value="aucun">None</option>
+                                <option value="aujourdhui">Today</option>
+                                <option value="demain">Tomorrow</option>
+                                <option value="semaine">In a week</option>
                             </select>
                         </label>
                     </div>
 
                     <button id="save" class="btn btn-primary" type="button">
-                        Déposer
+                        Submit
                     </button>
                     <button id="restart" class="btn btn-ghost" type="button">
-                        Reprendre la photo
+                        Retake the photo
                     </button>
                 </section>
 
                 <section id="step-working" class="step hidden">
                     <div class="spinner"></div>
-                    <h2>Dépôt du document…</h2>
+                    <h2>Submitting the document…</h2>
                 </section>
 
                 <section id="step-done" class="step hidden">
                     <div class="tick">✓</div>
-                    <h2 id="done-title">Document déposé</h2>
+                    <h2 id="done-title">Document submitted</h2>
                     <p class="lede" id="done-name"></p>
                     <a id="done-link" class="btn btn-primary" href="#">
-                        Ouvrir dans Odoo
+                        Open in Odoo
                     </a>
                     <button id="again" class="btn btn-ghost" type="button">
-                        Numériser un autre document
+                        Scan another document
                     </button>
                 </section>
             </t>

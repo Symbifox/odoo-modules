@@ -48,7 +48,7 @@ class DailyDigestConfig(models.Model):
     _inherit = "daily.digest.config"
 
     include_hosting_patch = fields.Boolean(
-        string="Inclure l'état de mise à jour du parc", default=True,
+        string="Include fleet update status", default=True,
     )
 
     # ------------------------------------------------------------- collecte
@@ -90,10 +90,10 @@ class DailyDigestConfig(models.Model):
         orange = "#D68910"
 
         libelles = {
-            "stale": (_("muet, aucun relevé récent"), rouge),
-            "security": (_("correctif de sécurité en attente"), rouge),
-            "blind": (_("compte de paquets inconnu"), orange),
-            "reboot": (_("redémarrage requis"), orange),
+            "stale": (_("silent, no recent report"), rouge),
+            "security": (_("security patch pending"), rouge),
+            "blind": (_("package count unknown"), orange),
+            "reboot": (_("reboot required"), orange),
         }
 
         lignes = []
@@ -109,12 +109,12 @@ class DailyDigestConfig(models.Model):
                 for s in nommes
             )
             if reste:
-                noms += _(" et %s de plus", reste)
+                noms += _(" and %s more", reste)
             lignes.append(
                 f'<tr>'
                 f'<td style="padding:6px 10px;border-bottom:1px solid #eee;'
                 f'color:{couleur};font-weight:600;white-space:nowrap;">'
-                f'{_esc(_pluriel(len(systemes), _("système"), _("systèmes")))}</td>'
+                f'{_esc(_pluriel(len(systemes), _("system"), _("systems")))}</td>'
                 f'<td style="padding:6px 10px;border-bottom:1px solid #eee;'
                 f'color:{couleur};">{_esc(libelle)}</td>'
                 f'<td style="padding:6px 10px;border-bottom:1px solid #eee;'
@@ -123,22 +123,22 @@ class DailyDigestConfig(models.Model):
             )
 
         muets = len(groupes.get("stale", []))
-        chapeau = _("Ce que les machines du parc rapportent.")
+        chapeau = _("What the fleet's machines are reporting.")
         # La phrase qui distingue « rien à signaler » de « personne ne
         # mesure ». Elle est la raison d'être de la section. Deux phrases
         # entières plutôt qu'un pluriel recollé : l'assemblage donnait
         # « 1 un système ne rapporte plus ».
         if muets == 1:
-            chapeau = _("Attention : un système ne rapporte plus. Un relevé "
-                        "absent n'est pas une bonne nouvelle.")
+            chapeau = _("Warning: one system is no longer reporting. A "
+                        "missing report is not good news.")
         elif muets:
-            chapeau = _("Attention : %s systèmes ne rapportent plus. Un relevé "
-                        "absent n'est pas une bonne nouvelle.", muets)
+            chapeau = _("Warning: %s systems are no longer reporting. A "
+                        "missing report is not good news.", muets)
 
         return (
             f'<h3 style="margin:0 0 4px 0;color:{anthracite};'
             f'font-family:Lexend,Helvetica,Arial,sans-serif;">'
-            f'{_esc(_("Mises à jour du parc"))}</h3>'
+            f'{_esc(_("Fleet updates"))}</h3>'
             f'<p style="margin:0 0 10px 0;color:{bleu};font-size:13px;">'
             f'{_esc(chapeau)}</p>'
             f'<table style="width:100%;border-collapse:collapse;font-size:13px;'

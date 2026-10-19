@@ -43,50 +43,50 @@ def text_from_html(html):
 
 class EditorialVersion(models.Model):
     _name = "bf.editorial.version"
-    _description = "Créneau de langue"
+    _description = "Language slot"
     _order = "entry_id, is_source desc, id"
 
     entry_id = fields.Many2one(
-        "bf.editorial.entry", string="Entrée", required=True,
+        "bf.editorial.entry", string="Entry", required=True,
         ondelete="cascade", index=True,
     )
     lang_id = fields.Many2one(
-        "res.lang", string="Langue", required=True, ondelete="restrict",
+        "res.lang", string="Language", required=True, ondelete="restrict",
     )
     lang_code = fields.Char(related="lang_id.code", store=True, readonly=True)
     is_source = fields.Boolean(
-        string="Langue source",
-        help="La langue dans laquelle l'article est écrit. Les autres en sont"
-             " des traductions.",
+        string="Source language",
+        help="The language the article is written in. The others are "
+             "translations of it.",
     )
     state = fields.Selection(
         [
-            ("todo", "À traduire"),
-            ("translated", "Traduite"),
-            ("reviewed", "Relue"),
-            ("published", "Publiée"),
+            ("todo", "To translate"),
+            ("translated", "Translated"),
+            ("reviewed", "Reviewed"),
+            ("published", "Published"),
         ],
-        string="État", default="todo", required=True,
+        string="State", default="todo", required=True,
     )
-    translator_id = fields.Many2one("res.users", string="Traducteur")
-    translated_date = fields.Date(string="Traduite le")
-    word_count = fields.Integer(string="Mots", readonly=True)
+    translator_id = fields.Many2one("res.users", string="Translator")
+    translated_date = fields.Date(string="Translated on")
+    word_count = fields.Integer(string="Words", readonly=True)
     slug = fields.Char(
-        string="Slug figé", readonly=True,
-        help="Relevé à la publication. Un changement de titre casserait sinon"
-             " le rattachement des visites à l'article.",
+        string="Frozen slug", readonly=True,
+        help="Captured at publication. A title change would otherwise "
+             "break the link between visits and the article.",
     )
     qa_state = fields.Selection(
-        [("todo", "À passer"), ("clean", "Propre"), ("findings", "Constats")],
+        [("todo", "To run"), ("clean", "Clean"), ("findings", "Findings")],
         string="QA", default="todo",
     )
-    qa_findings = fields.Text(string="Constats", readonly=True)
+    qa_findings = fields.Text(string="Findings", readonly=True)
 
     _sql_constraints = [
         (
             "lang_unique_per_entry",
             "UNIQUE(entry_id, lang_id)",
-            "Une entrée ne peut porter qu'un seul créneau par langue.",
+            "An entry can only carry one slot per language.",
         ),
     ]
 
@@ -100,7 +100,7 @@ class EditorialVersion(models.Model):
             ])
             if others:
                 raise ValidationError(_(
-                    "Une entrée ne peut avoir qu'une seule langue source."
+                    "An entry can only have one source language."
                 ))
 
     def _post_content(self):

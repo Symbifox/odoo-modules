@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="paperformat_subscription" model="report.paperformat">
-        <field name="name">Rapport des abonnements (US Letter)</field>
+        <field name="name">Subscription report (US Letter)</field>
         <field name="format">Letter</field>
         <field name="orientation">Portrait</field>
         <field name="margin_top">12</field>
@@ -14,12 +14,12 @@
     </record>
 
     <record id="action_report_subscription" model="ir.actions.report">
-        <field name="name">Rapport des abonnements</field>
+        <field name="name">Subscription report</field>
         <field name="model">subscription.digest</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_subscription.report_subscription</field>
         <field name="report_file">bf_subscription.report_subscription</field>
-        <field name="print_report_name">'Rapport_abonnements_%s' % (time.strftime('%Y-%m-%d'))</field>
+        <field name="print_report_name">'Subscription_report_%s' % (time.strftime('%Y-%m-%d'))</field>
         <field name="paperformat_id" ref="paperformat_subscription"/>
     </record>
 

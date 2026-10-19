@@ -44,9 +44,9 @@
                                 <img t-if="brand_company.logo" t-att-src="image_data_uri(brand_company.logo)"/>
                             </div>
                             <div class="banner-content">
-                                <p class="doc-type">Rapport</p>
-                                <h1>Portefeuille d'abonnements</h1>
-                                <p class="doc-subtitle"><t t-esc="brand_company.name"/> — généré le <t t-esc="p['generated_on']"/></p>
+                                <p class="doc-type">Report</p>
+                                <h1>Subscription portfolio</h1>
+                                <p class="doc-subtitle"><t t-esc="brand_company.name"/> - generated on <t t-esc="p['generated_on']"/></p>
                             </div>
                         </div>
                         <div class="sub-accent-bar"/>
@@ -54,17 +54,17 @@
                         <div class="sub-body">
                             <!-- KPIs -->
                             <div class="kpi-row">
-                                <div class="kpi"><div class="v"><t t-esc="p['active_count']"/></div><div class="l">Abonnements actifs</div></div>
-                                <div class="kpi"><div class="v"><t t-esc="p['monthly']"/></div><div class="l">Dépense mensualisée</div></div>
-                                <div class="kpi"><div class="v"><t t-esc="p['annual']"/></div><div class="l">Dépense annualisée</div></div>
+                                <div class="kpi"><div class="v"><t t-esc="p['active_count']"/></div><div class="l">Active subscriptions</div></div>
+                                <div class="kpi"><div class="v"><t t-esc="p['monthly']"/></div><div class="l">Monthly spend</div></div>
+                                <div class="kpi"><div class="v"><t t-esc="p['annual']"/></div><div class="l">Annual spend</div></div>
                             </div>
 
                             <!-- Renewals -->
-                            <h2 class="sec">Renouvellements à venir (<t t-esc="p['horizon_days']"/> j)</h2>
+                            <h2 class="sec">Upcoming renewals (<t t-esc="p['horizon_days']"/> days)</h2>
                             <table class="grid" t-if="p['renewals']">
                                 <thead><tr>
-                                    <th>Abonnement</th><th>Fournisseur</th><th>Renouvellement</th>
-                                    <th>À annuler avant</th><th class="r">Montant</th>
+                                    <th>Subscription</th><th>Vendor</th><th>Renewal</th>
+                                    <th>Cancel before</th><th class="r">Amount</th>
                                 </tr></thead>
                                 <tbody>
                                     <tr t-foreach="p['renewals']" t-as="r">
@@ -76,29 +76,29 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <p t-else="" class="muted">Aucun renouvellement dans l'horizon.</p>
+                            <p t-else="" class="muted">No renewal within the horizon.</p>
 
                             <!-- Dormant -->
-                            <h2 class="sec">Abonnements dormants</h2>
+                            <h2 class="sec">Dormant subscriptions</h2>
                             <table class="grid" t-if="p['dormant']">
-                                <thead><tr><th>Abonnement</th><th>Fournisseur</th><th>Dernière facture</th></tr></thead>
+                                <thead><tr><th>Subscription</th><th>Vendor</th><th>Last bill</th></tr></thead>
                                 <tbody>
                                     <tr t-foreach="p['dormant']" t-as="d">
                                         <td><t t-esc="d['name']"/></td>
                                         <td><t t-esc="d['vendor']"/></td>
-                                        <td><t t-esc="d['last_bill'] or 'aucune'"/></td>
+                                        <td><t t-if="d['last_bill']" t-esc="d['last_bill']"/><t t-else="">none</t></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <p t-else="" class="muted">Aucun abonnement dormant.</p>
+                            <p t-else="" class="muted">No dormant subscription.</p>
 
                             <!-- Managed clients -->
                             <t t-if="p['managed']">
-                                <h2 class="sec">Coût par client géré</h2>
+                                <h2 class="sec">Cost per managed client</h2>
                                 <table class="grid">
                                     <thead><tr>
-                                        <th>Client</th><th class="r"># Abonnements</th>
-                                        <th class="r">Coût mensualisé</th><th class="r">Marge (vie)</th>
+                                        <th>Client</th><th class="r"># Subscriptions</th>
+                                        <th class="r">Monthly cost</th><th class="r">Margin (lifetime)</th>
                                     </tr></thead>
                                     <tbody>
                                         <tr t-foreach="p['managed']" t-as="m">

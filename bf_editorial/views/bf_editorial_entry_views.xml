@@ -5,51 +5,51 @@
         <field name="name">bf.editorial.entry.form</field>
         <field name="model">bf.editorial.entry</field>
         <field name="arch" type="xml">
-            <form string="Entrée éditoriale">
+            <form string="Editorial entry">
                 <header>
-                    <button name="action_run_qa" type="object" string="Passer la QA"
+                    <button name="action_run_qa" type="object" string="Run the QA"
                             class="btn-secondary"
-                            help="Contrôles déterministes. Aucune intelligence artificielle n'intervient."/>
+                            help="Deterministic checks. No artificial intelligence is involved."/>
                     <button name="action_sync_from_post" type="object"
-                            string="Relire les créneaux de langue" class="btn-secondary"
+                            string="Re-read language slots" class="btn-secondary"
                             invisible="not post_id"/>
                     <button name="action_apply_checklist_templates" type="object"
-                            string="Reposer les gabarits" class="btn-secondary"
-                            help="Utile après un changement de pilier ou de nature."/>
+                            string="Reapply the templates" class="btn-secondary"
+                            help="Useful after a change of pillar or kind."/>
                     <button name="action_fix_mechanical" type="object"
-                            string="Corriger les défauts mécaniques"
+                            string="Fix mechanical defects"
                             class="btn-secondary" invisible="not post_id"
-                            confirm="Cette action écrit dans le billet. Elle ne corrige que les titres vides et les en-têtes de tableau sans portée, dans toutes les langues, puis repasse la QA. Continuer?"
-                            help="Titres vides et portées de tableau, dans toutes les langues. Rien qui demande un jugement."/>
+                            confirm="This action writes to the post. It only fixes empty headings and table headers without a scope, in all languages, then runs the QA again. Continue?"
+                            help="Empty headings and table scopes, in all languages. Nothing that calls for judgment."/>
                     <button name="action_open_waiver" type="object"
-                            string="Signer une dérogation" class="btn-secondary"
+                            string="Sign a waiver" class="btn-secondary"
                             invisible="preflight_ok or published_date or qa_waived"
                             groups="bf_editorial.group_editorial_manager"
-                            help="Accepter par écrit les motifs de jugement qui retiennent la publication."/>
+                            help="Accept in writing the judgment-based reasons that hold back publication."/>
                     <button name="action_revoke_waiver" type="object"
-                            string="Lever la dérogation" class="btn-secondary"
+                            string="Revoke the waiver" class="btn-secondary"
                             invisible="not qa_waived"
                             groups="bf_editorial.group_editorial_manager"/>
-                    <button name="action_publish" type="object" string="Publier"
+                    <button name="action_publish" type="object" string="Publish"
                             class="btn-primary" invisible="published_date or not preflight_ok"
                             groups="bf_editorial.group_editorial_manager"/>
-                    <button name="action_publish" type="object" string="Publier"
+                    <button name="action_publish" type="object" string="Publish"
                             class="btn-secondary" invisible="published_date or preflight_ok"
                             groups="bf_editorial.group_editorial_manager"
-                            help="La garde de pré-vol refusera et expliquera pourquoi."/>
+                            help="The preflight guard will refuse and explain why."/>
                     <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Publiée" bg_color="text-bg-success"
+                    <widget name="web_ribbon" title="Published" bg_color="text-bg-success"
                             invisible="not published_date"/>
-                    <widget name="web_ribbon" title="Bloquée" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Entry blocked" bg_color="text-bg-danger"
                             invisible="not is_blocked"/>
                     <div class="oe_title">
-                        <label for="name" string="Titre de travail"/>
-                        <h1><field name="name" placeholder="Le titre peut changer, celui-ci reste"/></h1>
+                        <label for="name" string="Working title"/>
+                        <h1><field name="name" placeholder="The title may change, this one stays"/></h1>
                     </div>
                     <group>
-                        <group string="Cadrage">
+                        <group string="Framing">
                             <field name="calendar_id"/>
                             <field name="kind"/>
                             <field name="pillar_id"/>
@@ -57,19 +57,19 @@
                                    options="{'color_field': 'color'}"/>
                             <field name="post_id" invisible="kind != 'blog'"/>
                         </group>
-                        <group string="Conduite">
+                        <group string="Execution">
                             <field name="user_id"/>
                             <field name="reviewer_id"/>
                             <field name="planned_date"/>
                             <field name="scheduled_publish_date"
-                                   help="La garde de pré-vol s'applique aussi à cette date."/>
+                                   help="The preflight guard also applies on this date."/>
                             <field name="published_date" invisible="not published_date"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
 
                     <div class="alert alert-warning" role="alert" invisible="preflight_ok">
-                        <strong>La publication est retenue.</strong>
+                        <strong>Publishing is held back.</strong>
                         <field name="preflight_summary" nolabel="1"/>
                     </div>
                     <div class="alert alert-success" role="alert"
@@ -78,10 +78,7 @@
                     </div>
                     <div class="alert alert-info" role="alert"
                          invisible="not qa_waived or qa_waiver_stale">
-                        <strong>Cette entrée est sous dérogation.</strong>
-                        La QA voit toujours ce qu'elle voit; c'est le refus de
-                        publier qui a cédé, sur les motifs signés et sur
-                        ceux-là seulement.
+                        <strong>This entry is under a waiver.</strong> The QA still sees what it sees; it is the refusal to publish that gave way, on the signed reasons and on those only.
                         <group class="mt-2">
                             <field name="qa_waived_by" readonly="1"/>
                             <field name="qa_waived_on" readonly="1"/>
@@ -91,9 +88,7 @@
                     </div>
                     <div class="alert alert-danger" role="alert"
                          invisible="not qa_waiver_stale">
-                        <strong>La dérogation ne couvre plus rien.</strong>
-                        Le texte a bougé depuis sa signature. À signer de
-                        nouveau sur les constats actuels, ou à lever.
+                        <strong>The waiver no longer covers anything.</strong> The text has changed since it was signed. Sign it again on the current findings, or revoke it.
                     </div>
                     <field name="preflight_ok" invisible="1"/>
                     <field name="is_blocked" invisible="1"/>
@@ -102,7 +97,7 @@
 
                     <notebook>
 
-                        <page string="Langues" name="langues">
+                        <page string="Languages" name="langues">
                             <field name="language_summary" nolabel="1" readonly="1"/>
                             <field name="version_ids" nolabel="1">
                                 <list editable="bottom">
@@ -130,7 +125,7 @@
                             </group>
                         </page>
 
-                        <page string="Restes humains" name="controle">
+                        <page string="Manual to-dos" name="controle">
                             <field name="checklist_ids" nolabel="1">
                                 <list editable="bottom" decoration-muted="done">
                                     <field name="sequence" widget="handle"/>
@@ -154,16 +149,16 @@
                                        invisible="not qa_waived"/>
                             </group>
                             <field name="qa_findings" nolabel="1" readonly="1"
-                                   placeholder="Aucun constat. Passez la QA pour remplir cette zone."/>
+                                   placeholder="No findings. Run the QA to fill this area."/>
                         </page>
 
-                        <page string="Véracité" name="veracite">
+                        <page string="Accuracy" name="veracite">
                             <group>
                                 <group>
                                     <field name="fact_check_date"/>
                                     <field name="fact_checked_by"/>
                                 </group>
-                                <group string="Fraîcheur du sujet">
+                                <group string="Topic freshness">
                                     <field name="subject_module_id"/>
                                     <field name="source_version"
                                            invisible="not subject_module_id"/>
@@ -173,7 +168,7 @@
                                            invisible="not subject_module_id"/>
                                 </group>
                             </group>
-                            <separator string="Affirmations"/>
+                            <separator string="Claims"/>
                             <field name="claim_ids" nolabel="1">
                                 <list editable="bottom" decoration-warning="verdict == 'todo'"
                                       decoration-danger="verdict == 'false'">
@@ -184,7 +179,7 @@
                                     <field name="correction" optional="hide"/>
                                     <field name="verdict_by" optional="hide"/>
                                     <button name="action_confirm" type="object"
-                                            icon="fa-check" title="Confirmer le verdict proposé"
+                                            icon="fa-check" title="Confirm the proposed verdict"
                                             invisible="not is_machine_proposed"/>
                                 </list>
                             </field>
@@ -204,13 +199,13 @@
                         </page>
                         <page string="Angle" name="angle">
                             <group>
-                                <field name="hook" placeholder="La phrase qui accroche"/>
-                                <field name="thesis" placeholder="Ce que l'article défend, en une phrase"/>
+                                <field name="hook" placeholder="The hook sentence"/>
+                                <field name="thesis" placeholder="What the article argues, in one sentence"/>
                                 <field name="reader_problem"/>
                                 <field name="promise"/>
                                 <field name="cta"/>
                             </group>
-                            <group string="Référencement">
+                            <group string="SEO">
                                 <field name="target_keyword"/>
                                 <field name="search_intent"/>
                                 <field name="pattern"/>
@@ -219,18 +214,18 @@
                             </group>
                         </page>
 
-                        <page string="Dépendances" name="dependances">
+                        <page string="Dependencies" name="dependances">
                             <group>
                                 <field name="blocked_reason"
-                                       placeholder="Motif de blocage saisi à la main"/>
+                                       placeholder="Blocking reason entered by hand"/>
                                 <field name="blocking_summary" readonly="1"
                                        invisible="not is_blocked"/>
                             </group>
-                            <separator string="Doit sortir après"/>
+                            <separator string="Must be published after"/>
                             <field name="depends_on_ids" nolabel="1" widget="many2many_tags"/>
-                            <separator string="Retient"/>
+                            <separator string="Holds back"/>
                             <field name="blocks_ids" nolabel="1" widget="many2many_tags" readonly="1"/>
-                            <group string="Mesure brute">
+                            <group string="Raw measure">
                                 <field name="raw_visits" readonly="1"/>
                                 <field name="task_id"/>
                             </group>
@@ -261,8 +256,8 @@
                                 <field name="pillar_id"/>
                             </div>
                             <div class="mt-1">
-                                <span class="badge text-bg-danger" t-if="record.is_blocked.raw_value">Bloquée</span>
-                                <span class="badge text-bg-success" t-if="record.preflight_ok.raw_value">Pré-vol vert</span>
+                                <span class="badge text-bg-danger" t-if="record.is_blocked.raw_value">Entry blocked</span>
+                                <span class="badge text-bg-success" t-if="record.preflight_ok.raw_value">Preflight green</span>
                                 <field name="tag_ids" widget="many2many_tags"
                                        options="{'color_field': 'color'}"/>
                             </div>
@@ -289,8 +284,8 @@
                   decoration-muted="published_date">
                 <header>
                     <button name="action_run_qa" type="object"
-                            string="Passer la QA" class="btn-secondary"
-                            help="Contrôles déterministes sur la sélection. Aucune intelligence artificielle n'intervient."/>
+                            string="Run the QA" class="btn-secondary"
+                            help="Deterministic checks on the selection. No artificial intelligence is involved."/>
                 </header>
                 <field name="name"/>
                 <field name="calendar_id" optional="show"/>
@@ -298,13 +293,13 @@
                 <field name="stage_id"/>
                 <field name="planned_date"/>
                 <field name="published_date" optional="hide"/>
-                <field name="word_count" optional="show" sum="Mots"/>
+                <field name="word_count" optional="show" sum="Words"/>
                 <field name="langs_complete" optional="show"/>
                 <field name="qa_state" optional="show"/>
                 <field name="preflight_ok"/>
                 <field name="is_blocked" optional="hide"/>
                 <field name="version_drift" optional="hide"/>
-                <field name="raw_visits" optional="hide" sum="Visites (brut)"/>
+                <field name="raw_visits" optional="hide" sum="Visits (raw)"/>
                 <field name="user_id" widget="many2one_avatar_user" optional="show"/>
             </list>
         </field>
@@ -334,47 +329,45 @@
                 <field name="pillar_id"/>
                 <field name="tag_ids"/>
                 <field name="calendar_id"/>
-                <filter name="mine" string="Les miennes"
+                <filter name="mine" string="Mine"
                         domain="[('user_id', '=', uid)]"/>
-                <filter name="open" string="En cours"
+                <filter name="open" string="In progress"
                         domain="[('published_date', '=', False)]"/>
                 <separator/>
-                <filter name="ready" string="Pré-vol vert"
+                <filter name="ready" string="Preflight green"
                         domain="[('preflight_ok', '=', True), ('published_date', '=', False)]"/>
-                <filter name="blocked" string="Bloquées"
+                <filter name="blocked" string="Blocked entries"
                         domain="[('is_blocked', '=', True)]"/>
-                <filter name="drift" string="Dérive de version"
+                <filter name="drift" string="Version drift"
                         domain="[('version_drift', '=', True)]"/>
-                <filter name="langs_missing" string="Langue manquante"
+                <filter name="langs_missing" string="Missing language"
                         domain="[('langs_complete', '=', False)]"/>
-                <filter name="langs_not_ready" string="Langue pas encore relue"
+                <filter name="langs_not_ready" string="Language not reviewed yet"
                         domain="[('langs_ready', '=', False)]"/>
-                <filter name="waived" string="Sous dérogation"
+                <filter name="waived" string="Under waiver"
                         domain="[('qa_waived', '=', True)]"/>
                 <separator/>
-                <filter name="planned" string="Date prévue" date="planned_date"/>
-                <filter name="published" string="Publiées" date="published_date"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="g_stage" string="Étape" context="{'group_by': 'stage_id'}"/>
-                    <filter name="g_pillar" string="Pilier" context="{'group_by': 'pillar_id'}"/>
-                    <filter name="g_calendar" string="Calendrier" context="{'group_by': 'calendar_id'}"/>
-                    <filter name="g_user" string="Responsable" context="{'group_by': 'user_id'}"/>
-                    <filter name="g_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                <filter name="planned" string="Planned date" date="planned_date"/>
+                <filter name="published" string="Published entries" date="published_date"/>
+                <group expand="0" string="Group by">
+                    <filter name="g_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                    <filter name="g_pillar" string="Pillar" context="{'group_by': 'pillar_id'}"/>
+                    <filter name="g_calendar" string="Calendar" context="{'group_by': 'calendar_id'}"/>
+                    <filter name="g_user" string="Assignee" context="{'group_by': 'user_id'}"/>
+                    <filter name="g_kind" string="Kind" context="{'group_by': 'kind'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_editorial_entry" model="ir.actions.act_window">
-        <field name="name">Entrées éditoriales</field>
+        <field name="name">Editorial entries</field>
         <field name="res_model">bf.editorial.entry</field>
         <field name="view_mode">kanban,list,calendar,form</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créer une première entrée</p>
-            <p>Une entrée porte un article, ou une publication qui ne passe pas
-               par le blogue. C'est elle qui tient l'angle, les sources, les
-               langues et ce qu'il reste à faire.</p>
+            <p class="o_view_nocontent_smiling_face">Create a first entry</p>
+            <p>An entry carries an article, or a publication that does not go through the blog. It holds the angle, the sources, the languages and what is left to do.</p>
         </field>
     </record>
 

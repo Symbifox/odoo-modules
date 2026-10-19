@@ -6,7 +6,7 @@
              deuxième), et au bouton « Renouvellement confirmé » de fermer
              exactement celles-là sans toucher aux autres tâches de la fiche. -->
         <record id="mail_activity_type_renewal" model="mail.activity.type">
-            <field name="name">Renouvellement d'abonnement</field>
+            <field name="name">Subscription renewal</field>
             <field name="icon">fa-refresh</field>
             <field name="res_model">subscription.subscription</field>
             <field name="delay_count">0</field>

@@ -7,18 +7,18 @@
         <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app string="Atelier éditorial" name="bf_editorial"
+                <app string="Editorial workshop" name="bf_editorial"
                      logo="/bf_editorial/static/description/icon.png">
-                    <block title="Politique multilingue"
-                           help="Ce que le module considère comme « publié » quand un article existe en plusieurs langues.">
+                    <block title="Multilingual policy"
+                           help="What the module considers &quot;published&quot; when an article exists in several languages.">
                         <setting id="require_all_langs"
-                                 help="Un article dont la traduction n'est pas sortie reste incomplet et ne compte pas dans la cadence. Chaque calendrier peut surcharger ce réglage.">
+                                 help="An article whose translation has not come out stays incomplete and does not count in the cadence. Each calendar can override this setting.">
                             <field name="bf_editorial_require_all_langs"/>
                         </setting>
                     </block>
-                    <block title="Sources" help="Fraîcheur des références citées.">
+                    <block title="Sources" help="Freshness of the cited references.">
                         <setting id="source_recheck"
-                                 help="Au-delà de ce délai, une source est considérée périmée.">
+                                 help="After this period, a source is considered outdated.">
                             <field name="bf_editorial_source_recheck_months"/>
                         </setting>
                     </block>

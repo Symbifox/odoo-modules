@@ -1,20 +1,22 @@
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
 class SubscriptionRebillWizard(models.TransientModel):
     _name = 'subscription.rebill.wizard'
-    _description = "Wizard de refacturation d'un abonnement géré pour client"
+    _description = "Rebilling wizard for a subscription managed for a client"
 
     subscription_id = fields.Many2one(
         'subscription.subscription', required=True, readonly=True,
     )
     vendor_bill_id = fields.Many2one(
-        'account.move', string="Facture fournisseur",
+        'account.move', string="Vendor bill",
         domain="[('move_type', 'in', ['in_invoice', 'in_refund']), "
                "('subscription_id', '=', subscription_id)]",
-        help="Facture fournisseur d'origine. Optionnel : laisser vide pour "
-             "créer une refacturation sans facture amont (ex. forfait fixe).",
+        help="Original vendor bill. Optional: leave empty to create a "
+             "rebill without an upstream bill (e.g. flat fee).",
     )
     managed_for_id = fields.Many2one(
         'res.partner', required=True, readonly=True,
@@ -27,33 +29,33 @@ class SubscriptionRebillWizard(models.TransientModel):
     )
 
     mode = fields.Selection([
-        ('at_cost', 'Au coût'),
-        ('markup_percent', 'Coût + markup %'),
-        ('fixed_amount', 'Montant fixe'),
+        ('at_cost', "At cost"),
+        ('markup_percent', "Cost + markup %"),
+        ('fixed_amount', "Fixed amount"),
     ], required=True, default='at_cost')
     cost_amount = fields.Monetary(
-        string="Coût (facture fournisseur)",
+        string="Cost (vendor bill)",
         currency_field='currency_id',
-        help="Pré-rempli depuis la facture fournisseur si fournie.",
+        help="Pre-filled from the vendor bill if one is given.",
     )
     markup_percent = fields.Float(string="Markup (%)", default=0.0)
     fixed_amount = fields.Monetary(
-        string="Montant fixe", currency_field='currency_id',
+        string="Fixed amount", currency_field='currency_id',
     )
     final_amount = fields.Monetary(
         compute='_compute_final_amount', currency_field='currency_id',
-        string="Montant final refacturé",
+        string="Final rebilled amount",
     )
 
     line_description = fields.Char(
-        string="Description de ligne", required=True,
+        string="Line description", required=True,
     )
     product_id = fields.Many2one(
-        'product.product', string="Produit",
-        help="Optionnel — sinon une ligne libre est créée.",
+        'product.product', string="Product",
+        help="Optional: otherwise a free-form line is created.",
     )
     invoice_date = fields.Date(
-        string="Date de facturation", default=fields.Date.context_today,
+        string="Invoice date", default=fields.Date.context_today,
     )
     journal_id = fields.Many2one(
         'account.journal', string="Journal",
@@ -80,12 +82,13 @@ class SubscriptionRebillWizard(models.TransientModel):
             sub = self.env['subscription.subscription'].browse(sub_id)
             if not sub.is_managed_for_client:
                 raise UserError(_(
-                    "Cet abonnement n'est pas marqué comme géré pour un client : "
-                    "renseignez d'abord « Géré pour le client » sur l'abonnement « %s »."
+                    "This subscription is not marked as managed for a "
+                    "client: first fill in \"Managed for client\" on the "
+                    "subscription \"%s\"."
                 ) % sub.name)
             if not sub.rebilled:
                 raise UserError(_(
-                    "L'abonnement « %s » n'a pas la refacturation activée."
+                    "Rebilling is not turned on for the subscription \"%s\"."
                 ) % sub.name)
             res.update({
                 'subscription_id': sub.id,
@@ -97,7 +100,9 @@ class SubscriptionRebillWizard(models.TransientModel):
                 'fixed_amount': sub.rebill_fixed_amount or sub.cycle_amount,
                 # Fallback cost to the subscription's cycle amount; overridden below if a bill is given.
                 'cost_amount': sub.cycle_amount,
-                'line_description': _("Refacturation – %s") % sub.name,
+                # La ligne est lue par le client géré : dans sa langue (la personne peut la retoucher).
+                'line_description': sub.with_context(
+                    lang=sub.managed_for_id.lang or self.env.lang).env._("Rebilling: %s") % sub.name,
                 'product_id': sub.rebill_product_id.id if sub.rebill_product_id else False,
             })
 
@@ -140,16 +145,17 @@ class SubscriptionRebillWizard(models.TransientModel):
     def action_create_invoice(self):
         self.ensure_one()
         if self.final_amount <= 0:
-            raise UserError(_("Le montant à refacturer doit être supérieur à zéro."))
+            raise UserError(_("The amount to rebill must be greater than zero."))
         if not self.managed_for_id:
-            raise UserError(_("Aucun client cible — renseignez « managed_for » sur l'abonnement."))
+            raise UserError(_("No target client: fill in \"managed_for\" "
+                              "on the subscription."))
 
         journal = self.journal_id or self.env['account.journal'].search([
             ('type', '=', 'sale'),
             ('company_id', '=', self.company_id.id),
         ], limit=1)
         if not journal:
-            raise UserError(_("Aucun journal de vente trouvé pour la société %s.") % self.company_id.name)
+            raise UserError(_("No sales journal found for company %s.") % self.company_id.name)
 
         line_vals = {
             'name': self.line_description,
@@ -161,6 +167,8 @@ class SubscriptionRebillWizard(models.TransientModel):
         if self.subscription_id.analytic_distribution:
             line_vals['analytic_distribution'] = self.subscription_id.analytic_distribution
 
+        # La note de la facture est lue par le client géré : dans sa langue.
+        lc = self.with_context(lang=self.managed_for_id.lang or self.env.lang)
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'partner_id': self.managed_for_id.id,
@@ -170,35 +178,36 @@ class SubscriptionRebillWizard(models.TransientModel):
             'company_id': self.company_id.id,
             'subscription_id': self.subscription_id.id,
             'invoice_line_ids': [(0, 0, line_vals)],
-            'narration': _(
-                "Refacturation de l'abonnement %(name)s (réf. %(code)s)."
-                "%(bill_ref)s"
+            'narration': lc.env._(
+                "Rebilling of subscription %(name)s (ref. "
+                "%(code)s).%(bill_ref)s"
             ) % {
                 'name': self.subscription_id.name,
                 'code': self.subscription_id.code or '',
-                'bill_ref': (_(" Facture fournisseur source : %s.") % self.vendor_bill_id.name)
+                'bill_ref': (lc.env._(" Source vendor bill: %s.") % self.vendor_bill_id.name)
                             if self.vendor_bill_id and self.vendor_bill_id.name else '',
             },
         })
 
         # Trace the rebill on the subscription chatter
         self.subscription_id.message_post(
-            body=_(
-                "Facture de refacturation créée : <a href='#' data-oe-model='account.move' "
-                "data-oe-id='%(id)d'>%(name)s</a> — %(amount).2f %(currency)s "
-                "(mode : %(mode)s)."
-            ) % {
+            body=Markup(_(
+                "Rebill invoice created: <a href='#' "
+                "data-oe-model='account.move' "
+                "data-oe-id='%(id)d'>%(name)s</a>, %(amount).2f "
+                "%(currency)s (mode: %(mode)s)."
+            )) % {
                 'id': invoice.id,
-                'name': invoice.display_name or _("Brouillon"),
+                'name': invoice.display_name or _("Draft"),
                 'amount': self.final_amount,
                 'currency': self.currency_id.name or '',
-                'mode': dict(self._fields['mode'].selection).get(self.mode, self.mode),
+                'mode': dict(self._fields['mode']._description_selection(self.env)).get(self.mode, self.mode),
             },
         )
 
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Facture de refacturation"),
+            'name': _("Rebill invoice"),
             'res_model': 'account.move',
             'view_mode': 'form',
             'res_id': invoice.id,

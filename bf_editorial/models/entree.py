@@ -23,224 +23,227 @@ WAIVABLE = ("qa_findings", "word_floor")
 
 class EditorialEntry(models.Model):
     _name = "bf.editorial.entry"
-    _description = "Entrée éditoriale"
+    _description = "Editorial entry"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "planned_date desc, id desc"
 
     # --- identité ---------------------------------------------------------
     name = fields.Char(
-        string="Titre de travail", required=True, tracking=True,
-        help="Il survit aux changements de titre publié, ce qui permet de"
-             " suivre une entrée dont l'article a été renommé.",
+        string="Working title", required=True, tracking=True,
+        help="It survives changes to the published title, which makes it "
+             "possible to follow an entry whose article was renamed.",
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
     calendar_id = fields.Many2one(
-        "bf.editorial.calendar", string="Calendrier",
+        "bf.editorial.calendar", string="Calendar",
         ondelete="restrict", index=True, tracking=True,
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", related="calendar_id.company_id",
+        "res.company", string="Company", related="calendar_id.company_id",
         store=True, index=True,
     )
     post_id = fields.Many2one(
-        "blog.post", string="Billet", ondelete="set null", index=True,
+        "blog.post", string="Post", ondelete="set null", index=True,
         tracking=True,
-        help="Vide pour une publication qui ne passe pas par le blogue.",
+        help="Empty for a publication that does not go through the blog.",
     )
     kind = fields.Selection(
         [
-            ("blog", "Article de blogue"),
-            ("social", "Publication sociale"),
-            ("newsletter", "Infolettre"),
-            ("video", "Vidéo"),
+            ("blog", "Blog article"),
+            ("social", "Social post"),
+            ("newsletter", "Newsletter"),
+            ("video", "Video"),
         ],
-        string="Nature", default="blog", required=True, tracking=True,
+        string="Kind", default="blog", required=True, tracking=True,
     )
     pillar_id = fields.Many2one(
-        "blog.tag.category", string="Pilier",
+        "blog.tag.category", string="Pillar",
         domain=[("is_pillar", "=", True)], index=True, tracking=True,
     )
-    tag_ids = fields.Many2many("blog.tag", string="Sujets")
-    color = fields.Integer(string="Couleur", related="pillar_id.color")
+    tag_ids = fields.Many2many("blog.tag", string="Topics")
+    color = fields.Integer(string="Color", related="pillar_id.color")
 
     # --- cycle ------------------------------------------------------------
     stage_id = fields.Many2one(
-        "bf.editorial.stage", string="Étape", index=True, tracking=True,
+        "bf.editorial.stage", string="Stage", index=True, tracking=True,
         group_expand="_group_expand_stage", default=lambda s: s._default_stage(),
         ondelete="restrict",
     )
-    planned_date = fields.Date(string="Date prévue", tracking=True)
+    planned_date = fields.Date(string="Planned date", tracking=True)
     scheduled_publish_date = fields.Datetime(
-        string="Publication différée", tracking=True,
-        help="Une fois la date approuvée, la publication part toute seule —"
-             " mais seulement si la garde de pré-vol est verte à ce moment-là.",
+        string="Scheduled publication", tracking=True,
+        help="Once the date is approved, publication goes out by itself, "
+             "but only if the preflight guard is green at that moment.",
     )
     published_date = fields.Datetime(
-        string="Publié le", tracking=True, readonly=True, copy=False,
+        string="Published on", tracking=True, readonly=True, copy=False,
     )
     timeline_date = fields.Date(
-        string="Date au calendrier", compute="_compute_timeline_date", store=True,
-        help="Date prévue si elle existe, sinon date de publication. C'est"
-             " celle que la vue calendrier affiche : une vue calée sur la"
-             " seule date prévue laisse invisible tout ce qui est déjà sorti.",
+        string="Calendar date", compute="_compute_timeline_date", store=True,
+        help="Planned date if there is one, otherwise publication date. "
+             "This is the one the calendar view shows: a view based on "
+             "the planned date alone hides everything that is already out.",
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsable", default=lambda self: self.env.user,
+        "res.users", string="Assignee", default=lambda self: self.env.user,
         tracking=True,
     )
-    reviewer_id = fields.Many2one("res.users", string="Relecteur", tracking=True)
-    task_id = fields.Many2one("project.task", string="Tâche liée")
-    campaign_id = fields.Many2one("utm.campaign", string="Campagne")
+    reviewer_id = fields.Many2one("res.users", string="Reviewer", tracking=True)
+    task_id = fields.Many2one("project.task", string="Linked task")
+    campaign_id = fields.Many2one("utm.campaign", string="Campaign")
 
     # --- angle ------------------------------------------------------------
     hook = fields.Text(
-        string="Accroche",
-        help="La première phrase, ou l'idée qui doit accrocher.",
+        string="Hook",
+        help="The first sentence, or the idea that should hook the reader.",
     )
     thesis = fields.Text(
-        string="Thèse", help="Ce que l'article défend, en une phrase.",
+        string="Thesis", help="What the article argues, in one sentence.",
     )
-    reader_problem = fields.Text(string="Problème du lecteur")
-    promise = fields.Text(string="Promesse")
-    cta = fields.Char(string="Appel à l'action")
+    reader_problem = fields.Text(string="Reader problem")
+    promise = fields.Text(string="Promise")
+    cta = fields.Char(string="Call to action")
 
     # --- référencement ----------------------------------------------------
-    target_keyword = fields.Char(string="Mot-clé visé")
+    target_keyword = fields.Char(string="Target keyword")
     search_intent = fields.Selection(
         [
-            ("informational", "S'informer"),
-            ("comparison", "Comparer"),
-            ("transactional", "Choisir un fournisseur"),
-            ("navigational", "Trouver une page précise"),
+            ("informational", "Get informed"),
+            ("comparison", "Compare"),
+            ("transactional", "Choose a vendor"),
+            ("navigational", "Find a specific page"),
         ],
-        string="Intention de recherche",
+        string="Search intent",
     )
     pattern = fields.Selection(
         [
-            ("alternative", "Alternative à"),
-            ("howto", "Comment faire"),
-            ("comparison", "Comparatif"),
-            ("posture", "Prise de position"),
-            ("product", "Présentation produit"),
-            ("case", "Étude de cas"),
+            ("alternative", "Alternative to"),
+            ("howto", "How-to"),
+            ("comparison", "Comparison"),
+            ("posture", "Opinion piece"),
+            ("product", "Product presentation"),
+            ("case", "Case study"),
         ],
-        string="Patron",
-        help="Le patron « alternative à » domine historiquement le palmarès.",
+        string="Pattern",
+        help="The \"alternative to\" pattern has historically dominated "
+             "the ranking.",
     )
-    competitor = fields.Char(string="Concurrent visé")
+    competitor = fields.Char(string="Target competitor")
 
     # --- dépendances ------------------------------------------------------
     depends_on_ids = fields.Many2many(
         "bf.editorial.entry", "bf_editorial_entry_dep_rel", "entry_id",
-        "depends_id", string="Dépend de",
-        help="Entrées qui doivent être publiées avant celle-ci — un billet"
-             " publié ne doit jamais pointer un brouillon.",
+        "depends_id", string="Depends on",
+        help="Entries that must be published before this one: a published "
+             "post must never point to a draft.",
     )
     blocks_ids = fields.Many2many(
         "bf.editorial.entry", "bf_editorial_entry_dep_rel", "depends_id",
-        "entry_id", string="Bloque", readonly=True,
+        "entry_id", string="Blocks", readonly=True,
     )
-    blocked_reason = fields.Char(string="Motif de blocage", tracking=True)
+    blocked_reason = fields.Char(string="Blocking reason", tracking=True)
     is_blocked = fields.Boolean(
-        string="Bloquée", compute="_compute_is_blocked", store=True,
+        string="Entry blocked", compute="_compute_is_blocked", store=True,
     )
     # Calcul SÉPARÉ, et c'est délibéré : Odoo avertit à chaque chargement du
     # registre quand une même méthode calcule des champs de « store »
     # différents. Les deux partagent leurs dépendances, pas leur stockage.
     blocking_summary = fields.Text(
-        string="Ce qui bloque", compute="_compute_blocking_summary",
+        string="What is blocking", compute="_compute_blocking_summary",
     )
 
     # --- véracité ---------------------------------------------------------
-    fact_check_date = fields.Date(string="Fact-check du", tracking=True)
-    fact_checked_by = fields.Many2one("res.users", string="Fact-check par")
+    fact_check_date = fields.Date(string="Fact-checked on", tracking=True)
+    fact_checked_by = fields.Many2one("res.users", string="Fact-checked by")
     source_ids = fields.One2many(
         "bf.editorial.source", "entry_id", string="Sources",
     )
     claim_ids = fields.One2many(
-        "bf.editorial.claim", "entry_id", string="Affirmations",
+        "bf.editorial.claim", "entry_id", string="Claims",
     )
     unverified_claim_count = fields.Integer(
-        string="Affirmations non vérifiées", compute="_compute_claim_stats",
+        string="Unverified claims", compute="_compute_claim_stats",
     )
     dead_source_count = fields.Integer(
-        string="Sources mortes", compute="_compute_claim_stats",
+        string="Dead sources", compute="_compute_claim_stats",
     )
 
     # --- fraîcheur produit ------------------------------------------------
     subject_module_id = fields.Many2one(
-        "ir.module.module", string="Module documenté",
-        help="Renseigné, le module signale de lui-même que la version a bougé"
-             " depuis le fact-check.",
+        "ir.module.module", string="Documented module",
+        help="When filled in, the module flags by itself that the version "
+             "has changed since the fact-check.",
     )
     source_version = fields.Char(
-        string="Version au fact-check",
-        help="La version du module documentée au moment de la vérification.",
+        string="Version at fact-check",
+        help="The module version documented at the time of the check.",
     )
     current_version = fields.Char(
-        string="Version actuelle", compute="_compute_version_drift",
+        string="Current version", compute="_compute_version_drift",
     )
     version_drift = fields.Boolean(
-        string="Dérive de version", compute="_compute_version_drift",
+        string="Version drift", compute="_compute_version_drift",
         search="_search_version_drift",
     )
 
     # --- créneaux de langue et qualité ------------------------------------
     version_ids = fields.One2many(
-        "bf.editorial.version", "entry_id", string="Créneaux de langue",
+        "bf.editorial.version", "entry_id", string="Language slots",
     )
     checklist_ids = fields.One2many(
-        "bf.editorial.checklist", "entry_id", string="Liste de contrôle",
+        "bf.editorial.checklist", "entry_id", string="Checklist",
     )
     open_checklist_count = fields.Integer(
-        string="Restes ouverts", compute="_compute_checklist_stats",
+        string="Open to-dos", compute="_compute_checklist_stats",
     )
     word_count = fields.Integer(
-        string="Mots (langue source)", compute="_compute_language_state",
+        string="Words (source language)", compute="_compute_language_state",
     )
     word_floor = fields.Integer(
-        string="Plancher", related="calendar_id.word_floor", readonly=True,
+        string="Floor", related="calendar_id.word_floor", readonly=True,
     )
     # Ces deux cases se calculent depuis les créneaux, et se COCHENT aussi :
     # cocher écrit la décision sur chaque créneau exigé (relue, ou publiée),
     # décocher la retire. Une case qui se calcule sans se cocher est une
     # case que personne ne peut cocher, et c'est ce qu'on a vécu.
     langs_complete = fields.Boolean(
-        string="Toutes les langues livrées", compute="_compute_language_state",
+        string="All languages delivered", compute="_compute_language_state",
         inverse="_inverse_langs_complete", search="_search_langs_complete",
-        help="Vrai quand chaque langue exigée porte un créneau publié."
-             " Cocher passe tous les créneaux exigés à « Publiée » et fige"
-             " leur slug, sans publier le billet : c'est le geste de"
-             " rattrapage d'un article sorti hors de l'atelier. Réservé à la"
-             " Direction éditoriale, comme publier. Décocher ramène les"
-             " créneaux publiés à « Relue ».",
+        help="True when every required language carries a published slot. "
+             "Checking sets all required slots to \"Published\" and "
+             "freezes their slug, without publishing the post: it is the "
+             "catch-up action for an article that came out outside the "
+             "workshop. Reserved to Editorial management, like "
+             "publishing. Unchecking returns published slots to "
+             "\"Reviewed\".",
     )
     langs_ready = fields.Boolean(
-        string="Toutes les langues relues", compute="_compute_language_state",
+        string="All languages reviewed", compute="_compute_language_state",
         inverse="_inverse_langs_ready", search="_search_langs_ready",
-        help="Vrai quand chaque langue exigée porte un créneau relu ou déjà"
-             " publié. C'est cet état que la garde de pré-vol contrôle :"
-             " exiger « publiée » AVANT de publier ne se satisfait jamais."
-             " Cocher passe à « Relue » chaque créneau exigé qui ne l'est"
-             " pas encore, et crée ceux qui manquent. Décocher ramène les"
-             " créneaux relus à « Traduite » ; un créneau publié ne bouge pas.",
+        help="True when every required language carries a reviewed or "
+             "already published slot. This is the status the preflight "
+             "guard checks: requiring \"published\" BEFORE publishing can "
+             "never be satisfied. Checking sets every required slot that "
+             "is not yet reviewed to \"Reviewed\", and creates the "
+             "missing ones. Unchecking returns reviewed slots to "
+             "\"Translated\"; a published slot does not move.",
     )
     language_summary = fields.Text(
-        string="État des langues", compute="_compute_language_state",
+        string="Language status", compute="_compute_language_state",
     )
 
     qa_state = fields.Selection(
         [
-            ("todo", "À passer"),
-            ("clean", "Propre"),
-            ("findings", "Constats"),
+            ("todo", "To run"),
+            ("clean", "Clean"),
+            ("findings", "Findings"),
         ],
-        string="État QA", default="todo", copy=False, tracking=True,
+        string="QA status", default="todo", copy=False, tracking=True,
     )
-    qa_findings = fields.Text(string="Constats QA", readonly=True, copy=False)
-    qa_last_run = fields.Datetime(string="QA passée le", readonly=True, copy=False)
+    qa_findings = fields.Text(string="QA findings", readonly=True, copy=False)
+    qa_last_run = fields.Datetime(string="QA run on", readonly=True, copy=False)
     qa_run_by = fields.Many2one(
-        "res.users", string="QA passée par", readonly=True, copy=False,
+        "res.users", string="QA run by", readonly=True, copy=False,
     )
 
     # --- dérogation -------------------------------------------------------
@@ -248,48 +251,48 @@ class EditorialEntry(models.Model):
     # publier quand même. Les deux restent lisibles côte à côte : rien n'efface
     # un constat, c'est le REFUS qui cède, en nommant qui le fait céder.
     qa_waived = fields.Boolean(
-        string="Sous dérogation", readonly=True, copy=False, tracking=True,
+        string="Under waiver", readonly=True, copy=False, tracking=True,
     )
     qa_waiver_reason = fields.Text(
-        string="Motif de la dérogation", readonly=True, copy=False,
+        string="Waiver reason", readonly=True, copy=False,
     )
     qa_waiver_problems = fields.Text(
-        string="Motifs couverts", readonly=True, copy=False,
-        help="Les motifs de refus, mot pour mot, tels qu'ils se lisaient à la"
-             " signature. La dérogation ne couvre QUE ceux-là : un motif qui"
-             " change de texte n'est plus le motif signé.",
+        string="Covered reasons", readonly=True, copy=False,
+        help="The refusal reasons, word for word, as they read at "
+             "signing. The waiver covers ONLY those: a reason whose text "
+             "changes is no longer the signed reason.",
     )
     qa_waiver_findings = fields.Text(
-        string="Constats couverts", readonly=True, copy=False,
-        help="Les constats de QA au moment de la signature. Ils servent"
-             " d'empreinte : dès que la QA en rapporte d'autres, la"
-             " dérogation ne les couvre plus.",
+        string="Covered findings", readonly=True, copy=False,
+        help="The QA findings at the time of signing. They serve as a "
+             "fingerprint: as soon as the QA reports others, the waiver "
+             "no longer covers them.",
     )
     qa_waived_by = fields.Many2one(
-        "res.users", string="Dérogation signée par", readonly=True, copy=False,
+        "res.users", string="Waiver signed by", readonly=True, copy=False,
     )
     qa_waived_on = fields.Datetime(
-        string="Dérogation signée le", readonly=True, copy=False,
+        string="Waiver signed on", readonly=True, copy=False,
     )
     qa_waiver_stale = fields.Boolean(
-        string="Dérogation périmée", compute="_compute_qa_waiver_stale",
-        help="Vrai quand une dérogation existe mais que le texte a bougé"
-             " depuis. Elle ne couvre alors plus rien, et la garde reprend.",
+        string="Stale waiver", compute="_compute_qa_waiver_stale",
+        help="True when a waiver exists but the text has changed since. "
+             "It then covers nothing, and the guard resumes.",
     )
 
     preflight_ok = fields.Boolean(
-        string="Pré-vol vert", compute="_compute_preflight",
+        string="Preflight green", compute="_compute_preflight",
         search="_search_preflight_ok",
     )
     preflight_summary = fields.Text(
-        string="Pré-vol", compute="_compute_preflight",
+        string="Preflight", compute="_compute_preflight",
     )
 
     # --- mesures brutes ---------------------------------------------------
     raw_visits = fields.Integer(
-        string="Visites (brut)", related="post_id.visits", readonly=True,
-        help="Compteur natif d'Odoo. Il compte aussi les robots : à lire comme"
-             " un ordre de grandeur, pas comme un lectorat.",
+        string="Visits (raw)", related="post_id.visits", readonly=True,
+        help="Odoo's native counter. It also counts bots: read it as an "
+             "order of magnitude, not as a readership.",
     )
 
     @api.model_create_multi
@@ -330,7 +333,7 @@ class EditorialEntry(models.Model):
         for dep in self.depends_on_ids.filtered(
             lambda e: not e.stage_id.is_closing
         ):
-            reasons.append(_("« %s » n'est pas publiée", dep.name))
+            reasons.append(_("\"%s\" is not published", dep.name))
         return reasons
 
     @api.depends("depends_on_ids.stage_id.is_closing", "blocked_reason")
@@ -341,6 +344,7 @@ class EditorialEntry(models.Model):
 
     @api.depends("depends_on_ids.stage_id.is_closing",
                  "depends_on_ids.name", "blocked_reason")
+    @api.depends_context("lang")
     def _compute_blocking_summary(self):
         for entry in self:
             reasons = entry._blocking_reasons()
@@ -389,6 +393,7 @@ class EditorialEntry(models.Model):
         "version_ids.state", "version_ids.word_count", "version_ids.lang_id",
         "version_ids.is_source", "calendar_id",
     )
+    @api.depends_context("lang")
     def _compute_language_state(self):
         for entry in self:
             source = entry.version_ids.filtered("is_source")[:1]
@@ -401,7 +406,7 @@ class EditorialEntry(models.Model):
             if not required:
                 entry.langs_complete = True
                 entry.langs_ready = True
-                entry.language_summary = _("Aucune langue exigée.")
+                entry.language_summary = _("No language required.")
                 continue
 
             lines, missing, not_ready = [], [], []
@@ -412,12 +417,13 @@ class EditorialEntry(models.Model):
                 if not version:
                     missing.append(lang.name)
                     not_ready.append(lang.name)
-                    lines.append(_("%s : aucun créneau", lang.name))
+                    lines.append(_("%s: no slot", lang.name))
                     continue
-                lines.append("%s : %s (%s mots)" % (
-                    lang.name,
-                    dict(version._fields["state"].selection).get(version.state),
-                    version.word_count,
+                lines.append(_(
+                    "%(lang)s: %(etat)s (%(mots)s words)",
+                    lang=lang.name,
+                    etat=dict(version._fields["state"]._description_selection(self.env)).get(version.state),
+                    mots=version.word_count,
                 ))
                 if version.state != "published":
                     missing.append(lang.name)
@@ -475,12 +481,29 @@ class EditorialEntry(models.Model):
         """
         if not slots:
             return
-        label = dict(slots._fields["state"].selection).get(state, state)
-        self._message_log(body=_(
-            "Créneaux passés à « %(etat)s » d'un geste : %(langues)s.",
+        # La phrase et l'état dans la même langue : sans langue au contexte (XML-RPC, travail
+        # planifié), _() prend celle de l'usager alors que la sélection rendrait l'anglais.
+        env = self.with_context(lang=self.env.lang or self.env.user.lang or "en_US").env
+        label = dict(slots._fields["state"]._description_selection(env)).get(state, state)
+        self._message_log(body=env._(
+            "Slots moved to \"%(etat)s\" in one action: %(langues)s.",
             etat=label,
             langues=", ".join(slots.mapped("lang_id.name")),
         ))
+
+    def _canon_lang(self):
+        """La langue des textes que la dérogation fige et compare.
+
+        Un motif signé dans une langue doit couvrir encore quand une autre personne, ou le travail
+        planifié, relit l'entrée dans la sienne : le motif et les constats de QA se calculent donc
+        toujours dans la langue de la société (l'anglais à défaut), jamais dans celle de l'acteur.
+        Ce qui est figé (constats de QA, problèmes de la dérogation) se lit donc dans cette langue ;
+        le pré-vol, lui, s'affiche dans la langue de la personne.
+        """
+        self.ensure_one()
+        return (self.company_id.partner_id.lang
+                or self.env.company.partner_id.lang
+                or "en_US")
 
     def _inverse_langs_ready(self):
         for entry in self:
@@ -504,8 +527,8 @@ class EditorialEntry(models.Model):
         # même groupe que le bouton, et une phrase propre à cette garde.
         if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
             raise AccessError(_(
-                "Cocher « Toutes les langues livrées » demande le groupe"
-                " « Direction éditoriale »."
+                "Checking \"All languages delivered\" requires the "
+                "\"Editorial management\" group."
             ))
         for entry in self:
             if entry.langs_complete:
@@ -527,29 +550,29 @@ class EditorialEntry(models.Model):
         "word_count", "word_floor", "version_drift", "dead_source_count",
         "unverified_claim_count", "calendar_id",
     )
+    @api.depends_context("lang")
     def _compute_preflight(self):
         for entry in self:
             problems = entry._preflight_problems()
             entry.preflight_ok = not problems
             lignes = (
                 ["• " + p for p in problems] if problems
-                else [_("Rien ne s'oppose à la publication.")]
+                else [_("Nothing stands in the way of publishing.")]
             )
             # Une dérogation ne se lit pas dans un onglet : elle se lit là où
             # se lit le verdict, sinon on publie sous dérogation sans le voir.
             if entry.qa_waived and not entry.qa_waiver_stale:
                 lignes.append(_(
-                    "⚠ Sous dérogation, signée par %(qui)s le %(quand)s :"
-                    " %(motif)s",
+                    "⚠ Under waiver, signed by %(qui)s on %(quand)s: %(motif)s",
                     qui=entry.qa_waived_by.name or "?",
                     quand=entry.qa_waived_on or "?",
                     motif=entry.qa_waiver_reason or "",
                 ))
             elif entry.qa_waiver_stale:
                 lignes.append(_(
-                    "⚠ Une dérogation existe mais le texte a bougé depuis :"
-                    " elle ne couvre plus rien. À signer de nouveau, ou à"
-                    " lever."
+                    "⚠ A waiver exists but the text has changed since: it "
+                    "no longer covers anything. Sign it again, or revoke "
+                    "it."
                 ))
             entry.preflight_summary = "\n".join(lignes)
 
@@ -570,11 +593,16 @@ class EditorialEntry(models.Model):
         """
         self.ensure_one()
         problems = []
+        # Les motifs signés sont écrits dans la langue canonique : on compare ceux-là, et on AFFICHE
+        # ceux de la langue de la personne (même code, même ordre).
+        canon = {}
+        if not ignore_waiver and self.qa_waived:
+            canon = dict(self.with_context(lang=self._canon_lang())._preflight_findings())
         for code, message in self._preflight_findings():
             if (
                 not ignore_waiver
                 and code in WAIVABLE
-                and self._waiver_covers(message)
+                and self._waiver_covers(canon.get(code, message))
             ):
                 continue
             problems.append(message)
@@ -593,45 +621,46 @@ class EditorialEntry(models.Model):
 
         if self.is_blocked:
             problems.append(
-                ("blocked", _("Entrée bloquée : %s", self.blocking_summary))
+                ("blocked", _("Entry blocked: %s", self.blocking_summary))
             )
 
         if self.open_checklist_count:
             problems.append(("checklist", _(
-                "%s reste(s) bloquant(s) dans la liste de contrôle.",
+                "%s blocking to-do(s) left in the checklist.",
                 self.open_checklist_count,
             )))
 
         if self.qa_state == "todo":
             problems.append(
-                ("qa_todo", _("La QA éditoriale n'a pas été passée."))
+                ("qa_todo", _("The editorial QA has not been run."))
             )
         elif self.qa_state == "findings":
             problems.append(("qa_findings", _(
-                "La QA éditoriale a laissé des constats ouverts."
+                "The editorial QA left open findings."
             )))
 
         floor = self.word_floor
         if floor and self.word_count and self.word_count < floor:
             problems.append(("word_floor", _(
-                "Plancher de mots non atteint : %s contre %s.",
+                "Word floor not reached: %s against %s.",
                 self.word_count, floor,
             )))
 
         if self.version_drift:
             problems.append(("version_drift", _(
-                "Le module documenté a bougé depuis le fact-check : %s → %s.",
+                "The documented module has changed since the fact-check: "
+                "%s → %s.",
                 self.source_version, self.current_version,
             )))
 
         if self.dead_source_count:
             problems.append(("dead_source", _(
-                "%s source(s) ne répondent plus.", self.dead_source_count,
+                "%s source(s) no longer respond.", self.dead_source_count,
             )))
 
         if self.unverified_claim_count:
             problems.append(("claims", _(
-                "%s affirmation(s) sans verdict.", self.unverified_claim_count,
+                "%s claim(s) without a verdict.", self.unverified_claim_count,
             )))
 
         # La politique multilingue est la dernière, parce que c'est celle qui
@@ -645,7 +674,7 @@ class EditorialEntry(models.Model):
         if self.calendar_id and self.calendar_id._requires_all_langs():
             if not self.langs_ready:
                 problems.append(("langs", _(
-                    "Toutes les langues exigées ne sont pas relues :\n%s",
+                    "Not all required languages are reviewed:\n%s",
                     self.language_summary,
                 )))
         return problems
@@ -662,7 +691,7 @@ class EditorialEntry(models.Model):
     def _search_derived_bool(self, operator, value, getter):
         if operator not in ("=", "!="):
             raise UserError(_(
-                "Ce critère ne se compare qu'avec « = » ou « != »."
+                "This criterion can only be compared with \"=\" or \"!=\"."
             ))
         wanted = bool(value) if operator == "=" else not bool(value)
         matching = [
@@ -694,7 +723,7 @@ class EditorialEntry(models.Model):
     def action_run_qa(self):
         """Passer les contrôles déterministes. Aucune IA n'intervient ici."""
         for entry in self:
-            findings = self.env["bf.editorial.qa"].run(entry)
+            findings = self.env["bf.editorial.qa"].with_context(lang=entry._canon_lang()).run(entry)
             entry.write({
                 "qa_findings": "\n".join(findings) if findings else False,
                 "qa_state": "findings" if findings else "clean",
@@ -702,7 +731,7 @@ class EditorialEntry(models.Model):
                 "qa_run_by": self.env.user.id,
             })
             entry.message_post(body=_(
-                "QA éditoriale passée : %s constat(s).", len(findings),
+                "Editorial QA run: %s finding(s).", len(findings),
             ))
         return True
 
@@ -739,16 +768,16 @@ class EditorialEntry(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
             raise AccessError(_(
-                "Signer une dérogation demande le groupe « Direction"
-                " éditoriale ». C'est le même groupe que publier, et c'est"
-                " voulu : une dérogation est une publication d'avance."
+                "Signing a waiver requires the \"Editorial management\" "
+                "group. It is the same group as publishing, on purpose: a "
+                "waiver is a publication in advance."
             ))
         problems = self._waivable_problems()
         if not problems:
             raise UserError(_(
-                "Il n'y a rien à signer : aucun motif de jugement ne retient"
-                " cette entrée. Ce qui reste au pré-vol se règle, il ne se"
-                " signe pas."
+                "There is nothing to sign: no judgment-based reason holds "
+                "this entry back. What remains at preflight gets fixed, "
+                "not signed."
             ))
         wizard = self.env["bf.editorial.waiver"].create({
             "entry_id": self.id,
@@ -760,7 +789,7 @@ class EditorialEntry(models.Model):
             "res_id": wizard.id,
             "view_mode": "form",
             "target": "new",
-            "name": _("Signer une dérogation"),
+            "name": _("Sign a waiver"),
         }
 
     def _sign_waiver(self, reason):
@@ -768,18 +797,20 @@ class EditorialEntry(models.Model):
         self.ensure_one()
         problems = self._waivable_problems()
         if not problems:
-            raise UserError(_("Il n'y a plus rien à signer."))
+            raise UserError(_("There is nothing left to sign."))
+        # Figés dans la langue canonique (voir `_canon_lang`) ; `problems` reste celui de la personne.
+        figes = self.with_context(lang=self._canon_lang())._waivable_problems()
         self.write({
             "qa_waived": True,
             "qa_waiver_reason": reason,
-            "qa_waiver_problems": "\n".join(problems),
+            "qa_waiver_problems": "\n".join(figes),
             "qa_waiver_findings": self.qa_findings or False,
             "qa_waived_by": self.env.user.id,
             "qa_waived_on": fields.Datetime.now(),
         })
         self.message_post(body=_(
-            "Dérogation signée par %(qui)s.\n\nMotifs couverts :\n%(motifs)s"
-            "\n\nRaison : %(raison)s",
+            "Waiver signed by %(qui)s.\n\nReasons "
+            "covered:\n%(motifs)s\n\nReason: %(raison)s",
             qui=self.env.user.name,
             motifs="\n".join("• " + p for p in problems),
             raison=reason,
@@ -793,8 +824,8 @@ class EditorialEntry(models.Model):
                 "bf_editorial.group_editorial_manager"
             ):
                 raise AccessError(_(
-                    "Lever une dérogation demande le groupe « Direction"
-                    " éditoriale »."
+                    "Revoking a waiver requires the \"Editorial "
+                    "management\" group."
                 ))
             if not entry.qa_waived:
                 continue
@@ -807,7 +838,7 @@ class EditorialEntry(models.Model):
                 "qa_waived_on": False,
             })
             entry.message_post(body=_(
-                "Dérogation levée par %s. La garde de pré-vol reprend.",
+                "Waiver revoked by %s. The preflight guard resumes.",
                 self.env.user.name,
             ))
         return True
@@ -826,13 +857,13 @@ class EditorialEntry(models.Model):
         """
         if not self.env.user.has_group("bf_editorial.group_editorial_user"):
             raise AccessError(_(
-                "Corriger un billet demande au moins le groupe « Rédaction »."
+                "Fixing a post requires at least the \"Writing\" group."
             ))
         for entry in self:
             if not entry.post_id:
                 raise UserError(_(
-                    "« %s » n'est rattachée à aucun billet : il n'y a nulle"
-                    " part où corriger.", entry.name,
+                    "\"%s\" is not linked to any post: there is nowhere "
+                    "to fix.", entry.name,
                 ))
             entry._fix_mechanical_one()
         return True
@@ -850,23 +881,25 @@ class EditorialEntry(models.Model):
 
         if not rapports:
             self.message_post(body=_(
-                "Réparation mécanique : rien à corriger."
+                "Mechanical repair: nothing to fix."
             ))
             return False
 
         self.post_id.invalidate_recordset(["content"])
         lignes = []
+        phrases = {
+            "titres_vides": _("%s empty heading(s) replaced by a spacer"),
+            "portees": _("%s scope(s) set on table headers"),
+        }
         for lang, rapport in sorted(rapports.items()):
-            lignes.append("• %s : %s" % (
-                lang, reparation.rapport_lisible(rapport, _),
-            ))
+            lignes.append(_("• %(lang)s: %(rapport)s", lang=lang, rapport=reparation.rapport_lisible(rapport, phrases)))
         # L'écriture est en SQL : le crochet ORM qui remet la QA à « à passer »
         # ne la voit pas. On repasse donc la QA nous-mêmes, ce qui a le mérite
         # de montrer tout de suite ce que la réparation a réglé.
         self.action_run_qa()
         self.message_post(body=_(
-            "Réparation mécanique appliquée par %(qui)s :\n%(detail)s"
-            "\n\nLa QA a été repassée dans la foulée.",
+            "Mechanical repair applied by %(qui)s:\n%(detail)s\n\nThe QA "
+            "was run again right after.",
             qui=self.env.user.name, detail="\n".join(lignes),
         ))
         return True
@@ -904,13 +937,13 @@ class EditorialEntry(models.Model):
         """
         if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
             raise AccessError(_(
-                "Publier demande le groupe « Direction éditoriale »."
+                "Publishing requires the \"Editorial management\" group."
             ))
         for entry in self:
             problems = entry._preflight_problems()
             if problems:
                 raise UserError(_(
-                    "Publication refusée pour « %(name)s » :\n\n%(list)s",
+                    "Publication refused for \"%(name)s\":\n\n%(list)s",
                     name=entry.name,
                     list="\n".join("• " + p for p in problems),
                 ))
@@ -934,15 +967,16 @@ class EditorialEntry(models.Model):
             # Publier sous dérogation et publier au vert ne sont pas le même
             # geste. Le chatter doit pouvoir les distinguer des mois plus tard.
             self.message_post(body=_(
-                "Publiée SOUS DÉROGATION, signée par %(qui)s le %(quand)s."
-                "\n\nMotifs couverts :\n%(motifs)s\n\nRaison : %(raison)s",
+                "Published UNDER WAIVER, signed by %(qui)s on "
+                "%(quand)s.\n\nReasons covered:\n%(motifs)s\n\nReason: "
+                "%(raison)s",
                 qui=self.qa_waived_by.name or "?",
                 quand=self.qa_waived_on or "?",
                 motifs=self.qa_waiver_problems or "",
                 raison=self.qa_waiver_reason or "",
             ))
         else:
-            self.message_post(body=_("Publiée, garde de pré-vol verte."))
+            self.message_post(body=_("Published, preflight guard green."))
 
     def _release_versions(self):
         """Faire sortir les créneaux de langue avec l'article.
@@ -979,20 +1013,23 @@ class EditorialEntry(models.Model):
             ("active", "=", True),
         ])
         for entry in due:
+            # Le travail planifié n'a pas de langue : la note part au responsable de l'entrée, dans la sienne
+            # (entry.env._ : _() lirait la langue du `self` du travail planifié, pas celle de l'entrée).
+            entry = entry.with_context(lang=entry.user_id.lang or entry._canon_lang())
             problems = entry._preflight_problems()
             if problems:
                 entry.activity_schedule(
                     "mail.mail_activity_data_todo",
-                    summary=_("Publication différée refusée"),
-                    note=_(
-                        "La date approuvée est passée, mais la garde de pré-vol"
-                        " a refusé :<br/>%s",
+                    summary=entry.env._("Scheduled publication refused"),
+                    note=entry.env._(
+                        "The approved date has passed, but the preflight "
+                        "guard refused:<br/>%s",
                         "<br/>".join("• " + p for p in problems),
                     ),
                     user_id=entry.user_id.id or self.env.uid,
                 )
-                entry.message_post(body=_(
-                    "Publication différée refusée, %s point(s) bloquant(s).",
+                entry.message_post(body=entry.env._(
+                    "Scheduled publication refused, %s blocking point(s).",
                     len(problems),
                 ))
                 continue

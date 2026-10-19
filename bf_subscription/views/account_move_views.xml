@@ -23,7 +23,7 @@
         <field name="arch" type="xml">
             <header position="inside">
                 <button name="action_open_rebill_wizard" type="object"
-                        string="Refacturer au client" class="btn-secondary"
+                        string="Rebill to client" class="btn-secondary"
                         invisible="move_type not in ('in_invoice', 'in_refund') or not subscription_id"/>
             </header>
         </field>

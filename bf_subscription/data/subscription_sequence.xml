@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="1">
         <record id="seq_subscription" model="ir.sequence">
-            <field name="name">Abonnement</field>
+            <field name="name">Subscription</field>
             <field name="code">subscription.subscription</field>
             <!-- ⚠️ company_id EXPLICITEMENT vide : sans ça, le défaut d'ir.sequence
                  (la société courante) estampille la séquence à la société qui charge

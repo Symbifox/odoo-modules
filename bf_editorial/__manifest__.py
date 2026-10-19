@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial",
-    "version": "18.0.1.10.0",
+    # 18.0.1.11.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.11.0",
     "category": "Marketing",
     "summary": "Calendrier éditorial, cadence mesurée et contrôles de publication"
                " pour le blogue — l'état se calcule, seules les décisions se stockent",
