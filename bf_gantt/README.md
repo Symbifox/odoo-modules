@@ -132,6 +132,7 @@ Labels and messages are written in English in the source; the French ships in `i
 
 | Version | Notes |
 |---|---|
+| 18.0.1.6.1 | The portal footer no longer doubles the full stop after a company name that already ends with one ("Inc.."); the upgrade removes the stray leading full stop the French translation kept from the previous wording. A lane's progress is the average of its bars (a closed bar counts as 100 %), instead of the share of closed lines only, which showed 0 % on a lane whose lines were well under way. |
 | 18.0.1.6.0 | Labels written in English in the source, French in `i18n/fr_CA.po`; the drawn schedule follows the reader's language (see *Languages*). |
 | 18.0.1.5.7 | SVG text and accents read `--brand-dark`/`--brand-primary` instead of fixed hex values. |
 | 18.0.1.5.4 | The planned start date gets its own row and label on the task form. It used to be inserted inside the deadline's inline block, where the form draws no label: it showed as a second, blank date box under "Deadline", ahead of the real deadline, which it squeezed and truncated. |
@@ -152,6 +153,6 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Licence
 
-BUSL-1.1, Change Date **2030-10-11**, Change Licence LGPL-3.0-or-later. Internal
+BUSL-1.1, Change Date **2030-10-19**, Change Licence LGPL-3.0-or-later. Internal
 use stays free; reselling or hosting it for a third party needs a written
 agreement. See `LICENSE`.

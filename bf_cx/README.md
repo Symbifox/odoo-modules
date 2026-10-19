@@ -213,6 +213,14 @@ or a complaint show the theme's color, and a feedback card's edge shows the
 feedback's color, which an automatic rule can set (by theme or by channel,
 for instance). `bf_color` is a dependency.
 
+### Public survey page
+
+The public survey page no longer carries Odoo's "Powered by Odoo" promotion
+(18.0.1.13.1): `survey.layout` calls the brand promotion message directly, out
+of reach of a portal debranding module. The customer answers their supplier,
+not a software publisher. The frame only keeps the survey navigation, and is
+left out when there is none and when printing.
+
 ## Architecture
 
 - No hard dependency on the helpdesk or on the privacy module: the links live

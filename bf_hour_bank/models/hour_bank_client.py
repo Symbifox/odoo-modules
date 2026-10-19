@@ -142,6 +142,20 @@ class HourBankClient(models.Model):
     # Core: build report data
     # ------------------------------------------------------------------
 
+    def _bf_tz_lecteur(self):
+        """Le fuseau du client à qui part le PDF, jamais celui de qui l'envoie.
+
+        L'envoi automatique tourne sous l'usager système (sans fuseau, donc en
+        UTC) et un envoi manuel d'Auckland datait le PDF d'un client du Québec en
+        heure de Nouvelle-Zélande. Repli : le fuseau par défaut de bf_timezone s'il
+        est installé, sinon celui de la société."""
+        self.ensure_one()
+        if self.partner_id.tz:
+            return self.partner_id.tz
+        if 'bf.timezone' in self.env:
+            return self.env['bf.timezone'].default_tz()
+        return self.company_id.partner_id.tz or self.env.user.tz or 'UTC'
+
     def _get_report_data(self, date_from=None, date_to=None):
         """Build the full hour-bank dataset (debits + credits) for self.
 
@@ -591,8 +605,8 @@ class HourBankClient(models.Model):
             'margin:0 0 20px 0;">Les fichiers PDF et Excel sont '
             "en pi&#232;ces jointes.</p>"
             '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0;">Cordialement,<br/>Blue Fox</p>'
-        ) % html_escape(self.partner_id.name)
+            'margin:0;">Cordialement,<br/>%s</p>'
+        ) % (html_escape(self.partner_id.name), html_escape(self.company_id.name or ''))
 
         body_html = WizardModel.new({})._wrap_branded_body(inner_body)
 
@@ -918,7 +932,7 @@ class HourBankClient(models.Model):
             'format Excel.</p>'
             '%s'
             '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0;">Cordialement,<br/>Blue Fox</p>'
+            'margin:0;">Cordialement,<br/>%s</p>'
         ) % (
             html_escape(self.partner_id.name),
             html_escape(line.name or ''),
@@ -927,6 +941,7 @@ class HourBankClient(models.Model):
             ('<p style="font-size:14px;line-height:22px;margin:0 0 20px 0;">'
              '<a href="%s" style="color:#29ABE2;">Ouvrir la banque dans Odoo</a></p>'
              % html_escape(bank_url)) if bank_url else '',
+            html_escape(self.company_id.name or ''),
         )
 
         body_html = WizardModel.new({})._wrap_branded_body(inner_body)

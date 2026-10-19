@@ -417,7 +417,8 @@ the company's brand colour when the company carries one.
 Every page names itself in the portal breadcrumb, under "My co-ownership".
 The slots already taken in a common space are printed in the reader's time
 zone, like their own bookings below them, and a refused request shows its
-reason under "Reason for refusal", not under "What was done".
+reason under "Reason for refusal", not under "What was done". The date a request
+was filed is shown in the reader's time zone, without seconds.
 
 ## Security
 
@@ -475,7 +476,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-19, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

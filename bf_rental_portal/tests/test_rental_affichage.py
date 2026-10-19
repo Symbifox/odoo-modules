@@ -50,6 +50,26 @@ class TestRentalPortalAffichage(HttpCase, RentalPortalCommon):
         self.assertIn("Rien : l'avis informe seulement", text)
         self.assertNotIn("cet avis informe", text)
 
+    def test_notice_dates_never_wrap(self):
+        """À 1280 px, « 2026-09-/25 » : les trois dates se coupaient en deux."""
+        today = fields.Date.context_today(self.env.user)
+        self.env["bf.rental.notice"].create(
+            {
+                "lease_id": self.lease.id,
+                "kind": "new_tenant_rent",
+                "date_given": today,
+                "date_received": today,
+                "state": "given",
+            }
+        )
+        self.authenticate("rt_tenant", "rt_tenant_pwd")
+        page = self.url_open("/my/rental/notices").text
+        self.assertEqual(page.count('<th class="text-nowrap">'), 3)
+        # … et sur un téléphone, le tableau défile au lieu de déborder la page.
+        self.assertRegex(page, r'<div class="table-responsive">\s*<table class="table table-sm">')
+        cellule = re.search(r'<td class="text-nowrap">\s*<span[^>]*>([^<]+)</span>', page)
+        self.assertTrue(cellule, "la date de réception est dans une cellule insécable")
+
     def test_the_upcoming_term_badge_is_readable_on_the_website_theme(self):
         """🔴 `text-bg-light` sur un badge du site : encre pâle sur fond pâle."""
         self.env["bf.rental.term"].create(

@@ -344,7 +344,7 @@
                                                         <t t-out="u.name"/><t t-if="not u_last">, </t>
                                                     </t>
                                                 </td>
-                                                <td><t t-out="str(task.date_deadline) if task.date_deadline else ''"/></td>
+                                                <td><span t-if="task.date_deadline" t-field="task.date_deadline" t-options="{'widget': 'datetime', 'date_only': True, 'tz_name': doc._bf_tz_lecteur()}"/></td>
                                             </tr>
                                         </t>
                                     </tbody>
@@ -372,7 +372,7 @@
                                                         <t t-out="u.name"/><t t-if="not u_last">, </t>
                                                     </t>
                                                 </td>
-                                                <td><t t-out="str(task.date_deadline) if task.date_deadline else ''"/></td>
+                                                <td><span t-if="task.date_deadline" t-field="task.date_deadline" t-options="{'widget': 'datetime', 'date_only': True, 'tz_name': doc._bf_tz_lecteur()}"/></td>
                                             </tr>
                                         </t>
                                     </tbody>

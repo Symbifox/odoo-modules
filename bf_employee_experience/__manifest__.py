@@ -2,7 +2,7 @@
     "name": "Expérience employé",
     "summary": "Catalogue des avantages, admissibilité par règle, registre d'usage "
                "et indicateurs de rétention",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.2",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -41,6 +41,11 @@ Ce qu'il ajoute
 * **Six indicateurs** (`bf.ex.indicator`) : taux d'adhésion, coût par avantage,
   coût par personne, ancienneté médiane, taux de roulement, et la liste des
   avantages que personne n'utilise.
+* **Le coût d'un départ** (`bf.ex.departure.policy`, `bf.ex.departure`), par
+  l'une de trois méthodes jamais additionnées : composantes réelles,
+  pourcentage du salaire, ou mixte (direct réel, indirect en pourcentage). Une
+  fourchette sur douze mois glissants, jamais sous trois départs : un seul
+  départ redonnerait un salaire.
 
 La porte d'entrée est le droit
 ------------------------------
@@ -80,6 +85,7 @@ Ce qu'il ne fait pas
         "views/claim_views.xml",
         "views/indicator_views.xml",
         "views/hr_employee_views.xml",
+        "views/departure_views.xml",
         "views/menuitems.xml",
         "report/statement_reports.xml",
         "report/statement_templates.xml",

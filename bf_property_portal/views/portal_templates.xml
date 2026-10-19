@@ -338,7 +338,7 @@
                         </span>
                         <span>
                             <span class="badge text-bg-secondary" t-field="req.state"/>
-                            <small class="text-muted ms-2"><span t-field="req.date_submitted"/></small>
+                            <small class="text-muted ms-2"><span t-field="req.date_submitted" t-options="{'hide_seconds': True}"/></small>
                         </span>
                     </div>
                     <div class="card-body">

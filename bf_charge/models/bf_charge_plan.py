@@ -11,6 +11,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import formatLang
 
 _logger = logging.getLogger(__name__)
 
@@ -58,12 +59,24 @@ class BfChargePlan(models.Model):
     hours_dormant = fields.Float(string="Heures dormantes", readonly=True)
     hours_template = fields.Float(string="Heures de gabarits", readonly=True)
     hours_rejected = fields.Float(string="Heures écartées (unité de vente)", readonly=True)
+    # Le même total revient dans le plan de chaque personne : le maximum, pas la
+    # somme, quand on regroupe des plans.
+    hours_unassigned = fields.Float(
+        string="Heures sans assigné", readonly=True, aggregator="max",
+        help="Tâches vivantes que personne ne porte. Comptées pour qu'on les voie, "
+             "jamais posées sur les semaines de cette personne : elles ne sont à personne.")
+    tasks_unassigned = fields.Integer(string="Tâches sans assigné", readonly=True,
+                                      aggregator="max")
     tasks_without_charge = fields.Integer(string="Tâches sans charge", readonly=True)
     backlog_weeks = fields.Float(
         string="Carnet en semaines de capacité", readonly=True,
         help="Heures posées et non plaçables, divisées par la capacité nette déclarée.",
     )
     summary = fields.Text(string="Ce que le plan dit", readonly=True)
+    is_current = fields.Boolean(
+        string="Plan en vigueur", compute="_compute_is_current", search="_search_is_current",
+        help="Le dernier plan calculé de cette personne dans cette société. Les plans "
+             "plus anciens restent lisibles, mais ne s'additionnent pas aux autres.")
 
     # ------------------------------------------------------------------
     # Construction
@@ -92,44 +105,62 @@ class BfChargePlan(models.Model):
         charge_par_semaine = dict.fromkeys(semaines, 0.0)
         taches_par_semaine = {jour: set() for jour in semaines}
 
+        # Le contrat porte sur UNE personne : le plan ne lit que ses tâches, plus
+        # celles que personne ne porte. Lire tout le carnet de la société divisait
+        # le travail de toute la firme par la capacité d'une seule personne (vu à la
+        # démo : 500 à 800 % dès la première semaine).
         taches = self.env["project.task"].search([
             ("state", "not in", ["1_done", "1_canceled"]),
             ("company_id", "in", [False, self.company_id.id]),
+            "|", ("user_ids", "in", self.user_id.ids), ("user_ids", "=", False),
         ])
         natures = {p.id: p.charge_kind for p in taches.project_id}
 
         totaux = dict.fromkeys(
             ["placees", "non_placables", "retard", "au_dela", "dormantes",
-             "gabarits", "ecartees"], 0.0)
-        compte = {"non_placables": 0, "sans_charge": 0}
+             "gabarits", "ecartees", "sans_assigne"], 0.0)
+        compte = {"non_placables": 0, "sans_charge": 0, "sans_assigne": 0}
 
         for tache in taches:
             nature = natures.get(tache.project_id.id, "dormant") if tache.project_id else "dormant"
-            heures = tache.charge_hours or 0.0
+            # Une tâche à plusieurs se divise à parts égales : chacun porte sa part.
+            part = 1.0 / len(tache.user_ids) if tache.user_ids else 1.0
+            heures = (tache.charge_hours or 0.0) * part
             socle = self._socle_de_ligne(tache, nature)
 
+            if not tache.user_ids:
+                # Personne ne la porte : elle n'entre dans le plan de personne. Seule
+                # une charge vivante est comptée, à part ; un gabarit ou un projet
+                # dormant sans assigné n'est le travail de personne, et le répéter
+                # dans le plan de chacun regonflait le carnet de toute la firme.
+                if nature == "vivant" and heures:
+                    totaux["sans_assigne"] += heures
+                    compte["sans_assigne"] += 1
+                    lignes.append(dict(socle, bucket="sans_assigne", hours=heures, share=1.0))
+                continue
+
             if tache.charge_source == "vente_ecartee":
-                ecartees = tache.allocated_hours or 0.0
+                ecartees = (tache.allocated_hours or 0.0) * part
                 totaux["ecartees"] += ecartees
-                lignes.append(dict(socle, bucket="ecartee", hours=ecartees, share=1.0))
+                lignes.append(dict(socle, bucket="ecartee", hours=ecartees, share=part))
 
             if nature == "gabarit":
                 totaux["gabarits"] += heures
-                lignes.append(dict(socle, bucket="gabarit", hours=heures, share=1.0))
+                lignes.append(dict(socle, bucket="gabarit", hours=heures, share=part))
                 continue
             if nature == "dormant":
                 totaux["dormantes"] += heures
-                lignes.append(dict(socle, bucket="dormant", hours=heures, share=1.0))
+                lignes.append(dict(socle, bucket="dormant", hours=heures, share=part))
                 continue
 
             if not heures:
                 compte["sans_charge"] += 1
-                lignes.append(dict(socle, bucket="sans_charge", hours=0.0, share=1.0))
+                lignes.append(dict(socle, bucket="sans_charge", hours=0.0, share=part))
                 continue
             if not tache.charge_placeable:
                 totaux["non_placables"] += heures
                 compte["non_placables"] += 1
-                lignes.append(dict(socle, bucket="non_placable", hours=heures, share=1.0))
+                lignes.append(dict(socle, bucket="non_placable", hours=heures, share=part))
                 continue
 
             debut = tache.charge_date_start
@@ -139,24 +170,24 @@ class BfChargePlan(models.Model):
                 charge_par_semaine[semaines[0]] += heures
                 taches_par_semaine[semaines[0]].add(tache.id)
                 totaux["placees"] += heures
-                lignes.append(dict(socle, bucket="retard", hours=heures, share=1.0,
+                lignes.append(dict(socle, bucket="retard", hours=heures, share=part,
                                    week_start=semaines[0]))
                 continue
             if debut > fin_horizon:
                 totaux["au_dela"] += heures
-                lignes.append(dict(socle, bucket="au_dela", hours=heures, share=1.0))
+                lignes.append(dict(socle, bucket="au_dela", hours=heures, share=part))
                 continue
 
             parts = self._repartir(debut, fin, semaines)
             if not parts:
                 totaux["au_dela"] += heures
-                lignes.append(dict(socle, bucket="au_dela", hours=heures, share=1.0))
+                lignes.append(dict(socle, bucket="au_dela", hours=heures, share=part))
                 continue
             for jour, poids in parts.items():
                 charge_par_semaine[jour] += heures * poids
                 taches_par_semaine[jour].add(tache.id)
                 lignes.append(dict(socle, bucket="pose", hours=heures * poids,
-                                   share=poids, week_start=jour))
+                                   share=poids * part, week_start=jour))
             totaux["placees"] += heures
 
         if lignes:
@@ -188,6 +219,8 @@ class BfChargePlan(models.Model):
             "hours_template": totaux["gabarits"],
             "hours_rejected": totaux["ecartees"],
             "tasks_without_charge": compte["sans_charge"],
+            "hours_unassigned": totaux["sans_assigne"],
+            "tasks_unassigned": compte["sans_assigne"],
             "backlog_weeks": (carnet / capacite) if capacite else 0.0,
             "summary": self._redige_resume(totaux, compte, capacite, carnet, contrat),
         })
@@ -203,13 +236,38 @@ class BfChargePlan(models.Model):
         self.ensure_one()
         action = self.env["ir.actions.actions"]._for_xml_id("bf_charge.action_bf_charge_plan_line")
         action["domain"] = [("plan_id", "=", self.id)]
-        action["context"] = {"search_default_g_semaine": 1}
+        # Les deux regroupements : sans le sort, le graphique ne montre qu'une barre
+        # « Heures » par semaine, et une barre « Aucun » où se mêlent le non
+        # plaçable et l'au-delà de l'horizon.
+        action["context"] = {"search_default_g_semaine": 1, "search_default_g_sort": 1}
         action["display_name"] = _("Charge de « %(nom)s »") % {"nom": self.name}
         return action
 
     def _compute_line_count(self):
         for plan in self:
             plan.line_count = len(plan.line_ids)
+
+    def _plans_en_vigueur(self):
+        """Le dernier plan calculé de chaque personne, dans chaque société."""
+        self.env["bf.charge.plan"].flush_model(["user_id", "company_id", "build_date"])
+        self.env.cr.execute("""
+            SELECT DISTINCT ON (user_id, company_id) id
+              FROM bf_charge_plan
+             WHERE build_date IS NOT NULL
+             ORDER BY user_id, company_id, build_date DESC, id DESC
+        """)
+        return [r[0] for r in self.env.cr.fetchall()]
+
+    def _compute_is_current(self):
+        courants = set(self._plans_en_vigueur())
+        for plan in self:
+            plan.is_current = plan.id in courants
+
+    def _search_is_current(self, operator, value):
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise UserError(_("Recherche non prise en charge sur le plan en vigueur."))
+        positif = (operator == "=") == value
+        return [("id", "in" if positif else "not in", self._plans_en_vigueur())]
 
     def _socle_de_ligne(self, tache, nature):
         """Ce qu'une ligne porte quel que soit le sort de sa charge."""
@@ -271,6 +329,11 @@ class BfChargePlan(models.Model):
         if totaux["placees"] + totaux["non_placables"]:
             part = 100.0 * totaux["non_placables"] / (totaux["placees"] + totaux["non_placables"])
             lignes.append(_("Le non plaçable pèse %(part).0f %% du carnet.") % {"part": part})
+        if compte["sans_assigne"]:
+            lignes.append(_(
+                "À part : %(h)s h sur %(nb)s tâche(s) que personne ne porte. Elles ne "
+                "sont pas posées sur ces semaines ; les assigner les y fera entrer."
+            ) % {"h": self._nombre(totaux["sans_assigne"]), "nb": compte["sans_assigne"]})
         if compte["sans_charge"]:
             lignes.append(_(
                 "%(nb)s tâches vivantes ne portent aucune charge : elles ne sont "
@@ -287,9 +350,9 @@ class BfChargePlan(models.Model):
             ) % {"g": totaux["gabarits"], "d": totaux["dormantes"]})
         if capacite:
             lignes.append(_(
-                "Au rythme déclaré de %(cap).1f h par semaine, le carnet vaut "
-                "%(sem).1f semaines."
-            ) % {"cap": capacite, "sem": carnet / capacite})
+                "Au rythme déclaré de %(cap)s h par semaine, le carnet vaut "
+                "%(sem)s semaines."
+            ) % {"cap": self._nombre(capacite), "sem": self._nombre(carnet / capacite)})
         return "\n".join(lignes)
 
     # ------------------------------------------------------------------
@@ -347,9 +410,13 @@ class BfChargePlan(models.Model):
 
         signaux.append(self._signal_banques())
 
+        # Même portée que le plan : les tâches de la personne, pas celles de la firme.
         Task = self.env["project.task"]
-        arrivees = Task.search_count([("create_date", ">=", fields.Datetime.to_datetime(depuis))])
-        clotures = Task.search_count([
+        siennes = [("user_ids", "in", self.user_id.ids),
+                   ("company_id", "in", [False, self.company_id.id])]
+        arrivees = Task.search_count(
+            siennes + [("create_date", ">=", fields.Datetime.to_datetime(depuis))])
+        clotures = Task.search_count(siennes + [
             ("state", "in", ["1_done", "1_canceled"]),
             ("date_last_stage_update", ">=", fields.Datetime.to_datetime(depuis)),
         ])
@@ -367,7 +434,7 @@ class BfChargePlan(models.Model):
         if capacite:
             semaines = carnet / capacite
             verdict = "vert" if semaines <= 8 else ("jaune" if semaines <= 16 else "rouge")
-            mesure = _("%(s).1f semaines de capacité déclarée") % {"s": semaines}
+            mesure = _("%(s)s semaines de capacité déclarée") % {"s": self._nombre(semaines)}
         else:
             verdict = "inconnu"
             mesure = _("indéterminé : aucune capacité déclarée")
@@ -383,8 +450,9 @@ class BfChargePlan(models.Model):
     def _signal_banques(self):
         """Banques d'heures sous zéro. Muet si `bf_hour_bank` n'est pas installé."""
         self.ensure_one()
-        modele = self.env["ir.model"].sudo().search([("model", "=", "hour.bank.client")], limit=1)
-        if not modele:
+        # Le registre, pas ir.model : pendant une montée, le modèle peut exister en
+        # base sans être encore chargé.
+        if "hour.bank.client" not in self.env:
             return {
                 "code": "banques",
                 "name": _("Banques d'heures"),
@@ -396,7 +464,8 @@ class BfChargePlan(models.Model):
         banques = self.env["hour.bank.client"].sudo().search(
             [("company_id", "in", [False, self.company_id.id])])
         sous_zero = [b for b in banques if (b.current_balance or 0.0) < 0]
-        noms = ", ".join("%s %.2f h" % (b.name, b.current_balance) for b in sous_zero)
+        noms = ", ".join("%s %s h" % (b.name, self._nombre(b.current_balance, 2))
+                         for b in sous_zero)
         return {
             "code": "banques",
             "name": _("Banques d'heures sous zéro"),
@@ -404,6 +473,10 @@ class BfChargePlan(models.Model):
             "target": noms or _("aucune"),
             "verdict": "vert" if not sous_zero else ("jaune" if len(sous_zero) == 1 else "rouge"),
         }
+
+    def _nombre(self, valeur, chiffres=1):
+        """Un nombre écrit comme la langue de la personne l'écrit (« 128,0 » en français)."""
+        return formatLang(self.env, valeur, digits=chiffres)
 
     @staticmethod
     def _verdict_seuil(valeur, plafond):
@@ -433,6 +506,8 @@ class BfChargePlanWeek(models.Model):
 
     plan_id = fields.Many2one("bf.charge.plan", string="Plan", required=True,
                               ondelete="cascade", index=True)
+    user_id = fields.Many2one("res.users", string="Personne", related="plan_id.user_id",
+                              store=True, index=True)
     sequence = fields.Integer(string="Rang", default=1)
     date_start = fields.Date(string="Lundi", required=True)
     date_end = fields.Date(string="Dimanche", required=True)

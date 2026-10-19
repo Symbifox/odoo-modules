@@ -47,6 +47,13 @@
                             color: <t t-esc="dark"/>;
                             position: relative;
                             min-height: 255mm;
+                            box-sizing: border-box;
+                        }
+                        /* Le pied est posé en absolu au bas de la page : sans cette
+                           réserve, un corps qui s'allonge passe dessous et le pied se
+                           pose sur la signature. */
+                        .letter-page-generated {
+                            padding-bottom: 32mm;
                         }
 
                         /* ── Banner header (mode = banner) ── */
@@ -230,7 +237,7 @@
                         }
                     </style>
 
-                    <div class="letter-page">
+                    <div t-att-class="'letter-page letter-page-generated' if generated else 'letter-page'">
 
                         <!-- Full-page background image (mode = image) -->
                         <t t-if="mode == 'image' and company.letterhead_image">
@@ -249,13 +256,10 @@
                                     <h1 t-out="company.name"/>
                                     <p t-if="company.letter_header_note" class="classic-note"
                                        t-out="company.letter_header_note"/>
-                                    <p class="classic-address">
-                                        <t t-out="company.street or ''"/>
-                                        <t t-if="company.street2"><br/><t t-out="company.street2"/></t>
-                                        <br/>
-                                        <t t-out="' '.join(filter(None, [company.zip, company.city, company.state_id.name if company.state_id else '']))"/>
-                                        <t t-if="company.country_id"><br/><t t-out="company.country_id.name"/></t>
-                                    </p>
+                                    <!-- L'adresse au format du pays (« Montréal QC  H2W 2R2 »),
+                                         pas « H2W 2R2 Montréal Quebec ». -->
+                                    <p class="classic-address" style="white-space: pre-line;"
+                                       t-out="'\n'.join(ligne.strip() for ligne in company.partner_id._display_address(without_company=True).split('\n') if ligne.strip())"/>
                                 </div>
                             </div>
                         </t>
@@ -269,9 +273,7 @@
                                     <p t-if="company.letter_header_note" class="banner-note"
                                        t-out="company.letter_header_note"/>
                                     <p class="banner-address">
-                                        <t t-out="' '.join(filter(None, [company.street, company.street2]))"/>
-                                        <t t-if="company.street or company.street2"> · </t>
-                                        <t t-out="' '.join(filter(None, [company.zip, company.city]))"/>
+                                        <t t-out="' · '.join(ligne.strip() for ligne in company.partner_id._display_address(without_company=True).split('\n') if ligne.strip() and ligne.strip() != (company.country_id.name or ''))"/>
                                         <t t-if="company.phone"> · <t t-out="company.phone"/></t>
                                         <t t-if="company.email"> · <t t-out="company.email"/></t>
                                     </p>

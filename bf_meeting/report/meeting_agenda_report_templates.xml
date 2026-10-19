@@ -357,7 +357,7 @@
                                                 </td>
                                                 <td><t t-out="task['assignees']"/></td>
                                                 <td style="text-align: center;">
-                                                    <t t-if="task['deadline']"><t t-out="task['deadline']"/></t>
+                                                    <t t-if="task['deadline']"><t t-out="task['deadline']" t-options="{'widget': 'datetime', 'date_only': True, 'tz_name': doc._bf_tz_lecteur()}"/></t>
                                                 </td>
                                                 <td><t t-out="task['source']"/></td>
                                             </tr>

@@ -231,13 +231,15 @@
                     </p>
                 </div>
 
-                <table t-if="notices" class="table table-sm">
+                <!-- Dates insécables : sur un téléphone, le tableau défile au lieu de couper. -->
+                <div t-if="notices" class="table-responsive">
+                <table class="table table-sm">
                     <thead>
                         <tr>
                             <th>Avis</th>
-                            <th>Reçu le</th>
-                            <th>Date visée</th>
-                            <th>À répondre avant</th>
+                            <th class="text-nowrap">Reçu le</th>
+                            <th class="text-nowrap">Date visée</th>
+                            <th class="text-nowrap">À répondre avant</th>
                             <th>Le silence vaut</th>
                             <th>État</th>
                         </tr>
@@ -245,7 +247,9 @@
                     <tbody>
                         <tr t-foreach="notices" t-as="notice">
                             <td><span t-field="notice.kind"/></td>
-                            <td>
+                            <!-- Les dates ne se coupent jamais : à 1280 px, le libellé
+                                 « Rien : l'avis informe seulement » coupait « 2026-09-/25 ». -->
+                            <td class="text-nowrap">
                                 <span t-if="notice.date_received" t-field="notice.date_received"/>
                                 <!--
                                     ⚠️ C'est de la RÉCEPTION que court le mois,
@@ -256,8 +260,8 @@
                                 -->
                                 <span t-else="" class="text-muted">non consignée</span>
                             </td>
-                            <td><span t-if="notice.target_date" t-field="notice.target_date"/></td>
-                            <td>
+                            <td class="text-nowrap"><span t-if="notice.target_date" t-field="notice.target_date"/></td>
+                            <td class="text-nowrap">
                                 <span t-if="notice.response_deadline" t-field="notice.response_deadline"/>
                                 <span t-else="" class="text-muted"/>
                             </td>
@@ -280,6 +284,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
 
                 <!--
                     ⚠️ Le SEUL délai du corpus qui joue contre le locateur

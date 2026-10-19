@@ -30,7 +30,7 @@
                                                     <tbody>
                                                         <tr>
                                                             <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
-                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}" style="text-decoration:none;">
+                                                                <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
                                                                     <img t-attf-src="/brand/logo/{{ company.id }}" t-att-alt="company.name or 'Logo'" style="height:48px; width:auto; display:block; border:0;"/>
                                                                 </a>
                                                             </td>
@@ -86,13 +86,13 @@
                                                     <tbody>
                                                         <tr>
                                                             <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                                                <strong t-attf-style="color:{{ brand_dark }};">Banque d'heures par <t t-out="company.name or 'Blue Fox'"/></strong><br/>
+                                                                <strong t-attf-style="color:{{ brand_dark }};">Banque d'heures par <t t-out="company.name"/></strong><br/>
                                                                 Suivi automatique des heures consomm&#233;es vs. provisionn&#233;es.
                                                             </td>
                                                             <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Politique de confidentialit&#233;</a>
-                                                                <span style="color:#9CA3AF;"> | </span>
-                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/termes-et-conditions" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                                                                <a t-if="company and 'brand_privacy_url' in company and company.brand_privacy_url" t-attf-href="{{ company.brand_privacy_url }}" style="color:#9CA3AF; text-decoration:underline;">Politique de confidentialit&#233;</a>
+                                                                <span t-if="company and 'brand_privacy_url' in company and company.brand_privacy_url and company and 'brand_terms_url' in company and company.brand_terms_url" style="color:#9CA3AF;"> | </span>
+                                                                <a t-if="company and 'brand_terms_url' in company and company.brand_terms_url" t-attf-href="{{ company.brand_terms_url }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

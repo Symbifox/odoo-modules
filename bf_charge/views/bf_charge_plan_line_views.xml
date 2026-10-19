@@ -61,6 +61,8 @@
                         domain="[('bucket','in',['dormant','gabarit','au_dela','ecartee'])]"/>
                 <filter name="sans_charge" string="Sans charge"
                         domain="[('bucket','=','sans_charge')]"/>
+                <filter name="sans_assigne" string="Sans assigné"
+                        domain="[('bucket','=','sans_assigne')]"/>
                 <separator/>
                 <filter name="client" string="Travail client" domain="[('is_client','=',True)]"/>
                 <filter name="interne" string="Travail interne" domain="[('is_client','=',False)]"/>

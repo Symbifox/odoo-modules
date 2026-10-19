@@ -75,7 +75,14 @@ the rest of the company.
 
 The catalogue itself is visible in full to all staff, with each person's
 eligibility shown. "After a year you will be entitled to it" cannot be said if the
-benefit is hidden.
+benefit is hidden. Its counters (entitled, users, take-up rate, cost) summarise the
+whole register, which an ordinary employee cannot read: outside the benefits
+administration they are zero and hidden, along with the eligibility rules, so the
+list and the form open for everyone (18.0.1.1.1). Before, they raised an access
+error on the rules for ordinary staff; computed on one's own lines, they would
+have been wrong anyway. The take-up rate is on a 0 to 100 scale, like every rate
+of the family, and is no longer shown through Odoo's percentage widget, which
+multiplied it by a hundred.
 
 No new groups: the two from `hr` already describe the roles.
 
@@ -90,6 +97,33 @@ rate is not a number, it is a number over a period.
 ⚠️ The cost of a departure carries a **method**, not a sum. Real components and a
 percentage of annual salary estimate the same thing; adding them would count the
 same departure twice.
+
+## The cost of a departure (18.0.1.1.0)
+
+`bf.ex.departure.policy` holds one method per company, and the monthly reading
+creates a `bf.ex.departure` line per person who left (voluntary, involuntary from
+Odoo's dismissal reason, or regretted, in the sense of ISO/TS 30421). Three
+methods, never added together: **real components** (notice and severance for an
+involuntary departure, recruitment, training, supervision, interim, plus an
+estimated ramp-up of the replacement), **a percentage of annual salary** by salary
+band, or **hybrid** (measured direct costs, indirect estimated as a percentage).
+The result is a range: the low end is what is measured, or the direct part; the
+high end adds the estimated indirect part.
+
+The cost of one departure is deduced from a salary, so nothing is shown for a
+single person. The indicator sums departures over **twelve rolling months**, and
+shows no amount below a minimum of departures, never fewer than three. The method
+and the departure lines are reserved to HR managers (`hr.group_hr_manager`), who
+already read contracts. Archived leavers still count in headcount and turnover:
+Odoo's departure wizard archives the employee, and the turnover rate used to read
+zero.
+
+The amounts themselves (low, high, and per departure) are reserved to HR managers
+too, on the model and in the views (18.0.1.1.2): the minimum hides a month taken
+alone, but not the difference between two consecutive months, and the rolling sum
+of a month with a single departure minus that of the month before gives that
+departure's cost, hence a salary. An HR officer still sees the counts and whether
+the amount is withheld.
 
 ## The starter catalogue
 
@@ -161,4 +195,5 @@ odoo -d <database> -u bf_employee_experience --test-enable \
 
 ## Licence
 
-LGPL-3.
+Business Source License 1.1. Each published version converts to LGPL-3.0-or-later on its
+Change Date, four years after its release. See `LICENSE`.

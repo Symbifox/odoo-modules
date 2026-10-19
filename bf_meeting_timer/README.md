@@ -98,6 +98,12 @@ anglais dans la source (« Time per agenda topic ») et traduits en français da
 `i18n/fr_CA.po`. Le reste de l'interface est encore écrit en français dans la
 source.
 
+## Minutes (18.0.1.5.2)
+
+Les minutes du tableau du rapport et de la note au fil de discussion s'écrivent
+comme la langue les écrit (« 22,5 min » en français), sans « -0 » pour un écart
+arrondi à zéro.
+
 ## Dépendances
 
 `bf_meeting`.

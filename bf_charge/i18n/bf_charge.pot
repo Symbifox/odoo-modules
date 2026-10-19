@@ -80,7 +80,7 @@ msgstr ""
 #. module: bf_charge
 #. odoo-python
 #: code:addons/bf_charge/models/bf_charge_plan.py:0
-msgid "%(s).1f semaines de capacité déclarée"
+msgid "%(s)s semaines de capacité déclarée"
 msgstr ""
 
 #. module: bf_charge
@@ -113,7 +113,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_charge/models/bf_charge_plan.py:0
 msgid ""
-"Au rythme déclaré de %(cap).1f h par semaine, le carnet vaut %(sem).1f "
+"Au rythme déclaré de %(cap)s h par semaine, le carnet vaut %(sem)s "
 "semaines."
 msgstr ""
 
@@ -873,6 +873,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__user_id
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__user_id
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__user_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__user_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_search
 msgid "Personne"
 msgstr ""
 
@@ -885,6 +887,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__plan_id
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__plan_id
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__plan_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_search
 msgid "Plan"
 msgstr ""
 
@@ -987,6 +990,7 @@ msgstr ""
 
 #. module: bf_charge
 #: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_search
 msgid "Regrouper par"
 msgstr ""
 
@@ -1070,6 +1074,7 @@ msgstr ""
 #: model:ir.ui.menu,name:bf_charge.menu_bf_charge_weeks
 #: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
 #: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_calendar
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_search
 msgid "Semaines"
 msgstr ""
 
@@ -1330,4 +1335,75 @@ msgstr ""
 #. module: bf_charge
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__state
 msgid "État"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Capacité"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_unassigned
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_unassigned
+msgid "Heures sans assigné"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_plan__is_current
+msgid ""
+"Le dernier plan calculé de cette personne dans cette société. Les plans plus"
+" anciens restent lisibles, mais ne s'additionnent pas aux autres."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__is_current
+msgid "Plan en vigueur"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_search
+msgid "Plans en vigueur"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Recherche non prise en charge sur le plan en vigueur."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Sans assigné"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__sans_assigne
+msgid "Sans assigné, comptée à part"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__tasks_unassigned
+msgid "Tâches sans assigné"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_plan__hours_unassigned
+msgid ""
+"Tâches vivantes que personne ne porte. Comptées pour qu'on les voie, jamais "
+"posées sur les semaines de cette personne : elles ne sont à personne."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"À part : %(h)s h sur %(nb)s tâche(s) que personne ne porte. Elles ne sont "
+"pas posées sur ces semaines ; les assigner les y fera entrer."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_snapshot__tasks_open
+msgid ""
+"Depuis 18.0.1.2.0 : les tâches de la personne du relevé. Avant : celles de "
+"toute la société (rupture de série)."
 msgstr ""

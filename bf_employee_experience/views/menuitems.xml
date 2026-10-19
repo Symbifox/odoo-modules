@@ -26,5 +26,9 @@
               groups="hr.group_hr_user"/>
     <menuitem id="menu_indicator" name="Indicateurs de rétention" parent="menu_analysis"
               action="action_indicator" sequence="10"/>
+    <menuitem id="menu_departure" name="Départs" parent="menu_analysis"
+              action="action_departure" sequence="30" groups="hr.group_hr_manager"/>
+    <menuitem id="menu_departure_policy" name="Coût d'un départ : méthode" parent="menu_analysis"
+              action="action_departure_policy" sequence="40" groups="hr.group_hr_manager"/>
 
 </odoo>

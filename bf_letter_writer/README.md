@@ -144,7 +144,12 @@ Brand colours come from `bf_lexend`.
 - `image` mode: full-page background (known limitation — it covers the first
   page; prefer `pdf_overlay` for multi-page letters).
 - Optional modules are detected through `ir.module.module` (`installed` state).
-- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-10-11.
+- The generated letterheads (banner and classic) write the company address in its
+  country's format (`_display_address`, for instance "Montréal QC  H2W 2R2"),
+  skipping empty lines, and reserve room at the bottom of the page so a long body
+  never runs under the footer and the footer never lands on the signature
+  (18.0.2.1.1).
+- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-10-19.
 
 ## Languages (v18.0.2.1.0)
 

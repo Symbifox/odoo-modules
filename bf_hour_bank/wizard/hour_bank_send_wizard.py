@@ -1,6 +1,6 @@
 import base64
 
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -57,15 +57,10 @@ border="0"><tbody><tr>\
 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
 font-size:12px;color:#6B7280;">\
 <strong style="color:{dark};">Banque d'heures par {company_name}</strong><br/>\
-Solutions &eacute;thiques et souveraines pour vos donn&eacute;es.</td>\
+{tagline}</td>\
 <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
 font-size:12px;color:#9CA3AF;">\
-<a href="{privacy_url}" \
-style="color:#9CA3AF;text-decoration:underline;">\
-Politique de confidentialit&eacute;</a>\
-<span style="color:#9CA3AF;"> | </span>\
-<a href="{terms_url}" \
-style="color:#9CA3AF;text-decoration:underline;">Conditions</a>\
+{legal_links}\
 </td></tr></tbody></table></td></tr>\
 </tbody></table>\
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" \
@@ -126,23 +121,40 @@ class HourBankSendWizard(models.TransientModel):
                 rec._onchange_hour_bank_id()
         return records
 
+    @staticmethod
+    def _legal_links(company):
+        """Les liens légaux que la société a déclarés, et eux seuls.
+
+        Même règle que le gabarit du courriel : un lien bâti sur le site
+        (« <site>/r/politique-de-confidentialite ») menait chez l'éditeur, ou nulle
+        part chez un locataire qui n'a pas cette page."""
+        style = 'style="color:#9CA3AF;text-decoration:underline;"'
+        liens = []
+        for champ, libelle in (('brand_privacy_url', 'Politique de confidentialit&eacute;'),
+                               ('brand_terms_url', 'Conditions')):
+            url = company[champ] if champ in company else False
+            if url:
+                liens.append('<a href="%s" %s>%s</a>' % (escape(url), style, libelle))
+        return '<span style="color:#9CA3AF;"> | </span>'.join(liens)
+
     def _wrap_branded_body(self, inner_html):
         """Wrap inner message HTML with the company-branded email layout.
         Colors pulled from bf_lexend company fields; falls back to canonical hex.
         Logo, website, and policy/terms URLs are tenant-aware so each company
         in the database sends emails with its own visual identity."""
         company = self.env.company
-        website = company.website or 'https://bluefoxconsultant.com'
+        website = company.website or company.get_base_url()
         return Markup(_BRANDED_WRAPPER.format(
             primary=company.report_brand_primary or '#714B67',
             dark=company.report_brand_dark or '#212529',
-            company_name=company.name or 'Blue Fox',
+            company_name=company.name or '',
             company_email=company.email or 'service@example.com',
             company_phone=company.phone or '555-555-5555',
             company_website=website,
             logo_url='/web/image/res.company/%d/logo' % company.id,
-            privacy_url=website.rstrip('/') + '/r/politique-de-confidentialite',
-            terms_url=website.rstrip('/') + '/r/termes-et-conditions',
+            tagline=escape(company['brand_email_tagline'] or '')
+            if 'brand_email_tagline' in company else '',
+            legal_links=self._legal_links(company),
             content=str(inner_html or ''),
         ))
 

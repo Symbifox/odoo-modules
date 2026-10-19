@@ -6,10 +6,12 @@ essayé. Les appels passent par /web/dataset/call_kw et call_button, le seul
 chemin où vivent les gardes du point d'entrée.
 """
 import json
+from datetime import timedelta
 import time
 from unittest.mock import patch
 
 import odoo
+from odoo import fields
 from odoo.tests import HttpCase, TransactionCase, new_test_user, tagged
 from odoo.tests.common import JsonRpcException
 
@@ -694,6 +696,18 @@ class TestImpersonateJourney(HttpCase):
                              [[self.partner.id], {"name": "Trop tard"}])
         self.assertEqual(self._uid(), self.helper.id)
         self.assertEqual(journal.end_reason, "forced")
+
+    def test_forced_end_of_an_expired_session_keeps_its_deadline(self):
+        """Une séance échue, fermée au bouton, s'arrête à son échéance."""
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        journal = self._journal(self.helper, self.person)
+        echeance = fields.Datetime.now() - timedelta(minutes=44)
+        journal.sudo().write({"date_start": echeance - timedelta(minutes=10),
+                              "expires_at": echeance})
+        journal.with_user(self.env.ref("base.user_admin")).action_force_end()
+        self.assertEqual(journal.date_end, echeance)
+        self.assertEqual(journal.end_reason, "expired")
 
     def test_button_called_through_call_kw_is_not_replayed_after_the_end(self):
         """Un action_* reçu par call_kw au moment de la fin est refusé, pas rejoué

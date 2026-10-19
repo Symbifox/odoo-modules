@@ -83,6 +83,28 @@ workload and its source appear only when they differ from the allocated time (co
 by hand, or a sale set aside, with its reason), and *Not placeable, no date* only when
 the task carries no date at all.
 
+## Whose work a plan counts (18.0.1.2.0)
+
+A contract declares the capacity of **one person**, so a plan now reads that
+person's tasks only. It used to read every task of the company and divide the
+whole firm's backlog by a single person's capacity, which showed several times
+the capacity from the first week. A task with several assignees is split in
+equal shares, each person carrying their part. A live task nobody is assigned to
+is never placed on anyone's weeks: it is counted apart (*Unassigned hours*,
+*Unassigned tasks*, and a line in the summary), so it is seen without being
+anyone's work; an unassigned task in a template or dormant project counts
+nowhere. The weekly reading and the arrivals-against-closures signal use the
+same scope, so the snapshot's open task count breaks its series at this version.
+
+The *Weeks* menu opens on the **current plans** only (the latest plan computed
+for each person in each company; older plans stay readable as an archive) and
+can be grouped by person, since adding the capacities of several plans of the
+same person meant nothing. Its graph opens on the hours, the *Lines* button
+groups by week and by outcome, the week table labels its *Hours* and *Capacity*
+columns, and numbers in the summary and the signals are written the way the
+reader's language writes them. On upgrade, the current plans are recomputed on
+their person's scope; older plans keep what they said.
+
 ## Requirements
 
 - Odoo 18 Community

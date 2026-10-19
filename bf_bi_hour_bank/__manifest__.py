@@ -1,6 +1,6 @@
 {
     "name": "BF BI - Hour banks",
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.0.4",
     "category": "Productivity/Dashboard",
     "summary": "Hour banks dashboard: balances computed by the hour bank module, adjustments",
     "author": "Les services de consultation Blue Fox, Inc.",

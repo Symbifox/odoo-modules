@@ -47,7 +47,8 @@
     #   les gardes d'envoi le refusaient (base sans mail_post_defer). L'avis
     #   part toujours sur-le-champ, dans un contexte neuf : le client ne peut
     #   plus le repousser. Le message d'un courriel en file ne se modifie pas.
-    "version": "18.0.1.0.4",
+    # 18.0.1.0.5 : une séance déjà échue, fermée au bouton, s'arrête à son échéance.
+    "version": "18.0.1.0.5",
     "category": "Administration",
     "summary": "See Symbifox as one of your users, read-only by default, with a reason, "
                "a time limit, a notice to the person and a journal no access right can rewrite",

@@ -49,14 +49,32 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <group string="Coût d'un départ">
+                    <group string="Départs du mois">
+                        <field name="departures_voluntary"/>
+                        <field name="departures_involuntary"/>
+                        <field name="departures_regrettable"/>
+                    </group>
+                    <group string="Coût des départs, douze mois glissants">
                         <div class="text-muted" colspan="2">
                             Les composantes réelles et le pourcentage du salaire estiment la
-                            même chose. Choisir l'une des deux méthodes, jamais les additionner.
+                            même chose. Une seule méthode, jamais les deux additionnées.
                         </div>
                         <field name="departure_cost_method"/>
-                        <field name="departure_cost" widget="monetary"
-                               invisible="departure_cost_method == 'none'"/>
+                        <field name="departures_12m" invisible="departure_cost_method == 'none'"/>
+                        <div class="alert alert-warning" role="status" colspan="2"
+                             invisible="not departure_cost_hidden">
+                            Trop peu de départs sur douze mois pour publier un montant :
+                            il laisserait deviner un salaire.
+                        </div>
+                        <field name="departure_cost_low" groups="hr.group_hr_manager" widget="monetary"
+                               invisible="departure_cost_method == 'none' or departure_cost_hidden"/>
+                        <field name="departure_cost" groups="hr.group_hr_manager" widget="monetary"
+                               invisible="departure_cost_method == 'none' or departure_cost_hidden"/>
+                        <field name="departure_cost_avg_low" groups="hr.group_hr_manager" widget="monetary"
+                               invisible="departure_cost_method == 'none' or departure_cost_hidden"/>
+                        <field name="departure_cost_avg" groups="hr.group_hr_manager" widget="monetary"
+                               invisible="departure_cost_method == 'none' or departure_cost_hidden"/>
+                        <field name="departure_cost_hidden" invisible="1"/>
                     </group>
                 </sheet>
             </form>

@@ -23,7 +23,10 @@ class BfChargeSnapshot(models.Model):
     user_id = fields.Many2one("res.users", string="Personne", required=True,
                               default=lambda self: self.env.user)
 
-    tasks_open = fields.Integer(string="Tâches ouvertes")
+    tasks_open = fields.Integer(
+        string="Tâches ouvertes",
+        help="Depuis 18.0.1.2.0 : les tâches de la personne du relevé. Avant : celles "
+             "de toute la société (rupture de série).")
     tasks_dated = fields.Integer(string="Tâches datées")
     tasks_placeable = fields.Integer(string="Tâches plaçables")
     hours_live = fields.Float(string="Heures vivantes")
@@ -31,6 +34,7 @@ class BfChargeSnapshot(models.Model):
     hours_template = fields.Float(string="Heures de gabarits")
     hours_placeable = fields.Float(string="Heures plaçables")
     hours_unplaceable = fields.Float(string="Heures non plaçables")
+    hours_unassigned = fields.Float(string="Heures sans assigné", aggregator="max")
     clients_touched = fields.Integer(string="Clients touchés (30 j)")
     client_hours = fields.Float(string="Heures client (30 j)")
     internal_hours = fields.Float(string="Heures internes (30 j)")
@@ -50,22 +54,32 @@ class BfChargeSnapshot(models.Model):
         today = fields.Date.context_today(self)
         depuis = today - timedelta(days=30)
 
+        # Même portée que le plan : les tâches de la personne (sa part quand elles
+        # sont à plusieurs), et à part celles que personne ne porte.
         taches = self.env["project.task"].search([
             ("state", "not in", ["1_done", "1_canceled"]),
             ("company_id", "in", [False, company.id]),
+            "|", ("user_ids", "in", user.ids), ("user_ids", "=", False),
         ])
         natures = {p.id: p.charge_kind for p in taches.project_id}
         vals = {
             "date": today, "user_id": user.id, "company_id": company.id,
-            "tasks_open": len(taches),
+            "tasks_open": 0,
             "tasks_dated": 0, "tasks_placeable": 0,
             "hours_live": 0.0, "hours_dormant": 0.0, "hours_template": 0.0,
-            "hours_placeable": 0.0, "hours_unplaceable": 0.0,
+            "hours_placeable": 0.0, "hours_unplaceable": 0.0, "hours_unassigned": 0.0,
             "client_hours": 0.0, "internal_hours": 0.0, "clients_touched": 0,
         }
         for tache in taches:
             nature = natures.get(tache.project_id.id, "dormant") if tache.project_id else "dormant"
-            heures = tache.charge_hours or 0.0
+            part = 1.0 / len(tache.user_ids) if tache.user_ids else 1.0
+            heures = (tache.charge_hours or 0.0) * part
+            if not tache.user_ids:
+                # Même règle que le plan : seule une charge vivante est comptée, à part.
+                if nature == "vivant":
+                    vals["hours_unassigned"] += heures
+                continue
+            vals["tasks_open"] += 1
             if tache.date_deadline:
                 vals["tasks_dated"] += 1
             if nature == "gabarit":
@@ -99,8 +113,9 @@ class BfChargeSnapshot(models.Model):
 
         Task = self.env["project.task"]
         borne = fields.Datetime.to_datetime(depuis)
-        vals["tasks_opened"] = Task.search_count([("create_date", ">=", borne)])
-        vals["tasks_closed"] = Task.search_count([
+        siennes = [("user_ids", "in", user.ids), ("company_id", "in", [False, company.id])]
+        vals["tasks_opened"] = Task.search_count(siennes + [("create_date", ">=", borne)])
+        vals["tasks_closed"] = Task.search_count(siennes + [
             ("state", "in", ["1_done", "1_canceled"]),
             ("date_last_stage_update", ">=", borne),
         ])

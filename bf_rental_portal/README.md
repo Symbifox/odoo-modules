@@ -159,6 +159,9 @@ announcements, common-space bookings and the register of art. 1070 CCQ on them
 would install obligations that are not theirs. The two portals coexist when both
 are installed; neither needs the other.
 
+**Dates never wrap** (18.0.1.9.1). The three dates of the notices table stay on
+one line, and on a phone the table scrolls instead of overflowing the page.
+
 **Every page names itself in the breadcrumb** ("My lease", "Notices received",
 "My rent"). The pages put the breadcrumb in the search bar, and without these
 entries Odoo showed only the home icon there, leaving the page without a title.
@@ -215,7 +218,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-19, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

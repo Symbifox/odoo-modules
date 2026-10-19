@@ -444,17 +444,22 @@ class BfGanttSource(models.AbstractModel):
                 "seq": b["lane_seq"],
                 "total": 0,
                 "done": 0,
+                "avance": 0,
             })
             c["total"] += 1
             if b["closed"]:
                 c["done"] += 1
+            # L'avancement du couloir est la moyenne de ses barres : une ligne à
+            # 70 % n'est pas finie, mais elle n'est pas à zéro non plus. Compter les
+            # seules lignes terminées faisait lire « 0 % » à un client.
+            c["avance"] += 100 if b["closed"] else (b.get("progress") or 0)
             d, f = b["start"], b["end"]
             mini = d if mini is None else min(mini, d)
             maxi = f if maxi is None else max(maxi, f)
 
         liste = sorted(couloirs.values(), key=lambda c: (c["seq"], c["name"]))
         for c in liste:
-            c["pct"] = round(c["done"] / c["total"] * 100) if c["total"] else 0
+            c["pct"] = round(c.pop("avance") / c["total"]) if c["total"] else 0
 
         debut = date.fromisoformat(mini) if mini else (bornes[0] or aujourdhui)
         fin = date.fromisoformat(maxi) if maxi else (

@@ -223,13 +223,13 @@
                             <div class="hb-meta-item">
                                 <div class="hb-meta-label">Derni&#232;re mise &#224; jour</div>
                                 <div class="hb-meta-value">
-                                    <t t-out="data['last_update'].strftime('%Y-%m-%d %H:%M')"/>
+                                    <t t-out="data['last_update']" t-options="{'widget': 'datetime', 'hide_seconds': True, 'tz_name': doc._bf_tz_lecteur()}"/>
                                 </div>
                             </div>
                             <div class="hb-meta-item right">
                                 <div class="hb-meta-label">Solde restant</div>
                                 <div t-attf-class="hb-meta-value {{ 'balance-positive' if balance &gt;= 0 else 'balance-negative' }}">
-                                    <t t-out="'%.2f h' % balance"/>
+                                    <t t-out="balance" t-options="{'widget': 'float', 'precision': 2}"/> h
                                 </div>
                             </div>
                         </div>
@@ -250,8 +250,8 @@
                                     <t t-foreach="entries" t-as="e">
                                         <tr t-attf-class="{{ 'credit' if e['entry_type'] == 'credit' else '' }}">
                                             <td><t t-out="str(e['date'])"/></td>
-                                            <td class="num"><t t-out="'%.2f' % e['hours']"/></td>
-                                            <td class="num"><t t-out="'%.2f' % e['cumulative']"/></td>
+                                            <td class="num"><t t-out="e['hours']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                            <td class="num"><t t-out="e['cumulative']" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                             <td><t t-out="e['description']"/></td>
                                             <td><t t-out="e['project']"/></td>
                                         </tr>
@@ -274,13 +274,13 @@
                                         <t t-foreach="summary_by_project.items()" t-as="item">
                                             <tr>
                                                 <td><t t-out="item[0]"/></td>
-                                                <td class="num"><t t-out="'%.2f' % item[1]"/></td>
+                                                <td class="num"><t t-out="item[1]" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                             </tr>
                                             <t t-set="grand_total" t-value="grand_total + item[1]"/>
                                         </t>
                                         <tr class="total">
                                             <td>Total</td>
-                                            <td class="num"><t t-out="'%.2f' % grand_total"/></td>
+                                            <td class="num"><t t-out="grand_total" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -307,10 +307,10 @@
                                                 <t t-set="month_total" t-value="0"/>
                                                 <t t-foreach="all_projects" t-as="proj">
                                                     <t t-set="val" t-value="month_item[1].get(proj, 0.0)"/>
-                                                    <td class="num"><t t-out="'%.2f' % val"/></td>
+                                                    <td class="num"><t t-out="val" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                                     <t t-set="month_total" t-value="month_total + val"/>
                                                 </t>
-                                                <td class="num" style="font-weight:700"><t t-out="'%.2f' % month_total"/></td>
+                                                <td class="num" style="font-weight:700"><t t-out="month_total" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                             </tr>
                                         </t>
                                     </tbody>

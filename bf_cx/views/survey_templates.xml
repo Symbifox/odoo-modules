@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le sondage public portait « Généré par Odoo » en bas à droite : survey.layout
+         appelle web.brand_promotion_message directement, que portal_odoo_debranding
+         n'atteint pas. Le client répond à SON fournisseur, pas à un éditeur de logiciel.
+         Le cadre ne garde que la navigation du sondage, et disparaît sans elle. -->
+    <template id="survey_layout_sans_promotion" inherit_id="survey.layout"
+              name="Sondage : sans promotion de l'éditeur">
+        <xpath expr="//div[hasclass('o_survey_brand_message')]" position="attributes">
+            <attribute name="t-if">not no_survey_navigation</attribute>
+            <attribute name="class" add="d-print-none" separator=" "/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_brand_message')]/div[@t-call='web.brand_promotion_message']"
+               position="replace"/>
+    </template>
+</odoo>

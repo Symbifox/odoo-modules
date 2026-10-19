@@ -8,6 +8,16 @@ from .common import ExCase
 @tagged("post_install", "-at_install")
 class TestIndicator(ExCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Un départ déjà en base (données d'un locataire, essai précédent) se
+        # compterait dans nos mois : on sort de la société toute fiche partie.
+        elsewhere = cls.env["res.company"].create({"name": "Départs d'ailleurs (essai)"})
+        cls.env["hr.employee"].with_context(active_test=False).search([
+            ("company_id", "=", cls.env.company.id), ("departure_date", "!=", False),
+        ]).write({"company_id": elsewhere.id})
+
     def test_headcount_hires_and_turnover(self):
         period = (self.today - relativedelta(months=1)).replace(day=1)
         month_end = period + relativedelta(months=1) - relativedelta(days=1)

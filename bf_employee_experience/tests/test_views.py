@@ -1,3 +1,5 @@
+from lxml import etree
+
 from odoo.tests.common import tagged
 
 from odoo.addons.bf_employee_experience.models.starter_catalogue import STARTER
@@ -67,6 +69,112 @@ class TestViews(ExCase):
         ):
             with self.subTest(model=model):
                 self.assertTrue(self._load(self.plain, model, types)["views"])
+
+    def _open_benefit_screens(self, user, benefit):
+        """Ce que le client web lit vraiment : les champs de la vue, AVEC données.
+
+        `get_views` seul ne prouve rien : il ne calcule aucun champ. C'est la
+        lecture (`web_search_read`, `web_read`) qui déclenche les calculs.
+        """
+        Benefit = self.env["bf.ex.benefit"].with_user(user)
+        views = Benefit.get_views([(False, "list"), (False, "form")])["views"]
+        shown = {}
+        for vtype in ("list", "form"):
+            arch = etree.fromstring(views[vtype]["arch"])
+            names = {node.get("name") for node in arch.iter("field")}
+            shown[vtype] = names
+            spec = {
+                name: {} for name in names
+                if name in Benefit._fields and Benefit._fields[name].type not in ("one2many", "many2many")
+            }
+            if "rule_ids" in names:
+                spec["rule_ids"] = {"fields": {"name": {}, "criteria_summary": {}}}
+            self.env.invalidate_all()
+            if vtype == "list":
+                Benefit.web_search_read([("id", "=", benefit.id)], spec)
+            else:
+                Benefit.browse(benefit.id).web_read(spec)
+        return shown
+
+    def test_plain_employee_opens_the_catalogue_with_its_data(self):
+        """La liste « Avantages » et la fiche levaient `AccessError`
+        sur `bf.ex.eligibility.rule` pour tout le personnel ordinaire.
+
+        Les compteurs du catalogue lisent les règles, que seule l'administration
+        des avantages lit. Le menu, lui, est ouvert à tous : le catalogue doit
+        s'ouvrir, sans ses compteurs.
+        """
+        benefit = self._benefit("Catalogue ouvert (essai)")
+        self.env["bf.ex.eligibility.rule"].create({"name": "Tous", "benefit_id": benefit.id})
+        me = self._employee("Employée ordinaire", user=self.plain)
+        self.env["bf.ex.entitlement"].create({
+            "employee_id": me.id, "benefit_id": benefit.id,
+            "source": "manual", "reason": "Pour l'essai.",
+        })
+        shown = self._open_benefit_screens(self.plain, benefit)
+        for name in ("entitled_count", "user_count", "uptake_rate", "annual_cost", "rule_ids"):
+            with self.subTest(field=name):
+                self.assertNotIn(name, shown["list"] | shown["form"],
+                                 "un compteur du registre entier ne s'affiche pas hors de l'administration")
+        self.env.invalidate_all()
+        as_plain = benefit.with_user(self.plain)
+        self.assertEqual(as_plain.entitled_count, 0,
+                         "calculé sur ses seules lignes, le compteur serait faux : il vaut zéro")
+        self.assertFalse(as_plain.unused)
+
+    def test_officer_still_reads_the_counters(self):
+        benefit = self._benefit("Catalogue compté (essai)")
+        self.env["bf.ex.eligibility.rule"].create({"name": "Tous", "benefit_id": benefit.id})
+        emp = self._employee("Ayant droit")
+        self.env["bf.ex.entitlement"].create({
+            "employee_id": emp.id, "benefit_id": benefit.id,
+            "source": "manual", "reason": "Pour l'essai.",
+        })
+        shown = self._open_benefit_screens(self.officer, benefit)
+        self.assertIn("uptake_rate", shown["list"])
+        self.assertIn("rule_ids", shown["form"])
+        self.env.invalidate_all()
+        as_officer = benefit.with_user(self.officer)
+        self.assertEqual(as_officer.entitled_count, 1)
+        self.assertEqual(as_officer.rule_count, 1)
+        self.assertTrue(as_officer.unused)
+
+    def test_no_percentage_widget_on_a_0_100_rate(self):
+        """La liste des avantages affichait « 8 820 % » d'adhésion.
+
+        Tous les taux du module (`uptake_rate`, `turnover_rate`) valent déjà
+        0 à 100, comme l'agrégat du pont vie privée et la tuile du tableau de
+        bord qui les relisent. Le widget `percentage` attend une fraction de 0
+        à 1 et la multiplie par cent : il n'a rien à faire dans ces vues tant
+        qu'aucun champ ne porte de fraction.
+        """
+        data = self.env["ir.model.data"].search([
+            ("module", "=", "bf_employee_experience"), ("model", "=", "ir.ui.view"),
+        ])
+        hits = [
+            (view.xml_id, node.get("name"))
+            for view in self.env["ir.ui.view"].browse(data.mapped("res_id"))
+            if view.type != "qweb"
+            for node in etree.fromstring(view.arch.encode()).iter("field")
+            if node.get("widget") == "percentage"
+        ]
+        self.assertFalse(hits, "widget « percentage » sur un taux 0 à 100 : %s" % hits)
+
+    def test_uptake_rate_reads_on_a_0_100_scale(self):
+        """L'échelle est une interface : la tuile et l'agrégat la relisent."""
+        benefit = self._benefit("Échelle (essai)")
+        users = [self._employee("Échelle %s" % i) for i in range(4)]
+        for emp in users:
+            self.env["bf.ex.entitlement"].create({
+                "employee_id": emp.id, "benefit_id": benefit.id,
+                "source": "manual", "reason": "Pour l'essai.",
+            })
+        for emp in users[:3]:
+            self.env["bf.ex.usage"].create({
+                "employee_id": emp.id, "benefit_id": benefit.id, "date": self.today,
+            }).action_confirm()
+        benefit.invalidate_recordset()
+        self.assertAlmostEqual(benefit.uptake_rate, 75.0)
 
     def test_employee_form_inherit_loads(self):
         """Le bouton greffé sur la fiche employé ne doit casser pour personne."""

@@ -2,6 +2,8 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 
+from .departure import METHODS
+
 
 def _median(values):
     """Médiane d'une liste de nombres. Liste vide : zéro."""
@@ -55,20 +57,36 @@ class Indicator(models.Model):
     cost_per_employee = fields.Monetary(
         string="Coût par personne", currency_field="currency_id",
     )
+    departures_voluntary = fields.Integer(string="Départs volontaires")
+    departures_involuntary = fields.Integer(string="Départs involontaires")
+    departures_regrettable = fields.Integer(string="Départs regrettés")
     departure_cost_method = fields.Selection(
-        [
-            ("none", "Non calculé"),
-            ("itemized", "Composantes réelles"),
-            ("salary_pct", "Pourcentage du salaire annuel"),
-        ],
-        string="Méthode du coût d'un départ", default="none",
+        METHODS, string="Méthode du coût d'un départ", default="none",
         help="Les composantes réelles et le pourcentage du salaire sont deux "
              "façons d'estimer la MÊME chose. Les additionner compterait deux "
              "fois le même départ.",
     )
-    departure_cost = fields.Monetary(
-        string="Coût des départs", currency_field="currency_id",
+    departures_12m = fields.Integer(string="Départs sur 12 mois")
+    departure_cost_hidden = fields.Boolean(
+        string="Trop peu de départs pour publier",
+        help="Sous le minimum de la méthode, un montant laisserait deviner un salaire.",
     )
+    # 🔴 Réservés aux responsables RH. Le minimum de départs cache un mois isolé,
+    # mais pas la DIFFÉRENCE entre deux mois : la somme glissante sur douze mois
+    # d'un mois à un seul départ, moins celle du mois d'avant, donne le coût de ce
+    # départ, donc le salaire de la personne. Un agent RH n'a pas les salaires.
+    departure_cost_low = fields.Monetary(
+        string="Coût des départs sur 12 mois (bas)", currency_field="currency_id",
+        help="Ce qui se mesure, ou le direct seulement.", groups="hr.group_hr_manager",
+    )
+    departure_cost = fields.Monetary(
+        string="Coût des départs sur 12 mois (haut)", currency_field="currency_id",
+        help="Le bas, plus l'indirect estimé.", groups="hr.group_hr_manager",
+    )
+    departure_cost_avg_low = fields.Monetary(string="Par départ (bas)", currency_field="currency_id",
+                                             groups="hr.group_hr_manager")
+    departure_cost_avg = fields.Monetary(string="Par départ (haut)", currency_field="currency_id",
+                                         groups="hr.group_hr_manager")
 
     _sql_constraints = [
         (
@@ -92,7 +110,12 @@ class Indicator(models.Model):
 
         base = [("company_id", "=", company.id)]
         # Effectif : présent = premier contrat commencé, départ non survenu.
-        started = Employee.search(base + [("first_contract_date", "!=", False)])
+        # Une personne partie est archivée, mais elle était là en début de mois.
+        # Une fiche archivée SANS date de départ (doublon, erreur) reste exclue.
+        started = Employee.with_context(active_test=False).search(base + [
+            ("first_contract_date", "!=", False),
+            "|", ("active", "=", True), ("departure_date", "!=", False),
+        ])
 
         def present_on(day):
             return started.filtered(
@@ -103,7 +126,9 @@ class Indicator(models.Model):
         head_start = present_on(period)
         head_end = present_on(nxt - relativedelta(days=1))
         hires = started.filtered(lambda e: period <= e.first_contract_date < nxt)
-        departures = Employee.search(base + [
+        # Le départ archive la fiche (assistant de départ d'Odoo) : sans
+        # active_test=False, le roulement réel vaudrait toujours zéro.
+        departures = Employee.with_context(active_test=False).search(base + [
             ("departure_date", ">=", period), ("departure_date", "<", nxt),
         ])
 
@@ -125,7 +150,7 @@ class Indicator(models.Model):
         ])
         cost = sum(usages.mapped("amount"))
 
-        vals = {
+        vals = dict(self._departure_cost_vals(company, departures, nxt), **{
             "company_id": company.id,
             "period": period,
             "headcount_start": len(head_start),
@@ -136,7 +161,7 @@ class Indicator(models.Model):
             "median_tenure_months": _median(tenures),
             "benefit_cost": cost,
             "cost_per_employee": cost / len(head_end) if head_end else 0.0,
-        }
+        })
         record = self.sudo().search([
             ("company_id", "=", company.id), ("period", "=", period),
         ], limit=1)
@@ -145,6 +170,44 @@ class Indicator(models.Model):
         else:
             record = self.sudo().create(vals)
         return record
+
+    @api.model
+    def _departure_cost_vals(self, company, month_departures, nxt):
+        """Le coût des départs, sur douze mois glissants.
+
+        Douze mois et pas le mois : un mois à un seul départ redonnerait le
+        salaire de la personne partie. Sous le minimum de la méthode, rien.
+        """
+        Departure = self.env["bf.ex.departure"].sudo()
+        month = Departure._ensure_for(month_departures)
+        window = self.env["hr.employee"].sudo().with_context(active_test=False).search([
+            ("company_id", "=", company.id),
+            ("departure_date", ">=", nxt - relativedelta(months=12)),
+            ("departure_date", "<", nxt),
+        ])
+        records = Departure._ensure_for(window)
+        policy = self.env["bf.ex.departure.policy"]._for_company(company)
+        vals = {
+            "departures_voluntary": len(month.filtered(lambda d: d.kind == "voluntary")),
+            "departures_involuntary": len(month.filtered(lambda d: d.kind == "involuntary")),
+            "departures_regrettable": len(month.filtered("regrettable")),
+            "departure_cost_method": policy.method,
+            "departures_12m": len(records),
+            "departure_cost_hidden": False,
+            "departure_cost_low": 0.0, "departure_cost": 0.0,
+            "departure_cost_avg_low": 0.0, "departure_cost_avg": 0.0,
+        }
+        if policy.method == "none":
+            return vals
+        if len(records) < policy.min_departures:
+            vals["departure_cost_hidden"] = True
+            return vals
+        low, high = policy._range(records)
+        vals.update({
+            "departure_cost_low": low, "departure_cost": high,
+            "departure_cost_avg_low": low / len(records), "departure_cost_avg": high / len(records),
+        })
+        return vals
 
     @api.model
     def _cron_build_indicators(self):

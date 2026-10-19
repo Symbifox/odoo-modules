@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_departure_policy_form" model="ir.ui.view">
+        <field name="name">bf.ex.departure.policy.form</field>
+        <field name="model">bf.ex.departure.policy</field>
+        <field name="arch" type="xml">
+            <form string="Coût d'un départ : méthode">
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        Trois méthodes, jamais additionnées. Le pourcentage du salaire
+                        résume le calcul détaillé ; il ne s'y ajoute pas. Le résultat
+                        est une fourchette : le bas est ce qui se mesure, le haut y
+                        ajoute l'indirect estimé.
+                    </div>
+                    <group>
+                        <field name="method" widget="radio"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="min_departures"/>
+                    </group>
+                    <group string="Pourcentage du salaire (CAP 2012, Work Institute)"
+                           invisible="method != 'salary_pct'">
+                        <field name="tier1_max" widget="monetary"/>
+                        <field name="tier1_pct"/>
+                        <field name="tier2_max" widget="monetary"/>
+                        <field name="tier2_pct"/>
+                        <field name="tier3_pct"/>
+                        <field name="total_pct"/>
+                    </group>
+                    <group string="Montée en compétence du remplaçant (estimée)"
+                           invisible="method != 'itemized'">
+                        <field name="ramp_days"/>
+                        <field name="productivity_loss_pct"/>
+                        <field name="benefits_load_pct"/>
+                    </group>
+                    <group string="Indirect (Work Institute)" invisible="method != 'hybrid'">
+                        <field name="indirect_pct"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_departure_policy" model="ir.actions.server">
+        <field name="name">Coût d'un départ : méthode</field>
+        <field name="model_id" ref="model_bf_ex_departure_policy"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_policy()</field>
+    </record>
+
+    <record id="view_departure_list" model="ir.ui.view">
+        <field name="name">bf.ex.departure.list</field>
+        <field name="model">bf.ex.departure</field>
+        <field name="arch" type="xml">
+            <list string="Départs" editable="bottom" create="0">
+                <field name="departure_date"/>
+                <field name="employee_id" readonly="1"/>
+                <field name="kind"/>
+                <field name="regrettable"/>
+                <field name="separation_cost" widget="monetary" readonly="kind != 'involuntary'"/>
+                <field name="recruitment_cost" widget="monetary"/>
+                <field name="training_cost" widget="monetary"/>
+                <field name="supervision_cost" widget="monetary"/>
+                <field name="interim_cost" widget="monetary"/>
+                <field name="measured_direct" widget="monetary" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_departure" model="ir.actions.act_window">
+        <field name="name">Départs</field>
+        <field name="res_model">bf.ex.departure</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun départ relevé</p>
+            <p>Le relevé mensuel crée une ligne par départ. On y inscrit ce que le
+               départ a réellement coûté ; l'estimation d'un départ isolé ne
+               s'affiche jamais, parce qu'elle se déduit du salaire.</p>
+        </field>
+    </record>
+
+</odoo>

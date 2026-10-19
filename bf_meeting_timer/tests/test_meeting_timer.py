@@ -375,6 +375,24 @@ class TestMeetingTimer(TransactionCase):
         corps = self._recaps(agenda).body
         self.assertIn('non abordé', corps)
 
+    def test_les_minutes_s_ecrivent_dans_la_langue(self):
+        """« 18.5 min » sur un compte rendu français."""
+        if not self.env['res.lang']._lang_get('fr_CA'):
+            self.skipTest("fr_CA inactif sur cette base")
+        agenda = self._agenda().with_context(lang='fr_CA')
+        self.assertEqual(agenda._timer_fmt_min(18.5), "18,5")
+        self.assertEqual(agenda._timer_fmt_min(-2.5), "-2,5")
+        self.assertEqual(agenda._timer_fmt_min(0.0), "0")
+        self.assertEqual(agenda._timer_fmt_min(22.04), "22")
+        self.assertEqual(agenda._timer_fmt_min(-0.04), "0")
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:22:30')
+            agenda.action_timer_stop()
+        corps = self._recaps(agenda).body
+        self.assertIn("22,5 min", corps)
+        self.assertNotIn("22.5", corps)
+
     def test_le_clone_ne_rapporte_pas_le_temps(self):
         """⚠️ `copy()` sur l'ordre du jour ne rapporte AUCUN sujet : l'essai qui
         s'y fiait passait sur une liste vide. Le chemin qui

@@ -97,3 +97,11 @@ class TestTemplate(TransactionCase):
         snapshot = dashboard.with_context(lang="fr_CA").get_readonly_dashboard()["snapshot"]
         labels = [f["label"] for f in snapshot["globalFilters"]]
         self.assertIn("Période", labels)
+
+    def test_list_headers_are_not_clipped(self):
+        """« Budget alloué (h » : la colonne du seuil gardait la largeur par défaut."""
+        dashboard = self.env.ref("bf_bi_hour_bank.dashboard_hour_bank")
+        data = json.loads(dashboard.spreadsheet_data)
+        cols = data["sheets"][0]["cols"]
+        for col in ("1", "2", "3"):
+            self.assertGreaterEqual(cols.get(col, {}).get("size", 0), 140, col)

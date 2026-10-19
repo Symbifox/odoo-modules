@@ -206,6 +206,26 @@ docker exec <container> odoo -d <db> -i bf_hour_bank --stop-after-init --no-http
 
 ## Changelog
 
+### 18.0.1.15.4
+
+- The PDF and the portal write hours with the decimal separator of the reader's
+  language (`16,20` in French) and the last update time without seconds. The PDF
+  is dated in the client's time zone (else the default one), never in the time
+  zone of whoever sends it or of the system user that runs the automatic send.
+- The send assistant's email wrapper follows the same rule as the template: it
+  shows only the legal links the company declared, and the company's own email
+  tagline. Automatic sends and threshold alerts are signed with the company's
+  name.
+
+### 18.0.1.15.3
+
+- The email template no longer falls back on the publisher's name, website and
+  legal links: the company's name, its website (else the database's address),
+  and only the privacy and terms links it declares (`brand_privacy_url`,
+  `brand_terms_url`). The upgrade applies the same corrections to the templates
+  stored in the database, in every language, replacing only those literals so a
+  tenant's own edits are kept.
+
 ### 18.0.1.15.2
 
 - Report brand colours read the document's company (`doc.company_id`), not `env.company`.

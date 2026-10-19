@@ -171,6 +171,12 @@ class MeetingAgenda(models.Model):
              "courriel d'envoi. Propagée au compte rendu.",
     )
 
+    def _bf_tz_lecteur(self):
+        """Le fuseau du client, sinon celui par défaut (voir meeting.record)."""
+        self.ensure_one()
+        return (self.partner_id.tz if self.partner_id else None) \
+            or self.env['bf.timezone'].default_tz()
+
     @api.depends('meeting_type')
     def _compute_meeting_type_icon(self):
         glyphs = {

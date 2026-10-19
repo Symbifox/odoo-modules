@@ -20,6 +20,7 @@ SEAUX = [
     ("pose", "Posée sur une semaine"),
     ("retard", "En retard, ramenée sur la première semaine"),
     ("non_placable", "Non plaçable, aucune date"),
+    ("sans_assigne", "Sans assigné, comptée à part"),
     ("au_dela", "Au delà de l'horizon"),
     ("sans_charge", "Vivante, sans charge"),
     ("dormant", "Projet dormant"),

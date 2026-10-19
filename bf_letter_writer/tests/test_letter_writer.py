@@ -439,6 +439,30 @@ class TestLetterWriter(TransactionCase):
         )[0].decode("utf-8", errors="ignore")
         self.assertIn('class="letter-bg"', html, "Fond image inséré")
 
+    def test_23b_generated_letterhead_layout(self):
+        """L'adresse suit le format du pays, et le pied a sa place réservée."""
+        canada = self.env.ref("base.ca")
+        self.company.write({
+            "street": "123, rue Saint-Laurent", "street2": False, "city": "Montréal",
+            "zip": "H2W 2R2",
+            "country_id": canada.id,
+            "state_id": self.env["res.country.state"].search(
+                [("country_id", "=", canada.id), ("code", "=", "QC")], limit=1).id,
+        })
+        for mode in ("classic", "banner"):
+            letter = self._make_letter()
+            letter.letterhead_style = mode
+            letter.body_html = "<ul>%s</ul>" % "".join("<li>Point %s</li>" % i for i in range(4))
+            html = self.env["ir.actions.report"]._render_qweb_html(
+                "bf_letter_writer.report_letter_document", letter.ids
+            )[0].decode("utf-8", errors="ignore")
+            self.assertIn("Montréal QC", html, mode)
+            self.assertNotIn("H2W 2R2 Montréal", html, mode)
+            self.assertIn('class="letter-page letter-page-generated"', html, mode)
+            # Sans deuxième ligne de rue, aucune ligne vide (pre-line la rendrait).
+            self.assertNotIn("Saint-Laurent\n\n", html, mode)
+        self.assertIn(".letter-page-generated {", html)
+
     # -- 24. PDF overlay stamping (PyPDF2) ----------------------------
     def test_24_pdf_overlay_stamp(self):
         from PyPDF2 import PdfReader

@@ -15,9 +15,12 @@ lieu d'en créer une neuve. Trois promesses, qu'aucune lecture du code ne rend
 
 import importlib.util
 import re
+
+import pytz
 from pathlib import Path
 
-from odoo import Command
+from odoo import Command, fields
+from odoo.tools.misc import format_date
 from odoo.tests import TransactionCase, tagged
 
 PNG_1PX = (
@@ -99,6 +102,45 @@ class TestDiscussedTasks(TransactionCase):
         self.assertNotIn('TACHE-ANNULEE-DEPUIS', html)
         # L'action née de la rencontre reste listée, une seule fois.
         self.assertEqual(html.count('ACTION-NEE-DE-LA-RENCONTRE'), 1)
+
+    def test_les_echeances_sont_des_dates_locales(self):
+        """« 2026-10-23 20:00:00 » : l'échéance sortait en date-heure UTC brute.
+
+        Et au jour du LECTEUR : envoyé d'Auckland, un compte rendu destiné à un
+        client de Montréal changeait le jour de l'échéance.
+        ⚠️ Un module de la base peut ramener l'heure d'une échéance écrite (vu sur une base
+        réelle : 03 h devient 19 h UTC) : on lit la valeur stockée."""
+        client = self.env['res.partner'].create({'name': 'Client de Montréal',
+                                                 'tz': 'America/Toronto'})
+        self.rencontre.partner_id = client
+        # Écrites en SQL : un module de la base réécrit l'heure d'une échéance selon le
+        # fuseau de qui l'écrit, et l'essai doit garder deux jours différents.
+        self.env.flush_all()
+        for tache, valeur in ((self.ancienne, '2026-10-23 19:00:00'),
+                              (self.neuve, '2026-10-24 02:00:00')):
+            self.env.cr.execute("UPDATE project_task SET date_deadline = %s WHERE id = %s",
+                                [valeur, tache.id])
+        self.env.invalidate_all()
+        self.env.user.tz = 'Pacific/Auckland'
+        montreal = pytz.timezone('America/Toronto')
+        auckland = pytz.timezone('Pacific/Auckland')
+        for tache in (self.neuve, self.ancienne):
+            stocke = pytz.utc.localize(tache.date_deadline)
+            self.assertNotEqual(stocke.astimezone(montreal).date(), stocke.astimezone(auckland).date(),
+                                "l'essai doit tomber sur deux jours différents")
+        html = self.env['ir.actions.report']._render_qweb_html(
+            'bf_meeting.action_report_meeting_record', [self.rencontre.id])[0]
+        html = html.decode() if isinstance(html, bytes) else html
+        cellules = re.findall(r'<td><span>([^<]*)</span></td>', html)
+        attendues = [
+            format_date(self.env, pytz.utc.localize(t.date_deadline).astimezone(montreal).date())
+            for t in (self.neuve, self.ancienne)
+        ]
+        self.assertEqual(cellules, attendues)
+        for cellule in cellules:
+            self.assertNotRegex(cellule, r'\d{2}:\d{2}', "une date, pas une date-heure")
+        for tache in (self.neuve, self.ancienne):
+            self.assertNotIn(fields.Datetime.to_string(tache.date_deadline), html)
 
     def test_le_pdf_sans_tache_discutee_n_a_pas_de_section(self):
         html = self.env['ir.actions.report']._render_qweb_html(

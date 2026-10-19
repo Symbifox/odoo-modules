@@ -129,6 +129,24 @@ class TestPortalAffichage(HttpCase):
         self.assertIn("Coupure d'eau mardi matin", texte)
         self.assertIn("De 9 h à 11 h, colonne est.", texte)
 
+    def test_a_request_date_is_local_and_without_seconds(self):
+        """« 2026-10-10 07:48:00 » : la date d'une demande portait ses secondes."""
+        demande = self.env["bf.property.request"].create(
+            {
+                "organisation_id": self.syndicat.id,
+                "building_id": self.building.id,
+                "unit_id": self.unit.id,
+                "requester_partner_id": self.partner.id,
+                "category": "plumbing",
+                "description": "Infiltration au plafond.",
+            }
+        )
+        demande.date_submitted = "2026-10-10 11:48:00"   # 7 h 48 à Montréal
+        texte = self._page("/my/property/requests")
+        self.assertIn("07:48", texte)
+        self.assertNotIn("07:48:00", texte)
+        self.assertNotIn("11:48", texte)
+
     def test_a_refusal_is_not_shown_as_what_was_done(self):
         """🔴 Le motif d'un refus paraissait sous « Ce qui a été fait : »."""
         demande = self.env["bf.property.request"].create(

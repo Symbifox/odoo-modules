@@ -81,7 +81,7 @@
 
                     <p class="text-muted small mt-4 mb-0">
                         Read-only page, served by
-                        <span t-out="payload['company']['name']"/>. It reflects the state at the time of display.
+                        <span t-out="payload['company']['name']"/><t t-out="'' if (payload['company']['name'] or '').endswith('.') else '.'"/> It reflects the state at the time of display.
                     </p>
                 </div>
             </div>

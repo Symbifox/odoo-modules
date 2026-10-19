@@ -50,7 +50,9 @@ seule bibliothèque capable de lire le ``.mpp`` exige une machine virtuelle Java
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.6.0",
+    # 18.0.1.6.1 : pied du portail sans point doublé ; avancement d'un couloir = moyenne de ses
+    #   barres.
+    "version": "18.0.1.6.1",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

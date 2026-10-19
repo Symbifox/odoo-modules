@@ -80,7 +80,7 @@
                             </td>
                             <td class="text-end">
                                 <span t-attf-class="#{'text-success fw-bold' if hb.current_balance &gt;= 0 else 'text-danger fw-bold'}">
-                                    <t t-out="'%.2f' % hb.current_balance"/>
+                                    <t t-out="hb.current_balance" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </span>
                             </td>
                             <td class="text-end d-none d-md-table-cell">
@@ -138,14 +138,14 @@
                     </h3>
                     <p class="text-muted mb-0">
                         Derni&#232;re mise &#224; jour :
-                        <t t-out="data['last_update'].strftime('%Y-%m-%d %H:%M')"/>
+                        <t t-out="data['last_update']" t-options="{'widget': 'datetime', 'hide_seconds': True}"/>
                     </p>
                 </div>
                 <div class="col-md-4">
                     <div class="hb-balance-card p-3 rounded">
                         <div class="text-muted small text-uppercase">Solde restant</div>
                         <div t-attf-class="fs-2 fw-bold #{'text-success' if data['balance'] &gt;= 0 else 'text-danger'}">
-                            <t t-out="'%.2f h' % data['balance']"/>
+                            <t t-out="data['balance']" t-options="{'widget': 'float', 'precision': 2}"/> h
                         </div>
                     </div>
                 </div>
@@ -183,8 +183,8 @@
                             <t t-foreach="entries" t-as="e">
                                 <tr t-attf-class="#{'credit' if e['entry_type'] == 'credit' else ''}">
                                     <td><t t-out="str(e['date'])"/></td>
-                                    <td class="num"><t t-out="'%.2f' % e['hours']"/></td>
-                                    <td class="num"><t t-out="'%.2f' % e['cumulative']"/></td>
+                                    <td class="num"><t t-out="e['hours']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td class="num"><t t-out="e['cumulative']" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                     <td><t t-out="e['description']"/></td>
                                     <td class="d-none d-lg-table-cell"><t t-out="e['project']"/></td>
                                     <td class="d-none d-lg-table-cell"><t t-out="e['task']"/></td>
@@ -217,13 +217,13 @@
                             <t t-foreach="summary.items()" t-as="item">
                                 <tr>
                                     <td><t t-out="item[0]"/></td>
-                                    <td class="text-end"><t t-out="'%.2f' % item[1]"/></td>
+                                    <td class="text-end"><t t-out="item[1]" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                 </tr>
                                 <t t-set="grand_total" t-value="grand_total + item[1]"/>
                             </t>
                             <tr class="fw-bold table-light">
                                 <td>Total</td>
-                                <td class="text-end"><t t-out="'%.2f' % grand_total"/></td>
+                                <td class="text-end"><t t-out="grand_total" t-options="{'widget': 'float', 'precision': 2}"/></td>
                             </tr>
                         </tbody>
                     </table>

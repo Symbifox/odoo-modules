@@ -231,6 +231,7 @@ rules) are refused at the RPC entry point.
 
 ## Changelog
 
+- **18.0.1.0.5**: an administrator who ends a session whose time limit has already passed closes it at its deadline, with the reason "expired", as the scheduled job would have; the journal used to record the session as lasting until the click.
 - **18.0.1.0.4**: the notice to the person is always sent at once, in a context of its own: the browser can no longer delay it or leave it to a queue. The start notice goes out before the session switches; sent after the commit, it went out under the person and the sending checks refused it on databases without `mail_post_defer`. The message of an email still in the queue cannot be changed either.
 - **18.0.1.0.3**: the address and phones of the person's contact are protected
   where the ORM writes, whatever the path (user or employee record, portal page,

@@ -35,6 +35,8 @@
                             <field name="tasks_without_charge"/>
                             <field name="hours_beyond"/>
                             <field name="hours_late"/>
+                            <field name="hours_unassigned"/>
+                            <field name="tasks_unassigned"/>
                         </group>
                     </group>
                     <group>
@@ -59,8 +61,8 @@
                                       decoration-muted="verdict == 'inconnu'">
                                     <field name="date_start"/>
                                     <field name="date_end"/>
-                                    <field name="hours" sum="Heures posées"/>
-                                    <field name="capacity"/>
+                                    <field name="hours" string="Heures" sum="Heures posées"/>
+                                    <field name="capacity" string="Capacité"/>
                                     <field name="load_percent" widget="float"/>
                                     <field name="task_count" sum="Tâches"/>
                                     <field name="verdict" widget="badge"/>
@@ -143,8 +145,10 @@
         <field name="arch" type="xml">
             <graph string="Charge posée par semaine" type="bar" sample="0">
                 <field name="date_start" interval="week"/>
-                <field name="hours" type="measure"/>
+                <field name="user_id"/>
+                <!-- La dernière mesure déclarée est celle qui s'affiche à l'ouverture. -->
                 <field name="capacity" type="measure"/>
+                <field name="hours" type="measure"/>
             </graph>
         </field>
     </record>
@@ -162,9 +166,30 @@
         </field>
     </record>
 
+    <!-- Chaque personne a plusieurs plans : additionner leurs capacités ne veut
+         rien dire. Par défaut, seul le dernier plan calculé de chacun compte. -->
+    <record id="view_bf_charge_plan_week_search" model="ir.ui.view">
+        <field name="name">bf.charge.plan.week.search</field>
+        <field name="model">bf.charge.plan.week</field>
+        <field name="arch" type="xml">
+            <search string="Semaines">
+                <field name="user_id"/>
+                <field name="plan_id"/>
+                <filter name="en_vigueur" string="Plans en vigueur"
+                        domain="[('plan_id.is_current', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_personne" string="Personne" context="{'group_by': 'user_id'}"/>
+                    <filter name="g_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_bf_charge_plan_week" model="ir.actions.act_window">
         <field name="name">Semaines de charge</field>
         <field name="res_model">bf.charge.plan.week</field>
         <field name="view_mode">graph,calendar,list</field>
+        <field name="search_view_id" ref="view_bf_charge_plan_week_search"/>
+        <field name="context">{'search_default_en_vigueur': 1}</field>
     </record>
 </odoo>

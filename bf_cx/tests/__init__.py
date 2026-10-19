@@ -6,3 +6,4 @@ from . import test_cx_wave_resend
 from . import test_cx_exclusion
 from . import test_cx_testimonial_optin
 from . import test_couleur_libre
+from . import test_cx_page_publique

@@ -115,5 +115,26 @@
             <field name="global" eval="True"/>
         </record>
 
+        <!-- ============ Départs : le salaire se devine derrière ============ -->
+
+        <!--
+          Le coût estimé d'un départ se déduit du salaire. Ni la méthode ni les
+          fiches de départ ne s'ouvrent à l'administration des avantages : le
+          contrôle complet seulement, qui lit déjà les contrats.
+        -->
+        <record id="rule_departure_company" model="ir.rule">
+            <field name="name">Départ : société</field>
+            <field name="model_id" ref="model_bf_ex_departure"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_departure_policy_company" model="ir.rule">
+            <field name="name">Méthode du coût d'un départ : société</field>
+            <field name="model_id" ref="model_bf_ex_departure_policy"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
     </data>
 </odoo>

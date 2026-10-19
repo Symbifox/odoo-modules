@@ -124,7 +124,15 @@ class BfImpersonateSession(models.Model):
         if not self.env.user.has_group("base.group_system"):
             raise AccessError(_("Only an administrator can end someone else's impersonation."))
         self.check_access("read")
-        self._bf_close("forced")
+        # Une séance dont la durée est déjà passée a pris fin à son échéance, pas
+        # au clic : la fermer « maintenant » inscrivait 54 minutes au journal pour
+        # une séance bornée à 10. On la ferme comme la tâche planifiée l'aurait fait.
+        maintenant = fields.Datetime.now()
+        echues = self.sudo().filtered(
+            lambda j: not j.date_end and j.expires_at and j.expires_at <= maintenant)
+        for journal in echues:
+            journal._bf_close("expired", when=journal.expires_at)
+        (self - echues)._bf_close("forced")
         return True
 
     @api.model

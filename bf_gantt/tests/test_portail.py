@@ -16,6 +16,7 @@ en fixe un, il faut passer `--db-filter=^<base_de_test>$` : sans lui, toutes ces
 requêtes atterrissent dans la base nommée par la configuration, où le module
 n'est pas installé, et rendent un 404 qui ressemble à une route mal écrite.
 """
+import json
 from datetime import date, datetime
 
 from odoo.tests.common import HttpCase, new_test_user, tagged
@@ -99,6 +100,56 @@ class TestPortail(HttpCase):
         self.assertIn("<svg", corps)
         self.assertIn("Projet public", corps)
         self.assertIn("Tâche visible au portail", corps)
+
+    def test_le_pied_ne_double_pas_le_point_final_du_nom(self):
+        """« servie par Boréal inc.. » : le nom de la société porte déjà son point."""
+        self.projet.action_bf_gantt_publier()
+        url = self._url("project", self.projet, token=self.projet.access_token)
+        # La page suit la langue du site : on regarde la ponctuation, pas la phrase.
+        for nom, motif in (("Banc Gantt inc.", r"Banc Gantt inc\.</span>\s+[A-Z]"),
+                           ("Banc Gantt", r"Banc Gantt</span>\.\s+[A-Z]")):
+            (self.projet.company_id or self.env.company).name = nom
+            self.env.flush_all()
+            corps = self.url_open(url).text
+            self.assertRegex(corps, motif)
+            # Doublé : « inc.</span>. » ou « </span>. . »
+            self.assertNotRegex(corps, r"Banc Gantt inc\.</span>\.")
+            self.assertNotRegex(corps, r"Banc Gantt(?: inc\.)?</span>\.?\s+\.\s")
+
+    def test_la_migration_retire_le_point_herite_de_l_ancienne_traduction(self):
+        """La montée gardait la traduction « . Elle reflète… » : « Boréal. . Elle »."""
+        import importlib.util
+        from pathlib import Path
+        chemin = Path(__file__).parents[1] / "migrations" / "18.0.1.6.1" / "post-migrate.py"
+        spec = importlib.util.spec_from_file_location("bf_gantt_mig_1_6_1", chemin)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        vue = self.env.ref("bf_gantt.portail_echeancier")
+        self.env.flush_all()
+        self.env.cr.execute("SELECT arch_db FROM ir_ui_view WHERE id = %s", [vue.id])
+        arch = self.env.cr.fetchone()[0]
+        abime = {lang: texte.replace("It reflects the state", ". It reflects the state")
+                 .replace("Elle reflète", ". Elle reflète") for lang, texte in arch.items()}
+        self.env.cr.execute("UPDATE ir_ui_view SET arch_db = %s::jsonb WHERE id = %s",
+                            [json.dumps(abime), vue.id])
+        migration.migrate(self.env.cr, "18.0.1.6.0")
+        self.env.cr.execute("SELECT arch_db FROM ir_ui_view WHERE id = %s", [vue.id])
+        self.assertEqual(self.env.cr.fetchone()[0], arch)
+        # Rejouable : rien ne bouge au second passage.
+        migration.migrate(self.env.cr, "18.0.1.6.0")
+        self.env.cr.execute("SELECT arch_db FROM ir_ui_view WHERE id = %s", [vue.id])
+        self.assertEqual(self.env.cr.fetchone()[0], arch)
+
+    def test_le_pied_francais_ne_double_pas_le_point(self):
+        langue = self.env["res.lang"]._lang_get("fr_CA")
+        if not langue:
+            self.skipTest("fr_CA inactif sur cette base")
+        self.projet.action_bf_gantt_publier()
+        (self.projet.company_id or self.env.company).name = "Banc Gantt"
+        self.env.flush_all()
+        vue = self.env.ref("bf_gantt.portail_echeancier").with_context(lang="fr_CA")
+        self.assertIn("Elle reflète", vue.arch_db)
+        self.assertNotRegex(vue.arch_db, r"/>\s*\.\s+Elle reflète")
 
     def test_la_page_ne_laisse_pas_la_declaration_xml_dans_le_html(self):
         self.projet.action_bf_gantt_publier()

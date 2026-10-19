@@ -35,10 +35,10 @@
                                     </span>
                                 </td>
                                 <td><t t-out="ligne['planned_minutes']"/> min</td>
-                                <td><t t-out="ligne['minutes']"/> min</td>
+                                <td><t t-out="doc.agenda_id._timer_fmt_min(ligne['minutes'])"/> min</td>
                                 <td>
                                     <t t-set="ecart" t-value="round(ligne['minutes'] - ligne['planned_minutes'], 1)"/>
-                                    <t t-if="ecart &gt; 0">+</t><t t-out="ecart"/> min
+                                    <t t-if="ecart &gt; 0">+</t><t t-out="doc.agenda_id._timer_fmt_min(ecart)"/> min
                                 </td>
                             </tr>
                         </tbody>

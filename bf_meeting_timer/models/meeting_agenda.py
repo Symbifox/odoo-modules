@@ -22,6 +22,7 @@ from markupsafe import Markup
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import formatLang
 
 _logger = logging.getLogger(__name__)
 
@@ -612,6 +613,12 @@ class MeetingAgenda(models.Model):
             })
         return lignes
 
+    def _timer_fmt_min(self, minutes):
+        """Des minutes écrites comme la langue les écrit : « 18,5 », « 0 », « -2,5 »."""
+        # « + 0.0 » : un écart de -0,04 s'arrondit à -0.0, qui s'écrirait « -0 ».
+        minutes = round(minutes or 0.0, 1) + 0.0
+        return formatLang(self.env, minutes, digits=0 if minutes == int(minutes) else 1)
+
     def _timer_post_recap(self):
         """Une note au chatter à la fin de la course, pas une par geste.
 
@@ -640,7 +647,7 @@ class MeetingAgenda(models.Model):
                 mention = ''
             items += Markup('<li>%s</li>') % _(
                 "%(nom)s : %(reel)s min pour %(prevu)s prévues%(mention)s",
-                nom=ligne['name'], reel=ligne['minutes'],
+                nom=ligne['name'], reel=self._timer_fmt_min(ligne['minutes']),
                 prevu=ligne['planned_minutes'], mention=mention)
         # 🔴 La trace ne doit JAMAIS emporter la mesure. Un `message_post` peut
         # échouer pour une raison qui n'a rien à voir avec le chronomètre : un

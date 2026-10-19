@@ -866,6 +866,15 @@ class MeetingRecord(models.Model):
         for rec in self:
             rec.task_count = len(rec.task_ids)
 
+    def _bf_tz_lecteur(self):
+        """Le fuseau du client, sinon celui par défaut : celui de l'en-tête.
+
+        Les échéances d'un document se lisent au jour de son lecteur, jamais au
+        fuseau de qui l'envoie (un envoi d'Auckland changeait le jour au Québec)."""
+        self.ensure_one()
+        return (self.partner_id.tz if self.partner_id else None) \
+            or self.env['bf.timezone'].default_tz()
+
     def _discussed_tasks_for_report(self):
         """Les tâches existantes discutées, telles que le compte rendu les montre.
 

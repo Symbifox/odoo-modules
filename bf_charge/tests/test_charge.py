@@ -28,7 +28,10 @@ class TestCharge(TransactionCase):
         cls.env = cls.env(context=dict(cls.env.context, allowed_company_ids=[cls.company.id]))
         cls.user = cls.env.user
         cls.Project = cls.env["project.project"].with_company(cls.company)
-        cls.Task = cls.env["project.task"].with_company(cls.company)
+        # Le plan ne lit que les tâches de sa personne : les tâches de l'essai lui
+        # sont donc assignées par défaut, comme le formulaire le fait pour soi.
+        cls.Task = cls.env["project.task"].with_company(cls.company).with_context(
+            default_user_ids=[cls.user.id])
         cls.projet = cls.Project.create({"name": "Charge : projet vivant",
                                          "company_id": cls.company.id})
         cls.gabarit = cls.Project.create({"name": "Charge : patron",
@@ -343,7 +346,8 @@ class TestCharge(TransactionCase):
 
     #: Champs dont on compare l'ÉCART plutôt que le total.
     TOTAUX = ("hours_placed", "hours_unplaceable", "tasks_unplaceable", "hours_late",
-              "hours_template", "hours_dormant")
+              "hours_template", "hours_dormant", "hours_unassigned", "tasks_unassigned",
+              "tasks_without_charge")
 
     def _base(self, semaines=4):
         """Un plan bâti AVANT les tâches de l'essai, plus ses totaux de départ.
@@ -479,6 +483,7 @@ class TestCharge(TransactionCase):
         self.assertAlmostEqual(s.get("gabarit", 0.0), plan.hours_template, places=2)
         self.assertAlmostEqual(s.get("dormant", 0.0), plan.hours_dormant, places=2)
         self.assertAlmostEqual(s.get("au_dela", 0.0), plan.hours_beyond, places=2)
+        self.assertAlmostEqual(s.get("sans_assigne", 0.0), plan.hours_unassigned, places=2)
         self.assertEqual(len(plan.line_ids.filtered(lambda l: l.bucket == "sans_charge")),
                          plan.tasks_without_charge)
 
@@ -539,6 +544,123 @@ class TestCharge(TransactionCase):
         self.assertIn(("plan_id", "=", plan.id), action["domain"])
         self.assertTrue(action["view_mode"].startswith("graph"),
                         "le bouton ouvre le graphique, pas la liste")
+        # Sans le regroupement par sort, le graphique n'a qu'une barre par semaine.
+        self.assertEqual(action["context"].get("search_default_g_sort"), 1)
+        self.assertEqual(action["context"].get("search_default_g_semaine"), 1)
+
+    # -- le contrat porte sur UNE personne ---------------------------------
+    def _autre(self):
+        return self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Charge : collègue", "login": "charge-collegue@example.com",
+            "company_id": self.company.id, "company_ids": [(6, 0, [self.company.id])],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+
+    def test_le_plan_ignore_les_taches_des_autres(self):
+        self._saisir(self.projet, jours=1)
+        plan, base = self._base()
+        autre = self._autre()
+        aujourdhui = fields.Date.context_today(self.env.user)
+        tache = self.Task.create({"name": "à la collègue", "project_id": self.projet.id,
+                                  "allocated_hours": 40.0, "date_deadline": aujourdhui,
+                                  "user_ids": [(6, 0, autre.ids)]})
+        self.Task.create({"name": "sans date, à la collègue", "project_id": self.projet.id,
+                          "allocated_hours": 30.0, "user_ids": [(6, 0, autre.ids)]})
+        plan.action_build()
+        for champ in self.TOTAUX:
+            self.assertAlmostEqual(self._ecart(plan, base, champ), 0.0, places=2, msg=champ)
+        self.assertFalse(plan.line_ids.filtered(lambda l: l.task_id == tache))
+
+    def test_une_tache_a_deux_se_divise_a_parts_egales(self):
+        self._saisir(self.projet, jours=1)
+        plan, base = self._base()
+        autre = self._autre()
+        tache = self.Task.create({
+            "name": "à deux", "project_id": self.projet.id, "allocated_hours": 10.0,
+            "date_deadline": fields.Date.context_today(self.env.user),
+            "user_ids": [(6, 0, (self.user | autre).ids)]})
+        plan.action_build()
+        self.assertAlmostEqual(self._ecart(plan, base, "hours_placed"), 5.0, places=2)
+        siennes = plan.line_ids.filtered(lambda l: l.task_id == tache)
+        self.assertAlmostEqual(sum(siennes.mapped("hours")), 5.0, places=2)
+        self.assertAlmostEqual(sum(siennes.mapped("share")), 0.5, places=6)
+
+    def test_une_tache_sans_assigne_est_comptee_a_part(self):
+        self._saisir(self.projet, jours=1)
+        plan, base = self._base()
+        tache = self.Task.create({
+            "name": "à personne", "project_id": self.projet.id, "allocated_hours": 7.0,
+            "date_deadline": fields.Date.context_today(self.env.user), "user_ids": False})
+        plan.action_build()
+        self.assertAlmostEqual(self._ecart(plan, base, "hours_unassigned"), 7.0, places=2)
+        self.assertEqual(self._ecart(plan, base, "tasks_unassigned"), 1)
+        self.assertAlmostEqual(self._ecart(plan, base, "hours_placed"), 0.0, places=2,
+                               msg="compté, jamais posé sur les semaines de la personne")
+        ligne = plan.line_ids.filtered(lambda l: l.task_id == tache)
+        self.assertEqual(ligne.bucket, "sans_assigne")
+        self.assertFalse(ligne.week_start)
+        self.assertIn("personne ne porte", plan.summary)
+
+    def test_un_gabarit_ou_un_dormant_sans_assigne_n_est_a_personne(self):
+        """Repris dans le plan de chacun, il regonflait le carnet de toute la firme."""
+        self._saisir(self.projet, jours=1)
+        plan, base = self._base()
+        aujourdhui = fields.Date.context_today(self.env.user)
+        for projet in (self.gabarit, self.dormant):
+            self.Task.create({"name": "à personne", "project_id": projet.id,
+                              "allocated_hours": 40.0, "date_deadline": aujourdhui,
+                              "user_ids": False})
+        self.Task.create({"name": "vivante, à personne, sans charge",
+                          "project_id": self.projet.id, "user_ids": False})
+        plan.action_build()
+        for champ in self.TOTAUX:
+            self.assertAlmostEqual(self._ecart(plan, base, champ), 0.0, places=2, msg=champ)
+        self.assertNotIn("À part : 0 h", plan.summary)
+
+    def test_la_migration_recalcule_les_plans_en_vigueur(self):
+        """Les plans calculés avant 1.2.0 gardaient les chiffres de toute la firme."""
+        import importlib.util
+        from pathlib import Path
+        chemin = Path(__file__).parents[1] / "migrations" / "18.0.1.2.0" / "end-migrate.py"
+        spec = importlib.util.spec_from_file_location("bf_charge_mig_1_2_0", chemin)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        self._saisir(self.projet, jours=1)
+        ancien = self._plan()
+        ancien.action_build()
+        recent = self._plan()
+        recent.action_build()
+        # Ce qu'un plan d'avant portait : des heures qui ne sont pas les siennes.
+        recent.hours_placed = ancien.hours_placed = 9999.0
+        migration.migrate(self.env.cr, "18.0.1.1.3")
+        self.assertNotEqual(recent.hours_placed, 9999.0, "le plan en vigueur est recalculé")
+        self.assertEqual(ancien.hours_placed, 9999.0, "l'archive n'est pas touchée")
+
+    def test_le_resume_ecrit_les_nombres_dans_la_langue(self):
+        if not self.env["res.lang"]._lang_get("fr_CA"):
+            self.skipTest("fr_CA inactif sur cette base")
+        contrat = self.env["bf.charge.contract"].create({
+            "name": "Essai", "hours_per_week": 10.5, "company_id": self.company.id})
+        contrat.action_activate()
+        plan = self._plan().with_context(lang="fr_CA")
+        plan.action_build()
+        self.assertIn("10,5 h par semaine", plan.summary)
+        carnet = plan.signal_ids.filtered(lambda s: s.code == "carnet")
+        self.assertRegex(carnet.measure, r"^\d+,\d semaines")
+
+    def test_les_semaines_ne_lisent_que_le_plan_en_vigueur(self):
+        ancien = self._plan()
+        ancien.action_build()
+        recent = self._plan()
+        recent.action_build()
+        self.assertFalse(ancien.is_current)
+        self.assertTrue(recent.is_current)
+        Semaine = self.env["bf.charge.plan.week"]
+        lues = Semaine.search([("plan_id.is_current", "=", True),
+                               ("plan_id", "in", (ancien | recent).ids)])
+        self.assertEqual(lues.plan_id, recent)
+        self.assertEqual(set(lues.mapped("user_id").ids), {self.user.id})
+        self.assertIn(ancien, self.env["bf.charge.plan"].search([("is_current", "=", False)]))
 
     # ------------------------------------------------------------------
     def test_releve_capture(self):
@@ -550,6 +672,19 @@ class TestCharge(TransactionCase):
         self.assertTrue(releve.name.startswith("Relevé"))
         self.assertGreaterEqual(releve.hours_placeable, 3.0)
         self.assertGreaterEqual(releve.tasks_open, 1)
+
+    def test_releve_ne_lit_que_la_personne(self):
+        self._saisir(self.projet, jours=1)
+        avant = self.env["bf.charge.snapshot"]._capture(company=self.company)
+        self.Task.create({"name": "à la collègue", "project_id": self.projet.id,
+                          "allocated_hours": 50.0, "user_ids": [(6, 0, self._autre().ids)],
+                          "date_deadline": fields.Date.context_today(self.env.user)})
+        self.Task.create({"name": "à personne", "project_id": self.projet.id,
+                          "allocated_hours": 4.0, "user_ids": False})
+        apres = self.env["bf.charge.snapshot"]._capture(company=self.company)
+        self.assertAlmostEqual(apres.hours_live - avant.hours_live, 0.0, places=2)
+        self.assertEqual(apres.tasks_open, avant.tasks_open)
+        self.assertAlmostEqual(apres.hours_unassigned - avant.hours_unassigned, 4.0, places=2)
 
     def test_cron_du_releve_est_livre_inactif(self):
         cron = self.env.ref("bf_charge.cron_bf_charge_snapshot")

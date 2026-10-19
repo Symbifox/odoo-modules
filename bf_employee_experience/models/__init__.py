@@ -4,5 +4,6 @@ from . import starter_catalogue
 from . import entitlement
 from . import usage
 from . import claim
+from . import departure
 from . import indicator
 from . import hr_employee

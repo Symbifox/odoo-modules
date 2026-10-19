@@ -105,6 +105,9 @@ class Benefit(models.Model):
         string="Personnes qui s'en servent", compute="_compute_counts",
         help="Personnes distinctes ayant au moins un usage confirmé sur les douze derniers mois.",
     )
+    # ⚠️ Échelle 0 à 100, comme tous les taux de la famille (roulement, agrégat
+    # du pont vie privée, tuile du tableau de bord). Une vue ne lui met donc
+    # jamais `widget="percentage"`, qui attend 0 à 1 et multiplie par cent.
     uptake_rate = fields.Float(
         string="Taux d'adhésion (%)", compute="_compute_counts",
         help="Personnes qui s'en servent, sur personnes qui y ont droit.",
@@ -133,8 +136,30 @@ class Benefit(models.Model):
 
     # ------------------------------------------------------------------
 
+    def _ex_reads_whole_registry(self):
+        """Les compteurs du catalogue résument le registre de TOUT le personnel.
+
+        🔴 Le catalogue est ouvert à tout le personnel, mais pas ce
+        qu'il résume : les règles d'admissibilité ne se lisent pas hors de
+        `hr.group_hr_user` (aucune ACL), et les droits comme les usages ne se
+        lisent que pour soi (règles d'enregistrement). Calculés sous un compte
+        ordinaire, ces compteurs levaient `AccessError` sur les règles, et la
+        liste « Avantages » comme la fiche ne s'ouvraient plus, ni la tuile de
+        l'accueil. Sans cette erreur, ils auraient été faux : « 1 personne y a
+        droit », la sienne. Hors de l'administration des avantages, ils valent
+        donc zéro, et les vues les masquent.
+        """
+        return self.env.su or self.env.user.has_group("hr.group_hr_user")
+
     @api.depends("rule_ids", "entitlement_ids.date_end", "usage_ids.state", "usage_ids.date")
+    @api.depends_context("uid")
     def _compute_counts(self):
+        if not self._ex_reads_whole_registry():
+            self.update({
+                "rule_count": 0, "entitled_count": 0, "user_count": 0,
+                "uptake_rate": 0.0, "unused": False,
+            })
+            return
         today = fields.Date.context_today(self)
         horizon = fields.Date.subtract(today, years=1)
         for benefit in self:
@@ -155,7 +180,13 @@ class Benefit(models.Model):
 
     @api.depends("cost_model", "cost_amount", "usage_ids.amount", "usage_ids.state",
                  "usage_ids.date", "entitlement_ids.date_end")
+    @api.depends_context("uid")
     def _compute_cost(self):
+        if not self._ex_reads_whole_registry():
+            # Voir `_ex_reads_whole_registry` : un coût calculé sur ses seules
+            # lignes serait faux, et le coût par personne laisse deviner un usage.
+            self.update({"annual_cost": 0.0, "cost_per_entitled": 0.0})
+            return
         today = fields.Date.context_today(self)
         horizon = fields.Date.subtract(today, years=1)
         for benefit in self:

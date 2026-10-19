@@ -140,6 +140,21 @@ class TestSource(TransactionCase):
             "project", self.projet.id, grouping="none")
         self.assertEqual([c["key"] for c in payload["lanes"]], ["all"])
 
+    def test_l_avancement_du_couloir_compte_les_lignes_avancees(self):
+        """Deux lignes à 40 et 70 %, une fermée : pas « 0 % »."""
+        def barre(cle, closed, progress):
+            return {"lane": "a", "lane_name": "A", "lane_seq": 1, "closed": closed,
+                    "progress": progress, "start": "2026-09-01", "end": "2026-09-10",
+                    "id": cle}
+        payload = self.source._assembler(
+            "project", "T", "", self.env.company, "none",
+            [barre(1, False, 40), barre(2, False, 70), barre(3, True, 100)],
+            [], self.aujourdhui, (None, None), False)
+        couloir = payload["lanes"][0]
+        self.assertEqual((couloir["done"], couloir["total"]), (1, 3))
+        self.assertEqual(couloir["pct"], 70)
+        self.assertNotIn("avance", couloir)
+
     def test_le_module_ne_depend_pas_des_etapes_de_progression(self):
         """`bf_stepbystep_clients` peut être absent : on l'offre, on n'en dépend pas."""
         offert = self.source._etapes_de_progression_disponibles()
