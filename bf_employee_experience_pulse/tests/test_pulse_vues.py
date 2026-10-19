@@ -6,6 +6,8 @@ en production pour la personne qui l'ouvre, pas pour l'administrateur qui l'a
 écrite.
 """
 
+from lxml import etree
+
 from odoo.tests.common import tagged
 
 from .common import PulseCase
@@ -134,4 +136,27 @@ class TestPulseVues(PulseCase):
             fuites,
             "un employé sans rôle RH voit un menu qui le mènera à un refus : %s"
             % fuites,
+        )
+
+    def test_aucun_taux_0_a_100_sous_le_widget_pourcentage(self):
+        """La vague affichait « 3 750 % » de réponse.
+
+        `response_rate` vaut déjà 0 à 100. Le widget `percentage` attend une
+        fraction de 0 à 1 et la multiplie par cent. Aucun champ du pulse ne
+        porte de fraction : le widget n'a donc rien à faire dans ses vues.
+        """
+        donnees = self.env["ir.model.data"].search([
+            ("module", "=", "bf_employee_experience_pulse"),
+            ("model", "=", "ir.ui.view"),
+        ])
+        poses = [
+            (vue.xml_id, noeud.get("name"))
+            for vue in self.env["ir.ui.view"].browse(donnees.mapped("res_id"))
+            if vue.type != "qweb"
+            for noeud in etree.fromstring(vue.arch.encode()).iter("field")
+            if noeud.get("widget") == "percentage"
+        ]
+        self.assertFalse(
+            poses,
+            "widget « percentage » sur un taux déjà exprimé de 0 à 100 : %s" % poses,
         )

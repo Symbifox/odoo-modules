@@ -2,7 +2,7 @@
     "name": "Expérience employé : pulse",
     "summary": "Sondage d'humeur anonyme, eNPS, seuils d'affichage et scores "
                "par axe",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.2.3",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

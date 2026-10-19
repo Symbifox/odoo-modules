@@ -11,7 +11,9 @@
                 <field name="date_close"/>
                 <field name="invitation_count"/>
                 <field name="response_count"/>
-                <field name="response_rate" widget="percentage" digits="[3,0]"/>
+                <!-- ⚠️ `response_rate` vaut déjà 0 à 100 : jamais `widget="percentage"`,
+                     qui multiplie par cent. -->
+                <field name="response_rate" digits="[16,0]"/>
                 <field name="pending_flush_count" optional="show"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
                 <field name="state" widget="badge"
@@ -62,7 +64,7 @@
                             <field name="response_count"/>
                         </group>
                         <group>
-                            <field name="response_rate" widget="percentage" digits="[3,0]"/>
+                            <field name="response_rate" digits="[16,0]"/>
                             <field name="pending_flush_count"/>
                         </group>
                     </group>

@@ -68,6 +68,8 @@ class PulseCampaign(models.Model):
         help="Le nombre de personnes qui ont répondu. Jamais lesquelles, "
              "jamais quand.",
     )
+    # ⚠️ Échelle 0 à 100 : une vue ne lui met jamais `widget="percentage"`,
+    # qui attend 0 à 1 et multiplie par cent.
     response_rate = fields.Float(
         string="Taux de réponse (%)", compute="_compute_counters",
     )

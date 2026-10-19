@@ -155,7 +155,7 @@ kept for rules, borders and selected states.
 
 ## Tests
 
-65 tests. Fresh install from an empty database, and the journey played over HTTP
+66 tests. Fresh install from an empty database, and the journey played over HTTP
 by a **signed-in** user — which is the only place the native module's trap shows
 itself.
 
@@ -169,6 +169,18 @@ odoo -c <config> -d <database> -i bf_employee_experience_pulse \
 from the config file, so the module would load from a neighbouring tree while its
 data files came from the right one. A mutation pass on a hybrid tree measures
 nothing.
+
+## Changelog
+
+### 18.0.1.2.3
+
+- The response rate is shown on its own 0 to 100 scale: the wave list and form
+  no longer put Odoo's `percentage` widget on it (a wave showed "3,750 %").
+
+### 18.0.1.2.2
+
+- The guard that drops leftover log columns builds its `ALTER TABLE` with
+  quoted SQL identifiers instead of string formatting.
 
 ## Licence
 

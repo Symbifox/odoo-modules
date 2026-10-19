@@ -19,6 +19,7 @@ donc le ménage se refait tout seul.
 import logging
 
 from odoo import models
+from odoo.tools import SQL
 
 _logger = logging.getLogger(__name__)
 
@@ -71,7 +72,8 @@ class SansJournal(models.AbstractModel):
                 "Pulse : la table %s portait encore %s, colonne retirée.",
                 table, colonne,
             )
-            self.env.cr.execute(
-                'ALTER TABLE "%s" DROP COLUMN "%s"' % (table, colonne)
-            )
+            self.env.cr.execute(SQL(
+                "ALTER TABLE %s DROP COLUMN %s",
+                SQL.identifier(table), SQL.identifier(colonne),
+            ))
         return restantes
