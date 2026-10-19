@@ -4,13 +4,19 @@
     <!-- Rendu une fois PAR DESTINATAIRE, dans sa langue et son fuseau : chaque
          phrase est un terme entier du catalogue, sans fragment qui ne se
          traduise pas seul. Le plan de match vient de Gen : il est rendu en
-         texte (t-out), jamais en balisage, et sans lien. -->
+         texte (t-out), jamais en balisage, et sans lien.
+         Habillage : l'enveloppe (bandeau, police, pied) vient de la mise en page
+         passée à l'envoi ; le corps prend l'accent de la société (`accent`) et les
+         gris de la marque (#F5F7FA, #374151, #6B7280), jamais ceux d'Odoo. Les
+         styles vont sur les blocs et sur le lien, jamais sur un <strong> ou un
+         <span> : ils feraient partie du terme traduit et le catalogue ne le
+         retrouverait plus. -->
     <template id="task_unblocked_notification">
         <div>
-            <p>Hello,</p>
-            <p>
+            <p style="margin:0 0 12px 0;">Hello,</p>
+            <p style="margin:0 0 12px 0;">
                 <span>The task</span>
-                <a t-att-href="access_link" style="font-weight: bold;"><t t-out="task.display_name"/></a>
+                <a t-att-href="access_link" t-attf-style="font-weight:600;color:{{ accent }};"><t t-out="task.display_name"/></a>
                 <t t-if="task.project_id">
                     <span>in the project</span>
                     <strong><t t-out="task.project_id.display_name"/></strong>
@@ -21,7 +27,7 @@
                 </t>
                 <span>is now <strong>unblocked</strong> and ready to resume.</span>
             </p>
-            <p t-if="deadline or planned or high_priority">
+            <p t-if="deadline or planned or high_priority" style="margin:0 0 12px 0;">
                 <t t-if="deadline">
                     <span>Deadline:</span> <strong><t t-out="deadline"/></strong>
                 </t>
@@ -34,27 +40,27 @@
                     <strong>High priority</strong>
                 </t>
             </p>
-            <p t-if="to_manager">
+            <p t-if="to_manager" style="margin:0 0 12px 0;">
                 <em>Nobody is assigned to this task: you receive this notice as the project manager.</em>
             </p>
             <t t-if="kind == 'blocker_closed' and other_info">
-                <p>
+                <p style="margin:0 0 12px 0;">
                     <strong><t t-out="closing_user"/></strong>
                     <span>completed the following blocking tasks on</span>
                     <strong><t t-out="closing_time"/></strong><span>:</span>
                 </p>
             </t>
             <t t-if="kind == 'dependency_removed' and other_info">
-                <p>
+                <p style="margin:0 0 12px 0;">
                     <strong><t t-out="closing_user"/></strong>
                     <span>removed the dependency on the following tasks on</span>
                     <strong><t t-out="closing_time"/></strong><span>:</span>
                 </p>
             </t>
-            <ul t-if="other_info">
+            <ul t-if="other_info" style="margin:0 0 12px 0;padding-left:20px;">
                 <t t-foreach="other_info" t-as="other">
                     <li>
-                        <a t-att-href="other['url']"><t t-out="other['name']"/></a>
+                        <a t-att-href="other['url']" t-attf-style="color:{{ accent }};"><t t-out="other['name']"/></a>
                         (<t t-out="other['state_label']"/>)
                         <t t-if="other['project_name']">
                             <span>· project</span> <t t-out="other['project_name']"/>
@@ -65,27 +71,40 @@
                     </li>
                 </t>
             </ul>
-            <p t-if="hidden_count">
+            <p t-if="hidden_count" style="margin:0 0 12px 0;">
                 <span>Other tasks involved, which you cannot open:</span> <t t-out="hidden_count"/>
             </p>
-            <div t-if="plan" style="margin: 16px 0; padding: 12px 16px; border-left: 3px solid #c9ced4; background-color: #f6f7f8;">
-                <p style="margin: 0 0 8px 0;"><strong>Game plan proposed by Gen</strong></p>
-                <t t-if="plan['situation']">
-                    <p style="margin: 0;"><strong>Situation</strong></p>
-                    <ul style="margin-top: 4px;">
-                        <li t-foreach="plan['situation']" t-as="line"><t t-out="line"/></li>
-                    </ul>
-                </t>
-                <t t-if="plan['next_actions']">
-                    <p style="margin: 0;"><strong>Next actions</strong></p>
-                    <ol style="margin-top: 4px;">
-                        <li t-foreach="plan['next_actions']" t-as="line"><t t-out="line"/></li>
-                    </ol>
-                </t>
-                <p style="margin: 8px 0 0 0; font-size: 12px; color: #6c757d;">Written by Gen from the task and its thread only. Check it before acting on it.</p>
-            </div>
-            <p t-elif="plan_missing" style="font-size: 12px; color: #6c757d;">Gen could not prepare a game plan this time.</p>
-            <p>Over to you!</p>
+            <!-- Le liséré est une cellule de tableau, pas un `border-left` : le
+                 nettoyeur d'Odoo retire les propriétés CSS hors de sa liste
+                 blanche (`border-left` n'y est pas ; `background-color` et
+                 `width` y sont), et le plan arrivait sans cadre.
+                 Taille, interligne et couleur sont écrits sur la cellule : la mise en
+                 page n'a pas de DOCTYPE, et en mode quirks une table n'hérite de rien
+                 (le plan sortait à 16 px, interligne normal, gris d'Odoo). Mêmes valeurs
+                 que la cellule de contenu de la mise en page. -->
+            <table t-if="plan" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0;border-collapse:collapse;">
+                <tr>
+                    <td width="3" t-attf-style="width:3px;background-color:{{ accent }};">&#160;</td>
+                    <td style="padding:12px 16px;background-color:#F5F7FA;font-size:15px;line-height:24px;color:#374151;">
+                        <p style="margin:0 0 8px 0;"><strong>Game plan proposed by Gen</strong></p>
+                        <t t-if="plan['situation']">
+                            <p style="margin:0;"><strong>Situation</strong></p>
+                            <ul style="margin:4px 0 8px 0;padding-left:20px;">
+                                <li t-foreach="plan['situation']" t-as="line"><t t-out="line"/></li>
+                            </ul>
+                        </t>
+                        <t t-if="plan['next_actions']">
+                            <p style="margin:0;"><strong>Next actions</strong></p>
+                            <ol style="margin:4px 0 8px 0;padding-left:20px;">
+                                <li t-foreach="plan['next_actions']" t-as="line"><t t-out="line"/></li>
+                            </ol>
+                        </t>
+                        <p style="margin:8px 0 0 0;font-size:12px;color:#6B7280;">Written by Gen from the task and its thread only. Check it before acting on it.</p>
+                    </td>
+                </tr>
+            </table>
+            <p t-elif="plan_missing" style="margin:0 0 12px 0;font-size:12px;color:#6B7280;">Gen could not prepare a game plan this time.</p>
+            <p style="margin:0;">Over to you!</p>
         </div>
     </template>
 

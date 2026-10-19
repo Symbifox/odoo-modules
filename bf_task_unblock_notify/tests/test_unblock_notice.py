@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """The notice of 18.0.2.0.0: layout, content, project manager, game plan."""
+import re
 import socket
 from datetime import datetime
 from unittest.mock import patch
@@ -97,11 +98,18 @@ class TestUnblockNotice(TransactionCase):
     # ------------------------------------------------------------------
     # Layout and content
     # ------------------------------------------------------------------
-    def test_layout_prefers_the_brand(self):
-        branded = self.env.ref("bluefox_branding.bf_mail_layout", raise_if_not_found=False)
-        expected = ("bluefox_branding.bf_mail_layout" if branded
-                    else "mail.mail_notification_light")
-        self.assertEqual(self.Event._layout(), expected)
+    def test_notice_wears_the_house_layout(self):
+        # The layout every Blue Fox module points its emails to: `bluefox_branding`
+        # replaces it when installed, `bf_onboarding_base` ships a copy otherwise.
+        # Never a local list that falls back on Odoo's own light layout.
+        self.assertTrue(self.env.ref("bf_onboarding_base.bf_mail_layout", raise_if_not_found=False))
+        blocker = self._task("Blocker layout")
+        waiting = self._waiting(blocker)
+        after = self._last_id()
+        blocker.write({"state": "1_done"})
+        notice = self._notices(waiting, self.assignee.partner_id, after)
+        self.assertEqual(len(notice), 1)
+        self.assertEqual(notice.email_layout_xmlid, "bf_onboarding_base.bf_mail_layout")
 
     def test_notice_content(self):
         same = self._task("Blocker same project")
@@ -135,6 +143,49 @@ class TestUnblockNotice(TransactionCase):
         self.assertIn("Closer Auckland", body)
         self.assertEqual(event.state, "sent")
         self.assertFalse(event.with_plan)
+
+    def test_body_takes_the_company_accent_and_the_brand_greys(self):
+        # 18.0.2.0.2: the frame of the plan, the links and the muted lines were
+        # Odoo's greys; the envelope was the brand's and the body was not.
+        self.company.report_brand_primary = "#12AB34"
+        blocker = self._task("Blocker accent")
+        waiting = self._waiting(blocker)
+        after = self._last_id()
+        with self._with_plan():
+            blocker.write({"state": "1_done"})
+            event = self.Event.search([("task_id", "=", waiting.id)])
+            token = event._claim()
+            requests, eligible = event._plan_requests()
+        plans = dict.fromkeys(eligible)
+        _ask_bridge(("/nowhere.sock", "bf", FakeTransport(answer=PLAN)), requests, plans)
+        self.assertTrue(event._send(plans, "ok", token=token))
+        # What the mail carries is the body once Odoo's sanitizer has been through
+        # it: it drops `border-left` (not in its CSS whitelist), which is why the
+        # frame of the plan is a table cell, and it spaces the declarations.
+        body = re.sub(r";\s+", ";", self._notices(waiting, self.assignee.partner_id, after).body)
+        self.assertIn("width:3px;background-color:#12AB34", body)
+        self.assertNotIn("border-left", body)
+        # Both links (the task and the blocker) carry the colour: not the
+        # `background-color` of the frame, which contains the same text.
+        self.assertEqual(
+            len(re.findall(r'<a [^>]*style="[^"]*(?<![-\w])color:#12AB34', body)), 2)
+        # Size, line height and colour are on the cell of the plan: the layout has
+        # no DOCTYPE, and in quirks mode a table inherits none of them.
+        self.assertRegex(
+            body, r"<td [^>]*background-color:#F5F7FA[^>]*font-size:15px[^>]*line-height:24px")
+        for odoo_grey in ("#c9ced4", "#f6f7f8", "#6c757d"):
+            self.assertNotIn(odoo_grey, body.lower())
+        self.assertIn("#F5F7FA", body)
+        self.assertIn("#6B7280", body)
+
+    def test_a_value_that_is_not_a_colour_is_dropped(self):
+        task = self._task("Task accent")
+        for bad in ("red; background:url(x)", "", "red", "rgb(1,2,3)", "#12345", "#1234567", "29ABE2"):
+            self.company.report_brand_primary = bad
+            self.assertEqual(self.Event._accent(task), "#714B67", repr(bad))
+        for good in ("#abc", "#abcd", "#29ABE2", "#29abe2cc"):
+            self.company.report_brand_primary = good
+            self.assertEqual(self.Event._accent(task), good)
 
     def test_french_formats(self):
         event = self.Event.with_context(lang="fr_CA", tz="America/Toronto")

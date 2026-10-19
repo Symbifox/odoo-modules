@@ -322,13 +322,12 @@ class TaskUnblockEvent(models.Model):
     sent_at = fields.Datetime(readonly=True)
     plan_outcome = fields.Char("Game plan outcome", readonly=True)
 
-    # Layouts of the notice, in order of preference: the first one present
-    # serves. `bluefox_branding` is not a dependency; installed, it puts the
-    # notice with the company's other emails (banner, accent, font, footer).
-    _LAYOUTS = (
-        "bluefox_branding.bf_mail_layout",
-        "mail.mail_notification_light",
-    )
+    # The layout of the notice: the one every Blue Fox module points its emails
+    # to. `bluefox_branding`, when installed, replaces it with its own (banner,
+    # accent, font, footer); without it the copy that `bf_onboarding_base` ships
+    # applies, so the notice is never left in Odoo's own layout.
+    _LAYOUT = "bf_onboarding_base.bf_mail_layout"
+    _DEFAULT_ACCENT = "#714B67"  # what the layout itself falls back on
 
     # ------------------------------------------------------------------
     # Recording
@@ -624,11 +623,24 @@ class TaskUnblockEvent(models.Model):
     # ------------------------------------------------------------------
     # Sending
     # ------------------------------------------------------------------
-    def _layout(self):
-        for xmlid in self._LAYOUTS:
-            if self.env.ref(xmlid, raise_if_not_found=False):
-                return xmlid
-        return "mail.mail_notification_layout"
+    def _accent(self, task):
+        """The accent colour of the company the notice speaks for.
+
+        The one the layout reads (`report_brand_primary`, a field of
+        `bf_onboarding_base`), so the body and the envelope agree whichever
+        layout serves: the frame of the game plan and the links are not the
+        only grey part of a branded notice.
+
+        ⚠️ Nothing is darkened here: the raw accent is the brand owner's call
+        (`branding.scss` of `bluefox_branding`). Only a hexadecimal colour goes
+        through (the value ends up in a `style` attribute): anything else, a
+        `rgb()` or a colour name included, gives the layout's own default.
+        """
+        company = (task.company_id or self.env.company).sudo()
+        colour = company.report_brand_primary
+        if not re.fullmatch(r"#(?:[0-9A-Fa-f]{3,4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})", colour or ""):
+            colour = self._DEFAULT_ACCENT
+        return colour
 
     def _send(self, plans, outcome, token=None):
         """Mark the notice sent and send it, once, whoever gets there first.
@@ -759,6 +771,7 @@ class TaskUnblockEvent(models.Model):
                 "closing_user": self.user_id.name or "",
                 "closing_time": self._when(self.create_date),
                 "access_link": task._notify_get_action_link("view"),
+                "accent": self._accent(task),
                 "to_manager": self.to_manager,
                 "deadline": self._deadline(task),
                 "planned": planned,
@@ -774,7 +787,7 @@ class TaskUnblockEvent(models.Model):
             body=body,
             partner_ids=partner.ids,
             author_id=author_id,
-            email_layout_xmlid=self._layout(),
+            email_layout_xmlid=self._LAYOUT,
             model_description=self.env["ir.model"]._get("project.task").display_name,
             mail_auto_delete=False,
             # The layout signs for the company; the author's own signature

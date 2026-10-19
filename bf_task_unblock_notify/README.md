@@ -17,7 +17,7 @@ Two events unblock a task:
 
 ### The notice
 
-- Wears the company's mail layout when `bluefox_branding` is installed (banner, accent, font, footer), and Odoo's light layout otherwise. The layout signs for the company: the author's own signature is left out.
+- Wears the house mail layout, `bf_onboarding_base.bf_mail_layout` (banner, accent, font, footer), which `bluefox_branding` replaces with its own when installed. The body takes the company's accent colour and the brand greys. The layout signs for the company: the author's own signature is left out.
 - Rendered **once per recipient**, in their language and **their time zone** (the time of the unblock used to follow the time zone of whoever closed the blocker), without seconds.
 - Names the task, its project and client, its **deadline**, its **planned hours** and a **high priority** when set.
 - Lists the tasks that unblocked it, **each one a link**. Their project and client are named only when they differ from the unblocked task's.
@@ -38,8 +38,8 @@ When Gen (`bf_claude_chat`, `bf_ai_bridge`) is installed, the database is allowe
 ## Requirements
 
 - Odoo 18.0 (Community or Enterprise)
-- Modules: `project`, `bf_onboarding_base`
-- Optional: `bluefox_branding` (layout), `bf_claude_chat` and `bf_ai_bridge` (game plan)
+- Modules: `project`, `bf_onboarding_base` (18.0.2.1.1 or later: the first to ship the mail layout the notice points to)
+- Optional: `bluefox_branding` (replaces the layout with its own), `bf_claude_chat` and `bf_ai_bridge` (game plan)
 
 ## Installation
 
@@ -96,6 +96,16 @@ bf_task_unblock_notify/
 ```
 
 ## Changelog
+
+### 18.0.2.0.3
+- **The house mail layout**: the notice points to `bf_onboarding_base.bf_mail_layout`, the layout every Blue Fox module points its emails to. `bluefox_branding` replaces it with its own when installed; without it the copy `bf_onboarding_base` ships applies. No more local list ending on Odoo's light layout.
+- The body reads its accent from `report_brand_primary` (the field `bf_onboarding_base` defines, which the layout reads too), so the envelope and the body take the same colour. Only a hexadecimal colour goes through; anything else gives the layout's own default.
+- The game plan cell carries its own font size, line height and colour: the layout has no DOCTYPE, and in quirks mode a table inherits none of them.
+
+### 18.0.2.0.2
+- **The body of the notice takes the company's brand**, as the other branded modules do (`bf_training`, `bf_babillard`): the company's accent on the links and on the frame of the game plan, and the brand greys (`#F5F7FA`, `#6B7280`) in place of Odoo's. The banner, font and footer already came from the layout; the body did not.
+- The frame of the game plan is a table cell: Odoo's HTML sanitizer drops `border-left`, so the frame never reached the mail.
+- Paragraph and list spacing set explicitly, so every mail client draws the same notice.
 
 ### 18.0.2.0.1
 - French typography: a space before the colon that ends « … le 11 oct., 12 h 17 : ».
