@@ -111,7 +111,11 @@ class ProjectTask(models.Model):
 
     def _apply_time_of_day_to_deadline(self):
         """If a slot is set and the deadline is set, rewrite the deadline's time
-        portion to the user's effective time for that slot. Date is preserved."""
+        portion to the user's effective time for that slot. The date is kept in
+        the zone of the write: the context's `tz` first, as Odoo's
+        context_timestamp does, then the user's. A write made on behalf of
+        another zone (federation, a technical user without a zone) says which
+        day it means through `tz`."""
         self.ensure_one()
         if not self.time_of_day_id or not self.date_deadline:
             return
@@ -122,7 +126,10 @@ class ProjectTask(models.Model):
         if hm is None:
             return
         hours, minutes = hm
-        tz = pytz.timezone(self.env.user.tz or "UTC")
+        try:
+            tz = pytz.timezone(self.env.context.get("tz") or self.env.user.tz or "UTC")
+        except pytz.UnknownTimeZoneError:
+            tz = pytz.timezone(self.env.user.tz or "UTC")
         local = pytz.utc.localize(self.date_deadline.replace(tzinfo=None)).astimezone(tz)
         new_local = local.replace(hour=hours, minute=minutes, second=0, microsecond=0)
         new_utc = new_local.astimezone(pytz.utc).replace(tzinfo=None)

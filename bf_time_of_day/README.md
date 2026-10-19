@@ -93,6 +93,8 @@ res.users
 | `time_of_day_id` set, `date_deadline` set, `default_time` blank and no override | unchanged |
 | `time_of_day_id` set, `date_deadline` set, `default_time` or override set | the deadline's **time** is rewritten, the **date** preserved, the user's time zone respected |
 
+The date is kept in the time zone of the write: the context's `tz` first (as Odoo's `context_timestamp` does), then the user's, then UTC. A write made on behalf of another zone, such as a technical user without a time zone, says which day it means through `tz`; an unknown `tz` falls back to the user's zone.
+
 ## File Structure
 
 ```
@@ -127,6 +129,9 @@ bf_time_of_day/
 ```
 
 ## Changelog
+
+### 18.0.1.5.2
+- **The deadline keeps its day when written on behalf of another time zone.** Snapping the deadline to the slot now reads the time zone of the context before the user's. A write made by a user without a time zone (the superuser, an integration) used to snap in UTC, and the deadline slipped by one day for anyone far from UTC. Three tests cover the context zone, the user's zone and an unknown zone.
 
 ### 18.0.1.5.1
 - **"My color" for time slots**: the slot list and form show the *Displayed color*, which opens "My color" (a shade only you see) and also shows Odoo's index color, where the free-color field alone read "No color".

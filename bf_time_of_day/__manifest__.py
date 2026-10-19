@@ -10,7 +10,11 @@
     # 18.0.1.5.0: la plage horaire prend une couleur libre (bf_color) ;
     #   la pastille de la carte de tâche la reprend telle quelle.
     # 18.0.1.5.1: la couleur affichée, dans la liste et la fiche, ouvre « Ma couleur ».
-    "version": "18.0.1.5.1",
+    # 18.0.1.5.2: le recalage sur la plage lit le fuseau du contexte avant
+    #   celui de l'usager. La fédération écrit le jour reçu au nom du fuseau
+    #   de la société ; le superutilisateur, sans fuseau, recalait en UTC et
+    #   l'échéance glissait d'un jour pour qui est loin d'UTC.
+    "version": "18.0.1.5.2",
     "category": "Project",
     "summary": "Plages horaires (Matinée / Midi / Fin de jour / Hors heures) pour tâches et activités",
     'author': 'Les services de consultation Blue Fox, Inc.',
