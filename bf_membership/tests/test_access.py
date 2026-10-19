@@ -483,6 +483,35 @@ class TestAccess(MembershipCase):
         # Sans le rôle, « Dupliquer » marche sur tout contact.
         self.bruno.with_user(self._contacts_only("dupliquer")).copy()
 
+    def test_creating_a_user_without_the_role(self):
+        """🔴 `res.users.create` résout les défauts du contact avant de le créer (statut
+        « none ») : un administrateur des usagers sans le rôle Membres crée quand même un
+        compte, et un défaut forgé reste refusé."""
+        users_admin = new_test_user(self.env, login="admin_usagers", context={"no_reset_password": True},
+                                    groups="base.group_user,base.group_erp_manager,base.group_partner_manager")
+        Users = self.env["res.users"].with_user(users_admin).with_context(no_reset_password=True)
+        user = Users.create({"name": "Nouveau compte (essai)", "login": "nouveau_compte_essai"})
+        self.assertEqual(user.partner_id.sudo().member_status, "none")
+        # `res.users` résout lui-même le contexte de ses champs hérités : un défaut forgé
+        # arrive en clair au contact, et la garde le refuse (par son message, pas par les droits).
+        for forged in ({"default_directory_consent": True}, {"default_member_status": "member"},
+                       {"default_member_number": "00997"}):
+            with self.assertRaisesRegex(AccessError, "réservés au rôle Membres"):
+                Users.with_context(**forged).create({"name": "Défaut forgé (essai)", "login": "defaut_forge_essai"})
+        with self.assertRaisesRegex(AccessError, "réservés au rôle Membres"):
+            Users.create({"name": "Consentement passé (essai)", "login": "consentement_passe_essai",
+                          "directory_consent": True})
+
+    def test_a_personal_default_sets_no_consent(self):
+        """🔴 Un employé peut poser ses propres `ir.default` : sans le rôle, ils ne cochent
+        aucun consentement à la création d'un contact (Loi 25)."""
+        contacts = self._contacts_only("defaut_perso")
+        Default = self.env["ir.default"].with_user(contacts)
+        Default.set("res.partner", "directory_consent", True, user_id=True)
+        Default.set("res.partner", "notice_email_consent", True, user_id=True)
+        created = self.env["res.partner"].with_user(contacts).create({"name": "Défaut personnel (essai)"})
+        self.assertFalse(created.sudo().directory_consent or created.sudo().notice_email_consent)
+
     def test_without_the_role_no_consent_is_set_at_creation(self):
         contacts = self._contacts_only("creer_contacts")
         Partner = self.env["res.partner"].with_user(contacts)

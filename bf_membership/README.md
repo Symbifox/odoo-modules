@@ -262,7 +262,12 @@ every association of the database: only someone who holds every company where
 the contact has a membership writes its consents and its number (a request
 created for the occasion in one's own company does not open the others). A
 contact that holds no membership yet logs nothing. Duplicating a contact never copies
-its consents:
+its consents, and no default fills them for someone without the role: neither a
+context default nor a personal default (`ir.default`, which any employee can set
+for themselves) checks a consent when they create a contact. A value passed
+explicitly is refused. Creating a user account goes through the same guard, and
+an administrator of users without the Members roles (but allowed to create
+contacts) can create accounts:
 
 * « Paraît au répertoire des membres »: read by the directory of
   `bf_membership_portal`;
@@ -407,6 +412,12 @@ odoo -d <database> -u bf_membership --test-enable \
 
 ## Changelog
 
+- **18.0.1.0.6**: without the Members roles, defaults no longer fill a reserved
+  contact field. A personal default (`ir.default`) set by an employee could check
+  both consents of a contact they created, with no trace. And creating a user
+  account passed the default member status to its contact, which the guard took
+  for a reserved write: an administrator of users without the role could create no
+  account at all. Explicit values stay refused.
 - **18.0.1.0.5**: the followers and notifications of the association's
   records stay hidden whatever other modules are installed. The rules that
   hid them were group rules, which Odoo combines with OR: next to another
@@ -427,6 +438,6 @@ manifest schema has no BUSL value; the `LICENSE` file governs.
   operations. Providing it to third parties as a product or service (hosted,
   managed or resold) requires a separate written agreement with the Licensor.
 * Each version converts to LGPL-3.0-or-later at its Change Date; for this
-  version, `LICENSE` sets 2030-10-01.
+  version, `LICENSE` sets 2030-10-18.
 
 See `LICENSE` for the full terms.

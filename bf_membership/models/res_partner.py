@@ -160,6 +160,26 @@ class ResPartner(models.Model):
                     break
             partner.member_number = number
 
+    @api.model
+    def default_get(self, fields_list):
+        """Sans le rôle, aucun défaut ne remplit un champ réservé.
+
+        🔴 Les défauts s'appliquent APRÈS la garde de `create` : un `ir.default`
+        personnel (qu'un employé peut poser lui-même) cochait un consentement sans
+        trace. Et `res.users.create`, qui résout les défauts du contact avant de le
+        créer, lui passait `member_status` = « none » : la garde le refusait, et
+        aucun compte sans le rôle ne créait d'usager. Le statut se calcule ensuite de
+        lui-même ; le numéro s'attribue à la première mise en règle.
+        """
+        res = super().default_get(fields_list)
+        if not self.env.su:
+            role = self.env.user.has_group("bf_membership.group_membership_user")
+            manager = self.env.user.has_group("bf_membership.group_membership_manager")
+            reserved = MEMBERSHIP_FIELDS if not role else {"member_number"} if not manager else set()
+            for name in reserved & res.keys():
+                del res[name]
+        return res
+
     @api.model_create_multi
     def create(self, vals_list):
         if not self.env.su:
