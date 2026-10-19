@@ -180,6 +180,16 @@ Les libellés et les messages sont écrits en anglais dans la source ; le franç
 
 ## Historique
 
+### 18.0.12.3.1 — thème sombre
+
+Sous le thème sombre `bf_dark_mode`, l'application gardait son fond gris pâle
+sous le texte clair du thème : le titre du coffre verrouillé, la consigne de
+recherche et les intitulés de regroupement descendaient sous 2:1. Le fond suit
+maintenant celui de la page. Le rouge des cartes (décompte des cinq dernières
+secondes, message d'un token illisible, corbeille) prend la teinte « emphasis »
+du thème, la bande d'accent des cartes revient, et le code de relève s'imprime
+en noir. Le mode clair ne change pas.
+
 ### 18.0.12.2.0
 
 Odoo ne rejoue pas les règles d'enregistrement après un `write`. Gardes `write`

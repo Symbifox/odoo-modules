@@ -144,6 +144,26 @@
     background: var(--bs-tertiary-bg, #f8f9fa);
 }
 
+// --- Thème sombre (bf_dark_mode). Le fond gris pâle ci-dessus restait sous le
+//     texte clair du thème : titre du portail à 1,14:1, consigne de recherche
+//     et intitulés de regroupement à 1,82:1. Le fond suit celui de la page, les
+//     cartes (surface du thème) s'en détachent comme en mode clair. Le rouge
+//     sur la carte (décompte des cinq dernières secondes, message d'un token
+//     illisible, corbeille) descendait sous 3:1 selon la couleur de la marque :
+//     même teinte que les « emphasis » du thème. La bordure grise que le thème
+//     pose sur `.card` effaçait aussi la bande d'accent.
+body.bf_dark_mode .o_bf_otp {
+    --bf-otp-bg: var(--body-bg, #1a1d1e);
+
+    .o_bf_otp_card:not(.o_bf_otp_broken) {
+        border-left-color: #29ABE2;
+    }
+
+    .text-danger {
+        color: var(--danger-text-emphasis, #f3b8be) !important;
+    }
+}
+
 // ⚠️ À l'impression, on ne veut QUE le code : une capture du back-office autour
 // d'un secret qu'on va glisser dans une enveloppe n'apporte rien et révèle le
 // reste de l'écran.
@@ -158,5 +178,8 @@
         right: 2rem;
         border: 1px solid #000;
         background: #fff;
+        // Sous le thème sombre, le texte héritait de la teinte claire : 1,48:1
+        // sur le papier.
+        color: #000;
     }
 }
