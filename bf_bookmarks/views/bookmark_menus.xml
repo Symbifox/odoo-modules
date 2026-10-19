@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bookmark_root" name="Signets" sequence="85"
+              action="action_bookmarks_home"
+              web_icon="bf_bookmarks,static/description/icon.png"/>
+    <menuitem id="menu_bookmarks_home" name="Mes signets" parent="menu_bookmark_root"
+              action="action_bookmarks_home" sequence="5"/>
+    <menuitem id="menu_bookmark_favorites" name="Mes favoris" parent="menu_bookmark_root"
+              action="action_bookmark_favorites" sequence="7"/>
+    <menuitem id="menu_bookmark" name="Gérer" parent="menu_bookmark_root"
+              action="action_bookmark" sequence="10"/>
+    <menuitem id="menu_bookmark_proposal" name="Propositions" parent="menu_bookmark_root"
+              action="action_bookmark_proposal" sequence="15"/>
+    <menuitem id="menu_bookmark_folder" name="Dossiers" parent="menu_bookmark_root"
+              action="action_bookmark_folder" sequence="20"/>
+    <menuitem id="menu_bookmark_import" name="Importer" parent="menu_bookmark_root"
+              action="action_bookmark_import" sequence="30"/>
+    <menuitem id="menu_bookmark_trash" name="Supprimés depuis le navigateur"
+              parent="menu_bookmark_root" action="action_bookmark_trash" sequence="40"/>
+</odoo>

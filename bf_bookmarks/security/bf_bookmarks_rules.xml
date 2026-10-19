@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les règles d'un même groupe s'additionnent : chaque portée a la sienne.
+         🔴 Aucune règle ne donne au responsable des signets les dossiers perso
+         des autres. -->
+    <record id="rule_folder_read_personal" model="ir.rule">
+        <field name="name">Dossier — lecture — Perso : le propriétaire</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'personal'), ('owner_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_folder_read_company" model="ir.rule">
+        <field name="name">Dossier — lecture — Entreprise : le personnel de la société</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'company'), ('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_folder_read_department" model="ir.rule">
+        <field name="name">Dossier — lecture — Département : ses membres et son gestionnaire</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'department'), '|', ('department_id.member_ids.user_id', 'in', [user.id]), ('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_folder_read_project" model="ir.rule">
+        <field name="name">Dossier — lecture — Projet : ses abonnés et son chargé</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'project'), '|', ('project_id.message_partner_ids', 'in', [user.partner_id.id]), ('project_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_folder_write_personal" model="ir.rule">
+        <field name="name">Dossier — écriture — Perso : le propriétaire</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'personal'), ('owner_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_folder_write_department" model="ir.rule">
+        <field name="name">Dossier — écriture — Département : son gestionnaire</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'department'), ('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_folder_write_project" model="ir.rule">
+        <field name="name">Dossier — écriture — Projet : son chargé</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'project'), ('project_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_folder_manager" model="ir.rule">
+        <field name="name">Dossier — responsable des signets — entreprise et équipes</field>
+        <field name="model_id" ref="model_bf_bookmark_folder"/>
+        <field name="groups" eval="[(4, ref('group_bookmark_manager'))]"/>
+        <field name="domain_force">[('scope', '!=', 'personal'), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- Les règles de lecture des signets sont recopiées sur bf.bookmark.usage
+         (rule_usage_mark_*) : toute modification se fait des deux côtés. -->
+    <record id="rule_mark_read_personal" model="ir.rule">
+        <field name="name">Signet — lecture — Perso : le propriétaire</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'personal'), ('owner_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mark_read_company" model="ir.rule">
+        <field name="name">Signet — lecture — Entreprise : le personnel de la société</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'company'), ('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mark_read_department" model="ir.rule">
+        <field name="name">Signet — lecture — Département : ses membres et son gestionnaire</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'department'), '|', ('department_id.member_ids.user_id', 'in', [user.id]), ('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mark_read_project" model="ir.rule">
+        <field name="name">Signet — lecture — Projet : ses abonnés et son chargé</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'project'), '|', ('project_id.message_partner_ids', 'in', [user.partner_id.id]), ('project_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mark_write_personal" model="ir.rule">
+        <field name="name">Signet — écriture — Perso : le propriétaire</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'personal'), ('owner_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_mark_write_department" model="ir.rule">
+        <field name="name">Signet — écriture — Département : son gestionnaire</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'department'), ('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_mark_write_project" model="ir.rule">
+        <field name="name">Signet — écriture — Projet : son chargé</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('scope', '=', 'project'), ('project_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_mark_manager" model="ir.rule">
+        <field name="name">Signet — responsable des signets — entreprise et équipes</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="groups" eval="[(4, ref('group_bookmark_manager'))]"/>
+        <field name="domain_force">[('scope', '!=', 'personal'), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- Favoris et récents : chacun les siens, et personne d'autre. Règle GLOBALE
+         (sans groupe) : elle s'applique aussi aux responsables et aux administrateurs
+         hors sudo. -->
+    <record id="rule_usage_own" model="ir.rule">
+        <field name="name">Usage des signets — les siens seulement</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+    <!-- 🔴 ET seulement les lignes dont le signet est lisible : les cinq règles de LECTURE
+         de bf.bookmark, recopiées telles quelles derrière `bookmark_id.`. Sans elles, une
+         ligne survivait à la perte d'accès (signet déplacé dans un perso, départ d'un
+         département) et rendait le titre ET l'adresse à jour du signet : le nom du
+         many2one se calcule en sudo et remplit le cache. À changer EN MÊME TEMPS que les
+         règles rule_mark_read_* et rule_mark_manager ; l'essai d'équivalence le vérifie. -->
+    <record id="rule_usage_mark_personal" model="ir.rule">
+        <field name="name">Usage des signets — signet lisible — Perso : le propriétaire</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('bookmark_id.scope', '=', 'personal'), ('bookmark_id.owner_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_usage_mark_company" model="ir.rule">
+        <field name="name">Usage des signets — signet lisible — Entreprise : le personnel de la société</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('bookmark_id.scope', '=', 'company'), ('bookmark_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_usage_mark_department" model="ir.rule">
+        <field name="name">Usage des signets — signet lisible — Département : ses membres et son gestionnaire</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('bookmark_id.scope', '=', 'department'), '|', ('bookmark_id.department_id.member_ids.user_id', 'in', [user.id]), ('bookmark_id.department_id.manager_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_usage_mark_project" model="ir.rule">
+        <field name="name">Usage des signets — signet lisible — Projet : ses abonnés et son chargé</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('bookmark_id.scope', '=', 'project'), '|', ('bookmark_id.project_id.message_partner_ids', 'in', [user.partner_id.id]), ('bookmark_id.project_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_usage_mark_manager" model="ir.rule">
+        <field name="name">Usage des signets — signet lisible — responsable des signets — entreprise et équipes</field>
+        <field name="model_id" ref="model_bf_bookmark_usage"/>
+        <field name="groups" eval="[(4, ref('group_bookmark_manager'))]"/>
+        <field name="domain_force">[('bookmark_id.scope', '!=', 'personal'), ('bookmark_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- Une proposition : vue par qui l'a faite et par qui en décide, personne d'autre. -->
+    <record id="rule_proposal_parties" model="ir.rule">
+        <field name="name">Proposition de signet — proposant et décideur</field>
+        <field name="model_id" ref="model_bf_bookmark_proposal"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('proposer_id', '=', user.id), ('responsible_id', '=', user.id)]</field>
+    </record>
+</odoo>

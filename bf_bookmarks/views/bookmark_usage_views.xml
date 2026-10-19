@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bookmark_usage_view_list_favorites" model="ir.ui.view">
+        <field name="name">bf.bookmark.usage.list.favorites</field>
+        <field name="model">bf.bookmark.usage</field>
+        <field name="arch" type="xml">
+            <list string="Mes favoris" create="false" editable="bottom">
+                <field name="favorite_sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="url" widget="url"/>
+                <field name="folder_id"/>
+                <field name="use_count" optional="hide"/>
+                <field name="last_used" optional="hide"/>
+                <button name="action_remove_favorite" type="object" icon="fa-star-o"
+                        title="Retirer des favoris" aria-label="Retirer des favoris"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bookmark_favorites" model="ir.actions.act_window">
+        <field name="name">Mes favoris</field>
+        <field name="res_model">bf.bookmark.usage</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="bookmark_usage_view_list_favorites"/>
+        <field name="domain">[('favorite', '=', True), ('user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun favori pour l'instant</p>
+            <p>Cliquez l'étoile d'un signet, dans l'icône Signets ou sur la page Signets. Vos
+               favoris s'affichent en tête ; glissez-les ici ou dans l'icône pour les ordonner.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_bookmarks" model="ir.module.category">
+        <field name="name">Signets</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <!-- Seul ce groupe modifie les signets d'entreprise. Les signets d'équipe se
+         modifient aussi par le gestionnaire du département ou le chargé du projet :
+         ce droit-là vient des règles, pas d'un groupe. -->
+    <record id="group_bookmark_manager" model="res.groups">
+        <field name="name">Responsable des signets</field>
+        <field name="category_id" ref="module_category_bookmarks"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_bookmark_manager'))]"/>
+    </record>
+</odoo>

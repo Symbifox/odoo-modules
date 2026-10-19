@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La page Signets : accueil du module, cible de « Tout voir » dans la barre, et
+         application installable (PWA à portée réduite de bluefox_branding). Le
+         chemin donne une adresse lisible : /odoo/signets. -->
+    <record id="action_bookmarks_home" model="ir.actions.client">
+        <field name="name">Mes signets</field>
+        <field name="tag">bf_bookmarks.home</field>
+        <field name="path">signets</field>
+    </record>
+</odoo>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bookmark_view_list" model="ir.ui.view">
+        <field name="name">bf.bookmark.list</field>
+        <field name="model">bf.bookmark</field>
+        <field name="arch" type="xml">
+            <list string="Signets">
+                <header>
+                    <button name="action_restore_from_browser" type="object" string="Restaurer"
+                            invisible="not context.get('bf_bookmarks_trash')"/>
+                </header>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="url" widget="url"/>
+                <field name="folder_id"/>
+                <field name="scope"/>
+                <field name="archived_date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bookmark_view_form" model="ir.ui.view">
+        <field name="name">bf.bookmark.form</field>
+        <field name="model">bf.bookmark</field>
+        <field name="arch" type="xml">
+            <form string="Signet">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="ex. Portail du client"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="url" widget="url" placeholder="https://"/>
+                            <field name="folder_id" domain="[('can_edit', '=', True)]"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="scope"/>
+                            <field name="company_id" invisible="scope != 'company'" groups="base.group_multi_company"/>
+                            <field name="department_id" invisible="scope != 'department'"/>
+                            <field name="project_id" invisible="scope != 'project'"/>
+                            <field name="owner_id" invisible="scope != 'personal'"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="À quoi sert ce lien, pour qui…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- L'ajout rapide depuis l'icône de la barre : titre, adresse, dossier. -->
+    <record id="bookmark_view_form_quick" model="ir.ui.view">
+        <field name="name">bf.bookmark.form.quick</field>
+        <field name="model">bf.bookmark</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Ajouter un signet">
+                <group>
+                    <field name="name" string="Titre"/>
+                    <field name="url" widget="url" placeholder="https://"/>
+                    <field name="folder_id" domain="[('can_edit', '=', True)]"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="bookmark_view_search" model="ir.ui.view">
+        <field name="name">bf.bookmark.search</field>
+        <field name="model">bf.bookmark</field>
+        <field name="arch" type="xml">
+            <search string="Signets">
+                <field name="name"/>
+                <field name="url"/>
+                <field name="folder_id"/>
+                <filter name="filter_personal" string="Perso" domain="[('scope', '=', 'personal')]"/>
+                <filter name="filter_company" string="Entreprise" domain="[('scope', '=', 'company')]"/>
+                <filter name="filter_team" string="Équipes" domain="[('scope', 'in', ('department', 'project'))]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <filter name="filter_browser_trash" string="Supprimés depuis le navigateur"
+                        domain="[('active', '=', False), ('archived_from_browser', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_scope" string="Portée" context="{'group_by': 'scope'}"/>
+                    <filter name="group_folder" string="Dossier" context="{'group_by': 'folder_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bookmark_trash" model="ir.actions.act_window">
+        <field name="name">Supprimés depuis le navigateur</field>
+        <field name="res_model">bf.bookmark</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('active', '=', False), ('archived_from_browser', '=', True)]</field>
+        <field name="context">{'active_test': False, 'bf_bookmarks_trash': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à récupérer</p>
+            <p>Un signet supprimé dans le navigateur n'est pas effacé : il arrive ici, et
+               « Restaurer » le remet à sa place, dans le navigateur aussi.</p>
+        </field>
+    </record>
+
+    <record id="action_bookmark" model="ir.actions.act_window">
+        <field name="name">Signets</field>
+        <field name="res_model">bf.bookmark</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_scope': 1, 'search_default_group_folder': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez un premier signet</p>
+            <p>Les signets d'entreprise et d'équipe apparaissent dans le navigateur de
+               chaque personne concernée, par l'extension Symbifox Signets. Vos signets
+               perso vous suivent d'un poste à l'autre.</p>
+        </field>
+    </record>
+</odoo>

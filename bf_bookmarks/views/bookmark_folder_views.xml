@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bookmark_folder_view_list" model="ir.ui.view">
+        <field name="name">bf.bookmark.folder.list</field>
+        <field name="model">bf.bookmark.folder</field>
+        <field name="arch" type="xml">
+            <list string="Dossiers">
+                <field name="sequence" widget="handle"/>
+                <field name="complete_name"/>
+                <field name="scope"/>
+                <field name="bookmark_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bookmark_folder_view_form" model="ir.ui.view">
+        <field name="name">bf.bookmark.folder.form</field>
+        <field name="model">bf.bookmark.folder</field>
+        <field name="arch" type="xml">
+            <form string="Dossier de signets">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="scope" readonly="parent_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="scope != 'company'" readonly="parent_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="department_id" invisible="scope != 'department'" readonly="parent_id"
+                                   required="scope == 'department' and not parent_id"/>
+                            <field name="project_id" invisible="scope != 'project'" readonly="parent_id"
+                                   required="scope == 'project' and not parent_id"/>
+                            <field name="owner_id" invisible="scope != 'personal'" readonly="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Signets" name="bookmarks">
+                            <field name="bookmark_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="url" widget="url"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sous-dossiers" name="children">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="bookmark_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bookmark_folder_view_search" model="ir.ui.view">
+        <field name="name">bf.bookmark.folder.search</field>
+        <field name="model">bf.bookmark.folder</field>
+        <field name="arch" type="xml">
+            <search string="Dossiers">
+                <field name="complete_name"/>
+                <filter name="filter_roots" string="Sections" domain="[('parent_id', '=', False)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_scope" string="Portée" context="{'group_by': 'scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bookmark_folder" model="ir.actions.act_window">
+        <field name="name">Dossiers</field>
+        <field name="res_model">bf.bookmark.folder</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_scope': 1}</field>
+    </record>
+</odoo>

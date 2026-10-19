@@ -1,0 +1,39 @@
+// ⚠️ Pas de min()/max() CSS qui mélange les unités (px et vw/vh) : libsass veut les
+// calculer lui-même, échoue (« Incompatible units ») et c'est TOUT web.assets_web
+// qui ne se compile plus. On passe par une largeur et un plafond séparés.
+.o_bf_bookmarks_systray {
+    width: 380px;
+    max-width: 92vw;
+}
+.o_bf_bookmarks_systray_list {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.o_bf_bookmark_row {
+    min-width: 0;
+    border-radius: 4px;
+    .o_bf_star, .o_bf_act { visibility: hidden; color: var(--bs-secondary-color); }
+    .o_bf_star_on { visibility: visible; color: var(--bs-warning); }
+    &:hover, &:focus-within {
+        background: var(--bs-tertiary-bg);
+        .o_bf_star, .o_bf_act { visibility: visible; }
+    }
+}
+.o_bf_draggable { cursor: grab; }
+.o_bf_grip { cursor: grab; }
+.o_bf_favicon { flex: 0 0 16px; object-fit: contain; }
+.o_bf_bookmark_link {
+    min-width: 0;
+    &:hover span { text-decoration: underline; }
+}
+.o_bf_drop_target {
+    outline: 2px dashed var(--bs-primary);
+    border-radius: 4px;
+}
+.o_bf_bookmarks_home .card-body {
+    min-width: 0;
+}
+// Sur un écran tactile, pas de survol : l'étoile reste visible.
+@media (hover: none) {
+    .o_bf_bookmark_row .o_bf_star, .o_bf_bookmark_row .o_bf_act { visibility: visible; }
+}

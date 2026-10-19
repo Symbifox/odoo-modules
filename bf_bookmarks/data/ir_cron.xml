@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Chaque jour : les hôtes nouveaux, les icônes de plus de 7 jours, les échecs de
+         plus d'un jour. Une icône est donc rafraîchie chaque semaine. Déclenchée aussi à
+         l'ajout d'un signet vers un hôte inconnu. -->
+    <record id="cron_refresh_favicons" model="ir.cron">
+        <field name="name">Signets : icônes des sites</field>
+        <field name="model_id" ref="model_bf_bookmark_favicon"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_refresh()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Chaque jour, par lots : les signets d'entreprise et d'équipe non vérifiés depuis
+         7 jours. Chaque lien est donc visité une fois par semaine. -->
+    <record id="cron_check_links" model="ir.cron">
+        <field name="name">Signets : liens morts</field>
+        <field name="model_id" ref="model_bf_bookmark"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_links()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

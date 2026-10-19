@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_bookmarks.Link">
+        <div class="o_bf_bookmark_row d-flex align-items-center gap-1"
+             t-att-class="{ 'o_bf_draggable': props.glisse }"
+             t-att-draggable="props.glisse ? 'true' : 'false'"
+             t-on-dragstart="onDragStart" t-on-dragover="onDragOver" t-on-drop="onDrop">
+            <i t-if="props.glisse" class="fa fa-fw fa-ellipsis-v text-muted o_bf_grip" aria-hidden="true"/>
+            <a class="o_bf_bookmark_link d-flex align-items-center gap-2 text-reset text-decoration-none py-1 flex-grow-1"
+               t-att-href="props.lien.url" target="_blank" rel="noopener noreferrer" t-att-title="props.lien.url"
+               draggable="false" t-on-click="() => props.gestes.ouvrir(props.lien)">
+                <img t-if="props.lien.icon" class="o_bf_favicon" t-att-src="props.lien.icon" alt="" width="16" height="16"/>
+                <i t-else="" class="fa fa-fw fa-bookmark-o text-muted" aria-hidden="true"/>
+                <span class="text-truncate" t-esc="props.lien.title"/>
+                <small t-if="props.lien.chemin" class="text-muted text-truncate ms-auto" t-esc="props.lien.chemin"/>
+            </a>
+            <button type="button" class="btn btn-link btn-sm p-0 px-1 o_bf_act o_bf_copy"
+                    title="Copier le lien" aria-label="Copier le lien"
+                    t-on-click.stop="() => props.gestes.copier(props.lien)">
+                <i class="fa fa-clone" aria-hidden="true"/>
+            </button>
+            <button t-if="props.perso" type="button" class="btn btn-link btn-sm p-0 px-1 o_bf_act o_bf_propose"
+                    title="Proposer à l'équipe" aria-label="Proposer à l'équipe"
+                    t-on-click.stop="() => props.gestes.proposer(props.lien)">
+                <i class="fa fa-share" aria-hidden="true"/>
+            </button>
+            <button type="button" class="btn btn-link btn-sm p-0 px-1 o_bf_star"
+                    t-att-class="{ 'o_bf_star_on': props.lien.favorite }"
+                    t-att-title="props.lien.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+                    t-att-aria-label="props.lien.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+                    t-att-aria-pressed="props.lien.favorite ? 'true' : 'false'"
+                    t-on-click.stop="() => props.gestes.favori(props.lien)">
+                <i t-att-class="'fa ' + (props.lien.favorite ? 'fa-star' : 'fa-star-o')" aria-hidden="true"/>
+            </button>
+        </div>
+    </t>
+
+    <t t-name="bf_bookmarks.FolderTree">
+        <div class="o_bf_bookmark_folder">
+            <button type="button" class="btn btn-link text-reset text-decoration-none p-0 d-flex align-items-center gap-2 py-1 w-100 text-start"
+                    t-att-class="{ 'o_bf_drop_target': state.survol }"
+                    t-on-click="toggle" t-att-aria-expanded="state.open ? 'true' : 'false'"
+                    t-on-dragover="onDragOver" t-on-dragleave="onDragLeave" t-on-drop="onDrop">
+                <i t-att-class="'fa fa-fw ' + (state.open ? 'fa-folder-open-o' : 'fa-folder-o')" aria-hidden="true"/>
+                <span class="fw-semibold" t-esc="props.node.title"/>
+            </button>
+            <div t-if="state.open" class="ps-3">
+                <t t-foreach="props.node.children" t-as="child" t-key="child.id">
+                    <BookmarkFolderTree t-if="child.kind === 'folder'" node="child" gestes="props.gestes"
+                                        modifiable="props.modifiable" onDeposer="props.onDeposer"
+                                        perso="props.perso" depth="(props.depth || 0) + 1"/>
+                    <BookmarkLink t-else="" lien="child" gestes="props.gestes" perso="props.perso"
+                                  glisse="props.modifiable and props.onDeposer ? 'ranger' : undefined"
+                                  parentId="props.node.id" index="child_index"
+                                  onDeposer="props.modifiable ? props.onDeposer : undefined"/>
+                </t>
+                <div t-if="!props.node.children.length" class="text-muted small py-1">Vide</div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bookmarks.Systray">
+        <Dropdown position="'bottom-end'" state="dropdown" beforeOpen.bind="onBeforeOpen"
+                  onOpened.bind="onOpened" menuClass="'o_bf_bookmarks_systray_menu p-0'">
+            <button title="Signets" aria-label="Signets"
+                    t-on-pointerenter="precharger" t-on-focus="precharger">
+                <i class="fa fa-lg fa-bookmark-o" role="img" aria-hidden="true"/>
+            </button>
+            <t t-set-slot="content">
+                <div class="o_bf_bookmarks_systray p-2">
+                    <div class="d-flex gap-2 mb-2">
+                        <input type="search" class="form-control form-control-sm" placeholder="Chercher un signet…"
+                               aria-label="Chercher un signet" t-model="state.requete" t-ref="recherche"/>
+                        <button type="button" class="btn btn-sm btn-primary o_bf_bookmarks_add"
+                                title="Ajouter la page actuelle aux signets" aria-label="Ajouter la page actuelle aux signets"
+                                t-on-click="ajouterPageActuelle">
+                            <i class="fa fa-plus" aria-hidden="true"/>
+                        </button>
+                    </div>
+                    <div class="o_bf_bookmarks_systray_list">
+                        <t t-if="state.erreur">
+                            <div class="text-muted small p-2">Les signets n'ont pas pu être lus.</div>
+                        </t>
+                        <t t-elif="state.requete">
+                            <t t-foreach="resultats" t-as="link" t-key="link.id">
+                                <BookmarkLink lien="link" gestes="gestes"/>
+                            </t>
+                            <div t-if="!resultats.length" class="text-muted small p-2">Aucun signet ne correspond.</div>
+                        </t>
+                        <t t-else="">
+                            <div t-if="state.favoris.length" class="o_bf_bookmarks_favoris mb-2">
+                                <div class="small text-muted text-uppercase fw-semibold px-1">Favoris</div>
+                                <t t-foreach="state.favoris" t-as="link" t-key="'fav-' + link.id">
+                                    <BookmarkLink lien="link" gestes="gestes" glisse="'favori'" onDeposer="onDeposerFavori"/>
+                                </t>
+                            </div>
+                            <div t-if="state.recents.length" class="o_bf_bookmarks_recents mb-2">
+                                <div class="small text-muted text-uppercase fw-semibold px-1">Récents</div>
+                                <t t-foreach="state.recents" t-as="link" t-key="'rec-' + link.id">
+                                    <BookmarkLink lien="link" gestes="gestes"/>
+                                </t>
+                            </div>
+                            <t t-foreach="state.sections" t-as="section" t-key="section.id">
+                                <BookmarkFolderTree node="section" gestes="gestes" perso="section.scope === 'personal'"
+                                                    open="section_index === 0 and !state.favoris.length"/>
+                            </t>
+                            <div t-if="state.charge and !state.sections.length" class="text-muted small p-2">Aucun signet pour l'instant.</div>
+                        </t>
+                    </div>
+                    <div class="border-top mt-2 pt-2 d-flex">
+                        <button type="button" class="btn btn-link btn-sm p-0" t-on-click="toutVoir">Tout voir</button>
+                    </div>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+
+    <t t-name="bf_bookmarks.Home">
+        <div class="o_bf_bookmarks_home o_action h-100 overflow-auto">
+            <div class="container-lg py-3 px-3">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                    <h1 class="h3 m-0 me-auto">Signets</h1>
+                    <button type="button" class="btn btn-primary" t-on-click="ajouter">
+                        <i class="fa fa-plus me-1" aria-hidden="true"/>Ajouter
+                    </button>
+                    <button type="button" class="btn btn-secondary" t-on-click="gerer">Gérer</button>
+                </div>
+                <input type="search" class="form-control form-control-lg mb-3" placeholder="Chercher dans tous les signets…"
+                       aria-label="Chercher dans tous les signets" t-model="state.requete"/>
+                <t t-if="state.requete">
+                    <div class="card">
+                        <div class="card-body py-2">
+                            <t t-foreach="resultats" t-as="link" t-key="link.id">
+                                <BookmarkLink lien="link" gestes="gestes"/>
+                            </t>
+                            <div t-if="!resultats.length" class="text-muted py-2">Aucun signet ne correspond.</div>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div t-if="state.favoris.length or state.recents.length" class="row g-3 mb-3">
+                        <div t-if="state.favoris.length" class="col-12 col-md-6">
+                            <div class="card h-100 o_bf_bookmarks_favoris">
+                                <div class="card-header d-flex align-items-center gap-2">
+                                    <i class="fa fa-star text-warning" aria-hidden="true"/>
+                                    <span class="fw-semibold">Favoris</span>
+                                    <small class="text-muted ms-auto">Glissez pour ordonner</small>
+                                </div>
+                                <div class="card-body py-2">
+                                    <t t-foreach="state.favoris" t-as="link" t-key="'fav-' + link.id">
+                                        <BookmarkLink lien="link" gestes="gestes" glisse="'favori'" onDeposer="onDeposerFavori"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-if="state.recents.length" class="col-12 col-md-6">
+                            <div class="card h-100 o_bf_bookmarks_recents">
+                                <div class="card-header d-flex align-items-center gap-2">
+                                    <i class="fa fa-clock-o text-muted" aria-hidden="true"/>
+                                    <span class="fw-semibold">Récents</span>
+                                </div>
+                                <div class="card-body py-2">
+                                    <t t-foreach="state.recents" t-as="link" t-key="'rec-' + link.id">
+                                        <BookmarkLink lien="link" gestes="gestes"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <t t-foreach="state.sections" t-as="section" t-key="section.id">
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="card h-100 o_bf_bookmarks_section" t-att-data-section="section.id">
+                                    <div class="card-header d-flex align-items-center gap-2">
+                                        <span class="fw-semibold text-truncate" t-esc="section.title"/>
+                                        <span class="badge text-bg-light ms-auto" t-esc="portees[section.scope]"/>
+                                        <i t-if="!section.writable" class="fa fa-lock text-muted" title="Imposé : modifiable par les responsables"
+                                           aria-label="Imposé"/>
+                                    </div>
+                                    <div class="card-body py-2">
+                                        <t t-foreach="section.children" t-as="child" t-key="child.id">
+                                            <BookmarkFolderTree t-if="child.kind === 'folder'" node="child" gestes="gestes"
+                                                                modifiable="section.writable" onDeposer="onDeposerRanger"
+                                                                perso="section.scope === 'personal'"/>
+                                            <BookmarkLink t-else="" lien="child" gestes="gestes"
+                                                          perso="section.scope === 'personal'"
+                                                          glisse="section.writable ? 'ranger' : undefined"
+                                                          parentId="section.id" index="child_index"
+                                                          onDeposer="section.writable ? onDeposerRanger : undefined"/>
+                                        </t>
+                                        <div t-if="!compter(section)" class="text-muted small py-1">Aucun signet.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>

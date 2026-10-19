@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_form_bookmarks" model="ir.ui.view">
+        <field name="name">project.project.form.bf_bookmarks</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_bookmarks" type="object" class="oe_stat_button"
+                        icon="fa-bookmark">
+                    <field name="bookmark_count" widget="statinfo" string="Signets"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="partner_form_bookmarks" model="ir.ui.view">
+        <field name="name">res.partner.form.bf_bookmarks</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_bookmarks" type="object" class="oe_stat_button"
+                        icon="fa-bookmark" invisible="bookmark_count == 0"
+                        groups="base.group_user">
+                    <field name="bookmark_count" widget="statinfo" string="Signets"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

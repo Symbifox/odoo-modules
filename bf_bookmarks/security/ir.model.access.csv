@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bookmark_folder_user,bf.bookmark.folder utilisateur,model_bf_bookmark_folder,base.group_user,1,1,1,1
+access_bookmark_user,bf.bookmark utilisateur,model_bf_bookmark,base.group_user,1,1,1,1
+access_bookmark_import_user,bf.bookmark.import utilisateur,model_bf_bookmark_import,base.group_user,1,1,1,1
+access_bookmark_usage_user,bf.bookmark.usage utilisateur,model_bf_bookmark_usage,base.group_user,1,1,1,1
+access_bookmark_favicon_admin,bf.bookmark.favicon administration,model_bf_bookmark_favicon,base.group_system,1,1,1,1
+access_bookmark_proposal_user,bf.bookmark.proposal utilisateur,model_bf_bookmark_proposal,base.group_user,1,1,1,0
