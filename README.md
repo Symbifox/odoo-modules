@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**247 modules are BUSL-1.1.** The source is published and auditable, and **you
+**248 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -85,9 +85,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.1 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.66.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.66.1 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.2.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
-| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
+| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
@@ -109,6 +109,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_report` | BF BI Reports | 18.0.1.0.1 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
 | `bf_budget` | Budgets opérationnels | 18.0.1.1.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
@@ -151,7 +152,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.1.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
 | `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.1.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.1.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
-| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
+| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.2 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.1 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.1.1 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_credit_identity` | Credit & Identity | 18.0.1.1.0 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
@@ -187,20 +188,20 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.1.0 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.2.0 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.6.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.60.6 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.64.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.1.2 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
-| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
+| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.2 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.2 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
-| `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | BUSL-1.1 | An approved expense becomes a benefit usage, at real cost |
+| `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.1 | BUSL-1.1 | An approved expense becomes a benefit usage, at real cost |
 | `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.3.0 | BUSL-1.1 | Allergies and food allergies, readable only by the person and by whoever organises |
 | `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.1 | BUSL-1.1 | Express consent, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
-| `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.1 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
+| `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.3 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
-| `bf_federation` | Fédération | 18.0.1.5.2 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
+| `bf_federation` | Fédération | 18.0.1.5.3 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
 | `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
@@ -220,12 +221,12 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_flux_partage` | Flux RSS : partage externe | 18.0.1.0.3 | BUSL-1.1 | Secret share links without login: a public card page and the same items as RSS, one link per recipient, with expiry, visit count and revocation |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.2.1 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
-| `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.3 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
+| `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.4 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.7.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_gantt` | Échéancier | 18.0.1.6.1 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |
 | `bf_health` | Healthy Fox | 18.0.2.6.0 | LGPL-3 | Personal health, training and nutrition: medications, vitals, lab results, screenings, workouts (GPX import), food log (Open Food Facts barcodes), daily metrics and a private mood journal; every record private to its owner |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.6 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
-| `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.2 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
+| `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.3 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
 | `bf_helpdesk_merge` | Helpdesk — Doublons, fusion et incidents | 18.0.1.3.2 | AGPL-3 | Complete ticket merge (timesheets, attachments, followers, internal notes), duplicate suggestions at creation, parent incidents with a grouped reply |
 | `bf_home` | Accueil Symbifox | 18.0.2.1.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.6.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
@@ -238,7 +239,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_impersonate` | Impersonate a User | 18.0.1.0.5 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
-| `bf_key_management` | Symbifox Keys | 18.0.1.0.11 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
+| `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
@@ -249,7 +250,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
-| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.1 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
+| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.2 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.1.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.68.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
@@ -264,7 +265,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.3.2 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on companies, contacts, projects and tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): client folders linked or created from a template, chatter attachments filed to the client folder, folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.4 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
 | `bf_nfc_event` | Pastilles NFC : la présence à une séance | 18.0.1.0.1 | BUSL-1.1 | Tap the room's tag to record attendance at the session in progress, registration created if missing |
-| `bf_nfc_gen` | Pastilles NFC : les skills de Gen | 18.0.1.0.1 | BUSL-1.1 | A tag that asks Gen to prepare a meeting's agenda or refine its minutes, from a list the administrator ticks |
+| `bf_nfc_gen` | Pastilles NFC : les skills de Gen | 18.0.1.0.2 | BUSL-1.1 | A tag that asks Gen to prepare a meeting's agenda or refine its minutes, from a list the administrator ticks |
 | `bf_nfc_helpdesk` | Pastilles NFC : signaler un problème | 18.0.1.1.0 | BUSL-1.1 | A tag on a customer's equipment opens a ticket already filled in: customer, place, reporter, time |
 | `bf_nfc_inspection` | Pastilles NFC : relevés et registres | 18.0.1.0.2 | BUSL-1.1 | A checklist filled in at every tap, non-conformities followed to their correction, and the register that comes out of it |
 | `bf_nfc_loan` | Pastilles NFC : le prêt d'équipement | 18.0.1.2.0 | BUSL-1.1 | Equipment loans by tag: free you take it, yours you return it, someone else's asks first; reminders past a delay |
@@ -281,10 +282,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.12.3.1 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
-| `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
-| `bf_outreach_privacy` | Démarchage — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for outreach: prospecting purpose in the register, retention of prospects, a hashed opt-out list and verified destruction recorded in the register |
+| `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.1 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.1 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.1 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
+| `bf_outreach_privacy` | Démarchage — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for outreach: prospecting purpose in the register, retention of prospects, a hashed opt-out list and verified destruction recorded in the register |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |
 | `bf_persona` | Persona des contacts | 18.0.3.3.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
@@ -352,7 +353,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_work` | Symbifox École : remise de travaux | 18.0.1.0.2 | BUSL-1.1 | Students hand in their work on the portal, the teacher returns a corrected copy with a mark; scored quizzes through Surveys |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.9 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.3.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
-| `bf_security_awareness` | Security Awareness | 18.0.2.0.3 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
+| `bf_security_awareness` | Security Awareness | 18.0.2.0.4 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
 | `bf_shift` | Symbifox Quarts de travail | 18.0.1.2.1 | BUSL-1.1 | Shift scheduling for regular and unionised employees: labour standards checks, premiums, call lists, swaps, taxable benefits, payroll export |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.28.1 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates that can carry their own PDF (a request starts from one pick above the upload), draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields plus boxed cells for pre-printed forms and server-validated choice lists, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, an audited manager-only link reveal (the token itself is readable by administrators only), signing state and proof that only the signing flow can write, attachments included, and a mixin to send any Odoo record for signature with post-back of the signed document |
@@ -372,13 +373,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.3.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
-| `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.1 | LGPL-3 | Notifies assignees when their task becomes unblocked |
+| `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.3 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
-| `bf_time_of_day` | BF Time of Day | 18.0.1.5.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
+| `bf_time_of_day` | BF Time of Day | 18.0.1.5.2 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.14.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.3.2 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
-| `bf_training` | Registre de formation | 18.0.1.4.0 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
+| `bf_training` | Registre de formation | 18.0.1.4.1 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
 | `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.0 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
 | `bf_training_mobile` | Registre de formation : mes formations au téléphone | 18.0.1.0.0 | BUSL-1.1 | L'écran « mes formations » de Symbifox Mobile : ce que je dois, pour quand, et ce que j'ai déjà prouvé |
 | `bf_training_process` | Registre de formation : entraînement à la tâche | 18.0.1.0.0 | BUSL-1.1 | La formation accrochée à l'étape de processus qu'elle enseigne, et le couloir qui dit enfin qui joue le rôle |
@@ -409,9 +410,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.27.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
-| `hosting_management` | Gestion d'hébergement | 18.0.2.62.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
+| `hosting_management` | Gestion d'hébergement | 18.0.2.62.1 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
 | `personal_budget` | Personal Budget | 18.0.2.1.2 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |
-| `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.0 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
+| `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.1 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
 | `privacy_breach_notice_hosting` | Vie privée : avis de violation depuis l'hébergement | 18.0.1.0.0 | BUSL-1.1 | Qualifies a hosting security event for privacy and prepares one draft breach notice per affected organisation |
 | `privacy_breach_notice_mail_tracking` | Vie privée : avis de violation et suivi des courriels | 18.0.1.0.0 | BUSL-1.1 | Keeps the email tracking of breach notices and incident records to the privacy role, within the record's company |
 | `privacy_breach_notice_sms` | Avis de violation : pas de SMS | 18.0.1.0.0 | BUSL-1.1 | A breach notice never goes out by SMS: the email to the designated address is the record |
@@ -420,7 +421,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_nz` | Cadre de confidentialité — Privacy Act 2020 (Nouvelle-Zélande) | 18.0.1.0.1 | BUSL-1.1 | New Zealand Privacy Act 2020 regulatory-framework pack for the Privacy module |
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
-| `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.0 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
+| `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.1 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
 | `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.5.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 <!-- MODULES_TABLE:END -->
 
@@ -465,11 +466,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **246 modules: BUSL-1.1.** Production use for your own internal business
+- **248 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **86 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **90 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
