@@ -176,7 +176,8 @@ class BfNfcGenRequest(models.Model):
         db_name, demande_id, uid = self.env.cr.dbname, self.id, self.env.uid
 
         def _envoyer():
-            from odoo import api as _api, registry as _registry
+            from odoo import api as _api
+            from odoo.modules.registry import Registry as _registry
             # ⚠️ La demande doit être EN BASE avant qu'un agent parte : un point de
             # reprise défait après l'enregistrement de l'appel l'aurait effacée, et le
             # pont lancerait une passe que rien ne suit.
@@ -185,11 +186,12 @@ class BfNfcGenRequest(models.Model):
                     _logger.warning("Demande à Gen %s absente au moment d'appeler le pont : rien n'est lancé.",
                                     demande_id)
                     return
+            cause = None
             try:
                 reponse = transport.post(socket_path, "/nfc-skill", charge, 20)
                 statut, message = reponse.get("status", "?"), reponse.get("message", "")
             except Exception as exc:  # noqa: BLE001 — la cause est rendue telle quelle
-                statut, message = "error", _("Pont injoignable (%s).", type(exc).__name__)
+                statut, message, cause = "error", "", type(exc).__name__
             if statut == "ok":
                 return
             with _registry(db_name).cursor() as cr:
@@ -198,6 +200,12 @@ class BfNfcGenRequest(models.Model):
                 env = _api.Environment(cr, SUPERUSER_ID, {})
                 demande = env["bf.nfc.gen.request"].browse(demande_id).exists()
                 if demande:
+                    if cause:
+                        # 🔴 18.0.1.0.2 : `_()` hors de tout environnement levait dans ce fil, et la
+                        # demande restait « Transmise » jusqu'au guet quand le pont était
+                        # injoignable. Le texte se rédige ici, dans la langue de la personne.
+                        message = env["bf.nfc.gen.request"].with_context(
+                            lang=demande.user_id.lang or "en_US").env._("Pont injoignable (%s).") % cause
                     demande.set_state("busy" if statut == "busy" else "error", message)
 
         self.env.cr.postcommit.add(lambda: threading.Thread(target=_envoyer, daemon=True).start())

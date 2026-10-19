@@ -29,6 +29,12 @@ activity when Gen has finished or failed.
 limited to the tenant, a turn ceiling, at most two concurrent tag passes, and a
 pass that fails is logged too. Only an integer reaches the prompt.
 
+## Changelog
+
+### 18.0.1.0.2
+- **An unreachable bridge no longer leaves the request hanging.** When the call to the bridge failed, the background thread built its error message outside any environment, raised, and the request stayed "Sent" until the watchdog caught it. The message is now written once the request is reloaded, in the requester's language, and the request goes straight to the error state.
+- Compatibility: the registry is imported from `odoo.modules.registry`.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE).
