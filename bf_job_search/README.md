@@ -71,6 +71,7 @@ whoever administers the database.
 
 ## Changelog
 
+- **18.0.1.0.2**: French thank-you draft reads naturally before any job title ("pour le poste « … »" instead of a missing elision).
 - **18.0.1.0.1**: official Symbifox app icon (PNG, and the same image as SVG for the installable app).
 - **18.0.1.0.0**: first release.
 

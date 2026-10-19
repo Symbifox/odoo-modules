@@ -31,6 +31,19 @@ class TestInterviews(JobCase):
         self.assertIn("Hello Jane,", itv.thank_you_draft)
         self.assertIn("Hello Sam,", itv.thank_you_draft)
 
+    def test_brouillon_francais_sans_elision_manquante(self):
+        # Un poste qui commence par une voyelle ne donne plus « le poste de Analyste ».
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_job_search"], ["fr_CA"], overwrite=True)
+        app = self.app(self.env_anne, stage="applied", name="Analyste d'affaires")
+        itv = self.env_anne["bf.job.interview"].create({
+            "application_id": app.id, "interviewers": "Nadia Belkacem"})
+        itv.invalidate_recordset(["thank_you_draft"])
+        draft = itv.with_context(lang="fr_CA").thank_you_draft
+        self.assertIn("Bonjour Nadia,", draft)
+        self.assertIn("pour le poste « Analyste d'affaires »", draft)
+        self.assertNotIn("de Analyste", draft)
+
     @freeze_time("2031-03-03 12:00:00")
     def test_date_inconnue_puis_confirmee(self):
         app = self.app(self.env_anne, stage="applied")

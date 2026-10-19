@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Job Search",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "summary": "Track your job applications with the good habits built in: "
                "follow-ups, interviews, thank-you notes, referees and a job search log",
