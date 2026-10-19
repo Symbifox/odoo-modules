@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**246 modules are BUSL-1.1.** The source is published and auditable, and **you
+**247 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -282,6 +282,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_otp` | Symbifox OTP | 18.0.12.3.1 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
+| `bf_outreach_privacy` | Démarchage — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for outreach: prospecting purpose in the register, retention of prospects, a hashed opt-out list and verified destruction recorded in the register |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.1 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.1 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_outreach_optout_list" model="ir.ui.view">
+        <field name="name">bf.outreach.optout.list</field>
+        <field name="model">bf.outreach.optout</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="refused_on"/>
+                <field name="key_kind"/>
+                <field name="reason"/>
+                <field name="noted_by_id"/>
+                <field name="origin"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_optout_search" model="ir.ui.view">
+        <field name="name">bf.outreach.optout.search</field>
+        <field name="model">bf.outreach.optout</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="lookup" string="Courriel ou téléphone" operator="="/>
+                <field name="reason"/>
+                <filter name="email" string="Courriels" domain="[('key_kind', '=', 'email')]"/>
+                <filter name="phone" string="Téléphones" domain="[('key_kind', '=', 'phone')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_outreach_optout" model="ir.actions.act_window">
+        <field name="name">Opposition au démarchage</field>
+        <field name="res_model">bf.outreach.optout</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune opposition inscrite</p>
+            <p>Chaque refus de démarchage s'inscrit ici au moment où il est noté :
+            une empreinte du courriel et des numéros, la date, l'auteur et le
+            motif. La liste ne se relit pas : tapez une adresse ou un numéro
+            dans la recherche pour vérifier s'il y figure.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_outreach_optout"
+              name="Opposition au démarchage"
+              parent="privacy_consent.menu_privacy_operations"
+              action="action_bf_outreach_optout"
+              groups="privacy_consent.group_privacy_user"
+              sequence="37"/>
+
+    <!-- Le menu Vie privée exige un groupe vie privée : le gestionnaire du
+         Démarchage qui n'en a pas trouve la liste dans sa configuration. -->
+    <menuitem id="menu_bf_outreach_optout_config"
+              name="Opposition au démarchage"
+              parent="bf_outreach.menu_bf_outreach_config"
+              action="action_bf_outreach_optout"
+              groups="bf_outreach.group_bf_outreach_manager"
+              sequence="90"/>
+
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Taille de lot du balayage. `set_param` plutôt qu'un `<record>` :
+        `ir.config_parameter` porte une contrainte d'unicité sur la clé.
+    -->
+    <data noupdate="1">
+
+        <!-- Dans le bloc noupdate : un réglage fait à la main survit à un -u. -->
+        <function model="ir.config_parameter" name="set_param">
+            <value>bf_outreach_privacy.batch_size</value>
+            <value>500</value>
+        </function>
+
+        <!--
+            Le cron PROPOSE, il ne détruit pas : il dépose des lignes dans une
+            campagne laissée EN RÉVISION. Rien ne part sans qu'un humain
+            approuve puis exécute.
+
+            `noupdate="1"` : le jour où quelqu'un l'éteint, un `-u` ne doit pas
+            le rallumer. ⚠️ Un `-u` ne réécrit donc ni son nom ni son code :
+            renommer la méthode appelée EXIGERAIT une migration.
+        -->
+        <record id="cron_privacy_propose_destruction" model="ir.cron">
+            <field name="name">Démarchage — proposition de destruction (DEM-001/002)</field>
+            <field name="model_id" ref="bf_outreach.model_bf_outreach_target"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_propose_destruction()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

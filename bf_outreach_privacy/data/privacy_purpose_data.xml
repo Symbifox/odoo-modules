@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Le démarchage n'avait aucune fiche au registre des traitements,
+            alors qu'il porte des personnes qui n'ont rien demandé : nom,
+            fonction, coordonnées, source de la cible, notes libres et
+            l'historique complet des interactions.
+
+            ⚠️ Pas de consentement à recueillir au registre, et ce n'est pas
+            une commodité. Le démarchage d'une entreprise relève de son
+            intérêt légitime ; le courriel commercial, lui, reste soumis à la
+            LCAP (consentement exprès, ou tacite quand l'adresse est publiée
+            bien en vue et liée à la fonction), ce que le module ne vérifie
+            pas : c'est à l'usager de ne charger que des listes qui le
+            permettent. Ce que le registre retient, c'est le droit de dire
+            non, et la liste d'opposition le fait tenir.
+        -->
+        <record id="purpose_outreach_prospecting" model="privacy.purpose">
+            <field name="code">outreach_prospecting</field>
+            <field name="name">Démarchage et prospection</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Quand nous vous démarchons, nous conservons votre nom, votre
+                fonction, votre organisation, votre courriel et votre numéro,
+                l'endroit où nous les avons trouvés, et la trace de nos appels,
+                courriels et lettres, avec ce qui s'y est dit.</p>
+                <p>Cette trace sert à ne pas vous relancer plus souvent que
+                prévu, à donner suite à ce que vous nous avez répondu, et à ne
+                plus jamais vous contacter si vous nous le demandez.</p>
+                <p>Cette trace est proposée à la destruction trois ans après
+                notre dernier échange avec vous, et détruite sur approbation de
+                notre responsable de la vie privée. Si vous nous demandez de ne
+                plus vous contacter, votre dossier de démarchage (notes et
+                historique des échanges) est proposé à la destruction sans
+                délai. Nous gardons une empreinte de votre courriel et de votre
+                numéro, la date et le motif de votre demande, pour vous
+                reconnaître si vous revenez dans une liste. Si vous figurez
+                aussi parmi nos contacts, cette fiche garde la mention de votre
+                refus et relève de ses propres règles.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">26</field>
+        </record>
+
+        <!--
+            ⚠️ La durée déclarée ici documente le régime ; ce qui PILOTE le
+            balayage, ce sont les règles DEM-001 et DEM-002 du calendrier.
+        -->
+        <record id="retention_policy_outreach_prospecting" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_outreach_prospecting"/>
+            <field name="retention_days">1095</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Nom de l'organisation ou de la personne démarchée, personne-ressource, fonction, courriel, téléphone, cellulaire, site web, source de la cible, notes libres, interactions (type, sens, date, issue, durée, résumé, notes), motif d'une demande de ne plus être contacté.</field>
+            <field name="notes">1 095 jours = 3 ans après le dernier contact utile, la durée de DEM-001. Un refus relève de DEM-002 : la fiche est proposée à la destruction sans délai, et seule une empreinte des coordonnées reste à la liste d'opposition, sans échéance. Le contact Odoo lié, s'il existe, relève de ses propres règles et garde la mention du refus.</field>
+        </record>
+
+    </data>
+</odoo>

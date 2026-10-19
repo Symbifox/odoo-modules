@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            DEM-001 — la cible sans refus.
+
+            Trois ans, alignés sur COR-001 (correspondance) et TEL-001, et sur
+            la pratique courante pour un prospect. Décision du 2026-10-18.
+
+            L'ancrage est le dernier contact UTILE, pas le dernier essai : une
+            cible relancée chaque mois sans jamais répondre mourrait sinon
+            jamais. À défaut de contact utile, la création de la fiche.
+        -->
+        <record id="retention_outreach_target" model="privacy.retention.calendar">
+            <field name="name">Démarchage — cibles sans refus</field>
+            <field name="code">DEM-001</field>
+            <field name="document_type">marketing</field>
+            <field name="description">Cibles de démarchage (`bf.outreach.target`) qui n'ont pas demandé à ne plus être contactées : coordonnées, source, notes, et l'historique des interactions avec leurs notes.</field>
+            <field name="legal_basis">Art. 3.2 et 23 LPRPSP : une fois la fin accomplie, le renseignement se détruit. Un prospect qui ne répond plus depuis trois ans n'en a plus. Durée alignée sur COR-001.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">bf.outreach.target</field>
+            <field name="notes">Ancrage : la date de la dernière interaction qui a joint la personne (rejointe, réponse, intérêt, refus poli, rappel demandé) ou de toute interaction entrante ; à défaut, la création de la fiche. Les essais restés sans réponse ne prolongent rien. Le cron du pont `bf_outreach_privacy` dépose les cibles échues dans une campagne laissée EN RÉVISION ; l'approbation et l'exécution appartiennent au responsable de la vie privée.</field>
+        </record>
+
+        <!--
+            DEM-002 — la fiche d'une personne qui a refusé.
+
+            ⚠️ Le refus demande un régime à lui. Détruire le dossier au
+            complet ferait perdre la preuve du refus ; le garder au complet
+            contredirait le refus. La preuve vit donc à la liste d'opposition,
+            inscrite AU MOMENT du refus, et la fiche part sans délai : zéro an
+            ici, le délai réel étant celui de l'approbation de la campagne.
+        -->
+        <record id="retention_outreach_refused" model="privacy.retention.calendar">
+            <field name="name">Démarchage — refus (fiche complète)</field>
+            <field name="code">DEM-002</field>
+            <field name="document_type">marketing</field>
+            <field name="description">Cibles de démarchage marquées « ne plus contacter ». La fiche complète est détruite ; une empreinte SHA-256 du courriel et des numéros, la date, l'auteur et le motif du refus restent à la liste d'opposition (`bf.outreach.optout`).</field>
+            <field name="legal_basis">Art. 23 LPRPSP : on conserve le strict nécessaire à la fin, et la fin qui reste est de ne plus contacter la personne. LCAP : la demande de désabonnement doit tenir.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">bf.outreach.target</field>
+            <field name="notes">Une fiche refusée sans courriel, sans numéro et sans contact qui garde le refus est RETENUE par le balayage : la détruire effacerait la seule trace du refus. L'inscription à la liste d'opposition n'a pas d'échéance ; seul un gestionnaire la lève, quand la personne redonne son accord.</field>
+        </record>
+
+    </data>
+</odoo>
