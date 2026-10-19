@@ -879,6 +879,7 @@ The inbox client action calls these `@api.model` methods on `bf.email`. They sta
 - `_inbox_folder_domain(key)` resolves `imapf:<account>:<folder>` and `imapacct:<account>` keys **without** going through `_inbox_folder_defs` (11.1+): the domain is needed on every folder click and every page, and routing it through discovery would put a cache refresh — so, one day in two, an IMAP round-trip — behind a click. Account ownership is verified against the caller, never inferred from the key.
 - `bf.email.held.held_summary()` / `held_count()` / `held_decide(account_id, folder, decision)` (11.55+) — the "To decide" batches of the current user. `held_decide` checks that the account is the caller's and active; `add` queues the batch for the background ingestion, `ignore` remembers it.
 - `inbox_sync_now()` — same work as the list view's *Synchroniser maintenant*, but returns only the notification text. `action_sync_now` ends with `next: {tag: reload}`, which reloads the whole web client and would throw away the open preview and selection.
+- *Synchroniser maintenant* (11.64.1+) runs the IMAP mirror after ingestion, on the caller's own accounts only (`_mirror_own_accounts`, same guard as `_sync_own_accounts`): a message archived in Thunderbird or the webmail is marked handled on the click instead of at the next 5-minute mirror pass. One savepoint per account. The per-account body of `_cron_imap_mirror` lives in `_imap_mirror_account(account)`; the cron still walks every active account.
 
 ### IMAP write-back sweep (9.0+)
 `_cron_imap_writeback_sweep(dry_run=False)`, hourly. `_cron_imap_reconcile` and `_cron_imap_mirror` both run server → Odoo; this one closes the other direction. It reads the Message-IDs actually sitting in INBOX, resolves each owner's row, and replays `_imap_writeback_archive` on the ones already marked handled — covering both a write-back that failed on a transient error (nothing ever retried it) and any code path that sets `is_handled` without going through `action_archive`. Rows born from the chatter carry no `account_id` and would be skipped by the write-back; since the sweep has just observed their physical copy in that account's INBOX, it binds them to it first. Bounded by INBOX size, idempotent, and `dry_run=True` turns it into a plain gap report.
@@ -1010,7 +1011,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-17, this version converts automatically to
+- **Change Date**: on 2030-10-19, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog

@@ -4842,6 +4842,37 @@ class BfEmail(models.Model):
                 )
 
     @api.model
+    def _mirror_own_accounts(self):
+        """Miroir limité aux comptes de l'usager qui clique.
+
+        « Synchroniser maintenant » ne faisait que l'ingestion : un archivage
+        fait dans Thunderbird restait « à faire » jusqu'à la passe du miroir.
+        Même garde que `_sync_own_accounts` : le bouton est offert à tout
+        usager interne et n'ouvre que SES boîtes. Le réveil des reports échus
+        reste au cron, qui vaut pour tout le monde.
+
+        Un point de sauvegarde par compte : une erreur de base (la passe du
+        cron qui écrit les mêmes lignes au même moment) n'annule que ce compte
+        et laisse le bouton rendre son avis. Rend le nombre de lignes passées
+        à « Traité ».
+        """
+        Account = self.env["bf.email.account"].sudo()
+        accounts = Account.search([
+            ("active", "=", True), ("user_id", "=", self.env.uid),
+        ])
+        handled = 0
+        for account in accounts:
+            try:
+                with self.env.cr.savepoint():
+                    handled += self._imap_mirror_account(account)
+            except Exception:  # noqa: BLE001
+                _logger.warning(
+                    "bf.email manual mirror, account %s failed",
+                    account.display_name, exc_info=True,
+                )
+        return handled
+
+    @api.model
     def _cron_sync_imap(self):
         """Pull new messages from IMAP for every active bf.email.account.
 
@@ -5128,102 +5159,127 @@ class BfEmail(models.Model):
         Account = self.env["bf.email.account"].sudo()
         accounts = Account.search([("active", "=", True)])
         for account in accounts:
-            if not (account.host and account.login and account.password):
-                continue
+            # Un point de sauvegarde par compte : le bouton
+            # « Synchroniser » fait maintenant tourner le même miroir. S'il
+            # vient d'écrire les mêmes lignes, l'écriture du cron échoue en
+            # sérialisation ; sans point de sauvegarde, tout le passage était
+            # annulé (comptes précédents, réveils des reports).
             try:
-                conn = account._ouvrir_imap()
-            except bf_email_imap.ImapConnectionError as exc:
+                with self.env.cr.savepoint():
+                    self._imap_mirror_account(account)
+            except Exception:  # noqa: BLE001
                 _logger.warning(
-                    "bf.email IMAP mirror (%s): %s", account.display_name, exc,
+                    "bf.email IMAP mirror (%s): passe annulée",
+                    account.display_name, exc_info=True,
                 )
-                continue
-            folders = []
-            returned = anchored = sent_handled = 0
-            # Les UID que des lignes revendiquent déjà comme étant en boîte.
-            # Sert deux fois : à savoir ce qui est « inconnu » côté serveur,
-            # et comme portée de la passe de sortie. Petit par construction,
-            # puisqu'il ne contient que ce qu'on croit encore en INBOX.
-            anchored_scope = [
-                ("account_id", "=", account.id),
-                ("imap_folder", "ilike", "INBOX"),
-                ("imap_in_inbox", "=", True),
-                ("imap_uid", "!=", False),
-            ]
-            claimed = {
-                str(uid)
-                for uid in Rows.search(anchored_scope).mapped("imap_uid")
-                if uid
-            }
+
+    def _imap_mirror_account(self, account):
+        """Passes 1, 3 et 2 du miroir pour UN compte (voir `_cron_imap_mirror`).
+
+        Sortie du cron pour que « Synchroniser maintenant » la fasse tourner
+        sur les seuls comptes de l'usager (`_mirror_own_accounts`).
+
+        Rend le nombre de lignes passées à « Traité » parce que leur message
+        a quitté l'INBOX ou le dossier « Sent » au serveur.
+        """
+        Rows = self.sudo().with_context(active_test=False)
+        if not (account.host and account.login and account.password):
+            return 0
+        try:
+            conn = account._ouvrir_imap()
+        except bf_email_imap.ImapConnectionError as exc:
+            _logger.warning(
+                "bf.email IMAP mirror (%s): %s", account.display_name, exc,
+            )
+            return 0
+        folders = []
+        returned = anchored = sent_handled = 0
+        # Les UID que des lignes revendiquent déjà comme étant en boîte.
+        # Sert deux fois : à savoir ce qui est « inconnu » côté serveur,
+        # et comme portée de la passe de sortie. Petit par construction,
+        # puisqu'il ne contient que ce qu'on croit encore en INBOX.
+        anchored_scope = [
+            ("account_id", "=", account.id),
+            ("imap_folder", "ilike", "INBOX"),
+            ("imap_in_inbox", "=", True),
+            ("imap_uid", "!=", False),
+        ]
+        claimed = {
+            str(uid)
+            for uid in Rows.search(anchored_scope).mapped("imap_uid")
+            if uid
+        }
+        try:
+            # L'arborescence pendant qu'on tient la connexion : la colonne
+            # de gauche de la boîte de réception la lit dans le cache et
+            # n'a alors jamais à ouvrir de session elle-même.
             try:
-                # L'arborescence pendant qu'on tient la connexion : la colonne
-                # de gauche de la boîte de réception la lit dans le cache et
-                # n'a alors jamais à ouvrir de session elle-même.
-                try:
-                    folders = bf_email_imap.list_folders(conn)
-                except Exception:
-                    _logger.debug(
-                        "bf.email IMAP mirror (%s) : LIST illisible",
-                        account.display_name, exc_info=True,
-                    )
-                if not bf_email_imap.select_folder(conn, "INBOX", readonly=True):
-                    continue
-                status, data = conn.uid("SEARCH", None, "ALL")
-                if status != "OK" or not data or not data[0]:
-                    live_uids = set()
-                else:
-                    raw = data[0]
-                    if isinstance(raw, bytes):
-                        raw = raw.decode("ascii", errors="ignore")
-                    live_uids = {x for x in raw.split() if x.isdigit()}
-
-                # Passe 1, connexion encore ouverte : ce que l'INBOX contient
-                # et qu'aucune ligne ancrée ne revendique.
-                unclaimed = sorted(live_uids - claimed, key=int)
-                if unclaimed:
-                    returned, anchored = self._imap_mirror_adopt(
-                        conn, account, unclaimed,
-                    )
-                # Passe 3, même connexion : nos copies « Sent » non
-                # traitées que leur propriétaire a rangées au serveur.
-                # ⚠️ Une erreur de transport y remonterait au cron, qui
-                # annulerait tout le passage (passes des comptes précédents,
-                # réveils) : la passe 3 échoue seule (11.54.1).
-                try:
-                    sent_handled = self._imap_mirror_sent(conn, account)
-                except (OSError, imaplib.IMAP4.error):
-                    _logger.warning(
-                        "bf.email IMAP mirror (%s) : passe Sent interrompue",
-                        account.display_name, exc_info=True)
-            finally:
-                try:
-                    conn.logout()
-                except Exception:
-                    pass
-                account._store_imap_folders(folders)
-
-            # Passe 2 : ce qu'on croyait en boîte et qui n'y est plus. Relue
-            # après la passe 1, qui vient peut-être d'en réancrer.
-            rows = Rows.search(anchored_scope)
-            flipped_out = auto_handled = 0
-            now = fields.Datetime.now()
-            for row in rows:
-                if str(row.imap_uid) in live_uids:
-                    continue
-                vals = {"imap_in_inbox": False}
-                flipped_out += 1
-                if not row.is_handled:
-                    vals["is_handled"] = True
-                    vals["handled_at"] = now
-                    auto_handled += 1
-                row.write(vals)
-            if flipped_out or returned or anchored or sent_handled:
-                _logger.info(
-                    "bf.email IMAP mirror (%s): %s sortie(s) dont %s "
-                    "auto-Traité, %s retour(s) en boîte, %s ancrage(s) posé(s), "
-                    "%s envoi(s) rangé(s) au serveur",
-                    account.display_name, flipped_out, auto_handled,
-                    returned, anchored, sent_handled,
+                folders = bf_email_imap.list_folders(conn)
+            except Exception:
+                _logger.debug(
+                    "bf.email IMAP mirror (%s) : LIST illisible",
+                    account.display_name, exc_info=True,
                 )
+            if not bf_email_imap.select_folder(conn, "INBOX", readonly=True):
+                return 0
+            status, data = conn.uid("SEARCH", None, "ALL")
+            if status != "OK" or not data or not data[0]:
+                live_uids = set()
+            else:
+                raw = data[0]
+                if isinstance(raw, bytes):
+                    raw = raw.decode("ascii", errors="ignore")
+                live_uids = {x for x in raw.split() if x.isdigit()}
+
+            # Passe 1, connexion encore ouverte : ce que l'INBOX contient
+            # et qu'aucune ligne ancrée ne revendique.
+            unclaimed = sorted(live_uids - claimed, key=int)
+            if unclaimed:
+                returned, anchored = self._imap_mirror_adopt(
+                    conn, account, unclaimed,
+                )
+            # Passe 3, même connexion : nos copies « Sent » non
+            # traitées que leur propriétaire a rangées au serveur.
+            # ⚠️ Une erreur de transport y remonterait au cron, qui
+            # annulerait tout le passage (passes des comptes précédents,
+            # réveils) : la passe 3 échoue seule (11.54.1).
+            try:
+                sent_handled = self._imap_mirror_sent(conn, account)
+            except (OSError, imaplib.IMAP4.error):
+                _logger.warning(
+                    "bf.email IMAP mirror (%s) : passe Sent interrompue",
+                    account.display_name, exc_info=True)
+        finally:
+            try:
+                conn.logout()
+            except Exception:
+                pass
+            account._store_imap_folders(folders)
+
+        # Passe 2 : ce qu'on croyait en boîte et qui n'y est plus. Relue
+        # après la passe 1, qui vient peut-être d'en réancrer.
+        rows = Rows.search(anchored_scope)
+        flipped_out = auto_handled = 0
+        now = fields.Datetime.now()
+        for row in rows:
+            if str(row.imap_uid) in live_uids:
+                continue
+            vals = {"imap_in_inbox": False}
+            flipped_out += 1
+            if not row.is_handled:
+                vals["is_handled"] = True
+                vals["handled_at"] = now
+                auto_handled += 1
+            row.write(vals)
+        if flipped_out or returned or anchored or sent_handled:
+            _logger.info(
+                "bf.email IMAP mirror (%s): %s sortie(s) dont %s "
+                "auto-Traité, %s retour(s) en boîte, %s ancrage(s) posé(s), "
+                "%s envoi(s) rangé(s) au serveur",
+                account.display_name, flipped_out, auto_handled,
+                returned, anchored, sent_handled,
+            )
+        return auto_handled + sent_handled
 
     def _imap_mirror_sent(self, conn, account):
         """Traiter une copie « Sent » que son propriétaire a rangée.
@@ -6406,21 +6462,26 @@ class BfEmail(models.Model):
             self._sync_own_accounts()
         except Exception:
             _logger.exception("bf.email action_sync_now: IMAP pull failed")
+        # Après l'ingestion : ce qui vient d'entrer est déjà ancré, et ce qui
+        # a été rangé hors d'Odoo (Thunderbird, webmail) passe « Traité ».
+        handled = self._mirror_own_accounts()
 
         after_count = self.search_count([])
         created = after_count - before_count
         after = _read_watermark(self.env, "bf_email.last_sync_date") or before
+        message = f"{created} nouveau(x) courriel(s) import\u00e9(s).\n"
+        if handled:
+            message += (f"{handled} courriel(s) rang\u00e9(s) hors d'Odoo, "
+                        f"marqu\u00e9(s) Trait\u00e9(s).\n")
+        message += f"Dernier message trait\u00e9\u00a0: {after}"
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": "Synchronisation termin\u00e9e",
-                "message": (
-                    f"{created} nouveau(x) courriel(s) import\u00e9(s).\n"
-                    f"Dernier message trait\u00e9\u00a0: {after}"
-                ),
-                "type": "success" if created else "info",
+                "message": message,
+                "type": "success" if (created or handled) else "info",
                 "sticky": False,
                 "next": {"type": "ir.actions.client", "tag": "reload"},
             },

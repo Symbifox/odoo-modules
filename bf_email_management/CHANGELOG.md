@@ -4,6 +4,29 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.64.1] - 2026-10-19
+
+### Added
+
+- *Synchroniser maintenant* also runs the IMAP mirror after ingestion. A
+  message archived in Thunderbird or the webmail used to stay "to do" in Odoo
+  until the next mirror pass, five minutes later; the click now marks it
+  handled, and the notification says how many messages were marked handled
+  that way.
+- Same guard as the manual ingestion: only the accounts of the user who
+  clicks are opened. Waking snoozed messages that are due stays with the cron.
+
+### Changed
+
+- The per-account body of the mirror cron moved to `_imap_mirror_account`,
+  with no change in behaviour; the cron still walks every active account.
+- One savepoint per account, for the button AND the cron: a broken mailbox, or
+  both passes writing the same rows at the same moment (serialization error),
+  now only rolls back that account. Before, an error in one account rolled
+  back the whole cron pass, earlier accounts and snooze wake-ups included.
+- The version number jumps to match the deployed source, whose intermediate
+  numbers this public copy published as 18.0.11.60.2 to 18.0.11.60.6.
+
 ## [18.0.11.60.6] - 2026-10-17
 
 ### Changed
