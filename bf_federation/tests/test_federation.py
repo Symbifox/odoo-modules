@@ -218,6 +218,22 @@ class TestFederation(HttpCase):
         self._flush()
         self.assertFalse(mirror.date_deadline)
 
+    def test_06b_received_day_keeps_its_slot(self):
+        """La plage horaire recale l'heure du jour reçu dans le fuseau de la
+        société, pas dans celui du superutilisateur qui écrit à la réception (UTC)."""
+        if "time_of_day_id" not in self.env["project.task"]._fields:
+            self.skipTest("bf_time_of_day absent")
+        self.env.company.partner_id.tz = "Pacific/Auckland"
+        self.env.ref("base.user_root").tz = False
+        eod = self.env["bf.time.of.day"].search([("code", "=", "eod")], limit=1)  # 16 h
+        task = self._share(time_of_day_id=eod.id)
+        mirror = self._mirror_of(task)
+        mirror.write({"date_deadline": "2026-10-07 23:00:00"})  # 8 oct. midi à Auckland
+        self._flush()
+        self.assertEqual(transport.day_in_zone(task.date_deadline, "Pacific/Auckland"), "2026-10-08")
+        self.assertEqual(task.date_deadline, fields.Datetime.to_datetime("2026-10-08 03:00:00"),
+                         "le 8 oct. à 16 h à Auckland, l'heure de la plage")
+
     def test_07_card_update_and_archive(self):
         task = self._share()
         mirror = self._mirror_of(task)

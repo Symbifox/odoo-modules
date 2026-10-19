@@ -245,8 +245,11 @@ def write_deadline_day(task, day, tz_name):
 
     Certains modules reposent l'heure d'une échéance dans le fuseau de
     l'utilisateur qui écrit ; quand ce fuseau est loin, le jour civil peut
-    glisser. La relecture est la seule preuve.
+    glisser. Le fuseau voulu passe donc dans le contexte (`tz`), que ces
+    modules lisent avant celui de l'usager. La relecture reste la seule
+    preuve.
     """
+    task = task.with_context(tz=tz_name)
     task.write({"date_deadline": noon_in_zone_utc(day, tz_name)})
     if not day:
         return

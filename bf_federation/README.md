@@ -211,3 +211,11 @@ la file et réponse perdue, notes échappées, droits, destinataire proposé et 
 (appariement, compte explicite, portail, homonymes, casse, ré-adressage sans réassignation,
 repli interne, organisation retrouvée). Les tests pairent l'instance avec
 elle-même. Sans `bf_task_waiting_states`, une tâche qui attend l'autre reste « En cours ».
+
+## Journal
+
+- **18.0.1.5.3** : le jour d'échéance reçu garde l'heure de sa plage horaire. Quand
+  `bf_time_of_day` est installé chez le receveur, la plage recalait l'heure dans le
+  fuseau de qui écrit, ici le superutilisateur de la réception (UTC). Le fuseau voulu
+  passe maintenant dans le contexte (`tz`) de l'écriture ; la relecture qui corrige
+  d'un jour reste en place. Un essai couvre une société à Auckland.
