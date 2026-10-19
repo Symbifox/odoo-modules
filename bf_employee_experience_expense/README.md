@@ -13,10 +13,21 @@ as is.
 * A "Benefit" field on the expense and on the expense product. The product acts as
   the default: link the "Training" product to the benefit once, and every
   subsequent expense follows.
-* On the move to approved state, a **confirmed** usage line is created, with
-  origin "expense", carrying the amount actually incurred.
+* When the expense report is approved (the *Approve* button, or the duplicate
+  wizard), a **confirmed** usage line is created for each expense linked to a
+  benefit, with origin "expense", carrying the amount actually incurred in the
+  company's currency.
+* If the approval is withdrawn (report refused, reset to draft, expense removed
+  from the report), the line is withdrawn too, with a note on the expense's
+  chatter. A new approval creates a new line, at the amount of the day.
 * The link is bidirectional: the usage line cites the expense, the expense cites
   the line. One expense cannot produce two usages.
+
+⚠️ In Odoo 18 an expense's state is computed from its expense report and never
+goes through `hr.expense.write`. Version 18.0.1.0.0 listened to that write
+only, so it never fired outside its own tests. The bridge now listens to the
+report, and the 18.0.1.0.1 migration creates the usage lines that approved
+expenses should have produced.
 
 ## What it does not do
 
@@ -27,13 +38,25 @@ visible.
 
 ## Tests
 
-7 tests.
+12 tests, played through the real approval path of the expense report.
 
 ```
 odoo -d <database> -u bf_employee_experience_expense --test-enable \
      --test-tags /bf_employee_experience_expense --stop-after-init --http-port=8180
 ```
 
+## Changelog
+
+### 18.0.1.0.1
+
+- Usage lines follow the expense report's approval, refusal and reset, instead
+  of a write on the expense that Odoo 18 never makes.
+- The amount is taken in the company's currency.
+- Migration: approved expenses without a usage line get one.
+
 ## Licence
 
-LGPL-3.
+Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
+own internal business operations; providing it to third parties as a hosted,
+managed or resold service requires a written agreement. This version converts
+to LGPL-3.0-or-later on 2030-10-19.
