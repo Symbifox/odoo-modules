@@ -10,14 +10,17 @@
    est connue ou non transforme le point d'entrée en oracle.
 """
 
+import json
 import re
-from datetime import date
+from datetime import date, timedelta
 from email.header import decode_header, make_header
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.addons.base.models.ir_mail_server import IrMailServer
 from odoo.tests import tagged
 from odoo.tests.common import HttpCase
+from odoo.tools import mute_logger
 
 from ..controllers import main as ctl
 
@@ -65,6 +68,10 @@ class TestMailingSignup(HttpCase):
         self.liste = self.env["mailing.list"].create({"name": "Essai — nouveautés"})
         self.env["ir.config_parameter"].sudo().set_param(
             ctl.ICP_LIST, str(self.liste.id))
+        # Sur une copie de la prod, `notify_email` est posé : l'avis interne
+        # ajoutait un courriel et trois essais comptaient faux. Les essais de
+        # l'avis le posent eux-mêmes.
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_NOTIFY, "")
         self.adresse = "essai.inscription@example.com"
 
     # ------------------------------------------------------------------ outils
@@ -302,6 +309,32 @@ class TestMailingSignup(HttpCase):
         self.assertIn("1 rue de l'Essai", corps)
         self.assertIn("G1A 1A1", corps)
 
+    def test_le_site_de_la_societe_s_ajoute_a_l_adresse(self):
+        """Le lien s'AJOUTE : l'adresse postale reste, la LCAP la veut."""
+        self.env.company.partner_id.write({
+            "street": "1 rue de l'Essai", "city": "Québec", "zip": "G1A 1A1"})
+        self._habiller()
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_COMPANY_URL, "https://societe.test/")
+        self._poster()
+        corps = self._corps_html(self.envois[0])
+        self.assertIn('href="https://societe.test/"', corps)
+        self.assertIn(">societe.test</a>", corps)
+        self.assertIn("1 rue de l'Essai", corps)
+
+    def test_sans_site_de_societe_le_pied_garde_le_nom_seul(self):
+        self._habiller()
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_COMPANY_URL, "")
+        self._poster()
+        self.assertNotIn(" · <a href=", self._corps_html(self.envois[0]))
+
+    def test_un_site_de_societe_hors_http_est_ignore(self):
+        """La valeur finit dans un `href` : ni `javascript:` ni `data:`."""
+        self._habiller()
+        for valeur in ("javascript:alert(1)", "data:text/html,x", "societe.test"):
+            self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_COMPANY_URL, valeur)
+            self.assertEqual(ctl._marque(self.env)["site_societe"], "", valeur)
+
     # ------------------------------------------------------------------- avis
 
     def _avis(self, fragment):
@@ -416,3 +449,425 @@ class TestMailingSignup(HttpCase):
             allow_redirects=False)
         self.assertIn('lang="en"', r.text)
         self.assertTrue(self._inscription().opt_out)
+
+    # ------------------------------------------------------------ relecture adverse
+
+    def test_un_jeton_non_ascii_ne_rend_pas_d_erreur(self):
+        """`hmac.compare_digest` levait sur une chaîne non ASCII : une 500, et
+        seulement pour une adresse inscrite, donc un oracle."""
+        self._poster()
+        for jeton in ("é" * 32, "é", "Z" * 32, "0" * 31, "0" * 33):
+            r = self.url_open("/infolettre/confirmer",
+                              data={"e": self.adresse, "j": jeton, "lang": "fr"},
+                              allow_redirects=False)
+            self.assertEqual(r.status_code, 303, jeton)
+            self.assertEqual(r.headers["Location"], "/#infolettre")
+        self.assertTrue(self._inscription().opt_out)
+
+    def test_un_champ_envoye_en_fichier_ne_rend_pas_d_erreur(self):
+        for champ in ("courriel", "lang", "site_web"):
+            ctl._bucket_data.clear()
+            donnees = {"courriel": self.adresse, "lang": "fr"}
+            donnees.pop(champ, None)
+            r = self.opener.post(self.base_url() + "/infolettre", data=donnees,
+                                 files={champ: ("x.txt", b"essai", "text/plain")},
+                                 allow_redirects=False, timeout=10)
+            self.assertEqual(r.status_code, 303, champ)
+        r = self.opener.post(self.base_url() + "/infolettre/confirmer",
+                             data={"lang": "fr"}, files={"e": ("x.txt", b"x", "text/plain"),
+                                                          "j": ("y.txt", b"y", "text/plain")},
+                             allow_redirects=False, timeout=10)
+        self.assertEqual(r.status_code, 303)
+
+    def test_un_corps_trop_gros_est_refuse(self):
+        r = self.url_open("/infolettre", data={"courriel": self.adresse,
+                                               "site_web": "x" * (ctl.MAX_CORPS + 10)},
+                          allow_redirects=False)
+        self.assertEqual(r.status_code, 413)
+        self.assertFalse(self._inscription())
+
+    def test_le_refus_du_seau_se_journalise(self):
+        for _i in range(ctl._SIGNUP_MAX):
+            self._poster()
+        with self.assertLogs("odoo.addons.bf_mailing_signup.controllers.main",
+                             level="WARNING") as journal:
+            self._poster()
+        self.assertTrue(any("seau « signup » plein" in l for l in journal.output))
+
+    def test_la_confirmation_ne_porte_aucun_pixel(self):
+        """Ni l'en-tête marqueur ni une image de suivi ne sortent. Si `mail_tracking`
+        est installé, son image est retirée ; sinon l'essai vérifie l'en-tête."""
+        self._poster()
+        message = self.envois[0]
+        self.assertNotIn(ctl.ENTETE_SANS_SUIVI, message)
+        self.assertNotIn("data-odoo-tracking-email", self._corps_html(message))
+        self.assertNotIn("X-Odoo-MailTracking-ID", message)
+
+    def test_build_email_retire_le_pixel_des_seuls_courriels_marques(self):
+        pixel = '<img src="https://x.example/t.gif" data-odoo-tracking-email="42"/>'
+        serveur = self.env["ir.mail_server"]
+        marque = serveur.build_email("a@example.com", ["b@example.com"], "s",
+                                     f"<p>corps</p>{pixel}", subtype="html",
+                                     headers={ctl.ENTETE_SANS_SUIVI: "1", "X-Autre": "garde"})
+        corps = marque.get_body(preferencelist=("html",)).get_content()
+        self.assertNotIn("data-odoo-tracking-email", corps)
+        self.assertIn("corps", corps)
+        self.assertNotIn(ctl.ENTETE_SANS_SUIVI, marque)
+        self.assertEqual(marque["X-Autre"], "garde")
+        ordinaire = serveur.build_email("a@example.com", ["b@example.com"], "s",
+                                        f"<p>corps</p>{pixel}", subtype="html")
+        self.assertIn("data-odoo-tracking-email",
+                      ordinaire.get_body(preferencelist=("html",)).get_content())
+
+    def test_build_email_retire_sans_rien_ecrire(self):
+        """🔴 `build_email` est publique. Elle retire le pixel et les
+        en-têtes de `mail_tracking` (posés quand il passe AVANT nous), et n'écrit
+        RIEN, même quand le corps et l'en-tête portent des identifiants de relevé.
+        Un courriel ordinaire garde les siens (le suivi des autres reste intact)."""
+        Notes = self.env["bf.mailing.signup.tracking"].sudo()
+        avant = Notes.search_count([])
+        pixel = '<img src="https://x.example/t.gif" data-odoo-tracking-email="424242"/>'
+        entetes = {"X-Odoo-MailTracking-ID": "424243", "X-Odoo-Database": "essai",
+                   "X-Autre": "garde"}
+        serveur = self.env["ir.mail_server"]
+        marque = serveur.build_email("a@example.com", ["b@example.com"], "s",
+                                     f"<p>corps</p>{pixel}", subtype="html",
+                                     headers=dict(entetes, **{ctl.ENTETE_SANS_SUIVI: "1"}))
+        self.assertEqual(Notes.search_count([]), avant, "build_email n'écrit rien")
+        for entete in (ctl.ENTETE_SANS_SUIVI, "X-Odoo-MailTracking-ID", "X-Odoo-Database"):
+            self.assertNotIn(entete, marque)
+        self.assertNotIn("data-odoo-tracking-email",
+                         marque.get_body(preferencelist=("html",)).get_content())
+        self.assertEqual(marque["X-Autre"], "garde")
+        ordinaire = serveur.build_email("a@example.com", ["b@example.com"], "s",
+                                        "<p>corps</p>", subtype="html", headers=dict(entetes))
+        self.assertEqual(ordinaire["X-Odoo-MailTracking-ID"], "424243")
+        self.assertEqual(Notes.search_count([]), avant)
+
+    def test_portail_par_json_rpc_ne_fait_rien_noter(self):
+        """🔴 Rejoué tel quel : un usager PORTAIL appelle
+        `/web/dataset/call_kw/ir.mail_server/build_email` avec l'en-tête marqueur et
+        cinquante « pixels » d'identifiants choisis. L'appel aboutit (la méthode est
+        publique), et aucune ligne n'est écrite pour la purge."""
+        self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Portail d'essai", "login": "portail.n1@example.com",
+            "email": "portail.n1@example.com", "password": "portail-n1-essai",
+            "groups_id": [(6, 0, [self.env.ref("base.group_portal").id])]})
+        Notes = self.env["bf.mailing.signup.tracking"].sudo()
+        avant = Notes.search_count([])
+        self.authenticate("portail.n1@example.com", "portail-n1-essai")
+        corps = "".join(f'<img data-odoo-tracking-email="{i}">'
+                        for i in range(10 ** 6, 10 ** 6 + 50))
+        r = self.url_open("/web/dataset/call_kw/ir.mail_server/build_email", data=json.dumps({
+            "jsonrpc": "2.0", "method": "call", "id": 1, "params": {
+                "model": "ir.mail_server", "method": "build_email",
+                "args": [[], "a@example.com", ["b@example.com"], "x", corps],
+                "kwargs": {"subtype": "html",
+                           "headers": {ctl.ENTETE_SANS_SUIVI: "1",
+                                       "X-Odoo-MailTracking-ID": "777"}}}}),
+            headers={"Content-Type": "application/json"})
+        reponse = r.json()
+        self.assertNotIn("error", reponse, "l'appel du portail a bien atteint build_email")
+        self.assertEqual(Notes.search_count([]), avant, "le portail n'a rien fait noter")
+
+    def test_les_releves_se_notent_par_le_mail_id_des_courriels_marques(self):
+        """Notés à l'envoi, par le `mail_id` : le relevé d'un courriel marqué l'est,
+        celui d'un courriel ordinaire ne l'est pas (sa purge n'est pas la nôtre)."""
+        if "mail.tracking.email" not in self.env:
+            self.skipTest("mail_tracking n'est pas installé sur cette base")
+        Notes = self.env["bf.mailing.signup.tracking"].sudo()
+        avant = set(Notes.search([]).mapped("tracking_email_id"))
+        Mail = self.env["mail.mail"].sudo()
+        ordinaire = Mail.create({"subject": "Ordinaire", "body_html": "<p>x</p>",
+                                 "email_to": "ordinaire.n1@example.com"})
+        marque = Mail.create({"subject": "Marqué", "body_html": "<p>x</p>",
+                              "email_to": "marque.n1@example.com",
+                              "headers": repr({ctl.ENTETE_SANS_SUIVI: "1"})})
+        (ordinaire | marque).send()
+        Releve = self.env["mail.tracking.email"].sudo()
+        r_ordinaire = Releve.search([("recipient", "=", "ordinaire.n1@example.com")])
+        r_marque = Releve.search([("recipient", "=", "marque.n1@example.com")])
+        self.assertTrue(r_ordinaire and r_marque, "mail_tracking relève les deux envois")
+        notes = set(Notes.search([]).mapped("tracking_email_id")) - avant
+        self.assertEqual(notes, set(r_marque.ids))
+
+    def test_proxy_sans_x_forwarded_host_fait_un_seau_unique(self):
+        """🔴 Le défaut vu en relecture : derrière un proxy qui n'envoie pas
+        `X-Forwarded-Host`, Odoo n'applique pas ProxyFix et tous les visiteurs
+        partagent l'adresse du proxy. Avec l'en-tête, chacun a son seau."""
+        from unittest.mock import patch as patcher
+        from odoo.tools import config
+        with patcher.dict(config.options, {"proxy_mode": True}), \
+                patcher.object(ctl, "_proxy_sans_hote_signale", False):
+            ctl._bucket_data.clear()
+            with self.assertLogs("odoo.addons.bf_mailing_signup.controllers.main",
+                                 level="WARNING") as journal:
+                for i in range(ctl._SIGNUP_MAX + 1):
+                    self.url_open("/infolettre", data={"courriel": f"v{i}@example.com"},
+                                  headers={"X-Forwarded-For": f"203.0.113.{i + 1}"},
+                                  allow_redirects=False)
+            self.assertTrue(any("sans X-Forwarded-Host" in l for l in journal.output))
+            self.assertTrue(any("seau « signup » plein" in l for l in journal.output),
+                            "sans X-Forwarded-Host, six visiteurs distincts remplissent UN seau")
+            ctl._bucket_data.clear()
+            with self.assertNoLogs("odoo.addons.bf_mailing_signup.controllers.main",
+                                   level="WARNING"):
+                for i in range(ctl._SIGNUP_MAX + 1):
+                    self.url_open("/infolettre", data={"courriel": f"w{i}@example.com"},
+                                  headers={"X-Forwarded-For": f"198.51.100.{i + 1}",
+                                           "X-Forwarded-Host": "www.example.com"},
+                                  allow_redirects=False)
+            inscrits = self.env["mailing.contact"].search(
+                [("email_normalized", "=like", "w_@example.com")])
+            self.assertEqual(len(inscrits), ctl._SIGNUP_MAX + 1,
+                             "avec X-Forwarded-Host, chaque visiteur a son seau")
+
+
+    # -------------------------------------------------- deuxième passe de relecture
+
+    def _sujets(self):
+        return [str(make_header(decode_header(m["Subject"]))) for m in self.envois]
+
+    def _confirmations_a(self, fragment):
+        return [m for m in self.envois if fragment in (m["To"] or "")
+                and "Confirmez" in str(make_header(decode_header(m["Subject"])))]
+
+    def test_trois_confirmations_par_boite_sous_adressage_compris(self):
+        ips = iter(f"198.51.100.{n}" for n in range(1, 40))
+        # Le refus vient du compte, avant toute écriture : jamais l'erreur de la
+        # contrainte CHECK, qui ne sert que de seconde ligne.
+        with patch.object(ctl, "_client_ip", side_effect=lambda: next(ips)), \
+                self.assertNoLogs("odoo.addons.bf_mailing_signup.controllers.main", level="ERROR"), \
+                mute_logger("odoo.sql_db"):
+            for i in range(6):
+                self._poster(courriel=f"cible+{i}@example.com")
+            for a in ("c.i.b.l.e@gmail.com", "cible+x@googlemail.com", "CIBLE@gmail.com",
+                      "ci.ble@gmail.com"):
+                self._poster(courriel=a)
+        self.assertEqual(len(self._confirmations_a("@example.com")), 3)
+        self.assertEqual(len([m for m in self.envois
+                              if (m["To"] or "").endswith(("@gmail.com>", "@gmail.com",
+                                                           "@googlemail.com>", "@googlemail.com"))]),
+                         3)
+        self.assertEqual(len(self.envois), 6)
+
+    def test_la_trace_ne_garde_pas_l_adresse(self):
+        self._poster()
+        trace = self.env["bf.mailing.signup.trace"].sudo().search([], order="id desc", limit=1)
+        self.assertEqual(len(trace.key), 64)
+        self.assertNotIn("@", trace.key)
+        self.assertNotIn("essai", trace.key)
+        self.assertEqual(trace.key, ctl._cle_boite(self.env, "essai.inscription+x@example.com"))
+
+    def test_course_sur_le_plafond_par_boite(self):
+        Trace = type(self.env["bf.mailing.signup.trace"])
+        self.env["bf.mailing.signup.trace"].sudo().create(
+            {"key": ctl._cle_boite(self.env, self.adresse), "day": fields.Date.today(), "rank": 1})
+        with patch.object(Trace, "search_count", return_value=0), \
+                self.assertLogs("odoo.addons.bf_mailing_signup.controllers.main",
+                                level="WARNING") as journal, \
+                self.assertNoLogs("odoo.sql_db", level="ERROR"):
+            r = self._poster()
+        self.assertEqual(r.headers["Location"], "/infolettre-merci.html")
+        self.assertTrue(any("en concurrence" in l for l in journal.output))
+        self.assertFalse(self.envois, "le perdant n'envoie rien")
+        self.assertFalse(self._inscription(), "ni inscription en attente")
+
+    def test_plafond_global_page_occupe_et_un_seul_avis(self):
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_NOTIFY, "veille@example.com")
+        for constante, page in (("_GLOBAL_HEURE", "/infolettre-occupe.html"),
+                                ("_GLOBAL_JOUR", "/en/infolettre-occupe.html")):
+            self.envois.clear()
+            with patch.object(ctl, constante, 0):
+                for i in range(3):
+                    ctl._bucket_data.clear()
+                    r = self._poster(courriel=f"occupe{i}@example.com",
+                                     lang="en" if "JOUR" in constante else "fr")
+                    self.assertEqual(r.headers["Location"], page, constante)
+            # L'avis interne part en file, marqué (ni pixel, relevé effacé à sept
+            # jours) : on la vide comme le ferait la tâche.
+            en_file = self.env["mail.mail"].sudo().search(
+                [("state", "=", "outgoing"), ("subject", "like", "plafond global")])
+            self.assertEqual(len(en_file), 1, constante)
+            self.assertIn(ctl.ENTETE_SANS_SUIVI, en_file.headers or "", constante)
+            self.env["mail.mail"].sudo().search([("state", "=", "outgoing")]).send()
+            avis = [s for s in self._sujets() if "plafond global" in s]
+            self.assertEqual(len(avis), 1, constante)
+            self.assertFalse(self.env["mailing.contact"].search(
+                [("email_normalized", "=like", "occupe%")]), constante)
+
+    def test_mot_encode_rfc2047_refuse(self):
+        for adresse in ("=?utf-8?q?attaquant=40pirate.example?=@victime.example",
+                        "a=b@example.com", "a?b@example.com", "a,b@example.com"):
+            ctl._bucket_data.clear()
+            self._poster(courriel=adresse)
+        self.assertFalse(self.envois)
+        self.assertFalse(self.env["mailing.contact"].search([("email", "ilike", "victime")]))
+
+    def test_origine_etrangere_refusee(self):
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_BASE_URL, "https://symbifox.example")
+        for entetes in ({"Origin": "https://pirate.example"}, {"Origin": "null"},
+                        {"Sec-Fetch-Site": "cross-site"}):
+            ctl._bucket_data.clear()
+            r = self.url_open("/infolettre", data={"courriel": self.adresse},
+                              headers=entetes, allow_redirects=False)
+            self.assertEqual(r.status_code, 403, entetes)
+        self.assertFalse(self._inscription())
+        for lang, entetes in (("fr", {"Origin": "https://symbifox.example",
+                                      "Sec-Fetch-Site": "same-origin"}),
+                              ("en", {"Origin": "https://symbifox.example"})):
+            ctl._bucket_data.clear()
+            r = self.url_open("/infolettre", data={"courriel": self.adresse, "lang": lang},
+                              headers=entetes, allow_redirects=False)
+            self.assertEqual(r.status_code, 303, lang)
+        self.assertTrue(self._inscription())
+
+    def test_releves_mail_tracking_notes_et_purges(self):
+        if "mail.tracking.email" not in self.env:
+            self.skipTest("mail_tracking n'est pas installé sur cette base")
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_NOTIFY, "veille@example.com")
+        Notes = self.env["bf.mailing.signup.tracking"].sudo()
+        avant = Notes.search([]).ids
+        self._poster()
+        notes = Notes.search([("id", "not in", avant)])
+        releves = self.env["mail.tracking.email"].sudo().browse(
+            notes.mapped("tracking_email_id")).exists()
+        self.assertEqual(set(releves.mapped("recipient")), {self.adresse, "veille@example.com"},
+                         "confirmation et avis interne notés")
+        for m in self.envois:
+            self.assertNotIn("data-odoo-tracking-email", self._corps_html(m))
+        trace = self.env["bf.mailing.signup.trace"].sudo().search([], order="id desc", limit=1)
+        self.env.cr.execute("UPDATE bf_mailing_signup_trace SET create_date = %s WHERE id = %s",
+                            [fields.Datetime.now() - timedelta(hours=49), trace.id])
+        self.env.invalidate_all()
+        Notes._cron_purger()
+        self.assertFalse(trace.exists(), "trace de plus de 48 h effacée")
+        self.assertTrue(releves.exists(), "relevés de moins de sept jours gardés")
+        self.env.cr.execute("UPDATE bf_mailing_signup_tracking SET create_date = %s WHERE id IN %s",
+                            [fields.Datetime.now() - timedelta(days=8), tuple(notes.ids)])
+        self.env.invalidate_all()
+        Notes._cron_purger()
+        self.assertFalse(releves.exists())
+        self.assertFalse(notes.exists())
+
+    # ------------------------------------------------- troisième passe de relecture
+
+    def _verrou_tenu(self, cle):
+        """Vrai si cette transaction tient le verrou consultatif `cle`."""
+        self.env.cr.execute(
+            "SELECT count(*) FROM pg_locks WHERE locktype = 'advisory' "
+            "AND pid = pg_backend_pid() AND classid = %s::bigint::oid "
+            "AND objid = %s::bigint::oid AND objsubid = 1",
+            [(cle >> 32) & 0xFFFFFFFF, cle & 0xFFFFFFFF])
+        return bool(self.env.cr.fetchone()[0])
+
+    def test_les_plafonds_se_comptent_sous_verrou(self):
+        """Le compte-puis-écrit des plafonds prend le verrou consultatif de
+        l'infolettre (tenu jusqu'à la fin de la transaction). Que le compte se fasse
+        sur une transaction neuve, seul un envoi concurrent le montre : le parcours
+        `--proxy-mode` le vérifie (24 envois simultanés, 20 lignes au plus)."""
+        self.assertFalse(self._verrou_tenu(ctl.VERROU_PLAFONDS))
+        self._poster()
+        self.assertTrue(self._verrou_tenu(ctl.VERROU_PLAFONDS))
+        self.assertTrue(self._inscription())
+
+    def test_un_avis_qui_casse_en_sql_ne_perd_pas_l_inscription(self):
+        """Un avis qui lève une erreur SQL (transaction en échec) : sous son
+        `savepoint`, l'inscription et sa confirmation tiennent quand même."""
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_NOTIFY, "veille@example.com")
+
+        def avis_casse(env, *_a, **_k):
+            env.cr.execute("SELECT 1 / 0")
+
+        with patch.object(ctl, "_avis_html", side_effect=avis_casse), \
+                mute_logger("odoo.sql_db", "odoo.addons.bf_mailing_signup.controllers.main"):
+            r = self._poster()
+        self.assertEqual(r.status_code, 303)
+        self.assertEqual(r.headers["Location"], "/infolettre-merci.html")
+        self.assertTrue(self._inscription(), "l'inscription existe")
+        self.assertTrue(self.env["bf.mailing.signup.trace"].sudo().search(
+            [("key", "=", ctl._cle_boite(self.env, self.adresse))]), "et sa trace")
+        self.assertEqual(len(self.envois), 1, "la confirmation est partie")
+
+    def _vieillir_contact(self, contact, jours=8, datetime_desinscription=None):
+        """Recule un contact et ses inscriptions de `jours` jours, en SQL."""
+        quand = fields.Datetime.now() - timedelta(days=jours)
+        self.env.cr.execute("UPDATE mailing_contact SET create_date = %s WHERE id = %s",
+                            [quand, contact.id])
+        self.env.cr.execute(
+            "UPDATE mailing_subscription SET create_date = %s, opt_out_datetime = "
+            "CASE WHEN opt_out THEN %s ELSE NULL END WHERE contact_id = %s",
+            [quand, datetime_desinscription or quand, contact.id])
+        self.env.invalidate_all()
+
+    def test_purge_des_contacts_jamais_confirmes(self):
+        """Seul part le contact que le formulaire a créé et que personne n'a
+        confirmé depuis plus de sept jours. Tout le reste est gardé."""
+        Contact = self.env["mailing.contact"].sudo()
+        cas = ("vieux", "recent", "confirme", "desinscrit", "mixte", "raison", "liste_neuve")
+        adresses = {k: f"f7-{k.replace('_', '-')}@example.com" for k in cas}
+        for k in cas:
+            ctl._bucket_data.clear()
+            self._poster(courriel=adresses[k])
+        for k in ("confirme", "desinscrit"):
+            self.adresse = adresses[k]
+            self._confirmer()
+        contacts = {k: Contact.search([("email_normalized", "=", a)]) for k, a in adresses.items()}
+        self.assertTrue(all(c.create_uid == self.env.ref("base.public_user") for c in
+                            contacts.values()), "créés par la route publique")
+        autre = self.env["mailing.list"].create({"name": "Essai — autre liste"})
+        self.env["mailing.subscription"].sudo().create(
+            {"contact_id": contacts["mixte"].id, "list_id": autre.id, "opt_out": False})
+        interne = Contact.create({"email": "f7-interne@example.com"})
+        public = self.env.ref("base.public_user")
+        sans_inscription = Contact.with_user(public).sudo().create(
+            {"email": "f7-sans-inscription@example.com"})
+        self.env["mailing.subscription"].sudo().create(
+            {"contact_id": interne.id, "list_id": self.liste.id, "opt_out": True})
+        for k in ("vieux", "confirme", "mixte", "raison", "liste_neuve"):
+            self._vieillir_contact(contacts[k])
+        self._vieillir_contact(interne)
+        self._vieillir_contact(sans_inscription)
+        # Un abonnement actif dont la date de désinscription vaut celle de création
+        # (une donnée importée) : actif, donc gardé, quelle que soit cette date.
+        self.env.cr.execute("UPDATE mailing_subscription SET opt_out_datetime = create_date "
+                            "WHERE contact_id = %s AND list_id = %s",
+                            [contacts["mixte"].id, autre.id])
+        # Désinscrit trois jours après son inscription : son refus doit rester.
+        contacts["desinscrit"].subscription_ids.write({"opt_out": True})
+        self._vieillir_contact(contacts["desinscrit"], datetime_desinscription=(
+            fields.Datetime.now() - timedelta(days=5)))
+        raison = self.env["mailing.subscription.optout"].sudo().search([], limit=1) or \
+            self.env["mailing.subscription.optout"].sudo().create({"name": "Essai"})
+        self.env.cr.execute("UPDATE mailing_subscription SET opt_out_reason_id = %s "
+                            "WHERE contact_id = %s", [raison.id, contacts["raison"].id])
+        # Contact ancien, inscription récente (une autre liste) : pas encore sept jours.
+        self.env["mailing.subscription"].sudo().create(
+            {"contact_id": contacts["liste_neuve"].id, "list_id": autre.id, "opt_out": True})
+        self.env.invalidate_all()
+        self.env["bf.mailing.signup.tracking"]._cron_purger()
+        self.assertFalse(contacts["vieux"].exists(), "en attente depuis huit jours : effacé")
+        self.assertFalse(self.env["mailing.subscription"].search(
+            [("contact_id", "=", contacts["vieux"].id)]), "avec son inscription")
+        for k in ("recent", "confirme", "desinscrit", "mixte", "raison", "liste_neuve"):
+            self.assertTrue(contacts[k].exists(), k)
+        self.assertTrue(interne.exists(), "créé par un usager interne : jamais visé")
+        self.assertTrue(sans_inscription.exists(), "sans inscription : pas « en attente »")
+
+    def test_desinstallation_efface_les_releves_notes(self):
+        """La table des relevés à purger part avec le module ; le crochet de
+        désinstallation efface donc tout de suite les relevés notés, quel que soit
+        leur âge, et laisse les autres."""
+        if "mail.tracking.email" not in self.env:
+            self.skipTest("mail_tracking n'est pas installé sur cette base")
+        from .. import uninstall_hook
+        Releve = self.env["mail.tracking.email"].sudo()
+        notes = Releve.create([{"name": f"Noté {i}", "recipient": f"r2-{i}@example.com"}
+                               for i in range(2)])
+        libre = Releve.create({"name": "Pas noté", "recipient": "r2-libre@example.com"})
+        self.env["bf.mailing.signup.tracking"].sudo().create(
+            [{"tracking_email_id": i} for i in notes.ids])
+        uninstall_hook(self.env)
+        self.assertFalse(notes.exists())
+        self.assertTrue(libre.exists())
+

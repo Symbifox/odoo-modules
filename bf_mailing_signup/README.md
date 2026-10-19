@@ -53,14 +53,55 @@ cron. Un lien plus vieux ne confirme plus, il faut refaire une demande.
 
 | Méthode | Route | Effet |
 |---|---|---|
-| POST | `/infolettre` | Crée l'inscription désactivée et envoie le lien. Redirige **toujours** vers la page de remerciement. |
-| GET | `/infolettre/confirmer?e=&j=&lang=` | Si le jeton vaut, rend une page avec un seul bouton « Confirmer mon inscription ». Ne confirme **rien**. Sinon renvoie au formulaire. |
-| POST | `/infolettre/confirmer` | Le bouton de cette page : lève l'`opt_out` si le jeton vaut. |
+| POST | `/infolettre` | Crée l'inscription désactivée et envoie le lien. Redirige vers la page de remerciement, sauf deux cas : plafond GLOBAL atteint (page « occupé ») et `Origin` étranger (403). |
+| GET | `/infolettre/confirmer?e=&j=&lang=` | Si le jeton vaut, rend une page à un bouton « Confirmer mon inscription » ; n'active RIEN. Sinon renvoie au formulaire. |
+| POST | `/infolettre/confirmer` (`e`, `j`, `lang`) | Le bouton : lève l'`opt_out` si le jeton vaut. Sinon renvoie au formulaire. |
 
-⚠️ Le POST rend la **même** réponse quoi qu'il arrive : adresse connue, adresse
-refusée, pot de miel rempli, plafond atteint. Une réponse qui varierait ferait de
-la route un oracle : on saurait, en essayant une adresse, si elle est sur la
-liste.
+⚠️ Le POST rend la **même** réponse quoi qu'il arrive à une ADRESSE : adresse
+connue, adresse refusée, pot de miel rempli, seau ou plafond de la boîte atteint.
+Une réponse qui varierait ferait de la route un oracle : on saurait, en essayant
+une adresse, si elle est sur la liste. La page « occupé » ne dit qu'un état
+d'ensemble (le plafond global), le 403 qu'une origine étrangère.
+
+## Plafonds
+
+| Plafond | Tenu par | Au-delà |
+|---|---|---|
+| 5 envois par heure et par IP | seau en mémoire, **par worker** | « merci », refus journalisé |
+| 3 confirmations par boîte et par jour | la base : `bf.mailing.signup.trace`, `UNIQUE(key, day, rank)`, `CHECK rank BETWEEN 1 AND 3` | « merci », sans envoi |
+| 20 confirmations par heure, 100 par 24 h, toutes boîtes | compte en base des mêmes traces, sous verrou | page « occupé », un seul avis interne par fenêtre |
+| `Origin` présent et étranger, ou `Sec-Fetch-Site: cross-site` | contrôle de la route | 403 |
+
+🔴 **Le seau par IP ne borne pas le total.** Il vit dans la mémoire de chaque
+worker (dix workers : environ 50 envois par heure et par IP) et repart à zéro à
+chaque recyclage. On ne le garde pas en base, pour ne pas garder une donnée de plus
+(l'adresse IP) : c'est le plafond global, avec son avis interne, qui borne le total.
+
+La boîte est normalisée avant le compte : sans `+suffixe`, et sans les points chez
+Gmail (`gmail.com`, `googlemail.com`) ; sinon `cible+0@` à `cible+7@` donnaient
+huit confirmations à la même personne. La trace ne garde PAS l'adresse : un HMAC
+de la boîte normalisée (secret de la base), le jour et un rang. Elle est effacée
+au bout de 48 heures. Le perdant d'une course sur la contrainte lève avant tout
+envoi, et le journal SQL est muet pendant l'écriture (la requête fautive porterait
+sinon l'empreinte au journal, en ERROR, provoquée de l'extérieur).
+
+🔴 **Le compte puis l'écriture sont sérialisés.** Sans verrou, 24 envois simultanés
+comptaient tous 19 et écrivaient tous (23 lignes pour 20). Chaque
+envoi prend donc le verrou consultatif des plafonds (`pg_advisory_xact_lock`, tenu
+jusqu'à la fin de sa transaction), puis compte sur une transaction NEUVE, ouverte après
+la prise du verrou : Odoo travaille en REPEATABLE READ, et un compte fait dans la
+transaction de la requête, dont l'instantané date d'avant le verrou, ne verrait pas la
+ligne que l'envoi précédent vient de valider. Le rang de la boîte est alors toujours
+libre : la contrainte ne lève plus, et Postgres n'écrit plus de violation à son journal.
+
+L'avis « plafond global atteint » part à `notify_email` une fois par fenêtre (heure
+ou jour) : `bf_mailing_signup.plafond_avise` garde la dernière fenêtre avisée, et sa
+ligne est prise sous verrou pour qu'un second worker ne le double pas. Il fait un
+`set_param`, qui vide les caches de tous les workers : une fois par fenêtre au plus.
+
+L'adresse doit passer une expression stricte : ASCII, ni virgule, ni point-virgule,
+ni chevrons, ni guillemets, ni `=` ni `?` (un mot encodé RFC 2047 `=?…?=` se décode
+en une AUTRE adresse chez le serveur).
 
 ## Champs attendus du formulaire
 
@@ -101,6 +142,7 @@ Trois choses, apprises ailleurs, y sont volontaires :
 | `bf_mailing_signup.brand_name` | *(le nom de la société)* | Le nom écrit dans le sujet, l'en-tête et le corps. |
 | `bf_mailing_signup.brand_mark_url` | *(aucune)* | URL absolue du sigle, dans le bandeau. |
 | `bf_mailing_signup.brand_logo_url` | *(aucune)* | URL absolue du logo de la société, dans le pied. |
+| `bf_mailing_signup.company_url` | *(aucune)* | Le site de la société, en lien à côté de son nom dans le pied. `http` ou `https` seulement ; vide, le pied garde le nom seul. |
 | `bf_mailing_signup.notify_email` | *(aucune)* | Qui prévenir d'une inscription. Vide, personne n'est prévenu. Plusieurs adresses séparées par des virgules. |
 
 ⚠️ Les deux URL d'images n'ont **aucune valeur par défaut**, et c'est délibéré :
@@ -148,8 +190,90 @@ formulaire échoue en silence sans eux :
 2. `form-action 'self'` dans la CSP — elle dit `'none'` par défaut, et un
    navigateur bloque alors l'envoi **sans rien afficher**.
 
+🔴 Le bloc doit aussi envoyer `proxy_set_header X-Forwarded-Host …`. Odoo 18
+n'applique ProxyFix (`proxy_mode`) que si cet en-tête arrive : sans lui,
+`remote_addr` reste l'adresse du proxy, tous les visiteurs partagent UN seau, et
+cinq envois par heure ferment le formulaire pour tout le monde. Le module le
+signale une fois par processus au journal, et journalise chaque refus du seau.
+`client_max_body_size 64k` (le module refuse lui-même au-delà de 64 Kio, en 413)
+et `proxy_hide_header Set-Cookie` (Odoo poserait un témoin de session de 90 jours
+sur le domaine du site) complètent le bloc.
+
+⚠️ N'ajouter `X-Forwarded-Host` aux blocs de production qu'**après** la pose de la
+18.0.1.2.2 : avant elle, `/infolettre` n'a ni plafond par boîte ni plafond global,
+et c'est le seau unique, par accident, qui le bornait. Avec l'en-tête et l'ancien
+code, chaque IP enverrait environ 50 confirmations par heure à n'importe quelle
+adresse.
+
 ## Pages attendues du site appelant
 
-`/infolettre-merci.html`, `/infolettre-confirme.html`, et leurs jumelles sous
-`/en/`. Le module n'ajoute aucune vue : c'est tout son intérêt, la page reste
+`/infolettre-merci.html`, `/infolettre-confirme.html`, `/infolettre-occupe.html`,
+et leurs jumelles sous `/en/`. Le module n'ajoute aucune vue : c'est tout son intérêt, la page reste
 celle du site, avec sa charte et sa CSP.
+
+## Aucun pixel de suivi, relevés effacés à sept jours
+
+La confirmation et l'avis interne (qui nomme l'adresse) portent l'en-tête interne
+`X-BF-Sans-Suivi`. `ir.mail_server.build_email` le retire, avec l'image de suivi
+d'ouverture que le module OCA `mail_tracking` colle à tout courriel sortant et les
+en-têtes qu'il poserait (`X-Odoo-MailTracking-ID`, `X-Odoo-Database`), quel que soit
+l'ordre de chargement des deux modules. Un autre module peut marquer ses courriels de
+la même façon.
+
+🔴 `build_email` est une méthode publique : tout usager connecté, portail compris,
+l'appelle par `/web/dataset/call_kw`. Elle n'écrit donc RIEN (une version antérieure
+notait en `sudo` tout identifiant de relevé lu dans le corps reçu, et un usager
+portail faisait effacer n'importe quel relevé de l'instance). Les relevés `mail.tracking.email`
+se notent dans `bf.mailing.signup.tracking` à l'envoi, dans
+`mail.mail._postprocess_sent_message` (privée), par le `mail_id` des courriels marqués
+du lot : jamais à partir d'un identifiant reçu. La tâche quotidienne efface ces relevés
+au bout de sept jours : le module OCA les garderait sans limite, adresse comprise. La
+désinstallation du module les efface tout de suite (`uninstall_hook`) : plus personne
+ne les purgerait.
+
+## Contacts jamais confirmés, effacés à sept jours
+
+Le formulaire crée un contact et son inscription désactivée ; si le lien n'est jamais
+suivi, ils restaient à vie. La même tâche efface au bout de sept jours, comme le lien
+qui seul pouvait les confirmer, les seuls contacts :
+
+* créés par la route publique (créateur membre de `base.group_public`) ;
+* dont TOUTES les inscriptions (au moins une) sont nées désactivées et n'ont jamais
+  bougé depuis (`opt_out_datetime` égale à leur date de création, sans raison de
+  désinscription), et ont plus de sept jours.
+
+Un abonné, même désinscrit (son refus doit rester), un contact créé à la main ou par
+import, un contact sans inscription ne sont jamais visés. Un lien suivi plus tard
+recrée le contact.
+
+## Déploiement
+
+Depuis la 18.0.1.2.2, le module a des modèles (traces, relevés), des données et une
+tâche planifiée : un `-u` est nécessaire, PUIS un redémarrage (les contrôleurs ne se
+rechargent qu'au démarrage). Libellés en anglais, traduits dans `i18n/fr_CA.po`.
+
+## Journal
+
+- **18.0.1.2.2, troisième passe** (relecture adverse) : `build_email` n'écrit plus rien
+  (un usager portail y faisait noter n'importe quel relevé) ; les relevés se notent à
+  l'envoi par le `mail_id` des courriels marqués ; plafonds comptés sous verrou
+  consultatif, sur une transaction neuve (24 envois simultanés : 20 lignes, plus 23) ;
+  avis interne sous `savepoint` ; contacts jamais confirmés effacés à sept jours ;
+  relevés notés effacés à la désinstallation.
+- **18.0.1.2.2, deuxième passe** (relecture adverse) : plafonds en base (3 par boîte
+  normalisée et par jour, en HMAC ; 20 par heure, 100 par 24 h, page « occupé » et un
+  avis par fenêtre) ; `Origin` étranger et `Sec-Fetch-Site: cross-site` refusés ; `=` et
+  `?` refusés dans la partie locale ; relevés `mail_tracking` notés et effacés à sept
+  jours, avis interne compris.
+- **18.0.1.2.2, suite** (relecture adverse) : jeton validé (`[0-9a-f]{32}`)
+  avant la comparaison, qui levait sur un caractère non ASCII (une 500 pour une adresse
+  inscrite seulement, donc un oracle) ; un champ envoyé comme fichier ne rend plus de
+  500 ; corps limité à 64 Kio ; refus du seau journalisés ; proxy sans
+  `X-Forwarded-Host` signalé ; plus de pixel de suivi sur la confirmation.
+- **18.0.1.2.2** : le pied peut porter le site de la société, en lien à côté
+  de son nom (`company_url`). L'adresse postale passe sur sa propre ligne, plus petite,
+  dans le même gris : la LCAP la veut présentée clairement, et un lien ne la remplace pas.
+- **18.0.1.2.1** : ouvrir le lien de confirmation ne confirme plus
+  rien. Les passerelles de courriel et les aperçus de liens ouvrent chaque lien
+  en GET ou en HEAD avant la personne, et confirmaient l'inscription à sa place.
+  Le lien rend un bouton ; seul son POST active.

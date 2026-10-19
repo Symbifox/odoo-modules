@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Inscription publique à une liste d'envoi",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.2.2",
     "category": "Marketing",
     "summary": "Formulaire d'infolettre en HTML pur, à double consentement, "
                "sans reCaptcha ni ressource tierce",
@@ -63,6 +63,13 @@ Ce que le module ne fait pas
   l'adresse de son choix, et se relit ensuite sur la fiche du contact.
 * Il ne crée pas de ``res.partner``. Une adresse d'infolettre n'est pas un
   contact tant qu'elle n'a rien demandé d'autre.
+* Il ne pose aucun pixel de suivi d'ouverture sur la confirmation : celui du
+  module ``mail_tracking``, s'il est installé, est retiré avant l'envoi, et son
+  relevé est effacé au bout de sept jours (et à la désinstallation).
+* Il ne garde pas un contact que personne n'a confirmé : effacé au bout de sept
+  jours, comme le lien qui seul pouvait le confirmer.
+* Il ne garde pas l'adresse pour ses plafonds : un HMAC de la boîte normalisée,
+  effacé au bout de 48 heures.
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -72,8 +79,14 @@ Ce que le module ne fait pas
     # sur un locataire qui n'a pas l'application Rendez-vous, et trente lignes
     # de seau valent mieux qu'une dépendance à une application entière.
     "depends": ["mass_mailing"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/signup_data.xml",
+    ],
     # Aucune icône : le module est de la plomberie, et la page catalogue du site
     # tuile TOUT module qui en porte une.
+    # Les relevés `mail_tracking` déjà notés sont effacés avec le module.
+    "uninstall_hook": "uninstall_hook",
     "installable": True,
     "application": False,
 }

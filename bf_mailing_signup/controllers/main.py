@@ -15,14 +15,18 @@ import re
 import threading
 import time
 from collections import defaultdict
-from datetime import date
+from datetime import date, timedelta
 from hashlib import sha256
+
+import psycopg2.errors
 
 import werkzeug.utils
 from urllib.parse import quote
 
-from odoo import fields, http
+from odoo import SUPERUSER_ID, api, fields, http
 from odoo.http import request
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
+from odoo.tools import config, mute_logger
 
 _logger = logging.getLogger(__name__)
 
@@ -39,14 +43,17 @@ ICP_BASE_URL = "bf_mailing_signup.base_url"
 ICP_BRAND = "bf_mailing_signup.brand_name"
 ICP_MARK = "bf_mailing_signup.brand_mark_url"
 ICP_LOGO = "bf_mailing_signup.brand_logo_url"
+# Le site de la SOCIÉTÉ (pas celui du produit), en lien dans le pied, à côté de
+# son nom. Même règle que les images : aucune valeur par défaut.
+ICP_COMPANY_URL = "bf_mailing_signup.company_url"
 
 # Où retomber après un envoi. Ce sont des pages du site appelant, pas des vues
 # d'ici : le module n'ajoute aucune vue, c'est tout son intérêt.
 PAGES = {
     "fr": {"merci": "/infolettre-merci.html", "confirme": "/infolettre-confirme.html",
-           "retour": "/#infolettre"},
+           "occupe": "/infolettre-occupe.html", "retour": "/#infolettre"},
     "en": {"merci": "/en/infolettre-merci.html", "confirme": "/en/infolettre-confirme.html",
-           "retour": "/en/#infolettre"},
+           "occupe": "/en/infolettre-occupe.html", "retour": "/en/#infolettre"},
 }
 
 # Fenêtre de validité du lien de confirmation, en jours. Obtenue en réessayant
@@ -59,10 +66,38 @@ CONFIRM_DAYS = 7
 _SIGNUP_MAX, _SIGNUP_WINDOW = 5, 3600
 _CONFIRM_MAX, _CONFIRM_WINDOW = 30, 3600
 
-# Assez pour refuser une adresse manifestement fausse, sans prétendre valider
-# une adresse courriel par expression régulière — seul l'envoi le prouve.
-_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s.]+\.[^@\s]+$")
+# ⚠️ Stricte, exprès : la valeur part dans `email_to`, où une virgule ou un
+# point-virgule séparent DEUX destinataires, où chevrons et guillemets changent
+# le sens de l'en-tête, et où `=?…?=` est un mot encodé RFC 2047 que le serveur
+# décode en une AUTRE adresse. Ni `=` ni `?` dans la partie locale ; pas d'IDN :
+# un refus vaut mieux qu'un courriel à la mauvaise boîte.
+_EMAIL_RE = re.compile(
+    r"^[A-Za-z0-9.!#$%&'*+/^_`{|}~-]+"
+    r"@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
 _EMAIL_MAX = 254  # RFC 5321
+
+# Plafonds tenus en BASE (bf.mailing.signup.trace) : le seau par IP vit dans
+# chaque worker et repart à zéro à chaque recyclage, il ne borne pas le total.
+# Trois confirmations par BOÎTE et par jour : la boîte est normalisée (sans
+# +suffixe, sans les points chez Gmail), sinon cible+0@ à cible+7@ en donnaient
+# huit. Vingt par heure et cent par 24 heures en tout : au-delà, la page
+# « occupé » et un seul avis interne par fenêtre.
+_PAR_BOITE_MAX = 3
+_GLOBAL_HEURE = 20
+_GLOBAL_JOUR = 100
+ICP_PLAFOND_AVISE = "bf_mailing_signup.plafond_avise"
+_GMAIL = frozenset(("gmail.com", "googlemail.com"))
+
+
+def _cle_verrou(nom):
+    """Un entier signé de 64 bits, stable, pour `pg_advisory_xact_lock`."""
+    return int.from_bytes(sha256(nom.encode()).digest()[:8], "big", signed=True)
+
+
+# Le verrou consultatif qui sérialise le compte-puis-écrit des plafonds de
+# l'infolettre. Un autre formulaire tient le sien à part.
+VERROU_PLAFONDS = _cle_verrou("bf_mailing_signup:plafonds")
 
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)
@@ -71,6 +106,21 @@ _bucket_data = defaultdict(list)
 # l'historique d'un seau est sans gravité, laisser la mémoire enfler ne l'est pas.
 _MAX_TRACKED_IPS = 10000
 _bucket_window = {}  # seau -> fenêtre la plus longue vue, pour l'élagage
+
+# La taille d'un envoi légitime tient en quelques centaines d'octets. Au-delà
+# de 64 Kio, werkzeug refuse avant même de lire le corps (413).
+MAX_CORPS = 64 * 1024
+
+# Un jeton bien formé : 32 chiffres hexadécimaux. Tout le reste est refusé AVANT
+# `hmac.compare_digest`, qui lève sur une chaîne non ASCII (erreur 500, et donc
+# un oracle : la 500 ne sortait que pour un identifiant existant).
+_JETON_RE = re.compile(r"^[0-9a-f]{32}$")
+
+# Marque d'un courriel qui ne doit porter AUCUN pixel de suivi d'ouverture : la
+# confirmation part vers une adresse qui n'a peut-être rien demandé. Retirée
+# par `ir.mail_server.build_email` (models/ir_mail_server.py) avant l'envoi.
+ENTETE_SANS_SUIVI = "X-BF-Sans-Suivi"
+_proxy_sans_hote_signale = False
 
 
 def _borner_seaux(maintenant):
@@ -105,7 +155,23 @@ def _client_ip():
     donnerait un seau neuf à chaque requête. Même règle que `bf_appointment` et
     `bf_meeting`.
     """
+    global _proxy_sans_hote_signale
     try:
+        environ = request.httprequest.environ
+        # 🔴 Odoo 18 n'applique ProxyFix que si `X-Forwarded-Host` arrive. Un
+        # proxy qui ne l'envoie pas laisse `remote_addr` à SA propre adresse :
+        # tous les visiteurs tombent dans le même seau, et cinq envois par
+        # heure suffisent à fermer le formulaire pour tout le monde. Signalé
+        # une fois par processus, au premier envoi.
+        if (config.get("proxy_mode") and environ.get("HTTP_X_FORWARDED_FOR")
+                and not environ.get("HTTP_X_FORWARDED_HOST")
+                and not _proxy_sans_hote_signale):
+            _proxy_sans_hote_signale = True
+            _logger.warning(
+                "bf_mailing_signup : proxy_mode actif, X-Forwarded-For reçu sans "
+                "X-Forwarded-Host. Odoo n'applique pas ProxyFix : le seau par IP "
+                "devient un seau unique pour tous les visiteurs. Ajouter "
+                "« proxy_set_header X-Forwarded-Host » au bloc du proxy.")
         return request.httprequest.remote_addr or "inconnu"
     except Exception:
         return "inconnu"
@@ -122,10 +188,120 @@ def _rate_ok(bucket, max_hits, window):
         hits = [t for t in _bucket_data[ident] if t > cutoff]
         if len(hits) >= max_hits:
             _bucket_data[ident] = hits
+            _logger.warning("bf_mailing_signup : seau « %s » plein pour %s (%d en %d s), "
+                            "envoi refusé", bucket, ident[1], max_hits, window)
             return False
         hits.append(now)
         _bucket_data[ident] = hits
     return True
+
+
+def _boite(email):
+    """La boîte qui reçoit vraiment : sans +suffixe, et sans les points chez Gmail."""
+    local, _sep, domaine = (email or "").strip().lower().rpartition("@")
+    local = local.split("+", 1)[0]
+    if domaine in _GMAIL:
+        local, domaine = local.replace(".", ""), "gmail.com"
+    return f"{local}@{domaine}"
+
+
+def _cle_boite(env, email, espace="bf_mailing_signup"):
+    """HMAC de la boîte normalisée : ce que la base garde, jamais l'adresse."""
+    charge = f"{espace}:boite:{_boite(email)}".encode()
+    return hmac.new(_secret(env), charge, sha256).hexdigest()
+
+
+def _origine_attendue(env):
+    """`schéma://hôte[:port]` du site qui porte les formulaires (`base_url`)."""
+    icp = env["ir.config_parameter"].sudo()
+    base = (icp.get_param(ICP_BASE_URL) or icp.get_param("web.base.url") or "").strip()
+    m = re.match(r"^(https?://[^/?#]+)", base, re.IGNORECASE)
+    return m.group(1).lower() if m else ""
+
+
+def _origine_refusee(env):
+    """Vrai si le POST vient manifestement d'une autre page que celles du site.
+
+    La route s'ouvre sans jeton CSRF : sans ce contrôle, une page tierce fait
+    poster les navigateurs de ses visiteurs et remplit les plafonds à leur place.
+    Refusé : un `Sec-Fetch-Site: cross-site`, ou un `Origin` PRÉSENT qui n'est pas
+    celui du site (« null » compris). Un client sans navigateur n'envoie ni l'un
+    ni l'autre : il reste borné par les plafonds.
+    """
+    entetes = request.httprequest.headers
+    if (entetes.get("Sec-Fetch-Site") or "").strip().lower() == "cross-site":
+        return True
+    origine = entetes.get("Origin")
+    if origine is None:
+        return False
+    attendue = _origine_attendue(env)
+    return not attendue or origine.strip().rstrip("/").lower() != attendue
+
+
+def _refus_origine():
+    _logger.warning("bf_mailing_signup : envoi refusé, Origin ou Sec-Fetch-Site étranger")
+    return request.make_response("Origine refusée.", status=403,
+                                 headers=[("Content-Type", "text/plain; charset=utf-8")])
+
+
+def _compter_sous_verrou(env, cle, compter):
+    """Prendre le verrou `cle`, puis rendre `compter(env_frais)`, lu sur une transaction NEUVE.
+
+    🔴 Le compte puis l'écriture d'un plafond doivent être sérialisés : sans
+    verrou, 24 envois simultanés comptaient tous 19 et écrivaient tous (23 lignes
+    pour 20), et le perdant d'une course sur la boîte
+    laissait son INSERT au journal de Postgres.
+    🔴 Le verrou SEUL ne suffit pas. Odoo travaille en REPEATABLE READ :
+    l'instantané de la requête date de sa première instruction, donc d'AVANT la
+    prise du verrou, et un compte fait sur `env.cr` ne voit pas la ligne que le
+    détenteur précédent vient de valider. Le compte se fait donc sur un curseur
+    ouvert APRÈS la prise du verrou, et fermé avant toute écriture de la requête.
+    Le verrou, lui, tient jusqu'à la fin de la transaction de la requête : la
+    ligne qu'elle écrit est visible du suivant quand il l'obtient.
+    """
+    env.cr.execute("SELECT pg_advisory_xact_lock(%s)", [cle])
+    with env.registry.cursor() as cr:
+        return compter(api.Environment(cr, SUPERUSER_ID, {}))
+
+
+def _reveiller_la_file(env):
+    """La tâche « Email Queue Manager », tout de suite plutôt qu'à son heure."""
+    cron = env.ref("mail.ir_cron_mail_scheduler_action", raise_if_not_found=False)
+    if cron:
+        cron.sudo()._trigger()
+
+
+def _aviser_plafond(env, cle_icp, fenetre, destinataires, objet, texte):
+    """Un seul avis interne par fenêtre de plafond, même entre plusieurs workers.
+
+    La ligne du paramètre `cle_icp` (créée par les données du module) est prise
+    sous verrou : le second worker attend, lève une erreur de sérialisation quand
+    le premier valide, et Odoo rejoue sa requête, qui trouve la fenêtre déjà
+    avisée. ⚠️ `set_param` vide les caches de tous les workers : une fois par
+    fenêtre au plus.
+    """
+    with mute_logger("odoo.sql_db"):
+        env.cr.execute("SELECT value FROM ir_config_parameter WHERE key = %s FOR UPDATE",
+                       [cle_icp])
+    ligne = env.cr.fetchone()
+    if ligne and ligne[0] == fenetre:
+        return False
+    env["ir.config_parameter"].sudo().set_param(cle_icp, fenetre)
+    _logger.warning("bf_mailing_signup : %s", objet)
+    if destinataires:
+        env["mail.mail"].sudo().create({
+            "subject": objet,
+            "body_html": f'<p style="font-family:{POLICE}">{_ech(texte)}</p>',
+            "email_to": destinataires,
+            "auto_delete": True,
+            "headers": repr({ENTETE_SANS_SUIVI: "1"}),
+        })
+        _reveiller_la_file(env)
+    return True
+
+
+def _fenetres(maintenant):
+    return (f"heure {maintenant:%Y-%m-%dT%H}", f"jour {maintenant:%Y-%m-%d}")
 
 
 def _secret(env):
@@ -143,13 +319,24 @@ def _token_valid(env, list_id, email, token):
     ⚠️ `hmac.compare_digest` et non `==` : une comparaison qui s'arrête au
     premier octet différent laisse mesurer le bon jeton octet par octet.
     """
+    if not isinstance(token, str) or not _JETON_RE.match(token):
+        return False
     today = date.today().toordinal()
-    return any(hmac.compare_digest(_token(env, list_id, email, today - d), token or "")
+    return any(hmac.compare_digest(_token(env, list_id, email, today - d), token)
                for d in range(CONFIRM_DAYS))
 
 
+def _texte(valeur):
+    """Une valeur de formulaire en texte, ou "" si elle n'en est pas une.
+
+    ⚠️ Un champ envoyé en `multipart/form-data` comme FICHIER arrive en
+    `FileStorage`, pas en `str` : `.strip()` levait, et la route rendait une 500.
+    """
+    return valeur if isinstance(valeur, str) else ""
+
+
 def _lang(raw):
-    return "en" if (raw or "").strip().lower().startswith("en") else "fr"
+    return "en" if _texte(raw).strip().lower().startswith("en") else "fr"
 
 
 def _list_id(env):
@@ -252,11 +439,17 @@ def _marque(env):
     # impossible, en silence.
     societe = env.company.sudo()
     adresse = societe.partner_id._display_address(without_company=True) or ""
+    # Seuls http et https passent : la valeur finit dans un `href`, et un
+    # `javascript:` ou un `data:` n'a rien à faire dans un courriel.
+    site_societe = (icp.get_param(ICP_COMPANY_URL) or "").strip()
+    if not re.match(r"^https?://[^\s/]+", site_societe, re.IGNORECASE):
+        site_societe = ""
     return {
         "marque": icp.get_param(ICP_BRAND) or societe.name,
         "societe": societe.name,
         "sigle": icp.get_param(ICP_MARK) or "",
         "logo": icp.get_param(ICP_LOGO) or "",
+        "site_societe": site_societe,
         # La LCAP veut une adresse postale dans un message qui demande un
         # consentement. `_display_address` la met au format du pays plutôt
         # qu'au nôtre, ce qui évite de bricoler province et code postal.
@@ -295,6 +488,16 @@ def _habiller(env, url, lang):
         signature = (
             f'<p style="margin:2px 0 0;font-family:{POLICE};font-size:12.5px;'
             f'color:{CIEL};line-height:1.2">{_ech(t["par"])}</p>')
+
+    # Le site de la société, à côté de son nom. L'adresse postale reste dessous,
+    # plus petite mais dans le même gris : la LCAP la veut, présentée clairement,
+    # dans tout message qui demande un consentement, et un lien ne la remplace pas.
+    site_societe = ""
+    if b["site_societe"]:
+        hote = b["site_societe"].split("//", 1)[-1].rstrip("/")
+        site_societe = (
+            f' · <a href="{_att(b["site_societe"])}" style="color:{GRIS};'
+            f'text-decoration:underline">{_ech(hote)}</a>')
 
     logo = ""
     if b["logo"]:
@@ -359,7 +562,8 @@ def _habiller(env, url, lang):
     <tr>{logo}
       <td valign="top">
         <p style="margin:0 0 7px;font-family:{POLICE};font-size:12.5px;line-height:1.6;
-                  color:{GRIS}">{societe}<br>{_ech(b["postale"])}</p>
+                  color:{GRIS}">{societe}{site_societe}<br>
+        <span style="font-size:11px;line-height:1.5">{_ech(b["postale"])}</span></p>
         <p style="margin:0;font-family:{POLICE};font-size:12.5px;line-height:1.6;
                   color:{GRIS}">{_ech(t["pourquoi"])}</p></td>
     </tr></table>
@@ -462,21 +666,26 @@ def _aviser(env, moment, email, lang, contact=None):
     ⚠️ Tout est sous `try` jusqu'au bout. Cet avis est un confort d'exploitation
     posé APRÈS le travail utile : s'il lève, la personne qui vient de s'inscrire
     ne doit pas en payer le prix, ni voir une erreur, ni perdre son inscription.
+    ⚠️ Et sous `savepoint` : une erreur SQL attrapée sans lui laisserait la
+    transaction en échec, et la requête perdrait l'inscription en validant.
     """
     try:
-        destinataires = (env["ir.config_parameter"].sudo()
-                         .get_param(ICP_NOTIFY) or "").strip()
-        if not destinataires:
-            return
-        sujet = MOMENTS[moment][0].format(email=email)
-        # `email_from` reste absent, pour la même raison que sur la confirmation :
-        # l'adresse d'envoi par défaut est la seule alignée en SPF et DKIM.
-        env["mail.mail"].sudo().create({
-            "subject": sujet,
-            "body_html": _avis_html(env, moment, email, lang, contact),
-            "email_to": destinataires,
-            "auto_delete": True,
-        }).send(raise_exception=False)
+        with env.cr.savepoint():
+            destinataires = (env["ir.config_parameter"].sudo()
+                             .get_param(ICP_NOTIFY) or "").strip()
+            if not destinataires:
+                return
+            sujet = MOMENTS[moment][0].format(email=email)
+            # `email_from` reste absent, pour la même raison que sur la confirmation :
+            # l'adresse d'envoi par défaut est la seule alignée en SPF et DKIM.
+            env["mail.mail"].sudo().create({
+                "subject": sujet,
+                "body_html": _avis_html(env, moment, email, lang, contact),
+                "email_to": destinataires,
+                "auto_delete": True,
+                # Il nomme l'adresse saisie : ni pixel, et relevé effacé à sept jours.
+                "headers": repr({ENTETE_SANS_SUIVI: "1"}),
+            }).send(raise_exception=False)
     except Exception:               # noqa: BLE001
         _logger.exception("bf_mailing_signup : avis interne non envoyé (%s)", moment)
 
@@ -517,10 +726,12 @@ class BfMailingSignup(http.Controller):
     # consentement — un envoi non sollicité n'inscrit personne, il fait partir
     # un seul courriel vers l'adresse saisie — plus le pot de miel et le seau.
     @http.route("/infolettre", type="http", auth="public", methods=["POST"],
-                csrf=False, website=False, sitemap=False)
+                csrf=False, website=False, sitemap=False, max_content_length=MAX_CORPS)
     def signup(self, **post):
         lang = _lang(post.get("lang"))
         pages = PAGES[lang]
+        if _origine_refusee(request.env):
+            return _refus_origine()
         # Réponse UNIQUE quoi qu'il arrive. Dire « déjà inscrit », « adresse
         # refusée » ou « trop de tentatives » donne à qui sonde le service
         # exactement ce qu'il cherche : savoir si une adresse est sur la liste.
@@ -530,12 +741,14 @@ class BfMailingSignup(http.Controller):
         # qu'aucun lecteur d'écran n'annonce et qu'aucune tabulation n'atteint.
         # Rempli, c'est un robot. On rend la page de remerciement quand même :
         # un refus visible lui apprendrait où est le champ.
-        if (post.get("site_web") or "").strip():
+        # Un pot de miel envoyé comme fichier est aussi un robot.
+        site_web = post.get("site_web")
+        if site_web is not None and (not isinstance(site_web, str) or site_web.strip()):
             return merci
         if not _rate_ok("signup", _SIGNUP_MAX, _SIGNUP_WINDOW):
             return merci
 
-        email = (post.get("courriel") or "").strip().lower()
+        email = _texte(post.get("courriel")).strip().lower()
         if not email or len(email) > _EMAIL_MAX or not _EMAIL_RE.match(email):
             return merci
 
@@ -546,9 +759,21 @@ class BfMailingSignup(http.Controller):
             return merci
 
         try:
-            contact = self._ensure_pending(env, list_id, email)
-            self._send_confirmation(env, list_id, email, lang)
-            _aviser(env, "demande", email, lang, contact)
+            with env.cr.savepoint():
+                plafond = self._plafonds(env, email)
+                if plafond:
+                    return werkzeug.utils.redirect(pages["occupe"], 303)
+                if plafond is None:
+                    contact = self._ensure_pending(env, list_id, email)
+                    self._send_confirmation(env, list_id, email, lang)
+                    _aviser(env, "demande", email, lang, contact)
+        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+            raise                       # Odoo rejoue la requête
+        except psycopg2.errors.UniqueViolation:
+            # Le perdant d'une course sur le plafond par boîte : la contrainte a
+            # levé avant tout envoi. Rien n'est écrit.
+            _logger.warning("bf_mailing_signup : plafond par boîte atteint en concurrence, "
+                            "envoi refusé")
         except Exception:               # noqa: BLE001 — la page ne doit jamais 500
             _logger.exception("bf_mailing_signup : échec d'inscription")
         return merci
@@ -560,11 +785,12 @@ class BfMailingSignup(http.Controller):
     # passerelle analyse les liens, et le double consentement se confirmait
     # tout seul. Le GET rend un bouton ; seul le POST de ce bouton active.
     @http.route("/infolettre/confirmer", type="http", auth="public",
-                methods=["GET", "POST"], csrf=False, website=False, sitemap=False)
+                methods=["GET", "POST"], csrf=False, website=False, sitemap=False,
+                max_content_length=MAX_CORPS)
     def confirm(self, e=None, j=None, lang=None, **kw):
         lang = _lang(lang)
         pages = PAGES[lang]
-        email = (e or "").strip().lower()
+        email = _texte(e).strip().lower()
         env = request.env
         list_id = _list_id(env)
         if (not _rate_ok("confirm", _CONFIRM_MAX, _CONFIRM_WINDOW)
@@ -587,6 +813,48 @@ class BfMailingSignup(http.Controller):
         return werkzeug.utils.redirect(pages["confirme"], 303)
 
     # ------------------------------------------------------------------ interne
+
+    def _plafonds(self, env, email):
+        """Rend True (plafond global : page « occupé »), False (plafond de la
+        boîte : « merci » sans envoi) ou None (la confirmation peut partir, sa
+        trace est écrite). Les comptes se font sous le verrou des plafonds, sur
+        une transaction neuve (`_compter_sous_verrou`) : deux envois simultanés
+        ne voient plus le même compte. Une course perdue malgré tout (seconde
+        ligne) lève `UniqueViolation`."""
+        Trace = env["bf.mailing.signup.trace"].sudo()
+        maintenant = fields.Datetime.now()
+        heure, jour_ = _fenetres(maintenant)
+        bornes = ((_GLOBAL_HEURE, maintenant - timedelta(hours=1), heure),
+                  (_GLOBAL_JOUR, maintenant - timedelta(days=1), jour_))
+        cle = _cle_boite(env, email)
+        jour = fields.Date.today()
+
+        def compter(frais):
+            Lues = frais["bf.mailing.signup.trace"]
+            return ([Lues.search_count([("create_date", ">=", depuis)])
+                     for _limite, depuis, _fenetre in bornes],
+                    Lues.search_count([("key", "=", cle), ("day", "=", jour)]))
+
+        globaux, deja = _compter_sous_verrou(env, VERROU_PLAFONDS, compter)
+        for (limite, _depuis, fenetre), n in zip(bornes, globaux):
+            if n >= limite:
+                _aviser_plafond(
+                    env, ICP_PLAFOND_AVISE, fenetre,
+                    (env["ir.config_parameter"].sudo().get_param(ICP_NOTIFY) or "").strip(),
+                    f"Infolettre : plafond global atteint ({limite} confirmations, {fenetre})",
+                    "Le formulaire d'infolettre répond « occupé » jusqu'à la fin de la "
+                    "fenêtre. Un pic légitime, ou un envoi en masse : le journal d'Odoo "
+                    "dit d'où viennent les refus du seau.")
+                return True
+        if deja >= _PAR_BOITE_MAX:
+            _logger.warning("bf_mailing_signup : plafond de %d confirmations par boîte et par "
+                            "jour atteint, envoi refusé", _PAR_BOITE_MAX)
+            return False
+        # `mute_logger` : le perdant d'une course écrirait sinon la requête
+        # INSERT au journal en ERROR, provoqué de l'extérieur.
+        with mute_logger("odoo.sql_db"):
+            Trace.create({"key": cle, "day": jour, "rank": deja + 1}).flush_recordset()
+        return None
 
     def _ensure_pending(self, env, list_id, email):
         """Crée le contact et son inscription DÉSACTIVÉE, sans rien réactiver.
@@ -632,6 +900,7 @@ class BfMailingSignup(http.Controller):
             "email_to": email,
             "reply_to": reply_to or False,
             "auto_delete": True,
+            "headers": repr({ENTETE_SANS_SUIVI: "1"}),
         })
         # Envoi immédiat, mais un SMTP lent ou fâché ne doit pas faire attendre
         # le visiteur ni lui rendre une erreur : en cas d'échec le message reste

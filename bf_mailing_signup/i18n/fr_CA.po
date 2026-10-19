@@ -1,0 +1,111 @@
+# Translation of Public mailing list signup - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_mailing_signup 18.0.1.2.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 10:32+0000\n"
+"PO-Revision-Date: 2026-10-11 10:32+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_mailing_signup
+#: model:ir.model.constraint,message:bf_mailing_signup.constraint_bf_mailing_signup_trace_rank_bounds
+#: model:ir.model.constraint,message:bf_mailing_signup.constraint_bf_mailing_signup_trace_rank_unique
+msgid "At most three confirmations per mailbox and per day."
+msgstr "Au plus trois confirmations par boîte et par jour."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__create_uid
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__create_date
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__day
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__display_name
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_bf_mailing_signup_trace__key
+msgid "HMAC of the normalized mailbox, never the address itself."
+msgstr "HMAC de la boîte normalisée, jamais l'adresse elle-même."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__id
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__write_uid
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__write_date
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_mailing_signup
+#: model:ir.model,name:bf_mailing_signup.model_ir_mail_server
+msgid "Mail Server"
+msgstr "Serveur de courriel"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__key
+msgid "Mailbox key"
+msgstr "Clé de boîte"
+
+#. module: bf_mailing_signup
+#: model:ir.model,name:bf_mailing_signup.model_mail_mail
+msgid "Outgoing Mails"
+msgstr "Courriels sortants"
+
+#. module: bf_mailing_signup
+#: model:ir.actions.server,name:bf_mailing_signup.cron_purger_ir_actions_server
+msgid ""
+"Public signup: erase caps traces, tracking records and unconfirmed contacts"
+msgstr ""
+"Inscription publique : effacer les traces des plafonds, les relevés de suivi "
+"et les contacts non confirmés"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__rank
+msgid "Rank"
+msgstr "Rang"
+
+#. module: bf_mailing_signup
+#: model:ir.model,name:bf_mailing_signup.model_bf_mailing_signup_trace
+msgid "Signup confirmation trace (caps)"
+msgstr "Trace de confirmation d'inscription (plafonds)"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__tracking_email_id
+msgid "Tracking record"
+msgstr "Relevé de suivi"
+
+#. module: bf_mailing_signup
+#: model:ir.model,name:bf_mailing_signup.model_bf_mailing_signup_tracking
+msgid "Tracking record to erase (mail_tracking)"
+msgstr "Relevé de suivi à effacer (mail_tracking)"
