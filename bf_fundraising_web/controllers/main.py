@@ -25,6 +25,29 @@ _SUBMIT_WINDOW = 600  # par 10 minutes et par IP
 _MAX_TRACKED_IPS = 10000
 
 
+def _borner(maintenant):
+    """Tenir `_submit_data` sous `_MAX_TRACKED_IPS` adresses sans relâcher un
+    bloqué.
+
+    ⚠️ Il y avait ici un `clear()` : passé 10 000 adresses, tout le monde
+    repartait à zéro, y compris l'adresse qu'on était en train de plafonner.
+    On retire d'abord les adresses échues ; si le flot est frais, celles
+    qui pèsent le moins. Une adresse bloquée sort en dernier.
+    Appelée sous `_submit_lock`.
+    """
+    if len(_submit_data) <= _MAX_TRACKED_IPS:
+        return
+    limite = maintenant - _SUBMIT_WINDOW
+    for ip in [i for i, v in _submit_data.items() if not v or v[-1] <= limite]:
+        del _submit_data[ip]
+    if len(_submit_data) > _MAX_TRACKED_IPS:
+        cible = _MAX_TRACKED_IPS * 9 // 10
+        ordre = sorted(_submit_data,
+                       key=lambda i: (len(_submit_data[i]), _submit_data[i][-1]))
+        for ip in ordre[:len(_submit_data) - cible]:
+            del _submit_data[ip]
+
+
 def _client_ip():
     try:
         return request.httprequest.remote_addr or "unknown"
@@ -37,8 +60,7 @@ def _check_submit_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _submit_lock:
-        if len(_submit_data) > _MAX_TRACKED_IPS:
-            _submit_data.clear()
+        _borner(now)
         cutoff = now - _SUBMIT_WINDOW
         _submit_data[ip] = [t for t in _submit_data[ip] if t > cutoff]
         if len(_submit_data[ip]) >= _SUBMIT_MAX:

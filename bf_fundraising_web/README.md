@@ -17,6 +17,11 @@ consulting site, for instance, should not show a donation link).
 > Required configuration: a **donation product** must be set on the company
 > ("Product for bank transfer donations") for the form to create the lines.
 
+Submissions are **rate-limited per IP address**. The limiter keeps at most
+10,000 addresses in memory: past that bound it drops expired addresses first,
+then the lightest ones, and a blocked address is evicted last, so flooding the
+limiter with new addresses never unblocks an address that hit its limit.
+
 ## Donor portal
 
 A signed-in donor sees, under **My account**:
@@ -31,3 +36,11 @@ rendering runs in `sudo`).
 ## Dependencies
 
 `bf_receipt_ca`, `website`, `portal`. AGPL-3 licence.
+
+## Changelog
+
+### 18.0.1.0.4
+
+- The donation form's rate limiter no longer resets every address once it
+  tracks more than 10,000 of them: it evicts expired, then lightly used
+  addresses, and keeps a blocked address blocked. New regression test.
