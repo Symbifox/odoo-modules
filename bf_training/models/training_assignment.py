@@ -31,7 +31,11 @@ class BfTrainingAssignment(models.Model):
 
     _name = "bf.training.assignment"
     _description = "Assignation de formation"
-    _inherit = ["mail.thread"]
+    # 🔴 Le mixin d'activités s'était perdu au déménagement : l'assignation de
+    # `bf_security_awareness` l'avait, et ses relances appellent
+    # `activity_schedule`. Il n'ajoute aucune colonne. Son `activity_ids`
+    # (activités de suivi) ne se confond pas avec `activity_id` (le catalogue).
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "due_date, id"
 
     partner_id = fields.Many2one(

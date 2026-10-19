@@ -145,6 +145,17 @@ même protégé par `noupdate` : son corps a changé, et Odoo ne réécrit jamai
 enregistrement protégé. Un gabarit retouché à la main est donc remplacé par ces
 montées ; reportez vos retouches après.
 
+## Activités de suivi
+
+Une assignation porte des activités Odoo (à faire, appel, rappel), comme une
+tâche ou une opportunité : l'agent y planifie son suivi, et les modules qui
+relancent y posent les leurs. Depuis 18.0.1.4.1 ; le mixin s'était perdu quand le
+modèle est venu de `bf_security_awareness`, dont les relances plantaient faute de
+lui.
+
+Le champ **Activité** de l'assignation reste la formation du catalogue ; les
+activités de suivi sont à part, dans le fil de l'assignation.
+
 ## Droits
 
 Deux groupes : **Agent** tient le registre (saisit, assigne, relance), et
@@ -184,7 +195,7 @@ modules séparés qui s'appuient sur celui-ci.
 
 ## Essais
 
-60 essais. Au registre lui-même, six mutations sur six attrapées : l'expiration
+64 essais. Au registre lui-même, six mutations sur six attrapées : l'expiration
 qui ne périme plus, la dispense défaite par le recalcul, l'exclusion de catégorie
 ignorée, l'échéance ancrée au mauvais jour, la ligne incomplète comptée pour
 complète, et la fenêtre annuelle ouverte sur toute l'histoire.
@@ -202,5 +213,5 @@ odoo -d <base> -u bf_training --test-enable --test-tags bf_training
 
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-10-02.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-10-19.
 Voir `LICENSE`.
