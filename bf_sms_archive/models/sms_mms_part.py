@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class SmsArchiveMmsPart(models.Model):
     _name = "sms.archive.mms.part"
-    _description = "Pièce jointe MMS"
+    _description = "MMS attachment"
     _order = "sequence, id"
 
     message_id = fields.Many2one(
@@ -19,29 +19,29 @@ class SmsArchiveMmsPart(models.Model):
         index=True,
     )
     sequence = fields.Integer(
-        string="Séquence",
+        string="Sequence",
         default=0,
     )
     content_type = fields.Char(
-        string="Type MIME",
+        string="MIME type",
     )
     filename = fields.Char(
-        string="Nom de fichier",
+        string="Filename",
     )
     attachment_id = fields.Many2one(
         comodel_name="ir.attachment",
-        string="Fichier",
+        string="File",
         ondelete="cascade",
     )
     text_content = fields.Text(
-        string="Contenu texte",
-        help="Pour les parties text/plain",
+        string="Text content",
+        help="For text/plain parts",
     )
     owner_id = fields.Many2one(
         related="message_id.owner_id",
         store=True,
         index=True,
-        string="Propriétaire",
+        string="Owner",
     )
 
     is_image = fields.Boolean(
@@ -60,7 +60,8 @@ class SmsArchiveMmsPart(models.Model):
             messages = self.env["sms.archive.message"].sudo().browse(
                 [i for i in ids if i]).exists()
             if len(messages) != len(ids) or messages.owner_id != self.env.user:
-                raise AccessError(_("Une pièce MMS ne s'ajoute qu'à vos propres messages."))
+                raise AccessError(_("An MMS part can only be added to "
+                                    "your own messages."))
         return super().create(vals_list)
 
     @api.depends("content_type")

@@ -1,0 +1,45 @@
+# Translation of Pont IA (socket du bridge) - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_ai_bridge 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_ai_bridge
+#: model:ir.model,name:bf_ai_bridge.model_bf_ai_bridge
+msgid "AI bridge: transport to the claude-chatbot-bridge service"
+msgstr "Pont IA : transport vers le service claude-chatbot-bridge"
+
+#. module: bf_ai_bridge
+#. odoo-python
+#: code:addons/bf_ai_bridge/models/bf_ai_bridge.py:0
+msgid ""
+"The AI assistance service cannot be reached: socket %(chemin)s cannot be "
+"found. Check that the claude-chatbot-bridge service is running and that the "
+"system parameter %(param)s points to the right place."
+msgstr ""
+"Le service d'assistance IA n'est pas joignable : la socket %(chemin)s est "
+"introuvable. Vérifier que le service claude-chatbot-bridge tourne et que le "
+"paramètre système %(param)s pointe au bon endroit."
+
+#. module: bf_ai_bridge
+#. odoo-python
+#: code:addons/bf_ai_bridge/models/bf_ai_bridge.py:0
+msgid ""
+"This system's tenant is not declared: set the system parameter %(param)s "
+"(\"bf\", \"pme\"…). Without it, a call to the bridge would fetch another "
+"client's data."
+msgstr ""
+"Le locataire de ce système n'est pas déclaré : poser le paramètre système "
+"%(param)s (« bf », « pme »…). Sans lui, un appel au pont irait chercher les "
+"données d'un autre client."

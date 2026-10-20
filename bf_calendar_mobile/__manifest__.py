@@ -10,7 +10,11 @@
     #   par personne et par transaction, au plus aux 20 s.
     # 18.0.3.8.1 : l'avis « agenda » a son propre interrupteur,
     #   `bf_calendar_mobile.avis_agenda` (vide : suit `bf_email.push_enabled`).
-    "version": "18.0.3.8.1",
+    # 18.0.3.9.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.3.9.0",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -214,6 +214,6 @@ class TestMessageLinks(TransactionCase):
         link = self.msg_a.link_ids
         self.bail.unlink()
         self.assertTrue(link.exists())
-        self.assertEqual(link.res_name, "Fiche supprimée")
+        self.assertEqual(link.res_name, "Deleted record")
         with self.assertRaises(UserError):
             link.action_open_target()

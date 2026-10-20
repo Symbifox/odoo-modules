@@ -4,31 +4,31 @@
         <field name="name">bf.process.node.form</field>
         <field name="model">bf.process.node</field>
         <field name="arch" type="xml">
-            <form string="Nœud">
+            <form string="Node">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_ouvrir_matrice" type="object"
                                 class="oe_stat_button" icon="fa-sitemap"
                                 invisible="knowledge_item_count == 0">
                             <field name="knowledge_item_count" widget="statinfo"
-                                   string="Pourquoi"/>
+                                   string="Why"/>
                         </button>
                         <button name="action_ouvrir_page_atelier" type="object"
                                 class="oe_stat_button" icon="fa-qrcode"
                                 invisible="resource_count == 0">
                             <field name="resource_count" widget="statinfo"
-                                   string="Page d'atelier"/>
+                                   string="Workshop page"/>
                         </button>
                         <button name="action_ouvrir_rencontres" type="object"
                                 class="oe_stat_button" icon="fa-comments-o"
                                 invisible="meeting_count == 0">
                             <field name="meeting_count" widget="statinfo"
-                                   string="Où ça s'est dit"/>
+                                   string="Where it was said"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Verbe + complément"/></h1>
+                        <h1><field name="name" placeholder="Verb + object"/></h1>
                     </div>
                     <group>
                         <group>
@@ -38,7 +38,7 @@
                             <field name="lane_id"
                                    domain="[('diagram_id', '=', diagram_id)]"/>
                             <field name="child_diagram_id" invisible="kind != 'sub'"
-                                   string="Déplié au niveau"
+                                   string="Expanded at level"
                                    domain="[('process_id', '=', process_id)]"/>
                             <field name="process_id" invisible="1"/>
                         </group>
@@ -52,7 +52,7 @@
                             <field name="valide_executant"/>
                             <field name="conteste"/>
                             <field name="note_validation"
-                                   placeholder="Ce qui a été dit à la relecture"/>
+                                   placeholder="What was said at review"/>
                         </group>
                         <group>
                             <field name="code"/>
@@ -64,12 +64,10 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Ressources" name="ressources"
+                        <page string="Resources" name="ressources"
                               invisible="kind == 'note'">
                             <p class="text-muted">
-                                Ce qu'il faut avoir sous la main pour exécuter
-                                l'étape. C'est ce que le code QR de la carte
-                                imprimée ouvre.
+                                What you need at hand to perform the step. It is what the QR code on the printed map opens.
                             </p>
                             <field name="resource_ids">
                                 <list editable="bottom">
@@ -86,16 +84,13 @@
                                     <field name="critique" optional="hide"/>
                                     <button name="action_ouvrir" type="object"
                                             icon="fa-external-link"
-                                            title="Ouvrir la ressource"/>
+                                            title="Open the resource"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Pourquoi cette étape" name="tracabilite">
+                        <page string="Why this step" name="tracabilite">
                             <p class="text-muted">
-                                La décision qui a produit l'étape. La fiche de
-                                l'élément porte le décideur, le rationnel et les
-                                alternatives écartées ; le compte rendu se
-                                déduit de là, il ne se saisit pas à la main.
+                                The decision that produced the step. The item's record holds the decision maker, the rationale and the alternatives set aside; the meeting report is derived from there, it is not entered by hand.
                             </p>
                             <field name="knowledge_item_ids" widget="many2many"
                                    options="{'no_create': True}">
@@ -125,7 +120,7 @@
         <field name="name">bf.process.node.list</field>
         <field name="model">bf.process.node</field>
         <field name="arch" type="xml">
-            <list string="Nœuds">
+            <list string="Nodes">
                 <field name="process_id"/>
                 <field name="diagram_id"/>
                 <field name="kind"/>
@@ -143,26 +138,26 @@
         <field name="name">bf.process.node.search</field>
         <field name="model">bf.process.node</field>
         <field name="arch" type="xml">
-            <search string="Nœuds">
+            <search string="Nodes">
                 <field name="name"/>
                 <field name="process_id"/>
                 <field name="diagram_id"/>
-                <filter name="activites" string="Activités"
+                <filter name="activites" string="Activities"
                         domain="[('kind', 'in', ['task', 'send', 'receive', 'user', 'sub'])]"/>
-                <filter name="a_valider" string="À valider"
+                <filter name="a_valider" string="To validate"
                         domain="[('validation', '=', 'a_valider'),
                                  ('kind', 'in', ['task','send','receive','user','sub'])]"/>
-                <filter name="contestees" string="Contestées"
+                <filter name="contestees" string="Disputed steps"
                         domain="[('validation', '=', 'conteste')]"/>
                 <separator/>
-                <filter name="fragilites" string="Fragilités relevées"
+                <filter name="fragilites" string="Weak points found"
                         domain="[('tone', '=', 'risk')]"/>
-                <filter name="pistes" string="Pistes d'amélioration"
+                <filter name="pistes" string="Improvement ideas"
                         domain="[('tone', '=', 'ai')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_niveau" string="Niveau"
+                <group expand="0" string="Group by">
+                    <filter name="par_niveau" string="Level"
                             context="{'group_by': 'diagram_id'}"/>
-                    <filter name="par_couloir" string="Couloir"
+                    <filter name="par_couloir" string="Lane"
                             context="{'group_by': 'lane_id'}"/>
                     <filter name="par_type" string="Type"
                             context="{'group_by': 'kind'}"/>
@@ -174,7 +169,7 @@
     </record>
 
     <record id="action_bf_process_node" model="ir.actions.act_window">
-        <field name="name">Nœuds</field>
+        <field name="name">Nodes</field>
         <field name="res_model">bf.process.node</field>
         <field name="view_mode">list,form</field>
     </record>

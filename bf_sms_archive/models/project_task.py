@@ -21,7 +21,7 @@ class ProjectTask(models.Model):
         relation="sms_thread_task_rel",
         column1="task_id",
         column2="thread_id",
-        string="Conversations SMS",
+        string="SMS conversations",
     )
     sms_thread_count = fields.Integer(
         string="Conversations",
@@ -32,12 +32,12 @@ class ProjectTask(models.Model):
         relation="sms_thread_auto_task_rel",
         column1="task_id",
         column2="thread_id",
-        string="Conversations suivies",
-        help="Conversations dont chaque nouveau message est relayé "
-             "automatiquement au chatter de cette tâche.",
+        string="Followed conversations",
+        help="Conversations whose every new message is automatically "
+             "relayed to the chatter of this task.",
     )
     sms_link_count = fields.Integer(
-        string="SMS rattachés",
+        string="Linked SMS",
         compute="_compute_sms_link_count",
     )
 
@@ -78,7 +78,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Conversations ({self.name})",
+            "name": self.env._("Conversations (%s)", self.name),
             "res_model": "sms.archive.thread",
             "domain": [("task_ids", "in", self.id)],
             "view_mode": "list,form",
@@ -90,7 +90,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"SMS rattachés ({self.name})",
+            "name": self.env._("Linked SMS (%s)", self.name),
             "res_model": "sms.archive.link",
             "domain": [("res_ref", "=", f"project.task,{self.id}")],
             "view_mode": "list",

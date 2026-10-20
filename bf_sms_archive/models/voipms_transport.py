@@ -48,7 +48,7 @@ SMS_SEGMENT_LEN = 160
 
 class SmsArchiveVoipms(models.AbstractModel):
     _name = "sms.archive.voipms"
-    _description = "Transport API VOIP.ms (SMS/MMS)"
+    _description = "VOIP.ms API transport (SMS/MMS)"
 
     # ------------------------------------------------------------------
     # Config + appel bas niveau

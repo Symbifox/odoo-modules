@@ -18,7 +18,7 @@ _ICE_REFRESH_BEFORE = 600  # on rafraîchit 10 min avant l'échéance
 
 class SoftphoneIce(models.AbstractModel):
     _name = "bf.softphone.ice"
-    _description = "Fournisseur de serveurs ICE (TURN Cloudflare) pour le softphone"
+    _description = "ICE server provider (Cloudflare TURN) for the softphone"
 
     @api.private
     @api.model
@@ -38,7 +38,7 @@ class SoftphoneIce(models.AbstractModel):
         contrôle porte bien sur la personne.
         """
         if not self.env.user.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         now = time.time()
         if _ICE_CACHE["servers"] and now < _ICE_CACHE["exp"] - _ICE_REFRESH_BEFORE:
             return _ICE_CACHE["servers"]

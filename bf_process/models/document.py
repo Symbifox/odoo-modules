@@ -21,42 +21,42 @@ from odoo.exceptions import UserError, ValidationError
 from .erreurs import refus_lisible
 
 GENRES = [
-    ("couverture", "Bloc de couverture"),
-    ("hypothese", "Hypothèse"),
-    ("question", "Question ouverte"),
-    ("constat", "Constat"),
-    ("annexe", "Page d'annexe"),
-    ("validation", "Ligne du registre de validation"),
+    ("couverture", "Cover block"),
+    ("hypothese", "Assumption"),
+    ("question", "Open question"),
+    ("constat", "Finding"),
+    ("annexe", "Appendix page"),
+    ("validation", "Validation register line"),
 ]
 
 # Ce qui se regroupe sur une même page d'annexe, et dans quel ordre.
 PAGES = (
-    ("hypothese", "Hypothèses retenues pour dessiner la carte"),
-    ("question", "Questions ouvertes"),
-    ("constat", "Ce que la carte fait apparaître"),
+    ("hypothese", "Assumptions made to draw the map"),
+    ("question", "Open questions"),
+    ("constat", "What the map reveals"),
 )
 
 
 class BfProcessSection(models.Model):
     _name = "bf.process.section"
     _inherit = ["bf.process.gel"]
-    _description = "Section du livrable d'une cartographie"
+    _description = "Process map deliverable section"
     _order = "kind, sequence, id"
 
     process_id = fields.Many2one(
-        "bf.process", string="Cartographie", required=True,
+        "bf.process", string="Process map", required=True,
         ondelete="cascade", index=True)
-    sequence = fields.Integer(string="Ordre", default=10)
-    kind = fields.Selection(GENRES, string="Genre", required=True,
+    sequence = fields.Integer(string="Order", default=10)
+    kind = fields.Selection(GENRES, string="Kind", required=True,
                             default="hypothese")
     name = fields.Char(
-        string="Intitulé", required=True,
-        help="Le titre du bloc, l'énoncé de l'hypothèse, ou le rôle attendu"
-             " au registre de validation.")
+        string="Heading", required=True,
+        help="The block title, the statement of the assumption, or the "
+             "role expected in the validation register.")
     body = fields.Html(
-        string="Corps", sanitize=True,
-        help="Le texte de la section. Pour une ligne de registre, le nom de"
-             " la personne attendue.")
+        string="Body", sanitize=True,
+        help="The section text. For a register line, the name of the "
+             "expected person.")
 
     @api.constrains("kind", "body")
     def _check_corps(self):
@@ -69,8 +69,8 @@ class BfProcessSection(models.Model):
         for rec in self:
             if rec.kind != "validation" and not (rec.body or "").strip():
                 raise ValidationError(_(
-                    "« %s » n'a pas de corps. Une section vide se numérote et"
-                    " se lit comme une omission : écrivez-la, ou retirez-la."
+                    "\"%s\" has no body. An empty section gets numbered "
+                    "and reads as an omission: write it, or remove it."
                 ) % rec.name)
 
 
@@ -78,20 +78,20 @@ class BfProcessDocument(models.Model):
     _inherit = "bf.process"
 
     section_ids = fields.One2many(
-        "bf.process.section", "process_id", string="Sections du livrable")
+        "bf.process.section", "process_id", string="Deliverable sections")
     section_count = fields.Integer(compute="_compute_section_count")
     sous_titre = fields.Char(
-        string="Sous-titre du document",
-        help="La ligne sous le titre, en couverture. Par exemple : « état"
-             " actuel (AS-IS), de l'ouverture de l'exercice aux états"
-             " financiers ».")
+        string="Document subtitle",
+        help="The line under the title, on the cover. For example: "
+             "\"current state (AS-IS), from the opening of the fiscal "
+             "year to the financial statements\".")
     pied_document = fields.Char(
-        string="Pied de page du document",
-        help="Ce que porte le bas de chaque page : d'où vient la carte, et"
-             " ce qui n'a pas été fait. À défaut, la première ligne de la"
-             " source sert.")
+        string="Document footer",
+        help="What the bottom of each page says: where the map comes "
+             "from, and what was not done. If empty, the first line of "
+             "the source is used.")
     date_document = fields.Date(
-        string="Date du document", default=fields.Date.context_today)
+        string="Document date", default=fields.Date.context_today)
 
     @api.depends("section_ids")
     def _compute_section_count(self):
@@ -115,7 +115,7 @@ class BfProcessDocument(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Sections du livrable"),
+            "name": _("Deliverable sections"),
             "res_model": "bf.process.section",
             "view_mode": "list,form",
             "domain": [("process_id", "=", self.id)],
@@ -124,22 +124,28 @@ class BfProcessDocument(models.Model):
 
     # ------------------------------------------------------------- livrable --
     def _document_meta(self):
-        """Ce que la mise en page a besoin de savoir, et rien de plus."""
+        """Ce que la mise en page a besoin de savoir, et rien de plus.
+
+        Dans la langue du livrable (celle du client), pas dans celle de qui
+        clique sur « Livrable PDF ».
+        """
         self.ensure_one()
+        env = self._livrable().env
         client = self.partner_id.display_name or self.pool_name or ""
         date = fields.Date.to_string(self.date_document) if self.date_document else ""
         # « Brouillon » sur la couverture d'un livrable client se lit comme un
         # défaut de la carte, alors qu'il ne dit que l'état du modèle. Le
         # document d'un client disait « projet, à valider » : la même chose, mais
         # adressée au lecteur.
-        etat = {"brouillon": "projet, à valider", "valide": "validée",
-                "obsolete": "version obsolète"}.get(self.state, "")
+        etat = {"brouillon": env._("draft, to be validated"),
+                "valide": env._("validated"),
+                "obsolete": env._("obsolete version")}.get(self.state, "")
         # Le bandeau disait « (AS-IS) » en dur. Sur une carte du processus
         # souhaité, c'était faux à chaque page : le lecteur aurait pris la
         # cible pour un relevé de ce qui se fait aujourd'hui, ce qui est
         # exactement l'inverse de ce que le document raconte.
-        genre = ("Cartographie des processus (AS-IS)" if self.nature == "actuel"
-                 else "Processus souhaité (TO-BE)")
+        genre = (env._("Process map (AS-IS)") if self.nature == "actuel"
+                 else env._("Target process (TO-BE)"))
         return {
             "titre": self.name,
             "sous_titre": self.sous_titre or client,
@@ -171,9 +177,13 @@ class BfProcessDocument(models.Model):
         self.ensure_one()
         if self.nature != "cible":
             return []
-        from .ecart import ETATS, INTENTIONS
-        intentions, etats = dict(INTENTIONS), dict(ETATS)
-        efforts = {"faible": "Faible", "moyen": "Moyen", "eleve": "Élevé"}
+        # les libellés des sélections, lus dans la langue du livrable : le
+        # plan imprimé est une pièce du client
+        env = self._livrable().env
+        champs = env["bf.process.ecart"]._fields
+        intentions = dict(champs["intention"]._description_selection(env))
+        etats = dict(champs["etat"]._description_selection(env))
+        efforts = dict(champs["effort"]._description_selection(env))
         lignes = []
         for e in self.ecart_ids.sorted(
                 key=lambda e: (e.diagram_code or "", e.sequence, e.id)):
@@ -200,12 +210,97 @@ class BfProcessDocument(models.Model):
         self.ensure_one()
         if not self.diagram_ids:
             raise UserError(_(
-                "« %s » n'a encore aucun niveau : il n'y a pas de carte à"
-                " mettre dans un document.") % self.name)
+                "\"%s\" has no level yet: there is no map to put in a "
+                "document.") % self.name)
         from ..generateur import document as gen_doc
         return gen_doc.to_document(self.to_dicts(), self._document_meta(),
                                    self._document_sections(),
-                                   self._document_plan())
+                                   self._document_plan(),
+                                   libelles=self._libelles_rendu())
+
+    def _libelles_rendu(self):
+        """L'habillage des PDF (livrable, tracé, tirage d'atelier, vue delta).
+
+        Les générateurs sont du Python pur, sans `_()` : ils gardent l'anglais
+        par défaut et reçoivent d'ici, dans la langue du livrable, chaque mot
+        qu'ils posent autour de la carte. Les clés sont celles de
+        `generateur.document.LIBELLES` et `generateur.pdf.LIBELLES`.
+        """
+        self.ensure_one()
+        langue = self._langue_livrable()
+        env = self.with_context(lang=langue).env
+        return {
+            # espacement français (fine insécable avant « ; : ! ? ») : une
+            # règle de la langue, pas de la mise en page
+            "espaces_fr": langue.startswith("fr"),
+            # légende : les coupes de ligne sont faites à la main, par langue
+            "legende": {
+                "start": env._("Start event,\nnamed by its state"),
+                "task": env._("Activity\n(verb + object)"),
+                "send": env._("Activity that sends\na message"),
+                "receive": env._("Activity that receives\na message"),
+                "user": env._("Activity performed\nby a person"),
+                "sub": env._("Subprocess\ndetailed further on"),
+                "xor": env._("Exclusive choice\n(one path only)"),
+                "or": env._("Inclusive choice\n(one or more)"),
+                "and": env._("Parallelism\n(all paths)"),
+                "msgCatch": env._("Waiting for an\nexternal event"),
+                "timerCatch": env._("Waiting for\na deadline"),
+                "store": env._("Stored data"),
+                "end": env._("End, named by\nthe state reached"),
+            },
+            "legende_idee": (env._("Improvement or"),
+                             env._("automation idea")),
+            "legende_fragilite": (env._("Weak point or"),
+                                  env._("missing information")),
+            "Legend": env._("Legend"),
+            "Contents": env._("Contents"),
+            "titres_annexes": {
+                "hypothese": env._("Assumptions made to draw the map"),
+                "question": env._("Open questions"),
+                "constat": env._("What the map reveals"),
+            },
+            "Role": env._("Role"),
+            "Name": env._("Name"),
+            "Date": env._("Date"),
+            "Decision": env._("Decision"),
+            "Accurate / needs correction": env._("Accurate / needs correction"),
+            "Validation register": env._("Validation register"),
+            "registre_intro": env._(
+                "An AS-IS map is only worth something once it is recognized "
+                "by the people who do the work. Fill in and return with your "
+                "corrections."),
+            "Level": env._("Level"),
+            "Gap": env._("Gap"),
+            "Intent": env._("Intent"),
+            "Expected gain": env._("Expected gain"),
+            "Effort": env._("Effort"),
+            "Assignee": env._("Assignee"),
+            "State": env._("State"),
+            "Appendix": env._("Appendix"),
+            "Assumptions and open questions": env._(
+                "Assumptions and open questions"),
+            "hypotheses_sous_titre": env._(
+                "What the map assumes, and what it does not know yet"),
+            "Findings and ideas": env._("Findings and ideas"),
+            "constats_sous_titre": env._(
+                "Reading of the map, with no tool recommendation"),
+            "Transformation plan": env._("Transformation plan"),
+            " (continued)": env._(" (continued)"),
+            "plan_sous_titre": env._(
+                "What separates the current state from the target process, "
+                "and what each change brings"),
+            "Unfolded map": env._("Unfolded map"),
+            "Single page": env._("Single page"),
+            "%s: unfolded map": env._("%s: unfolded map"),
+            "depliee_sous_titre": env._(
+                "All levels on a single page, to browse on screen"),
+            "Process mapping": env._("Process mapping"),
+            # generateur/pdf.py : tracé nu, tirage d'atelier, vue delta
+            "Column %d/%d · Row %d/%d": env._("Column %d/%d · Row %d/%d"),
+            "Scaled to %d %% to fit on a PDF page.": env._(
+                "Scaled to %d %% to fit on a PDF page."),
+        }
 
     @refus_lisible
     def action_telecharger_document(self):

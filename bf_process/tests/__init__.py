@@ -9,3 +9,4 @@ from . import test_atelier
 from . import test_document
 from . import test_delta
 from . import test_ressource_piece
+from . import test_langue

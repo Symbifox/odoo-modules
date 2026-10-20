@@ -7,6 +7,7 @@ import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 import { registry } from "@web/core/registry";
 import { useBus, useService } from "@web/core/utils/hooks";
 import { user } from "@web/core/user";
+import { _t } from "@web/core/l10n/translation";
 import { BfEmailPanel } from "@bf_email_systray/js/bf_email_panel";
 
 // Personal inbox: scoped to the current user's OWN emails (user_id). Without
@@ -197,8 +198,8 @@ export class BfEmailSystray extends Component {
 
     get buttonTitle() {
         return this.isPanelMode
-            ? "Boîte de réception (Courriels Blue Fox) — ouvre un panneau"
-            : "Boîte de réception (Courriels Blue Fox) — ouvre en pleine page";
+            ? _t("Inbox (Blue Fox Emails): opens a panel")
+            : _t("Inbox (Blue Fox Emails): opens full page");
     }
 
     // ----------------------------------------------------------------

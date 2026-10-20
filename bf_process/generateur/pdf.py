@@ -474,8 +474,18 @@ def _bornes(d):
     return max(droites) + MARGE, max(bas) + MARGE
 
 
+#: Les mots que le tracé pose lui-même, en anglais par défaut. Le modèle passe
+#: les mêmes clés dans la langue du client (`bf.process._libelles_rendu`).
+LIBELLES = {
+    "Process mapping": "Process mapping",
+    "Column %d/%d · Row %d/%d": "Column %d/%d · Row %d/%d",
+    "Scaled to %d %% to fit on a PDF page.":
+        "Scaled to %d %% to fit on a PDF page.",
+}
+
+
 def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
-           pave=None, echelle=ECHELLE_ATELIER):
+           pave=None, echelle=ECHELLE_ATELIER, libelles=None):
     """Le PDF de la cartographie : une page par niveau, taillée sur la carte.
 
     `entete=False` rend le tracé nu, sans bandeau ni mention de source — c'est
@@ -487,11 +497,15 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
     qu'on imprime et qu'on assemble au mur. Une carte de quinze niveaux ne tient
     pas sur une feuille, et la réduire jusqu'à ce qu'elle y tienne rend un
     document qu'on ne lit pas debout.
+
+    `libelles` porte les mots du tracé dans la langue du client (clés de
+    `LIBELLES`) ; ce qui manque reste en anglais.
     """
+    lib = dict(LIBELLES, **(libelles or {}))
     _polices()
     tampon = io.BytesIO()
     c = rl_canvas.Canvas(tampon)
-    c.setTitle(titre or "Cartographie de processus")
+    c.setTitle(titre or lib["Process mapping"])
     c.setCreator("Blue Fox — bf_process")
 
     for d in diagrammes:
@@ -502,7 +516,7 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
             # le pavage ne réserve NI bandeau NI pied de carte : il a son
             # propre pied de tuile, et il tuile l'étendue réelle du tracé
             _paver(c, d, largeur, hauteur, pave, titre, sous_titre,
-                   pied if entete else "", echelle=echelle)
+                   pied if entete else "", echelle=echelle, lib=lib)
             continue
         page_w, page_h = largeur, hauteur + haut + bas
         k = 1.0
@@ -515,7 +529,7 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
         _dessiner_niveau(t, d, 0.28 if d.get("flat") else 0.5)
         t.commit()
         if entete:
-            _entete(c, d, page_w, page_h, titre, sous_titre, pied, k)
+            _entete(c, d, page_w, page_h, titre, sous_titre, pied, k, lib)
         c.showPage()
 
     c.save()
@@ -523,7 +537,7 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
 
 
 def _paver(c, d, largeur, hauteur, pave, titre, sous_titre, pied,
-           echelle=ECHELLE_ATELIER):
+           echelle=ECHELLE_ATELIER, lib=LIBELLES):
     """Découpe un niveau en pages assemblables, agrandies.
 
     Chaque tuile reprend une bande de la précédente : sans recouvrement, la
@@ -564,12 +578,12 @@ def _paver(c, d, largeur, hauteur, pave, titre, sous_titre, pied,
             _dessiner_niveau(t, d, 0.28 if d.get("flat") else 0.5)
             t.commit()
             _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees,
-                           d, titre, sous_titre, pied)
+                           d, titre, sous_titre, pied, lib)
             c.showPage()
 
 
 def _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees, d,
-                   titre, sous_titre, pied):
+                   titre, sous_titre, pied, lib=LIBELLES):
     """Le cadre de coupe et le repère d'assemblage d'une tuile."""
     c.setStrokeColorRGB(*HAIR)
     c.setLineWidth(0.5)
@@ -582,8 +596,8 @@ def _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees, d,
     c.setFont(GRAS, 8.5)
     c.setFillColorRGB(*INK)
     c.drawString(TUILE_MARGE, TUILE_MARGE + 10,
-                 "Colonne %d/%d · Rangée %d/%d" % (i + 1, colonnes,
-                                                   j + 1, rangees))
+                 lib["Column %d/%d · Row %d/%d"] % (i + 1, colonnes,
+                                                    j + 1, rangees))
     c.setFont(REGULIER, 8)
     c.setFillColorRGB(*GREY)
     reste = " · ".join(filter(None, (haut, sous_titre, titre if titre != haut
@@ -594,7 +608,7 @@ def _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees, d,
     c.drawRightString(page_w - TUILE_MARGE, TUILE_MARGE + 10, reste)
 
 
-def _entete(c, d, page_w, page_h, titre, sous_titre, pied, k):
+def _entete(c, d, page_w, page_h, titre, sous_titre, pied, k, lib=LIBELLES):
     """Le bandeau : de quelle carte il s'agit, et d'où elle sort."""
     haut = " — ".join(filter(None, (d.get("level"), d.get("title")))) or titre
     c.setFillColorRGB(*INK)
@@ -615,7 +629,7 @@ def _entete(c, d, page_w, page_h, titre, sous_titre, pied, k):
     mention = pied or ""
     if k < 1.0:
         # une réduction se dit : la page a buté sur la taille maximale d'un PDF
-        reduit = "Réduit à %d %% pour tenir dans une page PDF." % round(k * 100)
+        reduit = lib["Scaled to %d %% to fit on a PDF page."] % round(k * 100)
         mention = f"{mention} {reduit}".strip()
     if mention:
         c.setFont(REGULIER, 8)

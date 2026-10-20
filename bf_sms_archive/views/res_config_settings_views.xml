@@ -12,34 +12,34 @@
                      name="bf_sms_archive"
                      data-key="bf_sms_archive"
                      groups="bf_sms_archive.group_sms_manager">
-                    <block title="VOIP.ms — Messagerie live" id="bf_sms_voipms_block">
+                    <block title="VOIP.ms: live messaging" id="bf_sms_voipms_block">
                         <setting id="bf_sms_voipms_enabled_setting"
-                                 string="Activer la messagerie VOIP.ms"
-                                 help="Autorise l'envoi/réception SMS et MMS via l'API VOIP.ms.">
+                                 string="Enable VOIP.ms messaging"
+                                 help="Allows sending/receiving SMS and MMS through the VOIP.ms API.">
                             <field name="bf_sms_voipms_enabled"/>
                         </setting>
                         <setting id="bf_sms_voipms_creds_setting"
-                                 string="Identifiants API VOIP.ms"
-                                 help="Compte API VOIP.ms (voip.ms ▸ Main Menu ▸ SOAP/REST API).">
+                                 string="VOIP.ms API credentials"
+                                 help="VOIP.ms API account (voip.ms ▸ Main Menu ▸ SOAP/REST API).">
                             <div class="content-group">
                                 <div class="row mt8">
-                                    <label string="Utilisateur API" for="bf_sms_voipms_api_username"
+                                    <label string="API user" for="bf_sms_voipms_api_username"
                                            class="col-lg-4 o_light_label"/>
                                     <field name="bf_sms_voipms_api_username"/>
                                 </div>
                                 <div class="row mt8">
-                                    <label string="Mot de passe API" for="bf_sms_voipms_api_password"
+                                    <label string="API password" for="bf_sms_voipms_api_password"
                                            class="col-lg-4 o_light_label"/>
                                     <field name="bf_sms_voipms_api_password" password="True"/>
                                 </div>
                                 <div class="row mt8">
-                                    <label string="URL publique (webhook)" for="bf_sms_public_base_url"
+                                    <label string="Public URL (webhook)" for="bf_sms_public_base_url"
                                            class="col-lg-4 o_light_label"/>
                                     <field name="bf_sms_public_base_url"
-                                           placeholder="https://odoo.exemple.com"/>
+                                           placeholder="https://odoo.example.com"/>
                                 </div>
                                 <div class="row mt8">
-                                    <label string="Fuseau du compte VOIP.ms" for="bf_sms_voipms_tz"
+                                    <label string="VOIP.ms account time zone" for="bf_sms_voipms_tz"
                                            class="col-lg-4 o_light_label"/>
                                     <field name="bf_sms_voipms_tz"
                                            placeholder="America/New_York"/>
@@ -53,7 +53,7 @@
     </record>
 
     <record id="bf_sms_config_settings_action" model="ir.actions.act_window">
-        <field name="name">Paramètres SMS</field>
+        <field name="name">SMS settings</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>
@@ -62,7 +62,7 @@
 
     <menuitem
         id="sms_archive_menu_settings"
-        name="Paramètres SMS"
+        name="SMS settings"
         parent="sms_archive_menu_configuration"
         action="bf_sms_config_settings_action"
         sequence="1"

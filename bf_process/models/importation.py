@@ -55,7 +55,6 @@ from .erreurs import refus_lisible
 
 from ..generateur import geometrie as geo
 from ..generateur.bpmn import ELEMENT
-from .structure import KINDS
 
 B = "{http://www.omg.org/spec/BPMN/20100524/MODEL}"
 DI = "{http://www.omg.org/spec/BPMN/20100524/DI}"
@@ -87,7 +86,7 @@ class BfProcessLecture(models.AbstractModel):
     """
 
     _name = "bf.process.lecture"
-    _description = "Lecture d'un BPMN 2.0"
+    _description = "BPMN 2.0 reader"
 
     # ------------------------------------------------------------------ entrée
     def _lire_fichier(self, contenu, grilles=None):
@@ -100,14 +99,14 @@ class BfProcessLecture(models.AbstractModel):
         try:
             racine = ET.fromstring(contenu)
         except ET.ParseError as e:
-            raise UserError(_("Ce fichier n'est pas du XML lisible : %s") % e)
+            raise UserError(_("This file is not readable XML: %s") % e)
         if not racine.tag.endswith("definitions"):
-            raise UserError(_("La racine attendue est <bpmn:definitions>."))
+            raise UserError(_("The expected root is <bpmn:definitions>."))
         diagrammes = self._lire(racine, grilles or {})
         if not diagrammes:
             raise UserError(_(
-                "Aucun diagramme exploitable : il faut la partie DI (les "
-                "coordonnées), pas seulement la sémantique."))
+                "No usable diagram: the DI part (the coordinates) is "
+                "needed, not just the semantics."))
         return diagrammes
 
     def _lire(self, racine, grilles):
@@ -170,7 +169,7 @@ class BfProcessLecture(models.AbstractModel):
 
     # ------------------------------------------------------------------ bornes
     @staticmethod
-    def _bornes(forme):
+    def _bornes(forme, env):
         """Les bornes d'une forme, ou un refus qui nomme la forme fautive.
 
         Un `.bpmn` n'arrive pas forcément de chez nous, et un éditeur tiers
@@ -185,31 +184,35 @@ class BfProcessLecture(models.AbstractModel):
         colonne d'un nœud. La carte devenait alors définitivement intraçable :
         chaque tracé, chaque export et chaque PDF ultérieur rejouait la même
         opération. Un plantage se voit ; celui-là ne se voyait pas.
+
+        `env` donne la langue du refus : dans une méthode statique, `_()` ne
+        trouve ni `self` ni `env`, et ne lit la langue qu'à la requête HTTP.
+        En XML-RPC hors requête, ou en essai, le refus sortait en anglais.
         """
         quoi = forme.get("bpmnElement") or forme.get("id") or "?"
         b = forme.find(DC + "Bounds")
         if b is None:
-            raise UserError(_(
-                "La forme « %s » n'a pas de <dc:Bounds> : ce fichier porte sa "
-                "sémantique, pas ses coordonnées.") % quoi)
+            raise UserError(env._(
+                "Shape \"%s\" has no <dc:Bounds>: this file carries its "
+                "semantics, not its coordinates.") % quoi)
         valeurs = []
         for attr in ("x", "y", "width", "height"):
             brut = b.get(attr)
             if brut is None:
-                raise UserError(_(
-                    "Les bornes de la forme « %(quoi)s » n'ont pas d'attribut "
-                    "%(attr)s.", quoi=quoi, attr=attr))
+                raise UserError(env._(
+                    "The bounds of shape \"%(quoi)s\" have no %(attr)s "
+                    "attribute.", quoi=quoi, attr=attr))
             try:
                 valeur = float(brut)
             except (TypeError, ValueError):
-                raise UserError(_(
-                    "La borne %(attr)s de la forme « %(quoi)s » n'est pas un "
-                    "nombre : %(brut)s.", quoi=quoi, attr=attr, brut=brut))
+                raise UserError(env._(
+                    "Bound %(attr)s of shape \"%(quoi)s\" is not a "
+                    "number: %(brut)s.", quoi=quoi, attr=attr, brut=brut))
             if not math.isfinite(valeur):
-                raise UserError(_(
-                    "La borne %(attr)s de la forme « %(quoi)s » vaut "
-                    "%(brut)s. Une valeur pareille ne lève aucune erreur en se "
-                    "propageant : elle contaminerait la carte en silence.",
+                raise UserError(env._(
+                    "Bound %(attr)s of shape \"%(quoi)s\" is %(brut)s. "
+                    "Such a value raises no error as it spreads: it would "
+                    "silently corrupt the map.",
                     quoi=quoi, attr=attr, brut=brut))
             valeurs.append(valeur)
         return tuple(valeurs)
@@ -230,9 +233,9 @@ class BfProcessLecture(models.AbstractModel):
             return None
 
         prefixe = self._prefixe(plan, proc)
-        x_pool, y_pool = self._bornes(formes[principal.get("id")])[:2]
+        x_pool, y_pool = self._bornes(formes[principal.get("id")], self.env)[:2]
         nom_diagramme = self._nom_diagramme(racine, plan)
-        libelle, titre = self._scinder(nom_diagramme)
+        libelle, titre = self._scinder(nom_diagramme, self._titre_importe())
         d = {"title": titre, "nom_diagramme": nom_diagramme,
              "pool": principal.get("name") or "",
              "lanes": [], "ext": [], "nodes": [], "flows": [], "msgs": []}
@@ -268,7 +271,7 @@ class BfProcessLecture(models.AbstractModel):
                     "id": self._code_membre(p.get("id"), prefixe, "pool"),
                     "nom": p.get("name") or ""})
                 continue
-            ex, ey, ew, eh = self._bornes(formes[p.get("id")])
+            ex, ey, ew, eh = self._bornes(formes[p.get("id")], self.env)
             code = self._code_membre(p.get("id"), prefixe, "pool")
             code_de[p.get("id")] = code
             ids_pools.add(p.get("id"))
@@ -286,7 +289,7 @@ class BfProcessLecture(models.AbstractModel):
                     "id": self._code_membre(lane.get("id"), prefixe, "lane"),
                     "nom": lane.get("name") or ""})
                 continue
-            lx, ly, lw, lh = self._bornes(formes[lane.get("id")])
+            lx, ly, lw, lh = self._bornes(formes[lane.get("id")], self.env)
             bandes.append((ly, lh, lane))
         bandes.sort(key=lambda b: b[0])
         for _y, _h, lane in bandes:
@@ -340,7 +343,7 @@ class BfProcessLecture(models.AbstractModel):
                 continue
             code = self._code(ident, prefixe)
             code_de[ident] = code
-            bruts.append((el, ident, code, genre, balise, self._bornes(formes[ident])))
+            bruts.append((el, ident, code, genre, balise, self._bornes(formes[ident], self.env)))
 
         impose = grilles.get(prefixe) if prefixe else None
         if impose:
@@ -537,8 +540,19 @@ class BfProcessLecture(models.AbstractModel):
                 return diag.get("name") or ""
         return ""
 
+    def _titre_importe(self):
+        """Le titre d'un niveau sans nom, dans la langue du livrable.
+
+        Il devient le titre de la page, imprimé chez le client. L'appelant
+        passe cette langue par `bf_process_langue_livrable` ; la lecture garde
+        celle de la session pour ses refus, qui s'adressent à qui importe.
+        """
+        langue = (self.env.context.get("bf_process_langue_livrable")
+                  or self.env.lang)
+        return self.with_context(lang=langue).env._("Imported level")
+
     @staticmethod
-    def _scinder(nom):
+    def _scinder(nom, defaut="Imported level"):
         """Sépare « Niveau 2 — Traiter le dossier » en libellé et titre.
 
         Découper sur le DERNIER séparateur décapitait tout titre qui en
@@ -552,7 +566,7 @@ class BfProcessLecture(models.AbstractModel):
                 r"^(niveau|level|page|n[ivo]*\.?)\s*\d+$",
                 morceaux[0].strip(), re.IGNORECASE):
             return morceaux[0].strip(), morceaux[1].strip()
-        return None, (nom or "").strip() or "Niveau importé"
+        return None, (nom or "").strip() or defaut
 
     @staticmethod
     def _libelle(el, balise):
@@ -567,18 +581,19 @@ class BfProcessLecture(models.AbstractModel):
         Rend un fragment vide quand rien n'a été écarté. Les libellés viennent
         du fichier : chacun passe par `Markup %`, qui l'échappe.
         """
-        genres = dict(KINDS)
+        genres = dict(self.env["bf.process.node"]._fields["kind"]
+                      ._description_selection(self.env))
         motifs = {
-            "forme": _("aucune forme dans la partie graphique (DI), donc "
-                       "aucune position à reprendre"),
-            "hors": _("dessiné hors du processus que le module lit (dans un "
-                      "sous-processus déplié, le processus d'un autre "
-                      "participant ou la collaboration)"),
+            "forme": _("no shape in the graphical part (DI), so no "
+                       "position to carry over"),
+            "hors": _("drawn outside the process the module reads (in an "
+                      "expanded subprocess, another participant's process "
+                      "or the collaboration)"),
         }
         liens = {
-            "flux": _("une de ses extrémités n'est pas une étape lue"),
-            "message": _("il ne relie pas une étape lue à un participant "
-                         "externe lu"),
+            "flux": _("one of its ends is not a step that was read"),
+            "message": _("it does not link a step that was read to an "
+                         "external participant that was read"),
         }
         items = []
         for d in diagrammes:
@@ -588,9 +603,9 @@ class BfProcessLecture(models.AbstractModel):
                     # le genre quand le module le connaît ; sinon le motif dit
                     # déjà de quel type BPMN il s'agit
                     quoi = (genres[e["genre"]].lower() if e.get("genre")
-                            else _("élément"))
+                            else _("element"))
                 elif famille == "couloir":
-                    quoi = _("couloir")
+                    quoi = _("lane")
                 elif famille == "pool":
                     quoi = _("participant")
                 elif famille == "message":
@@ -598,10 +613,10 @@ class BfProcessLecture(models.AbstractModel):
                 else:
                     quoi = None
                 if quoi is None:
-                    objet = _("lien de « %(de)s » vers « %(vers)s »",
+                    objet = _("link from \"%(de)s\" to \"%(vers)s\"",
                               de=e.get("de") or "?", vers=e.get("vers") or "?")
                 elif e.get("nom"):
-                    objet = "%s « %s »" % (quoi, e["nom"])
+                    objet = _("%(quoi)s \"%(nom)s\"", quoi=quoi, nom=e["nom"])
                 else:
                     objet = "%s %s" % (quoi, e.get("id") or "")
                 if e["motif"] == "type":
@@ -610,7 +625,7 @@ class BfProcessLecture(models.AbstractModel):
                     balise = e.get("balise") or "?"
                     if e.get("evdef"):
                         balise = "%s + %s" % (balise, e["evdef"])
-                    motif = _("type BPMN « %s » que le module ne trace pas") \
+                    motif = _("BPMN type \"%s\" that the module does not draw") \
                         % balise
                 elif e["motif"] == "lien":
                     motif = liens.get(famille, e["motif"])
@@ -621,46 +636,53 @@ class BfProcessLecture(models.AbstractModel):
         if not items:
             return Markup("")
         return Markup("<p><b>%s</b> %s</p><ul>%s</ul>") % (
-            _("%d élément(s) du fichier n'ont pas été lus.") % len(items),
+            _("%d element(s) of the file were not read.") % len(items),
             consequence, Markup("").join(items))
 
 
 class BfProcessImportWizard(models.TransientModel):
     _name = "bf.process.import.wizard"
     _inherit = ["bf.process.lecture"]
-    _description = "Importer un BPMN 2.0"
+    _description = "Import BPMN 2.0"
 
-    name = fields.Char(string="Nom de la cartographie", required=True)
+    name = fields.Char(string="Process map name", required=True)
     version = fields.Char(string="Version", default="1.0", required=True)
-    fichier = fields.Binary(string="Fichier .bpmn", required=True)
-    nom_fichier = fields.Char(string="Nom du fichier")
+    fichier = fields.Binary(string=".bpmn file", required=True)
+    nom_fichier = fields.Char(string="File name")
     partner_id = fields.Many2one("res.partner", string="Client")
-    project_id = fields.Many2one("project.project", string="Projet")
-    rapport = fields.Text(string="Ce qui a été lu", readonly=True)
+    project_id = fields.Many2one("project.project", string="Project")
+    rapport = fields.Text(string="What was read", readonly=True)
 
     @refus_lisible
     def action_importer(self):
         self.ensure_one()
-        diagrammes = self._lire_fichier(base64.b64decode(self.fichier or b""))
+        # ce qui s'écrit dans la carte et finit au PDF (titre d'un niveau sans
+        # nom, ligne de source qui sert de pied de page) prend la langue du
+        # client choisi ici ; les refus de lecture gardent celle de la session
+        langue = self.env["bf.process"]._langue_du_client(self.partner_id)
+        diagrammes = self.with_context(
+            bf_process_langue_livrable=langue)._lire_fichier(
+            base64.b64decode(self.fichier or b""))
+        livrable = self.with_context(lang=langue).env
         processus = self.env["bf.process"].create({
             "name": self.name,
             "version": self.version,
             "pool_name": diagrammes[0]["pool"],
             "partner_id": self.partner_id.id,
             "project_id": self.project_id.id,
-            "source": _("Importé du fichier BPMN 2.0 « %s ».") % (
-                self.nom_fichier or "sans nom"),
+            "source": livrable._("Imported from the BPMN 2.0 file \"%s\".",
+                                 self.nom_fichier or livrable._("unnamed")),
         })
         processus._charger_niveaux(diagrammes)
         # `nom_fichier` est fourni par l'appelant, donc échappé comme le reste :
         # la sanitisation de `mail.message` est un filet, pas une raison de
         # composer du HTML par concaténation.
         corps = Markup(_(
-            "Import de <b>%s</b> : %s niveau(x), %s nœud(s).")) % (
+            "Import of <b>%s</b>: %s level(s), %s node(s).")) % (
             self.nom_fichier or "?", len(diagrammes), processus.node_count)
         corps += self._dire_ecartes(diagrammes, _(
-            "Ils ne sont pas dans la carte : posez-les ici à la main, ou "
-            "corrigez-les dans l'éditeur d'origine avant de réimporter."))
+            "They are not in the map: place them here by hand, or fix "
+            "them in the original editor before reimporting."))
         processus.message_post(body=corps)
         return {
             "type": "ir.actions.act_window",

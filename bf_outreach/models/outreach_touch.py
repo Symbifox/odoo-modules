@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from markupsafe import Markup
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 # Résultats qui valent une réponse de la cible : ils arrêtent la cadence
 # lorsque la campagne est réglée sur « Arrêter à la première réponse ».
@@ -10,36 +10,36 @@ REPLY_OUTCOMES = ("reached", "replied", "interested", "not_interested", "callbac
 
 class BfOutreachTouch(models.Model):
     _name = "bf.outreach.touch"
-    _description = "Interaction de démarchage"
+    _description = "Outreach interaction"
     _order = "date desc, id desc"
 
     target_id = fields.Many2one(
         "bf.outreach.target",
-        string="Cible",
+        string="Target",
         required=True,
         ondelete="cascade",
         index=True,
     )
     campaign_id = fields.Many2one(
-        related="target_id.campaign_id", store=True, index=True, string="Campagne"
+        related="target_id.campaign_id", store=True, index=True, string="Campaign"
     )
     company_id = fields.Many2one(related="target_id.company_id", store=True)
     partner_id = fields.Many2one(related="target_id.partner_id", store=True)
     user_id = fields.Many2one(
-        "res.users", string="Par", default=lambda self: self.env.user, required=True
+        "res.users", string="By", default=lambda self: self.env.user, required=True
     )
     date = fields.Datetime(
         string="Date", default=fields.Datetime.now, required=True, index=True
     )
     kind = fields.Selection(
         [
-            ("call", "Appel"),
-            ("email", "Courriel"),
-            ("letter", "Lettre"),
-            ("sms", "Texto"),
-            ("meeting", "Rencontre"),
+            ("call", "Call"),
+            ("email", "Email"),
+            ("letter", "Letter"),
+            ("sms", "Text message"),
+            ("meeting", "Meeting"),
             ("linkedin", "LinkedIn"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
         string="Type",
         default="call",
@@ -47,44 +47,45 @@ class BfOutreachTouch(models.Model):
         index=True,
     )
     direction = fields.Selection(
-        [("out", "Sortant"), ("in", "Entrant")],
-        string="Sens",
+        [("out", "Outgoing"), ("in", "Incoming")],
+        string="Direction",
         default="out",
         required=True,
     )
     outcome = fields.Selection(
         [
-            ("no_answer", "Pas de réponse"),
-            ("voicemail", "Boîte vocale"),
-            ("reached", "Personne rejointe"),
-            ("replied", "Réponse reçue"),
-            ("interested", "Intérêt manifesté"),
-            ("not_interested", "Refus"),
-            ("callback", "Rappel demandé"),
-            ("bounced", "Adresse invalide"),
-            ("sent", "Envoyé"),
+            ("no_answer", "No answer"),
+            ("voicemail", "Voicemail"),
+            ("reached", "Person reached"),
+            ("replied", "Reply received"),
+            ("interested", "Interest shown"),
+            ("not_interested", "Declined"),
+            ("callback", "Callback requested"),
+            ("bounced", "Invalid address"),
+            ("sent", "Sent"),
         ],
-        string="Résultat",
+        string="Outcome",
         default="no_answer",
         required=True,
         index=True,
     )
     duration = fields.Float(
-        string="Durée (min)", help="Durée de l'appel ou de la rencontre, en minutes."
+        string="Duration (min)", help="Length of the call or the meeting, in "
+                                   "minutes."
     )
-    summary = fields.Char(string="Résumé")
-    note = fields.Html(string="Détails")
+    summary = fields.Char(string="Summary")
+    note = fields.Html(string="Details")
     is_reply = fields.Boolean(
-        string="Réponse de la cible", compute="_compute_is_reply", store=True
+        string="Reply from the target", compute="_compute_is_reply", store=True
     )
     mail_message_id = fields.Many2one(
         "mail.message",
-        string="Message d'origine",
+        string="Source message",
         ondelete="set null",
         copy=False,
         index="btree_not_null",
-        help="Message de la discussion dont cette interaction est issue, "
-        "lorsqu'elle a été déduite plutôt que saisie.",
+        help="Message in the thread this interaction came from, when it "
+             "was inferred rather than keyed in.",
     )
 
     @api.depends("direction", "outcome")
@@ -93,6 +94,7 @@ class BfOutreachTouch(models.Model):
             touch.is_reply = touch.direction == "in" or touch.outcome in REPLY_OUTCOMES
 
     @api.depends("kind", "date", "outcome")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         for touch in self:
             date_str = fields.Datetime.to_string(touch.date) if touch.date else ""
@@ -124,7 +126,9 @@ class BfOutreachTouch(models.Model):
     def _post_on_target(self):
         """Trace l'interaction dans la discussion de la cible."""
         for touch in self:
-            body = Markup("<p><b>%(kind)s</b> (%(direction)s) — %(outcome)s</p>") % {
+            body = Markup(
+                _("<p><b>%(kind)s</b> (%(direction)s): %(outcome)s</p>")
+            ) % {
                 "kind": touch._kind_label(),
                 "direction": touch._label_of("direction"),
                 "outcome": touch._label_of("outcome"),

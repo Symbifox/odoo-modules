@@ -9,16 +9,16 @@
             <list decoration-muted="is_hidden or not active" decoration-bf="unread_count &gt; 0">
                 <field name="active" column_invisible="1"/>
                 <field name="contact_name" string="Contact"/>
-                <field name="phone_normalized" string="Téléphone"/>
-                <field name="partner_id" string="Contact Odoo"/>
-                <field name="unread_count" string="Non lus" optional="show"/>
+                <field name="phone_normalized" string="Phone"/>
+                <field name="partner_id" string="Odoo contact"/>
+                <field name="unread_count" string="Unread" optional="show"/>
                 <field name="message_count" string="Messages"/>
-                <field name="call_count" string="Appels" optional="hide"/>
-                <field name="last_message_date" string="Dernier message"/>
-                <field name="last_call_date" string="Dernier appel" optional="hide"/>
-                <field name="last_message_preview" string="Aperçu" optional="show"/>
-                <field name="is_hidden" string="Confidentiel" widget="boolean_toggle"/>
-                <field name="task_ids" string="Tâches" widget="many2many_tags" optional="hide"/>
+                <field name="call_count" string="Calls" optional="hide"/>
+                <field name="last_message_date" string="Last message"/>
+                <field name="last_call_date" string="Last call" optional="hide"/>
+                <field name="last_message_preview" string="Preview" optional="show"/>
+                <field name="is_hidden" string="Confidential" widget="boolean_toggle"/>
+                <field name="task_ids" string="Tasks" widget="many2many_tags" optional="hide"/>
             </list>
         </field>
     </record>
@@ -30,13 +30,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_match_partner" string="Lier au contact Odoo"
+                    <button name="action_match_partner" string="Link to Odoo contact"
                             type="object" class="btn-secondary"
                             invisible="partner_id"/>
-                    <button name="action_archive_thread" string="Archiver"
+                    <button name="action_archive_thread" string="Archive"
                             type="object" class="btn-secondary" icon="fa-archive"
                             invisible="not active"/>
-                    <button name="action_unarchive_thread" string="Désarchiver"
+                    <button name="action_unarchive_thread" string="Unarchive"
                             type="object" class="btn-secondary" icon="fa-inbox"
                             invisible="active"/>
                     <button name="action_export_csv" string="Export CSV"
@@ -48,9 +48,9 @@
                 </header>
                 <sheet>
                     <field name="active" invisible="1"/>
-                    <widget name="web_ribbon" title="Archivé"
+                    <widget name="web_ribbon" title="Archived"
                             bg_color="text-bg-secondary" invisible="active"/>
-                    <widget name="web_ribbon" title="Confidentiel"
+                    <widget name="web_ribbon" title="Confidential"
                             bg_color="text-bg-danger" invisible="not is_hidden"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_messages" type="object"
@@ -59,13 +59,13 @@
                         </button>
                         <button name="action_view_calls" type="object"
                                 class="oe_stat_button" icon="fa-phone">
-                            <field name="call_count" widget="statinfo" string="Appels"/>
+                            <field name="call_count" widget="statinfo" string="Calls"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="contact_name"/>
                         <h1>
-                            <field name="contact_name" placeholder="Nom du contact"/>
+                            <field name="contact_name" placeholder="Contact name"/>
                         </h1>
                         <h3>
                             <field name="phone_normalized" readonly="1"/>
@@ -73,15 +73,15 @@
                     </div>
                     <group>
                         <group string="Contact">
-                            <field name="phone_raw" string="Numéro original" readonly="1"/>
-                            <field name="partner_id" string="Contact Odoo"/>
-                            <field name="owner_id" string="Propriétaire" readonly="1"/>
-                            <field name="line_id" string="Ligne d'origine" readonly="1"/>
+                            <field name="phone_raw" string="Original number" readonly="1"/>
+                            <field name="partner_id" string="Odoo contact"/>
+                            <field name="owner_id" string="Owner" readonly="1"/>
+                            <field name="line_id" string="Origin line" readonly="1"/>
                         </group>
-                        <group string="Paramètres">
-                            <field name="is_hidden" string="Confidentiel"/>
-                            <field name="last_message_date" string="Dernier message" readonly="1"/>
-                            <field name="last_call_date" string="Dernier appel" readonly="1"/>
+                        <group string="Settings">
+                            <field name="is_hidden" string="Confidential"/>
+                            <field name="last_message_date" string="Last message" readonly="1"/>
+                            <field name="last_call_date" string="Last call" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -94,13 +94,13 @@
                                            decoration-info="direction == 'out'"
                                            decoration-success="direction == 'in'"
                                            decoration-muted="direction == 'draft'"/>
-                                    <field name="body" string="Contenu"/>
+                                    <field name="body" string="Content"/>
                                     <field name="date_sent" string="Date"/>
                                     <field name="contact_name" string="Contact" optional="hide"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Appels" name="calls">
+                        <page string="Calls" name="calls">
                             <field name="call_ids" nolabel="1" readonly="1">
                                 <list default_order="date desc"
                                       decoration-danger="call_type == 'missed'"
@@ -112,36 +112,36 @@
                                            decoration-warning="call_type == 'voicemail'"
                                            decoration-muted="call_type in ('rejected', 'blocked')"/>
                                     <field name="date" string="Date"/>
-                                    <field name="duration_display" string="Durée"/>
+                                    <field name="duration_display" string="Duration"/>
                                     <field name="contact_name" string="Contact" optional="hide"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Tâches liées" name="tasks">
+                        <page string="Linked tasks" name="tasks">
                             <field name="task_ids" nolabel="1"
                                    widget="many2many" options="{'no_create': True}">
                                 <list>
-                                    <field name="project_id" string="Projet"/>
-                                    <field name="name" string="Tâche"/>
-                                    <field name="stage_id" string="Étape"/>
+                                    <field name="project_id" string="Project"/>
+                                    <field name="name" string="Task"/>
+                                    <field name="stage_id" string="Stage"/>
                                 </list>
                             </field>
-                            <separator string="Suivi automatique"/>
+                            <separator string="Automatic follow-up"/>
                             <div class="text-muted small mb-2">
-                                Chaque nouveau message de cette conversation part
-                                dans le chatter de ces tâches. Sans effet sur les
-                                messages déjà archivés.
+                                Each new message in this conversation goes
+                                to the chatter of these tasks. No effect on
+                                messages already archived.
                             </div>
                             <field name="auto_post_task_ids" nolabel="1"
                                    widget="many2many_tags"
                                    options="{'no_create': True}"/>
                         </page>
-                        <page string="Rattachements" name="links">
+                        <page string="Links" name="links">
                             <div class="text-muted small mb-2">
-                                Où chaque message est parti. Un même message peut
-                                viser plusieurs fiches ; « Défaire » retire le
-                                rattachement, et la note du chatter avec lui
-                                lorsque plus aucun message ne la vise.
+                                Where each message went. A single message can
+                                target several records; "Undo" removes the
+                                link, and the chatter note along with it
+                                once no message points to it anymore.
                             </div>
                             <field name="link_ids" nolabel="1" readonly="1">
                                 <!-- La fiche d'abord : c'est la colonne qu'on lit.
@@ -149,23 +149,23 @@
                                      par le nom long de celui-ci et se réduisait à
                                      « Renouvelle… », ce qui ne distingue plus rien. -->
                                 <list create="false" default_order="create_date desc">
-                                    <field name="res_name" string="Fiche"/>
+                                    <field name="res_name" string="Record"/>
                                     <field name="res_model_label" string="Type"/>
                                     <field name="message_id" string="Message"
                                            optional="show"/>
-                                    <field name="call_id" string="Appel"
+                                    <field name="call_id" string="Call"
                                            optional="hide"/>
                                     <field name="is_auto" string="Auto"
                                            widget="boolean_toggle" readonly="1"/>
-                                    <field name="user_id" string="Par"
+                                    <field name="user_id" string="By"
                                            optional="hide"/>
-                                    <field name="create_date" string="Le"/>
+                                    <field name="create_date" string="Linked on"/>
                                     <button name="action_open_target" type="object"
                                             icon="fa-external-link"
-                                            title="Ouvrir la fiche"/>
+                                            title="Open the record"/>
                                     <button name="action_undo" type="object"
-                                            icon="fa-chain-broken" title="Défaire"
-                                            confirm="Retirer ce rattachement ? La note du chatter part avec lui si plus aucun message ne la vise."/>
+                                            icon="fa-chain-broken" title="Undo"
+                                            confirm="Remove this link? The chatter note goes with it if no message points to it anymore."/>
                                 </list>
                             </field>
                         </page>
@@ -182,24 +182,24 @@
         <field name="arch" type="xml">
             <search>
                 <field name="contact_name" string="Contact"/>
-                <field name="phone_normalized" string="Téléphone"/>
-                <field name="partner_id" string="Contact Odoo"/>
-                <filter name="filter_visible" string="Visibles"
+                <field name="phone_normalized" string="Phone"/>
+                <field name="partner_id" string="Odoo contact"/>
+                <filter name="filter_visible" string="Visible"
                         domain="[('is_hidden', '=', False)]"/>
-                <filter name="filter_hidden" string="Confidentiels"
+                <filter name="filter_hidden" string="Confidential threads"
                         domain="[('is_hidden', '=', True)]"/>
-                <filter name="filter_unmatched" string="Sans contact Odoo"
+                <filter name="filter_unmatched" string="No Odoo contact"
                         domain="[('partner_id', '=', False)]"/>
                 <separator/>
-                <filter name="filter_unread" string="Non lus"
+                <filter name="filter_unread" string="Unread"
                         domain="[('unread_count', '&gt;', 0)]"/>
-                <filter name="filter_active" string="Actives (boîte)"
+                <filter name="filter_active" string="Active (inbox)"
                         domain="[('active', '=', True)]"/>
-                <filter name="filter_archived" string="Archivés"
+                <filter name="filter_archived" string="Archived threads"
                         domain="[('active', '=', False)]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_partner" string="Contact Odoo"
+                <group expand="0" string="Group by">
+                    <filter name="group_partner" string="Odoo contact"
                             context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>

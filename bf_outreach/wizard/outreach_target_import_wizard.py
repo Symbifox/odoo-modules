@@ -8,36 +8,37 @@ from ..models.outreach_target import format_phone
 
 class BfOutreachTargetImportWizard(models.TransientModel):
     _name = "bf.outreach.target.import.wizard"
-    _description = "Ajouter des cibles à une campagne"
+    _description = "Add targets to a campaign"
 
     campaign_id = fields.Many2one(
-        "bf.outreach.campaign", string="Campagne", required=True
+        "bf.outreach.campaign", string="Campaign", required=True
     )
     partner_ids = fields.Many2many(
         "res.partner",
         string="Contacts",
         required=True,
-        help="Chaque contact retenu devient une cible de la campagne.",
+        help="Each contact kept becomes a target of the campaign.",
     )
     source = fields.Char(
         string="Source",
-        help="Provenance de la liste, reportée sur chaque cible créée.",
+        help="Where the list came from, carried over to each target created.",
     )
     assign_mode = fields.Selection(
         [
-            ("team", "Répartir dans l'équipe de la campagne"),
-            ("user", "Attribuer à une personne"),
-            ("none", "Laisser au responsable de la campagne"),
+            ("team", "Share out across the campaign team"),
+            ("user", "Assign to one person"),
+            ("none", "Leave to the campaign owner"),
         ],
-        string="Attribution",
+        string="Assignment",
         default="team",
         required=True,
     )
-    user_id = fields.Many2one("res.users", string="Attribuer à")
+    user_id = fields.Many2one("res.users", string="Assign to")
     skip_existing = fields.Boolean(
-        string="Ignorer les doublons",
+        string="Skip duplicates",
         default=True,
-        help="Ne recrée pas une cible pour un contact déjà présent dans la campagne.",
+        help="Does not create a second target for a contact already in "
+             "the campaign.",
     )
 
     @api.model
@@ -45,7 +46,7 @@ class BfOutreachTargetImportWizard(models.TransientModel):
         """Point d'entrée de l'action contextuelle sur les contacts."""
         return {
             "type": "ir.actions.act_window",
-            "name": _("Ajouter à une campagne de démarchage"),
+            "name": _("Add to an outreach campaign"),
             "res_model": self._name,
             "view_mode": "form",
             "target": "new",
@@ -58,7 +59,7 @@ class BfOutreachTargetImportWizard(models.TransientModel):
         self.ensure_one()
         campaign = self.campaign_id
         if not self.partner_ids:
-            raise UserError(_("Aucun contact sélectionné."))
+            raise UserError(_("No contact selected."))
 
         # Une exclusion « ne plus démarcher » prime sur tout le reste.
         excluded = self.partner_ids.filtered(
@@ -111,8 +112,9 @@ class BfOutreachTargetImportWizard(models.TransientModel):
         created = self.env["bf.outreach.target"].create(values_list)
         campaign.message_post(
             body=_(
-                "%(created)s cible(s) ajoutée(s) à la campagne, %(dup)s doublon(s) "
-                "ignoré(s), %(excluded)s exclusion(s) « ne plus démarcher » respectée(s).",
+                "%(created)s target(s) added to the campaign, %(dup)s "
+                "duplicate(s) skipped, %(excluded)s \"no outreach\" "
+                "exclusion(s) honored.",
                 created=len(created),
                 dup=duplicates,
                 excluded=len(excluded),

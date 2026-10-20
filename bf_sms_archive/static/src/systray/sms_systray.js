@@ -3,6 +3,7 @@ import { Component, useState, onWillStart, onWillDestroy } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { user } from "@web/core/user";
+import { _t } from "@web/core/l10n/translation";
 
 class SmsSystray extends Component {
     static template = "bf_sms_archive.Systray";
@@ -59,7 +60,7 @@ class SmsSystray extends Component {
         this.action.doAction({
             type: "ir.actions.client",
             tag: "sms_archive_messenger",
-            name: "Messagerie",
+            name: _t("Messaging"),
         });
     }
 }

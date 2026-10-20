@@ -4,7 +4,7 @@
         <field name="name">bf.process.node.resource.list</field>
         <field name="model">bf.process.node.resource</field>
         <field name="arch" type="xml">
-            <list string="Ressources">
+            <list string="Resources">
                 <field name="process_id"/>
                 <field name="node_id"/>
                 <field name="kind"/>
@@ -14,7 +14,7 @@
                 <field name="url" widget="url" optional="hide"/>
                 <field name="critique" optional="show"/>
                 <button name="action_ouvrir" type="object"
-                        icon="fa-external-link" title="Ouvrir la ressource"/>
+                        icon="fa-external-link" title="Open the resource"/>
             </list>
         </field>
     </record>
@@ -23,13 +23,13 @@
         <field name="name">bf.process.node.resource.form</field>
         <field name="model">bf.process.node.resource</field>
         <field name="arch" type="xml">
-            <form string="Ressource">
+            <form string="Resource">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
                             <field name="name"
-                                   placeholder="Ce que la personne cherche"/>
+                                   placeholder="What the person is looking for"/>
                         </h1>
                     </div>
                     <group>
@@ -39,7 +39,7 @@
                             <field name="process_id" readonly="1"/>
                             <field name="critique" readonly="1"/>
                         </group>
-                        <group string="Cible — une seule">
+                        <group string="Target: only one">
                             <field name="attachment_id"
                                    options="{'no_create': True}"/>
                             <field name="document_id"
@@ -51,7 +51,7 @@
                     </group>
                     <group>
                         <field name="note" nolabel="1"
-                               placeholder="Quand s'en servir, ou ce qu'il faut en retenir"/>
+                               placeholder="When to use it, or what to remember from it"/>
                     </group>
                 </sheet>
             </form>
@@ -62,20 +62,20 @@
         <field name="name">bf.process.node.resource.search</field>
         <field name="model">bf.process.node.resource</field>
         <field name="arch" type="xml">
-            <search string="Ressources">
+            <search string="Resources">
                 <field name="name"/>
                 <field name="node_id"/>
                 <field name="process_id"/>
-                <filter name="critiques" string="Critiques"
+                <filter name="critiques" string="Critical resources"
                         domain="[('critique', '=', True)]"/>
-                <filter name="sans_fichier" string="Adresse externe"
+                <filter name="sans_fichier" string="External address"
                         domain="[('url', '!=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_processus" string="Processus"
+                <group expand="0" string="Group by">
+                    <filter name="par_processus" string="Process"
                             context="{'group_by': 'process_id'}"/>
-                    <filter name="par_genre" string="Genre"
+                    <filter name="par_genre" string="Kind"
                             context="{'group_by': 'kind'}"/>
-                    <filter name="par_etape" string="Étape"
+                    <filter name="par_etape" string="Step"
                             context="{'group_by': 'node_id'}"/>
                 </group>
             </search>
@@ -83,17 +83,16 @@
     </record>
 
     <record id="action_bf_process_resource" model="ir.actions.act_window">
-        <field name="name">Ressources</field>
+        <field name="name">Resources</field>
         <field name="res_model">bf.process.node.resource</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_bf_process_resource_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucune ressource accrochée aux étapes
+                No resource attached to steps
             </p>
             <p>
-                Une procédure, une fiche signalétique ou une vidéo posée sur une
-                étape devient un code QR sur la carte imprimée.
+                A procedure, a safety data sheet or a video attached to a step becomes a QR code on the printed map.
             </p>
         </field>
     </record>

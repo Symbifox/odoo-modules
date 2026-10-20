@@ -5,7 +5,11 @@
     # 18.0.2.10.1: la bulle du téléphone ne retient plus l'affichage du client web : ses appels
     #   partent sans être attendus dans onWillStart. Loin du serveur,
     #   chaque aller-retour en chaîne retardait l'écran demandé.
-    "version": "18.0.2.10.1",
+    # 18.0.2.11.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.2.11.0",
     "category": "Tools",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

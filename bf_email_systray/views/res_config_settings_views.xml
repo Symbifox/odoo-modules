@@ -14,8 +14,8 @@
             <xpath expr="//block[@name='bf_email_inbox_setting_container']"
                    position="inside">
                 <setting id="bf_email_systray_mode_setting"
-                         string="Bouton de la barre syst&#232;me"
-                         help="Ce que fait l'ic&#244;ne de bo&#238;te de r&#233;ception dans la barre du haut. Le panneau s'ouvre par-dessus l'&#233;cran courant et le laisse en place ; la pleine page le remplace, comme le menu. Chacun peut choisir autrement depuis le menu du bouton, et son choix prime sur celui-ci.">
+                         string="Systray button"
+                         help="What the inbox icon in the top bar does. The panel opens over the current screen and leaves it in place; full page replaces it, like the menu. Everyone can choose differently from the button's menu, and their choice prevails over this one.">
                     <field name="bf_email_systray_mode" widget="radio"/>
                     <div class="content-group"
                          invisible="bf_email_systray_mode != 'panneau'">
@@ -32,9 +32,7 @@
                                    class="col-lg-2"/>
                         </div>
                         <div class="text-muted mt8">
-                            Taille de d&#233;part, entre 40 et 100&#160;%. La poign&#233;e du
-                            panneau permet de le retailler, et cette taille-l&#224;
-                            est retenue par personne.
+                            Starting size, between 40 and 100%. The panel's handle lets you resize it, and that size is remembered per person.
                         </div>
                     </div>
                 </setting>

@@ -4,7 +4,7 @@
         <field name="name">bf.process.compare.form</field>
         <field name="model">bf.process.compare.wizard</field>
         <field name="arch" type="xml">
-            <form string="Comparer deux versions">
+            <form string="Compare two versions">
                 <group>
                     <field name="source_id" options="{'no_create': True}"/>
                     <field name="cible_id" options="{'no_create': True}"/>
@@ -13,16 +13,16 @@
                 <field name="rapport_html" widget="html" readonly="1"
                        invisible="not rapport_html"/>
                 <footer>
-                    <button name="action_comparer" type="object" string="Comparer"
+                    <button name="action_comparer" type="object" string="Compare"
                             class="btn-primary"/>
-                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_process_compare" model="ir.actions.act_window">
-        <field name="name">Comparer deux versions</field>
+        <field name="name">Compare two versions</field>
         <field name="res_model">bf.process.compare.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -32,21 +32,15 @@
         <field name="name">bf.process.import.form</field>
         <field name="model">bf.process.import.wizard</field>
         <field name="arch" type="xml">
-            <form string="Importer un BPMN 2.0">
+            <form string="Import BPMN 2.0">
                 <div class="alert alert-info" role="status">
-                    Réimporter un fichier produit par ce module reconstitue les mêmes
-                    enregistrements. Un fichier venu d'un autre éditeur passe aussi,
-                    mais sa grille est déduite au mieux : relisez la carte avant de
-                    la valider.
+                    Reimporting a file produced by this module rebuilds the same records. A file from another editor also works, but its grid is inferred as best it can be: review the map before validating it.
                 </div>
                 <div class="alert alert-warning" role="alert">
-                    Ceci crée une cartographie <b>neuve</b>. Pour faire revenir un
-                    fichier retouché dans une carte qui existe déjà — en gardant ses
-                    discussions et son registre de validation — ouvrez cette carte et
-                    utilisez <b>Fusionner un fichier</b>.
+                    This creates a <b>new</b> process map. To bring an edited file back into a map that already exists (keeping its discussions and its validation register), open that map and use <b>Merge a file</b>.
                 </div>
                 <group>
-                    <field name="name" placeholder="Nom de la cartographie"/>
+                    <field name="name" placeholder="Process map name"/>
                     <field name="version"/>
                     <field name="fichier" filename="nom_fichier"/>
                     <field name="nom_fichier" invisible="1"/>
@@ -54,16 +48,16 @@
                     <field name="project_id"/>
                 </group>
                 <footer>
-                    <button name="action_importer" type="object" string="Importer"
+                    <button name="action_importer" type="object" string="Import"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_process_import" model="ir.actions.act_window">
-        <field name="name">Importer un BPMN 2.0</field>
+        <field name="name">Import BPMN 2.0</field>
         <field name="res_model">bf.process.import.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -73,15 +67,11 @@
         <field name="name">bf.process.merge.form</field>
         <field name="model">bf.process.merge.wizard</field>
         <field name="arch" type="xml">
-            <form string="Fusionner un BPMN 2.0">
+            <form string="Merge BPMN 2.0">
                 <field name="etat" invisible="1"/>
                 <div class="alert alert-info" role="status"
                      invisible="etat != 'depot'">
-                    Le fichier revient <b>dans</b> cette cartographie : les
-                    niveaux et les nœuds sont reconnus par leur identifiant BPMN,
-                    donc les discussions tenues sur les étapes et le registre de
-                    validation restent en place. Rien n'est écrit avant que vous
-                    ayez arbitré chaque écart.
+                    The file comes back <b>into</b> this process map: levels and nodes are recognized by their BPMN ID, so the discussions held on the steps and the validation register stay in place. Nothing is written until you have reviewed each gap.
                 </div>
                 <group invisible="etat != 'depot'">
                     <field name="process_id" options="{'no_create': True}"
@@ -93,7 +83,7 @@
                     <field name="resume_html" widget="html" readonly="1"/>
                     <group col="4">
                         <field name="ecart_count" readonly="1"/>
-                        <field name="retenu_count" string="Retenus" readonly="1"/>
+                        <field name="retenu_count" string="Selected gaps" readonly="1"/>
                     </group>
                     <field name="line_ids" nolabel="1">
                         <list editable="bottom" create="false" delete="false"
@@ -102,7 +92,7 @@
                             <field name="niveau_titre" string="Page" readonly="1"/>
                             <field name="portee" readonly="1"/>
                             <field name="operation" readonly="1"/>
-                            <field name="libelle" string="Ce qui change" readonly="1"/>
+                            <field name="libelle" string="What changes" readonly="1"/>
                             <field name="avant" readonly="1"/>
                             <field name="apres" readonly="1"/>
                             <field name="remarque" readonly="1" optional="show"/>
@@ -116,29 +106,29 @@
                 </div>
                 <footer>
                     <button name="action_analyser" type="object"
-                            string="Analyser" class="btn-primary"
+                            string="Analyze" class="btn-primary"
                             invisible="etat != 'depot'"/>
                     <button name="action_appliquer" type="object"
-                            string="Appliquer ce qui est retenu" class="btn-primary"
+                            string="Apply what is selected" class="btn-primary"
                             invisible="etat != 'arbitrage' or retenu_count == 0"
-                            confirm="Les écarts retenus seront écrits dans la cartographie. Continuer ?"/>
+                            confirm="The selected gaps will be written to the process map. Continue?"/>
                     <button name="action_tout_appliquer" type="object"
-                            string="Tout appliquer" class="btn-secondary"
+                            string="Apply all" class="btn-secondary"
                             invisible="etat != 'arbitrage'"/>
                     <button name="action_retraits_ignorer" type="object"
-                            string="Ignorer les retraits" class="btn-secondary"
+                            string="Ignore removals" class="btn-secondary"
                             invisible="etat != 'arbitrage'"/>
                     <button name="action_tout_ignorer" type="object"
-                            string="Tout ignorer" class="btn-secondary"
+                            string="Ignore all" class="btn-secondary"
                             invisible="etat != 'arbitrage'"/>
-                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_process_merge" model="ir.actions.act_window">
-        <field name="name">Fusionner un BPMN 2.0</field>
+        <field name="name">Merge BPMN 2.0</field>
         <field name="res_model">bf.process.merge.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

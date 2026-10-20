@@ -1,6 +1,9 @@
 {
     "name": "Fédération : suivis de démarchage",
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2: le rafraîchissement planifié lit les libellés de bf_outreach dans
+    #   la langue du client du suivi, plus dans la source (anglaise depuis
+    #   bf_outreach 18.0.1.5.0).
+    "version": "18.0.1.0.2",
     "category": "Sales",
     "summary": "L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter",
     "description": """

@@ -7,77 +7,77 @@ from odoo.exceptions import UserError
 
 class BfOutreachLogWizard(models.TransientModel):
     _name = "bf.outreach.log.wizard"
-    _description = "Journaliser un contact de démarchage"
+    _description = "Log an outreach touch"
 
     target_ids = fields.Many2many(
         "bf.outreach.target",
-        string="Cibles",
+        string="Targets",
         required=True,
     )
     target_count = fields.Integer(
-        string="Nombre de cibles", compute="_compute_target_count"
+        string="Number of targets", compute="_compute_target_count"
     )
     date = fields.Datetime(string="Date", default=fields.Datetime.now, required=True)
     kind = fields.Selection(
         [
-            ("call", "Appel"),
-            ("email", "Courriel"),
-            ("letter", "Lettre"),
-            ("sms", "Texto"),
-            ("meeting", "Rencontre"),
+            ("call", "Call"),
+            ("email", "Email"),
+            ("letter", "Letter"),
+            ("sms", "Text message"),
+            ("meeting", "Meeting"),
             ("linkedin", "LinkedIn"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
         string="Type",
         default="call",
         required=True,
     )
     direction = fields.Selection(
-        [("out", "Sortant"), ("in", "Entrant")],
-        string="Sens",
+        [("out", "Outgoing"), ("in", "Incoming")],
+        string="Direction",
         default="out",
         required=True,
     )
     outcome = fields.Selection(
         [
-            ("no_answer", "Pas de réponse"),
-            ("voicemail", "Boîte vocale"),
-            ("reached", "Personne rejointe"),
-            ("replied", "Réponse reçue"),
-            ("interested", "Intérêt manifesté"),
-            ("not_interested", "Refus"),
-            ("callback", "Rappel demandé"),
-            ("bounced", "Adresse invalide"),
-            ("sent", "Envoyé"),
+            ("no_answer", "No answer"),
+            ("voicemail", "Voicemail"),
+            ("reached", "Person reached"),
+            ("replied", "Reply received"),
+            ("interested", "Interest shown"),
+            ("not_interested", "Declined"),
+            ("callback", "Callback requested"),
+            ("bounced", "Invalid address"),
+            ("sent", "Sent"),
         ],
-        string="Résultat",
+        string="Outcome",
         default="no_answer",
         required=True,
     )
-    duration = fields.Float(string="Durée (min)")
-    summary = fields.Char(string="Résumé")
-    note = fields.Html(string="Détails")
+    duration = fields.Float(string="Duration (min)")
+    summary = fields.Char(string="Summary")
+    note = fields.Html(string="Details")
     stage_id = fields.Many2one(
         "bf.outreach.stage",
-        string="Déplacer à l'étape",
-        help="Laisser vide pour conserver l'étape actuelle.",
+        string="Move to stage",
+        help="Leave empty to keep the current stage.",
     )
     closed_reason = fields.Selection(
         [
-            ("converted", "Converti"),
-            ("not_interested", "Pas intéressé"),
-            ("no_answer", "Jamais joint"),
-            ("bad_timing", "Mauvais moment"),
-            ("invalid", "Coordonnées invalides"),
-            ("competitor", "Déjà servi ailleurs"),
-            ("other", "Autre"),
+            ("converted", "Won over"),
+            ("not_interested", "Not interested"),
+            ("no_answer", "Never reached"),
+            ("bad_timing", "Bad timing"),
+            ("invalid", "Invalid contact details"),
+            ("competitor", "Already served elsewhere"),
+            ("other", "Other"),
         ],
-        string="Motif de clôture",
+        string="Closing reason",
     )
     snooze_days = fields.Integer(
-        string="Repousser de (jours)",
-        help="Décale la prochaine relance, par exemple lorsque la cible demande "
-        "d'être rappelée plus tard. 0 = cadence normale.",
+        string="Postpone by (days)",
+        help="Shifts the next follow-up, for instance when the target "
+             "asks to be called back later. 0 = normal cadence.",
     )
 
     @api.depends("target_ids")
@@ -95,7 +95,7 @@ class BfOutreachLogWizard(models.TransientModel):
     def action_log(self):
         self.ensure_one()
         if not self.target_ids:
-            raise UserError(_("Aucune cible sélectionnée."))
+            raise UserError(_("No target selected."))
         touch_values = []
         for target in self.target_ids:
             touch_values.append(

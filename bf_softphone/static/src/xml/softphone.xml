@@ -6,8 +6,8 @@
             <SoftphonePanel t-if="ui.open" close="() => this.togglePanel()"/>
             <button class="o_bf_sp_bubble" t-att-class="bubbleClass"
                     t-on-click="togglePanel"
-                    t-att-title="state.ringing ? 'Appel entrant' : 'Téléphone'"
-                    t-att-aria-label="state.ringing ? 'Appel entrant' : 'Téléphone'">
+                    t-att-title="bubbleTitle"
+                    t-att-aria-label="bubbleTitle">
                 <i class="fa" t-att-class="ui.open ? 'fa-chevron-down' : 'fa-phone'"/>
                 <span t-if="state.ringing" class="o_bf_sp_bubble_dot"/>
                 <span t-elif="state.status !== 'registered'"
@@ -20,20 +20,20 @@
         <div class="o_bf_softphone_panel shadow rounded" t-on-click.stop="">
             <!-- Bandeau d'appel -->
             <div class="o_bf_sp_header d-flex align-items-center justify-content-between p-2">
-                <span t-if="state.status === 'registered'" class="text-success"><i class="fa fa-circle me-1"/>En ligne</span>
-                <span t-elif="state.status === 'connecting'" class="text-warning"><i class="fa fa-circle me-1"/>Connexion…</span>
-                <span t-elif="state.status === 'failed'" class="text-danger"><i class="fa fa-circle me-1"/>Échec</span>
-                <span t-else="" class="text-muted">Hors ligne</span>
+                <span t-if="state.status === 'registered'" class="text-success"><i class="fa fa-circle me-1"/>Online</span>
+                <span t-elif="state.status === 'connecting'" class="text-warning"><i class="fa fa-circle me-1"/>Connecting…</span>
+                <span t-elif="state.status === 'failed'" class="text-danger"><i class="fa fa-circle me-1"/>Failed</span>
+                <span t-else="" class="text-muted">Offline</span>
             </div>
 
             <!-- Appel entrant -->
             <div t-if="state.ringing" class="o_bf_sp_incall text-center p-3">
                 <div class="fw-bold" t-esc="state.peerName || state.peerNumber"/>
                 <div class="text-muted small" t-if="state.peerName" t-esc="state.peerNumber"/>
-                <div class="mt-2">Appel entrant…</div>
+                <div class="mt-2">Incoming call…</div>
                 <div class="mt-3 d-flex gap-2 justify-content-center">
-                    <button class="btn btn-success" t-on-click="answer"><i class="fa fa-phone"/> Répondre</button>
-                    <button class="btn btn-danger" t-on-click="hangup"><i class="fa fa-times"/> Refuser</button>
+                    <button class="btn btn-success" t-on-click="answer"><i class="fa fa-phone"/> Answer</button>
+                    <button class="btn btn-danger" t-on-click="hangup"><i class="fa fa-times"/> Decline</button>
                 </div>
             </div>
 
@@ -45,14 +45,14 @@
                 <div class="text-muted small" t-if="state.peerName" t-esc="state.peerNumber"/>
                 <div class="mt-3 d-flex gap-2 justify-content-center">
                     <button class="btn btn-secondary" t-on-click="mute"
-                            t-att-title="state.muted ? 'Réactiver le micro' : 'Couper le micro'">
+                            t-att-title="muteTitle">
                         <i t-att-class="state.muted ? 'fa fa-microphone-slash' : 'fa fa-microphone'"/>
                     </button>
                     <button class="btn btn-secondary" t-on-click="togglePad"
-                            title="Clavier (menus téléphoniques)">
+                            title="Keypad (phone menus)">
                         <i class="fa fa-th"/>
                     </button>
-                    <button class="btn btn-danger" t-on-click="hangup"><i class="fa fa-phone"/> Raccrocher</button>
+                    <button class="btn btn-danger" t-on-click="hangup"><i class="fa fa-phone"/> Hang up</button>
                 </div>
                 <!-- Clavier PENDANT l'appel : répondre à un menu vocal. Chaque
                      touche part en DTMF, elle n'écrit pas un nouveau numéro. -->
@@ -63,14 +63,14 @@
                         </t>
                     </div>
                     <div t-if="local.dtmf" class="text-muted small mt-2 text-center"
-                         t-esc="'Envoyé : ' + local.dtmf"/>
+                         t-esc="dtmfLabel"/>
                 </div>
             </div>
 
             <!-- Composition -->
             <div t-else="" class="o_bf_sp_dial p-2">
                 <input class="form-control o_bf_sp_input mb-2" t-model="local.dial"
-                       t-on-input="onSearch" placeholder="Numéro ou nom…"/>
+                       t-on-input="onSearch" placeholder="Number or name…"/>
                 <!-- Résultats de recherche -->
                 <div t-if="local.results.length" class="o_bf_sp_results list-group mb-2">
                     <button t-foreach="local.results" t-as="c" t-key="c.id"
@@ -86,13 +86,13 @@
                     </t>
                 </div>
                 <div class="d-flex gap-2 mt-2">
-                    <button class="btn btn-success flex-grow-1" t-on-click="call"><i class="fa fa-phone"/> Appeler</button>
+                    <button class="btn btn-success flex-grow-1" t-on-click="call"><i class="fa fa-phone"/> Call</button>
                     <button class="btn btn-light" t-on-click="del"><i class="fa fa-long-arrow-left"/></button>
                 </div>
 
                 <!-- Historique -->
                 <div t-if="local.history.length" class="o_bf_sp_history mt-3">
-                    <div class="text-muted small mb-1">Récents</div>
+                    <div class="text-muted small mb-1">Recent calls</div>
                     <button t-foreach="local.history" t-as="h" t-key="h.id"
                             class="o_bf_sp_hrow d-flex justify-content-between align-items-center w-100 btn btn-sm btn-light mb-1"
                             t-on-click="() => this.callNumber(h.name)">

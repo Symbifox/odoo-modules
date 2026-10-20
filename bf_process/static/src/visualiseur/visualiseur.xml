@@ -20,14 +20,14 @@
                 <span t-else="" class="o_bf_process_titre"
                       t-esc="state.donnees.titre"/>
                 <span t-if="state.donnees.gele" class="badge text-bg-secondary"
-                      title="Une version validée ne se modifie plus. Rouvrez-la, ou créez la suivante.">
-                    Version validée · lecture seule
+                      title="A validated version can no longer be edited. Reopen it, or create the next one.">
+                    Validated version · read-only
                 </span>
                 <span t-if="state.donnees.delta" class="o_bf_process_delta"
                       t-esc="state.donnees.delta"/>
                 <span class="flex-grow-1"/>
                 <div t-if="state.donnees.modifiable" class="btn-group btn-group-sm"
-                     role="group" aria-label="Outils d'édition">
+                     role="group" aria-label="Editing tools">
                     <button t-foreach="outils" t-as="o" t-key="o.code"
                             type="button" class="btn"
                             t-att-class="state.outil === o.code ? 'btn-primary' : 'btn-light'"
@@ -43,25 +43,25 @@
                             t-att-value="g.code" t-esc="g.nom"/>
                 </select>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(-0.2)"
-                        title="Réduire">−</button>
+                        title="Zoom out of the drawing">−</button>
                 <span class="o_bf_process_zoom"
                       t-esc="Math.round(state.zoom * 100) + ' %'"/>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(0.2)"
-                        title="Agrandir (Ctrl + molette)">+</button>
+                        title="Zoom in (Ctrl + wheel)">+</button>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.ajuster()"
-                        title="Ajuster à la largeur">Ajuster</button>
+                        title="Fit drawing to width">Fit drawing</button>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.telecharger()"
-                        title="Télécharger le tracé en SVG">SVG</button>
+                        title="Download the drawing as SVG">SVG</button>
                 <button class="btn btn-sm btn-primary" t-on-click="() => this.plein_ecran()"
-                        t-att-title="state.plein ? 'Quitter le plein écran' : 'Plein écran'">
-                    <t t-esc="state.plein ? 'Réduire' : 'Plein écran'"/>
+                        t-att-title="titrePleinEcran">
+                    <t t-esc="libellePleinEcran"/>
                 </button>
             </div>
             <div t-if="state.donnees.modifiable and state.outil !== 'consulter'"
                  class="o_bf_process_aide">
                 <t t-esc="aideOutil"/>
                 <t t-if="state.depuis">
-                    <t t-esc="' — origine prise : ' + state.depuis"/>
+                    <t t-esc="originePrise"/>
                 </t>
             </div>
             <div class="o_bf_process_toile" t-ref="toile"
@@ -108,7 +108,7 @@
                                   stroke-width="12" data-rid="lien"
                                   class="o_bf_process_lien"
                                   t-on-click="(ev) => this.surClicFlux(e.f, ev)">
-                            <title>Couper ce lien</title>
+                            <title>Cut this link</title>
                         </polyline>
                         <rect t-if="e.t === 'fantome'" t-att-x="e.x" t-att-y="e.y"
                               t-att-width="e.w" t-att-height="e.h"

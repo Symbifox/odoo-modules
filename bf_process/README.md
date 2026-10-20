@@ -347,6 +347,10 @@ If no level in the file matches the target, the merge refuses outright and
 points at the import wizard: that is a different map, or an editor that
 renamed the identifiers, and merging would delete everything to re-add it.
 
+## Languages (18.0.5.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Two languages matter. What ends up in the client's documents is written in the client's language (the company's when the map has no client), never in the language of whoever prints it: the deliverable PDF, the trace, the delta view, the workshop print, the seeded gap labels, the default names of new nodes, and the source and title of an imported map. The description of a task raised from a gap follows its assignee. Everything else follows the session: wizard results, read and merge refusals (also over XML-RPC), the editor palette and the display name. The public page of a step follows the visitor's language. Chatter notes keep their bold instead of showing escaped tags.
+
 ## Security
 
 Two groups, `bf_process.group_bf_process_user` (read, and can discuss on

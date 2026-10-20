@@ -1,0 +1,311 @@
+# Translation template for Blue Fox : Agenda mobile.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_calendar_mobile 18.0.3.9.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid " (invitation sent)"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "%(who)s %(what)s from the mobile app%(mail)s."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "%(who)s %(what)s from the mobile app."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "%(who)s moved the meeting from the mobile app."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "A meeting needs a start and an end."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "A meeting needs a title."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "A recurring meeting must be edited on the desktop."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "A task needs a title."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "Choose a project."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__client_uuid
+msgid "Device identifier"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "Exclusions require the Meetings module."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "Invalid date."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "Invalid record or activity type."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,help:bf_calendar_mobile.field_bf_calendar_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#: model:ir.model,name:bf_calendar_mobile.model_bf_calendar_mobile_receipt
+msgid "Mobile idempotency receipt (calendar)"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "Nothing to change."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "Record not found."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__response
+msgid "Response"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__route
+msgid "Route"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "The comment is empty."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "The comment is too long."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "The description has formatting: edit it in Odoo."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "The end is before the start."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "The end of the window is before its start."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "The organizer stays on their meeting."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "The summary or the note is too long."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid ""
+"This activity follows a meeting: move the meeting and the activity will "
+"follow."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "This calendar is not yours."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.constraint,message:bf_calendar_mobile.constraint_bf_calendar_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "This reminder no longer exists. Refresh the list."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "This type of record does not accept activities from the phone."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/mail_activity.py:0
+msgid "Unknown activity type for this record."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "Unknown attendance state."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/project_task.py:0
+msgid "Unknown task state."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "Unreadable reminders."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. modules: bf_calendar_mobile, bf_outreach, bf_sms_archive, bf_softphone
+#: model:ir.model.fields,field_description:bf_calendar_mobile.field_bf_calendar_mobile_receipt__user_id
+msgid "User"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "Window too wide (maximum %s days)."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "You are not attending this meeting."
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "added %s"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "confirmed attendance"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "declined"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/models/calendar_event.py:0
+msgid "removed %s"
+msgstr ""
+
+#. module: bf_calendar_mobile
+#. odoo-python
+#: code:addons/bf_calendar_mobile/controllers/mobile_api.py:0
+msgid "replied \"maybe\""
+msgstr ""

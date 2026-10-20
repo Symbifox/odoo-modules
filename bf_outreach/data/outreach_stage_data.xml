@@ -2,47 +2,47 @@
 <odoo noupdate="1">
 
     <record id="stage_to_contact" model="bf.outreach.stage">
-        <field name="name">À contacter</field>
+        <field name="name">To contact</field>
         <field name="sequence">1</field>
         <field name="stage_type">todo</field>
-        <field name="description">Cible ajoutée à la campagne, aucun contact encore fait.</field>
+        <field name="description">Target added to the campaign, not contacted yet.</field>
     </record>
 
     <record id="stage_contacted" model="bf.outreach.stage">
-        <field name="name">Contactée</field>
+        <field name="name">Contacted</field>
         <field name="sequence">10</field>
         <field name="stage_type">active</field>
-        <field name="description">Au moins une tentative faite, sans réponse encore.</field>
+        <field name="description">At least one attempt made, no reply yet.</field>
     </record>
 
     <record id="stage_discussion" model="bf.outreach.stage">
-        <field name="name">En discussion</field>
+        <field name="name">In discussion</field>
         <field name="sequence">20</field>
         <field name="stage_type">active</field>
-        <field name="description">La cible a répondu et l'échange est en cours.</field>
+        <field name="description">The target replied and the conversation is under way.</field>
     </record>
 
     <record id="stage_meeting" model="bf.outreach.stage">
-        <field name="name">Rendez-vous fixé</field>
+        <field name="name">Meeting booked</field>
         <field name="sequence">30</field>
         <field name="stage_type">active</field>
-        <field name="description">Une rencontre est planifiée.</field>
+        <field name="description">A meeting is scheduled.</field>
     </record>
 
     <record id="stage_won" model="bf.outreach.stage">
-        <field name="name">Convertie</field>
+        <field name="name">Converted</field>
         <field name="sequence">40</field>
         <field name="stage_type">won</field>
         <field name="fold" eval="True"/>
-        <field name="description">Dossier gagné : la cadence de relance s'arrête.</field>
+        <field name="description">File won: the follow-up cadence stops.</field>
     </record>
 
     <record id="stage_lost" model="bf.outreach.stage">
-        <field name="name">Non retenue</field>
+        <field name="name">Not pursued</field>
         <field name="sequence">50</field>
         <field name="stage_type">lost</field>
         <field name="fold" eval="True"/>
-        <field name="description">Dossier abandonné : la cadence de relance s'arrête.</field>
+        <field name="description">File dropped: the follow-up cadence stops.</field>
     </record>
 
 </odoo>

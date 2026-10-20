@@ -16,20 +16,20 @@ class ResConfigSettings(models.TransientModel):
     # Hôte du PBX — paramétrable par instance : deux locataires qui partagent
     # un PBX partagent aussi son compte de trunk, ce qui se décide avant.
     bf_softphone_pbx_host = fields.Char(
-        string="Hôte du PBX",
+        string="PBX host",
         config_parameter="bf_softphone.pbx_host",
         default="pbx.example.com",
-        help="Nom d'hôte du PBX servant le WebSocket SIP (wss://<hôte>/ws).",
+        help="Hostname of the PBX serving the SIP WebSocket (wss://<host>/ws).",
     )
     # Clé TURN Cloudflare — utilisée côté serveur pour forger des creds ICE
     # à TTL court. Ce sont des secrets ; ils ne quittent jamais le serveur
     # (seuls les creds éphémères générés partent vers le navigateur).
     bf_softphone_turn_key_id = fields.Char(
-        string="ID de clé TURN Cloudflare",
+        string="Cloudflare TURN key ID",
         config_parameter="bf_softphone.turn_key_id",
     )
     bf_softphone_turn_key_token = fields.Char(
-        string="Jeton de clé TURN Cloudflare",
+        string="Cloudflare TURN key token",
         config_parameter="bf_softphone.turn_key_token",
     )
 
@@ -37,65 +37,65 @@ class ResConfigSettings(models.TransientModel):
     # Lien AMI — composition d'appel pour les clients sans pile SIP
     # ------------------------------------------------------------------
     bf_softphone_ami_host = fields.Char(
-        string="Hôte AMI",
+        string="AMI host",
         config_parameter="bf_softphone.ami_host",
-        help="Adresse par laquelle Odoo joint l'interface manager d'Asterisk. "
-             "Le port n'a aucune raison d'être exposé au-delà de l'hôte.",
+        help="Address Odoo uses to reach the Asterisk Manager Interface. "
+             "The port has no reason to be exposed beyond the host.",
     )
     bf_softphone_ami_port = fields.Integer(
-        string="Port AMI",
+        string="AMI port",
         config_parameter="bf_softphone.ami_port",
         default=5038,
     )
     bf_softphone_ami_user = fields.Char(
-        string="Utilisateur AMI",
+        string="AMI user",
         config_parameter="bf_softphone.ami_user",
     )
     # Saisie write-only : chiffré au repos comme le secret SIP (même clé Fernet).
     # Pas de config_parameter ici — le stockage passe par set_values().
     bf_softphone_ami_password = fields.Char(
-        string="Mot de passe AMI",
-        help="Chiffré au repos. Laisser le masque pour ne pas changer le secret.",
+        string="AMI password",
+        help="Encrypted at rest. Leave the mask to keep the secret unchanged.",
     )
     bf_softphone_trunk = fields.Char(
-        string="Trunk sortant",
+        string="Outbound trunk",
         config_parameter="bf_softphone.trunk",
-        default="trunk-sortant",
-        help="Nom du endpoint PJSIP du fournisseur, tel qu'écrit dans le plan "
-             "de numérotation (Dial(PJSIP/${EXTEN}@<trunk>)).",
+        default="outbound-trunk",
+        help="Name of the provider's PJSIP endpoint, as written in the "
+             "dial plan (Dial(PJSIP/${EXTEN}@<trunk>)).",
     )
     bf_softphone_outbound_cid = fields.Char(
-        string="Afficheur sortant",
+        string="Outbound caller ID",
         config_parameter="bf_softphone.outbound_cid",
-        help="DID présenté quand le PBX fait sonner l'utilisateur PAR LE TRUNK. "
-             "Il doit appartenir au compte du fournisseur : un numéro qui n'est "
-             "pas à nous est remplacé — ou l'appel est refusé.",
+        help="DID shown when the PBX rings the user THROUGH THE TRUNK. It "
+             "must belong to the provider account: a number that is not "
+             "ours gets replaced, or the call is refused.",
     )
     # ------------------------------------------------------------------
     # Réveil par push — le PBX prévient Odoo avant de composer
     # ------------------------------------------------------------------
     bf_softphone_wake_enabled = fields.Boolean(
-        string="Réveil par push",
+        string="Push wake-up",
         config_parameter="bf_softphone.wake_enabled",
         default=True,
-        help="Fait sonner l'application mobile même fermée. Distinct de "
-             "l'interrupteur des notifications de textos : couper les textos "
-             "ne doit pas couper le téléphone.",
+        help="Rings the mobile app even when it is closed. Separate from "
+             "the text message notifications switch: turning off texts "
+             "must not turn off the phone.",
     )
     bf_softphone_pbx_wake_token = fields.Char(
-        string="Jeton de réveil du PBX",
+        string="PBX wake-up token",
         config_parameter="bf_softphone.pbx_wake_token",
-        help="Secret partagé avec le plan de numérotation (contexte [wake-sip]). "
-             "Le PBX le présente pour demander le réveil d'un poste ; sans jeton "
-             "configuré, la route refuse tout.",
+        help="Secret shared with the dial plan (context [wake-sip]). The "
+             "PBX presents it to request waking up an extension; with no "
+             "token configured, the route refuses everything.",
     )
     bf_softphone_originate_context = fields.Char(
-        string="Contexte de composition",
+        string="Dialing context",
         config_parameter="bf_softphone.originate_context",
         default="from-clicktocall",
-        help="Contexte du plan de numérotation exécuté une fois l'appareil de "
-             "l'utilisateur décroché. Il doit forcer l'afficheur sortant sur un "
-             "DID du compte, sans quoi la 2e jambe hérite de celui de la 1re.",
+        help="Dial plan context run once the user's device picks up. It "
+             "must force the outbound caller ID to a DID on the account, "
+             "otherwise the 2nd leg inherits the caller ID of the 1st.",
     )
 
     # ------------------------------------------------------------------
@@ -149,7 +149,7 @@ class ResConfigSettings(models.TransientModel):
             "tag": "display_notification",
             "params": {
                 "type": "success",
-                "message": _("Le PBX répond et accepte l'authentification."),
+                "message": _("The PBX responds and accepts the authentication."),
                 "sticky": False,
             },
         }

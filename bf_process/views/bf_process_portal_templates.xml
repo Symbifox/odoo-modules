@@ -2,7 +2,7 @@
 <odoo>
     <!-- La page d'atelier. Elle se lit debout, sur un téléphone, souvent avec
          des gants : gros titres, grosses cibles tactiles, aucune colonne. -->
-    <template id="portail_etape" name="Étape de processus">
+    <template id="portail_etape" name="Process step">
         <t t-call="web.frontend_layout">
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
@@ -19,7 +19,7 @@
 
                 <t t-if="not ressources">
                     <div class="alert alert-light border">
-                        Cette étape n'a plus de ressource attachée.
+                        This step no longer has an attached resource.
                     </div>
                 </t>
 
@@ -40,21 +40,20 @@
                 </div>
 
                 <p class="text-muted mt-4" style="font-size: .8rem;">
-                    Cette page ne montre que les consignes de cette étape.
+                    This page only shows the instructions for this step.
                 </p>
             </div>
         </t>
     </template>
 
-    <template id="portail_etape_refus" name="Étape inaccessible">
+    <template id="portail_etape_refus" name="Unreachable step">
         <t t-call="web.frontend_layout">
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
             <div class="container py-5" style="max-width: 640px;">
-                <h1 class="mb-3">Ce code ne mène nulle part</h1>
+                <h1 class="mb-3">This code leads nowhere</h1>
                 <p class="text-muted">
-                    Le lien est incomplet, ou l'étape a été retirée de la carte
-                    depuis l'impression. Demandez un tirage à jour.
+                    The link is incomplete, or the step was removed from the map since printing. Ask for an up-to-date print.
                 </p>
             </div>
         </t>

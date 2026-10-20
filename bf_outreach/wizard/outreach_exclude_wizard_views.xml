@@ -5,14 +5,13 @@
         <field name="name">bf.outreach.exclude.wizard.form</field>
         <field name="model">bf.outreach.exclude.wizard</field>
         <field name="arch" type="xml">
-            <form string="Ne plus contacter">
+            <form string="Do not contact">
                 <sheet>
                     <div class="alert alert-warning" role="alert">
-                        L'exclusion vaut pour toutes les campagnes, présentes et futures.
-                        Elle se pose aussi sur le contact Odoo lié, s'il y en a un.
+                        The exclusion applies to every campaign, present and future. It is also set on the linked Odoo contact, if there is one.
                     </div>
                     <group>
-                        <field name="reason" placeholder="Ce que la personne a demandé, dans ses mots"/>
+                        <field name="reason" placeholder="What the person asked for, in their own words"/>
                         <field name="kind"/>
                         <field name="log_touch"/>
                     </group>
@@ -24,9 +23,9 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_exclude" type="object" string="Ne plus contacter"
+                    <button name="action_exclude" type="object" string="Do not contact"
                             class="btn-danger"/>
-                    <button special="cancel" string="Annuler" class="btn-secondary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>

@@ -14,30 +14,30 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_email_systray_mode = fields.Selection(
-        [("panneau", "Dans un panneau, sans quitter l'écran"),
-         ("page", "En pleine page")],
-        string="Ce que fait le bouton de la barre",
+        [("panneau", "In a panel, without leaving the screen"),
+         ("page", "Full page")],
+        string="What the systray button does",
         default=DEFAULT_MODE,
-        help="**Dans un panneau** : la boîte s'ouvre par-dessus l'écran "
-             "courant, qui reste là. On lit un courriel et on revient à ce "
-             "qu'on faisait sans perdre sa place.\n\n"
-             "**En pleine page** : le bouton ouvre la boîte comme le menu, "
-             "en remplaçant l'écran courant.\n\n"
-             "C'est le défaut de la base. Chacun peut en changer depuis le "
-             "menu du bouton, et son choix prime.",
+        help="**In a panel**: the inbox opens over the current screen, "
+             "which stays in place. You read an email and go back to what "
+             "you were doing without losing your place.\n\n**Full page**: "
+             "the button opens the inbox like the menu does, replacing "
+             "the current screen.\n\nThis is the database default. "
+             "Everyone can change it from the button's menu, and their "
+             "choice prevails.",
     )
     bf_email_systray_width_pct = fields.Integer(
-        string="Largeur du panneau (%)",
+        string="Panel width (%)",
         default=DEFAULT_PCT,
-        help="Largeur de départ, en pourcentage de la fenêtre. Entre 40 et "
-             "100. La poignée du panneau permet ensuite de le retailler, et "
-             "cette taille-là est retenue par personne.",
+        help="Starting width, as a percentage of the window. Between 40 "
+             "and 100. The panel's handle then lets you resize it, and "
+             "that size is remembered per person.",
     )
     bf_email_systray_height_pct = fields.Integer(
-        string="Hauteur du panneau (%)",
+        string="Panel height (%)",
         default=DEFAULT_PCT,
-        help="Hauteur de départ, en pourcentage de la fenêtre. Entre 40 et "
-             "100.",
+        help="Starting height, as a percentage of the window. Between 40 "
+             "and 100.",
     )
 
     # ------------------------------------------------------------------

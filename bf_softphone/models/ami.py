@@ -29,7 +29,7 @@ import logging
 import socket
 import uuid
 
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ _MAX_BLOCKS = 10
 
 class SoftphoneAmi(models.AbstractModel):
     _name = "bf.softphone.ami"
-    _description = "Client AMI (Asterisk) pour la composition d'appel"
+    _description = "AMI client (Asterisk) for call dialing"
 
     # ------------------------------------------------------------------
     # Configuration
@@ -77,7 +77,8 @@ class SoftphoneAmi(models.AbstractModel):
         """Valeur d'en-tête sûre : refuse tout CR/LF (injection d'action AMI)."""
         text = "" if value is None else str(value)
         if "\r" in text or "\n" in text:
-            raise UserError("Valeur d'appel invalide (retour de ligne).")
+            # Méthode statique, sans env : `_` prend la langue de la requête.
+            raise UserError(_("Invalid call value (line break)."))
         return text.strip()
 
     @classmethod
@@ -95,7 +96,7 @@ class SoftphoneAmi(models.AbstractModel):
         while b"\r\n\r\n" not in buffer:
             chunk = sock.recv(4096)
             if not chunk:
-                raise UserError("Le PBX a fermé la connexion.")
+                raise UserError(_("The PBX closed the connection."))
             buffer += chunk
         raw, buffer = buffer.split(b"\r\n\r\n", 1)
         return raw.decode("utf-8", "replace"), buffer
@@ -129,7 +130,7 @@ class SoftphoneAmi(models.AbstractModel):
         """Ouvre une session AMI authentifiée. Retourne (socket, tampon lu)."""
         settings = self._ami_settings()
         if not (settings["host"] and settings["user"] and settings["secret"]):
-            raise UserError("Le lien avec le PBX n'est pas configuré.")
+            raise UserError(self.env._("The PBX link is not configured."))
         try:
             sock = socket.create_connection(
                 (settings["host"], settings["port"]), _CONNECT_TIMEOUT)
@@ -138,7 +139,7 @@ class SoftphoneAmi(models.AbstractModel):
             # dans un message d'erreur rendu à un téléphone.
             _logger.warning("bf_softphone: connexion AMI impossible (%s:%s) : %s",
                             settings["host"], settings["port"], exc)
-            raise UserError("Le PBX est injoignable.") from exc
+            raise UserError(self.env._("The PBX cannot be reached.")) from exc
         try:
             sock.settimeout(_READ_TIMEOUT)
             # « Events: off » : sans cela le compte clicktocall reçoit le flux
@@ -151,7 +152,7 @@ class SoftphoneAmi(models.AbstractModel):
             block, buffer = self._read_block(sock, b"")
             if block.get("response", "").lower() != "success":
                 _logger.warning("bf_softphone: authentification AMI refusée")
-                raise UserError("Le PBX a refusé l'authentification.")
+                raise UserError(self.env._("The PBX refused the authentication."))
             return sock, buffer
         except Exception:
             sock.close()
@@ -318,10 +319,12 @@ class SoftphoneAmi(models.AbstractModel):
                 if block.get("actionid") == action_id:
                     break
             else:
-                raise UserError("Le PBX n'a pas répondu à la demande d'appel.")
+                raise UserError(self.env._("The PBX did not answer the call request."))
 
             if block.get("response", "").lower() != "success":
-                raise UserError(block.get("message") or "Le PBX a refusé l'appel.")
+                # Le message du PBX (anglais d'Asterisk) passe tel quel ; seul le
+                # repli est traduit.
+                raise UserError(block.get("message") or self.env._("The PBX refused the call."))
             return {"ok": True, "action_id": action_id,
                     "message": block.get("message", "")}
         finally:

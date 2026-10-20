@@ -7,12 +7,12 @@
             <!-- `editable` : l'intention et le gain se remplissent en série,
                  une ligne après l'autre, en relisant la carte. Ouvrir une
                  fiche pour chaque écart ferait abandonner au troisième. -->
-            <list string="Écarts" editable="bottom"
+            <list string="Gaps" editable="bottom"
                   decoration-muted="caduc or etat == 'ecarte'"
                   decoration-success="etat == 'fait'"
                   decoration-bf="etat == 'retenu'">
                 <field name="sequence" widget="handle"/>
-                <field name="diagram_titre" string="Niveau" readonly="1"
+                <field name="diagram_titre" string="Level" readonly="1"
                        optional="show"/>
                 <field name="genre" readonly="1" optional="show"/>
                 <field name="libelle" readonly="1"/>
@@ -28,7 +28,7 @@
                 <field name="source" optional="hide" readonly="1"/>
                 <field name="caduc" optional="hide" readonly="1"/>
                 <button name="action_creer_tache" type="object" icon="fa-tasks"
-                        title="Créer la tâche qui porte ce changement"
+                        title="Create the task that carries this change"
                         invisible="task_id"/>
             </list>
         </field>
@@ -38,10 +38,10 @@
         <field name="name">bf.process.ecart.form</field>
         <field name="model">bf.process.ecart</field>
         <field name="arch" type="xml">
-            <form string="Écart">
+            <form string="Gap">
                 <header>
                     <button name="action_creer_tache" type="object"
-                            string="Créer la tâche" class="btn-primary"
+                            string="Create the task" class="btn-primary"
                             invisible="task_id"/>
                     <field name="etat" widget="statusbar"
                            statusbar_visible="a_decider,retenu,fait"/>
@@ -49,15 +49,13 @@
                 <sheet>
                     <div class="alert alert-warning" role="alert"
                          invisible="not caduc">
-                        Les cartes ne montrent plus cet écart. Il est gardé
-                        parce que quelqu'un a écrit dessus : tranchez, puis
-                        retirez-le.
+                        The maps no longer show this gap. It is kept because someone wrote on it: decide, then remove it.
                     </div>
                     <div class="oe_title">
                         <h1><field name="libelle" readonly="1"/></h1>
                     </div>
                     <group>
-                        <group string="Ce que les cartes disent">
+                        <group string="What the maps say">
                             <field name="cible_id" readonly="1"/>
                             <field name="origine_id" readonly="1"/>
                             <field name="diagram_titre" readonly="1"/>
@@ -70,7 +68,7 @@
                                    invisible="not node_cible_id"/>
                             <field name="cle" readonly="1" groups="base.group_no_one"/>
                         </group>
-                        <group string="Ce qu'on en fait">
+                        <group string="What we do about it">
                             <field name="intention"/>
                             <field name="effort"/>
                             <field name="responsable_id"/>
@@ -78,11 +76,11 @@
                                    invisible="not task_id"/>
                         </group>
                     </group>
-                    <group string="Gain attendu">
+                    <group string="Expected gain">
                         <field name="gain" nolabel="1"
-                               placeholder="Ce que le changement rapporte, en délai, en coût, en risque ou en conformité. Un écart sans gain est une préférence."/>
+                               placeholder="What the change brings, in lead time, cost, risk or compliance. A gap without a gain is a preference."/>
                     </group>
-                    <group string="Remarque">
+                    <group string="Note">
                         <field name="note" nolabel="1"/>
                     </group>
                 </sheet>
@@ -94,33 +92,33 @@
         <field name="name">bf.process.ecart.search</field>
         <field name="model">bf.process.ecart</field>
         <field name="arch" type="xml">
-            <search string="Écarts">
+            <search string="Gaps">
                 <field name="libelle"/>
                 <field name="cible_id"/>
                 <field name="partner_id"/>
                 <field name="responsable_id"/>
-                <filter name="a_decider" string="À décider"
+                <filter name="a_decider" string="To decide"
                         domain="[('etat', '=', 'a_decider')]"/>
-                <filter name="retenus" string="Retenus"
+                <filter name="retenus" string="Selected gaps"
                         domain="[('etat', '=', 'retenu')]"/>
-                <filter name="faits" string="Faits"
+                <filter name="faits" string="Done gaps"
                         domain="[('etat', '=', 'fait')]"/>
                 <separator/>
-                <filter name="sans_gain" string="Sans gain écrit"
+                <filter name="sans_gain" string="No gain written"
                         domain="[('gain', '=', False)]"
-                        help="Les écarts qui ne disent pas encore ce qu'ils rapportent."/>
-                <filter name="caducs" string="Caducs"
+                        help="Gaps that do not yet say what they bring."/>
+                <filter name="caducs" string="Lapsed gaps"
                         domain="[('caduc', '=', True)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_cible" string="Processus souhaité"
+                <group expand="0" string="Group by">
+                    <filter name="par_cible" string="Target process"
                             context="{'group_by': 'cible_id'}"/>
-                    <filter name="par_niveau" string="Niveau"
+                    <filter name="par_niveau" string="Level"
                             context="{'group_by': 'diagram_titre'}"/>
-                    <filter name="par_intention" string="Intention"
+                    <filter name="par_intention" string="Intent"
                             context="{'group_by': 'intention'}"/>
-                    <filter name="par_etat" string="État"
+                    <filter name="par_etat" string="State"
                             context="{'group_by': 'etat'}"/>
-                    <filter name="par_responsable" string="Responsable"
+                    <filter name="par_responsable" string="Assignee"
                             context="{'group_by': 'responsable_id'}"/>
                 </group>
             </search>
@@ -128,13 +126,12 @@
     </record>
 
     <record id="action_bf_process_ecart" model="ir.actions.act_window">
-        <field name="name">Écarts</field>
+        <field name="name">Gaps</field>
         <field name="res_model">bf.process.ecart</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun écart</p>
-            <p>Dessinez un processus souhaité d'après une carte de l'état
-               actuel, retouchez-le, puis semez les écarts.</p>
+            <p class="o_view_nocontent_smiling_face">No gap</p>
+            <p>Draw a target process from a current-state map, edit it, then seed the gaps.</p>
         </field>
     </record>
 </odoo>

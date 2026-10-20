@@ -89,17 +89,17 @@ _CALL_CHUNK_FOOTER = b"</calls>\n"
 
 class SmsArchiveImportWizard(models.TransientModel):
     _name = "sms.archive.import.wizard"
-    _description = "Import de sauvegarde SMS"
+    _description = "SMS backup import"
 
     file_data = fields.Binary(
-        string="Fichier XML ou ZIP",
+        string="XML or ZIP file",
         required=True,
     )
     file_name = fields.Char(
-        string="Nom du fichier",
+        string="File name",
     )
     result_message = fields.Text(
-        string="Résultat",
+        string="Result",
         readonly=True,
     )
 
@@ -120,14 +120,14 @@ class SmsArchiveImportWizard(models.TransientModel):
         """Import SMS or call logs from uploaded XML or ZIP file."""
         self.ensure_one()
         if not self.file_data:
-            raise UserError(_("Veuillez sélectionner un fichier."))
+            raise UserError(_("Please select a file."))
 
         raw = base64.b64decode(self.file_data)
         if len(raw) > _MAX_FILE_SIZE:
             raise UserError(_(
-                "Le fichier dépasse la limite de %d Mo pour l'import par "
-                "formulaire. Pour les fichiers plus volumineux, déposez-les "
-                "dans /mnt/sms-inbox côté serveur (voir README)."
+                "The file exceeds the %d MB limit for import through the "
+                "form. For larger files, drop them into /mnt/sms-inbox on "
+                "the server (see README)."
             ) % (_MAX_FILE_SIZE // (1024 * 1024)))
 
         fname = (self.file_name or "").lower()
@@ -136,7 +136,7 @@ class SmsArchiveImportWizard(models.TransientModel):
         elif fname.endswith(".xml"):
             xml_files = [(self.file_name, raw)]
         else:
-            raise UserError(_("Format non supporté. Utilisez un fichier XML ou ZIP."))
+            raise UserError(_("Unsupported format. Use an XML or ZIP file."))
 
         all_sms_stats = []
         all_call_stats = []
@@ -151,24 +151,26 @@ class SmsArchiveImportWizard(models.TransientModel):
                 stats = self._parse_and_import(stream)
                 all_sms_stats.append(stats)
 
-        lines = ["Import terminé :"]
+        # Résumé lu par l'usager qui importe : sa langue. Les retraits restent hors
+        # des chaînes traduites.
+        lines = [self.env._("Import complete:")]
         if all_sms_stats:
             sms = self._merge_stats(all_sms_stats)
-            lines.append(f"\n  --- SMS/MMS ---")
-            lines.append(f"  Messages traités : {sms['processed']}")
-            lines.append(f"  Nouveaux messages : {sms['created']}")
-            lines.append(f"  Doublons ignorés : {sms['duplicates']}")
-            lines.append(f"  Fils de conversation : {sms['threads']}")
-            lines.append(f"  Contacts Odoo liés : {sms['partners_matched']}")
-            lines.append(f"  Pièces jointes MMS : {sms['attachments']}")
+            lines.append("\n  --- %s ---" % self.env._("SMS/MMS"))
+            lines.append("  " + self.env._("Messages processed: %(count)s", count=sms["processed"]))
+            lines.append("  " + self.env._("New messages: %(count)s", count=sms["created"]))
+            lines.append("  " + self.env._("Duplicates skipped: %(count)s", count=sms["duplicates"]))
+            lines.append("  " + self.env._("Conversation threads: %(count)s", count=sms["threads"]))
+            lines.append("  " + self.env._("Odoo contacts linked: %(count)s", count=sms["partners_matched"]))
+            lines.append("  " + self.env._("MMS attachments: %(count)s", count=sms["attachments"]))
         if all_call_stats:
             calls = self._merge_stats(all_call_stats)
-            lines.append(f"\n  --- Appels ---")
-            lines.append(f"  Appels traités : {calls['processed']}")
-            lines.append(f"  Nouveaux appels : {calls['created']}")
-            lines.append(f"  Doublons ignorés : {calls['duplicates']}")
-            lines.append(f"  Fils de conversation : {calls['threads']}")
-            lines.append(f"  Contacts Odoo liés : {calls['partners_matched']}")
+            lines.append("\n  --- %s ---" % self.env._("Calls"))
+            lines.append("  " + self.env._("Calls processed: %(count)s", count=calls["processed"]))
+            lines.append("  " + self.env._("New calls: %(count)s", count=calls["created"]))
+            lines.append("  " + self.env._("Duplicates skipped: %(count)s", count=calls["duplicates"]))
+            lines.append("  " + self.env._("Conversation threads: %(count)s", count=calls["threads"]))
+            lines.append("  " + self.env._("Odoo contacts linked: %(count)s", count=calls["partners_matched"]))
 
         self.result_message = "\n".join(lines)
 
@@ -198,7 +200,7 @@ class SmsArchiveImportWizard(models.TransientModel):
             with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
                 xml_names = [n for n in zf.namelist() if n.lower().endswith(".xml")]
                 if not xml_names:
-                    raise UserError(_("Aucun fichier XML trouvé dans le ZIP."))
+                    raise UserError(_("No XML file found in the ZIP."))
                 results = []
                 for name in xml_names:
                     uncompressed_size = zf.getinfo(name).file_size
@@ -210,10 +212,11 @@ class SmsArchiveImportWizard(models.TransientModel):
                         continue
                     results.append((name, zf.read(name)))
                 if not results:
-                    raise UserError(_("Tous les fichiers XML du ZIP dépassent la limite de taille."))
+                    raise UserError(_("All XML files in the ZIP exceed "
+                                      "the size limit."))
                 return results
         except zipfile.BadZipFile:
-            raise UserError(_("Le fichier ZIP est corrompu."))
+            raise UserError(_("The ZIP file is corrupted."))
 
     @staticmethod
     def _extract_mms_parts(elem):
@@ -730,7 +733,7 @@ class SmsArchiveImportWizard(models.TransientModel):
                     file_type = wiz._detect_file_type(fh)
                     if file_type == "calls":
                         stats = wiz._parse_and_import_calls(fh)
-                        kind = "Appels"
+                        kind = "Calls"
                     else:
                         stats = wiz._parse_and_import(fh)
                         kind = "SMS/MMS"
@@ -764,9 +767,9 @@ class SmsArchiveImportWizard(models.TransientModel):
         self.ensure_one()
         self._cron_disk_import()
         self.result_message = _(
-            "Import depuis /mnt/sms-inbox déclenché.\n"
-            "Consultez le journal Odoo pour les détails, ou le dossier "
-            "sms-inbox/done (succès) / sms-inbox/failed (erreurs)."
+            "Import from /mnt/sms-inbox started.\nSee the Odoo log for "
+            "details, or the sms-inbox/done (success) / sms-inbox/failed "
+            "(errors) folder."
         )
         return {
             "type": "ir.actions.act_window",

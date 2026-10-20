@@ -2,34 +2,34 @@
 <odoo noupdate="1">
 
     <record id="bf_onb_step_campaign" model="onboarding.onboarding.step">
-        <field name="title">Créer une campagne</field>
-        <field name="description">[action:bf_outreach.action_bf_outreach_campaign] Définissez la période, l'équipe et la cadence de relance (combien d'appels et de courriels, à quel intervalle).</field>
-        <field name="button_text">Voir les campagnes</field>
-        <field name="done_text">Campagne créée</field>
+        <field name="title">Create a campaign</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_campaign] Set the period, the team and the follow-up cadence (how many calls and emails, at what interval).</field>
+        <field name="button_text">See the campaigns</field>
+        <field name="done_text">Campaign created</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
 
     <record id="bf_onb_step_targets" model="onboarding.onboarding.step">
-        <field name="title">Charger la liste de cibles</field>
-        <field name="description">[action:bf_outreach.action_bf_outreach_target] Ajoutez les cibles depuis vos contacts, ou sélectionnez-les dans la liste des contacts et utilisez l'action « Ajouter à une campagne de démarchage ».</field>
-        <field name="button_text">Voir les cibles</field>
-        <field name="done_text">Cibles chargées</field>
+        <field name="title">Load the target list</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_target] Add the targets from your contacts, or select them in the contact list and use the "Add to an outreach campaign" action.</field>
+        <field name="button_text">See the targets</field>
+        <field name="done_text">Targets loaded</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
 
     <record id="bf_onb_step_touches" model="onboarding.onboarding.step">
-        <field name="title">Journaliser les contacts</field>
-        <field name="description">[action:bf_outreach.action_bf_outreach_touch] Chaque appel et chaque courriel se note en deux clics ; les prochaines relances se calculent seules.</field>
-        <field name="button_text">Voir les interactions</field>
-        <field name="done_text">Suivi en marche</field>
+        <field name="title">Log the touches</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_touch] Every call and every email takes two clicks to note; the next follow-ups work themselves out.</field>
+        <field name="button_text">See the interactions</field>
+        <field name="done_text">Follow-up under way</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">3</field>
     </record>
 
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Démarchage</field>
+        <field name="name">Outreach</field>
         <field name="route_name">bf_outreach_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_outreach</field>
         <field name="step_ids" eval="[

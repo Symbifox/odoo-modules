@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="ir_cron_sms_nc_watch" model="ir.cron">
-            <field name="name">SMS &amp; Calls : surveillance dossier Nextcloud</field>
+            <field name="name">SMS &amp; Calls: Nextcloud folder watch</field>
             <field name="model_id" ref="model_sms_archive_import_wizard"/>
             <field name="state">code</field>
             <field name="code">model._cron_nc_watch_import()</field>
@@ -14,7 +14,7 @@
         </record>
 
         <record id="ir_cron_sms_disk_import" model="ir.cron">
-            <field name="name">SMS &amp; Calls : import depuis /mnt/sms-inbox</field>
+            <field name="name">SMS &amp; Calls: import from /mnt/sms-inbox</field>
             <field name="model_id" ref="model_sms_archive_import_wizard"/>
             <field name="state">code</field>
             <field name="code">model._cron_disk_import()</field>

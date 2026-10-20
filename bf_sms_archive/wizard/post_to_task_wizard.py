@@ -23,7 +23,7 @@ class SmsPostToTaskWizard(models.TransientModel):
 
     _name = "sms.archive.post.to.task.wizard"
     _inherit = ["bf.chatter.target.mixin"]
-    _description = "Poster des SMS ou des appels sur une fiche"
+    _description = "Post SMS or calls to a record"
 
     message_ids = fields.Many2many(
         comodel_name="sms.archive.message",
@@ -37,46 +37,47 @@ class SmsPostToTaskWizard(models.TransientModel):
         relation="sms_post_to_task_wizard_call_rel",
         column1="wizard_id",
         column2="call_id",
-        string="Appels",
+        string="Calls",
     )
     message_count = fields.Integer(
-        string="Nombre d'éléments",
+        string="Number of items",
         compute="_compute_message_count",
     )
     preview = fields.Html(
-        string="Aperçu",
+        string="Preview",
         compute="_compute_preview",
         readonly=True,
         sanitize=False,
     )
     target_reference = fields.Reference(
-        string="Fiche",
-        help="Cherchez la fiche par son nom, son numéro, un raccourci "
-             "(task:22299, ticket:42) ou collez une URL Odoo. Le projet n'a "
-             "plus à être choisi d'abord.",
+        string="Record",
+        help="Search for the record by name, number, a shortcut "
+             "(task:22299, ticket:42) or paste an Odoo URL. The project "
+             "no longer needs to be chosen first.",
     )
     # Dérivée de la cible, pas saisie : tout ce qui est propre à la tâche
     # (rattachement de la conversation, relais des messages suivants) s'y
     # accroche, et le reste du module continue de lire `task_id`.
     task_id = fields.Many2one(
         comodel_name="project.task",
-        string="Tâche",
+        string="Task",
         compute="_compute_task_id",
     )
     link_threads = fields.Boolean(
-        string="Lier aussi la(les) conversation(s) à cette tâche",
+        string="Also link the conversation(s) to this task",
         default=True,
     )
     follow_thread = fields.Boolean(
-        string="Envoyer aussi les prochains messages à cette tâche",
-        help="Les messages qui arriveront ensuite dans cette conversation seront relayés "
-             "automatiquement au chatter de la tâche. Se désactive depuis la Messagerie.",
+        string="Also send upcoming messages to this task",
+        help="Messages that arrive later in this conversation will be "
+             "automatically relayed to the task's chatter. Can be turned "
+             "off from Messaging.",
     )
     single_thread_id = fields.Many2one(
         comodel_name="sms.archive.thread",
         string="Conversation",
         compute="_compute_single_thread",
-        help="Renseigné seulement quand la sélection ne porte que sur une conversation.",
+        help="Only filled in when the selection covers a single conversation.",
     )
 
     # ── Valeurs par défaut ─────────────────────────────────────────
@@ -168,7 +169,7 @@ class SmsPostToTaskWizard(models.TransientModel):
         """Poser la sélection sur le chatter de la fiche, en une seule note."""
         self.ensure_one()
         if not self.message_ids and not self.call_ids:
-            raise UserError("Aucun élément sélectionné.")
+            raise UserError(self.env._("No item selected."))
         target = self._get_chatter_target("write")
 
         note = target.message_post(
@@ -205,18 +206,23 @@ class SmsPostToTaskWizard(models.TransientModel):
                 elif task.id in threads.auto_post_task_ids.ids:
                     threads.write({"auto_post_task_ids": [(3, task.id, 0)]})
 
-        detail = ""
         if task and task.project_id:
-            detail = f" ({task.project_id.name})"
+            message = self.env._(
+                "%(count)s item(s) posted to \"%(record)s\" (%(project)s)",
+                count=self.message_count, record=target.display_name,
+                project=task.project_id.name,
+            )
+        else:
+            message = self.env._(
+                "%(count)s item(s) posted to \"%(record)s\"",
+                count=self.message_count, record=target.display_name,
+            )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Posté sur la fiche",
-                "message": (
-                    f"{self.message_count} élément(s) posté(s) sur "
-                    f"« {target.display_name} »{detail}"
-                ),
+                "title": self.env._("Posted to the record"),
+                "message": message,
                 "type": "success",
             },
         }

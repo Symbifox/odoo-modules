@@ -27,7 +27,7 @@ _TOKEN_CACHE = {}  # {client_email: (access_token, exp_epoch)} — par worker
 
 class SmsFcm(models.AbstractModel):
     _name = "sms.archive.fcm"
-    _description = "Envoi FCM (push app native)"
+    _description = "FCM sending (native app push)"
 
     @api.model
     def _sa_info(self):
@@ -93,15 +93,17 @@ class SmsFcm(models.AbstractModel):
         headers = {"Authorization": "Bearer %s" % token,
                    "Content-Type": "application/json"}
         thread = msg.thread_id
-        data = {
-            "type": "sms",
-            "title": thread.contact_name or thread.phone_normalized or "Nouveau SMS",
-            "body": (msg.body or "")[:180] or "📎 Pièce jointe",
-            "thread_id": str(thread.id),
-            "message_id": str(msg.id),
-            "line_id": str(msg.line_id.id or ""),
-        }
         for dev in devices:
+            # Texte dans la langue du propriétaire de l'appareil.
+            title, body = msg._push_texts(dev.user_id.lang, 180)
+            data = {
+                "type": "sms",
+                "title": title,
+                "body": body,
+                "thread_id": str(thread.id),
+                "message_id": str(msg.id),
+                "line_id": str(msg.line_id.id or ""),
+            }
             payload = {"message": {
                 "token": dev.fcm_token,
                 "data": data,

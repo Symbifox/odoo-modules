@@ -1,0 +1,686 @@
+# Translation of Blue Fox : Téléphone SIP - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_softphone 18.0.2.11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_softphone
+#: model:ir.model,name:bf_softphone.model_bf_softphone_ami
+msgid "AMI client (Asterisk) for call dialing"
+msgstr "Client AMI (Asterisk) pour la composition d'appel"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_ami_host
+msgid "AMI host"
+msgstr "Hôte AMI"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "AMI link"
+msgstr "Lien AMI"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_ami_password
+msgid "AMI password"
+msgstr "Mot de passe AMI"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_ami_port
+msgid "AMI port"
+msgstr "Port AMI"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_ami_user
+msgid "AMI user"
+msgstr "Utilisateur AMI"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_ami_host
+msgid ""
+"Address Odoo uses to reach the Asterisk Manager Interface. The port has no "
+"reason to be exposed beyond the host."
+msgstr ""
+"Adresse par laquelle Odoo joint l'interface manager d'Asterisk. Le port n'a "
+"aucune raison d'être exposé au-delà de l'hôte."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Answer"
+msgstr "Répondre"
+
+#. module: bf_softphone
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Call"
+msgstr "Appeler"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Call %s"
+msgstr "Appel %s"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Call back %s"
+msgstr "Rappeler %s"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "Call to %(number)s failed (%(cause)s)."
+msgstr "Appel vers %(number)s non abouti (%(cause)s)."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "Call to %s failed."
+msgstr "Appel vers %s non abouti."
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_callback_number
+msgid "Callback number"
+msgstr "Numéro de rappel"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_turn_key_id
+msgid "Cloudflare TURN key ID"
+msgstr "ID de clé TURN Cloudflare"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_turn_key_token
+msgid "Cloudflare TURN key token"
+msgstr "Jeton de clé TURN Cloudflare"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid ""
+"Cloudflare TURN key, used server-side to mint short-lived ICE credentials. "
+"These secrets never leave the server."
+msgstr ""
+"Clé TURN Cloudflare — utilisée côté serveur pour forger des identifiants ICE"
+" à durée de vie courte. Ces secrets ne quittent jamais le serveur."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Connecting…"
+msgstr "Connexion…"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_missed_call_activity
+msgid "Create an activity on missed calls"
+msgstr "Créer une activité sur appel manqué"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_outbound_cid
+msgid ""
+"DID shown when the PBX rings the user THROUGH THE TRUNK. It must belong to "
+"the provider account: a number that is not ours gets replaced, or the call "
+"is refused."
+msgstr ""
+"DID présenté quand le PBX fait sonner l'utilisateur PAR LE TRUNK. Il doit "
+"appartenir au compte du fournisseur : un numéro qui n'est pas à nous est "
+"remplacé — ou l'appel est refusé."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Decline"
+msgstr "Refuser"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Dial plan"
+msgstr "Plan de numérotation"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_originate_context
+msgid ""
+"Dial plan context run once the user's device picks up. It must force the "
+"outbound caller ID to a DID on the account, otherwise the 2nd leg inherits "
+"the caller ID of the 1st."
+msgstr ""
+"Contexte du plan de numérotation exécuté une fois l'appareil de "
+"l'utilisateur décroché. Il doit forcer l'afficheur sortant sur un DID du "
+"compte, sans quoi la 2e jambe hérite de celui de la 1re."
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_originate_context
+msgid "Dialing context"
+msgstr "Contexte de composition"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Dialing through the PBX"
+msgstr "Composition par le PBX"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Enable wake-up"
+msgstr "Activer le réveil"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_users__sip_enabled
+msgid "Enables the softphone in the systray for this user."
+msgstr "Active le softphone dans la barre système pour cet utilisateur."
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_ami_password
+msgid "Encrypted at rest. Leave the mask to keep the secret unchanged."
+msgstr "Chiffré au repos. Laisser le masque pour ne pas changer le secret."
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_users__sip_extension
+msgid ""
+"Extension number registered on the PBX (e.g. 1001). Also sets the caller ID "
+"of outgoing calls."
+msgstr ""
+"Numéro de poste enregistré sur le PBX (ex. 1001). Détermine aussi "
+"l'afficheur des appels sortants."
+
+#. module: bf_softphone
+#. modules: bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Failed"
+msgstr "Échec"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Hang up"
+msgstr "Raccrocher"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_pbx_host
+msgid "Hostname of the PBX serving the SIP WebSocket (wss://<host>/ws)."
+msgstr "Nom d'hôte du PBX servant le WebSocket SIP (wss://<hôte>/ws)."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Hostname serving the SIP WebSocket (wss://<host>/ws)"
+msgstr "Nom d'hôte servant le WebSocket SIP (wss://<hôte>/ws)"
+
+#. module: bf_softphone
+#: model:ir.model,name:bf_softphone.model_bf_softphone_ice
+msgid "ICE server provider (Cloudflare TURN) for the softphone"
+msgstr "Fournisseur de serveurs ICE (TURN Cloudflare) pour le softphone"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_launcher.js:0
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "Incoming call"
+msgstr "Appel entrant"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Incoming call…"
+msgstr "Appel entrant…"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Invalid call type."
+msgstr "Type d'appel invalide."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "Invalid call value (line break)."
+msgstr "Valeur d'appel invalide (retour de ligne)."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Keypad (phone menus)"
+msgstr "Clavier (menus téléphoniques)"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid ""
+"Lets a client without a SIP stack (the mobile app) request a call: the PBX "
+"rings the user's device, then dials the other party with the trunk's caller "
+"ID."
+msgstr ""
+"Permet à un client sans pile SIP (l'application mobile) de demander un appel"
+" : le PBX fait sonner l'appareil de l'utilisateur, puis compose le "
+"correspondant avec l'afficheur du trunk."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_panel.js:0
+msgid "Mute microphone"
+msgstr "Couper le micro"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_trunk
+msgid ""
+"Name of the provider's PJSIP endpoint, as written in the dial plan "
+"(Dial(PJSIP/${EXTEN}@<trunk>))."
+msgstr ""
+"Nom du endpoint PJSIP du fournisseur, tel qu'écrit dans le plan de "
+"numérotation (Dial(PJSIP/${EXTEN}@<trunk>))."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "No SIP extension is configured on your account."
+msgstr "Aucun poste SIP n'est configuré sur votre compte."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "No call in progress."
+msgstr "Aucun appel en cours."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "No callback number is configured on your account."
+msgstr "Aucun numéro de rappel n'est configuré sur votre compte."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "No valid key."
+msgstr "Aucune touche valide."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid ""
+"Number cannot be dialed: only North American numbers are supported (\"%s\")."
+msgstr ""
+"Numéro non composable : seuls les numéros nord-américains le sont (« %s »)."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid ""
+"Number cannot be dialed: only ten-digit North American numbers are "
+"supported."
+msgstr ""
+"Numéro non composable : seuls les numéros nord-américains à dix chiffres le "
+"sont."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Number or name…"
+msgstr "Numéro ou nom…"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_users__sip_callback_number
+msgid ""
+"Number the PBX rings before dialing, for a call requested from the mobile "
+"app. Empty: the mobile number on the contact record is used."
+msgstr ""
+"Numéro que le PBX fait sonner avant de composer, pour un appel demandé "
+"depuis l'application mobile. Vide : le mobile de la fiche contact est "
+"utilisé."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Offline"
+msgstr "Hors ligne"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Online"
+msgstr "En ligne"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_outbound_cid
+msgid "Outbound caller ID"
+msgstr "Afficheur sortant"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_trunk
+msgid "Outbound trunk"
+msgstr "Trunk sortant"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Outgoing call"
+msgstr "Appel"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "PBX"
+msgstr "PBX"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_pbx_host
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "PBX host"
+msgstr "Hôte du PBX"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_pbx_wake_token
+msgid "PBX wake-up token"
+msgstr "Jeton de réveil du PBX"
+
+#. module: bf_softphone
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_launcher.js:0
+#: model:ir.module.category,name:bf_softphone.module_category_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.view_users_form_softphone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+#: code:addons/bf_softphone/models/softphone_ice.py:0
+msgid "Phone access not allowed."
+msgstr "Accès au téléphone non autorisé."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "Phone connection failed: %s"
+msgstr "Échec de connexion du téléphone : %s"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_enabled
+msgid "Phone enabled"
+msgstr "Téléphone activé"
+
+#. module: bf_softphone
+#: model:res.groups,name:bf_softphone.group_softphone_manager
+msgid "Phone manager"
+msgstr "Gestionnaire du téléphone"
+
+#. module: bf_softphone
+#: model:res.groups,name:bf_softphone.group_softphone_user
+msgid "Phone user"
+msgstr "Utilisateur du téléphone"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_config_settings__bf_softphone_wake_enabled
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Push wake-up"
+msgstr "Réveil par push"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/xml/softphone.xml:0
+msgid "Recent calls"
+msgstr "Récents"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_wake_enabled
+msgid ""
+"Rings the mobile app even when it is closed. Separate from the text message "
+"notifications switch: turning off texts must not turn off the phone."
+msgstr ""
+"Fait sonner l'application mobile même fermée. Distinct de l'interrupteur des"
+" notifications de textos : couper les textos ne doit pas couper le "
+"téléphone."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid ""
+"Rings the mobile app even when it is closed: the PBX notifies Odoo before "
+"dialing, Odoo pushes a notification, the app registers again and the dial "
+"plan dials the contact that just appeared."
+msgstr ""
+"Fait sonner l'application mobile même fermée : le PBX prévient Odoo avant de"
+" composer, Odoo pousse une notification, l'app se réenregistre et le plan de"
+" numérotation compose le contact qui vient d'apparaître."
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_extension
+msgid "SIP extension"
+msgstr "Poste SIP"
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_users__sip_password
+msgid ""
+"SIP extension password. Encrypted at rest; delivered to the browser only to "
+"its authenticated owner. Leave empty to keep it unchanged."
+msgstr ""
+"Mot de passe du poste SIP. Chiffré au repos ; livré au navigateur uniquement"
+" à son propriétaire authentifié. Laisser vide pour ne pas changer."
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_password
+msgid "SIP password"
+msgstr "Mot de passe SIP"
+
+#. module: bf_softphone
+#: model:ir.model.fields,field_description:bf_softphone.field_res_users__sip_password_encrypted
+msgid "SIP password (encrypted)"
+msgstr "Mot de passe SIP (chiffré)"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid ""
+"SIP password encryption unavailable: the bf_softphone_fernet_key key is not "
+"configured in odoo.conf."
+msgstr ""
+"Chiffrement du mot de passe SIP indisponible : la clé "
+"bf_softphone_fernet_key n'est pas configurée dans odoo.conf."
+
+#. module: bf_softphone
+#: model:ir.model.fields,help:bf_softphone.field_res_config_settings__bf_softphone_pbx_wake_token
+msgid ""
+"Secret shared with the dial plan (context [wake-sip]). The PBX presents it "
+"to request waking up an extension; with no token configured, the route "
+"refuses everything."
+msgstr ""
+"Secret partagé avec le plan de numérotation (contexte [wake-sip]). Le PBX le"
+" présente pour demander le réveil d'un poste ; sans jeton configuré, la "
+"route refuse tout."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_panel.js:0
+msgid "Sent: %s"
+msgstr "Envoyé : %s"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "TURN key ID"
+msgstr "ID de clé TURN"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "TURN media relay (Cloudflare)"
+msgstr "Relais média TURN (Cloudflare)"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Test the link"
+msgstr "Tester le lien"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX cannot be reached."
+msgstr "Le PBX est injoignable."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX closed the connection."
+msgstr "Le PBX a fermé la connexion."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX did not answer the call request."
+msgstr "Le PBX n'a pas répondu à la demande d'appel."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX link is not configured."
+msgstr "Le lien avec le PBX n'est pas configuré."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX refused the authentication."
+msgstr "Le PBX a refusé l'authentification."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/ami.py:0
+msgid "The PBX refused the call."
+msgstr "Le PBX a refusé l'appel."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_config_settings.py:0
+msgid "The PBX responds and accepts the authentication."
+msgstr "Le PBX répond et accepte l'authentification."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.view_users_form_softphone
+msgid ""
+"The SIP extension and password come from the PBX (see the extension's "
+"record). The password is only visible to a phone manager."
+msgstr ""
+"Le poste et le mot de passe SIP proviennent du PBX (voir la fiche du poste)."
+" Le mot de passe n'est visible que par un gestionnaire du téléphone."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.view_users_form_softphone
+msgid ""
+"The callback number is used for calls requested from the mobile app: the PBX"
+" rings it, then dials the other party with the business line's caller ID. If"
+" empty, the mobile number on the contact record is used."
+msgstr ""
+"Le numéro de rappel sert aux appels demandés depuis\n"
+"                        l'application mobile : le PBX le fait sonner, puis compose le\n"
+"                        correspondant avec l'afficheur de la ligne d'affaires. Vide,\n"
+"                        c'est le mobile de la fiche contact qui est utilisé."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid ""
+"The same secret must live on the PBX side, where the dial plan reads it (for"
+" example <code>WAKE_TOKEN</code> in its environment). Empty: wake-up is "
+"refused."
+msgstr ""
+"Le même secret doit vivre côté PBX, là où le plan de numérotation le lit "
+"(par exemple <code>WAKE_TOKEN</code> dans son environnement). Vide : le "
+"réveil est refusé."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "This call is not yours."
+msgstr "Cet appel n'est pas le vôtre."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "Token shared with the PBX"
+msgstr "Jeton partagé avec le PBX"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Too many calls requested, try again in a few minutes."
+msgstr "Trop d'appels demandés — réessaie dans quelques minutes."
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Too many searches, try again in a moment."
+msgstr "Trop de recherches — réessaie dans un instant."
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid ""
+"Turning off text message notifications does not turn off ringing: they are "
+"two separate switches."
+msgstr ""
+"Couper les notifications de textos ne coupe pas la sonnerie : ce sont deux "
+"interrupteurs."
+
+#. module: bf_softphone
+#. modules: bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_panel.js:0
+msgid "Unknown"
+msgstr "Inconnu"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "Unknown ring mode."
+msgstr "Mode de sonnerie inconnu."
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_panel.js:0
+msgid "Unmute microphone"
+msgstr "Réactiver le micro"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "authentication"
+msgstr "authentification"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "clicktocall"
+msgstr "clicktocall"
+
+#. module: bf_softphone
+#. odoo-python
+#: code:addons/bf_softphone/models/res_users.py:0
+msgid "extension %s"
+msgstr "poste %s"
+
+#. module: bf_softphone
+#. odoo-javascript
+#: code:addons/bf_softphone/static/src/js/softphone_service.js:0
+msgid "from %s"
+msgstr "de %s"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "from-clicktocall"
+msgstr "from-clicktocall"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "ami.example.internal"
+msgstr "ami.example.internal"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "pbx.example.com"
+msgstr "pbx.example.com"
+
+#. module: bf_softphone
+#: model_terms:ir.ui.view,arch_db:bf_softphone.res_config_settings_view_form_softphone
+msgid "my-trunk"
+msgstr "mon-trunk"

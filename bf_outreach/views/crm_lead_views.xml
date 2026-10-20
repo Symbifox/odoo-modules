@@ -28,7 +28,7 @@
             </field>
             <filter name="assigned_to_me" position="after">
                 <separator/>
-                <filter name="from_outreach" string="Issues du démarchage"
+                <filter name="from_outreach" string="From outreach"
                         domain="[('outreach_campaign_id', '!=', False)]"
                         groups="bf_outreach.group_bf_outreach_user"/>
             </filter>

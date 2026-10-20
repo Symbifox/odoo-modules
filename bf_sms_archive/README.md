@@ -495,7 +495,15 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
+## Languages (18.0.5.27.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it. A chatter note left by a user's action (SMS, calls, a number written back to a contact) follows that user; a note relayed without a session (webhook, poller) follows the owner of the line, not the process that relays it. Push notifications (UnifiedPush, FCM, Web Push) follow the user who receives them, and a paired device is named in its owner's language. Errors, action names, the CSV export and the import summary follow the user who acts. The token-authenticated mobile API answers in the language of the device's owner, whatever language the phone announces.
+
 ## Changelog
+
+### Version 18.0.5.27.0
+
+- **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`. Notes, push notifications and mobile API errors are written in their reader's language. See the Languages section.
 
 ### Version 18.0.5.26.1
 
@@ -888,7 +896,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-20, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---

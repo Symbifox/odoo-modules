@@ -68,7 +68,8 @@ class BfProcessChargement(models.Model):
             diagrammes if diagrammes is not None else self.to_dicts(),
             titre=f"{self.name} · v{self.version}",
             sous_titre=self.partner_id.display_name or "",
-            pied=pied[0] if pied else "")
+            pied=pied[0] if pied else "",
+            libelles=self._libelles_rendu())
 
     @refus_lisible
     def action_telecharger_bpmn(self):
@@ -83,12 +84,16 @@ class BfProcessChargement(models.Model):
         return self._telecharger(self._pdf_octets(), "pdf", "application/pdf")
 
     # ------------------------------------------------------------ vue delta
-    #: Ce que les teintes veulent dire, écrit sur la page plutôt que promis
-    #: dans un courriel : le PDF circule seul, et une couleur sans légende se
-    #: fait interpréter à l'envers une fois sur deux.
-    LEGENDE_DELTA = ("Vue delta : vert = étape ajoutée, rouge = étape retirée,"
-                     " ambre = étape modifiée. Les écarts mis de côté ne sont"
-                     " pas teintés.")
+    def _legende_delta_pdf(self):
+        """Ce que les teintes veulent dire, écrit sur la page plutôt que promis
+        dans un courriel : le PDF circule seul, et une couleur sans légende se
+        fait interpréter à l'envers une fois sur deux. Dans la langue du
+        client : c'est lui qui lit la page.
+        """
+        self.ensure_one()
+        return self._livrable().env._(
+            "Delta view: green = step added, red = step removed, amber = "
+            "step changed. Dismissed gaps are not tinted.")
 
     def _pages_delta(self):
         """Les deux cartes à la suite, chacune teintée de son côté du delta.
@@ -100,10 +105,12 @@ class BfProcessChargement(models.Model):
         propre disposition, et c'est la teinte qui les raccorde.
         """
         self.ensure_one()
+        # les étiquettes s'impriment : langue du client, pas de qui clique
+        env = self._livrable().env
         pages = []
         for cote, carte, etiquette in (
-                ("avant", self.origine_id, _("État actuel")),
-                ("apres", self, _("Processus souhaité"))):
+                ("avant", self.origine_id, env._("Current state")),
+                ("apres", self, env._("Target process"))):
             for d in carte.to_dicts(self._teintes(cote)):
                 d["level"] = " · ".join(
                     x for x in (etiquette, d.get("level")) if x)
@@ -114,9 +121,9 @@ class BfProcessChargement(models.Model):
         self.ensure_one()
         if self.nature != "cible" or not self.origine_id:
             raise UserError(_(
-                "La vue delta compare un processus souhaité à l'état actuel"
-                " dont il est tiré. « %s » décrit l'état actuel : dessinez"
-                " d'abord ce qu'on voudrait à la place.") % self.display_name)
+                "The delta view compares a target process with the "
+                "current state it is drawn from. \"%s\" describes the "
+                "current state: first draw what we would want instead.") % self.display_name)
 
     def _pdf_delta_octets(self):
         self.ensure_one()
@@ -124,9 +131,12 @@ class BfProcessChargement(models.Model):
         from ..generateur import pdf as gen_pdf
         return gen_pdf.to_pdf(
             self._pages_delta(),
-            titre=f"{self.name} · {self.origine_id.version} vers {self.version}",
-            sous_titre=self.LEGENDE_DELTA,
-            pied=(self.partner_id.display_name or ""))
+            titre=self._livrable().env._(
+                "%(nom)s · %(avant)s to %(apres)s", nom=self.name,
+                avant=self.origine_id.version, apres=self.version),
+            sous_titre=self._legende_delta_pdf(),
+            pied=(self.partner_id.display_name or ""),
+            libelles=self._libelles_rendu())
 
     @refus_lisible
     def action_telecharger_pdf_delta(self):
@@ -165,7 +175,7 @@ class BfProcessChargement(models.Model):
         if not niveau or niveau.process_id != self:
             niveau = self.diagram_ids[:1]
         if not niveau:
-            raise UserError(_("Cette cartographie n'a encore aucun niveau."))
+            raise UserError(_("This process map has no level yet."))
         return niveau.rendu()
 
     # --------------------------------------------------------------- écrire
@@ -177,8 +187,8 @@ class BfProcessChargement(models.Model):
         hors serveur. Réservée aux gestionnaires de cartographie.
         """
         if not self.env.user.has_group(GROUPE):
-            raise UserError(_("Charger une carte demande le droit de gestion des"
-                              " cartographies."))
+            raise UserError(_("Loading a map requires the process map "
+                              "management right."))
         processus = self.create(vals_processus)
         processus._charger_niveaux(diagrammes)
         return processus.id

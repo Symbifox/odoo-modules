@@ -79,9 +79,9 @@ class CalendarEvent(models.Model):
             start = fields.Datetime.now() - timedelta(days=1)
             stop = start + timedelta(days=8)
         if stop <= start:
-            raise UserError("La fin de la fenêtre précède son début.")
+            raise UserError(_("The end of the window is before its start."))
         if (stop - start) > timedelta(days=MAX_RANGE_DAYS):
-            raise UserError("Fenêtre trop large (maximum %s jours)." % MAX_RANGE_DAYS)
+            raise UserError(_("Window too wide (maximum %s days).", MAX_RANGE_DAYS))
         return start, stop
 
     # ------------------------------------------------------------------
@@ -359,9 +359,9 @@ class CalendarEvent(models.Model):
         vals = {k: v for k, v in (vals or {}).items() if k in self._MOBILE_CREATE_FIELDS
                 or k == "calendar_config_id"}
         if not vals.get("name"):
-            raise UserError(_("Une rencontre a besoin d'un titre."))
+            raise UserError(_("A meeting needs a title."))
         if not vals.get("start") or not vals.get("stop"):
-            raise UserError(_("Une rencontre a besoin d'un début et d'une fin."))
+            raise UserError(_("A meeting needs a start and an end."))
         config_id = vals.pop("calendar_config_id", None)
         # `alarm_ids` absent laisse le rappel d'office de
         # `bf_email_management`, comme au bureau ; une liste, même vide, le
@@ -383,7 +383,7 @@ class CalendarEvent(models.Model):
             config = self.env["nextcloud.calendar.sync.config"].sudo().browse(
                 int(config_id)).exists().filtered_domain(self._mobile_calendar_domain())
             if not config:
-                raise UserError(_("Ce calendrier n'est pas le vôtre."))
+                raise UserError(_("This calendar is not yours."))
             if config.exists():
                 vals["x_nc_calendar_id"] = config.id
                 # La couleur SUIT le calendrier, comme partout ailleurs sur
@@ -439,14 +439,15 @@ class CalendarEvent(models.Model):
         if ids is None:
             ids = []
         if not isinstance(ids, (list, tuple)):
-            raise UserError(_("Rappels illisibles."))
+            raise UserError(_("Unreadable reminders."))
         try:
             wanted = [int(i) for i in ids]
         except (TypeError, ValueError):
-            raise UserError(_("Rappels illisibles.")) from None
+            raise UserError(_("Unreadable reminders.")) from None
         alarms = self.env["calendar.alarm"].browse(wanted).exists()
         if len(alarms) != len(set(wanted)):
-            raise UserError(_("Ce rappel n'existe plus. Rafraîchissez la liste."))
+            raise UserError(_("This reminder no longer exists. Refresh "
+                              "the list."))
         return [(6, 0, alarms.ids)]
 
     def mobile_write(self, values):
@@ -466,23 +467,24 @@ class CalendarEvent(models.Model):
         values = values if isinstance(values, dict) else {}
         vals = {k: v for k, v in values.items() if k in self._MOBILE_WRITE_FIELDS}
         if not vals:
-            raise UserError(_("Rien à modifier."))
+            raise UserError(_("Nothing to change."))
         if self.recurrency:
-            raise UserError(_("Une rencontre récurrente se modifie au bureau."))
+            raise UserError(_("A recurring meeting must be edited on the "
+                              "desktop."))
         if "name" in vals and not (vals["name"] or "").strip():
-            raise UserError(_("Une rencontre a besoin d'un titre."))
+            raise UserError(_("A meeting needs a title."))
         if "alarm_ids" in vals:
             vals["alarm_ids"] = self._mobile_alarm_command(vals["alarm_ids"])
         start = fields.Datetime.to_datetime(vals.get("start")) or self.start
         stop = fields.Datetime.to_datetime(vals.get("stop")) or self.stop
         if ("start" in vals or "stop" in vals) and start and stop and stop < start:
-            raise UserError(_("La fin précède le début."))
+            raise UserError(_("The end is before the start."))
         self.check_access("write")
         avant = (self.start, self.stop, self.allday)
         self.write(vals)
         if (self.start, self.stop, self.allday) != avant:
             self.message_post(
-                body=_("%(who)s a déplacé la rencontre depuis l'application mobile.",
+                body=_("%(who)s moved the meeting from the mobile app.",
                        who=self.env.user.display_name),
                 subtype_xmlid="mail.mt_note",
             )
@@ -531,7 +533,7 @@ class CalendarEvent(models.Model):
         remove = Partner.browse([int(i) for i in (remove_ids or [])]).exists()
         organizer = self.user_id.partner_id
         if organizer and organizer in remove:
-            raise UserError(_("L'organisateur reste sur sa rencontre."))
+            raise UserError(_("The organizer stays on their meeting."))
         commands = [(4, p.id) for p in add if p not in self.partner_ids]
         commands += [(3, p.id) for p in remove if p in self.partner_ids]
         if commands:
@@ -545,14 +547,15 @@ class CalendarEvent(models.Model):
             retires = ", ".join(p.display_name for p in remove)
             morceaux = []
             if ajoutes:
-                morceaux.append(_("a ajouté %s", ajoutes))
+                morceaux.append(_("added %s", ajoutes))
             if retires:
-                morceaux.append(_("a retiré %s", retires))
+                morceaux.append(_("removed %s", retires))
             self.message_post(
-                body=_("%(who)s %(what)s depuis l'application mobile%(mail)s.",
+                body=_("%(who)s %(what)s from the mobile app%(mail)s.",
                        who=self.env.user.display_name,
-                       what=" ; ".join(morceaux),
-                       mail=_(" (invitation envoyée)") if notify and ajoutes else ""),
+                       # Virgule : juste dans les deux langues (Odoo n'extrait pas un msgid « ; »).
+                       what=", ".join(morceaux),
+                       mail=_(" (invitation sent)") if notify and ajoutes else ""),
                 subtype_xmlid="mail.mt_note",
             )
         return {"ok": True, "event": self.mobile_detail()}
@@ -597,7 +600,7 @@ class CalendarEvent(models.Model):
         """
         self.ensure_one()
         if "bf_skip_agenda" not in self._fields:
-            raise UserError(_("Les exclusions demandent le module Rencontres."))
+            raise UserError(_("Exclusions require the Meetings module."))
         vals = {}
         if skip_agenda is not None:
             vals["bf_skip_agenda"] = bool(skip_agenda)

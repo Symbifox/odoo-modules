@@ -49,26 +49,77 @@ PALE = Color(0.65, 0.72, 0.76)
 # sur aucun niveau du document sont retirés au moment du tracé : une légende
 # qui explique une forme absente fait douter le lecteur de ce qu'il regarde.
 LEGENDE = [
-    ("start", "Événement de début\nnommé par son état"),
-    ("task", "Activité\n(verbe + complément)"),
-    ("send", "Activité qui émet\nun message"),
-    ("receive", "Activité qui reçoit\nun message"),
-    ("user", "Activité tenue\npar une personne"),
-    ("sub", "Sous-processus\ndétaillé plus loin"),
-    ("xor", "Choix exclusif\n(une seule voie)"),
-    ("or", "Choix inclusif\n(une ou plusieurs)"),
-    ("and", "Parallélisme\n(toutes les voies)"),
-    ("msgCatch", "Attente d’un\névénement externe"),
-    ("timerCatch", "Attente d’une\néchéance"),
-    ("store", "Dépôt de données"),
-    ("end", "Fin, nommée par\nl’état atteint"),
+    ("start", "Start event,\nnamed by its state"),
+    ("task", "Activity\n(verb + object)"),
+    ("send", "Activity that sends\na message"),
+    ("receive", "Activity that receives\na message"),
+    ("user", "Activity performed\nby a person"),
+    ("sub", "Subprocess\ndetailed further on"),
+    ("xor", "Exclusive choice\n(one path only)"),
+    ("or", "Inclusive choice\n(one or more)"),
+    ("and", "Parallelism\n(all paths)"),
+    ("msgCatch", "Waiting for an\nexternal event"),
+    ("timerCatch", "Waiting for\na deadline"),
+    ("store", "Stored data"),
+    ("end", "End, named by\nthe state reached"),
 ]
 
 TITRES_ANNEXES = {
-    "hypothese": "Hypothèses retenues pour dessiner la carte",
-    "question": "Questions ouvertes",
-    "constat": "Ce que la carte fait apparaître",
+    "hypothese": "Assumptions made to draw the map",
+    "question": "Open questions",
+    "constat": "What the map reveals",
 }
+
+#: Tout l'habillage du livrable, en anglais par défaut. Le générateur ne
+#: connaît pas Odoo : le modèle lui passe ces mêmes clés, rendues dans la
+#: langue du client (`bf.process._libelles_rendu`), et ce qui manque retombe
+#: ici. Les clés courtes sont l'anglais lui-même ; les autres disent leur place.
+LIBELLES = {
+    "espaces_fr": False,
+    "legende": dict(LEGENDE),
+    "legende_idee": ("Improvement or", "automation idea"),
+    "legende_fragilite": ("Weak point or", "missing information"),
+    "Legend": "Legend",
+    "Contents": "Contents",
+    "titres_annexes": TITRES_ANNEXES,
+    "Role": "Role",
+    "Name": "Name",
+    "Date": "Date",
+    "Decision": "Decision",
+    "Accurate / needs correction": "Accurate / needs correction",
+    "Validation register": "Validation register",
+    "registre_intro": (
+        "An AS-IS map is only worth something once it is recognized by "
+        "the people who do the work. Fill in and return with your "
+        "corrections."),
+    "Level": "Level",
+    "Gap": "Gap",
+    "Intent": "Intent",
+    "Expected gain": "Expected gain",
+    "Effort": "Effort",
+    "Assignee": "Assignee",
+    "State": "State",
+    "Appendix": "Appendix",
+    "Assumptions and open questions": "Assumptions and open questions",
+    "hypotheses_sous_titre":
+        "What the map assumes, and what it does not know yet",
+    "Findings and ideas": "Findings and ideas",
+    "constats_sous_titre": "Reading of the map, with no tool recommendation",
+    "Transformation plan": "Transformation plan",
+    " (continued)": " (continued)",
+    "plan_sous_titre": ("What separates the current state from the target "
+                        "process, and what each change brings"),
+    "Unfolded map": "Unfolded map",
+    "Single page": "Single page",
+    "%s: unfolded map": "%s: unfolded map",
+    "depliee_sous_titre": "All levels on a single page, to browse on screen",
+    "Process mapping": "Process mapping",
+}
+
+
+def _libelles(libelles):
+    """Les libellés reçus, complétés par l'anglais pour ce qui manque."""
+    return dict(LIBELLES, **(libelles or {}))
 
 
 # ------------------------------------------------------------------- styles --
@@ -92,6 +143,15 @@ def _styles():
     }
 
 
+def _esp(texte, lib):
+    """L'espacement français si le livrable est en français, sinon le texte tel quel.
+
+    Une fine insécable avant « ? » dans un livrable anglais est une faute de
+    typographie, pas une préférence de mise en page.
+    """
+    return _fr(texte) if lib.get("espaces_fr") else texte
+
+
 def _fr(texte):
     """L'espacement français, posé sur le texte, jamais dans une balise."""
     import re
@@ -108,15 +168,15 @@ def _fr(texte):
     return re.sub("\x01", lambda _m: next(it), masque)
 
 
-def _flowables(html_source, styles):
+def _flowables(html_source, styles, lib=LIBELLES):
     """Le HTML d'une section, en objets de mise en page."""
     sortie = []
     for genre, contenu in conv.blocs(html_source):
         style = styles.get(genre, styles["p"])
         if genre == "puce":
-            sortie.append(Paragraph(_fr(contenu), style, bulletText="•"))
+            sortie.append(Paragraph(_esp(contenu, lib), style, bulletText="•"))
         else:
-            sortie.append(Paragraph(_fr(contenu), style))
+            sortie.append(Paragraph(_esp(contenu, lib), style))
     return sortie
 
 
@@ -147,7 +207,7 @@ def _pied(c, page_no, total, pied):
 
 
 # ---------------------------------------------------------------- couverture --
-def _bloc_couverture(c, x, y, largeur, titre, corps):
+def _bloc_couverture(c, x, y, largeur, titre, corps, lib=LIBELLES):
     """Un bloc de la couverture. Rend l'ordonnée du bloc suivant."""
     t = Toile(c, PAGE[0], PAGE[1])
     t.text(x, y, titre, size=11, gras=True, align=0)
@@ -155,8 +215,8 @@ def _bloc_couverture(c, x, y, largeur, titre, corps):
     styles = _styles()
     style = ParagraphStyle("couv", parent=styles["p"], fontSize=9.2,
                            leading=13.3, spaceAfter=0)
-    flow = [Paragraph(_fr(p), style) for _g, p in conv.blocs(corps)] or \
-           [Paragraph(_fr(corps or ""), style)]
+    flow = [Paragraph(_esp(p, lib), style) for _g, p in conv.blocs(corps)] or \
+           [Paragraph(_esp(corps or "", lib), style)]
     hauteur = sum(f.wrap(largeur, 400)[1] + style.spaceAfter for f in flow)
     cadre = Frame(x, PAGE[1] - y - 16 - hauteur, largeur, hauteur + 10,
                   leftPadding=0, rightPadding=0, topPadding=0,
@@ -165,15 +225,16 @@ def _bloc_couverture(c, x, y, largeur, titre, corps):
     return y + 26 + hauteur + 14
 
 
-def _legende(c, x0, y0, largeur, genres):
+def _legende(c, x0, y0, largeur, genres, lib=LIBELLES):
     """La légende, dessinée avec les primitives des diagrammes.
 
     Elle n'est pas une image collée : chaque forme est tracée par le même
     code que la carte. Une légende qui diverge du tracé est pire qu'aucune.
     """
     t = Toile(c, PAGE[0], PAGE[1])
-    t.text(x0, y0, "Légende", size=11, gras=True, align=0)
-    entrees = [(g, l) for g, l in LEGENDE if g in genres]
+    t.text(x0, y0, lib["Legend"], size=11, gras=True, align=0)
+    textes = dict(LEGENDE, **lib.get("legende", {}))
+    entrees = [(g, textes[g]) for g, _l in LEGENDE if g in genres]
     colonnes, larg_col = 2, largeur / 2
     from .pdf import dessiner_noeud
     for i, (genre, libelle) in enumerate(entrees):
@@ -184,10 +245,9 @@ def _legende(c, x0, y0, largeur, genres):
             t.text(cx + 36, cy - 2 + j * 11, ligne, size=8, color=GREY, align=0)
     y = y0 + 36 + ((max(len(entrees), 1) - 1) // colonnes + 1) * 54 - 14
     lg = (largeur - 20) / 2
-    for x, fond, bord, l1, l2 in (
-            (x0, BLUE_SOFT, BLUE, "Piste d’amélioration", "ou d’automatisation"),
-            (x0 + lg + 20, AMBER_SOFT, AMBER, "Point de fragilité ou",
-             "information manquante")):
+    for x, fond, bord, (l1, l2) in (
+            (x0, BLUE_SOFT, BLUE, lib["legende_idee"]),
+            (x0 + lg + 20, AMBER_SOFT, AMBER, lib["legende_fragilite"])):
         t.rect(x, y, x + lg, y + 34, fill=fond, color=None, w=0)
         t.line([(x + 9, y), (x, y), (x, y + 34), (x + 9, y + 34)],
                color=bord, w=1.4)
@@ -197,9 +257,9 @@ def _legende(c, x0, y0, largeur, genres):
     return y + 50
 
 
-def _sommaire(c, x0, y0, entrees, par_colonne=12, ecart=392):
+def _sommaire(c, x0, y0, entrees, par_colonne=12, ecart=392, lib=LIBELLES):
     t = Toile(c, PAGE[0], PAGE[1])
-    t.text(x0, y0, "Sommaire", size=11, gras=True, align=0)
+    t.text(x0, y0, lib["Contents"], size=11, gras=True, align=0)
     n = len(entrees)
     coupe = n if n <= par_colonne else (n + 1) // 2
     for i, (no, titre, etiquette) in enumerate(entrees):
@@ -212,7 +272,7 @@ def _sommaire(c, x0, y0, entrees, par_colonne=12, ecart=392):
     t.commit()
 
 
-def _couverture(c, meta, blocs, sommaire, genres, total):
+def _couverture(c, meta, blocs, sommaire, genres, total, lib=LIBELLES):
     t = Toile(c, PAGE[0], PAGE[1])
     t.rect(0, 0, PAGE[0], 150, fill=INK, color=None, w=0)
     t.text(MARGE, 62, meta["titre"], size=27, gras=True, color=WHITE, align=0)
@@ -227,13 +287,14 @@ def _couverture(c, meta, blocs, sommaire, genres, total):
     col_largeur = 340
     y = 190
     for titre, corps in blocs[:2]:
-        y = _bloc_couverture(c, MARGE, y, col_largeur, titre, corps)
+        y = _bloc_couverture(c, MARGE, y, col_largeur, titre, corps, lib)
     y2 = 190
     for titre, corps in blocs[2:4]:
-        y2 = _bloc_couverture(c, MARGE + 380, y2, col_largeur, titre, corps)
+        y2 = _bloc_couverture(c, MARGE + 380, y2, col_largeur, titre, corps,
+                              lib)
 
-    _legende(c, MARGE + 776, 190, 376, genres)
-    _sommaire(c, MARGE, max(y, y2, 470) + 16, sommaire)
+    _legende(c, MARGE + 776, 190, 376, genres, lib)
+    _sommaire(c, MARGE, max(y, y2, 470) + 16, sommaire, lib=lib)
     _pied(c, 1, total, meta.get("pied"))
 
 
@@ -262,7 +323,7 @@ def _page_texte(c, titre, sous_titre, meta, colonnes, page_no, total, pied,
                                        list(bas), mode="shrink")], c)
 
 
-def _registre(sections, styles):
+def _registre(sections, styles, lib=LIBELLES):
     """Le registre de validation, en tableau.
 
     Une carte AS-IS n'a de valeur qu'une fois reconnue par ceux qui exécutent
@@ -275,13 +336,14 @@ def _registre(sections, styles):
                             fontSize=8.6, spaceAfter=0)
     cellule = ParagraphStyle("td", parent=styles["p"], fontSize=8.6,
                              spaceAfter=0)
-    lignes = [[Paragraph("Rôle", entete), Paragraph("Nom", entete),
-               Paragraph("Date", entete), Paragraph("Décision", entete)]]
+    lignes = [[Paragraph(lib["Role"], entete), Paragraph(lib["Name"], entete),
+               Paragraph(lib["Date"], entete),
+               Paragraph(lib["Decision"], entete)]]
     for s in sections:
-        lignes.append([Paragraph(_fr(s[0] or ""), cellule),
-                       Paragraph(_fr(conv.texte_nu(s[1]) or ""), cellule),
+        lignes.append([Paragraph(_esp(s[0] or "", lib), cellule),
+                       Paragraph(_esp(conv.texte_nu(s[1]) or "", lib), cellule),
                        Paragraph("&nbsp;", cellule),
-                       Paragraph("Conforme / à corriger", cellule)])
+                       Paragraph(lib["Accurate / needs correction"], cellule)])
     largeur = PAGE[0] - 2 * MARGE
     table = Table(lignes, colWidths=[largeur * 0.30, largeur * 0.24,
                                      largeur * 0.16, largeur * 0.30])
@@ -294,11 +356,8 @@ def _registre(sections, styles):
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
     hauteur = table.wrap(largeur, 400)[1]
-    titre = Paragraph("Registre de validation", styles["h3"])
-    intro = Paragraph(_fr(
-        "Une carte AS-IS n’a de valeur qu’une fois reconnue par ceux qui "
-        "exécutent le travail. À compléter et à retourner avec les "
-        "corrections."), styles["p"])
+    titre = Paragraph(lib["Validation register"], styles["h3"])
+    intro = Paragraph(_esp(lib["registre_intro"], lib), styles["p"])
     return [titre, intro, table], hauteur + 46
 
 
@@ -317,7 +376,7 @@ def _pages_plan(plan):
             for i in range(0, len(plan), PLAN_PAR_PAGE)]
 
 
-def _table_plan(lignes, styles):
+def _table_plan(lignes, styles, lib=LIBELLES):
     """Le plan de transformation, en tableau.
 
     Un écart mécanique (« l'étape X est retirée ») ne se défend pas devant un
@@ -329,19 +388,14 @@ def _table_plan(lignes, styles):
                             fontSize=8.6, spaceAfter=0)
     cellule = ParagraphStyle("td_plan", parent=styles["p"], fontSize=8.6,
                              spaceAfter=0)
-    rangs = [[Paragraph(t, entete) for t in
-              ("Niveau", "Écart", "Intention", "Gain attendu", "Effort",
-               "Responsable", "État")]]
+    rangs = [[Paragraph(lib[t], entete) for t in
+              ("Level", "Gap", "Intent", "Expected gain", "Effort",
+               "Assignee", "State")]]
     for l in lignes:
         rangs.append([
-            Paragraph(_fr(l.get("niveau") or ""), cellule),
-            Paragraph(_fr(l.get("ecart") or ""), cellule),
-            Paragraph(_fr(l.get("intention") or ""), cellule),
-            Paragraph(_fr(l.get("gain") or ""), cellule),
-            Paragraph(_fr(l.get("effort") or ""), cellule),
-            Paragraph(_fr(l.get("responsable") or ""), cellule),
-            Paragraph(_fr(l.get("etat") or ""), cellule),
-        ])
+            Paragraph(_esp(l.get(cle) or "", lib), cellule)
+            for cle in ("niveau", "ecart", "intention", "gain", "effort",
+                        "responsable", "etat")])
     largeur = PAGE[0] - 2 * MARGE
     table = Table(rangs, colWidths=[largeur * x for x in
                                     (0.14, 0.26, 0.10, 0.24, 0.07, 0.11, 0.08)],
@@ -391,7 +445,7 @@ def _config_depliee(diagrammes):
     return couloirs, externes
 
 
-def _plan(diagrammes, sections, avec_depliee, pages_plan=0):
+def _plan(diagrammes, sections, avec_depliee, pages_plan=0, lib=LIBELLES):
     """Le sommaire, calculé avant de dessiner : les numéros de page en dépendent."""
     entrees, no = [], 2
     for d in diagrammes:
@@ -399,25 +453,26 @@ def _plan(diagrammes, sections, avec_depliee, pages_plan=0):
         no += 1
     if sections.get("hypothese") or sections.get("question") or \
             sections.get("validation"):
-        entrees.append((no, "Hypothèses et questions ouvertes", "Annexe"))
+        entrees.append((no, lib["Assumptions and open questions"],
+                        lib["Appendix"]))
         no += 1
     if sections.get("constat"):
-        entrees.append((no, "Constats et pistes", "Annexe"))
+        entrees.append((no, lib["Findings and ideas"], lib["Appendix"]))
         no += 1
     for i in range(pages_plan):
-        entrees.append((no, "Plan de transformation"
-                        + (" (suite)" if i else ""), "Annexe"))
+        entrees.append((no, lib["Transformation plan"]
+                        + (lib[" (continued)"] if i else ""), lib["Appendix"]))
         no += 1
     for titre, _corps in sections.get("annexe") or []:
-        entrees.append((no, titre, "Annexe"))
+        entrees.append((no, titre, lib["Appendix"]))
         no += 1
     if avec_depliee:
-        entrees.append((no, "Carte dépliée", "Une seule page"))
+        entrees.append((no, lib["Unfolded map"], lib["Single page"]))
         no += 1
     return entrees, no - 1
 
 
-def to_document(diagrammes, meta, sections, plan=None):
+def to_document(diagrammes, meta, sections, plan=None, libelles=None):
     """Le livrable complet, en octets.
 
     `sections` groupe la prose par genre : `couverture` et `annexe` portent
@@ -427,7 +482,11 @@ def to_document(diagrammes, meta, sections, plan=None):
     `plan` est le plan de transformation d'un processus souhaité : une liste
     de lignes déjà mises en mots par le modèle. Vide ou absent sur une carte
     de l'état actuel, qui n'a rien à transformer.
+
+    `libelles` porte l'habillage dans la langue du client (clés de
+    `LIBELLES`) ; ce qui manque reste en anglais.
     """
+    lib = _libelles(libelles)
     _polices()
     styles = _styles()
     depliee = None
@@ -436,8 +495,8 @@ def to_document(diagrammes, meta, sections, plan=None):
         try:
             depliee = aplatir.flatten(
                 diagrammes, couloirs, {},
-                title="%s — carte dépliée" % (meta.get("titre") or ""),
-                level="Tous les niveaux sur une seule page, à parcourir à l’écran",
+                title=lib["%s: unfolded map"] % (meta.get("titre") or ""),
+                level=lib["depliee_sous_titre"],
                 pool=diagrammes[0].get("pool") or "", ext=externes,
                 col_w=230, row_h=220, lane_pad=56)
         except aplatir.Abandon:
@@ -448,14 +507,14 @@ def to_document(diagrammes, meta, sections, plan=None):
 
     pages_plan = _pages_plan(plan)
     sommaire, total = _plan(diagrammes, sections, bool(depliee),
-                            len(pages_plan))
+                            len(pages_plan), lib)
     tampon = io.BytesIO()
     c = rl_canvas.Canvas(tampon, pagesize=PAGE)
-    c.setTitle(meta.get("titre") or "Cartographie de processus")
+    c.setTitle(meta.get("titre") or lib["Process mapping"])
     c.setCreator("Blue Fox — bf_process")
 
     _couverture(c, meta, sections.get("couverture") or [], sommaire,
-                _genres_presents(diagrammes), total)
+                _genres_presents(diagrammes), total, lib)
     c.showPage()
 
     droite = meta.get("droite") or ""
@@ -477,13 +536,15 @@ def to_document(diagrammes, meta, sections, plan=None):
     no = len(diagrammes) + 2
     if sections.get("hypothese") or sections.get("question") or \
             sections.get("validation"):
-        gauche = _liste(sections.get("hypothese"), TITRES_ANNEXES["hypothese"],
-                        styles)
-        droite_col = _liste(sections.get("question"), TITRES_ANNEXES["question"],
-                            styles)
-        bas, hauteur_bas = _registre(sections.get("validation") or [], styles)
-        _page_texte(c, "Hypothèses et questions ouvertes",
-                    "Ce que la carte suppose, et ce qu’elle ne sait pas encore",
+        titres = dict(TITRES_ANNEXES, **lib.get("titres_annexes", {}))
+        gauche = _liste(sections.get("hypothese"), titres["hypothese"],
+                        styles, lib=lib)
+        droite_col = _liste(sections.get("question"), titres["question"],
+                            styles, lib=lib)
+        bas, hauteur_bas = _registre(sections.get("validation") or [], styles,
+                                     lib)
+        _page_texte(c, lib["Assumptions and open questions"],
+                    lib["hypotheses_sous_titre"],
                     {"droite": droite, "meta": meta.get("meta", "")},
                     [gauche, droite_col], no, total, meta.get("pied"),
                     bas=bas, hauteur_bas=hauteur_bas)
@@ -493,30 +554,33 @@ def to_document(diagrammes, meta, sections, plan=None):
     if sections.get("constat"):
         constats = sections["constat"]
         moitie = (len(constats) + 1) // 2
-        _page_texte(c, "Constats et pistes",
-                    "Lecture de la carte, sans recommandation d’outil",
+        titres = dict(TITRES_ANNEXES, **lib.get("titres_annexes", {}))
+        _page_texte(c, lib["Findings and ideas"],
+                    lib["constats_sous_titre"],
                     {"droite": droite, "meta": meta.get("meta", "")},
-                    [_liste(constats[:moitie], TITRES_ANNEXES["constat"], styles),
-                     _liste(constats[moitie:], " ", styles, depart=moitie + 1)],
+                    [_liste(constats[:moitie], titres["constat"], styles,
+                            lib=lib),
+                     _liste(constats[moitie:], " ", styles, depart=moitie + 1,
+                            lib=lib)],
                     no, total, meta.get("pied"))
         c.showPage()
         no += 1
 
     for i, lignes in enumerate(pages_plan):
-        _page_texte(c, "Plan de transformation" + (" (suite)" if i else ""),
-                    "Ce qui sépare l’état actuel du processus souhaité, "
-                    "et ce que chaque changement rapporte",
+        _page_texte(c, lib["Transformation plan"]
+                    + (lib[" (continued)"] if i else ""),
+                    lib["plan_sous_titre"],
                     {"droite": droite, "meta": meta.get("meta", "")},
                     [], no, total, meta.get("pied"),
-                    bas=[_table_plan(lignes, styles)],
+                    bas=[_table_plan(lignes, styles, lib)],
                     hauteur_bas=PAGE[1] - HAUT - BAS - 36)
         c.showPage()
         no += 1
 
     for titre, corps in sections.get("annexe") or []:
-        flow = _flowables(corps, styles)
+        flow = _flowables(corps, styles, lib)
         moitie = (len(flow) + 1) // 2
-        _page_texte(c, titre, "Annexe",
+        _page_texte(c, titre, lib["Appendix"],
                     {"droite": droite, "meta": meta.get("meta", "")},
                     [flow[:moitie], flow[moitie:]], no, total, meta.get("pied"))
         c.showPage()
@@ -546,7 +610,7 @@ def to_document(diagrammes, meta, sections, plan=None):
     return tampon.getvalue()
 
 
-def _liste(sections, titre, styles, depart=1):
+def _liste(sections, titre, styles, depart=1, lib=LIBELLES):
     """Une suite d'entrées numérotées : intitulé en gras, puis son corps.
 
     ⚠️ L'intitulé est recollé à son corps par une PONCTUATION, pas par une
@@ -559,7 +623,7 @@ def _liste(sections, titre, styles, depart=1):
     """
     flow = []
     if titre and titre.strip():
-        flow.append(Paragraph(_fr(titre), styles["h3"]))
+        flow.append(Paragraph(_esp(titre, lib), styles["h3"]))
     for i, (nom, corps) in enumerate(sections or [], depart):
         intitule = (nom or "").strip()
         blocs = conv.blocs(corps)
@@ -570,10 +634,10 @@ def _liste(sections, titre, styles, depart=1):
         colle = suite[:1] in ",;:." if suite else False
         if suite and not colle and intitule and intitule[-1] not in ".?!:»":
             intitule += "."
-        texte = "<b>%d. %s</b>" % (i, _fr(intitule))
+        texte = "<b>%d. %s</b>" % (i, _esp(intitule, lib))
         if suite:
             texte += ("" if colle else " ") + suite
-        flow.append(Paragraph(_fr(texte), styles["numero"]))
+        flow.append(Paragraph(_esp(texte, lib), styles["numero"]))
         for _genre, suite in blocs[1:]:
-            flow.append(Paragraph(_fr(suite), styles["numero"]))
+            flow.append(Paragraph(_esp(suite, lib), styles["numero"]))
     return flow

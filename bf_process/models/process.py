@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -9,36 +11,36 @@ class BfProcess(models.Model):
     """Une cartographie de processus, versionnée."""
 
     _name = "bf.process"
-    _description = "Cartographie de processus"
+    _description = "Process mapping"
     _inherit = ["mail.thread"]
     _order = "name, version"
 
-    name = fields.Char(string="Processus", required=True, tracking=True)
-    code = fields.Char(string="Code", help="Préfixe des identifiants BPMN exportés.")
+    name = fields.Char(string="Process", required=True, tracking=True)
+    code = fields.Char(string="Code", help="Prefix of the exported BPMN IDs.")
     version = fields.Char(string="Version", default="1.0", required=True, tracking=True)
     state = fields.Selection(
-        [("brouillon", "Brouillon"), ("valide", "Validée"), ("obsolete", "Obsolète")],
-        string="État", default="brouillon", required=True, tracking=True)
+        [("brouillon", "Draft"), ("valide", "Validated"), ("obsolete", "Obsolete")],
+        string="State", default="brouillon", required=True, tracking=True)
     pool_name = fields.Char(
-        string="Pool principal", required=True,
-        help="L'organisation qui exécute le processus. Les exécutants sont des"
-             " couloirs, les participants externes des pools boîte noire.")
+        string="Main pool", required=True,
+        help="The organization that performs the process. Performers are "
+             "lanes; external participants are black-box pools.")
     partner_id = fields.Many2one("res.partner", string="Client", tracking=True)
-    project_id = fields.Many2one("project.project", string="Projet", tracking=True)
+    project_id = fields.Many2one("project.project", string="Project", tracking=True)
     source = fields.Text(
         string="Source",
-        help="D'où vient la carte, et ce qui n'a pas été fait. Une carte AS-IS"
-             " sans sa source n'est pas un livrable.")
-    diagram_ids = fields.One2many("bf.process.diagram", "process_id", string="Niveaux")
+        help="Where the map comes from, and what was not done. An AS-IS "
+             "map without its source is not a deliverable.")
+    diagram_ids = fields.One2many("bf.process.diagram", "process_id", string="Levels")
     diagram_count = fields.Integer(compute="_compute_counts")
     node_count = fields.Integer(compute="_compute_counts")
     active = fields.Boolean(default=True)
 
     # --- lignée des versions -------------------------------------------------
     version_precedente_id = fields.Many2one(
-        "bf.process", string="Version précédente", ondelete="set null", copy=False)
+        "bf.process", string="Previous version", ondelete="set null", copy=False)
     version_suivante_ids = fields.One2many(
-        "bf.process", "version_precedente_id", string="Versions suivantes")
+        "bf.process", "version_precedente_id", string="Next versions")
 
     # --- état actuel ou processus souhaité -----------------------------------
     # Deux branches, pas une ligne. Une lignée de versions dit « la réalité a
@@ -47,19 +49,19 @@ class BfProcess(models.Model):
     # comparerait plus à rien de cohérent, et la carte cesserait d'être le
     # référentiel de l'état actuel, ce qui est sa raison d'être.
     nature = fields.Selection(
-        [("actuel", "État actuel"), ("cible", "Processus souhaité")],
-        string="Nature", default="actuel", required=True, tracking=True,
-        help="Ce que la carte décrit : ce qui se passe aujourd'hui, ou ce"
-             " qu'on veut qu'il se passe.")
+        [("actuel", "Current state"), ("cible", "Target process")],
+        string="Map type", default="actuel", required=True, tracking=True,
+        help="What the map describes: what happens today, or what we want "
+             "to happen.")
     origine_id = fields.Many2one(
-        "bf.process", string="Dessinée d'après", ondelete="restrict",
+        "bf.process", string="Drawn from", ondelete="restrict",
         copy=False, index=True,
-        help="La version de l'état actuel dont ce processus souhaité est"
-             " tiré. C'est contre elle que les écarts se calculent, et elle"
-             " ne bouge pas quand l'état actuel est recartographié : la cible"
-             " a été dessinée d'après cette photo-là.")
+        help="The current-state version this target process is drawn "
+             "from. Gaps are computed against it, and it does not move "
+             "when the current state is remapped: the target was drawn "
+             "from that snapshot.")
     cible_ids = fields.One2many(
-        "bf.process", "origine_id", string="Processus souhaités")
+        "bf.process", "origine_id", string="Target processes")
     cible_count = fields.Integer(compute="_compute_cible_count")
 
     # --- registre de validation ---------------------------------------------
@@ -67,7 +69,7 @@ class BfProcess(models.Model):
     validee_count = fields.Integer(compute="_compute_validation")
     taux_validation = fields.Float(
         string="Validation", compute="_compute_validation",
-        help="Part des activités validées par le propriétaire ET par un exécutant.")
+        help="Share of activities validated by the owner AND by a performer.")
     conteste_count = fields.Integer(compute="_compute_validation")
 
     # `nature` entre dans la clé : l'état actuel et le processus souhaité
@@ -76,7 +78,7 @@ class BfProcess(models.Model):
     # de version qui ne veut rien dire.
     _sql_constraints = [
         ("name_version_uniq", "unique (name, nature, version)",
-         "Cette version de ce processus existe déjà."),
+         "This version of this process already exists."),
     ]
 
     @api.constrains("nature", "origine_id")
@@ -85,21 +87,21 @@ class BfProcess(models.Model):
         for rec in self:
             if rec.nature == "cible" and not rec.origine_id:
                 raise ValidationError(_(
-                    "Un processus souhaité se dessine d'après un état actuel."
-                    " Sans lui, il n'y a pas d'écart à montrer, juste une"
-                    " deuxième carte."))
+                    "A target process is drawn from a current state. "
+                    "Without one, there is no gap to show, just a second "
+                    "map."))
             if rec.nature == "actuel" and rec.origine_id:
                 raise ValidationError(_(
-                    "Une carte de l'état actuel ne se dessine d'après rien :"
-                    " elle décrit ce qui se passe."))
+                    "A current-state map is not drawn from anything: it "
+                    "describes what happens."))
             if rec.origine_id == rec:
                 raise ValidationError(_(
-                    "Une carte ne se dessine pas d'après elle-même."))
+                    "A map cannot be drawn from itself."))
             if rec.origine_id and rec.origine_id.nature != "actuel":
                 raise ValidationError(_(
-                    "« %s » est déjà un processus souhaité : une cible se"
-                    " dessine d'après l'état actuel, pas d'après une autre"
-                    " cible.") % rec.origine_id.display_name)
+                    "\"%s\" is already a target process: a target is "
+                    "drawn from the current state, not from another "
+                    "target.") % rec.origine_id.display_name)
 
     @api.depends("cible_ids")
     def _compute_cible_count(self):
@@ -126,6 +128,7 @@ class BfProcess(models.Model):
                                    if activites else 0.0)
 
     @api.depends("name", "version", "nature")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         """La nature se lit dans le nom : deux cartes portent le même titre.
 
@@ -138,9 +141,46 @@ class BfProcess(models.Model):
         de version sans que rien ne le signale. Un remplacement qui ne casse
         rien est le plus difficile à voir.
         """
+        suffixe = _(" (target)")
         for rec in self:
             rec.display_name = (f"{rec.name} v{rec.version}"
-                                + (" (souhaité)" if rec.nature == "cible" else ""))
+                                + (suffixe if rec.nature == "cible" else ""))
+
+    # --- langue du livrable ----------------------------------------------------
+    @api.model
+    def _langue_du_client(self, partner=None):
+        """La langue d'un document qui part chez ce client.
+
+        La sienne, à défaut celle de la société, à défaut celle de la session.
+        Jamais celle de qui imprime : le livrable est une pièce du client.
+        """
+        return ((partner.lang if partner else False)
+                or self.env.company.partner_id.lang
+                or self.env.lang or "en_US")
+
+    def _langue_livrable(self):
+        """La langue de tout ce qui part chez le client de CETTE carte."""
+        self.ensure_one()
+        return self._langue_du_client(self.partner_id)
+
+    def _livrable(self):
+        """La carte, dans la langue de son livrable : `._livrable().env._(…)`."""
+        self.ensure_one()
+        return self.with_context(lang=self._langue_livrable())
+
+    def _nom_par_defaut(self, genre):
+        """Le nom d'un nœud posé sans libellé, dans la langue du livrable.
+
+        Il s'écrit dans la carte, donc il finit au PDF du client : « À nommer »
+        dans la langue de la session aurait imprimé un mot de l'atelier
+        plutôt qu'un mot du client.
+        """
+        env = self._livrable().env
+        if genre == "note":
+            return env._("To be written")
+        if genre in ACTIVITES:
+            return env._("To be named")
+        return False
 
     # --- gel ------------------------------------------------------------------
     MODIFIABLE_APRES_VALIDATION = {
@@ -155,8 +195,9 @@ class BfProcess(models.Model):
             geles = self.filtered(lambda p: p.state == "valide")
             if touche and geles:
                 raise UserError(_(
-                    "« %s » est une version validée : son contenu ne se modifie "
-                    "plus. Créez la version suivante, ou rouvrez celle-ci."
+                    "\"%s\" is a validated version: its content can no "
+                    "longer be edited. Create the next version, or reopen "
+                    "this one."
                 ) % ", ".join(f"{p.name} v{p.version}" for p in geles))
         return super().write(vals)
 
@@ -164,27 +205,28 @@ class BfProcess(models.Model):
         geles = self.filtered(lambda p: p.state == "valide")
         if geles and not self.env.context.get("bf_process_degel"):
             raise UserError(_(
-                "Une version validée ne se supprime pas. Marquez-la obsolète."))
+                "A validated version cannot be deleted. Mark it obsolete."))
         return super(BfProcess, self.with_context(bf_process_degel=True)).unlink()
 
     def action_valider(self):
         """Fige la version. C'est ce qui rend la carte cit​able."""
         for rec in self:
             if not rec.diagram_ids:
-                raise UserError(_("Une cartographie sans niveau ne se valide pas."))
+                raise UserError(_("A process map without a level cannot "
+                                  "be validated."))
             rec.with_context(bf_process_degel=True).state = "valide"
-            rec.message_post(body=_(
-                "Version <b>%s</b> validée et gelée — %d activité(s) sur %d "
-                "validées au registre.") % (rec.version, rec.validee_count,
-                                            rec.activite_count))
+            rec.message_post(body=Markup(_(
+                "Version <b>%s</b> validated and frozen: %d of %d "
+                "activities validated in the register.")) % (
+                    rec.version, rec.validee_count, rec.activite_count))
         return True
 
     def action_rouvrir(self):
         """Dégèle, et le dit. Rouvrir en silence serait pire que ne pas geler."""
         for rec in self:
             rec.with_context(bf_process_degel=True).state = "brouillon"
-            rec.message_post(body=_(
-                "Version <b>%s</b> rouverte : elle redevient modifiable.")
+            rec.message_post(body=Markup(_(
+                "Version <b>%s</b> reopened: it can be edited again."))
                 % rec.version)
         return True
 
@@ -233,13 +275,13 @@ class BfProcess(models.Model):
             "diagram_ids": [],
         })
         nouvelle._charger_niveaux(self.to_dicts())
-        nouvelle.message_post(body=_(
-            "Reprise de la version <b>%s</b> : %d niveaux, %d nœuds. Le registre "
-            "de validation repart à zéro.") % (self.version, len(nouvelle.diagram_ids),
-                                               nouvelle.node_count))
+        nouvelle.message_post(body=Markup(_(
+            "Taken over from version <b>%s</b>: %d levels, %d nodes. The "
+            "validation register starts over.")) % (
+                self.version, len(nouvelle.diagram_ids), nouvelle.node_count))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Nouvelle version"),
+            "name": _("New version"),
             "res_model": "bf.process",
             "res_id": nouvelle.id,
             "view_mode": "form",
@@ -263,12 +305,12 @@ class BfProcess(models.Model):
         self.ensure_one()
         if self.nature != "actuel":
             raise UserError(_(
-                "« %s » est déjà un processus souhaité. Une cible se dessine"
-                " d'après l'état actuel.") % self.display_name)
+                "\"%s\" is already a target process. A target is drawn "
+                "from the current state.") % self.display_name)
         if not self.diagram_ids:
             raise UserError(_(
-                "« %s » n'a aucun niveau : il n'y a rien à reprendre pour"
-                " dessiner ce qu'on voudrait à la place.") % self.name)
+                "\"%s\" has no level: there is nothing to start from to "
+                "draw what we would want instead.") % self.name)
         cible = self.copy({
             "name": self.name,
             "nature": "cible",
@@ -280,17 +322,16 @@ class BfProcess(models.Model):
             "section_ids": [],
         })
         cible._charger_niveaux(self.to_dicts())
-        cible.message_post(body=_(
-            "Processus souhaité dessiné d'après <b>%s</b> : %d niveaux, %d "
-            "nœuds, identiques pour l'instant. Les écarts apparaissent à "
-            "mesure que la cible est retouchée."
-        ) % (self.display_name, len(cible.diagram_ids), cible.node_count))
-        self.message_post(body=_(
-            "Un processus souhaité a été dessiné d'après cette version : "
-            "<b>%s</b>.") % cible.display_name)
+        cible.message_post(body=Markup(_(
+            "Target process drawn from <b>%s</b>: %d levels, %d nodes, "
+            "identical for now. Gaps appear as the target is edited."
+        )) % (self.display_name, len(cible.diagram_ids), cible.node_count))
+        self.message_post(body=Markup(_(
+            "A target process was drawn from this version: <b>%s</b>."))
+            % cible.display_name)
         return {
             "type": "ir.actions.act_window",
-            "name": _("Processus souhaité"),
+            "name": _("Target process"),
             "res_model": "bf.process",
             "res_id": cible.id,
             "view_mode": "form",
@@ -316,7 +357,7 @@ class BfProcess(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Processus souhaités"),
+            "name": _("Target processes"),
             "res_model": "bf.process",
             "view_mode": "list,form",
             "domain": [("origine_id", "=", self.id)],
@@ -326,7 +367,7 @@ class BfProcess(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Comparer deux cartes"),
+            "name": _("Compare two maps"),
             "res_model": "bf.process.compare.wizard",
             "view_mode": "form",
             "target": "new",
@@ -341,7 +382,7 @@ class BfProcess(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Fusionner un fichier BPMN 2.0"),
+            "name": _("Merge a BPMN 2.0 file"),
             "res_model": "bf.process.merge.wizard",
             "view_mode": "form",
             "target": "new",
@@ -352,7 +393,7 @@ class BfProcess(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Niveaux"),
+            "name": _("Levels"),
             "res_model": "bf.process.diagram",
             "view_mode": "list,form",
             "domain": [("process_id", "=", self.id)],
@@ -371,57 +412,57 @@ class BfProcessDiagram(models.Model):
 
     _name = "bf.process.diagram"
     _inherit = ["bf.process.gel"]
-    _description = "Niveau de cartographie"
+    _description = "Process map level"
     _order = "process_id, sequence, id"
 
     process_id = fields.Many2one(
-        "bf.process", string="Processus", required=True, ondelete="cascade", index=True)
-    sequence = fields.Integer(string="Ordre", default=10)
-    title = fields.Char(string="Titre", required=True)
+        "bf.process", string="Process", required=True, ondelete="cascade", index=True)
+    sequence = fields.Integer(string="Order", default=10)
+    title = fields.Char(string="Title", required=True)
     level = fields.Char(
-        string="Niveau", help="Libellé affiché, par exemple « Niveau 2 ».")
+        string="Level", help="Displayed label, for example \"Level 2\".")
     code = fields.Char(
         string="Code", required=True,
-        help="Identifiant court du niveau, unique dans le processus.")
+        help="Short identifier of the level, unique within the process.")
     bpmn_id = fields.Char(
-        string="Identifiant BPMN", required=True, copy=False,
-        help="Stable, jamais régénéré : c'est lui qui permet à un réimport de"
-             " fusionner au lieu de dupliquer.")
+        string="BPMN ID", required=True, copy=False,
+        help="Stable, never regenerated: it is what lets a reimport merge "
+             "instead of duplicating.")
     parent_node_ids = fields.One2many(
-        "bf.process.node", "child_diagram_id", string="Ouvert depuis",
-        help="Les sous-processus qui ouvrent cette page. Il peut y en avoir"
-             " plusieurs : un sous-processus commun est appelé de plusieurs"
-             " endroits.")
+        "bf.process.node", "child_diagram_id", string="Opened from",
+        help="The subprocesses that open this page. There can be several: "
+             "a shared subprocess is called from several places.")
     parent_count = fields.Integer(compute="_compute_parent_count")
     pool_name = fields.Char(
-        string="Pool principal",
-        help="Vide : celui du processus s'applique.")
+        string="Main pool",
+        help="Empty: the process's pool name applies.")
     flat = fields.Boolean(
-        string="Carte dépliée",
-        help="Page unique rassemblant tous les niveaux.")
+        string="Unfolded map",
+        help="Single page gathering all levels.")
 
     # --- géométrie ----------------------------------------------------------
-    col_w = fields.Float(string="Largeur de colonne", default=168.0)
-    row_h = fields.Float(string="Hauteur de rangée", default=100.0)
-    lane_pad = fields.Float(string="Marge de couloir", default=50.0)
+    col_w = fields.Float(string="Column width", default=168.0)
+    row_h = fields.Float(string="Row height", default=100.0)
+    lane_pad = fields.Float(string="Lane padding", default=50.0)
     ext_header = fields.Float(
-        string="Hauteur des pools externes", default=0.0,
-        help="Vide : mesurée à partir du plus long nom de participant."
-             " Une valeur ici est une surcharge, et elle survit au recalcul.")
+        string="External pool height", default=0.0,
+        help="Empty: measured from the longest participant name. A value "
+             "here is an override, and it survives recomputation.")
 
-    lane_ids = fields.One2many("bf.process.lane", "diagram_id", string="Couloirs")
-    pool_ids = fields.One2many("bf.process.pool", "diagram_id", string="Pools externes")
-    node_ids = fields.One2many("bf.process.node", "diagram_id", string="Nœuds")
-    flow_ids = fields.One2many("bf.process.flow", "diagram_id", string="Flux")
+    lane_ids = fields.One2many("bf.process.lane", "diagram_id", string="Lanes")
+    pool_ids = fields.One2many("bf.process.pool", "diagram_id", string="External "
+                                                                       "pools")
+    node_ids = fields.One2many("bf.process.node", "diagram_id", string="Nodes")
+    flow_ids = fields.One2many("bf.process.flow", "diagram_id", string="Flows")
     message_ids = fields.One2many(
-        "bf.process.message", "diagram_id", string="Flux de message")
+        "bf.process.message", "diagram_id", string="Message flow")
     node_count = fields.Integer(compute="_compute_node_count")
 
     _sql_constraints = [
         ("code_uniq", "unique (process_id, code)",
-         "Ce code de niveau est déjà pris dans ce processus."),
+         "This level code is already used in this process."),
         ("bpmn_id_uniq", "unique (process_id, bpmn_id)",
-         "Cet identifiant BPMN est déjà pris dans ce processus."),
+         "This BPMN ID is already used in this process."),
     ]
 
     @api.depends("node_ids")

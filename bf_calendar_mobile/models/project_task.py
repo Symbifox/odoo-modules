@@ -69,8 +69,9 @@ class ProjectTask(models.Model):
             "deadline": iso(self.date_deadline),
             "priority": self.priority or "0",
             "state": self.state or "",
-            "state_label": dict(self._fields["state"].selection or []).get(
-                self.state, self.state or ""),
+            # Libellé dans la langue de l'usager (`.selection` = source anglaise).
+            "state_label": dict(self._fields["state"]._description_selection(
+                self.env)).get(self.state, self.state or ""),
             "stage": self.stage_id.display_name or "",
             "stage_id": self.stage_id.id or 0,
             "partner": self.partner_id.display_name or "",
@@ -129,9 +130,9 @@ class ProjectTask(models.Model):
         self.ensure_one()
         texte = (body or "").strip()
         if not texte:
-            raise UserError(_("Le commentaire est vide."))
+            raise UserError(_("The comment is empty."))
         if len(texte) > MAX_COMMENT:
-            raise UserError(_("Le commentaire est trop long."))
+            raise UserError(_("The comment is too long."))
         message = self.message_post(
             body=texte_simple.texte_vers_html(texte),
             message_type="comment", subtype_xmlid="mail.mt_note")
@@ -302,10 +303,10 @@ class ProjectTask(models.Model):
         self.ensure_one()
         vals = {k: v for k, v in (vals or {}).items() if k in self._MOBILE_WRITE_FIELDS}
         if not vals:
-            raise UserError(_("Rien à modifier."))
+            raise UserError(_("Nothing to change."))
         if "state" in vals and vals["state"] not in dict(
                 self._fields["state"].selection or []):
-            raise UserError(_("État de tâche inconnu."))
+            raise UserError(_("Unknown task state."))
         if "tag_ids" in vals:
             vals["tag_ids"] = [(6, 0, [int(t) for t in vals["tag_ids"]])]
         if "date_deadline" in vals and "time_of_day_id" in self._fields:
@@ -316,7 +317,7 @@ class ProjectTask(models.Model):
             # bureau perdrait listes, liens et gras sans que personne le voie.
             if not texte_simple.html_est_simple(self.description):
                 raise UserError(_(
-                    "La description porte une mise en forme : modifiez-la dans Odoo."))
+                    "The description has formatting: edit it in Odoo."))
             vals["description"] = texte_simple.texte_vers_html(texte or "")
         self.write(vals)
         return {"ok": True, "task": self._mobile_payload_detail()}
@@ -345,11 +346,11 @@ class ProjectTask(models.Model):
         prive = bool((vals or {}).get("private"))
         vals = {k: v for k, v in (vals or {}).items() if k in self._MOBILE_CREATE_FIELDS}
         if not vals.get("name"):
-            raise UserError(_("Une tâche a besoin d'un titre."))
+            raise UserError(_("A task needs a title."))
         if prive:
             vals["project_id"] = False
         elif not vals.get("project_id"):
-            raise UserError(_("Choisissez un projet."))
+            raise UserError(_("Choose a project."))
         if "tag_ids" in vals:
             vals["tag_ids"] = [(6, 0, [int(t) for t in vals["tag_ids"]])]
         vals["user_ids"] = [(6, 0, [self.env.uid])]
@@ -434,10 +435,10 @@ class ProjectTask(models.Model):
             ],
             "states": [
                 {"value": v, "label": l}
-                for v, l in (self._fields["state"].selection or [])
+                for v, l in self._fields["state"]._description_selection(self.env)
             ],
             "priorities": [
                 {"value": v, "label": l}
-                for v, l in (self._fields["priority"].selection or [])
+                for v, l in self._fields["priority"]._description_selection(self.env)
             ],
         }

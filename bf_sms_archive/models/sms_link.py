@@ -29,7 +29,7 @@ _logger = logging.getLogger(__name__)
 
 class SmsArchiveLink(models.Model):
     _name = "sms.archive.link"
-    _description = "Rattachement d'un SMS ou d'un appel à une fiche"
+    _description = "Link of an SMS or a call to a record"
     _order = "create_date desc, id desc"
 
     # Les deux sources possibles. Une ligne en porte exactement une : la
@@ -43,18 +43,18 @@ class SmsArchiveLink(models.Model):
     )
     call_id = fields.Many2one(
         comodel_name="call.archive.call",
-        string="Appel",
+        string="Call",
         ondelete="cascade",
         index=True,
     )
 
     res_model = fields.Char(
-        string="Modèle de la fiche",
+        string="Record model",
         required=True,
         index=True,
     )
     res_id = fields.Integer(
-        string="ID de la fiche",
+        string="Record ID",
         required=True,
         index=True,
     )
@@ -64,28 +64,28 @@ class SmsArchiveLink(models.Model):
     # porter sur DEUX lignes différentes : un message rattaché à la tâche 7 et
     # au ticket 42 ressortirait. Une clé unique évite le faux positif.
     res_ref = fields.Char(
-        string="Référence",
+        string="Reference",
         compute="_compute_res_ref",
         store=True,
         index=True,
     )
     res_name = fields.Char(
-        string="Fiche",
+        string="Record",
         compute="_compute_res_name",
     )
     res_model_label = fields.Char(
-        string="Type de fiche",
+        string="Record type",
         compute="_compute_res_name",
     )
 
     mail_message_id = fields.Many2one(
         comodel_name="mail.message",
-        string="Note publiée",
+        string="Posted note",
         ondelete="set null",
         index=True,
-        help="La note effectivement posée dans le chatter de la fiche. "
-             "Une note consolidée couvre souvent plusieurs messages : elle "
-             "n'est retirée que lorsque plus aucun rattachement ne la vise.",
+        help="The note actually posted in the record's chatter. A "
+             "consolidated note often covers several messages: it is only "
+             "removed once no link points to it anymore.",
     )
 
     thread_id = fields.Many2one(
@@ -100,37 +100,37 @@ class SmsArchiveLink(models.Model):
     # deux relations à chaque lecture.
     owner_id = fields.Many2one(
         comodel_name="res.users",
-        string="Propriétaire",
+        string="Owner",
         related="thread_id.owner_id",
         store=True,
         index=True,
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Rattaché par",
+        string="Linked by",
         default=lambda self: self.env.uid,
     )
     is_auto = fields.Boolean(
-        string="Suivi automatique",
+        string="Automatic follow-up",
         default=False,
-        help="Posé par le relais automatique du fil, pas à la main.",
+        help="Posted by the thread's automatic relay, not by hand.",
     )
 
     _sql_constraints = [
         (
             "item_required",
             "CHECK (message_id IS NOT NULL OR call_id IS NOT NULL)",
-            "Un rattachement porte sur un message ou sur un appel.",
+            "A link applies to a message or to a call.",
         ),
         (
             "message_target_uniq",
             "UNIQUE (message_id, res_ref)",
-            "Ce message est déjà rattaché à cette fiche.",
+            "This message is already linked to this record.",
         ),
         (
             "call_target_uniq",
             "UNIQUE (call_id, res_ref)",
-            "Cet appel est déjà rattaché à cette fiche.",
+            "This call is already linked to this record.",
         ),
     ]
 
@@ -149,7 +149,10 @@ class SmsArchiveLink(models.Model):
         for link in self:
             link.thread_id = link.message_id.thread_id or link.call_id.thread_id
 
+    # Non stocké, et il rend du texte (« Deleted record », type de fiche) : un
+    # cache par langue, sinon le premier lecteur fixe la langue des suivants.
     @api.depends("res_model", "res_id")
+    @api.depends_context("lang")
     def _compute_res_name(self):
         """Nom vivant de la fiche, lu par lot et jamais figé.
 
@@ -173,10 +176,11 @@ class SmsArchiveLink(models.Model):
                 names[(model, record.id)] = record.display_name
         for link in self:
             key = (link.res_model, link.res_id)
-            link.res_name = names.get(key) or _("Fiche supprimée")
+            link.res_name = names.get(key) or self.env._("Deleted record")
             link.res_model_label = labels.get(link.res_model, link.res_model or "")
 
     @api.depends("res_name", "message_id", "call_id")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         # Explicite plutôt que `_rec_name = "res_name"` : le nom de la fiche est
         # calculé et non stocké, et le `name_search` qu'un `_rec_name` implique
@@ -259,15 +263,15 @@ class SmsArchiveLink(models.Model):
         """Ouvre la fiche visée, après vérification des droits du lecteur."""
         self.ensure_one()
         if not self.res_model or self.res_model not in self.env:
-            raise UserError(_("Cette fiche n'existe plus."))
+            raise UserError(_("This record no longer exists."))
         record = self.env[self.res_model].browse(self.res_id)
         if not record.exists():
-            raise UserError(_("Cette fiche a été supprimée."))
+            raise UserError(_("This record has been deleted."))
         try:
             record.check_access("read")
         except AccessError as exc:
             raise UserError(_(
-                "Accès refusé sur %(model)s #%(id)s : %(err)s",
+                "Access denied on %(model)s #%(id)s: %(err)s",
                 model=self.res_model, id=self.res_id, err=exc,
             )) from exc
         return {

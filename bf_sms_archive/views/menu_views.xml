@@ -11,7 +11,7 @@
     <!-- Dashboard -->
     <menuitem
         id="sms_archive_menu_dashboard"
-        name="Tableau de bord"
+        name="Dashboard"
         parent="sms_archive_menu_root"
         action="sms_dashboard_client_action"
         sequence="2"/>
@@ -27,7 +27,7 @@
     <!-- Journal d'appels -->
     <menuitem
         id="sms_archive_menu_calls"
-        name="Journal d'appels"
+        name="Call log"
         parent="sms_archive_menu_root"
         action="call_action"
         sequence="15"/>
@@ -35,7 +35,7 @@
     <!-- Messages (search ready) -->
     <menuitem
         id="sms_archive_menu_messages"
-        name="Rechercher"
+        name="Search"
         parent="sms_archive_menu_root"
         action="sms_message_action"
         sequence="20"/>
@@ -43,7 +43,7 @@
     <!-- Rattachements -->
     <menuitem
         id="sms_archive_menu_links"
-        name="Rattachements"
+        name="Links"
         parent="sms_archive_menu_root"
         action="action_sms_links"
         sequence="25"/>
@@ -51,7 +51,7 @@
     <!-- Import -->
     <menuitem
         id="sms_archive_menu_import"
-        name="Importer"
+        name="Import"
         parent="sms_archive_menu_root"
         action="sms_import_wizard_action"
         sequence="30"/>

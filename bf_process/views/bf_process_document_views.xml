@@ -8,21 +8,18 @@
         <field name="arch" type="xml">
             <button name="action_telecharger_pdf" position="before">
                 <button name="action_telecharger_document" type="object"
-                        string="Générer le document" class="btn-primary"
+                        string="Generate the document" class="btn-primary"
                         invisible="diagram_count == 0"
-                        help="Le livrable complet : couverture, légende,
-                              sommaire, un niveau par page, annexes, registre
-                              de validation et carte dépliée. Le bouton
-                              « Tracer en PDF » ne rend que le tracé nu."/>
+                        help="The complete deliverable: cover, legend, table of contents, one level per page, appendices, validation register and unfolded map. The &quot;Render as PDF&quot; button only renders the bare drawing."/>
             </button>
             <page name="source" position="before">
                 <page string="Document" name="document"
                       invisible="diagram_count == 0">
                     <group>
                         <field name="sous_titre"
-                               placeholder="État actuel (AS-IS), de … à …"/>
+                               placeholder="Current state (AS-IS), from … to …"/>
                         <field name="pied_document"
-                               placeholder="À défaut, la première ligne de la source."/>
+                               placeholder="If empty, the first line of the source."/>
                         <field name="date_document"/>
                     </group>
                     <field name="section_ids" nolabel="1"
@@ -41,7 +38,7 @@
                                     <field name="name"/>
                                 </group>
                                 <field name="body" widget="html"
-                                       placeholder="Chacune comble un silence de la source. Une hypothèse fausse déplace des flèches, jamais du travail réel."/>
+                                       placeholder="Each one fills in something the source does not say. A wrong assumption moves arrows, never real work."/>
                             </sheet>
                         </form>
                     </field>

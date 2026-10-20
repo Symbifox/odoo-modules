@@ -90,10 +90,9 @@ class BfProcessAtelier(models.Model):
         if not self._noeuds_avec_ressources():
             from odoo.exceptions import UserError
             raise UserError(_(
-                "Aucune étape de « %s » ne porte de ressource : le tirage"
-                " d'atelier serait la même carte, en plus de pages.\n\n"
-                "Accrochez d'abord une procédure, une fiche ou une vidéo aux"
-                " étapes qui en demandent."
+                "No step of \"%s\" has a resource: the workshop print "
+                "would be the same map, on more pages.\n\nFirst attach a "
+                "procedure, a sheet or a video to the steps that need one."
             ) % self.name)
         pied = (self.source or "").strip().splitlines()
         octets = gen_pdf.to_pdf(
@@ -101,6 +100,7 @@ class BfProcessAtelier(models.Model):
             titre="%s · v%s" % (self.name, self.version),
             sous_titre=self.partner_id.display_name or "",
             pied=pied[0] if pied else "",
-            pave=gen_pdf.TABLOID)
+            pave=gen_pdf.TABLOID,
+            libelles=self._libelles_rendu())
         return self._telecharger(octets, "pdf", "application/pdf",
                                  suffixe="-atelier")

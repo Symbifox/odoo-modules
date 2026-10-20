@@ -5,30 +5,30 @@ from odoo.exceptions import UserError
 
 class BfOutreachExcludeWizard(models.TransientModel):
     _name = "bf.outreach.exclude.wizard"
-    _description = "Ne plus contacter"
+    _description = "Do not contact"
 
-    target_ids = fields.Many2many("bf.outreach.target", string="Cibles")
+    target_ids = fields.Many2many("bf.outreach.target", string="Targets")
     partner_ids = fields.Many2many("res.partner", string="Contacts")
     reason = fields.Char(
-        string="Motif",
-        help="Ce que la personne a demandé, dans ses mots. Conservé comme preuve "
-        "du traitement de la demande.",
+        string="Reason",
+        help="What the person asked for, in their own words. Kept as "
+             "evidence that the request was acted on.",
     )
     log_touch = fields.Boolean(
-        string="Journaliser l'interaction",
+        string="Log the interaction",
         default=True,
-        help="Consigne le refus comme interaction sur les cibles concernées, "
-        "afin que la demande apparaisse dans l'historique.",
+        help="Records the refusal as an interaction on the targets "
+             "concerned, so the request shows up in the history.",
     )
     kind = fields.Selection(
         [
-            ("call", "Appel"),
-            ("email", "Courriel"),
-            ("letter", "Lettre"),
-            ("sms", "Texto"),
-            ("other", "Autre"),
+            ("call", "Call"),
+            ("email", "Email"),
+            ("letter", "Letter"),
+            ("sms", "Text message"),
+            ("other", "Other"),
         ],
-        string="Reçue par",
+        string="Received by",
         default="call",
         required=True,
     )
@@ -48,7 +48,7 @@ class BfOutreachExcludeWizard(models.TransientModel):
                 [("partner_id", "in", self.partner_ids.ids)]
             )
         if not targets and not self.partner_ids:
-            raise UserError(_("Aucune cible ni contact sélectionné."))
+            raise UserError(_("No target or contact selected."))
 
         if self.log_touch and targets:
             self.env["bf.outreach.touch"].create(
@@ -58,7 +58,7 @@ class BfOutreachExcludeWizard(models.TransientModel):
                         "kind": self.kind,
                         "direction": "in",
                         "outcome": "not_interested",
-                        "summary": _("Demande de ne plus être contacté"),
+                        "summary": _("Request not to be contacted again"),
                         "note": self.reason or False,
                     }
                     for target in targets

@@ -3,6 +3,7 @@ import { registry } from "@web/core/registry";
 import { user } from "@web/core/user";
 import { loadJS } from "@web/core/assets";
 import { reactive } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 
 // Service porteur de l'UA JsSIP. Il DOIT être un service (pas un composant) :
 // l'enregistrement SIP doit survivre à la fermeture du panneau, sinon on cesse
@@ -48,8 +49,8 @@ export const softphoneService = {
         function notifyIncoming(from) {
             try {
                 if (window.Notification && Notification.permission === "granted") {
-                    liveNotification = new Notification("Appel entrant", {
-                        body: from ? "de " + from : "",
+                    liveNotification = new Notification(_t("Incoming call"), {
+                        body: from ? _t("from %s", from) : "",
                         tag: "bf-softphone-incoming",
                         requireInteraction: true,
                     });
@@ -64,7 +65,7 @@ export const softphoneService = {
                 let on = false;
                 titleTimer = setInterval(() => {
                     on = !on;
-                    document.title = on ? "\u260E Appel entrant" : originalTitle;
+                    document.title = on ? "\u260E " + _t("Incoming call") : originalTitle;
                 }, 900);
             } catch (e) { /* */ }
         }
@@ -217,9 +218,11 @@ export const softphoneService = {
             // avons raccroché avant que ça décroche.
             const cause = (ev && ev.cause) || "";
             if (failed && dir === "outgoing" && cause !== "Canceled") {
+                // `cause` vient de JsSIP (anglais technique) : laissé tel quel.
                 notification.add(
-                    "Appel vers " + number + " non abouti" +
-                    (cause ? " (" + cause + ")" : "") + ".",
+                    cause
+                        ? _t("Call to %(number)s failed (%(cause)s).", { number, cause })
+                        : _t("Call to %s failed.", number),
                     { type: "warning" });
             }
             callStartMs = 0;
@@ -253,8 +256,10 @@ export const softphoneService = {
             ua.on("unregistered", () => { state.status = "connecting"; });
             ua.on("registrationFailed", (e) => {
                 state.status = "failed";
-                notification.add("Échec de connexion du téléphone : " +
-                    ((e && e.cause) || "authentification"), { type: "danger" });
+                // Le repli se traduit à part : un `_t` passé en argument n'est pas extrait.
+                const repli = _t("authentication");
+                notification.add(_t("Phone connection failed: %s",
+                    (e && e.cause) || repli), { type: "danger" });
             });
             // MWI (badge messagerie vocale) — NON câblé en v1 : JsSIP 3.11.1 n'implémente
             // pas message-summary et répond 481 aux NOTIFY non sollicités. Un vrai badge
@@ -336,8 +341,8 @@ export const softphoneService = {
             const n = dialTarget(raw);
             if (!n) {
                 notification.add(
-                    "Numéro non composable : seuls les numéros nord-américains " +
-                    "le sont (« " + String(raw || "").trim() + " »).",
+                    _t("Number cannot be dialed: only North American numbers are supported (\"%s\").",
+                        String(raw || "").trim()),
                     { type: "warning" });
                 return;
             }

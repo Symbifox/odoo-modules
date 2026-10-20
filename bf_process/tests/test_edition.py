@@ -10,10 +10,20 @@ from ..generateur import mesure
 @tagged("post_install", "-at_install")
 class TestEdition(TransactionCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
+
     def setUp(self):
         super().setUp()
+        # Session francophone épinglée, catalogue chargé : les refus attendus
+        # ci-dessous sont en français quelle que soit la langue de la base.
+        self.env = self.env(context=dict(self.env.context, lang="fr_CA"))
         self.processus = self.env["bf.process"].create({
-            "name": "Essai édition", "code": "edit", "pool_name": "Blue Fox"})
+            "name": "Essai édition", "code": "edit", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.niveau = self.processus.diagram_ids
         self.noeuds = {n.code: n for n in self.niveau.node_ids}
@@ -123,14 +133,21 @@ class TestEdition(TransactionCase):
         """
         note = self.niveau.node_ids.filtered(lambda n: n.kind == "note")
         note.write({"name": "Renard \U0001F98A", "height": 0.0})
+        # La comparaison se fait dans la langue de la bibliothèque, l'anglais
+        # de la source : c'est là que les deux exemplaires doivent coïncider
+        # mot pour mot. Le message de référence est celui que la bibliothèque
+        # lève elle-même, et non une copie qui pourrait dériver avec elle.
         try:
-            self.niveau.deplacer_noeud("t1", 300.0, 60.0)
+            mesure.text_length("\U0001F98A", 9.0)
+        except mesure.MesureImpossible as exc:
+            attendu = str(exc)
+        else:
+            self.fail("la bibliothèque a mesuré un caractère hors table")
+        niveau = self.niveau.with_context(lang="en_US")
+        try:
+            niveau.deplacer_noeud("t1", 300.0, 60.0)
         except UserError as vu:
-            attendu = mesure.MesureImpossible(
-                "Le caractère %s n'est pas dans la table de largeurs de Lexend."
-                " La carte ne peut pas être mesurée sans deviner."
-                % mesure._nommer("\U0001F98A"))
-            self.assertEqual(str(vu), str(attendu))
+            self.assertEqual(str(vu), attendu)
         else:
             self.fail("le refus de mesure n'a pas été levé")
 
@@ -208,19 +225,19 @@ class TestEdition(TransactionCase):
     def test_supprimer_un_sous_processus_qui_ouvre_une_page_refuse(self):
         """Retirer l'appelant rendrait la page enfant inatteignable en silence."""
         carte = [
-            {"title": "Vue d'ensemble", "pool": "Blue Fox",
+            {"title": "Vue d'ensemble", "pool": "Essai inc.",
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Départ", "col": 0, "row": 0},
                  {"id": "a", "kind": "sub", "name": "Traiter", "col": 1, "row": 0}],
              "flows": [{"src": "s", "tgt": "a"}]},
-            {"title": "Traiter", "pool": "Blue Fox",
+            {"title": "Traiter", "pool": "Essai inc.",
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Ouvert", "col": 0, "row": 0},
                  {"id": "e", "kind": "end", "name": "Traité", "col": 1, "row": 0}],
              "flows": [{"src": "s", "tgt": "e"}]},
         ]
         p = self.env["bf.process"].create({"name": "Avec enfant",
-                                           "pool_name": "Blue Fox"})
+                                           "pool_name": "Essai inc."})
         p._charger_niveaux(carte)
         with self.assertRaisesRegex(UserError, "inatteignable"):
             p.diagram_ids[0].supprimer_noeud("a")

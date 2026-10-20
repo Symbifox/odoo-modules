@@ -5,7 +5,7 @@
         <field name="name">bf.outreach.log.wizard.form</field>
         <field name="model">bf.outreach.log.wizard</field>
         <field name="arch" type="xml">
-            <form string="Journaliser un contact">
+            <form string="Log a touch">
                 <sheet>
                     <group>
                         <group>
@@ -22,18 +22,18 @@
                         </group>
                     </group>
                     <group>
-                        <field name="summary" placeholder="Ce qui s'est dit, en une ligne"/>
+                        <field name="summary" placeholder="What was said, in one line"/>
                     </group>
-                    <field name="note" placeholder="Détails de l'échange…"/>
+                    <field name="note" placeholder="Details of the exchange…"/>
                     <group>
                         <field name="target_ids" widget="many2many_tags"
                                options="{'no_create': True}"
-                               string="Cibles concernées"/>
+                               string="Targets concerned"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_log" type="object" string="Journaliser" class="btn-primary"/>
-                    <button special="cancel" string="Annuler" class="btn-secondary"/>
+                    <button name="action_log" type="object" string="Log" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>

@@ -69,6 +69,10 @@ enter the inbox like a message sent from Odoo (`bf_email_management`
 18.0.11.53.1 and 18.0.11.54.0). The pinning tests live in
 `bf_email_management` (`test_compte_desactive`, `test_envois_imap_en_boite`).
 
+## Languages (18.0.2.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Every `_t(...)` of the button is extracted, including its title, which says whether a click opens the panel or the full page. Each label of the code and templates receives this module's French rather than the translation of another module that shares the same short text ("Inbox", "Close (Esc)").
+
 ## Dependencies
 
 `web`, `bf_email_management`.

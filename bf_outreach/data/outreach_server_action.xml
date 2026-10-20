@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="action_partner_add_to_outreach" model="ir.actions.server">
-        <field name="name">Ajouter à une campagne de démarchage</field>
+        <field name="name">Add to an outreach campaign</field>
         <field name="model_id" ref="base.model_res_partner"/>
         <field name="binding_model_id" ref="base.model_res_partner"/>
         <field name="binding_view_types">list,form</field>
@@ -12,7 +12,7 @@
     </record>
 
     <record id="action_target_write_letters" model="ir.actions.server">
-        <field name="name">Préparer les lettres</field>
+        <field name="name">Prepare the letters</field>
         <field name="model_id" ref="model_bf_outreach_target"/>
         <field name="binding_model_id" ref="model_bf_outreach_target"/>
         <field name="binding_view_types">list,form</field>
@@ -22,7 +22,7 @@
     </record>
 
     <record id="action_target_send_email" model="ir.actions.server">
-        <field name="name">Envoyer le courriel de campagne</field>
+        <field name="name">Send the campaign email</field>
         <field name="model_id" ref="model_bf_outreach_target"/>
         <field name="binding_model_id" ref="model_bf_outreach_target"/>
         <field name="binding_view_types">list</field>

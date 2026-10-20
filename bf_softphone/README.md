@@ -172,6 +172,10 @@ SIP configuration and the JsSIP load run after the first paint instead of
 inside `onWillStart`. Until the SIP agent is built, a click on a `tel:` link
 keeps the browser's default behaviour instead of being swallowed.
 
+## Languages (18.0.2.11.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Refusals (access, invalid key, number that cannot be dialled, PBX link down, search throttling) are in the language of the user who acts. The labels of a PBX-dialled call, the ringing extension and the name shown on the user's phone, follow the user even when the mobile request carries no language or another one, and the "call back" activity of a missed call is in the user's language. In the web client, every `_t(...)` is extracted, and each label receives this module's French rather than the translation of another module that shares the same short text ("Mute", "Recent").
+
 ## Configuration
 
 1. Settings → Phone: PBX host, and the TURN key (id + token).

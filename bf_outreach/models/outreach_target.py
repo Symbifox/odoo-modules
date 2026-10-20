@@ -41,7 +41,7 @@ def format_phone(number, country=None):
 
 class BfOutreachTarget(models.Model):
     _name = "bf.outreach.target"
-    _description = "Cible de démarchage"
+    _description = "Outreach target"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "next_action_date asc, priority desc, id desc"
 
@@ -51,15 +51,16 @@ class BfOutreachTarget(models.Model):
         return self.env["bf.outreach.stage"]._first_stage(campaign_id)
 
     name = fields.Char(
-        string="Cible",
+        string="Target",
         required=True,
         tracking=True,
-        help="Organisation démarchée, ou nom de la personne s'il s'agit d'un particulier.",
+        help="Organization being approached, or the person's name for an "
+             "individual.",
     )
     active = fields.Boolean(default=True)
     campaign_id = fields.Many2one(
         "bf.outreach.campaign",
-        string="Campagne",
+        string="Campaign",
         required=True,
         ondelete="cascade",
         index=True,
@@ -69,26 +70,27 @@ class BfOutreachTarget(models.Model):
         related="campaign_id.company_id", store=True, index=True
     )
     campaign_state = fields.Selection(related="campaign_id.state", store=True)
-    partner_id = fields.Many2one("res.partner", string="Contact Odoo", tracking=True)
-    contact_name = fields.Char(string="Personne-ressource")
-    function = fields.Char(string="Fonction")
-    email = fields.Char(string="Courriel")
-    phone = fields.Char(string="Téléphone")
-    mobile = fields.Char(string="Cellulaire")
-    website = fields.Char(string="Site web")
+    partner_id = fields.Many2one("res.partner", string="Odoo contact", tracking=True)
+    contact_name = fields.Char(string="Contact person")
+    function = fields.Char(string="Job position")
+    email = fields.Char(string="Email")
+    phone = fields.Char(string="Phone")
+    mobile = fields.Char(string="Mobile")
+    website = fields.Char(string="Website")
     source = fields.Char(
         string="Source",
-        help="Provenance de la cible : liste importée, salon, référencement, etc.",
+        help="Where the target came from: imported list, trade show, "
+             "referral, and so on.",
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsable",
+        string="Owner",
         default=lambda self: self.env.user,
         tracking=True,
     )
     stage_id = fields.Many2one(
         "bf.outreach.stage",
-        string="Étape",
+        string="Stage",
         default=lambda self: self._default_stage_id(),
         group_expand="_read_group_stage_ids",
         ondelete="restrict",
@@ -101,145 +103,145 @@ class BfOutreachTarget(models.Model):
         "bf_outreach_target_tag_rel",
         "target_id",
         "tag_id",
-        string="Étiquettes",
+        string="Tags",
     )
     priority = fields.Selection(
-        [("0", "Normale"), ("1", "Élevée"), ("2", "Urgente")],
-        string="Priorité",
+        [("0", "Normal"), ("1", "High"), ("2", "Urgent")],
+        string="Priority",
         default="0",
         tracking=True,
     )
-    color = fields.Integer(string="Couleur")
+    color = fields.Integer(string="Color")
     note = fields.Html(string="Notes")
     closed_reason = fields.Selection(
         [
-            ("converted", "Converti"),
-            ("not_interested", "Pas intéressé"),
-            ("no_answer", "Jamais joint"),
-            ("bad_timing", "Mauvais moment"),
-            ("invalid", "Coordonnées invalides"),
-            ("competitor", "Déjà servi ailleurs"),
-            ("other", "Autre"),
+            ("converted", "Won over"),
+            ("not_interested", "Not interested"),
+            ("no_answer", "Never reached"),
+            ("bad_timing", "Bad timing"),
+            ("invalid", "Invalid contact details"),
+            ("competitor", "Already served elsewhere"),
+            ("other", "Other"),
         ],
-        string="Motif de clôture",
+        string="Closing reason",
         tracking=True,
     )
     paused_until = fields.Date(
-        string="Ne pas relancer avant",
+        string="Do not follow up before",
         tracking=True,
-        help="Repousse la prochaine relance, par exemple lorsque la cible demande "
-        "d'être rappelée plus tard.",
+        help="Pushes back the next follow-up, for instance when the "
+             "target asks to be called back later.",
     )
     do_not_contact = fields.Boolean(
-        string="Ne plus contacter",
+        string="Do not contact",
         tracking=True,
         copy=False,
         index=True,
-        help="Exclusion demandée par la cible. La cadence s'arrête définitivement "
-        "et la cible ne peut plus être ajoutée à une campagne.",
+        help="Exclusion requested by the target. The cadence stops for "
+             "good and the target can no longer be added to a campaign.",
     )
     do_not_contact_date = fields.Datetime(
-        string="Exclusion demandée le", readonly=True, copy=False
+        string="Exclusion requested on", readonly=True, copy=False
     )
     do_not_contact_user_id = fields.Many2one(
-        "res.users", string="Exclusion notée par", readonly=True, copy=False
+        "res.users", string="Exclusion recorded by", readonly=True, copy=False
     )
     do_not_contact_reason = fields.Char(
-        string="Motif de l'exclusion",
+        string="Reason for the exclusion",
         copy=False,
-        help="Ce que la personne a demandé, dans ses mots. Conservé comme preuve "
-        "du traitement de la demande.",
+        help="What the person asked for, in their own words. Kept as "
+             "evidence that the request was acted on.",
     )
-    lead_id = fields.Many2one("crm.lead", string="Opportunité", copy=False)
+    lead_id = fields.Many2one("crm.lead", string="Opportunity", copy=False)
 
     touch_ids = fields.One2many(
         "bf.outreach.touch", "target_id", string="Interactions"
     )
     campaign_pitch = fields.Html(
         related="campaign_id.description",
-        string="Argumentaire de la campagne",
+        string="Campaign pitch",
         readonly=True,
-        help="Accroche et objections fréquentes de la campagne, sous les yeux "
-        "pendant l'appel.",
+        help="The campaign's hook and common objections, in view during "
+             "the call.",
     )
 
     # ------------------------------------------------------------------
     # Compteurs et dates (stockés : ils servent aux filtres et aux tris)
     # ------------------------------------------------------------------
     call_count = fields.Integer(
-        string="Appels", compute="_compute_touch_stats", store=True
+        string="Calls", compute="_compute_touch_stats", store=True
     )
     email_count = fields.Integer(
-        string="Courriels", compute="_compute_touch_stats", store=True
+        string="Emails", compute="_compute_touch_stats", store=True
     )
     letter_count = fields.Integer(
-        string="Lettres", compute="_compute_touch_stats", store=True
+        string="Letters", compute="_compute_touch_stats", store=True
     )
     touch_count = fields.Integer(
-        string="Nombre d'interactions", compute="_compute_touch_stats", store=True
+        string="Number of interactions", compute="_compute_touch_stats", store=True
     )
     last_call_date = fields.Datetime(
-        string="Dernier appel", compute="_compute_touch_stats", store=True
+        string="Last call", compute="_compute_touch_stats", store=True
     )
     last_email_date = fields.Datetime(
-        string="Dernier courriel", compute="_compute_touch_stats", store=True
+        string="Last email", compute="_compute_touch_stats", store=True
     )
     last_letter_date = fields.Datetime(
-        string="Dernière lettre", compute="_compute_touch_stats", store=True
+        string="Last letter", compute="_compute_touch_stats", store=True
     )
     last_touch_date = fields.Datetime(
-        string="Dernier contact", compute="_compute_touch_stats", store=True
+        string="Last touch", compute="_compute_touch_stats", store=True
     )
     has_reply = fields.Boolean(
-        string="A répondu", compute="_compute_touch_stats", store=True
+        string="Has replied", compute="_compute_touch_stats", store=True
     )
     first_reply_date = fields.Datetime(
-        string="Première réponse", compute="_compute_touch_stats", store=True
+        string="First reply", compute="_compute_touch_stats", store=True
     )
     next_call_date = fields.Date(
-        string="Prochain appel", compute="_compute_next_dates", store=True
+        string="Next call", compute="_compute_next_dates", store=True
     )
     next_email_date = fields.Date(
-        string="Prochain courriel", compute="_compute_next_dates", store=True
+        string="Next email", compute="_compute_next_dates", store=True
     )
     next_letter_date = fields.Date(
-        string="Prochaine lettre", compute="_compute_next_dates", store=True
+        string="Next letter", compute="_compute_next_dates", store=True
     )
     next_action_date = fields.Date(
-        string="Prochaine action",
+        string="Next action",
         compute="_compute_next_dates",
         store=True,
         index=True,
     )
     next_action_kind = fields.Selection(
-        [("call", "Appel"), ("email", "Courriel"), ("letter", "Lettre")],
-        string="Type de prochaine action",
+        [("call", "Call"), ("email", "Email"), ("letter", "Letter")],
+        string="Next action type",
         compute="_compute_next_dates",
         store=True,
     )
     is_excluded = fields.Boolean(
-        string="Exclue du démarchage",
+        string="Excluded from outreach",
         compute="_compute_is_excluded",
         store=True,
         index=True,
-        help="Vrai lorsque la cible, ou le contact Odoo qui lui est lié, a demandé "
-        "de ne plus être sollicité.",
+        help="True when the target, or the Odoo contact linked to it, has "
+             "asked to receive no further outreach.",
     )
     email_normalized = fields.Char(
-        string="Courriel normalisé",
+        string="Normalized email",
         compute="_compute_normalized",
         store=True,
         index=True,
-        help="Courriel réduit à sa forme canonique : sert au dédoublonnage et au "
-        "rapprochement des réponses entrantes.",
+        help="Email reduced to its canonical form: used for deduplication "
+             "and for matching incoming replies.",
     )
     phone_normalized = fields.Char(
-        string="Téléphone (E.164)",
+        string="Phone (E.164)",
         compute="_compute_normalized",
         store=True,
         index=True,
-        help="Numéro en format international : sert au dédoublonnage et au "
-        "rapprochement des appels journalisés.",
+        help="Number in international format: used for deduplication and "
+             "for matching logged calls.",
     )
 
     @api.depends("do_not_contact", "partner_id.outreach_opt_out")
@@ -468,10 +470,17 @@ class BfOutreachTarget(models.Model):
             target.activity_unlink(
                 ["mail.mail_activity_data_todo", "mail.mail_activity_data_call"]
             )
-            body = Markup("<p><b>%s</b></p>") % _("Ne plus contacter — demande enregistrée.")
+            body = Markup("<p><b>%s</b></p>") % _("Do not contact: "
+                                                  "request recorded.")
             if target.do_not_contact_reason:
                 body += Markup("<p>%s</p>") % target.do_not_contact_reason
             target.message_post(body=body)
+
+    def _outreach_reader_lang(self):
+        """Langue de qui lira un texte stocké sur la cible : son responsable, à
+        défaut celui de la campagne (puis la société, puis l'environnement)."""
+        self.ensure_one()
+        return self.campaign_id._outreach_lang(self.user_id or self.campaign_id.user_id)
 
     def _is_solicitable(self):
         """Peut-on solliciter cette cible, ici et maintenant ?
@@ -491,7 +500,7 @@ class BfOutreachTarget(models.Model):
         """Bouton : la personne demande de ne plus être sollicitée."""
         return {
             "type": "ir.actions.act_window",
-            "name": _("Ne plus contacter"),
+            "name": _("Do not contact"),
             "res_model": "bf.outreach.exclude.wizard",
             "view_mode": "form",
             "target": "new",
@@ -504,7 +513,7 @@ class BfOutreachTarget(models.Model):
             target.write({"do_not_contact": False})
             target.message_post(
                 body=Markup("<p>%s</p>")
-                % _("Exclusion levée par %s.", self.env.user.name)
+                % _("Exclusion lifted by %s.", self.env.user.name)
             )
         return True
 
@@ -514,7 +523,7 @@ class BfOutreachTarget(models.Model):
     def _action_log_wizard(self, kind):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Journaliser un contact"),
+            "name": _("Log a touch"),
             "res_model": "bf.outreach.log.wizard",
             "view_mode": "form",
             "target": "new",
@@ -547,17 +556,17 @@ class BfOutreachTarget(models.Model):
         if "letter.merge.wizard" not in self.env:
             raise UserError(
                 _(
-                    "Le module « Letter Writer » n'est pas installé : "
-                    "impossible de préparer des lettres."
+                    "The \"Letter Writer\" module is not installed: "
+                    "letters cannot be prepared."
                 )
             )
         self.filtered(lambda t: not t.partner_id).action_create_partner()
         partners = self.mapped("partner_id")
         if not partners:
-            raise UserError(_("Aucun destinataire : les cibles n'ont pas de contact."))
+            raise UserError(_("No recipient: the targets have no contact."))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Préparer les lettres"),
+            "name": _("Prepare the letters"),
             "res_model": "letter.merge.wizard",
             "view_mode": "form",
             "target": "new",
@@ -579,7 +588,7 @@ class BfOutreachTarget(models.Model):
         if blocked:
             raise UserError(
                 _(
-                    "Ces cibles ont demandé de ne plus être sollicitées :\n%s",
+                    "These targets asked not to be contacted again:\n%s",
                     "\n".join("• %s" % name for name in blocked.mapped("name")),
                 )
             )
@@ -587,7 +596,7 @@ class BfOutreachTarget(models.Model):
         if without_email:
             raise UserError(
                 _(
-                    "Ces cibles n'ont pas d'adresse courriel :\n%s",
+                    "These targets have no email address:\n%s",
                     "\n".join("• %s" % name for name in without_email.mapped("name")),
                 )
             )
@@ -607,7 +616,7 @@ class BfOutreachTarget(models.Model):
             composer_context["active_model"] = "bf.outreach.target"
         return {
             "type": "ir.actions.act_window",
-            "name": _("Courriel de démarchage"),
+            "name": _("Outreach email"),
             "res_model": "mail.compose.message",
             "view_mode": "form",
             "target": "new",
@@ -634,7 +643,11 @@ class BfOutreachTarget(models.Model):
                     "direction": "out",
                     "outcome": "sent",
                     "date": fields.Datetime.now(),
-                    "summary": subject or _("Courriel envoyé"),
+                    # Résumé stocké, lu par le responsable de la cible.
+                    "summary": subject
+                    or target.with_context(lang=target._outreach_reader_lang()).env._(
+                        "Email sent"
+                    ),
                     "user_id": self.env.user.id,
                 }
             )
@@ -671,7 +684,9 @@ class BfOutreachTarget(models.Model):
                 "direction": "out",
                 "outcome": "sent",
                 "date": message.date,
-                "summary": message.subject or _("Courriel envoyé"),
+                # Résumé stocké, lu par le responsable de la cible.
+                "summary": message.subject
+                or self.with_context(lang=self._outreach_reader_lang()).env._("Email sent"),
                 "mail_message_id": message.id,
                 "user_id": (message.author_id.user_ids[:1] or self.env.user).id,
             }
@@ -712,9 +727,16 @@ class BfOutreachTarget(models.Model):
         self.ensure_one()
         if self.lead_id:
             return self.action_open_lead()
+        # Nom et description restent sur l'opportunité : langue du vendeur,
+        # à défaut celle de qui agit.
+        lead_self = self.with_context(lang=self.user_id.lang or self.env.lang)
         lead = self.env["crm.lead"].create(
             {
-                "name": _("%(campaign)s — %(target)s", campaign=self.campaign_id.name, target=self.name),
+                "name": lead_self.env._(
+                    "%(campaign)s - %(target)s",
+                    campaign=self.campaign_id.name,
+                    target=self.name,
+                ),
                 "type": "opportunity",
                 "partner_id": self.partner_id.id or False,
                 "partner_name": self.name if not self.partner_id else False,
@@ -726,38 +748,46 @@ class BfOutreachTarget(models.Model):
                 "website": self.website or False,
                 "user_id": self.user_id.id or False,
                 "company_id": self.company_id.id,
-                "description": self._lead_description(),
+                "description": lead_self._lead_description(),
                 "outreach_target_id": self.id,
             }
         )
         self.lead_id = lead
         self.message_post(
             body=Markup("<p>%s</p>")
-            % _("Opportunité créée : %s", lead.name)
+            % _("Opportunity created: %s", lead.name)
         )
         return self.action_open_lead()
 
     def _lead_description(self):
         self.ensure_one()
         lines = [
-            _("Issue de la campagne de démarchage « %s ».", self.campaign_id.name),
-            _("Appels : %(calls)s — Courriels : %(emails)s", calls=self.call_count, emails=self.email_count),
+            self.env._("From the outreach campaign \"%s\".", self.campaign_id.name),
+            self.env._(
+                "Calls: %(calls)s, emails: %(emails)s",
+                calls=self.call_count,
+                emails=self.email_count,
+            ),
         ]
+        # `touch_ids` hérite du contexte de `self` : libellés dans la même langue.
         for touch in self.touch_ids.sorted("date"):
-            lines.append(
-                "%s — %s%s"
-                % (
-                    fields.Datetime.to_string(touch.date),
-                    touch._kind_label(),
-                    " : %s" % touch.summary if touch.summary else "",
+            date = fields.Datetime.to_string(touch.date)
+            if touch.summary:
+                line = self.env._(
+                    "%(date)s - %(kind)s: %(summary)s",
+                    date=date,
+                    kind=touch._kind_label(),
+                    summary=touch.summary,
                 )
-            )
+            else:
+                line = self.env._("%(date)s - %(kind)s", date=date, kind=touch._kind_label())
+            lines.append(line)
         return Markup("<p>%s</p>") % Markup("<br/>").join(lines)
 
     def action_open_lead(self):
         self.ensure_one()
         if not self.lead_id:
-            raise UserError(_("Aucune opportunité n'est liée à cette cible."))
+            raise UserError(_("No opportunity is linked to this target."))
         return {
             "type": "ir.actions.act_window",
             "res_model": "crm.lead",
@@ -801,14 +831,22 @@ class BfOutreachTarget(models.Model):
             if not target._is_solicitable():
                 continue
             activity_type = call_type if target.next_action_kind == "call" else todo_type
+            assignee = target.user_id or target.campaign_id.user_id or self.env.user
+            # Écrit par l'action planifiée : langue de l'assigné.
+            reader_env = target.with_context(
+                lang=target.campaign_id._outreach_lang(assignee)
+            ).env
+            summaries = {
+                "call": reader_env._("Outreach call"),
+                "email": reader_env._("Outreach email"),
+                "letter": reader_env._("Outreach letter"),
+            }
             values = {
                 "res_model_id": model_id,
                 "res_id": target.id,
                 "date_deadline": target.next_action_date,
-                "user_id": (target.user_id or target.campaign_id.user_id or self.env.user).id,
-                "summary": _("Appel de démarchage")
-                if target.next_action_kind == "call"
-                else _("Courriel de démarchage"),
+                "user_id": assignee.id,
+                "summary": summaries.get(target.next_action_kind, summaries["email"]),
             }
             if activity_type:
                 values["activity_type_id"] = activity_type.id

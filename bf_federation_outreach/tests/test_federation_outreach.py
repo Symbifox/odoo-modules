@@ -73,8 +73,10 @@ class TestFederationOutreach(TestFederation):
         self.assertEqual(miroir.contacted_count, 2)
         touche = miroir.line_ids[0].touch_ids
         self.assertEqual(len(touche), 1)
-        self.assertEqual(touche.kind, "Appel", "le libellé traverse : le client n'a pas le démarchage")
-        self.assertEqual(touche.outcome, "Boîte vocale")
+        # Rafraîchi ici sans langue au contexte : libellés de la source (anglaise) du démarchage.
+        # La langue du client au rafraîchissement planifié est prouvée par `test_langue`.
+        self.assertEqual(touche.kind, "Call", "le libellé traverse : le client n'a pas le démarchage")
+        self.assertEqual(touche.outcome, "Voicemail")
         for ligne in miroir.line_ids:
             self.assertFalse(ligne.contact_name or ligne.function or ligne.email or ligne.phone,
                              "🔴 une donnée personnelle a traversé sans que l'agence le coche")

@@ -16,58 +16,58 @@ _logger = logging.getLogger(__name__)
 
 class SmsArchiveThread(models.Model):
     _name = "sms.archive.thread"
-    _description = "Fil de conversation SMS"
+    _description = "SMS conversation thread"
     _order = "last_message_date desc nulls last, id desc"
 
     phone_raw = fields.Char(
-        string="Numéro original",
-        help="Numéro tel que lu dans le fichier XML d'export",
+        string="Original number",
+        help="Number as read in the export XML file",
     )
     phone_normalized = fields.Char(
-        string="Téléphone (E.164)",
+        string="Phone (E.164)",
         required=True,
         index=True,
-        help="Numéro normalisé utilisé comme clé de regroupement",
+        help="Normalized number used as the grouping key",
     )
     contact_name = fields.Char(
-        string="Nom du contact",
-        help="Dernier nom connu provenant du fichier XML",
+        string="Contact name",
+        help="Last known name from the XML file",
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Contact Odoo",
-        help="Lien vers un contact Odoo (correspondance automatique par téléphone)",
+        string="Odoo contact",
+        help="Link to an Odoo contact (automatic matching by phone)",
     )
     owner_id = fields.Many2one(
         comodel_name="res.users",
-        string="Propriétaire",
+        string="Owner",
         required=True,
         default=lambda self: self.env.uid,
         index=True,
     )
     line_id = fields.Many2one(
         comodel_name="sms.archive.line",
-        string="Ligne d'origine",
+        string="Origin line",
         index=True,
         ondelete="set null",
-        help="Ligne (DID) sur laquelle cette conversation s'est ouverte. C'est elle "
-             "qui décide du partage : les utilisateurs de cette ligne voient le fil, "
-             "sauf s'il est marqué « Confidentiel ».",
+        help="Line (DID) on which this conversation was opened. It "
+             "decides the sharing: users of this line see the thread, "
+             "unless it is marked \"Confidential\".",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
     is_hidden = fields.Boolean(
-        string="Confidentiel",
+        string="Confidential",
         default=False,
-        help="Masquer ce fil des recherches et listes MCP, et le réserver à son "
-             "propriétaire même quand la ligne est partagée.",
+        help="Hide this thread from MCP searches and lists, and keep it "
+             "for its owner only even when the line is shared.",
     )
     is_pinned = fields.Boolean(
-        string="Épinglé",
+        string="Pinned",
         default=False,
-        help="Garder ce fil en haut de la liste de la Messagerie.",
+        help="Keep this thread at the top of the Messaging list.",
     )
     message_ids = fields.One2many(
         comodel_name="sms.archive.message",
@@ -79,7 +79,7 @@ class SmsArchiveThread(models.Model):
         relation="sms_thread_task_rel",
         column1="thread_id",
         column2="task_id",
-        string="Tâches liées",
+        string="Linked tasks",
     )
     # Pluriel depuis la 5.13.0 : une conversation peut concerner plusieurs
     # dossiers à la fois (le même client écrit pour deux mandats en cours), et
@@ -90,31 +90,32 @@ class SmsArchiveThread(models.Model):
         relation="sms_thread_auto_task_rel",
         column1="thread_id",
         column2="task_id",
-        string="Suivi dans les tâches",
-        help="Chaque nouveau message de cette conversation est relayé "
-             "automatiquement au chatter de ces tâches. Ne s'applique qu'aux "
-             "messages qui arrivent ensuite, jamais à un import rétroactif.",
+        string="Followed in tasks",
+        help="Each new message in this conversation is automatically "
+             "relayed to the chatter of these tasks. Only applies to "
+             "messages that arrive afterwards, never to a retroactive "
+             "import.",
     )
     call_ids = fields.One2many(
         comodel_name="call.archive.call",
         inverse_name="thread_id",
-        string="Appels",
+        string="Calls",
     )
     link_ids = fields.One2many(
         comodel_name="sms.archive.link",
         inverse_name="thread_id",
-        string="Rattachements",
-        help="Quel message (ou quel appel) de cette conversation est parti "
-             "sur quelle fiche.",
+        string="Links",
+        help="Which message (or which call) of this conversation went to "
+             "which record.",
     )
 
     message_count = fields.Integer(
-        string="Nombre de messages",
+        string="Number of messages",
         compute="_compute_message_stats",
         store=True,
     )
     last_message_date = fields.Datetime(
-        string="Dernier message",
+        string="Last message",
         compute="_compute_message_stats",
         store=True,
     )
@@ -122,22 +123,22 @@ class SmsArchiveThread(models.Model):
     # le dernier message du fil quelle que soit sa ligne, lignes privées et
     # imports privés compris.
     last_message_preview = fields.Char(
-        string="Aperçu",
+        string="Preview",
         compute="_compute_last_message_preview",
     )
 
     call_count = fields.Integer(
-        string="Nombre d'appels",
+        string="Number of calls",
         compute="_compute_call_stats",
         store=True,
     )
     last_call_date = fields.Datetime(
-        string="Dernier appel",
+        string="Last call",
         compute="_compute_call_stats",
         store=True,
     )
     unread_count = fields.Integer(
-        string="Non lus",
+        string="Unread",
         compute="_compute_unread_count",
         store=True,
     )
@@ -150,7 +151,7 @@ class SmsArchiveThread(models.Model):
         (
             "phone_owner_uniq",
             "UNIQUE(phone_normalized, owner_id)",
-            "Un fil existe déjà pour ce numéro et ce propriétaire.",
+            "A thread already exists for this number and this owner.",
         ),
     ]
 
@@ -209,10 +210,10 @@ class SmsArchiveThread(models.Model):
             if not self.env.user.has_group("bf_sms_archive.group_sms_manager"):
                 foreign = self.sudo().filtered(lambda t: t.owner_id.id != uid)
                 if foreign:
-                    raise UserError(
-                        "Seul le propriétaire d'une conversation peut en changer "
-                        "le propriétaire, la ligne ou la confidentialité."
-                    )
+                    raise UserError(self.env._(
+                        "Only a conversation's owner can change its "
+                        "owner, line or confidentiality."
+                    ))
         res = super().write(vals)
         if "partner_id" in vals and vals["partner_id"]:
             for thread in self:
@@ -271,21 +272,22 @@ class SmsArchiveThread(models.Model):
                 with self.env.cr.savepoint():
                     if partner.mobile:
                         partner.message_post(
-                            body=Markup(
-                                "<p>Conversation SMS rattachée depuis le numéro "
-                                "<strong>%s</strong>, qui ne figure pas sur cette fiche "
-                                "(le mobile inscrit est <strong>%s</strong>). Numéro non "
-                                "reporté pour ne rien écraser.</p>"
-                            ) % (thread.phone_normalized, partner.mobile),
+                            body=Markup(self.env._(
+                                "<p>SMS conversation linked from the "
+                                "number <strong>%s</strong>, which is not "
+                                "on this record (the mobile on file is "
+                                "<strong>%s</strong>). Number not copied "
+                                "so as not to overwrite anything.</p>"
+                            )) % (thread.phone_normalized, partner.mobile),
                             subtype_xmlid="mail.mt_note",
                         )
                     else:
                         partner.write({"mobile": thread.phone_normalized})
                         partner.message_post(
-                            body=Markup(
-                                "<p>Mobile <strong>%s</strong> inscrit depuis la "
-                                "Messagerie SMS.</p>"
-                            ) % thread.phone_normalized,
+                            body=Markup(self.env._(
+                                "<p>Mobile <strong>%s</strong> added from "
+                                "SMS Messaging.</p>"
+                            )) % thread.phone_normalized,
                             subtype_xmlid="mail.mt_note",
                         )
             except AccessError:
@@ -304,7 +306,7 @@ class SmsArchiveThread(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Messages — {self.display_name}",
+            "name": self.env._("Messages: %s", self.display_name),
             "res_model": "sms.archive.message",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("thread_id", "=", self.id)],
@@ -316,7 +318,7 @@ class SmsArchiveThread(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Appels — {self.display_name}",
+            "name": self.env._("Calls: %s", self.display_name),
             "res_model": "call.archive.call",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("thread_id", "=", self.id)],
@@ -368,7 +370,11 @@ class SmsArchiveThread(models.Model):
         """Build a CSV attachment for an arbitrary message recordset."""
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(["Conversation", "Date", "Direction", "Contact", "Contenu", "MMS"])
+        # En-têtes dans la langue de l'usager qui exporte.
+        writer.writerow([
+            self.env._("Conversation"), self.env._("Date"), self.env._("Direction"),
+            self.env._("Contact"), self.env._("Content"), self.env._("MMS"),
+        ])
         for msg in messages.sorted("date_sent"):
             writer.writerow([
                 msg.thread_id.display_name or "",
@@ -376,7 +382,7 @@ class SmsArchiveThread(models.Model):
                 msg.direction,
                 msg.contact_name or "",
                 msg.body or "",
-                "Oui" if msg.is_mms else "Non",
+                self.env._("Yes") if msg.is_mms else self.env._("No"),
             ])
         data = base64.b64encode(output.getvalue().encode("utf-8-sig"))
         att = self.env["ir.attachment"].create({
@@ -824,7 +830,7 @@ class SmsArchiveThread(models.Model):
             line = thread.sudo().line_id
             if line and uid in line.user_ids.ids and not thread.is_hidden:
                 continue
-            raise UserError("Accès refusé à cette conversation.")
+            raise UserError(self.env._("Access to this conversation denied."))
 
     def _notify_users(self):
         """Utilisateurs à prévenir pour ce fil : propriétaire + partagés de la
@@ -1061,7 +1067,7 @@ class SmsArchiveThread(models.Model):
         """Messages d'un fil (volet droit), pagination par ``before_id`` (défilement infini)."""
         thread = self.with_context(active_test=False).browse(int(thread_id))
         if not thread.exists():
-            raise UserError("Conversation introuvable.")
+            raise UserError(self.env._("Conversation not found."))
         thread._check_messenger_access()
         Msg = self.env["sms.archive.message"]
         domain = [("thread_id", "=", thread.id)]
@@ -1197,7 +1203,7 @@ class SmsArchiveThread(models.Model):
         parce que « tâche » est le cas courant."""
         task = self.env["project.task"].browse(int(task_id)).exists()
         if not task:
-            raise UserError("Tâche introuvable.")
+            raise UserError(self.env._("Task not found."))
         res = self.messenger_post_to_target(
             thread_id, "project.task", task.id,
             message_ids=message_ids, call_ids=call_ids,
@@ -1237,19 +1243,20 @@ class SmsArchiveThread(models.Model):
             str(res_model), int(res_id),
         )
         if not record:
-            raise UserError("Fiche introuvable ou inaccessible.")
+            raise UserError(self.env._("Record not found or not accessible."))
         # `_browse_if_allowed` ne garantit que la LECTURE ; poser une note dans
         # un chatter est une écriture, et le sorcier exige déjà ce droit-là.
         try:
             record.check_access("write")
         except AccessError as exc:
-            raise UserError(
-                f"Accès refusé sur {res_model} #{res_id} : {exc}"
-            ) from exc
+            raise UserError(self.env._(
+                "Access denied on %(model)s #%(id)s: %(error)s",
+                model=res_model, id=res_id, error=exc,
+            )) from exc
 
         messages, calls = thread._messenger_selection(message_ids, call_ids)
         if not messages and not calls:
-            raise UserError("Rien à poster.")
+            raise UserError(self.env._("Nothing to post."))
 
         bodies = []
         if messages:
@@ -1302,10 +1309,10 @@ class SmsArchiveThread(models.Model):
         thread._check_messenger_access()
         message = thread.message_ids.filtered(lambda m: m.id == int(message_id))
         if not message:
-            raise UserError("Message introuvable dans cette conversation.")
+            raise UserError(self.env._("Message not found in this conversation."))
         link = message.link_ids.filtered(lambda l: l.id == int(link_id))
         if not link:
-            raise UserError("Rattachement introuvable.")
+            raise UserError(self.env._("Link not found."))
         removed = link.action_undo()
         return {
             "links": self.env["sms.archive.link"]._targets_for(message).get(message.id, []),
@@ -1382,11 +1389,11 @@ class SmsArchiveThread(models.Model):
         """Ouvre (ou crée) un fil pour composer un nouveau message."""
         line = self.env["sms.archive.line"].sudo().browse(int(line_id))
         if line.exists() and not line._is_usable_by():
-            raise UserError("Cette ligne ne vous est pas accessible.")
+            raise UserError(self.env._("This line is not accessible to you."))
         owner = line.owner_id.id if line.exists() else self.env.uid
         phone_norm = self.normalize_phone(phone)
         if not phone_norm:
-            raise UserError("Numéro invalide.")
+            raise UserError(self.env._("Invalid number."))
         if owner != self.env.uid and not self.env.su:
             return self._fil_sur_la_ligne_d_autrui(
                 line, owner, phone_norm, phone, contact_name).id

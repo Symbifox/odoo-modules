@@ -19,7 +19,7 @@ class BfProcessGel(models.AbstractModel):
     """Refuse l'écriture sur ce qui appartient à une version validée."""
 
     _name = "bf.process.gel"
-    _description = "Gel d'une version validée"
+    _description = "Validated version freeze"
 
     def _garde_gel(self, processus=None):
         if self.env.context.get(DEGEL):
@@ -28,9 +28,9 @@ class BfProcessGel(models.AbstractModel):
         geles = proc.filtered(lambda p: p.state == "valide")
         if geles:
             raise UserError(_(
-                "« %s » est une version validée : elle ne se modifie plus.\n\n"
-                "Créez la version suivante, ou rouvrez celle-ci depuis sa fiche "
-                "si la validation était prématurée."
+                "\"%s\" is a validated version: it can no longer be "
+                "edited.\n\nCreate the next version, or reopen this one "
+                "from its record if the validation was premature."
             ) % ", ".join(f"{p.name} v{p.version}" for p in geles))
 
     @api.model_create_multi

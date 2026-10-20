@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="ir_cron_remove_non_internal_followers" model="ir.cron">
-            <field name="name">Followers : retirer les non-employ&#233;s</field>
+            <field name="name">Followers: remove non-employees</field>
             <field name="model_id" ref="mail.model_mail_followers"/>
             <field name="state">code</field>
             <field name="code">model._cron_remove_non_internal_followers()</field>
@@ -14,7 +14,7 @@
         </record>
 
         <record id="ir_cron_unfollow_leads_not_owned" model="ir.cron">
-            <field name="name">Abonn&#233;s : retirer des pistes dont on n'est pas vendeur</field>
+            <field name="name">Followers: unfollow leads you are not the salesperson for</field>
             <field name="model_id" ref="mail.model_mail_followers"/>
             <field name="state">code</field>
             <field name="code">model._cron_unfollow_leads_not_owned()</field>

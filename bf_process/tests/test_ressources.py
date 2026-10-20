@@ -15,7 +15,7 @@ class TestRessources(TransactionCase):
         super().setUp()
         self.processus = self.env["bf.process"].create({
             "name": "Essai ressources", "code": "essai",
-            "pool_name": "Blue Fox"})
+            "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeuds = {n.code: n for n in self.processus.diagram_ids.node_ids}
         self.piece = self.env["ir.attachment"].create({
@@ -95,7 +95,7 @@ class TestTracabilite(TransactionCase):
         super().setUp()
         self.processus = self.env["bf.process"].create({
             "name": "Essai traçabilité", "code": "essai",
-            "pool_name": "Blue Fox"})
+            "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeuds = {n.code: n for n in self.processus.diagram_ids.node_ids}
         self.projet = self.env["project.project"].create({"name": "Essai carto"})

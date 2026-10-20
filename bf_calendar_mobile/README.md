@@ -154,6 +154,10 @@ Verbatim transcripts, review notes and structured notes never leave the
 server. A phone that is lost must not carry the transcript of a client
 meeting; only the summary and the decisions travel.
 
+## Languages (18.0.3.9.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The mobile routes have no session language: they take the language of the device's user. Refusals returned to the app (window too wide or reversed, unknown attendance state, meeting the user does not attend) are in that language, and so is the note left on a meeting's thread by an RSVP or by adding or removing attendees. Task state and priority labels sent to the app are translated instead of returning the English source to everyone. The attendee note separates names with a comma, correct in both languages.
+
 ## Requirements
 
 - Odoo 18 with `calendar` and `project`

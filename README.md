@@ -84,7 +84,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.2 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
-| `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.1 | LGPL-3 | The single transport to the AI bridge service |
+| `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.2.0 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.66.1 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.2.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
@@ -121,7 +121,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_block_appointment` | BF Calendar Work Blocks - Online Booking | 18.0.1.0.1 | LGPL-3 | Meeting slots booked in your calendar open online booking times, on top of your working hours. |
 | `bf_calendar_hold` | BF Calendar Held Slots | 18.0.1.0.2 | LGPL-3 | Hold several candidate slots for a meeting that has to move, see them on the meeting and in their own colour, and move the meeting to the one that is chosen: the others are released. |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.6.2.2 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
-| `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.8.1 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
+| `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.9.0 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_calendar_share` | BF Calendar Sharing | 18.0.1.1.4 | LGPL-3 | Choose what each colleague sees of your calendar: availability only, titles and locations, all details, or the right to edit. |
 | `bf_calendar_share_nextcloud` | BF Calendar Sharing - Nextcloud calendars | 18.0.1.0.0 | LGPL-3 | Choose which Nextcloud calendars a calendar sharing link shows. |
@@ -189,7 +189,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.2.0 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.6.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.64.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
-| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.2.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
+| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.3.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.1.2 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.2 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.2 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
@@ -206,7 +206,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
 | `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
 | `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.1.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
-| `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.1 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
+| `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.2 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
 | `bf_federation_privacy` | Fédération : avis de violation | 18.0.1.0.0 | BUSL-1.1 | A provider's breach notice lands in the incident register of its paired client, and the acknowledgement comes back with the fingerprint of the version read |
 | `bf_federation_privacy_discuss` | Fédération : pas de canal pour un avis de violation | 18.0.1.0.0 | BUSL-1.1 | A federated breach notice has no discussion channel: its thread and the email are the record |
 | `bf_federation_process` | Fédération : cartographies | 18.0.1.2.1 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
@@ -219,7 +219,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_flux_ia` | Flux RSS : tri par IA | 18.0.1.1.2 | BUSL-1.1 | Second sort after a list's rules: a language model scores each retained item 0-100 with a one-line reason and flags what cannot wait, sending an email alert behind freshness, one-per-event and daily-cap guards; an outage never blocks delivery |
 | `bf_flux_nextcloud` | Flux RSS : corpus Nextcloud | 18.0.1.0.2 | BUSL-1.1 | Deposits what a list retains into a Nextcloud folder as monthly Markdown files per source, with an index, for a knowledge base read by an agent |
 | `bf_flux_partage` | Flux RSS : partage externe | 18.0.1.0.3 | BUSL-1.1 | Secret share links without login: a public card page and the same items as RSS, one link per recipient, with expiry, visit count and revocation |
-| `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.2.1 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
+| `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.3.0 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.4 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.7.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
@@ -281,7 +281,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.12.3.1 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
-| `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
+| `bf_outreach` | Campagnes de démarchage | 18.0.1.5.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.1 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.1 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.1 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
@@ -290,7 +290,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_persona` | Persona des contacts | 18.0.3.3.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.13.0 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
-| `bf_process` | Cartographie de processus | 18.0.5.0.8 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
+| `bf_process` | Cartographie de processus | 18.0.5.1.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
@@ -362,8 +362,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.2.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.2.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.26.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
-| `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.1 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.27.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.11.0 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.4.2 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression, plus a token-protected client portal where the client sees their steps and deposits the expected documents. |
 | `bf_stepbystep_securetransfer` | Progression: deposit through secure transfer storage | 18.0.1.0.2 | BUSL-1.1 | Client portal deposits go straight to the S3 storage of the secure transfer when it is configured; large files stay there. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |

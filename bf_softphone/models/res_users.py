@@ -50,16 +50,16 @@ class ResUsers(models.Model):
 
     # Poste SIP de l'utilisateur sur le PBX (ex. "1001").
     sip_extension = fields.Char(
-        string="Poste SIP",
+        string="SIP extension",
         copy=False,
-        help="Numéro de poste enregistré sur le PBX (ex. 1001). Détermine aussi "
-             "l'afficheur des appels sortants.",
+        help="Extension number registered on the PBX (e.g. 1001). Also "
+             "sets the caller ID of outgoing calls.",
     )
     # ⚠️ Secret SIP — CHIFFRÉ AU REPOS (Fernet, clé hors base dans odoo.conf).
     # Un dump de base ou une injection SQL ne révèle donc que du texte chiffré.
     # Le champ stocké porte le chiffré ; groups=manager le masque en plus aux non-managers.
     sip_password_encrypted = fields.Char(
-        string="Mot de passe SIP (chiffré)",
+        string="SIP password (encrypted)",
         copy=False,
         groups="bf_softphone.group_softphone_manager",
     )
@@ -67,34 +67,35 @@ class ResUsers(models.Model):
     # l'inverse le chiffre dans sip_password_encrypted. Non stocké → jamais en base.
     # En lecture, il ne renvoie JAMAIS le clair (juste un masque si un secret existe).
     sip_password = fields.Char(
-        string="Mot de passe SIP",
+        string="SIP password",
         compute="_compute_sip_password",
         inverse="_inverse_sip_password",
         store=False,
         copy=False,
         groups="bf_softphone.group_softphone_manager",
-        help="Mot de passe du poste SIP. Chiffré au repos ; livré au navigateur "
-             "uniquement à son propriétaire authentifié. Laisser vide pour ne pas changer.",
+        help="SIP extension password. Encrypted at rest; delivered to the "
+             "browser only to its authenticated owner. Leave empty to "
+             "keep it unchanged.",
     )
     sip_enabled = fields.Boolean(
-        string="Téléphone activé",
+        string="Phone enabled",
         default=False,
-        help="Active le softphone dans la barre système pour cet utilisateur.",
+        help="Enables the softphone in the systray for this user.",
     )
     # Coupe la création d'activité « appel manqué » pour cet utilisateur.
     sip_missed_call_activity = fields.Boolean(
-        string="Créer une activité sur appel manqué",
+        string="Create an activity on missed calls",
         default=True,
     )
     # Numéro que le PBX fait sonner quand l'appel est demandé depuis un appareil
     # qui n'a PAS de pile SIP (l'app mobile). À défaut, le mobile puis le
     # téléphone de la fiche contact.
     sip_callback_number = fields.Char(
-        string="Numéro de rappel",
+        string="Callback number",
         copy=False,
-        help="Numéro que le PBX fait sonner avant de composer, pour un appel "
-             "demandé depuis l'application mobile. Vide : le mobile de la fiche "
-             "contact est utilisé.",
+        help="Number the PBX rings before dialing, for a call requested "
+             "from the mobile app. Empty: the mobile number on the "
+             "contact record is used.",
     )
 
     # ------------------------------------------------------------------
@@ -115,9 +116,9 @@ class ResUsers(models.Model):
         key = self._sip_fernet_key()
         if not key:
             # Pas de clé : on refuse de stocker en clair un secret SIP.
-            raise UserError(
-                "Chiffrement du mot de passe SIP indisponible : la clé "
-                "bf_softphone_fernet_key n'est pas configurée dans odoo.conf.")
+            raise UserError(self.env._(
+                "SIP password encryption unavailable: the "
+                "bf_softphone_fernet_key key is not configured in odoo.conf."))
         return Fernet(key).encrypt(value.encode()).decode()
 
     @api.model
@@ -160,7 +161,7 @@ class ResUsers(models.Model):
         """
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         # sudo() pour lire notre PROPRE sip_password (le champ est groups=manager,
         # donc invisible à un simple utilisateur même sur sa fiche) — strictement
         # borné à self.env.user, jamais à un id fourni par le client.
@@ -195,7 +196,7 @@ class ResUsers(models.Model):
         sinon un utilisateur peu privilégié aspirerait tout le carnet d'adresses.
         """
         if not self.env.user.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         self._softphone_throttle()
         term = (term or "").strip()
         if len(term) < 2:
@@ -238,7 +239,7 @@ class ResUsers(models.Model):
         plus large que la grande.
         """
         if not self.env.user.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         self._softphone_throttle()
         norm = self._softphone_nanpa(number)
         if not norm:
@@ -282,7 +283,7 @@ class ResUsers(models.Model):
         """Ce qu'un client sans pile SIP doit savoir pour offrir « Appeler »."""
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         me_su = me.sudo()
         callback = self._softphone_callback_number(me_su)
         extension = me_su.sip_extension or ""
@@ -308,41 +309,50 @@ class ResUsers(models.Model):
         """Fait sonner l'appareil de l'utilisateur, puis compose ``number``."""
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         self._softphone_call_throttle()
 
         target = self._softphone_nanpa(number)
         if not target:
-            raise UserError(
-                "Numéro non composable : seuls les numéros nord-américains à "
-                "dix chiffres le sont.")
+            raise UserError(self.env._(
+                "Number cannot be dialed: only ten-digit North American "
+                "numbers are supported."))
 
         me_su = me.sudo()
         callback = self._softphone_callback_number(me_su)
         ring = ring or ("callback" if callback else "extension")
         if ring not in ("callback", "extension"):
-            raise UserError("Mode de sonnerie inconnu.")
+            raise UserError(self.env._("Unknown ring mode."))
 
         ICP = self.env["ir.config_parameter"].sudo()
-        trunk = ICP.get_param("bf_softphone.trunk", "trunk-sortant")
+        trunk = ICP.get_param("bf_softphone.trunk", "outbound-trunk")
         context = ICP.get_param("bf_softphone.originate_context", "from-internal")
 
         caller = self.softphone_resolve_caller(target)
         name = re.sub(r'["\r\n]', "", caller.get("name") or "")[:40]
 
+        # Libellés vus par l'usager (réponse JSON, afficheur de SON téléphone) :
+        # dans sa langue à lui, explicitement. La route mobile n'a pas de langue
+        # de session tant que le jeton ne la pose pas.
+        env_usager = self.with_context(lang=me_su.lang or self.env.lang).env
+
         if ring == "extension":
             if not me_su.sip_extension:
-                raise UserError("Aucun poste SIP n'est configuré sur votre compte.")
+                raise UserError(self.env._("No SIP extension is configured on your account."))
             channel = "PJSIP/%s" % me_su.sip_extension
-            ring_label = "poste %s" % me_su.sip_extension
+            ring_label = env_usager._("extension %s", me_su.sip_extension)
             # Cette jambe reste sur le PBX : on peut y afficher le correspondant,
             # c'est la convention du clic-pour-appeler (le téléphone sonne en
             # annonçant qui il va appeler).
-            callerid = '"%s" <%s>' % (name or "Appel", target.lstrip("+"))
+            callerid = '"%s" <%s>' % (
+                # « Outgoing call » et non « Call » : ce msgid-là est déjà le
+                # bouton « Appeler » du panneau.
+                name or re.sub(r'["\r\n]', "", env_usager._("Outgoing call")),
+                target.lstrip("+"))
         else:
             if not callback:
-                raise UserError(
-                    "Aucun numéro de rappel n'est configuré sur votre compte.")
+                raise UserError(self.env._(
+                    "No callback number is configured on your account."))
             channel = "PJSIP/%s@%s" % (callback.lstrip("+"), trunk)
             ring_label = callback
             # ⚠️ Cette jambe SORT PAR LE TRUNK. Y mettre le numéro du
@@ -356,8 +366,10 @@ class ResUsers(models.Model):
             sortant = self._softphone_nanpa(
                 ICP.get_param("bf_softphone.outbound_cid", ""))
             affiche = _pretty(target)
-            callerid = ('"Appel %s" <%s>' % (affiche, sortant.lstrip("+"))
-                        if sortant else '"Appel %s" <%s>' % (affiche, callback.lstrip("+")))
+            # Le guillemet fermerait le nom de l'afficheur : retiré du libellé.
+            nom_affiche = re.sub(r'["\r\n]', "", env_usager._("Call %s", affiche))
+            callerid = '"%s" <%s>' % (
+                nom_affiche, (sortant or callback).lstrip("+"))
 
         self.env["bf.softphone.ami"].originate(
             channel=channel,
@@ -397,7 +409,7 @@ class ResUsers(models.Model):
         l'Originate — un canal ne dit pas autrement qui l'a demandé."""
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         try:
             canaux = self.env["bf.softphone.ami"].channels("bfsp-%d" % me.id)
         except UserError:
@@ -421,15 +433,15 @@ class ResUsers(models.Model):
         """
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         touches = re.sub(r"[^0-9*#A-Da-d]", "", digits or "")[:32]
         if not touches:
-            raise UserError("Aucune touche valide.")
+            raise UserError(self.env._("No valid key."))
         canaux = self.softphone_active_calls()
         sortantes = [c for c in canaux if c.get("role") == "outbound"]
         cible = (sortantes or canaux)
         if not cible:
-            raise UserError("Aucun appel en cours.")
+            raise UserError(self.env._("No call in progress."))
         Ami = self.env["bf.softphone.ami"]
         envoyees = 0
         for touche in touches:
@@ -444,13 +456,13 @@ class ResUsers(models.Model):
         quand l'appel a deux jambes."""
         me = self.env.user
         if not me.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         miens = {c["channel"] for c in self.softphone_active_calls()}
         if channel:
             # ⚠️ Ne jamais raccrocher un canal qu'on ne nous a pas prouvé nôtre :
             # le nom du canal vient du client.
             if channel not in miens:
-                raise UserError("Cet appel n'est pas le vôtre.")
+                raise UserError(self.env._("This call is not yours."))
             cibles = [channel]
         else:
             cibles = sorted(miens)
@@ -468,9 +480,9 @@ class ResUsers(models.Model):
         call_type ∈ {incoming, outgoing, missed}. Renvoie l'id du call, ou False.
         """
         if not self.env.user.has_group("bf_softphone.group_softphone_user"):
-            raise AccessError("Accès au téléphone non autorisé.")
+            raise AccessError(self.env._("Phone access not allowed."))
         if call_type not in ("incoming", "outgoing", "missed"):
-            raise UserError("Type d'appel invalide.")
+            raise UserError(self.env._("Invalid call type."))
         if not (number or "").strip():
             return False
         if date_ms is None:
@@ -507,7 +519,8 @@ class ResUsers(models.Model):
                 "res_model_id": self.env["ir.model"]._get_id("res.partner"),
                 "res_id": partner.id,
                 "activity_type_id": self.env.ref("mail.mail_activity_data_call").id,
-                "summary": "Rappeler %s" % (partner.name or call_rec.thread_id.phone_raw or ""),
+                "summary": self.env._(
+                    "Call back %s", partner.name or call_rec.thread_id.phone_raw or ""),
                 "user_id": self.env.uid,
                 "date_deadline": fields.Date.context_today(self),
             })
@@ -525,7 +538,7 @@ class ResUsers(models.Model):
         now = self._softphone_now()
         hits = [t for t in _SEARCH_HITS.get(uid, []) if now - t < _SEARCH_WINDOW]
         if len(hits) >= _SEARCH_MAX:
-            raise UserError("Trop de recherches — réessaie dans un instant.")
+            raise UserError(self.env._("Too many searches, try again in a moment."))
         hits.append(now)
         _SEARCH_HITS[uid] = hits
 
@@ -538,6 +551,6 @@ class ResUsers(models.Model):
         now = self._softphone_now()
         hits = [t for t in _CALL_HITS.get(uid, []) if now - t < _CALL_WINDOW]
         if len(hits) >= _CALL_MAX:
-            raise UserError("Trop d'appels demandés — réessaie dans quelques minutes.")
+            raise UserError(self.env._("Too many calls requested, try again in a few minutes."))
         hits.append(now)
         _CALL_HITS[uid] = hits

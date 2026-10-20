@@ -23,7 +23,7 @@ class TestRessourcePiece(TransactionCase):
             groups="base.group_user,bf_process.group_bf_process_manager")
         self.processus = self.env["bf.process"].create({
             "name": "Essai pièces", "code": "essai-pieces",
-            "pool_name": "Blue Fox"})
+            "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeud = self.processus.diagram_ids.node_ids.filtered(
             lambda n: n.kind != "note")[0]
@@ -90,7 +90,7 @@ class TestRessourcePiece(TransactionCase):
 
     def test_piece_d_une_ressource_d_un_autre_processus_refusee(self):
         autre = self.env["bf.process"].create({
-            "name": "Autre", "code": "autre-pieces", "pool_name": "Blue Fox"})
+            "name": "Autre", "code": "autre-pieces", "pool_name": "Essai inc."})
         autre._charger_niveaux(CARTE)
         autre_noeud = autre.diagram_ids.node_ids.filtered(
             lambda n: n.kind != "note")[0]

@@ -99,6 +99,10 @@ Two further integrations need no code of their own:
   then opens the batch letter merge. The letter module is detected at runtime rather than
   declared as a dependency.
 
+## Languages (18.0.1.5.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. What the scheduled job writes follows its reader, not the job: the daily campaign reminder follows the campaign's responsible, the per-target reminder its assignee, and a letter reminder now has its own summary instead of reading "outreach email". The fallback summary of a logged email follows the target's responsible, an interaction note follows the user who acts, and the opportunity created from a target (name and history) follows the salesperson. The universal search configuration is seeded in English with its French translation and leaves an edited value alone. On upgrade, the shipped stages, welcome text and colour rule switch to English only where the database still holds the text that was shipped.
+
 ## Security
 
 Two groups: *User* (run campaigns) and *Manager* (configuration and deletion). The three

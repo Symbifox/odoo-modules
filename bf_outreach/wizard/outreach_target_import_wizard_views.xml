@@ -5,12 +5,12 @@
         <field name="name">bf.outreach.target.import.wizard.form</field>
         <field name="model">bf.outreach.target.import.wizard</field>
         <field name="arch" type="xml">
-            <form string="Ajouter des cibles">
+            <form string="Add targets">
                 <sheet>
                     <group>
                         <group>
                             <field name="campaign_id" options="{'no_create': True}"/>
-                            <field name="source" placeholder="ex. Liste salon 2026"/>
+                            <field name="source" placeholder="e.g. trade show list 2026"/>
                         </group>
                         <group>
                             <field name="assign_mode"/>
@@ -22,11 +22,11 @@
                     </group>
                     <field name="partner_ids" widget="many2many_tags"
                            options="{'no_quick_create': True}"
-                           placeholder="Contacts à démarcher"/>
+                           placeholder="Contacts to approach"/>
                 </sheet>
                 <footer>
-                    <button name="action_import" type="object" string="Ajouter" class="btn-primary"/>
-                    <button special="cancel" string="Annuler" class="btn-secondary"/>
+                    <button name="action_import" type="object" string="Add" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>

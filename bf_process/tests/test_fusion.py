@@ -20,7 +20,7 @@ CARTE = [
     {
         "title": "Traiter une demande",
         "level": "Niveau 1",
-        "pool": "Blue Fox",
+        "pool": "Essai inc.",
         "col_w": 180.0, "row_h": 120.0, "lane_pad": 56.0, "ext_header": 78.0,
         "lanes": [{"id": "f", "name": "Conseil"}, {"id": "t", "name": "Technique"}],
         "ext": [{"id": "cli", "name": "Client", "pos": "top"}],
@@ -53,14 +53,14 @@ CARTE = [
 ]
 
 DEUX_NIVEAUX = [
-    {"title": "Vue d'ensemble", "pool": "Blue Fox", "ext_header": 62.0,
+    {"title": "Vue d'ensemble", "pool": "Essai inc.", "ext_header": 62.0,
      "nodes": [
          {"id": "s", "kind": "start", "name": "Départ", "col": 0, "row": 0},
          {"id": "a", "kind": "sub", "name": "Traiter le dossier",
           "col": 1, "row": 0},
          {"id": "e", "kind": "end", "name": "Dossier traité", "col": 2, "row": 0}],
      "flows": [{"src": "s", "tgt": "a"}, {"src": "a", "tgt": "e"}]},
-    {"title": "Traiter le dossier", "pool": "Blue Fox", "ext_header": 62.0,
+    {"title": "Traiter le dossier", "pool": "Essai inc.", "ext_header": 62.0,
      "nodes": [
          {"id": "s", "kind": "start", "name": "Dossier ouvert", "col": 0, "row": 0},
          {"id": "e", "kind": "end", "name": "Dossier traité", "col": 1, "row": 0}],
@@ -71,10 +71,20 @@ DEUX_NIVEAUX = [
 @tagged("post_install", "-at_install")
 class TestFusion(TransactionCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
+
     def setUp(self):
         super().setUp()
+        # Session francophone épinglée : les genres se lisent sur la sélection
+        # traduite, qui suit la langue du contexte et non celle de l'usager.
+        self.env = self.env(context=dict(self.env.context, lang="fr_CA"))
         self.processus = self.env["bf.process"].create({
-            "name": "Essai fusion", "code": "fus", "pool_name": "Blue Fox"})
+            "name": "Essai fusion", "code": "fus", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.niveau = self.processus.diagram_ids
 
@@ -174,7 +184,7 @@ class TestFusion(TransactionCase):
     # ============ ce que seule une vraie carte avait révélé ==============
     #
     # Les quatre contrôles qui suivent sont nés du passage de la fusion sur la
-    # cartographie de référence du banc — quinze niveaux, cent soixante-treize
+    # cartographie de référence d'un vrai mandat — quinze niveaux, cent soixante-treize
     # rendait deux cent cinquante-cinq écarts là où rien n'avait bougé. Aucun
     # ne se voyait sur la petite carte d'essai : ils tiennent à des cas que six
     # nœuds bien rangés ne produisent jamais.
@@ -184,7 +194,7 @@ class TestFusion(TransactionCase):
         carte = [{
             # un titre qui contient lui-même un tiret cadratin
             "title": "Service à la clientèle — vue d'ensemble",
-            "pool": "Blue Fox", "ext_header": 62.0,
+            "pool": "Essai inc.", "ext_header": 62.0,
             "lanes": [{"id": "a", "name": "Conseil"},
                       {"id": "b", "name": "Technique"}],
             "nodes": [
@@ -208,7 +218,7 @@ class TestFusion(TransactionCase):
                        "a": "B", "b": "T"}],
         }]
         p = self.env["bf.process"].create({
-            "name": "Carte véridique", "pool_name": "Blue Fox"})
+            "name": "Carte véridique", "pool_name": "Essai inc."})
         p._charger_niveaux(carte)
         return p
 
@@ -452,7 +462,7 @@ class TestFusion(TransactionCase):
         ne refait pas le raccord des liens qui tiennent déjà.
         """
         p = self.env["bf.process"].create({
-            "name": "Deux niveaux", "pool_name": "Blue Fox"})
+            "name": "Deux niveaux", "pool_name": "Essai inc."})
         p._charger_niveaux(DEUX_NIVEAUX)
         appelant = p.mapped("diagram_ids.node_ids").filtered(
             lambda n: n.kind == "sub")
@@ -480,7 +490,7 @@ class TestFusion(TransactionCase):
     def test_fichier_partiel_avertit_et_ne_retire_rien(self):
         """Un éditeur qui ne réexporte qu'une page ne doit pas vider la carte."""
         p = self.env["bf.process"].create({
-            "name": "Partiel", "pool_name": "Blue Fox"})
+            "name": "Partiel", "pool_name": "Essai inc."})
         p._charger_niveaux(DEUX_NIVEAUX)
         # seul le premier niveau part dans le fichier
         xml = self.env["bf.process"].browse(p.id).exporter_bpmn()

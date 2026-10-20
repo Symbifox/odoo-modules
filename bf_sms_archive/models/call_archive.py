@@ -44,7 +44,7 @@ _PRESENTATION_MAP = {
 
 class CallArchiveCall(models.Model):
     _name = "call.archive.call"
-    _description = "Appel archivé"
+    _description = "Archived call"
     _order = "date desc, id desc"
 
     thread_id = fields.Many2one(
@@ -55,19 +55,19 @@ class CallArchiveCall(models.Model):
         index=True,
     )
     call_hash = fields.Char(
-        string="Hash de dédoublonnage",
+        string="Deduplication hash",
         size=64,
         required=True,
         index=True,
     )
     call_type = fields.Selection(
         selection=[
-            ("incoming", "Entrant"),
-            ("outgoing", "Sortant"),
-            ("missed", "Manqué"),
-            ("voicemail", "Messagerie vocale"),
-            ("rejected", "Rejeté"),
-            ("blocked", "Bloqué"),
+            ("incoming", "Incoming"),
+            ("outgoing", "Outgoing"),
+            ("missed", "Missed"),
+            ("voicemail", "Voicemail"),
+            ("rejected", "Rejected"),
+            ("blocked", "Blocked"),
         ],
         string="Type",
         required=True,
@@ -79,52 +79,52 @@ class CallArchiveCall(models.Model):
     )
     date_ms = fields.Char(
         string="Timestamp (ms)",
-        help="Timestamp brut en millisecondes conservé du XML",
+        help="Raw timestamp in milliseconds kept from the XML",
     )
     duration = fields.Integer(
-        string="Durée (s)",
+        string="Duration (s)",
         default=0,
     )
     duration_display = fields.Char(
-        string="Durée",
+        string="Duration",
         compute="_compute_duration_display",
         store=True,
     )
     contact_name = fields.Char(
-        string="Nom du contact",
+        string="Contact name",
     )
     owner_id = fields.Many2one(
         related="thread_id.owner_id",
         store=True,
         index=True,
-        string="Propriétaire",
+        string="Owner",
     )
     import_batch_id = fields.Char(
-        string="Lot d'import",
-        help="Identifiant backup_set du fichier XML",
+        string="Import batch",
+        help="backup_set identifier from the XML file",
     )
     presentation = fields.Selection(
         selection=[
-            ("allowed", "Autorisé"),
-            ("restricted", "Restreint"),
-            ("unknown", "Inconnu"),
-            ("payphone", "Téléphone public"),
+            ("allowed", "Allowed"),
+            ("restricted", "Restricted"),
+            ("unknown", "Unknown"),
+            ("payphone", "Payphone"),
         ],
-        string="Présentation",
+        string="Presentation",
     )
     recording_url = fields.Char(
-        string="Enregistrement",
-        help="Lien interne Nextcloud vers le fichier audio de l'appel",
+        string="Recording",
+        help="Internal Nextcloud link to the call's audio file",
     )
 
     link_ids = fields.One2many(
         comodel_name="sms.archive.link",
         inverse_name="call_id",
-        string="Rattachements",
-        help="Les fiches sur le chatter desquelles cet appel a été posé.",
+        string="Links",
+        help="The records on whose chatter this call was posted.",
     )
     link_count = fields.Integer(
-        string="Fiches",
+        string="Records",
         compute="_compute_link_count",
         store=True,
     )
@@ -156,7 +156,7 @@ class CallArchiveCall(models.Model):
             return False
         return {
             "type": "ir.actions.act_window",
-            "name": "Poster sur une fiche",
+            "name": self.env._("Post to a record"),
             "res_model": "sms.archive.post.to.task.wizard",
             "view_mode": "form",
             "target": "new",
@@ -177,17 +177,21 @@ class CallArchiveCall(models.Model):
         if not calls:
             return ""
 
+        # Langue de la note : celle du contexte (l'usager qui pose les appels).
         threads = calls.thread_id
-        label = "appel" if len(calls) == 1 else "appels"
-        if len(threads) == 1:
-            contact = markupsafe.escape(
-                threads.contact_name or threads.phone_normalized or "")
-            header = f"<p><strong>{len(calls)} {label}</strong> — {contact}</p>"
+        if len(calls) == 1:
+            label = self.env._("1 call")
         else:
-            header = (
-                f"<p><strong>{len(calls)} {label}</strong> "
-                f"sur {len(threads)} conversations</p>"
-            )
+            label = self.env._("%(count)s calls", count=len(calls))
+        if len(threads) == 1:
+            contact = threads.contact_name or threads.phone_normalized or ""
+            header = markupsafe.Markup("<p><strong>%s</strong> — %s</p>") % (label, contact)
+        else:
+            header = markupsafe.Markup(self.env._(
+                "<p><strong>%(calls)s</strong> across %(threads)s conversations</p>",
+            )) % {"calls": label, "threads": len(threads)}
+        type_labels = dict(self._fields["call_type"]._description_selection(self.env))
+        listen_label = self.env._("🔊 Listen")
 
         rows = []
         prev_thread_id = None
@@ -200,28 +204,27 @@ class CallArchiveCall(models.Model):
                 )
                 prev_thread_id = call.thread_id.id
             arrow = _CALL_TYPE_LABELS.get(call.call_type, "?")
-            type_label = markupsafe.escape(
-                dict(self._fields["call_type"].selection).get(call.call_type, ""))
+            type_label = markupsafe.escape(type_labels.get(call.call_type, ""))
             color = "#b02a2a" if call.call_type in ("missed", "rejected", "blocked") else "#0f4960"
             date_str = markupsafe.escape(str(call.date or ""))
             duration = markupsafe.escape(call.duration_display or "")
             listen = ""
             if call.recording_url:
                 url = markupsafe.escape(call.recording_url)
-                listen = f" — <a href='{url}'>🔊 Écouter</a>"
+                listen = f" — <a href='{url}'>{markupsafe.escape(listen_label)}</a>"
             rows.append(
                 f"<p style='margin:2px 0'>"
                 f"<span style='color:{color};font-weight:600'>{arrow} {type_label}</span> "
                 f"<span style='color:#666;font-size:0.9em'>{date_str}</span> — {duration}"
                 f"{listen}</p>"
             )
-        return markupsafe.Markup(header + "".join(rows))
+        return header + markupsafe.Markup("".join(rows))
 
     _sql_constraints = [
         (
             "hash_uniq",
             "UNIQUE(call_hash)",
-            "Cet appel existe déjà (hash dupliqué).",
+            "This call already exists (duplicate hash).",
         ),
     ]
 

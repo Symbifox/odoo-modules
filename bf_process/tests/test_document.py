@@ -108,9 +108,16 @@ class TestDocument(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Le livrable se rend dans la langue du client : épinglée ici en
+        # fr_CA, avec le catalogue chargé, pour que les attentes françaises
+        # ci-dessous ne dépendent pas de la langue de la société copiée.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
         cls.env.user.groups_id |= cls.env.ref("bf_process.group_bf_process_manager")
         Process = cls.env["bf.process"]
-        cls.client = cls.env["res.partner"].create({"name": "Client d’essai inc."})
+        cls.client = cls.env["res.partner"].create(
+            {"name": "Client d’essai inc.", "lang": "fr_CA"})
         cls.carte = Process.browse(Process.charger_dicts(
             {"name": "Traiter une demande", "code": "DOC", "version": "1.0",
              "pool_name": PALETTE["pool"], "partner_id": cls.client.id,

@@ -3,7 +3,7 @@ from odoo import api, fields, models
 
 class SmsDashboard(models.AbstractModel):
     _name = "sms.archive.dashboard"
-    _description = "Tableau de bord SMS & Appels"
+    _description = "SMS & Calls dashboard"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que

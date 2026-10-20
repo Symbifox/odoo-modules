@@ -70,7 +70,7 @@ def _nommer(c):
     try:
         nom = unicodedata.name(c)
     except ValueError:
-        nom = "sans nom"
+        nom = "unnamed"
     return "U+%04X (%s)" % (ord(c), nom)
 
 
@@ -84,8 +84,8 @@ def text_length(texte, taille, gras=False):
         except KeyError:
             nom = _nommer(c)
             raise MesureImpossible(
-                "Le caractère %s n'est pas dans la table de largeurs de Lexend."
-                " La carte ne peut pas être mesurée sans deviner." % nom,
+                ("The character %s is not in the Lexend width table. The "
+                 "map cannot be measured without guessing.") % nom,
                 caractere=nom) from None
     return total * taille
 

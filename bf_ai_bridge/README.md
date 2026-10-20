@@ -97,6 +97,10 @@ Two measured reasons, not theoretical ones.
    carries its `LICENSE`, and depends only on `base`: the weakest dependency
    that still renders the service.
 
+## Languages (18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. This covers the two errors a user can meet, the tenant parameter not set and the socket that cannot be found, and the model's description.
+
 ## Tests
 
 ```

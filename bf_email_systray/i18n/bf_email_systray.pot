@@ -1,0 +1,161 @@
+# Translation template for Boîte de réception bf.email : barre Odoo.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_email_systray 18.0.2.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_email_systray
+#: model:ir.model.fields,help:bf_email_systray.field_res_config_settings__bf_email_systray_mode
+msgid ""
+"**In a panel**: the inbox opens over the current screen, which stays in place. You read an email and go back to what you were doing without losing your place.\n"
+"\n"
+"**Full page**: the button opens the inbox like the menu does, replacing the current screen.\n"
+"\n"
+"This is the database default. Everyone can change it from the button's menu, and their choice prevails."
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Always full page"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Always in a panel"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Close the panel (Esc)"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Emails:"
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields.selection,name:bf_email_systray.selection__res_config_settings__bf_email_systray_mode__page
+msgid "Full page"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "How to open the inbox"
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields.selection,name:bf_email_systray.selection__res_config_settings__bf_email_systray_mode__panneau
+msgid "In a panel, without leaving the screen"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Inbox"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/js/bf_email_systray.js:0
+msgid "Inbox (Blue Fox Emails): opens a panel"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/js/bf_email_systray.js:0
+msgid "Inbox (Blue Fox Emails): opens full page"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Open full page"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Open in a panel"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Open the list view"
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields,field_description:bf_email_systray.field_res_config_settings__bf_email_systray_height_pct
+msgid "Panel height (%)"
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields,field_description:bf_email_systray.field_res_config_settings__bf_email_systray_width_pct
+msgid "Panel width (%)"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Reset to the default size"
+msgstr ""
+
+#. module: bf_email_systray
+#. odoo-javascript
+#: code:addons/bf_email_systray/static/src/xml/bf_email_systray.xml:0
+msgid "Resize"
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields,help:bf_email_systray.field_res_config_settings__bf_email_systray_height_pct
+msgid "Starting height, as a percentage of the window. Between 40 and 100."
+msgstr ""
+
+#. module: bf_email_systray
+#: model_terms:ir.ui.view,arch_db:bf_email_systray.res_config_settings_view_form_bf_email_systray
+msgid ""
+"Starting size, between 40 and 100%. The panel's handle lets you resize it, "
+"and that size is remembered per person."
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields,help:bf_email_systray.field_res_config_settings__bf_email_systray_width_pct
+msgid ""
+"Starting width, as a percentage of the window. Between 40 and 100. The "
+"panel's handle then lets you resize it, and that size is remembered per "
+"person."
+msgstr ""
+
+#. module: bf_email_systray
+#: model_terms:ir.ui.view,arch_db:bf_email_systray.res_config_settings_view_form_bf_email_systray
+msgid "Systray button"
+msgstr ""
+
+#. module: bf_email_systray
+#: model_terms:ir.ui.view,arch_db:bf_email_systray.res_config_settings_view_form_bf_email_systray
+msgid ""
+"What the inbox icon in the top bar does. The panel opens over the current "
+"screen and leaves it in place; full page replaces it, like the menu. "
+"Everyone can choose differently from the button's menu, and their choice "
+"prevails over this one."
+msgstr ""
+
+#. module: bf_email_systray
+#: model:ir.model.fields,field_description:bf_email_systray.field_res_config_settings__bf_email_systray_mode
+msgid "What the systray button does"
+msgstr ""

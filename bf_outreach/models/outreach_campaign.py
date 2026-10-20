@@ -12,22 +12,22 @@ FROZEN_STATES = ("paused", "done", "cancelled")
 
 class BfOutreachCampaign(models.Model):
     _name = "bf.outreach.campaign"
-    _description = "Campagne de démarchage"
+    _description = "Outreach campaign"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, id desc"
 
-    name = fields.Char(string="Campagne", required=True, tracking=True)
+    name = fields.Char(string="Campaign", required=True, tracking=True)
     active = fields.Boolean(default=True)
-    color = fields.Integer(string="Couleur")
+    color = fields.Integer(string="Color")
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsable",
+        string="Owner",
         default=lambda self: self.env.user,
         tracking=True,
     )
@@ -36,102 +36,106 @@ class BfOutreachCampaign(models.Model):
         "bf_outreach_campaign_user_rel",
         "campaign_id",
         "user_id",
-        string="Équipe",
-        help="Utilisateurs entre qui les nouvelles cibles sont réparties à tour de rôle.",
+        string="Team",
+        help="Users the new targets are shared out among, in rotation.",
     )
     partner_id = fields.Many2one(
         "res.partner",
-        string="Client mandant",
-        help="Client pour qui la campagne est menée, lorsqu'il s'agit d'un mandat.",
+        string="On behalf of",
+        help="Client the campaign is run for, when it is a mandate.",
     )
     date_start = fields.Date(
-        string="Début",
+        string="Start date",
         default=fields.Date.context_today,
         tracking=True,
-        help="Point de départ de la cadence : une cible jamais contactée est "
-        "due à cette date (ou à sa date d'ajout si elle est postérieure).",
+        help="Where the cadence starts: a target never contacted is due "
+             "on this date (or on the date it was added, if that is "
+             "later).",
     )
-    date_end = fields.Date(string="Fin prévue", tracking=True)
+    date_end = fields.Date(string="Planned end date", tracking=True)
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("running", "En cours"),
-            ("paused", "En pause"),
-            ("done", "Terminée"),
-            ("cancelled", "Annulée"),
+            ("draft", "Draft"),
+            ("running", "Running"),
+            ("paused", "Paused"),
+            ("done", "Completed"),
+            ("cancelled", "Cancelled"),
         ],
-        string="État",
+        string="Status",
         default="draft",
         required=True,
         tracking=True,
     )
-    description = fields.Html(string="Notes et argumentaire")
+    description = fields.Html(string="Notes and pitch")
     mail_template_id = fields.Many2one(
         "mail.template",
-        string="Modèle de courriel",
+        string="Email template",
         domain="[('model', '=', 'bf.outreach.target')]",
-        help="Modèle proposé par le bouton « Envoyer le courriel » sur les cibles. "
-        "Rédigé sur le modèle « Cible de démarchage », il peut donc reprendre le "
-        "nom, la personne-ressource et la campagne.",
+        help="Template offered by the \"Send the email\" button on "
+             "targets. Written against the \"Outreach target\" model, so "
+             "it can pull in the name, the contact person and the "
+             "campaign.",
     )
 
     # ------------------------------------------------------------------
     # Cadence
     # ------------------------------------------------------------------
     call_target_count = fields.Integer(
-        string="Appels visés par cible",
+        string="Planned calls per target",
         default=3,
-        help="Nombre d'appels à faire à chaque cible. 0 = aucun appel prévu.",
+        help="How many calls to place to each target. 0 = no call planned.",
     )
     email_target_count = fields.Integer(
-        string="Courriels visés par cible",
+        string="Planned emails per target",
         default=3,
-        help="Nombre de courriels à envoyer à chaque cible. 0 = aucun courriel prévu.",
+        help="How many emails to send to each target. 0 = no email planned.",
     )
     call_interval_days = fields.Integer(
-        string="Intervalle entre deux appels (jours)", default=7
+        string="Interval between two calls (days)", default=7
     )
     email_interval_days = fields.Integer(
-        string="Intervalle entre deux courriels (jours)", default=14
+        string="Interval between two emails (days)", default=14
     )
     letter_target_count = fields.Integer(
-        string="Lettres visées par cible",
+        string="Planned letters per target",
         default=0,
-        help="Nombre de lettres à poster à chaque cible. 0 = aucune lettre prévue.",
+        help="How many letters to post to each target. 0 = no letter planned.",
     )
     letter_interval_days = fields.Integer(
-        string="Intervalle entre deux lettres (jours)", default=30
+        string="Interval between two letters (days)", default=30
     )
     stop_on_reply = fields.Boolean(
-        string="Arrêter à la première réponse",
+        string="Stop at the first reply",
         default=True,
-        help="Dès qu'une cible répond, elle sort de la cadence automatique : "
-        "le suivi se poursuit à la main, via l'étape et les activités.",
+        help="As soon as a target replies, it leaves the automatic "
+             "cadence: follow-up carries on by hand, through the stage "
+             "and the activities.",
     )
     working_days_only = fields.Boolean(
-        string="Jours ouvrables seulement",
+        string="Working days only",
         default=True,
-        help="Reporte au lundi une relance qui tomberait un samedi ou un dimanche.",
+        help="Pushes to Monday a follow-up that would land on a Saturday "
+             "or a Sunday.",
     )
     activity_mode = fields.Selection(
         [
-            ("none", "Aucune"),
-            ("campaign", "Une activité quotidienne sur la campagne"),
-            ("target", "Une activité par cible due"),
+            ("none", "None"),
+            ("campaign", "One daily activity on the campaign"),
+            ("target", "One activity per due target"),
         ],
-        string="Rappels automatiques",
+        string="Automatic reminders",
         default="campaign",
         required=True,
-        help="Comment le rappel quotidien des contacts dus est créé. "
-        "« Par cible » convient aux petites listes ; sur une grande liste, "
-        "préférer le rappel unique sur la campagne.",
+        help="How the daily reminder of due contacts is created. \"Per "
+             "target\" suits short lists; on a long list, prefer the "
+             "single reminder on the campaign.",
     )
 
     # ------------------------------------------------------------------
     # Contenu
     # ------------------------------------------------------------------
     target_ids = fields.One2many(
-        "bf.outreach.target", "campaign_id", string="Cibles"
+        "bf.outreach.target", "campaign_id", string="Targets"
     )
     touch_ids = fields.One2many(
         "bf.outreach.touch", "campaign_id", string="Interactions"
@@ -141,64 +145,64 @@ class BfOutreachCampaign(models.Model):
         "bf_outreach_stage_campaign_rel",
         "campaign_id",
         "stage_id",
-        string="Étapes propres à la campagne",
-        help="Laisser vide pour utiliser les étapes communes à toutes les campagnes.",
+        string="Campaign-specific stages",
+        help="Leave empty to use the stages shared by every campaign.",
     )
 
     # ------------------------------------------------------------------
     # Statistiques (non stockées : recalculées à la lecture)
     # ------------------------------------------------------------------
     target_count = fields.Integer(
-        string="Nombre de cibles", compute="_compute_statistics"
+        string="Number of targets", compute="_compute_statistics"
     )
     open_target_count = fields.Integer(
-        string="Dossiers ouverts", compute="_compute_statistics"
+        string="Open targets", compute="_compute_statistics"
     )
-    won_count = fields.Integer(string="Gagnées", compute="_compute_statistics")
-    lost_count = fields.Integer(string="Abandonnées", compute="_compute_statistics")
+    won_count = fields.Integer(string="Won targets", compute="_compute_statistics")
+    lost_count = fields.Integer(string="Dropped targets", compute="_compute_statistics")
     contacted_count = fields.Integer(
-        string="Cibles contactées", compute="_compute_statistics"
+        string="Targets contacted", compute="_compute_statistics"
     )
     untouched_count = fields.Integer(
-        string="Jamais contactées", compute="_compute_statistics"
+        string="Never contacted", compute="_compute_statistics"
     )
     replied_count = fields.Integer(
-        string="Cibles ayant répondu", compute="_compute_statistics"
+        string="Targets that replied", compute="_compute_statistics"
     )
     overdue_count = fields.Integer(
-        string="Relances en retard", compute="_compute_statistics"
+        string="Overdue follow-ups", compute="_compute_statistics"
     )
     due_today_count = fields.Integer(
-        string="À faire aujourd'hui", compute="_compute_statistics"
+        string="Due today", compute="_compute_statistics"
     )
-    call_count = fields.Integer(string="Appels", compute="_compute_statistics")
-    email_count = fields.Integer(string="Courriels", compute="_compute_statistics")
-    letter_count = fields.Integer(string="Lettres", compute="_compute_statistics")
+    call_count = fields.Integer(string="Calls", compute="_compute_statistics")
+    email_count = fields.Integer(string="Emails", compute="_compute_statistics")
+    letter_count = fields.Integer(string="Letters", compute="_compute_statistics")
     touch_count = fields.Integer(
-        string="Nombre d'interactions", compute="_compute_statistics"
+        string="Number of interactions", compute="_compute_statistics"
     )
     planned_touch_count = fields.Integer(
-        string="Contacts prévus", compute="_compute_statistics"
+        string="Planned touches", compute="_compute_statistics"
     )
     coverage_rate = fields.Float(
-        string="Couverture (%)",
+        string="Coverage (%)",
         compute="_compute_statistics",
-        help="Part des cibles contactées au moins une fois.",
+        help="Share of targets contacted at least once.",
     )
     reply_rate = fields.Float(
-        string="Taux de réponse (%)",
+        string="Reply rate (%)",
         compute="_compute_statistics",
-        help="Part des cibles contactées qui ont répondu.",
+        help="Share of contacted targets that replied.",
     )
     conversion_rate = fields.Float(
-        string="Taux de conversion (%)",
+        string="Conversion rate (%)",
         compute="_compute_statistics",
-        help="Part des cibles arrivées à une étape « Gagnée ».",
+        help="Share of targets that reached a \"Won\" stage.",
     )
     progress = fields.Float(
-        string="Avancement (%)",
+        string="Progress (%)",
         compute="_compute_statistics",
-        help="Contacts réalisés par rapport aux contacts prévus par la cadence.",
+        help="Touches made against the touches the cadence plans for.",
     )
 
     # ------------------------------------------------------------------
@@ -214,9 +218,9 @@ class BfOutreachCampaign(models.Model):
     )
     def _check_cadence(self):
         labels = {
-            "call": _("appels"),
-            "email": _("courriels"),
-            "letter": _("lettres"),
+            "call": _("calls"),
+            "email": _("emails"),
+            "letter": _("letters"),
         }
         for campaign in self:
             for channel, label in labels.items():
@@ -224,12 +228,13 @@ class BfOutreachCampaign(models.Model):
                 interval = campaign["%s_interval_days" % channel]
                 if goal < 0:
                     raise ValidationError(
-                        _("Le nombre de %s visés ne peut pas être négatif.", label)
+                        _("The planned number of %s cannot be negative.", label)
                     )
                 if goal > 1 and interval < 1:
                     raise ValidationError(
                         _(
-                            "L'intervalle entre deux %s doit être d'au moins une journée.",
+                            "The interval between two %s must be at least "
+                            "one day.",
                             label,
                         )
                     )
@@ -239,7 +244,7 @@ class BfOutreachCampaign(models.Model):
         for campaign in self:
             if campaign.date_start and campaign.date_end and campaign.date_end < campaign.date_start:
                 raise ValidationError(
-                    _("La date de fin ne peut pas précéder la date de début.")
+                    _("The end date cannot come before the start date.")
                 )
 
     # ------------------------------------------------------------------
@@ -393,23 +398,23 @@ class BfOutreachCampaign(models.Model):
         return action
 
     def action_view_targets(self):
-        return self._action_targets(_("Cibles"))
+        return self._action_targets(_("Targets"))
 
     def action_view_overdue(self):
         today = fields.Date.to_string(fields.Date.context_today(self))
         return self._action_targets(
-            _("Relances en retard"), domain=[("next_action_date", "<", today)]
+            _("Overdue follow-ups"), domain=[("next_action_date", "<", today)]
         )
 
     def action_view_due_today(self):
         today = fields.Date.to_string(fields.Date.context_today(self))
         return self._action_targets(
-            _("À faire aujourd'hui"), domain=[("next_action_date", "<=", today)]
+            _("Due today"), domain=[("next_action_date", "<=", today)]
         )
 
     def action_view_untouched(self):
         return self._action_targets(
-            _("Jamais contactées"), domain=[("touch_count", "=", 0)]
+            _("Never contacted"), domain=[("touch_count", "=", 0)]
         )
 
     def action_view_touches(self):
@@ -441,7 +446,7 @@ class BfOutreachCampaign(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Ajouter des cibles"),
+            "name": _("Add targets"),
             "res_model": "bf.outreach.target.import.wizard",
             "view_mode": "form",
             "target": "new",
@@ -475,6 +480,18 @@ class BfOutreachCampaign(models.Model):
         # Le membre le moins chargé ; à égalité, l'ordre de l'équipe tranche.
         best = min(members, key=lambda user: (counters.get(user.id, 0), members.ids.index(user.id)))
         return best
+
+    # ------------------------------------------------------------------
+    # Langue des textes écrits hors session
+    # ------------------------------------------------------------------
+    def _outreach_lang(self, user=None):
+        """Langue de qui lira un texte écrit sans session (action planifiée).
+
+        L'usager visé, à défaut le partenaire de la société de la campagne, à
+        défaut la langue de l'environnement.
+        """
+        company = self[:1].company_id or self.env.company
+        return (user and user.lang) or company.partner_id.lang or self.env.lang
 
     # ------------------------------------------------------------------
     # Relances automatiques
@@ -529,10 +546,14 @@ class BfOutreachCampaign(models.Model):
         overdue = due_targets.filtered(
             lambda t: t.next_action_date and t.next_action_date < today
         )
-        summary = _("Démarchage : %(due)s contact(s) dus, dont %(late)s en retard") % {
-            "due": len(due_targets),
-            "late": len(overdue),
-        }
+        # Écrit par l'action planifiée (aucune langue) : langue du responsable
+        # qui recevra l'activité.
+        assignee = self.user_id or self.env.user
+        summary = self.with_context(lang=self._outreach_lang(assignee)).env._(
+            "Outreach: %(due)s contact(s) due, %(late)s of them overdue",
+            due=len(due_targets),
+            late=len(overdue),
+        )
         if existing:
             existing.summary = summary
             return existing
@@ -541,7 +562,7 @@ class BfOutreachCampaign(models.Model):
             "res_id": self.id,
             "summary": summary,
             "date_deadline": today,
-            "user_id": (self.user_id or self.env.user).id,
+            "user_id": assignee.id,
         }
         if activity_type:
             values["activity_type_id"] = activity_type.id
@@ -557,7 +578,7 @@ class BfOutreachCampaign(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "success" if activities else "info",
-                "message": _("%s rappel(s) créé(s) ou mis à jour.", len(activities)),
+                "message": _("%s reminder(s) created or updated.", len(activities)),
                 "next": {"type": "ir.actions.act_window_close"},
             },
         }

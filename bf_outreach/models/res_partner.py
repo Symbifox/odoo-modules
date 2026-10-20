@@ -12,23 +12,23 @@ class ResPartner(models.Model):
     # propre drapeau, et on consulte le sien à l'exécution (voir
     # `_outreach_is_blocked`).
     outreach_opt_out = fields.Boolean(
-        string="Ne plus démarcher",
+        string="No outreach",
         tracking=True,
         copy=False,
         index=True,
-        help="La personne a demandé de ne plus recevoir de sollicitation de "
-        "démarchage. Elle ne peut plus être ajoutée à une campagne et la cadence "
-        "s'arrête sur toutes ses cibles existantes.",
+        help="The person asked to receive no further outreach. They can "
+             "no longer be added to a campaign, and the cadence stops on "
+             "all their existing targets.",
     )
     outreach_opt_out_date = fields.Datetime(
-        string="Exclusion demandée le", readonly=True, copy=False
+        string="Exclusion requested on", readonly=True, copy=False
     )
-    outreach_opt_out_reason = fields.Char(string="Motif de l'exclusion", copy=False)
+    outreach_opt_out_reason = fields.Char(string="Reason for the exclusion", copy=False)
     outreach_target_ids = fields.One2many(
-        "bf.outreach.target", "partner_id", string="Cibles de démarchage"
+        "bf.outreach.target", "partner_id", string="Outreach targets"
     )
     outreach_target_count = fields.Integer(
-        string="Nombre de cibles de démarchage", compute="_compute_outreach_target_count"
+        string="Number of outreach targets", compute="_compute_outreach_target_count"
     )
 
     @api.depends("outreach_target_ids")
@@ -80,7 +80,7 @@ class ResPartner(models.Model):
         """Enregistre l'exclusion depuis la fiche contact."""
         return {
             "type": "ir.actions.act_window",
-            "name": _("Ne plus démarcher"),
+            "name": _("No outreach"),
             "res_model": "bf.outreach.exclude.wizard",
             "view_mode": "form",
             "target": "new",

@@ -2,13 +2,13 @@
 <odoo>
 
     <record id="sms_messenger_client_action" model="ir.actions.client">
-        <field name="name">Messagerie</field>
+        <field name="name">Messaging</field>
         <field name="tag">sms_archive_messenger</field>
     </record>
 
     <menuitem
         id="sms_archive_menu_messenger"
-        name="Messagerie"
+        name="Messaging"
         parent="sms_archive_menu_root"
         action="sms_messenger_client_action"
         sequence="1"

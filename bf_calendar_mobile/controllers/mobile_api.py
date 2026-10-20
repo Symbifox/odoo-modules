@@ -86,6 +86,10 @@ def _authed():
     if "last_seen" in device._fields:
         device.sudo().write({"last_seen": fields.Datetime.now()})
     request.update_env(user=device.user_id.id)
+    # Sans langue de session (route publique à jeton), `_()` rendrait la source
+    # anglaise à tout le monde : les refus et les notes au fil sortent dans la
+    # langue de l'usager de l'appareil.
+    request.update_context(lang=device.user_id.lang)
     return device
 
 
@@ -307,7 +311,7 @@ class BfCalendarMobileApi(http.Controller):
             state = (data.get("state") or "").strip()
             if state not in _RSVP_STATES:
                 return _json({"error": "bad_request",
-                              "detail": "État de présence inconnu."}, 400)
+                              "detail": _("Unknown attendance state.")}, 400)
             event = request.env["calendar.event"]._mobile_resolve(
                 data.get("event_id"), data.get("key"))
             if not event:
@@ -315,16 +319,16 @@ class BfCalendarMobileApi(http.Controller):
             attendee = event._mobile_attendee()
             if not attendee:
                 return _json({"error": "bad_request",
-                              "detail": "Vous ne participez pas à cette "
-                                        "rencontre."}, 400)
+                              "detail": _("You are not attending this "
+                                          "meeting.")}, 400)
             attendee.write({"state": state})
             # Trace interne seulement. Voir l'en-tête du fichier : le
             # sous-type « Invitation » d'Odoo poste aux abonnés.
-            labels = {"accepted": _("a confirmé sa présence"),
-                      "declined": _("a décliné"),
-                      "tentative": _("répond « peut-être »")}
+            labels = {"accepted": _("confirmed attendance"),
+                      "declined": _("declined"),
+                      "tentative": _("replied \"maybe\"")}
             event.message_post(
-                body=_("%(who)s %(what)s depuis l'application mobile.",
+                body=_("%(who)s %(what)s from the mobile app.",
                        who=request.env.user.display_name,
                        what=labels[state]),
                 subtype_xmlid="mail.mt_note",

@@ -7,11 +7,11 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Téléphone" string="Téléphone"
+                <app data-string="Phone" string="Phone"
                      name="bf_softphone" groups="base.group_system">
                     <block title="PBX">
-                        <setting string="Hôte du PBX"
-                                 help="Nom d'hôte servant le WebSocket SIP (wss://&lt;hôte&gt;/ws)">
+                        <setting string="PBX host"
+                                 help="Hostname serving the SIP WebSocket (wss://&lt;host&gt;/ws)">
                             <div class="content-group">
                                 <div class="row mt16">
                                     <label for="bf_softphone_pbx_host" class="col-lg-3 o_light_label"/>
@@ -21,9 +21,9 @@
                             </div>
                         </setting>
                     </block>
-                    <block title="Relais média TURN (Cloudflare)"
-                           help="Clé TURN Cloudflare — utilisée côté serveur pour forger des identifiants ICE à durée de vie courte. Ces secrets ne quittent jamais le serveur.">
-                        <setting string="ID de clé TURN">
+                    <block title="TURN media relay (Cloudflare)"
+                           help="Cloudflare TURN key, used server-side to mint short-lived ICE credentials. These secrets never leave the server.">
+                        <setting string="TURN key ID">
                             <div class="content-group">
                                 <div class="row mt16">
                                     <label for="bf_softphone_turn_key_id" class="col-lg-3 o_light_label"/>
@@ -36,9 +36,9 @@
                             </div>
                         </setting>
                     </block>
-                    <block title="Composition par le PBX"
-                           help="Permet à un client sans pile SIP (l'application mobile) de demander un appel : le PBX fait sonner l'appareil de l'utilisateur, puis compose le correspondant avec l'afficheur du trunk.">
-                        <setting string="Lien AMI">
+                    <block title="Dialing through the PBX"
+                           help="Lets a client without a SIP stack (the mobile app) request a call: the PBX rings the user's device, then dials the other party with the trunk's caller ID.">
+                        <setting string="AMI link">
                             <div class="content-group">
                                 <div class="row mt16">
                                     <label for="bf_softphone_ami_host" class="col-lg-3 o_light_label"/>
@@ -61,17 +61,17 @@
                                 </div>
                                 <div class="mt8">
                                     <button name="action_softphone_test_ami" type="object"
-                                            string="Tester le lien" class="btn-link"
+                                            string="Test the link" class="btn-link"
                                             icon="fa-plug"/>
                                 </div>
                             </div>
                         </setting>
-                        <setting string="Plan de numérotation">
+                        <setting string="Dial plan">
                             <div class="content-group">
                                 <div class="row mt16">
                                     <label for="bf_softphone_trunk" class="col-lg-3 o_light_label"/>
                                     <field name="bf_softphone_trunk" class="col-lg-6"
-                                           placeholder="mon-trunk"/>
+                                           placeholder="my-trunk"/>
                                 </div>
                                 <div class="row mt8">
                                     <label for="bf_softphone_originate_context" class="col-lg-3 o_light_label"/>
@@ -86,13 +86,13 @@
                             </div>
                         </setting>
                     </block>
-                    <block title="Réveil par push"
-                           help="Fait sonner l'application mobile même fermée : le PBX prévient Odoo avant de composer, Odoo pousse une notification, l'app se réenregistre et le plan de numérotation compose le contact qui vient d'apparaître.">
-                        <setting string="Activer le réveil"
-                                 help="Couper les notifications de textos ne coupe pas la sonnerie : ce sont deux interrupteurs.">
+                    <block title="Push wake-up"
+                           help="Rings the mobile app even when it is closed: the PBX notifies Odoo before dialing, Odoo pushes a notification, the app registers again and the dial plan dials the contact that just appeared.">
+                        <setting string="Enable wake-up"
+                                 help="Turning off text message notifications does not turn off ringing: they are two separate switches.">
                             <field name="bf_softphone_wake_enabled"/>
                         </setting>
-                        <setting string="Jeton partagé avec le PBX">
+                        <setting string="Token shared with the PBX">
                             <div class="content-group">
                                 <div class="row mt16">
                                     <label for="bf_softphone_pbx_wake_token" class="col-lg-3 o_light_label"/>
@@ -100,9 +100,7 @@
                                            password="True"/>
                                 </div>
                                 <div class="text-muted mt8">
-                                    Le même secret doit vivre côté PBX, là où le plan de
-                                    numérotation le lit (par exemple <code>WAKE_TOKEN</code> dans
-                                    son environnement). Vide : le réveil est refusé.
+                                    The same secret must live on the PBX side, where the dial plan reads it (for example <code>WAKE_TOKEN</code> in its environment). Empty: wake-up is refused.
                                 </div>
                             </div>
                         </setting>

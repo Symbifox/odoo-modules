@@ -6,11 +6,11 @@
         <field name="name">sms.archive.line.list</field>
         <field name="model">sms.archive.line</field>
         <field name="arch" type="xml">
-            <list string="Lignes SMS/MMS">
+            <list string="SMS/MMS lines">
                 <field name="label"/>
                 <field name="did"/>
                 <field name="owner_id"/>
-                <field name="user_ids" widget="many2many_tags" string="Partagée avec"
+                <field name="user_ids" widget="many2many_tags" string="Shared with"
                        optional="show"/>
                 <field name="is_default" widget="boolean_toggle"/>
                 <field name="sms_enabled" widget="boolean_toggle"/>
@@ -25,59 +25,59 @@
         <field name="name">sms.archive.line.form</field>
         <field name="model">sms.archive.line</field>
         <field name="arch" type="xml">
-            <form string="Ligne SMS/MMS">
+            <form string="SMS/MMS line">
                 <header>
                     <button name="action_configure_webhook" type="object"
-                            string="Configurer le webhook VOIP.ms"
+                            string="Configure the VOIP.ms webhook"
                             class="btn-primary"
-                            confirm="Poser l'URL de callback de cette ligne dans VOIP.ms (setSMS) ?"/>
+                            confirm="Set this line's callback URL in VOIP.ms (setSMS)?"/>
                     <button name="action_regenerate_token" type="object"
-                            string="Régénérer le jeton" class="btn-secondary"
-                            confirm="Régénérer le jeton invalidera l'URL de callback actuelle. Continuer ?"/>
+                            string="Regenerate the webhook token" class="btn-secondary"
+                            confirm="Regenerating the token will invalidate the current callback URL. Continue?"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Inactif" bg_color="bg-danger"
+                    <widget name="web_ribbon" title="Inactive" bg_color="bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="label"/>
-                        <h1><field name="label" placeholder="Blue Fox principal"/></h1>
+                        <h1><field name="label" placeholder="Blue Fox main"/></h1>
                     </div>
                     <group>
-                        <group string="Numéro">
+                        <group string="Number">
                             <field name="did" placeholder="5145551234"/>
                             <field name="did_normalized" readonly="1"/>
                             <field name="owner_id" options="{'no_create': True}"/>
                             <field name="user_ids" widget="many2many_tags"
                                    options="{'no_create': True}"
-                                   placeholder="Collègues autorisés sur cette ligne…"/>
+                                   placeholder="Colleagues allowed on this line…"/>
                             <field name="voipms_subaccount" readonly="1"/>
                         </group>
-                        <group string="Capacités">
+                        <group string="Capabilities">
                             <field name="is_default"/>
                             <field name="sms_enabled"/>
                             <field name="mms_enabled"/>
                             <field name="active"/>
                         </group>
                     </group>
-                    <group string="Webhook entrant">
+                    <group string="Incoming webhook">
                         <field name="webhook_url" widget="CopyClipboardChar" readonly="1"/>
                     </group>
                     <group string="Notes">
                         <field name="note" nolabel="1"
-                               placeholder="Particularités de la ligne…"/>
+                               placeholder="Line specifics…"/>
                     </group>
                     <div class="alert alert-warning" role="alert" invisible="not user_ids">
-                        Ligne partagée : les personnes listées dans
-                        <strong>Utilisateurs partagés</strong> envoient depuis ce numéro et
-                        lisent les conversations qui s'y tiennent, y compris celles
-                        ouvertes avant le partage. Un fil marqué
-                        <em>Confidentiel</em> reste au seul propriétaire.
+                        Shared line: the people listed in
+                        <strong>Shared users</strong> send from this number and
+                        read the conversations held on it, including those
+                        opened before the sharing. A thread marked
+                        <em>Confidential</em> stays with the owner only.
                     </div>
                     <div class="alert alert-info" role="alert">
-                        Réglez « URL publique » dans
-                        <strong>Configuration ▸ Paramètres SMS</strong>, puis cliquez
-                        <em>Configurer le webhook VOIP.ms</em> pour activer la réception
-                        temps réel (ou collez l'URL ci-dessus dans le portail VOIP.ms).
+                        Set "Public URL" in
+                        <strong>Configuration ▸ SMS settings</strong>, then click
+                        <em>Configure the VOIP.ms webhook</em> to enable real-time
+                        reception (or paste the URL above into the VOIP.ms portal).
                     </div>
                 </sheet>
             </form>
@@ -86,22 +86,22 @@
 
     <!-- Line: Action -->
     <record id="sms_line_action" model="ir.actions.act_window">
-        <field name="name">Lignes SMS/MMS</field>
+        <field name="name">SMS/MMS lines</field>
         <field name="res_model">sms.archive.line</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune ligne configurée</p>
+            <p class="o_view_nocontent_smiling_face">No line configured</p>
             <p>
-                Une ligne rattache un DID VOIP.ms à un propriétaire Odoo, et peut être
-                partagée avec des collègues. Utilisez
-                <em>Synchroniser depuis VOIP.ms</em> ou créez-en une manuellement.
+                A line ties a VOIP.ms DID to an Odoo owner, and can be
+                shared with colleagues. Use
+                <em>Sync from VOIP.ms</em> or create one manually.
             </p>
         </field>
     </record>
 
     <!-- Server action: sync from VOIP.ms -->
     <record id="sms_line_sync_action" model="ir.actions.server">
-        <field name="name">Synchroniser depuis VOIP.ms</field>
+        <field name="name">Sync from VOIP.ms</field>
         <field name="model_id" ref="model_sms_archive_line"/>
         <field name="binding_model_id" ref="model_sms_archive_line"/>
         <field name="binding_view_types">list</field>
@@ -112,7 +112,7 @@
     <!-- Menu -->
     <menuitem
         id="sms_archive_menu_lines"
-        name="Lignes SMS/MMS"
+        name="SMS/MMS lines"
         parent="sms_archive_menu_configuration"
         action="sms_line_action"
         sequence="5"

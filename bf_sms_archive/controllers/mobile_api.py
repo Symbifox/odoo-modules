@@ -25,7 +25,7 @@ import pytz
 from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
-from odoo import fields, http
+from odoo import _, fields, http
 from odoo.exceptions import AccessDenied, UserError
 from odoo.http import request
 from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
@@ -291,32 +291,34 @@ def _parse_media(raw):
 
     Rend une liste vide quand rien n'est joint : ``action_send`` traite alors
     l'envoi comme un SMS, exactement comme avant.
+    `_()` et non `request.env._()` : la fonction sert aussi hors requête (essais), où
+    `_()` retombe sur la source ; sous requête, il lit la langue posée par `_authed`.
     """
     if not raw:
         return []
     if not isinstance(raw, list):
-        raise UserError("Pièces jointes invalides.")
+        raise UserError(_("Invalid attachments."))
     if len(raw) > MMS_MAX_PARTS:
-        raise UserError("Maximum %d pièces jointes." % MMS_MAX_PARTS)
+        raise UserError(_("Maximum %s attachments.", MMS_MAX_PARTS))
     out = []
     total = 0
     for item in raw:
         if not isinstance(item, dict):
-            raise UserError("Pièce jointe invalide.")
+            raise UserError(_("Invalid attachment."))
         data_b64 = (item.get("data_b64") or "").strip()
         if not data_b64:
-            raise UserError("Pièce jointe vide.")
+            raise UserError(_("Empty attachment."))
         try:
             size = len(base64.b64decode(data_b64, validate=True))
         except (ValueError, binascii.Error):
-            raise UserError("Pièce jointe illisible.")
+            raise UserError(_("Unreadable attachment."))
         if not size:
-            raise UserError("Pièce jointe vide.")
+            raise UserError(_("Empty attachment."))
         if size > MMS_MAX_PART_BYTES:
-            raise UserError("Pièce jointe trop volumineuse (max 1 Mo).")
+            raise UserError(_("Attachment too large (max 1 MB)."))
         total += size
         if total > MMS_MAX_TOTAL_BYTES:
-            raise UserError("Pièces jointes trop volumineuses (max 2 Mo au total).")
+            raise UserError(_("Attachments too large (max 2 MB in total)."))
         content_type = (item.get("content_type") or "").strip()
         if not _MIME_RE.match(content_type):
             content_type = "application/octet-stream"
@@ -383,6 +385,9 @@ def _authed(fn):
         # Hors transaction et au plus une fois la minute : voir le modèle.
         device._touch_last_seen()
         request.update_env(user=device.user_id.id)
+        # Aucune session web : les erreurs rendues à l'app (UserError → « error »)
+        # et les libellés partent dans la langue du propriétaire de l'appareil.
+        request.update_context(lang=device.user_id.lang)
         try:
             return fn(self, device, *args, **kw)
         except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
@@ -549,6 +554,7 @@ class BfSmsMobileApi(http.Controller):
         jeton = device.device_token
         device._seal()
         request.update_env(user=uid)
+        request.update_context(lang=user.lang)
         return _json({
             "token": jeton,
             "user_id": uid,
@@ -609,12 +615,12 @@ class BfSmsMobileApi(http.Controller):
         state = kw.get("state") or ""
         if not _allowed_redirect(redirect):
             return request.make_response(
-                "Redirection non autorisée.", status=400,
+                request.env._("Redirect not allowed."), status=400,
                 headers=[("Content-Type", "text/plain; charset=utf-8")]), None
         user = request.env.user
         if not user.has_group(SMS_USER_GROUP):
             return request.make_response(
-                "Ce compte n'a pas accès à la messagerie SMS.", status=403,
+                request.env._("This account does not have access to SMS messaging."), status=403,
                 headers=[("Content-Type", "text/plain; charset=utf-8")]), None
         demande = {
             "redirect": redirect,
@@ -657,6 +663,7 @@ class BfSmsMobileApi(http.Controller):
         jeton = device.device_token
         device._seal()
         request.update_env(user=device.user_id.id)
+        request.update_context(lang=device.user_id.lang)
         return _json({
             "token": jeton,
             "user_id": device.user_id.id,
@@ -763,9 +770,9 @@ class BfSmsMobileApi(http.Controller):
             if not line:
                 return _json({"error": "line_not_found"}, 404)
             if not line.mms_enabled:
-                raise UserError(
-                    "Cette ligne n'envoie pas de MMS : retirez la pièce jointe "
-                    "ou choisissez une autre ligne.")
+                raise UserError(request.env._(
+                    "This line does not send MMS: remove the attachment "
+                    "or choose another line."))
         msg_id = Msg.action_send(int(line_id), dst, body, media=media or None)
         msg = Msg.browse(msg_id)
         return _json({

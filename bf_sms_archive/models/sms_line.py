@@ -24,19 +24,21 @@ _logger = logging.getLogger(__name__)
 
 class SmsArchiveLine(models.Model):
     _name = "sms.archive.line"
-    _description = "Ligne SMS/MMS VOIP.ms"
+    _description = "VOIP.ms SMS/MMS line"
     _rec_name = "label"
     _order = "label, did"
 
     label = fields.Char(
-        string="Libellé",
+        string="Label",
         required=True,
-        help="Nom lisible de la ligne (ex. « Ligne principale », « Téléphone bureau »).",
+        help="Readable name of the line (e.g. \"Main line\", \"Office "
+             "phone\").",
     )
     did = fields.Char(
         string="DID (VOIP.ms)",
         required=True,
-        help="Numéro tel que présent dans le compte VOIP.ms (10 chiffres, ex. 5145551234).",
+        help="Number as it appears in the VOIP.ms account (10 digits, "
+             "e.g. 5145551234).",
     )
     did_normalized = fields.Char(
         string="DID (E.164)",
@@ -46,56 +48,58 @@ class SmsArchiveLine(models.Model):
     )
     owner_id = fields.Many2one(
         comodel_name="res.users",
-        string="Propriétaire",
+        string="Owner",
         required=True,
         default=lambda self: self.env.user,
         index=True,
-        help="Les messages envoyés/reçus sur cette ligne seront imputés à cet utilisateur.",
+        help="Messages sent/received on this line will be assigned to "
+             "this user.",
     )
     user_ids = fields.Many2many(
         comodel_name="res.users",
         relation="sms_archive_line_user_rel",
         column1="line_id",
         column2="user_id",
-        string="Utilisateurs partagés",
-        help="Collègues autorisés à envoyer depuis cette ligne et à lire les "
-             "conversations qui s'y tiennent, au même titre que le propriétaire. "
-             "Les fils marqués « Confidentiel » restent invisibles pour eux.",
+        string="Shared users",
+        help="Colleagues allowed to send from this line and to read the "
+             "conversations held on it, just like the owner. Threads "
+             "marked \"Confidential\" stay hidden from them.",
     )
     is_shared = fields.Boolean(
-        string="Partagée",
+        string="Shared",
         compute="_compute_is_shared",
-        help="Vrai dès qu'au moins un collègue a accès à cette ligne.",
+        help="True as soon as at least one colleague has access to this line.",
     )
     is_default = fields.Boolean(
-        string="Ligne par défaut",
-        help="Ligne d'envoi par défaut pour ce propriétaire.",
+        string="Default line",
+        help="Default sending line for this owner.",
     )
-    sms_enabled = fields.Boolean(string="SMS activé", default=True)
-    mms_enabled = fields.Boolean(string="MMS activé", default=True)
-    active = fields.Boolean(string="Actif", default=True)
-    voipms_subaccount = fields.Char(string="Sous-compte VOIP.ms")
+    sms_enabled = fields.Boolean(string="SMS enabled", default=True)
+    mms_enabled = fields.Boolean(string="MMS enabled", default=True)
+    active = fields.Boolean(string="Active", default=True)
+    voipms_subaccount = fields.Char(string="VOIP.ms sub-account")
     webhook_token = fields.Char(
-        string="Jeton webhook",
+        string="Webhook token",
         required=True,
         copy=False,
         default=lambda self: secrets.token_urlsafe(24),
         groups="bf_sms_archive.group_sms_manager",
-        help="Secret inclus dans l'URL de callback VOIP.ms pour authentifier les "
-             "messages entrants de cette ligne.",
+        help="Secret included in the VOIP.ms callback URL to authenticate "
+             "this line's incoming messages.",
     )
     webhook_url = fields.Char(
-        string="URL de callback",
+        string="Callback URL",
         compute="_compute_webhook_url",
         groups="bf_sms_archive.group_sms_manager",
-        help="À copier dans VOIP.ms (ou poser via le bouton « Configurer le webhook »). "
-             "Contient le jeton secret : traiter comme un secret (tenir hors des logs).",
+        help="To copy into VOIP.ms (or set with the \"Configure the "
+             "webhook\" button). Contains the secret token: treat it as a "
+             "secret (keep it out of logs).",
     )
     note = fields.Text(string="Notes")
 
     _sql_constraints = [
-        ("did_uniq", "UNIQUE(did)", "Cette ligne (DID) existe déjà."),
-        ("token_uniq", "UNIQUE(webhook_token)", "Jeton webhook déjà utilisé."),
+        ("did_uniq", "UNIQUE(did)", "This line (DID) already exists."),
+        ("token_uniq", "UNIQUE(webhook_token)", "Webhook token already in use."),
     ]
 
     @api.depends("user_ids")
@@ -141,7 +145,9 @@ class SmsArchiveLine(models.Model):
         for line in self:
             line.did_normalized = Thread.normalize_phone(line.did) if line.did else False
 
+    # Non stocké ; le marqueur d'un jeton absent est un texte traduit.
     @api.depends("webhook_token")
+    @api.depends_context("lang")
     def _compute_webhook_url(self):
         base = (
             self.env["ir.config_parameter"].sudo().get_param("bf_sms_archive.public_base_url", "")
@@ -150,7 +156,7 @@ class SmsArchiveLine(models.Model):
         ).rstrip("/")
         for line in self:
             # webhook_token est restreint au groupe gestionnaire → lecture sudo.
-            token = line.sudo().webhook_token or "<jeton>"
+            token = line.sudo().webhook_token or self.env._("<token>")
             line.webhook_url = (
                 f"{base}/bf_sms_archive/api/voipms/sms"
                 f"?token={token}&to={{TO}}&from={{FROM}}"
@@ -186,7 +192,8 @@ class SmsArchiveLine(models.Model):
         if not self.env.su and not self.env.user.has_group("bf_sms_archive.group_sms_manager"):
             self.check_access("read")
             if self.sudo().filtered(lambda l: l.owner_id != self.env.user):
-                raise AccessError(_("Seul le propriétaire d'une ligne peut en régénérer le jeton."))
+                raise AccessError(_("Only a line's owner can regenerate "
+                                    "its token."))
         for line in self:
             line.sudo().write({"webhook_token": secrets.token_urlsafe(24)})
         return True
@@ -204,10 +211,10 @@ class SmsArchiveLine(models.Model):
         Voipms = self.env["sms.archive.voipms"]
         cfg = Voipms._voipms_config()
         if not cfg["public_base_url"]:
-            raise UserError(
-                "Réglez d'abord « URL publique » (bf_sms_archive.public_base_url) "
-                "dans les paramètres."
-            )
+            raise UserError(self.env._(
+                "First set \"Public URL\" "
+                "(bf_sms_archive.public_base_url) in the settings."
+            ))
         for line in self:
             url = (
                 f"{cfg['public_base_url']}/bf_sms_archive/api/voipms/sms"

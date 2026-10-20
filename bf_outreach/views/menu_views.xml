@@ -2,36 +2,36 @@
 <odoo>
 
     <menuitem id="menu_bf_outreach_root"
-              name="Démarchage"
+              name="Outreach"
               web_icon="bf_outreach,static/description/icon.png"
               sequence="46"
               groups="bf_outreach.group_bf_outreach_user"/>
 
     <menuitem id="menu_bf_outreach_today"
-              name="Aujourd'hui"
+              name="Today"
               parent="menu_bf_outreach_root"
               action="action_bf_outreach_target_due"
               sequence="5"/>
 
     <menuitem id="menu_bf_outreach_campaign"
-              name="Campagnes"
+              name="Campaigns"
               parent="menu_bf_outreach_root"
               action="action_bf_outreach_campaign"
               sequence="10"/>
 
     <menuitem id="menu_bf_outreach_targets"
-              name="Cibles"
+              name="Targets"
               parent="menu_bf_outreach_root"
               sequence="20"/>
 
     <menuitem id="menu_bf_outreach_target_all"
-              name="Toutes les cibles"
+              name="All targets"
               parent="menu_bf_outreach_targets"
               action="action_bf_outreach_target"
               sequence="10"/>
 
     <menuitem id="menu_bf_outreach_target_overdue"
-              name="Relances en retard"
+              name="Overdue follow-ups"
               parent="menu_bf_outreach_targets"
               action="action_bf_outreach_target_overdue"
               sequence="20"/>
@@ -49,13 +49,13 @@
               groups="bf_outreach.group_bf_outreach_manager"/>
 
     <menuitem id="menu_bf_outreach_config_stage"
-              name="Étapes"
+              name="Stages"
               parent="menu_bf_outreach_config"
               action="action_bf_outreach_stage"
               sequence="10"/>
 
     <menuitem id="menu_bf_outreach_config_tag"
-              name="Étiquettes"
+              name="Tags"
               parent="menu_bf_outreach_config"
               action="action_bf_outreach_tag"
               sequence="20"/>

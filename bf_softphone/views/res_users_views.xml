@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Téléphone" name="bf_softphone"
+                <page string="Phone" name="bf_softphone"
                       groups="bf_softphone.group_softphone_user">
                     <group>
                         <field name="sip_enabled"/>
@@ -21,15 +21,10 @@
                                placeholder="514 555-0142"/>
                     </group>
                     <div class="text-muted">
-                        Le poste et le mot de passe SIP proviennent du PBX (voir la
-                        fiche du poste). Le mot de passe n'est visible que par un
-                        gestionnaire du téléphone.
+                        The SIP extension and password come from the PBX (see the extension's record). The password is only visible to a phone manager.
                     </div>
                     <div class="text-muted mt8">
-                        Le numéro de rappel sert aux appels demandés depuis
-                        l'application mobile : le PBX le fait sonner, puis compose le
-                        correspondant avec l'afficheur de la ligne d'affaires. Vide,
-                        c'est le mobile de la fiche contact qui est utilisé.
+                        The callback number is used for calls requested from the mobile app: the PBX rings it, then dials the other party with the business line's caller ID. If empty, the mobile number on the contact record is used.
                     </div>
                 </page>
             </xpath>

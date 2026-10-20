@@ -19,11 +19,23 @@ from .test_aller_retour import CARTE
 @tagged("post_install", "-at_install")
 class TestDelta(TransactionCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
+
     def setUp(self):
         super().setUp()
+        # Session et client francophones, épinglés : les libellés d'écarts et
+        # le livrable suivent le client, la légende à l'écran la session.
+        self.env = self.env(context=dict(self.env.context, lang="fr_CA"))
+        client = self.env["res.partner"].create(
+            {"name": "Client francophone", "lang": "fr_CA"})
         self.actuel = self.env["bf.process"].create({
             "name": "Traiter une demande", "code": "dem",
-            "pool_name": "Blue Fox"})
+            "pool_name": "Essai inc.", "partner_id": client.id})
         self.actuel._charger_niveaux(CARTE)
         self.noeuds = {n.code: n for n in self.actuel.diagram_ids.node_ids}
 
@@ -80,18 +92,18 @@ class TestDelta(TransactionCase):
             with self.cr.savepoint():
                 self.env["bf.process"].create({
                     "name": self.actuel.name, "version": self.actuel.version,
-                    "pool_name": "Blue Fox"})
+                    "pool_name": "Essai inc."})
 
     def test_une_cible_sans_origine_est_refusee(self):
         with self.assertRaises(ValidationError):
             self.env["bf.process"].create({
-                "name": "Sans photo", "nature": "cible", "pool_name": "Blue Fox"})
+                "name": "Sans photo", "nature": "cible", "pool_name": "Essai inc."})
 
     def test_un_etat_actuel_avec_origine_est_refuse(self):
         with self.assertRaises(ValidationError):
             self.env["bf.process"].create({
                 "name": "Confus", "nature": "actuel",
-                "origine_id": self.actuel.id, "pool_name": "Blue Fox"})
+                "origine_id": self.actuel.id, "pool_name": "Essai inc."})
 
     def test_le_nom_affiche_distingue_les_deux_branches(self):
         """🔴 C'était un `name_get`, qu'Odoo 18 n'appelle plus.
@@ -204,7 +216,8 @@ class TestDelta(TransactionCase):
              ("message", "libelle")})
         # le ton se dit en mots, pas par sa clé
         ton = cible.ecart_ids.filtered(lambda e: e.genre == "ton")
-        self.assertIn("fragilité vers piste d'amélioration", ton.libelle)
+        self.assertIn("fragilité ou information manquante vers piste "
+                      "d'amélioration", ton.libelle)
         for police in ("Lexend-Regular.ttf", "Lexend-SemiBold.ttf"):
             glyphes = TTFontFile(str(POLICES / police)).charToGlyph
             for ecart in cible.ecart_ids:

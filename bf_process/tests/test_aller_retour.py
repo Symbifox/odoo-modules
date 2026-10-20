@@ -7,7 +7,7 @@ CARTE = [
     {
         "title": "Traiter une demande",
         "level": "Niveau 1",
-        "pool": "Blue Fox",
+        "pool": "Essai inc.",
         "col_w": 180.0, "row_h": 120.0, "lane_pad": 56.0, "ext_header": 78.0,
         "lanes": [{"id": "f", "name": "Conseil"}, {"id": "t", "name": "Technique"}],
         "ext": [{"id": "cli", "name": "Client", "pos": "top"}],
@@ -46,7 +46,7 @@ class TestAllerRetour(TransactionCase):
     def setUp(self):
         super().setUp()
         self.processus = self.env["bf.process"].create({
-            "name": "Essai", "code": "essai", "pool_name": "Blue Fox"})
+            "name": "Essai", "code": "essai", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.niveau = self.processus.diagram_ids
 
@@ -101,7 +101,7 @@ class TestAllerRetour(TransactionCase):
         if texte:
             carte[0]["nodes"][-1]["name"] = texte
         autre = self.env["bf.process"].create({
-            "name": nom, "pool_name": "Blue Fox"})
+            "name": nom, "pool_name": "Essai inc."})
         autre._charger_niveaux(carte)
         return autre
 
@@ -148,7 +148,7 @@ class TestAllerRetour(TransactionCase):
         carte[0]["ext"] = [{"id": "cli", "pos": "top",
                             "name": "Fournisseur d'hébergement (Hetzner, OVH)"}]
         autre = self.env["bf.process"].create({
-            "name": "Essai pools", "pool_name": "Blue Fox"})
+            "name": "Essai pools", "pool_name": "Essai inc."})
         autre._charger_niveaux(carte)
         self.assertFalse(autre.diagram_ids.ext_header)
         # nom long : le bandeau bute sur la borne haute plutôt que sur 62
@@ -184,7 +184,7 @@ class TestAllerRetour(TransactionCase):
     def test_niveau_enfant_raccorde_au_sous_processus(self):
         """Une page enfant se raccroche au sous-processus qui porte son titre."""
         carte = [
-            {"title": "Vue d'ensemble", "pool": "Blue Fox", "ext_header": 62.0,
+            {"title": "Vue d'ensemble", "pool": "Essai inc.", "ext_header": 62.0,
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Départ", "col": 0, "row": 0},
                  {"id": "a", "kind": "sub", "name": "Traiter le dossier",
@@ -192,7 +192,7 @@ class TestAllerRetour(TransactionCase):
                  {"id": "e", "kind": "end", "name": "Dossier traité",
                   "col": 2, "row": 0}],
              "flows": [{"src": "s", "tgt": "a"}, {"src": "a", "tgt": "e"}]},
-            {"title": "Traiter le dossier", "pool": "Blue Fox", "ext_header": 62.0,
+            {"title": "Traiter le dossier", "pool": "Essai inc.", "ext_header": 62.0,
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Dossier ouvert",
                   "col": 0, "row": 0},
@@ -201,7 +201,7 @@ class TestAllerRetour(TransactionCase):
              "flows": [{"src": "s", "tgt": "e"}]},
         ]
         p = self.env["bf.process"].create({"name": "Deux niveaux",
-                                           "pool_name": "Blue Fox"})
+                                           "pool_name": "Essai inc."})
         p._charger_niveaux(carte)
         enfant = p.diagram_ids[1]
         appelants = enfant.parent_node_ids
@@ -211,7 +211,7 @@ class TestAllerRetour(TransactionCase):
     def test_sous_processus_commun_a_plusieurs_appelants(self):
         """Une page peut être ouverte de deux endroits, et les deux comptent."""
         carte = [
-            {"title": "Vue d'ensemble", "pool": "Blue Fox", "ext_header": 62.0,
+            {"title": "Vue d'ensemble", "pool": "Essai inc.", "ext_header": 62.0,
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Départ", "col": 0, "row": 0},
                  {"id": "a", "kind": "sub", "name": "Vérifier le dossier",
@@ -222,7 +222,7 @@ class TestAllerRetour(TransactionCase):
                   "col": 3, "row": 0}],
              "flows": [{"src": "s", "tgt": "a"}, {"src": "a", "tgt": "b"},
                        {"src": "b", "tgt": "e"}]},
-            {"title": "Vérifier le dossier", "pool": "Blue Fox", "ext_header": 62.0,
+            {"title": "Vérifier le dossier", "pool": "Essai inc.", "ext_header": 62.0,
              "nodes": [
                  {"id": "s", "kind": "start", "name": "Vérification demandée",
                   "col": 0, "row": 0},
@@ -231,7 +231,7 @@ class TestAllerRetour(TransactionCase):
              "flows": [{"src": "s", "tgt": "e"}]},
         ]
         p = self.env["bf.process"].create({"name": "Sous-processus commun",
-                                           "pool_name": "Blue Fox"})
+                                           "pool_name": "Essai inc."})
         p._charger_niveaux(carte)
         enfant = p.diagram_ids[1]
         self.assertEqual(sorted(enfant.parent_node_ids.mapped("code")), ["a", "b"])

@@ -1,29 +1,1813 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-#	* bf_sms_archive
-#
+# Translation of SMS & Calls - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: bf_sms_archive 18.0.5.27.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-19 00:00+0000\n"
-"PO-Revision-Date: 2026-06-29 00:00+0000\n"
+"POT-Creation-Date: 2026-10-19 12:12+0000\n"
+"PO-Revision-Date: 2026-10-19 12:12+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Language: fr_CA\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_sms_archive
-#: model:ir.module.category,name:bf_sms_archive.module_category_sms_archive
-#: model:ir.module.module,shortdesc:bf_sms_archive.module_bf_sms_archive
-#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_root
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "%(count)s SMS"
+msgstr "%(count)s SMS"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/call_archive.py:0
+msgid "%(count)s calls"
+msgstr "%(count)s appels"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/post_to_task_wizard.py:0
+msgid "%(count)s item(s) posted to \"%(record)s\""
+msgstr "%(count)s élément(s) posté(s) sur « %(record)s »"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/post_to_task_wizard.py:0
+msgid "%(count)s item(s) posted to \"%(record)s\" (%(project)s)"
+msgstr "%(count)s élément(s) posté(s) sur « %(record)s » (%(project)s)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%(count)s message(s) posted to \"%(name)s\""
+msgstr "%(count)s message(s) posté(s) sur « %(name)s »"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%(phone)s added to the mobile of %(name)s"
+msgstr "%(phone)s ajouté au mobile de %(name)s"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%s added to this contact's mobile"
+msgstr "%s ajouté au mobile de ce contact"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%s conversation(s) archived"
+msgstr "%s conversation(s) archivée(s)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%s conversation(s) unarchived"
+msgstr "%s conversation(s) désarchivée(s)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "%s incoming"
+msgstr "%s entrants"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "%s missed"
+msgstr "%s manqués"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "%s outgoing"
+msgstr "%s sortants"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "%s received"
+msgstr "%s reçus"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "%s sent"
+msgstr "%s envoyés"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%s tasks"
+msgstr "%s tâches"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "%s · automatic follow-up"
+msgstr "%s · suivi automatique"
+
+#. module: bf_sms_archive
+#: model:ir.actions.report,print_report_name:bf_sms_archive.action_report_sms_thread
+msgid ""
+"'SMS_%s_%s' % (object.phone_normalized.replace('+',''), "
+"time.strftime('%Y-%m-%d'))"
+msgstr ""
+"'SMS_%s_%s' % (object.phone_normalized.replace('+',''), "
+"time.strftime('%Y-%m-%d'))"
+
+#. module: bf_sms_archive
+#: model:ir.actions.report,print_report_name:bf_sms_archive.action_report_sms_messages
+msgid "'SMS_selection_%s' % time.strftime('%Y-%m-%d')"
+msgstr "'SMS_selection_%s' % time.strftime('%Y-%m-%d')"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "(download from Odoo)]"
+msgstr "— télécharger depuis Odoo]"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/call_archive.py:0
+msgid "1 call"
+msgstr "1 appel"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "1 year"
+msgstr "1 an"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "2 years"
+msgstr "2 ans"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "3 months"
+msgstr "3 mois"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "6 months"
+msgstr "6 mois"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/call_archive.py:0
+msgid "<p><strong>%(calls)s</strong> across %(threads)s conversations</p>"
+msgstr "<p><strong>%(calls)s</strong> sur %(threads)s conversations</p>"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "<p><strong>%(count)s SMS</strong> across %(threads)s conversations</p>"
+msgstr "<p><strong>%(count)s SMS</strong> sur %(threads)s conversations</p>"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "<p>Mobile <strong>%s</strong> added from SMS Messaging.</p>"
+msgstr "<p>Mobile <strong>%s</strong> inscrit depuis la Messagerie SMS.</p>"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid ""
+"<p>SMS conversation linked from the number <strong>%s</strong>, which is not"
+" on this record (the mobile on file is <strong>%s</strong>). Number not "
+"copied so as not to overwrite anything.</p>"
+msgstr ""
+"<p>Conversation SMS rattachée depuis le numéro <strong>%s</strong>, qui ne "
+"figure pas sur cette fiche (le mobile inscrit est <strong>%s</strong>). "
+"Numéro non reporté pour ne rien écraser.</p>"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid ""
+"<strong>Endpoint:</strong>\n"
+"                        <code>POST &lt;base_url&gt;/bf_sms_archive/api/ingest</code><br/>\n"
+"                        <strong>Auth:</strong>\n"
+"                        <code>Authorization: Bearer &lt;api_token&gt;</code><br/>\n"
+"                        The <em>bf-sms-relay</em> app expects these two values in\n"
+"                        its preferences."
+msgstr ""
+"<strong>Endpoint :</strong>\n"
+"                        <code>POST &lt;base_url&gt;/bf_sms_archive/api/ingest</code><br/>\n"
+"                        <strong>Auth :</strong>\n"
+"                        <code>Authorization: Bearer &lt;api_token&gt;</code><br/>\n"
+"                        L'app <em>bf-sms-relay</em> attend ces deux valeurs dans\n"
+"                        ses préférences."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid ""
+"<strong>Large files (over 1 GB)</strong>: drop them via\n"
+"                        <code>scp</code> into the <code>sms-inbox/</code> bind mount\n"
+"                        of the compose file (mounted at <code>/mnt/sms-inbox</code> in the\n"
+"                        container), then click \"Import from /mnt/sms-inbox\".\n"
+"                        The disk import bypasses the form's HTTP/memory limit."
+msgstr ""
+"<strong>Fichiers volumineux (+1 Go)</strong> : déposez-les via\n"
+"                        <code>scp</code> dans le bind mount <code>sms-inbox/</code>\n"
+"                        du compose (monté sur <code>/mnt/sms-inbox</code> côté\n"
+"                        container), puis cliquez sur « Importer depuis /mnt/sms-inbox ».\n"
+"                        L'import disque contourne la limite HTTP/mémoire du formulaire."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_line.py:0
+msgid "<token>"
+msgstr "<jeton>"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_mobile_device.py:0
+msgid "A device can only be created by pairing from the app."
+msgstr "Un appareil ne se crée qu'en s'appariant depuis l'application."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_mobile_device.py:0
+msgid "A device's token and user cannot be changed by hand."
+msgstr "Le jeton et l'usager d'un appareil ne se modifient pas à la main."
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.sms_line_action
+msgid ""
+"A line ties a VOIP.ms DID to an Odoo owner, and can be\n"
+"                shared with colleagues. Use\n"
+"                <em>Sync from VOIP.ms</em> or create one manually."
+msgstr ""
+"Une ligne rattache un DID VOIP.ms à un propriétaire Odoo, et peut être\n"
+"                partagée avec des collègues. Utilisez\n"
+"                <em>Synchroniser depuis VOIP.ms</em> ou créez-en une manuellement."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_link_item_required
+msgid "A link applies to a message or to a call."
+msgstr "Un rattachement porte sur un message ou sur un appel."
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.action_sms_links
+msgid ""
+"A link is created by posting an SMS or a call to the\n"
+"                chatter of a record, from Messaging or from the list\n"
+"                of messages. The same message can target several records."
+msgstr ""
+"Un rattachement se crée en posant un SMS ou un appel sur le\n"
+"                chatter d'une fiche, depuis la Messagerie ou depuis la liste\n"
+"                des messages. Le même message peut viser plusieurs fiches."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_push_subscription.py:0
+msgid "A push subscription cannot be given to someone else."
+msgstr "Un abonnement push ne se donne pas à quelqu'un d'autre."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_thread_phone_owner_uniq
+msgid "A thread already exists for this number and this owner."
+msgstr "Un fil existe déjà pour ce numéro et ce propriétaire."
+
+#. module: bf_sms_archive
 #: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "API password"
+msgstr "Mot de passe API"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__api_token
+msgid "API token"
+msgstr "Token API"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "API user"
+msgstr "Utilisateur API"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_link.py:0
+msgid "Access denied on %(model)s #%(id)s: %(err)s"
+msgstr "Accès refusé sur %(model)s #%(id)s : %(err)s"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Access denied on %(model)s #%(id)s: %(error)s"
+msgstr "Accès refusé sur %(model)s #%(id)s : %(error)s"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Access requested"
+msgstr "Accès demandé"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Access to this conversation denied."
+msgstr "Accès refusé à cette conversation."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Account"
+msgstr "Compte"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__active
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__active
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__active
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__active
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "Active (inbox)"
+msgstr "Actives (boîte)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Advanced view"
+msgstr "Affichage avancé"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "All XML files in the ZIP exceed the size limit."
+msgstr "Tous les fichiers XML du ZIP dépassent la limite de taille."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "All dates"
+msgstr "Tout"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "All lines"
+msgstr "Toutes les lignes"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "All read"
+msgstr "Tout est lu"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Allow"
+msgstr "Autoriser"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__presentation__allowed
+msgid "Allowed"
+msgstr "Autorisé"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "Allows sending/receiving SMS and MMS through the VOIP.ms API."
+msgstr "Autorise l'envoi/réception SMS et MMS via l'API VOIP.ms."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Already linked to this conversation"
+msgstr "Déjà liées à cette conversation"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__link_threads
+msgid "Also link the conversation(s) to this task"
+msgstr "Lier aussi la(les) conversation(s) à cette tâche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Also relay the next messages here"
+msgstr "Relayer aussi les prochains messages ici"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__follow_thread
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Also send upcoming messages to this task"
+msgstr "Envoyer aussi les prochains messages à cette tâche"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "America/New_York"
+msgstr "America/New_York"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_mms_part.py:0
+msgid "An MMS part can only be added to your own messages."
+msgstr "Une pièce MMS ne s'ajoute qu'à vos propres messages."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "An SMS can only be created in your own conversations."
+msgstr "Un SMS ne se crée que dans vos propres conversations."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "An SMS cannot move to another conversation."
+msgstr "Un SMS ne change pas de conversation."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_mobile_device.py:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Android device"
+msgstr "Appareil Android"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_device
+msgid "Android device allowed to push SMS/MMS/calls live"
+msgstr "Appareil Android autorisé à pousser des SMS/MMS/appels en direct"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_device_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_devices
+msgid "Android devices"
+msgstr "Appareils Android"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__app_version
+msgid "App Version"
+msgstr "Version de l'application"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Archive"
+msgstr "Archiver"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_message
+msgid "Archived SMS message"
+msgstr "Message SMS archivé"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_call_archive_call
+msgid "Archived call"
+msgstr "Appel archivé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Archived conversations"
+msgstr "Conversations archivées"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "Archived threads"
+msgstr "Archivés"
+
+#. module: bf_sms_archive
+#: model:ir.module.category,description:bf_sms_archive.module_category_sms_archive
+msgid "Archiving and search of SMS and call logs"
+msgstr "Archivage et recherche de SMS et journaux d'appels"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,done_text:bf_sms_archive.bf_onb_step_threads
+msgid "Archiving validated"
+msgstr "Archivage validé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Attach (MMS)"
+msgstr "Joindre (MMS)"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Attachment too large (max 1 MB)."
+msgstr "Pièce jointe trop volumineuse (max 1 Mo)."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Attachments too large (max 2 MB in total)."
+msgstr "Pièces jointes trop volumineuses (max 2 Mo au total)."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__auth
+msgid "Authentication secret"
+msgstr "Secret d'authentification"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Auto"
+msgstr "Auto"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Auto follow-up"
+msgstr "Suivi auto"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__is_auto
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Automatic follow-up"
+msgstr "Suivi automatique"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Automatic follow-up turned off"
+msgstr "Suivi automatique désactivé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
 #: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
-msgid "SMS & Calls"
-msgstr "SMS et appels"
+msgid "Average duration"
+msgstr "Durée moyenne"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_device__api_token
+msgid ""
+"Bearer token used by the Android app. Can be regenerated with the button."
+msgstr "Bearer token utilisé par l'app Android. Régénérable via le bouton."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__blocked
+msgid "Blocked"
+msgstr "Bloqué"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Blue Fox main"
+msgstr "Blue Fox principal"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "By"
+msgstr "Par"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__call_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Call"
+msgstr "Appel"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_sms_archive.call_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_calls
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_pivot
+msgid "Call log"
+msgstr "Journal d'appels"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Call statistics"
+msgstr "Statistiques d'appels"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Call type"
+msgstr "Type d'appel"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__webhook_url
+msgid "Callback URL"
+msgstr "URL de callback"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__call_ids
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__call_ids
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Calls"
+msgstr "Appels"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Calls processed: %(count)s"
+msgstr "Appels traités : %(count)s"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Calls: %s"
+msgstr "Appels : %s"
+
+#. module: bf_sms_archive
+#: model:res.groups,comment:bf_sms_archive.group_sms_user
+msgid "Can view and import their own SMS"
+msgstr "Peut consulter et importer ses propres SMS"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Capabilities"
+msgstr "Capacités"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__p256dh
+msgid "Client public key"
+msgstr "Clé publique cliente"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Colleagues allowed on this line…"
+msgstr "Collègues autorisés sur cette ligne…"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__user_ids
+msgid ""
+"Colleagues allowed to send from this line and to read the conversations held"
+" on it, just like the owner. Threads marked \"Confidential\" stay hidden "
+"from them."
+msgstr ""
+"Collègues autorisés à envoyer depuis cette ligne et à lire les conversations"
+" qui s'y tiennent, au même titre que le propriétaire. Les fils marqués « "
+"Confidentiel » restent invisibles pour eux."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__is_hidden
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Confidential"
+msgstr "Confidentiel"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "Confidential threads"
+msgstr "Confidentiels"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_configuration
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,title:bf_sms_archive.bf_onb_step_settings
+msgid "Configure SMS Archive"
+msgstr "Configurer SMS Archive"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Configure the VOIP.ms webhook"
+msgstr "Configurer le webhook VOIP.ms"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__contact_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__contact_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__contact_name
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Contact name"
+msgstr "Nom du contact"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Contact name or number…"
+msgstr "Nom du contact ou numéro…"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__body
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Content"
+msgstr "Contenu"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__thread_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__thread_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__thread_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__single_thread_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+msgid "Conversation"
+msgstr "Conversation"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Conversation archived"
+msgstr "Conversation archivée"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Conversation marked as unread"
+msgstr "Conversation marquée non lue"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Conversation not found."
+msgstr "Conversation introuvable."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Conversation threads: %(count)s"
+msgstr "Fils de conversation : %(count)s"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Conversation unarchived"
+msgstr "Conversation désarchivée"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_thread_action
+#: model:ir.model.fields,field_description:bf_sms_archive.field_project_task__sms_thread_count
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_threads
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.project_task_view_form_sms
+msgid "Conversations"
+msgstr "Conversations"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/project_task.py:0
+msgid "Conversations (%s)"
+msgstr "Conversations (%s)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_project_task__sms_auto_thread_ids
+msgid ""
+"Conversations whose every new message is automatically relayed to the "
+"chatter of this task."
+msgstr ""
+"Conversations dont chaque nouveau message est relayé automatiquement au "
+"chatter de cette tâche."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Create «"
+msgstr "Créer «"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__create_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__create_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "Custom"
+msgstr "Personnalisé"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__did_normalized
+msgid "DID (E.164)"
+msgstr "DID (E.164)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__did
+msgid "DID (VOIP.ms)"
+msgstr "DID (VOIP.ms)"
+
+#. module: bf_sms_archive
+#: model:ir.actions.client,name:bf_sms_archive.sms_dashboard_client_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__date_sent
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__call_hash
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__message_hash
+msgid "Deduplication hash"
+msgstr "Hash de dédoublonnage"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__is_default
+msgid "Default line"
+msgstr "Ligne par défaut"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__is_default
+msgid "Default sending line for this owner."
+msgstr "Ligne d'envoi par défaut pour ce propriétaire."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_link.py:0
+msgid "Deleted record"
+msgstr "Fiche supprimée"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__delivery_state
+msgid "Delivery status"
+msgstr "État de livraison"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Deny"
+msgstr "Refuser"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__name
+msgid "Device"
+msgstr "Appareil"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__ua
+msgid "Device / browser"
+msgstr "Appareil / navigateur"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__client_uuid
+msgid "Device identifier"
+msgstr "Identifiant de l'appareil"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__device_token
+msgid "Device token"
+msgstr "Jeton d'appareil"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_list
+msgid "Devices"
+msgstr "Appareils"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,done_text:bf_sms_archive.bf_onb_step_devices
+msgid "Devices registered"
+msgstr "Appareils enregistrés"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__direction
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Direction"
+msgstr "Direction"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__display_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Download"
+msgstr "Télécharger"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__direction__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Duplicates skipped: %(count)s"
+msgstr "Doublons ignorés : %(count)s"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__duration_display
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Duration"
+msgstr "Durée"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__duration
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+msgid "Duration (s)"
+msgstr "Durée (s)"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid ""
+"Each new message in this conversation goes\n"
+"                                to the chatter of these tasks. No effect on\n"
+"                                messages already archived."
+msgstr ""
+"Chaque nouveau message de cette conversation part\n"
+"                                dans le chatter de ces tâches. Sans effet sur les\n"
+"                                messages déjà archivés."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__auto_post_task_ids
+msgid ""
+"Each new message in this conversation is automatically relayed to the "
+"chatter of these tasks. Only applies to messages that arrive afterwards, "
+"never to a retroactive import."
+msgstr ""
+"Chaque nouveau message de cette conversation est relayé automatiquement au "
+"chatter de ces tâches. Ne s'applique qu'aux messages qui arrivent ensuite, "
+"jamais à un import rétroactif."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Empty attachment."
+msgstr "Pièce jointe vide."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_res_config_settings__bf_sms_voipms_enabled
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "Enable VOIP.ms messaging"
+msgstr "Activer la messagerie VOIP.ms"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Enable notifications"
+msgstr "Activer les notifications"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__endpoint
+msgid "Endpoint"
+msgstr "Endpoint"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__last_sync_count
+msgid "Entries (last batch)"
+msgstr "Entries (dernier batch)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "Error while loading the dashboard"
+msgstr "Erreur lors du chargement du tableau de bord"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Exit selection"
+msgstr "Quitter la sélection"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Export CSV"
+msgstr "Export CSV"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Export PDF"
+msgstr "Export PDF"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Export XML"
+msgstr "Export XML"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.action_sms_export_csv_bulk
+msgid "Export to CSV"
+msgstr "Exporter en CSV"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.action_sms_export_xml_bulk
+msgid "Export to XML"
+msgstr "Exporter en XML"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "Exported on"
+msgstr "Exporté le"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_fcm
+msgid "FCM sending (native app push)"
+msgstr "Envoi FCM (push app native)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__fcm_token
+msgid "FCM token (legacy)"
+msgstr "Jeton FCM (legacy)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__fail_count
+msgid "Fail Count"
+msgstr "Nombre d'échecs"
+
+#. module: bf_sms_archive
+#. modules: bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__delivery_state__failed
+msgid "Failed"
+msgstr "Échec"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__is_read
+msgid "False for a live incoming message not yet viewed (systray counter)."
+msgstr ""
+"Faux pour un message entrant live non encore consulté (compteur systray)."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__attachment_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__file_name
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__filename
+msgid "Filename"
+msgstr "Nom de fichier"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,description:bf_sms_archive.bf_onb_step_settings
+msgid ""
+"Fill in the NC paths to watch for SMS/call backups and the purge options."
+msgstr ""
+"Renseignez les chemins NC à surveiller pour les sauvegardes SMS/appels et "
+"les options de purge."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_line.py:0
+msgid "First set \"Public URL\" (bf_sms_archive.public_base_url) in the settings."
+msgstr ""
+"Réglez d'abord « URL publique » (bf_sms_archive.public_base_url) dans les "
+"paramètres."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Follow in the task"
+msgstr "Suivre dans la tâche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Follow-up kept on %s task(s)"
+msgstr "Suivi maintenu sur %s tâche(s)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_project_task__sms_auto_thread_ids
+msgid "Followed conversations"
+msgstr "Conversations suivies"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__auto_post_task_ids
+msgid "Followed in tasks"
+msgstr "Suivi dans les tâches"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__delivery_state
+msgid ""
+"For live outgoing messages. \"sent\" = accepted by the VOIP.ms API (VOIP.ms "
+"does not provide a reliable delivery receipt)."
+msgstr ""
+"Pour les messages sortants live. « sent » = accepté par l'API VOIP.ms "
+"(VOIP.ms ne fournit pas d'accusé de livraison fiable)."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_mms_part__text_content
+msgid "For text/plain parts"
+msgstr "Pour les parties text/plain"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "From date"
+msgstr "Du"
+
+#. module: bf_sms_archive
+#: model:res.groups,comment:bf_sms_archive.group_sms_manager
+msgid "Full access to all SMS archives"
+msgstr "Accès complet à toutes les archives SMS"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Hash"
+msgstr "Hash"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__is_hidden
+msgid ""
+"Hide this thread from MCP searches and lists, and keep it for its owner only"
+" even when the line is shared."
+msgstr ""
+"Masquer ce fil des recherches et listes MCP, et le réserver à son "
+"propriétaire même quand la ligne est partagée."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_device__name
+msgid "Human-readable name (e.g. \"Pixel 8\")"
+msgstr "Identification humaine (ex. « Pixel 8 »)"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid ""
+"Immediately processes the XML files dropped into sms-inbox on the server (no"
+" size limit)."
+msgstr ""
+"Traite immédiatement les XML déposés dans sms-inbox sur le serveur (aucune "
+"limite de taille)."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_import
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid "Import"
+msgstr "Importer"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_import_wizard_action
+msgid "Import SMS"
+msgstr "Importer des SMS"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__import_batch_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__import_batch_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Import batch"
+msgstr "Lot d'import"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Import complete:"
+msgstr "Import terminé :"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid "Import from /mnt/sms-inbox"
+msgstr "Importer depuis /mnt/sms-inbox"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid ""
+"Import from /mnt/sms-inbox started.\n"
+"See the Odoo log for details, or the sms-inbox/done (success) / sms-inbox/failed (errors) folder."
+msgstr ""
+"Import depuis /mnt/sms-inbox déclenché.\n"
+"Consultez le journal Odoo pour les détails, ou le dossier sms-inbox/done (succès) / sms-inbox/failed (erreurs)."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Inactive"
+msgstr "Inactif"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__incoming
+msgid "Incoming"
+msgstr "Entrant"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Incoming calls"
+msgstr "Entrants"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Incoming webhook"
+msgstr "Webhook entrant"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,title:bf_sms_archive.bf_onb_step_threads
+msgid "Inspect the SMS threads"
+msgstr "Inspecter les fils SMS"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_call_archive_call__recording_url
+msgid "Internal Nextcloud link to the call's audio file"
+msgstr "Lien interne Nextcloud vers le fichier audio de l'appel"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Invalid attachment."
+msgstr "Pièce jointe invalide."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Invalid attachments."
+msgstr "Pièces jointes invalides."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Invalid number."
+msgstr "Numéro invalide."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "Invalid recipient number."
+msgstr "Numéro destinataire invalide."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__is_image
+msgid "Is Image"
+msgstr "Est une image"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr "Corps JSON rendu la première fois, rendu de nouveau au rejeu."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__is_pinned
+msgid "Keep this thread at the top of the Messaging list."
+msgstr "Garder ce fil en haut de la liste de la Messagerie."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__label
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__write_uid
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__write_date
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__last_call_date
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Last call"
+msgstr "Dernier appel"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__contact_name
+msgid "Last known name from the XML file"
+msgstr "Dernier nom connu provenant du fichier XML"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__last_message_date
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Last message"
+msgstr "Dernier message"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__last_push
+msgid "Last push"
+msgstr "Dernier envoi"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__last_seen
+msgid "Last seen"
+msgstr "Vu la dernière fois"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__last_sync_at
+msgid "Last sync"
+msgstr "Dernière synchronisation"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__line_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+msgid "Line"
+msgstr "Ligne"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__line_id
+msgid ""
+"Line (DID) on which this conversation was opened. It decides the sharing: "
+"users of this line see the thread, unless it is marked \"Confidential\"."
+msgstr ""
+"Ligne (DID) sur laquelle cette conversation s'est ouverte. C'est elle qui "
+"décide du partage : les utilisateurs de cette ligne voient le fil, sauf s'il"
+" est marqué « Confidentiel »."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "Line not enabled for MMS."
+msgstr "Ligne non activée pour les MMS."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "Line not enabled for SMS."
+msgstr "Ligne non activée pour les SMS."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Line specifics…"
+msgstr "Particularités de la ligne…"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Link not found."
+msgstr "Rattachement introuvable."
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_link
+msgid "Link of an SMS or a call to a record"
+msgstr "Rattachement d'un SMS ou d'un appel à une fiche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Link removed, along with its chatter note."
+msgstr "Rattachement retiré, et la note du chatter avec lui."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Link removed. The note stays in the chatter."
+msgstr "Rattachement retiré. La note reste dans le chatter."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Link the conversation to a task first."
+msgstr "Rattachez d'abord la conversation à une tâche."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Link the conversation(s) to this task"
+msgstr "Lier la(les) conversation(s) à cette tâche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Link this message to a record"
+msgstr "Rattacher ce message à une fiche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Link this message to…"
+msgstr "Rattacher ce message à…"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Link to Odoo contact"
+msgstr "Lier au contact Odoo"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Link to a record"
+msgstr "Rattacher"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Link to an Odoo contact"
+msgstr "Lier à un contact Odoo"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__partner_id
+msgid "Link to an Odoo contact (automatic matching by phone)"
+msgstr "Lien vers un contact Odoo (correspondance automatique par téléphone)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_project_task__sms_link_count
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.project_task_view_form_sms
+msgid "Linked SMS"
+msgstr "SMS rattachés"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/project_task.py:0
+msgid "Linked SMS (%s)"
+msgstr "SMS rattachés (%s)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__user_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+msgid "Linked by"
+msgstr "Rattaché par"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Linked on"
+msgstr "Le"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__task_ids
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Linked tasks"
+msgstr "Tâches liées"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.action_sms_links
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__link_ids
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__link_ids
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__link_ids
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_links
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Links"
+msgstr "Rattachements"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Load earlier messages"
+msgstr "Charger les messages précédents"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Loading the dashboard…"
+msgstr "Chargement..."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "Logo"
+msgstr "Logo"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Longest call"
+msgstr "Appel le plus long"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__content_type
+msgid "MIME type"
+msgstr "Type MIME"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__is_mms
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+msgid "MMS"
+msgstr "MMS"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_mms_part
+msgid "MMS attachment"
+msgstr "Pièce jointe MMS"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__mms_part_ids
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "MMS attachments"
+msgstr "Pièces jointes MMS"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "MMS attachments: %(count)s"
+msgstr "Pièces jointes MMS : %(count)s"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__mms_enabled
+msgid "MMS enabled"
+msgstr "MMS activé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Mark all as read"
+msgstr "Tout marquer lu"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Mark as unread"
+msgstr "Marquer non lu"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Marked as read"
+msgstr "Marqué comme lu"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Maximum %s attachments."
+msgstr "Maximum %s pièces jointes."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__message_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__message_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__voipms_id
+msgid "Message identifier on the VOIP.ms side (live deduplication)."
+msgstr "Identifiant du message côté VOIP.ms (déduplication live)."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Message linked to \"%s\""
+msgstr "Message rattaché à « %s »"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Message not found in this conversation."
+msgstr "Message introuvable dans cette conversation."
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_message_action
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__message_ids
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__message_ids
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Messages processed: %(count)s"
+msgstr "Messages traités : %(count)s"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__owner_id
+msgid "Messages sent/received on this line will be assigned to this user."
+msgstr ""
+"Les messages envoyés/reçus sur cette ligne seront imputés à cet utilisateur."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_post_to_task_wizard__follow_thread
+msgid ""
+"Messages that arrive later in this conversation will be automatically "
+"relayed to the task's chatter. Can be turned off from Messaging."
+msgstr ""
+"Les messages qui arriveront ensuite dans cette conversation seront relayés "
+"automatiquement au chatter de la tâche. Se désactive depuis la Messagerie."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Messages: %s"
+msgstr "Messages : %s"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+#: code:addons/bf_sms_archive/static/src/systray/sms_systray.js:0
+#: model:ir.actions.client,name:bf_sms_archive.sms_messenger_client_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_messenger
+msgid "Messaging"
+msgstr "Messagerie"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__missed
+msgid "Missed"
+msgstr "Manqué"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Missed call rate"
+msgstr "Taux de manques"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Missed calls"
+msgstr "Appels manqués"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_mobile_device
+msgid "Mobile device (SMS messaging)"
+msgstr "Appareil mobile — messagerie SMS"
 
 #. module: bf_sms_archive
 #: model:ir.model,name:bf_sms_archive.model_sms_archive_mobile_receipt
@@ -31,31 +1815,1798 @@ msgid "Mobile idempotency receipt (messages)"
 msgstr "Accusé d'idempotence mobile (messages)"
 
 #. module: bf_sms_archive
-#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__user_id
-msgid "User"
-msgstr "Utilisateur"
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+msgid "Model"
+msgstr "Modèle"
 
 #. module: bf_sms_archive
-#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__client_uuid
-msgid "Device identifier"
-msgstr "Identifiant de l'appareil"
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Model, Android version, specifics..."
+msgstr "Modèle, version Android, particularités..."
 
 #. module: bf_sms_archive
-#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__route
-msgid "Route"
-msgstr "Route"
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Month"
+msgstr "Mois"
 
 #. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "More options"
+msgstr "Plus d'options"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Multiple selection"
+msgstr "Sélection multiple"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Mute sound"
+msgstr "Couper le son"
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Name, number, task:22299, or Odoo URL…"
+msgstr "Nom, numéro, task:22299, ou URL Odoo…"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "New SMS"
+msgstr "Nouveau SMS"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "New calls: %(count)s"
+msgstr "Nouveaux appels : %(count)s"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "New message"
+msgstr "Nouveau message"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "New messages: %(count)s"
+msgstr "Nouveaux messages : %(count)s"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "No"
+msgstr "Non"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "No Odoo contact"
+msgstr "Sans contact Odoo"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "No XML file found in the ZIP."
+msgstr "Aucun fichier XML trouvé dans le ZIP."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "No calls imported"
+msgstr "Aucun appel importé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "No contacts"
+msgstr "Aucun contact"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "No conversations."
+msgstr "Aucune conversation."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "No data available"
+msgstr "Aucune donnée disponible"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "No data to chart"
+msgstr "Aucune donnée"
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.sms_device_action
+msgid "No device registered"
+msgstr "Aucun appareil enregistré"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/post_to_task_wizard.py:0
+msgid "No item selected."
+msgstr "Aucun élément sélectionné."
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.sms_line_action
+msgid "No line configured"
+msgstr "Aucune ligne configurée"
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.action_sms_links
+msgid "No links"
+msgstr "Aucun rattachement"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "No matching messages."
+msgstr "Aucun message ne correspond."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__phone_normalized
+msgid "Normalized number used as the grouping key"
+msgstr "Numéro normalisé utilisé comme clé de regroupement"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__note
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__note
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Nothing to post."
+msgstr "Rien à poster."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid ""
+"Notifications blocked by the browser: allow them again in its settings."
+msgstr ""
+"Notifications bloquées par le navigateur : à réautoriser dans ses réglages."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Notifications enabled on this device."
+msgstr "Notifications activées sur cet appareil."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__did
+msgid ""
+"Number as it appears in the VOIP.ms account (10 digits, e.g. 5145551234)."
+msgstr ""
+"Numéro tel que présent dans le compte VOIP.ms (10 chiffres, ex. 5145551234)."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__phone_raw
+msgid "Number as read in the export XML file"
+msgstr "Numéro tel que lu dans le fichier XML d'export"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__call_count
+msgid "Number of calls"
+msgstr "Nombre d'appels"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__message_count
+msgid "Number of items"
+msgstr "Nombre d'éléments"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__message_count
+msgid "Number of messages"
+msgstr "Nombre de messages"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Number: %s"
+msgstr "Numéro : %s"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Odoo contact"
+msgstr "Contact Odoo"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Odoo contacts linked: %(count)s"
+msgstr "Contacts Odoo liés : %(count)s"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:onboarding.onboarding.step,step_image_alt:bf_sms_archive.bf_onb_step_devices
+#: model:onboarding.onboarding.step,step_image_alt:bf_sms_archive.bf_onb_step_settings
+#: model:onboarding.onboarding.step,step_image_alt:bf_sms_archive.bf_onb_step_threads
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid ""
+"Only a conversation's owner can change its owner, line or confidentiality."
+msgstr ""
+"Seul le propriétaire d'une conversation peut en changer le propriétaire, la "
+"ligne ou la confidentialité."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_line.py:0
+msgid "Only a line's owner can regenerate its token."
+msgstr "Seul le propriétaire d'une ligne peut en régénérer le jeton."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid ""
+"Only allow this if you just started signing in from the app on your phone."
+msgstr ""
+"N'autorisez que si vous venez de lancer la connexion depuis l'application "
+"sur votre téléphone."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_post_to_task_wizard__single_thread_id
+msgid "Only filled in when the selection covers a single conversation."
+msgstr ""
+"Renseigné seulement quand la sélection ne porte que sur une conversation."
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,button_text:bf_sms_archive.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Open the record"
+msgstr "Ouvrir la fiche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Open the wizard (preview, follow-up…)"
+msgstr "Ouvrir le sorcier (aperçu, suivi…)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__line_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Origin line"
+msgstr "Ligne d'origine"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__phone_raw
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Original number"
+msgstr "Numéro original"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__outgoing
+msgid "Outgoing"
+msgstr "Sortant"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Outgoing calls"
+msgstr "Sortants"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__owner_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__owner_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Owner"
+msgstr "Propriétaire"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Owner: %s"
+msgstr "Propriétaire : %s"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__pkce_challenge
+msgid "PKCE challenge"
+msgstr "Défi PKCE"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_push_subscription__partner_id
+msgid "Partner-related data of the user"
+msgstr "Données relatives aux partenaires de l'utilisateur"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__presentation__payphone
+msgid "Payphone"
+msgstr "Téléphone public"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__pending_code
+msgid "Pending Code"
+msgstr "Code en attente"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__pending_code_expiry
+msgid "Pending Code Expiry"
+msgstr "Expiration du code en attente"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__phone_normalized
+msgid "Phone (E.164)"
+msgstr "Téléphone (E.164)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Pin"
+msgstr "Épingler"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__is_pinned
+msgid "Pinned"
+msgstr "Épinglé"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Pixel 8"
+msgstr "Pixel 8"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__platform
+msgid "Platform"
+msgstr "Plateforme"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Please select a file."
+msgstr "Veuillez sélectionner un fichier."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Post %s message(s) to…"
+msgstr "Poster %s message(s) sur…"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_post_to_task_wizard
+msgid "Post SMS or calls to a record"
+msgstr "Poster des SMS ou des appels sur une fiche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Post the selection"
+msgstr "Poster"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Post to \"%s\""
+msgstr "Poster sur « %s »"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_sms_archive/models/call_archive.py:0
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+#: model:ir.actions.server,name:bf_sms_archive.action_call_post_to_task_bulk
+#: model:ir.actions.server,name:bf_sms_archive.action_sms_post_to_task_bulk
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Post to a record"
+msgstr "Poster sur une fiche"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Post to a record (options)"
+msgstr "Poster sur une fiche (options)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Post to a task"
+msgstr "Poster sur une tâche"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Post to the record"
+msgstr "Poster sur la fiche"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+msgid "Posted by hand"
+msgstr "Posés à la main"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_link__is_auto
+msgid "Posted by the thread's automatic relay, not by hand."
+msgstr "Posé par le relais automatique du fil, pas à la main."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__mail_message_id
+msgid "Posted note"
+msgstr "Note publiée"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/post_to_task_wizard.py:0
+msgid "Posted to the record"
+msgstr "Posté sur la fiche"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__presentation
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+msgid "Presentation"
+msgstr "Présentation"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__preview
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__last_message_preview
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Preview (will be posted as an internal note)"
+msgstr "Aperçu (sera posté en note interne)"
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_res_config_settings__bf_sms_public_base_url
+msgid ""
+"Public HTTPS base for the VOIP.ms callback URL (e.g. "
+"https://odoo.example.com)."
+msgstr ""
+"Base HTTPS publique pour l'URL de callback VOIP.ms (ex. "
+"https://odoo.exemple.com)."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_res_config_settings__bf_sms_public_base_url
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "Public URL (webhook)"
+msgstr "URL publique (webhook)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__delivery_state__queued
+msgid "Queued"
+msgstr "En file"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_call_archive_call__date_ms
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__date_sent_ms
+msgid "Raw timestamp in milliseconds kept from the XML"
+msgstr "Timestamp brut en millisecondes conservé du XML"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__is_read
+msgid "Read"
+msgstr "Lu"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__label
+msgid "Readable name of the line (e.g. \"Main line\", \"Office phone\")."
+msgstr ""
+"Nom lisible de la ligne (ex. « Ligne principale », « Téléphone bureau »)."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Receive SMS as notifications, even when the app is closed"
+msgstr "Recevoir les SMS en notification, même l'application fermée"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__delivery_state__received
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__direction__in
+msgid "Received"
+msgstr "Reçu"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_device__owner_id
+msgid "Received SMS/calls will be assigned to this user."
+msgstr "Les SMS/appels reçus seront imputés à cet utilisateur."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+msgid "Received messages"
+msgstr "Messages reçus"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Recent tasks"
+msgstr "Tâches récentes"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__res_name
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__target_reference
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Record"
+msgstr "Fiche"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__res_id
+msgid "Record ID"
+msgstr "ID de la fiche"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__res_model
+msgid "Record model"
+msgstr "Modèle de la fiche"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Record not found or not accessible."
+msgstr "Fiche introuvable ou inaccessible."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__res_model_label
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+msgid "Record type"
+msgstr "Type de fiche"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__recording_url
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+msgid "Recording"
+msgstr "Enregistrement"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__link_count
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__link_count
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+msgid "Records"
+msgstr "Fiches"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Redirect not allowed."
+msgstr "Redirection non autorisée."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_link__res_ref
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Regenerate the API token"
+msgstr "Régénérer le token"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Regenerate the webhook token"
+msgstr "Régénérer le jeton"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid ""
+"Regenerating the token will immediately invalidate the app's configuration "
+"on this device. Continue?"
+msgstr ""
+"Régénérer le token invalidera immédiatement la configuration de l'app sur "
+"cet appareil. Continuer ?"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid ""
+"Regenerating the token will invalidate the current callback URL. Continue?"
+msgstr "Régénérer le jeton invalidera l'URL de callback actuelle. Continuer ?"
+
+#. module: bf_sms_archive
+#: model_terms:ir.actions.act_window,help:bf_sms_archive.sms_device_action
+msgid ""
+"Register an Android device to allow the\n"
+"                <em>bf-sms-relay</em> app to push SMS, MMS and calls live.\n"
+"                An API token is generated automatically; set it in the app\n"
+"                with the URL <code>/bf_sms_archive/api/ingest</code>."
+msgstr ""
+"Enregistrez un appareil Android pour autoriser l'app\n"
+"                <em>bf-sms-relay</em> à pousser SMS, MMS et appels en direct.\n"
+"                Un token API est généré automatiquement; configurez-le dans l'app\n"
+"                avec l'URL <code>/bf_sms_archive/api/ingest</code>."
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,title:bf_sms_archive.bf_onb_step_devices
+msgid "Register the tracked devices"
+msgstr "Enregistrer les appareils suivis"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__rejected
+msgid "Rejected"
+msgstr "Rejeté"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__partner_id
+msgid "Related Partner"
+msgstr "Partenaire associé"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid ""
+"Remove this link? The chatter note goes with it if no message points to it "
+"anymore."
+msgstr ""
+"Retirer ce rattachement ? La note du chatter part avec lui si plus aucun "
+"message ne la vise."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Reply from this number"
+msgstr "Répondre depuis ce numéro"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_sms_archive
 #: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__response
 msgid "Response"
 msgstr "Réponse"
 
 #. module: bf_sms_archive
-#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_mobile_receipt__response
-msgid "JSON body returned the first time, returned again on replay."
-msgstr "Corps JSON rendu la première fois, rendu de nouveau au rejeu."
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__presentation__restricted
+msgid "Restricted"
+msgstr "Restreint"
 
 #. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__result_message
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid "Result"
+msgstr "Résultat"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Retry"
+msgstr "Réessayer"
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__route
+msgid "Route"
+msgstr "Route"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_search
+msgid "SMS"
+msgstr "SMS"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model:ir.module.category,name:bf_sms_archive.module_category_sms_archive
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_root
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "SMS & Calls"
+msgstr "SMS et appels"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_dashboard
+msgid "SMS & Calls dashboard"
+msgstr "Tableau de bord SMS & Appels"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.ir_cron_sms_nc_watch_ir_actions_server
+msgid "SMS & Calls: Nextcloud folder watch"
+msgstr "SMS et appels : surveillance du dossier Nextcloud"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.ir_cron_sms_disk_import_ir_actions_server
+msgid "SMS & Calls: import from /mnt/sms-inbox"
+msgstr "SMS et appels : import depuis /mnt/sms-inbox"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "SMS &amp; Calls"
+msgstr "SMS et appels"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding,name:bf_sms_archive.bf_onboarding_panel
+msgid "SMS Archive"
+msgstr "SMS Archive"
+
+#. module: bf_sms_archive
+#: model:res.groups,name:bf_sms_archive.group_sms_manager
+msgid "SMS Manager"
+msgstr "Gestionnaire SMS"
+
+#. module: bf_sms_archive
+#: model:res.groups,name:bf_sms_archive.group_sms_user
+msgid "SMS User"
+msgstr "Utilisateur SMS"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_import_wizard_view_form
+msgid "SMS backup file (XML or ZIP)"
+msgstr "Fichier de sauvegarde SMS (XML ou ZIP)"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_import_wizard
+msgid "SMS backup import"
+msgstr "Import de sauvegarde SMS"
+
+#. module: bf_sms_archive
+#: model:ir.actions.report,name:bf_sms_archive.action_report_sms_thread
+msgid "SMS conversation (PDF)"
+msgstr "Conversation SMS (PDF)"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_thread
+msgid "SMS conversation thread"
+msgstr "Fil de conversation SMS"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_project_task__sms_thread_ids
+msgid "SMS conversations"
+msgstr "Conversations SMS"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_dashboard_action
+msgid "SMS dashboard"
+msgstr "Tableau de bord SMS"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__sms_enabled
+msgid "SMS enabled"
+msgstr "SMS activé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_pivot
+msgid "SMS messages"
+msgstr "Messages SMS"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/systray/sms_systray.xml:0
+msgid "SMS messaging"
+msgstr "Messagerie SMS"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.bf_sms_config_settings_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_settings
+msgid "SMS settings"
+msgstr "Paramètres SMS"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "SMS/MMS"
+msgstr "SMS/MMS"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "SMS/MMS line"
+msgstr "Ligne SMS/MMS"
+
+#. module: bf_sms_archive
+#: model:ir.actions.act_window,name:bf_sms_archive.sms_line_action
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_lines
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_list
+msgid "SMS/MMS lines"
+msgstr "Lignes SMS/MMS"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model:ir.ui.menu,name:bf_sms_archive.sms_archive_menu_messages
+msgid "Search"
+msgstr "Rechercher"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Search for an Odoo contact…"
+msgstr "Rechercher un contact Odoo…"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_post_to_task_wizard__target_reference
+msgid ""
+"Search for the record by name, number, a shortcut (task:22299, ticket:42) or"
+" paste an Odoo URL. The project no longer needs to be chosen first."
+msgstr ""
+"Cherchez la fiche par son nom, son numéro, un raccourci (task:22299, "
+"ticket:42) ou collez une URL Odoo. Le projet n'a plus à être choisi d'abord."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Search in the conversation"
+msgstr "Rechercher dans la conversation"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Search this conversation…"
+msgstr "Rechercher dans cette conversation…"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Search…"
+msgstr "Rechercher…"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__webhook_token
+msgid ""
+"Secret included in the VOIP.ms callback URL to authenticate this line's "
+"incoming messages."
+msgstr ""
+"Secret inclus dans l'URL de callback VOIP.ms pour authentifier les messages "
+"entrants de cette ligne."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Select a conversation or start a new one."
+msgstr "Sélectionnez une conversation ou démarrez-en une nouvelle."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Select messages"
+msgstr "Sélectionner des messages"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Select several"
+msgstr "Sélectionner plusieurs"
+
+#. module: bf_sms_archive
+#: model:ir.actions.report,name:bf_sms_archive.action_report_sms_messages
+msgid "Selected SMS (PDF)"
+msgstr "SMS sélectionnés (PDF)"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_post_to_task_wizard_view_form
+msgid "Selected items"
+msgstr "Éléments sélectionnés"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__error
+msgid "Sending error"
+msgstr "Erreur d'envoi"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Sending failed: %s"
+msgstr "Échec de l'envoi : %s"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "Sending line not found."
+msgstr "Ligne d'envoi introuvable."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Sending number"
+msgstr "Numéro d'envoi"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__delivery_state__sent
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__sms_archive_message__direction__out
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__sent_by_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_tree
+msgid "Sent by"
+msgstr "Envoyé par"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+msgid "Sent messages"
+msgstr "Messages envoyés"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid ""
+"Set \"Public URL\" in\n"
+"                        <strong>Configuration ▸ SMS settings</strong>, then click\n"
+"                        <em>Configure the VOIP.ms webhook</em> to enable real-time\n"
+"                        reception (or paste the URL above into the VOIP.ms portal)."
+msgstr ""
+"Réglez « URL publique » dans\n"
+"                        <strong>Configuration ▸ Paramètres SMS</strong>, puis cliquez\n"
+"                        <em>Configurer le webhook VOIP.ms</em> pour activer la réception\n"
+"                        temps réel (ou collez l'URL ci-dessus dans le portail VOIP.ms)."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid "Set this line's callback URL in VOIP.ms (setSMS)?"
+msgstr "Poser l'URL de callback de cette ligne dans VOIP.ms (setSMS) ?"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Settings"
+msgstr "Paramètres"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,done_text:bf_sms_archive.bf_onb_step_settings
+msgid "Settings ready"
+msgstr "Paramètres prêts"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__is_shared
+msgid "Shared"
+msgstr "Partagée"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Shared line, owner: %s"
+msgstr "Ligne partagée, propriétaire : %s"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_form
+msgid ""
+"Shared line: the people listed in\n"
+"                        <strong>Shared users</strong> send from this number and\n"
+"                        read the conversations held on it, including those\n"
+"                        opened before the sharing. A thread marked\n"
+"                        <em>Confidential</em> stays with the owner only."
+msgstr ""
+"Ligne partagée : les personnes listées dans\n"
+"                        <strong>Utilisateurs partagés</strong> envoient depuis ce numéro et\n"
+"                        lisent les conversations qui s'y tiennent, y compris celles\n"
+"                        ouvertes avant le partage. Un fil marqué\n"
+"                        <em>Confidentiel</em> reste au seul propriétaire."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__user_ids
+msgid "Shared users"
+msgstr "Utilisateurs partagés"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_line_view_list
+msgid "Shared with"
+msgstr "Partagée avec"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Show active"
+msgstr "Voir les actifs"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Show archived threads"
+msgstr "Voir les archivés"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Simple view"
+msgstr "Affichage simple"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Sound: off"
+msgstr "Son : coupé"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Sound: on"
+msgstr "Son : activé"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Stage"
+msgstr "Étape"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Stop following (%s)"
+msgstr "Arrêter le suivi (%s)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Stop relaying the next messages here"
+msgstr "Ne plus relayer les prochains messages ici"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Symbifox Mobile wants to access your account"
+msgstr "Symbifox Mobile demande l'accès à votre compte"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.sms_line_sync_action
+msgid "Sync from VOIP.ms"
+msgstr "Synchroniser depuis VOIP.ms"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_device_view_form
+msgid "Synchronization"
+msgstr "Synchronisation"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Tap the messages to attach to the task."
+msgstr "Touchez les messages à joindre à la tâche."
+
+#. module: bf_sms_archive
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_project_task
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_post_to_task_wizard__task_id
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Task not found."
+msgstr "Tâche introuvable."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Task, ticket, contact, pasted URL…"
+msgstr "Tâche, ticket, contact, URL collée…"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Tasks"
+msgstr "Tâches"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Tasks of this conversation"
+msgstr "Tâches de cette conversation"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Technical"
+msgstr "Technique"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mms_part__text_content
+msgid "Text content"
+msgstr "Contenu texte"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "The ZIP file is corrupted."
+msgstr "Le fichier ZIP est corrompu."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "The content of an archived SMS cannot be changed."
+msgstr "Le contenu d'un SMS archivé ne se modifie pas."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid ""
+"The file exceeds the %d MB limit for import through the form. For larger "
+"files, drop them into /mnt/sms-inbox on the server (see README)."
+msgstr ""
+"Le fichier dépasse la limite de %d Mo pour l'import par formulaire. Pour les"
+" fichiers plus volumineux, déposez-les dans /mnt/sms-inbox côté serveur "
+"(voir README)."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid ""
+"The last exchange took place on\n"
+"                            «"
+msgstr ""
+"Le dernier échange s'est fait sur\n"
+"                            «"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "The next messages will also go to \"%s\""
+msgstr "Les prochains messages iront aussi dans « %s »"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_link__mail_message_id
+msgid ""
+"The note actually posted in the record's chatter. A consolidated note often "
+"covers several messages: it is only removed once no link points to it "
+"anymore."
+msgstr ""
+"La note effectivement posée dans le chatter de la fiche. Une note consolidée"
+" couvre souvent plusieurs messages : elle n'est retirée que lorsque plus "
+"aucun rattachement ne la vise."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_call_archive_call__link_ids
+msgid "The records on whose chatter this call was posted."
+msgstr "Les fiches sur le chatter desquelles cet appel a été posé."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__link_ids
+msgid ""
+"The records on whose chatter this message was posted. A single message can "
+"target several of them."
+msgstr ""
+"Les fiches sur le chatter desquelles ce message a été posé. Un même message "
+"peut en viser plusieurs."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "This account does not have access to SMS messaging."
+msgstr "Ce compte n'a pas accès à la messagerie SMS."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_call_archive_call_hash_uniq
+msgid "This call already exists (duplicate hash)."
+msgstr "Cet appel existe déjà (hash dupliqué)."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_link_call_target_uniq
+msgid "This call is already linked to this record."
+msgstr "Cet appel est déjà rattaché à cette fiche."
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_sms_archive
 #: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_mobile_receipt_user_client_uuid_unique
 msgid "This device identifier was already used by this user."
 msgstr "Cet identifiant d'appareil a déjà servi à cet usager."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_mobile_device_device_token_uniq
+msgid "This device token already exists."
+msgstr "Ce jeton d'appareil existe déjà."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_line_did_uniq
+msgid "This line (DID) already exists."
+msgstr "Cette ligne (DID) existe déjà."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid ""
+"This line does not send MMS: remove the attachment or choose another line."
+msgstr ""
+"Cette ligne n'envoie pas de MMS : retirez la pièce jointe ou choisissez une "
+"autre ligne."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "This line is not accessible to you."
+msgstr "Cette ligne ne vous est pas accessible."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_message_hash_uniq
+msgid "This message already exists (duplicate hash)."
+msgstr "Ce message existe déjà (hash dupliqué)."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_link_message_target_uniq
+msgid "This message is already linked to this record."
+msgstr "Ce message est déjà rattaché à cette fiche."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+msgid "This month"
+msgstr "Ce mois"
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_push_subscription_endpoint_uniq
+msgid "This push subscription already exists."
+msgstr "Cet abonnement push existe déjà."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_link.py:0
+msgid "This record has been deleted."
+msgstr "Cette fiche a été supprimée."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_link.py:0
+msgid "This record no longer exists."
+msgstr "Cette fiche n'existe plus."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_device_token_unique
+msgid "This token is already used by another device."
+msgstr "Ce token est déjà utilisé par un autre appareil."
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_search
+msgid "This week"
+msgstr "Cette semaine"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_res_config_settings__bf_sms_voipms_tz
+msgid ""
+"Time zone in which VOIP.ms issues its timestamps (\"Time Zone\" setting of "
+"the VOIP.ms portal, US/Eastern by default). IANA name, e.g. "
+"America/New_York."
+msgstr ""
+"Fuseau dans lequel VOIP.ms émet ses horodatages (réglage « Time Zone » du "
+"portail VOIP.ms, US/Eastern par défaut). Nom IANA, ex. America/New_York."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__date_ms
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__date_sent_ms
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+msgid "Timestamp (ms)"
+msgstr "Timestamp (ms)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__webhook_url
+msgid ""
+"To copy into VOIP.ms (or set with the \"Configure the webhook\" button). "
+"Contains the secret token: treat it as a secret (keep it out of logs)."
+msgstr ""
+"À copier dans VOIP.ms (ou poser via le bouton « Configurer le webhook »). "
+"Contient le jeton secret : traiter comme un secret (tenir hors des logs)."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "To date"
+msgstr "Au"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "To:"
+msgstr "À :"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__token_hash
+msgid "Token hash"
+msgstr "Empreinte du jeton"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Top 10 contacts"
+msgstr "Top 10 contacts"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Total calls"
+msgstr "Total appels"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_device__total_received
+msgid "Total received (lifetime)"
+msgstr "Total reçus (lifetime)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Total time"
+msgstr "Temps total"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_line__is_shared
+msgid "True as soon as at least one colleague has access to this line."
+msgstr "Vrai dès qu'au moins un collègue a accès à cette ligne."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Turn sound on"
+msgstr "Activer le son"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_sms_archive.field_call_archive_call__call_type
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Type at least two characters."
+msgstr "Tapez au moins deux caractères."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Unarchive"
+msgstr "Désarchiver"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_message_view_form
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid "Undo"
+msgstr "Défaire"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Undo this link"
+msgstr "Défaire ce rattachement"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Unexpected error"
+msgstr "Erreur inattendue"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_mobile_device__push_endpoint
+msgid ""
+"UnifiedPush (ntfy) endpoint URL to which this device's notifications are "
+"pushed."
+msgstr ""
+"URL d'endpoint UnifiedPush (ntfy) vers laquelle pousser les notifications de"
+" cet appareil."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__push_endpoint
+msgid "UnifiedPush endpoint"
+msgstr "Endpoint UnifiedPush"
+
+#. module: bf_sms_archive
+#. modules: bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__presentation__unknown
+msgid "Unknown"
+msgstr "Inconnu"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "Unlinked"
+msgstr "Non liés"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/js/sms_dashboard.js:0
+msgid "Unlinked contacts"
+msgstr "Contacts non liés"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.js:0
+msgid "Unpin"
+msgstr "Désépingler"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_thread__unread_count
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_tree
+msgid "Unread"
+msgstr "Non lus"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Unreadable attachment."
+msgstr "Pièce jointe illisible."
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/wizard/import_wizard.py:0
+msgid "Unsupported format. Use an XML or ZIP file."
+msgstr "Format non supporté. Utilisez un fichier XML ou ZIP."
+
+#. module: bf_sms_archive
+#. modules: bf_calendar_mobile, bf_outreach, bf_sms_archive, bf_softphone
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__user_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__user_id
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_push_subscription__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__sent_by_id
+msgid ""
+"User who actually wrote this outgoing message. Differs from the owner when "
+"the line is shared between several people."
+msgstr ""
+"Utilisateur qui a réellement composé ce message sortant. Diffère du "
+"propriétaire quand la ligne est partagée entre plusieurs personnes."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "VOIP.ms API account (voip.ms ▸ Main Menu ▸ SOAP/REST API)."
+msgstr "Compte API VOIP.ms (voip.ms ▸ Main Menu ▸ SOAP/REST API)."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "VOIP.ms API credentials"
+msgstr "Identifiants API VOIP.ms"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_voipms
+msgid "VOIP.ms API transport (SMS/MMS)"
+msgstr "Transport API VOIP.ms (SMS/MMS)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_message__voipms_id
+msgid "VOIP.ms ID"
+msgstr "ID VOIP.ms"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_line
+msgid "VOIP.ms SMS/MMS line"
+msgstr "Ligne SMS/MMS VOIP.ms"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "VOIP.ms account time zone"
+msgstr "Fuseau du compte VOIP.ms"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__line_id
+msgid "VOIP.ms line (DID) used for this live message."
+msgstr "Ligne (DID) VOIP.ms utilisée pour ce message live."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__voipms_subaccount
+msgid "VOIP.ms sub-account"
+msgstr "Sous-compte VOIP.ms"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_res_config_settings__bf_sms_voipms_api_password
+msgid "VOIP.ms: API password"
+msgstr "VOIP.ms — mot de passe API"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_res_config_settings__bf_sms_voipms_api_username
+msgid "VOIP.ms: API user"
+msgstr "VOIP.ms — utilisateur API"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_res_config_settings__bf_sms_voipms_tz
+msgid "VOIP.ms: account time zone"
+msgstr "VOIP.ms — fuseau du compte"
+
+#. module: bf_sms_archive
+#: model:ir.actions.server,name:bf_sms_archive.cron_voipms_poll_ir_actions_server
+msgid "VOIP.ms: incoming SMS safety net"
+msgstr "VOIP.ms : filet SMS entrants"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "VOIP.ms: live messaging"
+msgstr "VOIP.ms — Messagerie live"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,button_text:bf_sms_archive.bf_onb_step_devices
+msgid "View devices"
+msgstr "Voir les appareils"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,button_text:bf_sms_archive.bf_onb_step_threads
+msgid "View threads"
+msgstr "Voir les fils"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_search
+msgid "Visible"
+msgstr "Visibles"
+
+#. module: bf_sms_archive
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_sms_archive.selection__call_archive_call__call_type__voicemail
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.call_archive_view_search
+msgid "Voicemail"
+msgstr "Messagerie vocale"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_push_subscription
+msgid "Web Push subscription (SMS messaging)"
+msgstr "Abonnement Web Push (messagerie SMS)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__push_p256dh
+msgid "WebPush public key"
+msgstr "Clé publique WebPush"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_device__push_auth
+msgid "WebPush secret"
+msgstr "Secret WebPush"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_line__webhook_token
+msgid "Webhook token"
+msgstr "Jeton webhook"
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_line_token_uniq
+msgid "Webhook token already in use."
+msgstr "Jeton webhook déjà utilisé."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.sms_thread_view_form
+msgid ""
+"Where each message went. A single message can\n"
+"                                target several records; \"Undo\" removes the\n"
+"                                link, and the chatter note along with it\n"
+"                                once no message points to it anymore."
+msgstr ""
+"Où chaque message est parti. Un même message peut\n"
+"                                viser plusieurs fiches ; « Défaire » retire le\n"
+"                                rattachement, et la note du chatter avec lui\n"
+"                                lorsque plus aucun message ne la vise."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_thread__link_ids
+msgid ""
+"Which message (or which call) of this conversation went to which record."
+msgstr ""
+"Quel message (ou quel appel) de cette conversation est parti sur quelle "
+"fiche."
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "Write an SMS…"
+msgstr "Écrire un message…"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_import_wizard__file_data
+msgid "XML or ZIP file"
+msgstr "Fichier XML ou ZIP"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_thread.py:0
+msgid "Yes"
+msgstr "Oui"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/mobile_api.py:0
+msgid "Your SMS messages and calls"
+msgstr "Vos messages SMS et vos appels"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "[Image"
+msgstr "[Image"
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,description:bf_sms_archive.bf_onb_step_devices
+msgid ""
+"[action:bf_sms_archive.sms_device_action] Declare the phones and numbers "
+"whose SMS and calls you want to archive."
+msgstr ""
+"[action:bf_sms_archive.sms_device_action] Déclarez les téléphones et numéros"
+" dont vous voulez archiver les SMS et appels."
+
+#. module: bf_sms_archive
+#: model:onboarding.onboarding.step,description:bf_sms_archive.bf_onb_step_threads
+msgid ""
+"[action:bf_sms_archive.sms_thread_action] Check that the conversations "
+"appear and are linked to Odoo contacts."
+msgstr ""
+"[action:bf_sms_archive.sms_thread_action] Validez que les conversations "
+"apparaissent et sont reliées aux contacts Odoo."
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_call_archive_call__import_batch_id
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_message__import_batch_id
+msgid "backup_set identifier from the XML file"
+msgstr "Identifiant backup_set du fichier XML"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "chars"
+msgstr "car."
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.res_config_settings_view_form
+msgid "https://odoo.example.com"
+msgstr "https://odoo.exemple.com"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "linked"
+msgstr "liés"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid ""
+"message(s) in this conversation\n"
+"                            took place on other lines and remain with"
+msgstr ""
+"message(s) de cette conversation\n"
+"                            se sont tenus sur d'autres lignes et restent chez"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "message(s) selected"
+msgstr "message(s) sélectionné(s)"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "messages"
+msgstr "messages"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "selected"
+msgstr "sélectionné(s)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/xml/sms_dashboard.xml:0
+msgid "without an Odoo contact"
+msgstr "sans contact Odoo"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid ""
+"| Confidential document |\n"
+"            Exported on"
+msgstr ""
+"| Document confidentiel |\n"
+"            Exporté le"
+
+#. module: bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_sms_archive.report_sms_thread_block
+msgid "· MMS"
+msgstr "· MMS"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "· Unicode (70/SMS)"
+msgstr "· Unicode (70/SMS)"
+
+#. module: bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_sms_archive/static/src/messenger/messenger.xml:0
+msgid "→ 1 MMS"
+msgstr "→ 1 MMS"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/sms_message.py:0
+msgid "📎 Attachment"
+msgstr "📎 Pièce jointe"
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/call_archive.py:0
+msgid "🔊 Listen"
+msgstr "🔊 Écouter"

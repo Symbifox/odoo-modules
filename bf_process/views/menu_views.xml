@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_bf_process_root" name="Cartographies"
+    <menuitem id="menu_bf_process_root" name="Process maps"
               web_icon="bf_process,static/description/icon.png"
               sequence="46" groups="bf_process.group_bf_process_user"/>
-    <menuitem id="menu_bf_process" name="Cartographies"
+    <menuitem id="menu_bf_process" name="Process maps"
               parent="menu_bf_process_root" action="action_bf_process"
               sequence="10"/>
-    <menuitem id="menu_bf_process_diagram" name="Niveaux"
+    <menuitem id="menu_bf_process_diagram" name="Levels"
               parent="menu_bf_process_root" action="action_bf_process_diagram"
               sequence="20"/>
-    <menuitem id="menu_bf_process_import" name="Importer un BPMN"
+    <menuitem id="menu_bf_process_import" name="Import BPMN"
               parent="menu_bf_process_root" action="action_bf_process_import"
               sequence="40" groups="bf_process.group_bf_process_manager"/>
-    <menuitem id="menu_bf_process_ecart" name="Écarts"
+    <menuitem id="menu_bf_process_ecart" name="Gaps"
               parent="menu_bf_process_root" action="action_bf_process_ecart"
               sequence="25"/>
-    <menuitem id="menu_bf_process_resource" name="Ressources"
+    <menuitem id="menu_bf_process_resource" name="Resources"
               parent="menu_bf_process_root"
               action="action_bf_process_resource" sequence="35"/>
-    <menuitem id="menu_bf_process_node" name="Nœuds"
+    <menuitem id="menu_bf_process_node" name="Nodes"
               parent="menu_bf_process_root" action="action_bf_process_node"
               sequence="30"/>
 </odoo>

@@ -4,6 +4,8 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
+import { _t } from "@web/core/l10n/translation";
+import { user } from "@web/core/user";
 
 const MODEL = "sms.archive.thread";
 const PAGE = 50;
@@ -247,7 +249,7 @@ class SmsMessenger extends Component {
             !this.state.archived,
         ]);
         this.notification.add(
-            this.state.archived ? "Conversation désarchivée" : "Conversation archivée",
+            this.state.archived ? _t("Conversation unarchived") : _t("Conversation archived"),
             { type: "success" }
         );
         this.state.activeThreadId = null;
@@ -291,7 +293,9 @@ class SmsMessenger extends Component {
         ]);
         const n = this.state.selectedIds.length;
         this.notification.add(
-            `${n} conversation(s) ${this.state.archived ? "désarchivée(s)" : "archivée(s)"}`,
+            this.state.archived
+                ? _t("%s conversation(s) unarchived", n)
+                : _t("%s conversation(s) archived", n),
             { type: "success" }
         );
         this.state.selectMode = false;
@@ -353,7 +357,7 @@ class SmsMessenger extends Component {
 
     _rpcError(e) {
         // La charge d'erreur d'un RPC Owl est dans e.data.message, pas e.message.
-        return (e && e.data && e.data.message) || (e && e.message) || "Erreur inattendue";
+        return (e && e.data && e.data.message) || (e && e.message) || _t("Unexpected error");
     }
 
     async openTaskPicker() {
@@ -406,7 +410,7 @@ class SmsMessenger extends Component {
                 this.state.taskGroups = tasks.length
                     ? [{
                           model: "project.task",
-                          model_label: "Tâches récentes",
+                          model_label: _t("Recent tasks"),
                           icon: "fa fa-tasks",
                           results: tasks.map((t) => ({
                               id: t.id, name: t.name, detail: t.project_name || "",
@@ -444,7 +448,10 @@ class SmsMessenger extends Component {
             );
             this._applyLinks(res.links);
             this.notification.add(
-                `${res.count} message(s) posté(s) sur « ${res.name} »`,
+                _t('%(count)s message(s) posted to "%(name)s"', {
+                    count: res.count,
+                    name: res.name,
+                }),
                 { type: "success" }
             );
             this.state.taskPickerOpen = false;
@@ -485,7 +492,7 @@ class SmsMessenger extends Component {
         this.state.bubbleGroups = this.state.taskTargets.length
             ? [{
                   model: "project.task",
-                  model_label: "Tâches de cette conversation",
+                  model_label: _t("Tasks of this conversation"),
                   icon: "fa fa-tasks",
                   results: this.state.taskTargets.map((t) => ({
                       id: t.id,
@@ -534,7 +541,7 @@ class SmsMessenger extends Component {
                 { message_ids: [messageId] }
             );
             this._applyLinks(res.links);
-            this.notification.add(`Message rattaché à « ${res.name} »`, {
+            this.notification.add(_t('Message linked to "%s"', res.name), {
                 type: "success",
             });
             this.closeBubbleLink();
@@ -562,8 +569,8 @@ class SmsMessenger extends Component {
             msg.links = res.links || [];
             this.notification.add(
                 res.note_removed
-                    ? `Rattachement retiré, et la note du chatter avec lui.`
-                    : `Rattachement retiré. La note reste dans le chatter.`,
+                    ? _t("Link removed, along with its chatter note.")
+                    : _t("Link removed. The note stays in the chatter."),
                 { type: "success" }
             );
         } catch (e) {
@@ -584,7 +591,7 @@ class SmsMessenger extends Component {
         this.state.taskPickerOpen = false;
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Poster sur une fiche",
+            name: _t("Post to a record"),
             res_model: "sms.archive.post.to.task.wizard",
             view_mode: "form",
             views: [[false, "form"]],
@@ -612,7 +619,7 @@ class SmsMessenger extends Component {
                     : (this.state.taskTargets[0] && this.state.taskTargets[0].id);
                 if (!target) {
                     this.notification.add(
-                        "Rattachez d'abord la conversation à une tâche.",
+                        _t("Link the conversation to a task first."),
                         { type: "warning" }
                     );
                     return;
@@ -628,19 +635,99 @@ class SmsMessenger extends Component {
             const added = this.state.autoTaskIds.filter((id) => !before.includes(id));
             this.notification.add(
                 this.state.autoTaskIds.length === 0
-                    ? "Suivi automatique désactivé"
+                    ? _t("Automatic follow-up turned off")
                     : added.length
-                    ? `Les prochains messages iront aussi dans « ${
+                    ? _t(
+                          'The next messages will also go to "%s"',
                           this.state.autoTaskNames[
                               this.state.autoTaskIds.indexOf(added[0])
                           ]
-                      } »`
-                    : `Suivi maintenu sur ${this.state.autoTaskIds.length} tâche(s)`,
+                      )
+                    : _t("Follow-up kept on %s task(s)", this.state.autoTaskIds.length),
                 { type: "success" }
             );
         } catch (e) {
             this.notification.add(this._rpcError(e), { type: "danger" });
         }
+    }
+
+    // ── Libellés du gabarit ────────────────────────────────────
+    // Les ternaires et concaténations d'un gabarit OWL ne passent pas par le
+    // catalogue : chaque libellé calculé vit ici, derrière _t().
+
+    /** Langue de l'usager au format du navigateur (fr_CA → fr-CA) pour les dates. */
+    get locale() {
+        return (user.lang || "en_US").replace("_", "-");
+    }
+
+    get soundToggleTitle() {
+        return this.state.soundOn ? _t("Mute sound") : _t("Turn sound on");
+    }
+
+    get soundStateLabel() {
+        return this.state.soundOn ? _t("Sound: on") : _t("Sound: off");
+    }
+
+    get archivedToggleLabel() {
+        return this.state.archived ? _t("Show active") : _t("Show archived threads");
+    }
+
+    get archiveActionLabel() {
+        return this.state.archived ? _t("Unarchive") : _t("Archive");
+    }
+
+    get pinLabel() {
+        return this.state.activeThread && this.state.activeThread.is_pinned
+            ? _t("Unpin")
+            : _t("Pin");
+    }
+
+    /** En-tête du sélecteur de tâche. Un seul msgid : « Post » seul, coupé du
+     *  compteur par le gabarit, croisait le « Post » d'autres modules. */
+    get postCountLabel() {
+        return _t("Post %s message(s) to…", this.selectedMsgCount || this.state.conversation.length);
+    }
+
+    get msgSelectLabel() {
+        return this.state.msgSelectMode ? _t("Exit selection") : _t("Select messages");
+    }
+
+    get autoTaskMenuLabel() {
+        return this.state.autoTaskIds.length
+            ? _t("Stop following (%s)", this.autoTaskLabel)
+            : _t("Follow in the task");
+    }
+
+    get postButtonTitle() {
+        return this.state.taskTargets.length === 1
+            ? _t('Post to "%s"', this.state.taskTargets[0].name)
+            : _t("Post to a task");
+    }
+
+    get sendingLineTitle() {
+        return _t("Sending number");
+    }
+
+    ownerTitle(t) {
+        return t.owner_name ? _t("Owner: %s", t.owner_name) : "";
+    }
+
+    sharedLineTitle(t) {
+        return _t("Shared line, owner: %s", t.owner_name);
+    }
+
+    followTitle(taskId) {
+        return this.isFollowed(taskId)
+            ? _t("Stop relaying the next messages here")
+            : _t("Also relay the next messages here");
+    }
+
+    originTitle(msg) {
+        return msg.line_did ? _t("Number: %s", this.formatPhone(msg.line_did)) : "";
+    }
+
+    linkChipTitle(lk) {
+        return lk.is_auto ? _t("%s · automatic follow-up", lk.model_label) : lk.model_label;
     }
 
     get autoTaskLabel() {
@@ -650,7 +737,7 @@ class SmsMessenger extends Component {
         }
         return n === 1
             ? this.state.autoTaskNames[0]
-            : `${n} tâches`;
+            : _t("%s tasks", n);
     }
 
     // ── Contact linking / opening ──────────────────────────────
@@ -701,7 +788,12 @@ class SmsMessenger extends Component {
         // écriture chez le contact ne doit pas se faire en silence.
         if (updated.mobile_added) {
             this.notification.add(
-                `${updated.phone} ajouté au mobile de ${updated.partner_name || "ce contact"}`,
+                updated.partner_name
+                    ? _t("%(phone)s added to the mobile of %(name)s", {
+                          phone: updated.phone,
+                          name: updated.partner_name,
+                      })
+                    : _t("%s added to this contact's mobile", updated.phone),
                 { type: "success" }
             );
         }
@@ -729,7 +821,7 @@ class SmsMessenger extends Component {
     async markAllRead() {
         const summary = await this.orm.call(MODEL, "mark_all_read", []);
         await this.loadThreads();
-        this.notification.add(`${summary.total === 0 ? "Tout est lu" : ""}`.trim() || "Marqué comme lu", {
+        this.notification.add(summary.total === 0 ? _t("All read") : _t("Marked as read"), {
             type: "success",
         });
     }
@@ -740,7 +832,7 @@ class SmsMessenger extends Component {
         }
         await this.orm.call(MODEL, "messenger_set_thread_read", [this.state.activeThreadId, false]);
         await this.loadThreads();
-        this.notification.add("Conversation marquée non lue", { type: "info" });
+        this.notification.add(_t("Conversation marked as unread"), { type: "info" });
     }
 
     async togglePin() {
@@ -916,7 +1008,7 @@ class SmsMessenger extends Component {
         const files = Array.from(ev.target.files || []);
         for (const file of files) {
             if (this.state.attachments.length >= MAX_MEDIA) {
-                this.notification.add(`Maximum ${MAX_MEDIA} pièces jointes.`, { type: "warning" });
+                this.notification.add(_t("Maximum %s attachments.", MAX_MEDIA), { type: "warning" });
                 break;
             }
             const media = await this._readFile(file);
@@ -1017,7 +1109,7 @@ class SmsMessenger extends Component {
                 await this.openThread(threadId);
             }
         } catch (e) {
-            this.notification.add("Échec de l'envoi : " + (e.message || e), { type: "danger" });
+            this.notification.add(_t("Sending failed: %s", e.message || e), { type: "danger" });
         } finally {
             this.state.sending = false;
         }
@@ -1049,8 +1141,8 @@ class SmsMessenger extends Component {
     }
 
     _notifyInbound(payload) {
-        const title = payload.contact || "Nouveau SMS";
-        this.notification.add(payload.preview || "Nouveau message", {
+        const title = payload.contact || _t("New SMS");
+        this.notification.add(payload.preview || _t("New message"), {
             title,
             type: "info",
         });
@@ -1122,12 +1214,12 @@ class SmsMessenger extends Component {
     async enablePush() {
         await this._setupPush({ prompt: true });
         if (this.state.pushReady) {
-            this.notification.add("Notifications activées sur cet appareil.", {
+            this.notification.add(_t("Notifications enabled on this device."), {
                 type: "success",
             });
         } else if (window.Notification && Notification.permission === "denied") {
             this.notification.add(
-                "Notifications bloquées par le navigateur — à réautoriser dans ses réglages.",
+                _t("Notifications blocked by the browser: allow them again in its settings."),
                 { type: "warning" },
             );
         }
@@ -1191,7 +1283,7 @@ class SmsMessenger extends Component {
         if (!ms) {
             return "";
         }
-        return new Date(ms).toLocaleTimeString("fr-CA", {
+        return new Date(ms).toLocaleTimeString(this.locale, {
             hour: "2-digit", minute: "2-digit", timeZone: this.tz || undefined,
         });
     }
@@ -1200,7 +1292,7 @@ class SmsMessenger extends Component {
         if (!ms) {
             return "";
         }
-        return new Date(ms).toLocaleDateString("fr-CA", {
+        return new Date(ms).toLocaleDateString(this.locale, {
             weekday: "short", day: "numeric", month: "short", timeZone: this.tz || undefined,
         });
     }
@@ -1214,7 +1306,7 @@ class SmsMessenger extends Component {
         if (d.toDateString() === today.toDateString()) {
             return this.formatTime(ms);
         }
-        return d.toLocaleDateString("fr-CA", {
+        return d.toLocaleDateString(this.locale, {
             day: "numeric", month: "short", timeZone: this.tz || undefined,
         });
     }

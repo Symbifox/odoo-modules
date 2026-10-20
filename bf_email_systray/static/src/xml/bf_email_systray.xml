@@ -15,27 +15,27 @@
             </button>
             <Dropdown>
                 <button class="btn px-1 o_bf_email_systray_caret"
-                        title="Comment ouvrir la bo&#238;te">
+                        title="How to open the inbox">
                     <i class="fa fa-caret-down"/>
                 </button>
                 <t t-set-slot="content">
                     <DropdownItem onSelected="() => this.togglePanel()">
-                        <i class="fa fa-columns fa-fw me-2"/>Ouvrir en panneau
+                        <i class="fa fa-columns fa-fw me-2"/>Open in a panel
                     </DropdownItem>
                     <DropdownItem onSelected="() => this.openFullPage()">
-                        <i class="fa fa-expand fa-fw me-2"/>Ouvrir en pleine page
+                        <i class="fa fa-expand fa-fw me-2"/>Open full page
                     </DropdownItem>
                     <DropdownItem onSelected="() => this.openListView()">
-                        <i class="fa fa-list fa-fw me-2"/>Ouvrir la vue (liste)
+                        <i class="fa fa-list fa-fw me-2"/>Open the list view
                     </DropdownItem>
                     <div role="separator" class="dropdown-divider"/>
                     <DropdownItem onSelected="() => this.setMode('panneau')">
                         <i t-att-class="isPanelMode ? 'fa fa-check fa-fw me-2' : 'fa fa-fw me-2'"/>
-                        Toujours en panneau
+                        Always in a panel
                     </DropdownItem>
                     <DropdownItem onSelected="() => this.setMode('page')">
                         <i t-att-class="!isPanelMode ? 'fa fa-check fa-fw me-2' : 'fa fa-fw me-2'"/>
-                        Toujours en pleine page
+                        Always full page
                     </DropdownItem>
                 </t>
             </Dropdown>
@@ -46,25 +46,25 @@
         <div class="o_bf_email_panel_root">
             <div class="o_bf_email_panel_scrim" t-on-click="() => props.close()"/>
             <section class="o_bf_email_panel" t-att-style="panelStyle"
-                     role="dialog" aria-label="Bo&#238;te de r&#233;ception">
+                     role="dialog" aria-label="Inbox">
                 <header class="o_bf_email_panel_header d-flex align-items-center gap-2">
                     <i class="fa fa-inbox"/>
                     <span class="o_bf_email_panel_title text-truncate">
-                        <t t-if="filtre.contact">Courriels : <t t-esc="filtre.contact.name"/></t>
-                        <t t-else="">Bo&#238;te de r&#233;ception</t>
+                        <t t-if="filtre.contact">Emails: <t t-esc="filtre.contact.name"/></t>
+                        <t t-else="">Inbox</t>
                     </span>
                     <span class="o_bf_email_panel_size text-muted small" t-esc="sizeLabel"/>
                     <div class="ms-auto d-flex align-items-center">
                         <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
-                                t-on-click="resetSize" title="Revenir &#224; la taille par d&#233;faut">
+                                t-on-click="resetSize" title="Reset to the default size">
                             <i class="fa fa-compress"/>
                         </button>
                         <button class="btn btn-sm btn-link" t-on-click="openFullPage"
-                                title="Ouvrir en pleine page">
+                                title="Open full page">
                             <i class="fa fa-expand"/>
                         </button>
                         <button class="btn btn-sm btn-link o_bf_email_panel_close"
-                                t-on-click="() => props.close()" title="Fermer (&#201;chap)">
+                                t-on-click="() => props.close()" title="Close the panel (Esc)">
                             <i class="fa fa-times"/>
                         </button>
                     </div>
@@ -72,7 +72,7 @@
                 <div class="o_bf_email_panel_body">
                     <BfEmailInbox inPanel="true" contact="props.contact" onContactCleared="onContactCleared"/>
                 </div>
-                <div class="o_bf_email_panel_grip" title="Redimensionner"
+                <div class="o_bf_email_panel_grip" title="Resize"
                      t-on-pointerdown="startResize"
                      t-on-pointermove="onResizeMove"
                      t-on-pointerup="stopResize"

@@ -35,27 +35,20 @@ from odoo.exceptions import UserError
 from .erreurs import refus_lisible
 
 from ..generateur import geometrie as geo
-from .structure import ACTIVITES, KINDS
+from .structure import KINDS
 
 # Un nœud posé à la main hérite d'un nom qui se voit : mieux vaut une carte qui
-# affiche « À nommer » qu'une forme muette qu'on croit finie.
-NOMS_PAR_DEFAUT = {
-    "task": "À nommer",
-    "send": "À nommer",
-    "receive": "À nommer",
-    "user": "À nommer",
-    "sub": "À nommer",
-    "note": "À écrire",
-}
+# affiche « À nommer » qu'une forme muette qu'on croit finie. Le nom vient de
+# `bf.process._nom_par_defaut`, dans la langue du livrable : il s'imprime.
 
 
 class BfProcessEdition(models.Model):
     _inherit = "bf.process.diagram"
 
     pas_grille = fields.Float(
-        string="Pas de la grille", default=0.05,
-        help="Sur quoi un déplacement se cale, en fraction de colonne et de"
-             " rangée. 0,05 est le pas des cartes produites par le générateur.")
+        string="Grid step", default=0.05,
+        help="What a move snaps to, as a fraction of a column and a row. "
+             "0.05 is the step of the maps produced by the generator.")
 
     # ------------------------------------------------------------------ garde
     #: modèles réellement écrits par le tracé. Le contrôle porte sur celui que
@@ -82,12 +75,13 @@ class BfProcessEdition(models.Model):
         self.ensure_one()
         if self.process_id.state == "valide":
             raise UserError(_(
-                "« %s v%s » est une version validée : son tracé ne se modifie "
-                "plus. Créez la version suivante, ou rouvrez celle-ci."
+                "\"%s v%s\" is a validated version: its drawing can no "
+                "longer be edited. Create the next version, or reopen "
+                "this one."
             ) % (self.process_id.name, self.process_id.version))
         if not self.env[modele].has_access("write"):
             raise UserError(_(
-                "Modifier un tracé demande le droit de gestion des cartographies."))
+                "Editing a drawing requires the process map management right."))
 
     # ------------------------------------------------- pixels vers la grille
     def _caler(self, valeur):
@@ -161,7 +155,7 @@ class BfProcessEdition(models.Model):
         self._exiger_modifiable()
         noeud = self.node_ids.filtered(lambda n: n.code == code)
         if not noeud:
-            raise UserError(_("Aucun nœud « %s » sur ce niveau.") % code)
+            raise UserError(_("No node \"%s\" on this level.") % code)
         col, row, couloir = self._inverser(cx, cy)
         vals = {"col": col, "row": row}
         if couloir:
@@ -182,14 +176,12 @@ class BfProcessEdition(models.Model):
         self.ensure_one()
         self._exiger_modifiable()
         if genre not in dict(KINDS):
-            raise UserError(_("« %s » n'est pas un type de nœud.") % genre)
+            raise UserError(_("\"%s\" is not a node type.") % genre)
         col, row, couloir = self._inverser(cx, cy)
         pris = set(self.node_ids.mapped("code"))
         code = self._code_libre("n", pris)
         cible = self.lane_ids.filtered(lambda l: l.code == couloir)
-        libelle = nom or NOMS_PAR_DEFAUT.get(genre)
-        if not libelle and genre in ACTIVITES:
-            libelle = NOMS_PAR_DEFAUT["task"]
+        libelle = nom or self.process_id._nom_par_defaut(genre)
         noeud = self.env["bf.process.node"].create({
             "diagram_id": self.id,
             "sequence": (max(self.node_ids.mapped("sequence"), default=0) + 10),
@@ -202,7 +194,7 @@ class BfProcessEdition(models.Model):
         })
         self._resequencer(self.node_ids.sorted(lambda n: (n.sequence, n.id)))
         self.process_id.message_post(body=Markup(_(
-            "Nœud <b>%s</b> ajouté au niveau « %s » depuis le tracé."))
+            "Node <b>%s</b> added to level \"%s\" from the drawing."))
             % (noeud.display_name, self.display_name))
         return self.rendu()
 
@@ -217,19 +209,19 @@ class BfProcessEdition(models.Model):
         self._exiger_modifiable()
         noeud = self.node_ids.filtered(lambda n: n.code == code)
         if not noeud:
-            raise UserError(_("Aucun nœud « %s » sur ce niveau.") % code)
+            raise UserError(_("No node \"%s\" on this level.") % code)
         if noeud.child_diagram_id:
             raise UserError(_(
-                "« %s » ouvre le niveau « %s ». Détachez la page avant de "
-                "retirer le sous-processus qui y mène, sinon elle devient "
-                "inatteignable sans que rien ne le dise."
+                "\"%s\" opens level \"%s\". Detach the page before "
+                "removing the subprocess that leads to it, otherwise it "
+                "becomes unreachable without anything saying so."
             ) % (noeud.display_name, noeud.child_diagram_id.display_name))
         nom = noeud.display_name
         noeud.unlink()
         self._resequencer(self.node_ids.sorted(lambda n: (n.sequence, n.id)))
         self._resequencer(self.flow_ids.sorted(lambda f: (f.sequence, f.id)))
         self.process_id.message_post(body=Markup(_(
-            "Nœud <b>%s</b> retiré du niveau « %s » depuis le tracé."))
+            "Node <b>%s</b> removed from level \"%s\" from the drawing."))
             % (nom, self.display_name))
         return self.rendu()
 
@@ -241,13 +233,13 @@ class BfProcessEdition(models.Model):
         par_code = {n.code: n for n in self.node_ids}
         source, cible = par_code.get(code_source), par_code.get(code_cible)
         if not source or not cible:
-            raise UserError(_("Il faut deux nœuds de ce niveau pour un flux."))
+            raise UserError(_("A flow needs two nodes of this level."))
         if source == cible:
-            raise UserError(_("Un flux ne peut pas boucler sur lui-même."))
+            raise UserError(_("A flow cannot loop back on itself."))
         existant = self.flow_ids.filtered(
             lambda f: f.source_id == source and f.target_id == cible)
         if existant:
-            raise UserError(_("Ces deux nœuds sont déjà reliés."))
+            raise UserError(_("These two nodes are already linked."))
         # une annotation se relie par une association, jamais par une séquence
         vers_note = "note" in (source.kind, cible.kind)
         pris = {f.bpmn_id for f in self.process_id.mapped("diagram_ids.flow_ids")}
@@ -275,7 +267,7 @@ class BfProcessEdition(models.Model):
             lambda f: f.source_id.code == code_source
             and f.target_id.code == code_cible)
         if not flux:
-            raise UserError(_("Ces deux nœuds ne sont pas reliés."))
+            raise UserError(_("These two nodes are not linked."))
         flux.unlink()
         self._resequencer(self.flow_ids.sorted(lambda f: (f.sequence, f.id)))
         return self.rendu()
@@ -286,5 +278,6 @@ class BfProcessEdition(models.Model):
         """Ce qu'on peut poser sur une carte, dans l'ordre où on y pense."""
         ordre = ["start", "task", "user", "send", "receive", "sub", "xor",
                  "and", "or", "msgCatch", "timerCatch", "end", "note", "store"]
-        libelles = dict(KINDS)
+        libelles = dict(self.env["bf.process.node"]._fields["kind"]
+                        ._description_selection(self.env))
         return [{"code": g, "nom": libelles[g]} for g in ordre if g in libelles]

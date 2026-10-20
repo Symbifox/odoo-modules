@@ -38,26 +38,27 @@ def _messenger_path(env):
 
 class SmsPushSubscription(models.Model):
     _name = "sms.archive.push.subscription"
-    _description = "Abonnement Web Push (messagerie SMS)"
+    _description = "Web Push subscription (SMS messaging)"
     _rec_name = "endpoint"
 
     user_id = fields.Many2one(
-        "res.users", string="Utilisateur", required=True, ondelete="cascade",
+        "res.users", string="User", required=True, ondelete="cascade",
         index=True, default=lambda self: self.env.uid,
     )
     partner_id = fields.Many2one(
         "res.partner", related="user_id.partner_id", store=True, index=True,
     )
     endpoint = fields.Char(required=True, index=True)
-    p256dh = fields.Char(string="Clé publique cliente", required=True)
-    auth = fields.Char(string="Secret d'authentification", required=True)
-    ua = fields.Char(string="Appareil / navigateur")
+    p256dh = fields.Char(string="Client public key", required=True)
+    auth = fields.Char(string="Authentication secret", required=True)
+    ua = fields.Char(string="Device / browser")
     active = fields.Boolean(default=True)
     fail_count = fields.Integer(default=0)
-    last_push = fields.Datetime(string="Dernier envoi")
+    last_push = fields.Datetime(string="Last push")
 
     _sql_constraints = [
-        ("endpoint_uniq", "unique(endpoint)", "Cet abonnement push existe déjà."),
+        ("endpoint_uniq", "unique(endpoint)", "This push subscription "
+                                              "already exists."),
     ]
 
     def write(self, vals):
@@ -67,7 +68,8 @@ class SmsPushSubscription(models.Model):
         abonnement pourrait être réattribué, et son navigateur recevrait les
         SMS d'une autre personne."""
         if not self.env.su and "user_id" in vals and vals["user_id"] != self.env.uid:
-            raise AccessError(_("Un abonnement push ne se donne pas à quelqu'un d'autre."))
+            raise AccessError(_("A push subscription cannot be given to "
+                                "someone else."))
         return super().write(vals)
 
     # ── Gestion des clés VAPID ────────────────────────────────────────
@@ -167,14 +169,17 @@ class SmsPushSubscription(models.Model):
         thread = msg.thread_id
         base = (ICP.get_param("web.base.url") or "").rstrip("/")
         subject = ICP.get_param(VAPID_SUBJECT_PARAM) or DEFAULT_SUBJECT
-        payload = json.dumps({
-            "title": thread.contact_name or thread.phone_normalized or "Nouveau SMS",
-            "body": (msg.body or "")[:140] or "📎 Pièce jointe",
-            "tag": "sms-thread-%s" % thread.id,
-            "thread_id": thread.id,
-            "url": "%s%s" % (base, _messenger_path(self.env)),
-        })
+        url = "%s%s" % (base, _messenger_path(self.env))
         for sub in subs:
+            # Texte dans la langue de l'usager abonné.
+            title, body = msg._push_texts(sub.user_id.lang, 140)
+            payload = json.dumps({
+                "title": title,
+                "body": body,
+                "tag": "sms-thread-%s" % thread.id,
+                "thread_id": thread.id,
+                "url": url,
+            })
             try:
                 webpush(
                     subscription_info={

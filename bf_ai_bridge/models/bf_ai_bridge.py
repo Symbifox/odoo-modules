@@ -39,7 +39,7 @@ LEGACY_TENANT_PARAMS = ("bf_claude_chat.tenant",)
 
 class BfAiBridge(models.AbstractModel):
     _name = "bf.ai.bridge"
-    _description = "Pont IA : transport vers le service claude-chatbot-bridge"
+    _description = "AI bridge: transport to the claude-chatbot-bridge service"
 
     # ── Résolution du chemin ──────────────────────────────────────────────
 
@@ -73,9 +73,9 @@ class BfAiBridge(models.AbstractModel):
                     break
         if not valeur:
             raise UserError(_(
-                "Le locataire de ce système n'est pas déclaré : poser le "
-                "paramètre système %(param)s (« bf », « pme »…). Sans lui, un "
-                "appel au pont irait chercher les données d'un autre client.",
+                "This system's tenant is not declared: set the system "
+                "parameter %(param)s (\"bf\", \"pme\"…). Without it, a "
+                "call to the bridge would fetch another client's data.",
                 param=TENANT_PARAM,
             ))
         return valeur
@@ -100,9 +100,10 @@ class BfAiBridge(models.AbstractModel):
             return True
         chemin = self.socket_path()
         raise UserError(_(
-            "Le service d'assistance IA n'est pas joignable : la socket %(chemin)s "
-            "est introuvable. Vérifier que le service claude-chatbot-bridge tourne "
-            "et que le paramètre système %(param)s pointe au bon endroit.",
+            "The AI assistance service cannot be reached: socket "
+            "%(chemin)s cannot be found. Check that the "
+            "claude-chatbot-bridge service is running and that the system "
+            "parameter %(param)s points to the right place.",
             chemin=chemin, param=SOCKET_PARAM,
         ) + (("\n\n" + quoi) if quoi else ""))
 

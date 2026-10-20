@@ -4,28 +4,28 @@
     <!-- Module Category -->
     <record id="module_category_sms_archive" model="ir.module.category">
         <field name="name">SMS &amp; Calls</field>
-        <field name="description">Archivage et recherche de SMS et journaux d'appels</field>
+        <field name="description">Archiving and search of SMS and call logs</field>
         <field name="sequence">60</field>
     </record>
 
     <!-- User Group (owner-only) -->
     <record id="group_sms_user" model="res.groups">
-        <field name="name">Utilisateur SMS</field>
+        <field name="name">SMS User</field>
         <field name="category_id" ref="module_category_sms_archive"/>
-        <field name="comment">Peut consulter et importer ses propres SMS</field>
+        <field name="comment">Can view and import their own SMS</field>
     </record>
 
     <!-- Manager Group -->
     <record id="group_sms_manager" model="res.groups">
-        <field name="name">Gestionnaire SMS</field>
+        <field name="name">SMS Manager</field>
         <field name="category_id" ref="module_category_sms_archive"/>
         <field name="implied_ids" eval="[(4, ref('group_sms_user'))]"/>
-        <field name="comment">Accès complet à toutes les archives SMS</field>
+        <field name="comment">Full access to all SMS archives</field>
     </record>
 
     <!-- Record Rules: Thread -->
     <record id="sms_thread_rule_user" model="ir.rule">
-        <field name="name">Fil SMS : propriétaire ou ligne partagée</field>
+        <field name="name">SMS thread: owner or shared line</field>
         <field name="model_id" ref="model_sms_archive_thread"/>
         <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('line_id.user_ids', 'in', [user.id]), ('is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -36,7 +36,7 @@
     </record>
 
     <record id="sms_thread_rule_manager" model="ir.rule">
-        <field name="name">Fil SMS : gestionnaire voit tout</field>
+        <field name="name">SMS thread: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_thread"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -44,7 +44,7 @@
 
     <!-- Record Rules: Message -->
     <record id="sms_message_rule_user" model="ir.rule">
-        <field name="name">Message SMS : propriétaire ou ligne partagée</field>
+        <field name="name">SMS message: owner or shared line</field>
         <field name="model_id" ref="model_sms_archive_message"/>
         <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('line_id.user_ids', 'in', [user.id]), ('thread_id.is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -55,7 +55,7 @@
     </record>
 
     <record id="sms_message_rule_manager" model="ir.rule">
-        <field name="name">Message SMS : gestionnaire voit tout</field>
+        <field name="name">SMS message: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_message"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -63,7 +63,7 @@
 
     <!-- Record Rules: MMS Part -->
     <record id="sms_mms_part_rule_user" model="ir.rule">
-        <field name="name">MMS Part : propriétaire ou ligne partagée</field>
+        <field name="name">MMS part: owner or shared line</field>
         <field name="model_id" ref="model_sms_archive_mms_part"/>
         <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('message_id.line_id.user_ids', 'in', [user.id]), ('message_id.thread_id.is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -74,7 +74,7 @@
     </record>
 
     <record id="sms_mms_part_rule_manager" model="ir.rule">
-        <field name="name">MMS Part : gestionnaire voit tout</field>
+        <field name="name">MMS part: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_mms_part"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -87,7 +87,7 @@
          importé du propriétaire. Un rattachement d'APPEL ne se partage pas :
          le journal d'appels ne porte pas de ligne. -->
     <record id="sms_link_rule_user" model="ir.rule">
-        <field name="name">Rattachement SMS : propriétaire ou ligne partagée</field>
+        <field name="name">SMS link: owner or shared line</field>
         <field name="model_id" ref="model_sms_archive_link"/>
         <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', '&amp;', ('call_id', '=', False), ('message_id.line_id.user_ids', 'in', [user.id]), ('message_id.thread_id.is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -98,7 +98,7 @@
     </record>
 
     <record id="sms_link_rule_manager" model="ir.rule">
-        <field name="name">Rattachement SMS : gestionnaire voit tout</field>
+        <field name="name">SMS link: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_link"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -108,7 +108,7 @@
     <!-- Un appel archivé ne porte pas de ligne (il vient du journal Android) :
          partager un numéro ne donne donc aucun accès au journal d'appels. -->
     <record id="call_archive_rule_user" model="ir.rule">
-        <field name="name">Appel archivé : propriétaire seulement</field>
+        <field name="name">Archived call: owner only</field>
         <field name="model_id" ref="model_call_archive_call"/>
         <field name="domain_force">[('owner_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -119,7 +119,7 @@
     </record>
 
     <record id="call_archive_rule_manager" model="ir.rule">
-        <field name="name">Appel archivé : gestionnaire voit tout</field>
+        <field name="name">Archived call: manager sees all</field>
         <field name="model_id" ref="model_call_archive_call"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -127,7 +127,7 @@
 
     <!-- Record Rule: Device (manager only sees devices they own; superuser sees all) -->
     <record id="sms_device_rule_manager" model="ir.rule">
-        <field name="name">Appareil Android : gestionnaire voit ses appareils</field>
+        <field name="name">Android device: manager sees their devices</field>
         <field name="model_id" ref="model_sms_archive_device"/>
         <field name="domain_force">[('owner_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -137,7 +137,7 @@
          L'écriture reste au propriétaire : un collègue partagé consulte la ligne
          (libellé, DID, indicateurs) mais ne la reconfigure pas. -->
     <record id="sms_line_rule_user" model="ir.rule">
-        <field name="name">Ligne SMS : propriétaire ou partage</field>
+        <field name="name">SMS line: owner or shared</field>
         <field name="model_id" ref="model_sms_archive_line"/>
         <field name="domain_force">['|', ('owner_id', '=', user.id), ('user_ids', 'in', [user.id])]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -148,7 +148,7 @@
     </record>
 
     <record id="sms_line_rule_owner_write" model="ir.rule">
-        <field name="name">Ligne SMS : le propriétaire seul modifie</field>
+        <field name="name">SMS line: only the owner edits</field>
         <field name="model_id" ref="model_sms_archive_line"/>
         <field name="domain_force">[('owner_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
@@ -159,7 +159,7 @@
     </record>
 
     <record id="sms_line_rule_manager" model="ir.rule">
-        <field name="name">Ligne SMS : gestionnaire voit tout</field>
+        <field name="name">SMS line: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_line"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -167,14 +167,14 @@
 
     <!-- Record Rule: Push subscription (utilisateur ne voit que les siennes) -->
     <record id="sms_push_sub_rule_user" model="ir.rule">
-        <field name="name">Abonnement push : propriétaire seulement</field>
+        <field name="name">Push subscription: owner only</field>
         <field name="model_id" ref="model_sms_archive_push_subscription"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
     </record>
 
     <record id="sms_push_sub_rule_manager" model="ir.rule">
-        <field name="name">Abonnement push : gestionnaire voit tout</field>
+        <field name="name">Push subscription: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_push_subscription"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
@@ -182,14 +182,14 @@
 
     <!-- Record Rule: Mobile device (utilisateur ne voit que les siens) -->
     <record id="sms_mobile_device_rule_user" model="ir.rule">
-        <field name="name">Appareil mobile : propriétaire seulement</field>
+        <field name="name">Mobile device: owner only</field>
         <field name="model_id" ref="model_sms_archive_mobile_device"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
     </record>
 
     <record id="sms_mobile_device_rule_manager" model="ir.rule">
-        <field name="name">Appareil mobile : gestionnaire voit tout</field>
+        <field name="name">Mobile device: manager sees all</field>
         <field name="model_id" ref="model_sms_archive_mobile_device"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>

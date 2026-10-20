@@ -20,12 +20,12 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 GENRES = [
-    ("procedure", "Procédure"),
-    ("fiche", "Fiche signalétique"),
-    ("formation", "Formation"),
-    ("video", "Vidéo"),
-    ("gabarit", "Gabarit"),
-    ("reference", "Référence"),
+    ("procedure", "Procedure"),
+    ("fiche", "Safety data sheet"),
+    ("formation", "Training"),
+    ("video", "Video"),
+    ("gabarit", "Template"),
+    ("reference", "Reference"),
 ]
 
 # Ce qui doit survivre à l'impression : une case qui porte une consigne de
@@ -37,47 +37,47 @@ class BfProcessNodeResource(models.Model):
     """Une ressource accrochée à une étape."""
 
     _name = "bf.process.node.resource"
-    _description = "Ressource d'une étape"
+    _description = "Step resource"
     _order = "node_id, sequence, id"
 
     node_id = fields.Many2one(
-        "bf.process.node", string="Étape", required=True,
+        "bf.process.node", string="Step", required=True,
         ondelete="cascade", index=True)
     # stocké : le gel se lit sur le processus, et une ressource doit pouvoir
     # se chercher par processus sans traverser deux jointures
     process_id = fields.Many2one(
-        "bf.process", string="Processus", related="node_id.process_id",
+        "bf.process", string="Process", related="node_id.process_id",
         store=True, index=True)
-    sequence = fields.Integer(string="Ordre", default=10)
+    sequence = fields.Integer(string="Order", default=10)
     name = fields.Char(
-        string="Libellé", required=True,
-        help="Ce que la personne cherche, pas le nom du fichier.")
+        string="Label", required=True,
+        help="What the person is looking for, not the file name.")
     kind = fields.Selection(
-        GENRES, string="Genre", required=True, default="procedure")
+        GENRES, string="Kind", required=True, default="procedure")
     note = fields.Char(
-        string="Précision",
-        help="Quand s'en servir, ou ce qu'il faut en retenir.")
+        string="Details",
+        help="When to use it, or what to remember from it.")
 
     attachment_id = fields.Many2one(
-        "ir.attachment", string="Fichier", ondelete="restrict")
-    url = fields.Char(string="Adresse")
+        "ir.attachment", string="File", ondelete="restrict")
+    url = fields.Char(string="Address")
     document_id = fields.Many2one(
-        "project.document", string="Politique ou procédure",
+        "project.document", string="Policy or procedure",
         ondelete="restrict",
-        help="La pièce versionnée de la base de connaissances. C'est elle qui"
-             " porte les versions, les approbations et la diffusion : la"
-             " cartographie s'y raccorde plutôt que d'en garder une copie.")
+        help="The versioned document in the knowledge base. It carries "
+             "the versions, approvals and distribution: the process map "
+             "links to it rather than keeping a copy.")
 
     cible = fields.Char(
-        string="Cible", compute="_compute_cible",
-        help="L'adresse que le code QR ouvre.")
+        string="Target", compute="_compute_cible",
+        help="The address the QR code opens.")
     critique = fields.Boolean(
-        string="Critique", compute="_compute_critique", store=True,
-        help="Sécurité ou geste à reproduire : passe en tête à l'impression.")
+        string="Critical", compute="_compute_critique", store=True,
+        help="Safety, or a movement to reproduce: listed first when printed.")
 
     _sql_constraints = [
         ("libelle_non_vide", "check (length(trim(name)) > 0)",
-         "Une ressource sans libellé ne s'ouvre pas, elle s'ignore."),
+         "A resource without a label does not get opened, it gets ignored."),
     ]
 
     @api.depends("kind")
@@ -115,14 +115,14 @@ class BfProcessNodeResource(models.Model):
                       bool(rec.document_id)]
             if sum(cibles) == 0:
                 raise ValidationError(_(
-                    "« %s » ne mène nulle part : donnez-lui un fichier, une"
-                    " adresse, ou une politique de la base de connaissances."
+                    "\"%s\" leads nowhere: give it a file, an address, or "
+                    "a policy from the knowledge base."
                 ) % rec.name)
             if sum(cibles) > 1:
                 raise ValidationError(_(
-                    "« %s » a plusieurs cibles. Un code QR n'en ouvre qu'une :"
-                    " choisissez laquelle, et faites-en deux ressources si les"
-                    " deux comptent."
+                    "\"%s\" has several targets. A QR code opens only "
+                    "one: choose which, and make two resources if both "
+                    "matter."
                 ) % rec.name)
 
     # --- le fichier appartient à la ressource ---------------------------------
@@ -181,7 +181,7 @@ class BfProcessNodeResource(models.Model):
                     piece.check_access("read")
                 except AccessError:
                     raise ValidationError(_(
-                        "« %s » : vous n'avez pas accès à ce fichier.") % rec.name)
+                        "\"%s\": you do not have access to this file.") % rec.name)
                 libre = not piece.sudo().res_model and not piece.sudo().res_id \
                     and not piece.sudo().res_field
                 if libre:
@@ -189,14 +189,15 @@ class BfProcessNodeResource(models.Model):
                     piece.sudo().write({"res_model": rec._name, "res_id": rec.id})
                 elif not rec._piece_admise(piece):
                     raise ValidationError(_(
-                        "« %s » : ce fichier est rattaché à un autre dossier. Joignez-le"
-                        " à l'étape ou téléversez-le dans la ressource.") % rec.name)
+                        "\"%s\": this file is attached to another record. "
+                        "Attach it to the step or upload it in the "
+                        "resource.") % rec.name)
             if rec.document_id:
                 try:
                     rec.document_id.check_access("read")
                 except AccessError:
                     raise ValidationError(_(
-                        "« %s » : vous n'avez pas accès à ce document.") % rec.name)
+                        "\"%s\": you do not have access to this document.") % rec.name)
 
     @api.constrains("node_id")
     def _check_porteur(self):
@@ -204,8 +205,8 @@ class BfProcessNodeResource(models.Model):
         for rec in self:
             if rec.node_id.kind == "note":
                 raise ValidationError(_(
-                    "Une annotation ne porte pas de ressource : accrochez-la à"
-                    " l'étape que l'annotation commente."))
+                    "An annotation does not carry a resource: attach it "
+                    "to the step the annotation comments on."))
 
     # --- gel ------------------------------------------------------------------
     # Le mixin `bf.process.gel` résout le processus depuis `diagram_id` ou
@@ -310,13 +311,13 @@ class BfProcessNodeAvecRessources(models.Model):
     _inherit = "bf.process.node"
 
     resource_ids = fields.One2many(
-        "bf.process.node.resource", "node_id", string="Ressources")
+        "bf.process.node.resource", "node_id", string="Resources")
     # libellés distincts de `resource_ids` : deux champs du même modèle qui
     # portent le même libellé font râler Odoo à chaque upgrade.
     resource_count = fields.Integer(
-        string="Nombre de ressources", compute="_compute_resource_count")
+        string="Number of resources", compute="_compute_resource_count")
     resource_critique_count = fields.Integer(
-        string="Dont critiques", compute="_compute_resource_count")
+        string="Including critical", compute="_compute_resource_count")
 
     @api.depends("resource_ids", "resource_ids.critique")
     def _compute_resource_count(self):

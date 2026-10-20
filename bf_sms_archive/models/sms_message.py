@@ -38,14 +38,14 @@ _DIRECTION_LABELS = {
     "draft": "~",
 }
 
-# Libellés lisibles pour la note postée au chatter d'une tâche (cf. _render_task_post_body).
-_POST_DIRECTION_LABELS = {"in": "Reçu", "out": "Envoyé", "draft": "Brouillon"}
+# Couleurs de la note postée au chatter d'une tâche (cf. _render_task_post_body) ; les
+# libellés viennent de la sélection `direction`, traduits dans la langue de la note.
 _POST_DIRECTION_COLORS = {"in": "#0a7d3a", "out": "#0f4960", "draft": "#999"}
 
 
 class SmsArchiveMessage(models.Model):
     _name = "sms.archive.message"
-    _description = "Message SMS archivé"
+    _description = "Archived SMS message"
     _order = "date_sent asc, id asc"
 
     thread_id = fields.Many2one(
@@ -56,22 +56,22 @@ class SmsArchiveMessage(models.Model):
         index=True,
     )
     message_hash = fields.Char(
-        string="Hash de dédoublonnage",
+        string="Deduplication hash",
         size=64,
         required=True,
         index=True,
     )
     direction = fields.Selection(
         selection=[
-            ("in", "Reçu"),
-            ("out", "Envoyé"),
-            ("draft", "Brouillon"),
+            ("in", "Received"),
+            ("out", "Sent"),
+            ("draft", "Draft"),
         ],
         string="Direction",
         required=True,
     )
     body = fields.Text(
-        string="Contenu",
+        string="Content",
     )
     date_sent = fields.Datetime(
         string="Date",
@@ -80,77 +80,79 @@ class SmsArchiveMessage(models.Model):
     )
     date_sent_ms = fields.Char(
         string="Timestamp (ms)",
-        help="Timestamp brut en millisecondes conservé du XML",
+        help="Raw timestamp in milliseconds kept from the XML",
     )
     is_mms = fields.Boolean(
         string="MMS",
         default=False,
     )
     is_read = fields.Boolean(
-        string="Lu",
+        string="Read",
         default=True,
-        help="Faux pour un message entrant live non encore consulté (compteur systray).",
+        help="False for a live incoming message not yet viewed (systray "
+             "counter).",
     )
     delivery_state = fields.Selection(
         selection=[
-            ("queued", "En file"),
-            ("sent", "Envoyé"),
-            ("failed", "Échec"),
-            ("received", "Reçu"),
+            ("queued", "Queued"),
+            ("sent", "Sent"),
+            ("failed", "Failed"),
+            ("received", "Received"),
         ],
-        string="État de livraison",
-        help="Pour les messages sortants live. « sent » = accepté par l'API VOIP.ms "
-             "(VOIP.ms ne fournit pas d'accusé de livraison fiable).",
+        string="Delivery status",
+        help="For live outgoing messages. \"sent\" = accepted by the "
+             "VOIP.ms API (VOIP.ms does not provide a reliable delivery "
+             "receipt).",
     )
     voipms_id = fields.Char(
-        string="ID VOIP.ms",
+        string="VOIP.ms ID",
         index=True,
         copy=False,
-        help="Identifiant du message côté VOIP.ms (déduplication live).",
+        help="Message identifier on the VOIP.ms side (live deduplication).",
     )
     line_id = fields.Many2one(
         comodel_name="sms.archive.line",
-        string="Ligne",
+        string="Line",
         ondelete="set null",
-        help="Ligne (DID) VOIP.ms utilisée pour ce message live.",
+        help="VOIP.ms line (DID) used for this live message.",
     )
     error = fields.Text(
-        string="Erreur d'envoi",
+        string="Sending error",
     )
     contact_name = fields.Char(
-        string="Nom du contact",
+        string="Contact name",
     )
     owner_id = fields.Many2one(
         related="thread_id.owner_id",
         store=True,
         index=True,
-        string="Propriétaire",
+        string="Owner",
     )
     sent_by_id = fields.Many2one(
         comodel_name="res.users",
-        string="Envoyé par",
+        string="Sent by",
         ondelete="set null",
-        help="Utilisateur qui a réellement composé ce message sortant. Diffère du "
-             "propriétaire quand la ligne est partagée entre plusieurs personnes.",
+        help="User who actually wrote this outgoing message. Differs from "
+             "the owner when the line is shared between several people.",
     )
     import_batch_id = fields.Char(
-        string="Lot d'import",
-        help="Identifiant backup_set du fichier XML",
+        string="Import batch",
+        help="backup_set identifier from the XML file",
     )
     mms_part_ids = fields.One2many(
         comodel_name="sms.archive.mms.part",
         inverse_name="message_id",
-        string="Pièces jointes MMS",
+        string="MMS attachments",
     )
     link_ids = fields.One2many(
         comodel_name="sms.archive.link",
         inverse_name="message_id",
-        string="Rattachements",
-        help="Les fiches sur le chatter desquelles ce message a été posé. "
-             "Un même message peut en viser plusieurs.",
+        string="Links",
+        help="The records on whose chatter this message was posted. A "
+             "single message can target several of them.",
     )
     link_count = fields.Integer(
-        string="Fiches",
+        string="Records",
         compute="_compute_link_count",
         store=True,
     )
@@ -167,7 +169,7 @@ class SmsArchiveMessage(models.Model):
         (
             "hash_uniq",
             "UNIQUE(thread_id, message_hash)",
-            "Ce message existe déjà (hash dupliqué).",
+            "This message already exists (duplicate hash).",
         ),
     ]
 
@@ -196,7 +198,7 @@ class SmsArchiveMessage(models.Model):
             return False
         return {
             "type": "ir.actions.act_window",
-            "name": "Poster sur une fiche",
+            "name": self.env._("Post to a record"),
             "res_model": "sms.archive.post.to.task.wizard",
             "view_mode": "form",
             "target": "new",
@@ -218,16 +220,19 @@ class SmsArchiveMessage(models.Model):
         if not messages:
             return ""
 
+        # Langue de la note : celle du contexte (l'usager qui agit, ou le lecteur choisi
+        # par `_auto_post_to_task` pour un relais sans session).
         threads = messages.thread_id
         if len(threads) == 1:
-            contact = markupsafe.escape(
-                threads.contact_name or threads.phone_normalized or "")
-            header = f"<p><strong>{len(messages)} SMS</strong> — {contact}</p>"
+            contact = threads.contact_name or threads.phone_normalized or ""
+            header = markupsafe.Markup("<p><strong>%s</strong> — %s</p>") % (
+                self.env._("%(count)s SMS", count=len(messages)), contact)
         else:
-            header = (
-                f"<p><strong>{len(messages)} SMS</strong> "
-                f"sur {len(threads)} conversations</p>"
-            )
+            header = markupsafe.Markup(self.env._(
+                "<p><strong>%(count)s SMS</strong> across %(threads)s conversations</p>",
+            )) % {"count": len(messages), "threads": len(threads)}
+        direction_labels = dict(
+            self._fields["direction"]._description_selection(self.env))
 
         rows = []
         prev_thread_id = None
@@ -239,7 +244,8 @@ class SmsArchiveMessage(models.Model):
                     f"<p style='margin:8px 0 2px 0'><strong>— {contact}</strong></p>"
                 )
                 prev_thread_id = msg.thread_id.id
-            direction = _POST_DIRECTION_LABELS.get(msg.direction, "Brouillon")
+            direction = markupsafe.escape(
+                direction_labels.get(msg.direction) or direction_labels["draft"])
             arrow_color = _POST_DIRECTION_COLORS.get(msg.direction, "#999")
             date_str = markupsafe.escape(str(msg.date_sent or ""))
             body_escaped = markupsafe.escape(msg.body or "")
@@ -252,7 +258,7 @@ class SmsArchiveMessage(models.Model):
             )
         # Markup plutôt que body_is_html=True (déprécié en 18.0) : tout ce qui vient des
         # données est déjà passé par markupsafe.escape juste au-dessus.
-        return markupsafe.Markup(header + "".join(rows))
+        return header + markupsafe.Markup("".join(rows))
 
     def _post_to_record(self, record, link_threads=True, is_auto=False):
         """Pose ces messages sur le chatter de `record`, en une note, et enregistre
@@ -300,8 +306,14 @@ class SmsArchiveMessage(models.Model):
                 lambda t: t.exists() and t.active
             )
             for task in tasks:
+                # Pas de session ici (webhook, sondeur) : la note part dans la langue
+                # de qui la lira (propriétaire de la ligne, sinon du fil), à défaut
+                # celle de la société de la tâche.
+                lang = (msg.line_id.owner_id.lang or msg.thread_id.owner_id.lang
+                        or task.company_id.partner_id.lang or self.env.lang)
                 try:
-                    msg._post_to_record(task, link_threads=False, is_auto=True)
+                    msg.with_context(lang=lang)._post_to_record(
+                        task.with_context(lang=lang), link_threads=False, is_auto=True)
                 except Exception:  # noqa: BLE001 — un relais ne casse jamais la réception
                     _logger.exception(
                         "Suivi automatique vers la tâche %s échoué (message %s)",
@@ -646,15 +658,15 @@ class SmsArchiveMessage(models.Model):
         Line = self.env["sms.archive.line"].sudo()
         line = Line.browse(int(line_id))
         if not line.exists():
-            raise UserError("Ligne d'envoi introuvable.")
+            raise UserError(self.env._("Sending line not found."))
         if not line._is_usable_by():
-            raise UserError("Cette ligne ne vous est pas accessible.")
+            raise UserError(self.env._("This line is not accessible to you."))
 
         Thread = self.env["sms.archive.thread"].sudo()
         Voipms = self.env["sms.archive.voipms"]
         dst_norm = Thread.normalize_phone(dst)
         if not dst_norm:
-            raise UserError("Numéro destinataire invalide.")
+            raise UserError(self.env._("Invalid recipient number."))
         if line.owner_id.id != self.env.uid and not self.env.su:
             # Même règle que `start_conversation` : un collègue
             # n'atteint, ne désarchive ni ne rattache jamais le fil d'autrui.
@@ -699,12 +711,12 @@ class SmsArchiveMessage(models.Model):
         try:
             if is_mms:
                 if not line.mms_enabled:
-                    raise UserError("Ligne non activée pour les MMS.")
+                    raise UserError(self.env._("Line not enabled for MMS."))
                 medias = [self._media_to_datauri(m) for m in media][:3]
                 voipms_id = Voipms._voipms_send_mms(did, dst_api, body or "", medias)
             else:
                 if not line.sms_enabled:
-                    raise UserError("Ligne non activée pour les SMS.")
+                    raise UserError(self.env._("Line not enabled for SMS."))
                 sent_via_mms = False
                 if want_mms_escalation:
                     try:
@@ -833,7 +845,8 @@ class SmsArchiveMessage(models.Model):
                     # superutilisateur (envoi, ingestion), on ne crée que dans
                     # SES fils : l'import de sa propre sauvegarde.
                     if fil.sudo().owner_id != self.env.user:
-                        raise AccessError(_("Un SMS ne se crée que dans vos propres conversations."))
+                        raise AccessError(_("An SMS can only be created "
+                                            "in your own conversations."))
                 if vals.get("line_id"):
                     self.env["sms.archive.line"].browse(vals["line_id"]).check_access("read")
         return super().create(vals_list)
@@ -850,13 +863,26 @@ class SmsArchiveMessage(models.Model):
         passée depuis son propre fil y rattacherait le message d'un autre fil.
         Aucun chemin du module ne déplace un message."""
         if not self.env.su and _CONTENU_FIGE.intersection(vals):
-            raise AccessError(_("Le contenu d'un SMS archivé ne se modifie pas."))
+            raise AccessError(_("The content of an archived SMS cannot be "
+                                "changed."))
         if not self.env.su and "thread_id" in vals:
             cible = vals["thread_id"]
             cible = cible.id if hasattr(cible, "id") else cible
             if any(message.thread_id.id != cible for message in self):
-                raise AccessError(_("Un SMS ne change pas de conversation."))
+                raise AccessError(_("An SMS cannot move to another "
+                                    "conversation."))
         return super().write(vals)
+
+    def _push_texts(self, lang, body_limit):
+        """Titre et corps d'une notification poussée pour ce message, dans la
+        langue `lang` du destinataire (l'envoi part d'un webhook ou du sondeur :
+        aucune session ne dit qui lira)."""
+        self.ensure_one()
+        env = self.with_context(lang=lang or self.env.lang).env
+        thread = self.thread_id
+        title = thread.contact_name or thread.phone_normalized or env._("New SMS")
+        body = (self.body or "")[:body_limit] or env._("📎 Attachment")
+        return title, body
 
     def _notify_users(self):
         """Destinataires des notifications pour ce message : le propriétaire du

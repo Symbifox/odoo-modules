@@ -33,50 +33,52 @@ HEARTBEAT_SECONDS = 60
 
 class SmsMobileDevice(models.Model):
     _name = "sms.archive.mobile.device"
-    _description = "Appareil mobile — messagerie SMS"
+    _description = "Mobile device (SMS messaging)"
     _rec_name = "name"
     _order = "last_seen desc, id desc"
 
     user_id = fields.Many2one(
-        "res.users", string="Utilisateur", required=True, ondelete="cascade",
+        "res.users", string="User", required=True, ondelete="cascade",
         index=True,
     )
-    name = fields.Char(string="Appareil", default="Appareil Android")
+    # Défaut traduit (une chaîne fixe ne passe jamais par le catalogue) ; `_issue`
+    # pose de toute façon le nom dans la langue de l'usager propriétaire.
+    name = fields.Char(string="Device", default=lambda self: self.env._("Android device"))
     # ⚠️ Depuis la 5.14.0 le jeton n'est plus gardé en clair. ``device_token``
     # ne porte le jeton que le temps de le remettre à l'app (``_seal`` l'efface
     # aussitôt après la réponse) ; c'est ``token_hash`` qui sert à reconnaître
     # l'appareil. Un dump de base ne livre donc plus de jeton utilisable.
     # Audit du 2026-09-08 (S-M2).
     device_token = fields.Char(
-        string="Jeton d'appareil", index=True, copy=False,
+        string="Device token", index=True, copy=False,
         groups="bf_sms_archive.group_sms_manager",
     )
     token_hash = fields.Char(
-        string="Empreinte du jeton", index=True, copy=False,
+        string="Token hash", index=True, copy=False,
         groups="bf_sms_archive.group_sms_manager",
     )
-    fcm_token = fields.Char(string="Jeton FCM (legacy)", index=True)
+    fcm_token = fields.Char(string="FCM token (legacy)", index=True)
     push_endpoint = fields.Char(
-        string="Endpoint UnifiedPush",
-        help="URL d'endpoint UnifiedPush (ntfy) vers laquelle pousser les "
-             "notifications de cet appareil.")
+        string="UnifiedPush endpoint",
+        help="UnifiedPush (ntfy) endpoint URL to which this device's "
+             "notifications are pushed.")
     # Clés de l'abonnement WebPush (RFC 8291), en base64url : le point P-256 non
     # compressé de l'appareil (65 octets) et son secret d'authentification (16
     # octets). Présentes, les poussées partent chiffrées ; absentes (app ≤
     # 2.41.0), en clair. Elles appartiennent à l'ENDPOINT : ``write`` les
     # efface dès que l'endpoint change sans elles. Audit du 2026-09-08 (C-M3).
     push_p256dh = fields.Char(
-        string="Clé publique WebPush", copy=False,
+        string="WebPush public key", copy=False,
         groups="bf_sms_archive.group_sms_manager",
     )
     push_auth = fields.Char(
-        string="Secret WebPush", copy=False,
+        string="WebPush secret", copy=False,
         groups="bf_sms_archive.group_sms_manager",
     )
     platform = fields.Char(default="android")
     app_version = fields.Char()
     active = fields.Boolean(default=True)
-    last_seen = fields.Datetime(string="Vu la dernière fois")
+    last_seen = fields.Datetime(string="Last seen")
     # Code unique à usage unique pour l'échange web-login → jeton (le vrai jeton
     # ne transite jamais dans une URL/deep-link).
     pending_code = fields.Char(index=True, copy=False,
@@ -94,12 +96,12 @@ class SmsMobileDevice(models.Model):
     # ⚠️ L'allowlist de schémas de redirection ne remplace pas ceci : elle ferme
     # la redirection ouverte CÔTÉ SERVEUR, pas l'interception locale du code sur
     # l'appareil.
-    pkce_challenge = fields.Char(string="Défi PKCE", copy=False,
+    pkce_challenge = fields.Char(string="PKCE challenge", copy=False,
                                  groups="bf_sms_archive.group_sms_manager")
 
     _sql_constraints = [
         ("device_token_uniq", "unique(device_token)",
-         "Ce jeton d'appareil existe déjà."),
+         "This device token already exists."),
     ]
 
     # Champs qu'aucune écriture hors ``sudo`` ne peut poser : un gestionnaire
@@ -116,14 +118,14 @@ class SmsMobileDevice(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if not self.env.su:
-            raise AccessError(
-                "Un appareil ne se crée qu'en s'appariant depuis l'application.")
+            raise AccessError(self.env._(
+                "A device can only be created by pairing from the app."))
         return super().create(vals_list)
 
     def write(self, vals):
         if not self.env.su and any(f in vals for f in self._PROTECTED_FIELDS):
-            raise AccessError(
-                "Le jeton et l'usager d'un appareil ne se modifient pas à la main.")
+            raise AccessError(self.env._(
+                "A device's token and user cannot be changed by hand."))
         res = super().write(vals)
         # Les clés vont avec l'endpoint. Effacé (déconnexion, endpoint mort ou
         # non public, « Mes appareils ») ou remplacé sans elles, l'endpoint les
@@ -147,9 +149,14 @@ class SmsMobileDevice(models.Model):
         Le jeton en clair reste dans ``device_token`` jusqu'à ``_seal`` : c'est
         le contrôleur qui le remet à l'app, puis scelle."""
         raw = secrets.token_urlsafe(32)
+        if not name:
+            # Appariement sans session utile (API mobile) : nom par défaut dans la
+            # langue de l'usager à qui l'appareil appartient.
+            owner = self.env["res.users"].sudo().browse(user_id)
+            name = self.with_context(lang=owner.lang or self.env.lang).env._("Android device")
         return self.sudo().create({
             "user_id": user_id,
-            "name": (name or "Appareil Android")[:80],
+            "name": name[:80],
             "device_token": raw,
             "token_hash": self._hash_token(raw),
             "platform": platform,

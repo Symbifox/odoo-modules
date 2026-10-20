@@ -1,15 +1,14 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_outreach
-#
+# Translation of Campagnes de démarchage - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: bf_outreach 18.0.1.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 05:00+0000\n"
-"PO-Revision-Date: 2026-08-04 05:00+0000\n"
-"Last-Translator: Les services de consultation Blue Fox, Inc. <info@bluefoxconsultant.com>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,97 +16,117 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__stage_type
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__stage_type
+msgid ""
+"\"Won\" and \"Dropped\" close the file: the follow-up cadence stops and the "
+"target no longer shows up among the overdue ones."
+msgstr ""
+"« Gagnée » et « Abandonnée » ferment le dossier : la cadence de relance "
+"s'arrête et la cible ne remonte plus dans les retards."
+
+#. module: bf_outreach
 #. odoo-python
 #: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "%(campaign)s — %(target)s"
+msgid "%(campaign)s - %(target)s"
 msgstr "%(campaign)s — %(target)s"
 
 #. module: bf_outreach
 #. odoo-python
 #: code:addons/bf_outreach/wizard/outreach_target_import_wizard.py:0
 msgid ""
-"%(created)s cible(s) ajoutée(s) à la campagne, %(dup)s doublon(s) ignoré(s),"
-" %(excluded)s exclusion(s) « ne plus démarcher » respectée(s)."
+"%(created)s target(s) added to the campaign, %(dup)s duplicate(s) skipped, "
+"%(excluded)s \"no outreach\" exclusion(s) honored."
 msgstr ""
 "%(created)s cible(s) ajoutée(s) à la campagne, %(dup)s doublon(s) ignoré(s),"
 " %(excluded)s exclusion(s) « ne plus démarcher » respectée(s)."
 
 #. module: bf_outreach
 #. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "%(date)s - %(kind)s"
+msgstr "%(date)s — %(kind)s"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "%(date)s - %(kind)s: %(summary)s"
+msgstr "%(date)s — %(kind)s : %(summary)s"
+
+#. module: bf_outreach
+#. odoo-python
 #: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "%s rappel(s) créé(s) ou mis à jour."
+msgid "%s reminder(s) created or updated."
 msgstr "%s rappel(s) créé(s) ou mis à jour."
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
-msgid "<i class=\"fa fa-clock-o me-1\" title=\"Prochaine action\"/>"
+msgid "<i class=\"fa fa-clock-o me-1\" title=\"Next action\"/>"
 msgstr "<i class=\"fa fa-clock-o me-1\" title=\"Prochaine action\"/>"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
-msgid "<i class=\"fa fa-envelope me-1\" title=\"Courriels\"/>"
+msgid "<i class=\"fa fa-envelope me-1\" title=\"Emails\"/>"
 msgstr "<i class=\"fa fa-envelope me-1\" title=\"Courriels\"/>"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
-msgid "<i class=\"fa fa-envelope-o me-1\" title=\"Lettres\"/>"
+msgid "<i class=\"fa fa-envelope-o me-1\" title=\"Letters\"/>"
 msgstr "<i class=\"fa fa-envelope-o me-1\" title=\"Lettres\"/>"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
-msgid "<i class=\"fa fa-exclamation-triangle me-1\" title=\"En retard\"/>"
+msgid "<i class=\"fa fa-exclamation-triangle me-1\" title=\"Overdue\"/>"
 msgstr "<i class=\"fa fa-exclamation-triangle me-1\" title=\"En retard\"/>"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
-msgid "<i class=\"fa fa-phone me-1\" title=\"Appels\"/>"
+msgid "<i class=\"fa fa-phone me-1\" title=\"Calls\"/>"
 msgstr "<i class=\"fa fa-phone me-1\" title=\"Appels\"/>"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
-msgid "<i class=\"fa fa-users me-1\" title=\"Cibles\"/>"
+msgid "<i class=\"fa fa-users me-1\" title=\"Targets\"/>"
 msgstr "<i class=\"fa fa-users me-1\" title=\"Cibles\"/>"
 
 #. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_touch.py:0
+msgid "<p><b>%(kind)s</b> (%(direction)s): %(outcome)s</p>"
+msgstr "<p><b>%(kind)s</b> (%(direction)s) — %(outcome)s</p>"
+
+#. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "<span class=\"o_stat_text\">Opportunité</span>"
+msgid "<span class=\"o_stat_text\">Opportunity</span>"
 msgstr "<span class=\"o_stat_text\">Opportunité</span>"
 
 #. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__has_reply
-msgid "A répondu"
-msgstr "A répondu"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__lost
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Abandonnée"
-msgstr "Abandonnée"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__lost_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Abandonnées"
-msgstr "Abandonnées"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__campaign_pitch
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_campaign
 msgid ""
-"Accroche et objections fréquentes de la campagne, sous les yeux pendant "
-"l'appel."
+"A campaign brings together a list of targets, a follow-up cadence (how many "
+"calls and emails, at what pace) and the tracking of each file through to its"
+" conclusion."
 msgstr ""
-"Accroche et objections fréquentes de la campagne, sous les yeux pendant "
-"l'appel."
+"Une campagne regroupe une liste de cibles, une cadence de relance\n"
+"                (combien d'appels et de courriels, à quel rythme) et le suivi de\n"
+"                chaque dossier jusqu'à sa conclusion."
 
 #. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_meeting
+msgid "A meeting is scheduled."
+msgstr "Une rencontre est planifiée."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_needaction
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_needaction
 msgid "Action Needed"
 msgstr "Nécessite une action"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__active
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__active
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__active
@@ -116,38 +135,36 @@ msgid "Active"
 msgstr "Actif"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_ids
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_ids
 msgid "Activities"
 msgstr "Activités"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr "Indicateur d’exception d’activité"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_state
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_state
 msgid "Activity State"
 msgstr "Statut de l'activité"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_type_icon
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_type_icon
 msgid "Activity Type Icon"
 msgstr "Icône de type d'activité"
 
 #. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__bounced
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__bounced
-msgid "Adresse invalide"
-msgstr "Adresse invalide"
-
-#. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
-msgid "Ajouter"
+msgid "Add"
 msgstr "Ajouter"
 
 #. module: bf_outreach
@@ -155,223 +172,155 @@ msgstr "Ajouter"
 #: code:addons/bf_outreach/models/outreach_campaign.py:0
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
-msgid "Ajouter des cibles"
+msgid "Add targets"
 msgstr "Ajouter des cibles"
 
 #. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target
+msgid ""
+"Add targets from the campaign, or select contacts then use the \"Add to an "
+"outreach campaign\" action."
+msgstr ""
+"Ajoutez des cibles depuis la campagne, ou sélectionnez des contacts\n"
+"                puis utilisez l'action « Ajouter à une campagne de démarchage »."
+
+#. module: bf_outreach
 #: model:ir.model,name:bf_outreach.model_bf_outreach_target_import_wizard
-msgid "Ajouter des cibles à une campagne"
+msgid "Add targets to a campaign"
 msgstr "Ajouter des cibles à une campagne"
 
 #. module: bf_outreach
 #. odoo-python
 #: code:addons/bf_outreach/wizard/outreach_target_import_wizard.py:0
 #: model:ir.actions.server,name:bf_outreach.action_partner_add_to_outreach
-msgid "Ajouter à une campagne de démarchage"
+msgid "Add to an outreach campaign"
 msgstr "Ajouter à une campagne de démarchage"
 
 #. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target
-msgid ""
-"Ajoutez des cibles depuis la campagne, ou sélectionnez des contacts\n"
-"                puis utilisez l'action « Ajouter à une campagne de démarchage »."
-msgstr ""
-"Ajoutez des cibles depuis la campagne, ou sélectionnez des contacts\n"
-"                puis utilisez l'action « Ajouter à une campagne de démarchage »."
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_target_all
+msgid "All targets"
+msgstr "Toutes les cibles"
 
 #. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
-msgid "Annuler"
-msgstr "Annuler"
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__competitor
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__competitor
+msgid "Already served elsewhere"
+msgstr "Déjà servi ailleurs"
 
 #. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__cancelled
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Annulée"
-msgstr "Annulée"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__call
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__call
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__call
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__call
-msgid "Appel"
-msgstr "Appel"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Appel de démarchage"
-msgstr "Appel de démarchage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_count
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__call_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Appels"
-msgstr "Appels"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Appels : %(calls)s — Courriels : %(emails)s"
-msgstr "Appels : %(calls)s — Courriels : %(emails)s"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_target_count
-msgid "Appels visés par cible"
-msgstr "Appels visés par cible"
-
-#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Archivées"
+msgid "Archived"
 msgstr "Archivées"
 
 #. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Argumentaire"
-msgstr "Argumentaire"
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__stop_on_reply
+msgid ""
+"As soon as a target replies, it leaves the automatic cadence: follow-up "
+"carries on by hand, through the stage and the activities."
+msgstr ""
+"Dès qu'une cible répond, elle sort de la cadence automatique : le suivi se "
+"poursuit à la main, via l'étape et les activités."
 
 #. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__campaign_pitch
-msgid "Argumentaire de la campagne"
-msgstr "Argumentaire de la campagne"
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__user_id
+msgid "Assign to"
+msgstr "Attribuer à"
 
 #. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__stop_on_reply
-msgid "Arrêter à la première réponse"
-msgstr "Arrêter à la première réponse"
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__user
+msgid "Assign to one person"
+msgstr "Attribuer à une personne"
 
 #. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__assign_mode
+msgid "Assignment"
+msgstr "Attribution"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_contacted
+msgid "At least one attempt made, no reply yet."
+msgstr "Au moins une tentative faite, sans réponse encore."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_attachment_count
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
 #. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__user_id
-msgid "Attribuer à"
-msgstr "Attribuer à"
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_mode
+msgid "Automatic reminders"
+msgstr "Rappels automatiques"
 
 #. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__user
-msgid "Attribuer à une personne"
-msgstr "Attribuer à une personne"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__assign_mode
-msgid "Attribution"
-msgstr "Attribution"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/wizard/outreach_target_import_wizard.py:0
-msgid "Aucun contact sélectionné."
-msgstr "Aucun contact sélectionné."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Aucun destinataire : les cibles n'ont pas de contact."
-msgstr "Aucun destinataire : les cibles n'ont pas de contact."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_overdue
-msgid "Aucun retard"
-msgstr "Aucun retard"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__none
-msgid "Aucune"
-msgstr "Aucune"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/wizard/outreach_exclude_wizard.py:0
-msgid "Aucune cible ni contact sélectionné."
-msgstr "Aucune cible ni contact sélectionné."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target
-msgid "Aucune cible pour l'instant"
-msgstr "Aucune cible pour l'instant"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/wizard/outreach_log_wizard.py:0
-msgid "Aucune cible sélectionnée."
-msgstr "Aucune cible sélectionnée."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_touch
-msgid "Aucune interaction journalisée"
-msgstr "Aucune interaction journalisée"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Aucune opportunité n'est liée à cette cible."
-msgstr "Aucune opportunité n'est liée à cette cible."
-
-#. module: bf_outreach
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_today
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Back to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__bad_timing
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__bad_timing
+msgid "Bad timing"
+msgstr "Mauvais moment"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__user_id
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Aujourd'hui"
-msgstr "Aujourd'hui"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__other
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__other
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__other
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__other
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__other
-msgid "Autre"
-msgstr "Autre"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
-msgid "Avancement"
-msgstr "Avancement"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__progress
-msgid "Avancement (%)"
-msgstr "Avancement (%)"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__voicemail
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__voicemail
-msgid "Boîte vocale"
-msgstr "Boîte vocale"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__draft
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Brouillon"
-msgstr "Brouillon"
+msgid "By"
+msgstr "Par"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Cadence — appels"
+msgid "Cadence: calls"
 msgstr "Cadence — appels"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Cadence — courriels"
+msgid "Cadence: emails"
 msgstr "Cadence — courriels"
 
 #. module: bf_outreach
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Cadence — lettres"
+msgid "Cadence: letters"
 msgstr "Cadence — lettres"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__call
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__call
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__call
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__call
+msgid "Call"
+msgstr "Appel"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__callback
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__callback
+msgid "Callback requested"
+msgstr "Rappel demandé"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_count
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__call_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Calls"
+msgstr "Appels"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Calls: %(calls)s, emails: %(emails)s"
+msgstr "Appels : %(calls)s — Courriels : %(emails)s"
 
 #. module: bf_outreach
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__name
@@ -381,20 +330,23 @@ msgstr "Cadence — lettres"
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Campagne"
+msgid "Campaign"
 msgstr "Campagne"
 
 #. module: bf_outreach
 #: model:onboarding.onboarding.step,done_text:bf_outreach.bf_onb_step_campaign
-msgid "Campagne créée"
+msgid "Campaign created"
 msgstr "Campagne créée"
 
 #. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_campaign
-#: model:ir.model.fields,field_description:bf_outreach.field_crm_lead__outreach_campaign_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Campagne de démarchage"
-msgstr "Campagne de démarchage"
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__campaign_pitch
+msgid "Campaign pitch"
+msgstr "Argumentaire de la campagne"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__stage_ids
+msgid "Campaign-specific stages"
+msgstr "Étapes propres à la campagne"
 
 #. module: bf_outreach
 #: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_campaign
@@ -402,2014 +354,46 @@ msgstr "Campagne de démarchage"
 #: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_campaign
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Campagnes"
+msgid "Campaigns"
 msgstr "Campagnes"
 
 #. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Campagnes en cours"
-msgstr "Campagnes en cours"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
-msgid "Ce que la personne a demandé, dans ses mots"
-msgstr "Ce que la personne a demandé, dans ses mots"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_exclude_wizard__reason
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__do_not_contact_reason
-msgid ""
-"Ce que la personne a demandé, dans ses mots. Conservé comme preuve du "
-"traitement de la demande."
+#: model:res.groups,comment:bf_outreach.group_bf_outreach_user
+msgid "Can run campaigns: manage targets and log interactions."
 msgstr ""
-"Ce que la personne a demandé, dans ses mots. Conservé comme preuve du "
-"traitement de la demande."
+"Peut mener des campagnes : gérer les cibles et journaliser les interactions."
 
 #. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
-msgid "Ce qui s'est dit, en une ligne"
-msgstr "Ce qui s'est dit, en une ligne"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__mobile
-msgid "Cellulaire"
-msgstr "Cellulaire"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid ""
-"Ces cibles n'ont pas d'adresse courriel :\n"
-"%s"
-msgstr ""
-"Ces cibles n'ont pas d'adresse courriel :\n"
-"%s"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid ""
-"Ces cibles ont demandé de ne plus être sollicitées :\n"
-"%s"
-msgstr ""
-"Ces cibles ont demandé de ne plus être sollicitées :\n"
-"%s"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Cette semaine"
-msgstr "Cette semaine"
-
-#. module: bf_outreach
-#: model:ir.model.constraint,message:bf_outreach.constraint_bf_outreach_tag_name_uniq
-msgid "Cette étiquette existe déjà."
-msgstr "Cette étiquette existe déjà."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_touch
-msgid ""
-"Chaque appel et chaque courriel journalisé depuis une cible apparaît ici."
-msgstr ""
-"Chaque appel et chaque courriel journalisé depuis une cible apparaît ici."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__partner_ids
-msgid "Chaque contact retenu devient une cible de la campagne."
-msgstr "Chaque contact retenu devient une cible de la campagne."
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_targets
-msgid "Charger la liste de cibles"
-msgstr "Charger la liste de cibles"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__target_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Cible"
-msgstr "Cible"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_target
-#: model:ir.model.fields,field_description:bf_outreach.field_crm_lead__outreach_target_id
-msgid "Cible de démarchage"
-msgstr "Cible de démarchage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_crm_lead__outreach_target_id
-msgid "Cible dont cette opportunité est issue."
-msgstr "Cible dont cette opportunité est issue."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__target_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__target_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__target_ids
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_targets
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_activity
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_graph
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_pivot
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Cibles"
-msgstr "Cibles"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__replied_count
-msgid "Cibles ayant répondu"
-msgstr "Cibles ayant répondu"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,done_text:bf_outreach.bf_onb_step_targets
-msgid "Cibles chargées"
-msgstr "Cibles chargées"
-
-#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-msgid "Cibles concernées"
-msgstr "Cibles concernées"
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
 
 #. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__contacted_count
-msgid "Cibles contactées"
-msgstr "Cibles contactées"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_target_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_target_ids
-msgid "Cibles de démarchage"
-msgstr "Cibles de démarchage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__partner_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Client mandant"
-msgstr "Client mandant"
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__cancelled
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Cancelled"
+msgstr "Annulée"
 
 #. module: bf_outreach
 #: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__partner_id
-msgid "Client pour qui la campagne est menée, lorsqu'il s'agit d'un mandat."
+msgid "Client the campaign is run for, when it is a mandate."
 msgstr "Client pour qui la campagne est menée, lorsqu'il s'agit d'un mandat."
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_process
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Clore"
+msgid "Close"
 msgstr "Clore"
 
 #. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_mode
-msgid ""
-"Comment le rappel quotidien des contacts dus est créé. « Par cible » "
-"convient aux petites listes ; sur une grande liste, préférer le rappel "
-"unique sur la campagne."
-msgstr ""
-"Comment le rappel quotidien des contacts dus est créé. « Par cible » "
-"convient aux petites listes ; sur une grande liste, préférer le rappel "
-"unique sur la campagne."
-
-#. module: bf_outreach
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config
-msgid "Configuration"
-msgstr "Configuration"
-
-#. module: bf_outreach
-#: model:res.groups,comment:bf_outreach.group_bf_outreach_manager
-msgid "Configure les étapes, les étiquettes et supprime les enregistrements."
-msgstr "Configure les étapes, les étiquettes et supprime les enregistrements."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_exclude_wizard__log_touch
-msgid ""
-"Consigne le refus comme interaction sur les cibles concernées, afin que la "
-"demande apparaisse dans l'historique."
-msgstr ""
-"Consigne le refus comme interaction sur les cibles concernées, afin que la "
-"demande apparaisse dans l'historique."
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_res_partner
-msgid "Contact"
-msgstr "Contact"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__partner_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__partner_id
-msgid "Contact Odoo"
-msgstr "Contact Odoo"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__partner_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__partner_ids
-msgid "Contacts"
-msgstr "Contacts"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__planned_touch_count
-msgid "Contacts prévus"
-msgstr "Contacts prévus"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__progress
-msgid "Contacts réalisés par rapport aux contacts prévus par la cadence."
-msgstr "Contacts réalisés par rapport aux contacts prévus par la cadence."
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
-msgid "Contacts à démarcher"
-msgstr "Contacts à démarcher"
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_contacted
-msgid "Contactée"
-msgstr "Contactée"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
-msgid "Contactées"
-msgstr "Contactées"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Contexte, accroche, objections fréquentes…"
-msgstr "Contexte, accroche, objections fréquentes…"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Contexte, objections, engagements pris…"
-msgstr "Contexte, objections, engagements pris…"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__converted
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__converted
-msgid "Converti"
-msgstr "Converti"
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_won
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Convertie"
-msgstr "Convertie"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Converties"
-msgstr "Converties"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Coordonnées"
-msgstr "Coordonnées"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__invalid
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__invalid
-msgid "Coordonnées invalides"
-msgstr "Coordonnées invalides"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color
-msgid "Couleur"
-msgstr "Couleur"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__email
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__email
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__email
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__email
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Courriel"
-msgstr "Courriel"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Courriel de démarchage"
-msgstr "Courriel de démarchage"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Courriel envoyé"
-msgstr "Courriel envoyé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email_normalized
-msgid "Courriel normalisé"
-msgstr "Courriel normalisé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__email_normalized
-msgid ""
-"Courriel réduit à sa forme canonique : sert au dédoublonnage et au "
-"rapprochement des réponses entrantes."
-msgstr ""
-"Courriel réduit à sa forme canonique : sert au dédoublonnage et au "
-"rapprochement des réponses entrantes."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_count
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Courriels"
-msgstr "Courriels"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_target_count
-msgid "Courriels visés par cible"
-msgstr "Courriels visés par cible"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__coverage_rate
-msgid "Couverture (%)"
-msgstr "Couverture (%)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__create_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__create_uid
-msgid "Created by"
-msgstr "Créé par"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__create_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__create_date
-msgid "Created on"
-msgstr "Créé le"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Créer le contact"
-msgstr "Créer le contact"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_campaign
-msgid "Créer une campagne"
-msgstr "Créer une campagne"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Créer une opportunité"
-msgstr "Créer une opportunité"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_campaign
-msgid "Créer une première campagne de démarchage"
-msgstr "Créer une première campagne de démarchage"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_tag
-msgid "Créer une étiquette"
-msgstr "Créer une étiquette"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__date
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Date"
-msgstr "Date"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/wizard/outreach_exclude_wizard.py:0
-msgid "Demande de ne plus être contacté"
-msgstr "Demande de ne plus être contacté"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_call_date
-msgid "Dernier appel"
-msgstr "Dernier appel"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_touch_date
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Dernier contact"
-msgstr "Dernier contact"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_email_date
-msgid "Dernier courriel"
-msgstr "Dernier courriel"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_letter_date
-msgid "Dernière lettre"
-msgstr "Dernière lettre"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__description
-msgid "Description"
-msgstr "Description"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__display_name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__display_name
-msgid "Display Name"
-msgstr "Nom affiché"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__open_target_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Dossiers ouverts"
-msgstr "Dossiers ouverts"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__duration
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__duration
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_list
-msgid "Durée (min)"
-msgstr "Durée (min)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_touch__duration
-msgid "Durée de l'appel ou de la rencontre, en minutes."
-msgstr "Durée de l'appel ou de la rencontre, en minutes."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__stop_on_reply
-msgid ""
-"Dès qu'une cible répond, elle sort de la cadence automatique : le suivi se "
-"poursuit à la main, via l'étape et les activités."
-msgstr ""
-"Dès qu'une cible répond, elle sort de la cadence automatique : le suivi se "
-"poursuit à la main, via l'étape et les activités."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__date_start
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Début"
-msgstr "Début"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_log_wizard__snooze_days
-msgid ""
-"Décale la prochaine relance, par exemple lorsque la cible demande d'être "
-"rappelée plus tard. 0 = cadence normale."
-msgstr ""
-"Décale la prochaine relance, par exemple lorsque la cible demande d'être "
-"rappelée plus tard. 0 = cadence normale."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_stage
-msgid "Définir les étapes du suivi"
-msgstr "Définir les étapes du suivi"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__competitor
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__competitor
-msgid "Déjà servi ailleurs"
-msgstr "Déjà servi ailleurs"
-
-#. module: bf_outreach
-#: model:ir.module.category,name:bf_outreach.module_category_bf_outreach
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_root
-#: model:onboarding.onboarding,name:bf_outreach.bf_onboarding_panel
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_partner_form_outreach
-msgid "Démarchage"
-msgstr "Démarchage"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "Démarchage : %(due)s contact(s) dus, dont %(late)s en retard"
-msgstr "Démarchage : %(due)s contact(s) dus, dont %(late)s en retard"
-
-#. module: bf_outreach
-#: model:ir.actions.server,name:bf_outreach.ir_cron_outreach_followups_ir_actions_server
-msgid "Démarchage : rappels de relance"
-msgstr "Démarchage : rappels de relance"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Démarrer"
-msgstr "Démarrer"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__stage_id
-msgid "Déplacer à l'étape"
-msgstr "Déplacer à l'étape"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__note
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__note
-msgid "Détails"
-msgstr "Détails"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
-msgid "Détails de l'échange…"
-msgstr "Détails de l'échange…"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_mail_compose_message
-msgid "Email composition wizard"
-msgstr "Assistant de composition de courriels"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__running
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__active
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "En cours"
-msgstr "En cours"
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_discussion
-msgid "En discussion"
-msgstr "En discussion"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__paused
-msgid "En pause"
-msgstr "En pause"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "En retard"
-msgstr "En retard"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__direction__in
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__direction__in
-msgid "Entrant"
-msgstr "Entrant"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Envoyer le courriel"
-msgstr "Envoyer le courriel"
-
-#. module: bf_outreach
-#: model:ir.actions.server,name:bf_outreach.action_target_send_email
-msgid "Envoyer le courriel de campagne"
-msgstr "Envoyer le courriel de campagne"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__sent
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__sent
-msgid "Envoyé"
-msgstr "Envoyé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__is_excluded
-msgid "Exclue du démarchage"
-msgstr "Exclue du démarchage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_date
-#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out_date
-#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out_date
-msgid "Exclusion demandée le"
-msgstr "Exclusion demandée le"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__do_not_contact
-msgid ""
-"Exclusion demandée par la cible. La cadence s'arrête définitivement et la "
-"cible ne peut plus être ajoutée à une campagne."
-msgstr ""
-"Exclusion demandée par la cible. La cadence s'arrête définitivement et la "
-"cible ne peut plus être ajoutée à une campagne."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Exclusion levée par %s."
-msgstr "Exclusion levée par %s."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_user_id
-msgid "Exclusion notée par"
-msgstr "Exclusion notée par"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__failed_message_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__failed_message_ids
-msgid "Failed Messages"
-msgstr "Messages en échec"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__date_end
-msgid "Fin prévue"
-msgstr "Fin prévue"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_follower_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_follower_ids
-msgid "Followers"
-msgstr "Abonnés"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_partner_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "Abonnés (Partenaires)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__function
-msgid "Fonction"
-msgstr "Fonction"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_type_icon
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Icône Font Awesome par ex. fa-tasks"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__won
-msgid "Gagnée"
-msgstr "Gagnée"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__won_count
-msgid "Gagnées"
-msgstr "Gagnées"
-
-#. module: bf_outreach
-#: model:ir.module.category,description:bf_outreach.module_category_bf_outreach
-msgid "Gestion des campagnes de démarchage par appels et courriels."
-msgstr "Gestion des campagnes de démarchage par appels et courriels."
-
-#. module: bf_outreach
-#: model:res.groups,name:bf_outreach.group_bf_outreach_manager
-msgid "Gestionnaire"
-msgstr "Gestionnaire"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Générer les rappels du jour"
-msgstr "Générer les rappels du jour"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__has_message
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__has_message
-msgid "Has Message"
-msgstr "A un message"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Historique"
-msgstr "Historique"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__id
-msgid "ID"
-msgstr "Identifiant"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_exception_icon
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_exception_icon
-msgid "Icon"
-msgstr "Icône"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_exception_icon
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_exception_icon
-msgid "Icon to indicate an exception activity."
-msgstr "Icône pour indiquer une activité d'exception."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_needaction
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_needaction
-msgid "If checked, new messages require your attention."
-msgstr "Si coché, de nouveaux messages demandent votre attention."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_error
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_sms_error
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_error
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_sms_error
-msgid "If checked, some messages have a delivery error."
-msgstr "Si coché, certains messages ont une erreur de livraison."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__skip_existing
-msgid "Ignorer les doublons"
-msgstr "Ignorer les doublons"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Importer un fichier"
-msgstr "Importer un fichier"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
-msgid "Interaction"
-msgstr "Interaction"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_touch
-msgid "Interaction de démarchage"
-msgstr "Interaction de démarchage"
-
-#. module: bf_outreach
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_touch
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__touch_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__touch_ids
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_touch
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_graph
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_pivot
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Interactions"
-msgstr "Interactions"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_interval_days
-msgid "Intervalle entre deux appels (jours)"
-msgstr "Intervalle entre deux appels (jours)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_interval_days
-msgid "Intervalle entre deux courriels (jours)"
-msgstr "Intervalle entre deux courriels (jours)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_interval_days
-msgid "Intervalle entre deux lettres (jours)"
-msgstr "Intervalle entre deux lettres (jours)"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__interested
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__interested
-msgid "Intérêt manifesté"
-msgstr "Intérêt manifesté"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_is_follower
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_is_follower
-msgid "Is Follower"
-msgstr "Est un abonné"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Issue de la campagne de démarchage « %s »."
-msgstr "Issue de la campagne de démarchage « %s »."
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_crm_lead_search_outreach
-msgid "Issues du démarchage"
-msgstr "Issues du démarchage"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__untouched_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Jamais contactées"
-msgstr "Jamais contactées"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__no_answer
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__no_answer
-msgid "Jamais joint"
-msgstr "Jamais joint"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-msgid "Journaliser"
-msgstr "Journaliser"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__log_touch
-msgid "Journaliser l'interaction"
-msgstr "Journaliser l'interaction"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_touches
-msgid "Journaliser les contacts"
-msgstr "Journaliser les contacts"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Journaliser un appel"
-msgstr "Journaliser un appel"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
-msgid "Journaliser un contact"
-msgstr "Journaliser un contact"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_log_wizard
-msgid "Journaliser un contact de démarchage"
-msgstr "Journaliser un contact de démarchage"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Journaliser un courriel"
-msgstr "Journaliser un courriel"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Journaliser une lettre"
-msgstr "Journaliser une lettre"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__working_days_only
-msgid "Jours ouvrables seulement"
-msgstr "Jours ouvrables seulement"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
-msgid ""
-"L'exclusion vaut pour toutes les campagnes, présentes et futures.\n"
-"                        Elle se pose aussi sur le contact Odoo lié, s'il y en a un."
-msgstr ""
-"L'exclusion vaut pour toutes les campagnes, présentes et futures.\n"
-"                        Elle se pose aussi sur le contact Odoo lié, s'il y en a un."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "L'intervalle entre deux %s doit être d'au moins une journée."
-msgstr "L'intervalle entre deux %s doit être d'au moins une journée."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "La date de fin ne peut pas précéder la date de début."
-msgstr "La date de fin ne peut pas précéder la date de début."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_res_partner__outreach_opt_out
-#: model:ir.model.fields,help:bf_outreach.field_res_users__outreach_opt_out
-msgid ""
-"La personne a demandé de ne plus recevoir de sollicitation de démarchage. "
-"Elle ne peut plus être ajoutée à une campagne et la cadence s'arrête sur "
-"toutes ses cibles existantes."
-msgstr ""
-"La personne a demandé de ne plus recevoir de sollicitation de démarchage. "
-"Elle ne peut plus être ajoutée à une campagne et la cadence s'arrête sur "
-"toutes ses cibles existantes."
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__none
-msgid "Laisser au responsable de la campagne"
-msgstr "Laisser au responsable de la campagne"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_log_wizard__stage_id
-msgid "Laisser vide pour conserver l'étape actuelle."
-msgstr "Laisser vide pour conserver l'étape actuelle."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__campaign_ids
-msgid "Laisser vide pour rendre l'étape disponible dans toutes les campagnes."
-msgstr ""
-"Laisser vide pour rendre l'étape disponible dans toutes les campagnes."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__stage_ids
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Laisser vide pour utiliser les étapes communes à toutes les campagnes."
-msgstr ""
-"Laisser vide pour utiliser les étapes communes à toutes les campagnes."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__write_uid
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__write_uid
-msgid "Last Updated by"
-msgstr "Dernière mise à jour par"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__write_date
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__write_date
-msgid "Last Updated on"
-msgstr "Dernière mise à jour le"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid ""
-"Le module « Letter Writer » n'est pas installé : impossible de préparer des "
-"lettres."
-msgstr ""
-"Le module « Letter Writer » n'est pas installé : impossible de préparer des "
-"lettres."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "Le nombre de %s visés ne peut pas être négatif."
-msgstr "Le nombre de %s visés ne peut pas être négatif."
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_crm_lead
-msgid "Lead/Opportunity"
-msgstr "Piste/opportunité"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_due
-msgid ""
-"Les cibles réapparaissent ici selon la cadence définie sur leur campagne."
-msgstr ""
-"Les cibles réapparaissent ici selon la cadence définie sur leur campagne."
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Les miennes"
-msgstr "Les miennes"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_stage
-msgid ""
-"Les étapes de type « Gagnée » ou « Abandonnée » ferment le dossier\n"
-"                et arrêtent la cadence de relance."
-msgstr ""
-"Les étapes de type « Gagnée » ou « Abandonnée » ferment le dossier\n"
-"                et arrêtent la cadence de relance."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__fold
-msgid "Les étapes repliées apparaissent en colonne compacte dans le kanban."
-msgstr "Les étapes repliées apparaissent en colonne compacte dans le kanban."
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_tag
-msgid ""
-"Les étiquettes servent à segmenter les cibles : secteur, taille, provenance…"
-msgstr ""
-"Les étiquettes servent à segmenter les cibles : secteur, taille, provenance…"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__letter
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__letter
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__letter
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__letter
-msgid "Lettre"
-msgstr "Lettre"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_count
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__letter_count
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Lettres"
-msgstr "Lettres"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_target_count
-msgid "Lettres visées par cible"
-msgstr "Lettres visées par cible"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Lever l'exclusion"
-msgstr "Lever l'exclusion"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Lever l'exclusion relance le démarchage de cette cible. Confirmer ?"
-msgstr "Lever l'exclusion relance le démarchage de cette cible. Confirmer ?"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__linkedin
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__linkedin
-msgid "LinkedIn"
-msgstr "LinkedIn"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__bad_timing
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__bad_timing
-msgid "Mauvais moment"
-msgstr "Mauvais moment"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Mes campagnes"
-msgstr "Mes campagnes"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Mes cibles"
-msgstr "Mes cibles"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_content
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_content
-msgid "Message Content"
-msgstr "Contenu du message"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_error
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_error
-msgid "Message Delivery error"
-msgstr "Erreur d'envoi du message"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_search
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_search
-msgid "Message Search"
-msgstr "Recherche de message"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_content
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_content
-msgid "Message content, to be used only in searches"
-msgstr "Contenu du message, à n'utiliser que dans les recherches"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__mail_message_id
-msgid "Message d'origine"
-msgstr "Message d'origine"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_touch__mail_message_id
-msgid ""
-"Message de la discussion dont cette interaction est issue, lorsqu'elle a été"
-" déduite plutôt que saisie."
-msgstr ""
-"Message de la discussion dont cette interaction est issue, lorsqu'elle a été"
-" déduite plutôt que saisie."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_search
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_search
-msgid "Message search, to be used only in searches"
-msgstr "Recherche de message, à n'utiliser que dans les recherches"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_ids
-msgid "Messages"
-msgstr "Messages"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Mettre en pause"
-msgstr "Mettre en pause"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
-msgid "Modifier"
-msgstr "Modifier"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__mail_template_id
-msgid "Modèle de courriel"
-msgstr "Modèle de courriel"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__mail_template_id
-msgid ""
-"Modèle proposé par le bouton « Envoyer le courriel » sur les cibles. Rédigé "
-"sur le modèle « Cible de démarchage », il peut donc reprendre le nom, la "
-"personne-ressource et la campagne."
-msgstr ""
-"Modèle proposé par le bouton « Envoyer le courriel » sur les cibles. Rédigé "
-"sur le modèle « Cible de démarchage », il peut donc reprendre le nom, la "
-"personne-ressource et la campagne."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__reason
-msgid "Motif"
-msgstr "Motif"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__closed_reason
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__closed_reason
-msgid "Motif de clôture"
-msgstr "Motif de clôture"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_reason
-#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out_reason
-#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out_reason
-msgid "Motif de l'exclusion"
-msgstr "Motif de l'exclusion"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__my_activity_date_deadline
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Échéance de mon activité"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__paused_until
-msgid "Ne pas relancer avant"
-msgstr "Ne pas relancer avant"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-#: model:ir.model,name:bf_outreach.model_bf_outreach_exclude_wizard
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Ne plus contacter"
-msgstr "Ne plus contacter"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Ne plus contacter — demande enregistrée."
-msgstr "Ne plus contacter — demande enregistrée."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/res_partner.py:0
-#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out
-#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_partner_form_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_res_partner_filter_outreach
-msgid "Ne plus démarcher"
-msgstr "Ne plus démarcher"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__skip_existing
-msgid "Ne recrée pas une cible pour un contact déjà présent dans la campagne."
-msgstr ""
-"Ne recrée pas une cible pour un contact déjà présent dans la campagne."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_calendar_event_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Activité suivante de l'événement du calendrier"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_date_deadline
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_date_deadline
-msgid "Next Activity Deadline"
-msgstr "Échéance de la prochaine activité"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_summary
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_summary
-msgid "Next Activity Summary"
-msgstr "Résumé de l'activité suivante"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_type_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_type_id
-msgid "Next Activity Type"
-msgstr "Type d'activités à venir"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Nom de l'organisation"
-msgstr "Nom de l'organisation"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
-msgid "Nom de l'étape"
-msgstr "Nom de l'étape"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__call_target_count
-msgid "Nombre d'appels à faire à chaque cible. 0 = aucun appel prévu."
-msgstr "Nombre d'appels à faire à chaque cible. 0 = aucun appel prévu."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__touch_count
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__touch_count
-msgid "Nombre d'interactions"
-msgstr "Nombre d'interactions"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__target_count
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__target_count
-msgid "Nombre de cibles"
-msgstr "Nombre de cibles"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_target_count
-#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_target_count
-msgid "Nombre de cibles de démarchage"
-msgstr "Nombre de cibles de démarchage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__email_target_count
-msgid ""
-"Nombre de courriels à envoyer à chaque cible. 0 = aucun courriel prévu."
-msgstr ""
-"Nombre de courriels à envoyer à chaque cible. 0 = aucun courriel prévu."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__letter_target_count
-msgid "Nombre de lettres à poster à chaque cible. 0 = aucune lettre prévue."
-msgstr "Nombre de lettres à poster à chaque cible. 0 = aucune lettre prévue."
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_lost
-msgid "Non retenue"
-msgstr "Non retenue"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__0
-msgid "Normale"
-msgstr "Normale"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__note
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Notes"
-msgstr "Notes"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__description
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Notes et argumentaire"
-msgstr "Notes et argumentaire"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_needaction_counter
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_needaction_counter
-msgid "Number of Actions"
-msgstr "Nombre d'actions"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_error_counter
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_error_counter
-msgid "Number of errors"
-msgstr "Nombre d'erreurs"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_needaction_counter
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Nombre de messages nécessitant une action"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_error_counter
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_error_counter
-msgid "Number of messages with delivery error"
-msgstr "Nombre de messages avec des erreurs d'envoi"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__phone_normalized
-msgid ""
-"Numéro en format international : sert au dédoublonnage et au rapprochement "
-"des appels journalisés."
-msgstr ""
-"Numéro en format international : sert au dédoublonnage et au rapprochement "
-"des appels journalisés."
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_onboarding_onboarding
-msgid "Onboarding"
-msgstr "Parcours d'intégration"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_campaign
-#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_targets
-#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_touches
-msgid "Onboarding Step Image"
-msgstr "Image de l'étape du parcours d'intégration"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Ont répondu"
-msgstr "Ont répondu"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__lead_id
-msgid "Opportunité"
-msgstr "Opportunité"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-msgid "Opportunité créée : %s"
-msgstr "Opportunité créée : %s"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__name
-msgid ""
-"Organisation démarchée, ou nom de la personne s'il s'agit d'un particulier."
-msgstr ""
-"Organisation démarchée, ou nom de la personne s'il s'agit d'un particulier."
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Où je suis dans l'équipe"
-msgstr "Où je suis dans l'équipe"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__user_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Par"
-msgstr "Par"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__conversion_rate
-msgid "Part des cibles arrivées à une étape « Gagnée »."
-msgstr "Part des cibles arrivées à une étape « Gagnée »."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__coverage_rate
-msgid "Part des cibles contactées au moins une fois."
-msgstr "Part des cibles contactées au moins une fois."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__reply_rate
-msgid "Part des cibles contactées qui ont répondu."
-msgstr "Part des cibles contactées qui ont répondu."
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__no_answer
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__no_answer
-msgid "Pas de réponse"
-msgstr "Pas de réponse"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__not_interested
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__not_interested
-msgid "Pas intéressé"
-msgstr "Pas intéressé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_crm_lead__outreach_campaign_id
-msgid "Permet de mesurer ce que le démarchage rapporte au pipeline."
-msgstr "Permet de mesurer ce que le démarchage rapporte au pipeline."
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__reached
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__reached
-msgid "Personne rejointe"
-msgstr "Personne rejointe"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__contact_name
-msgid "Personne-ressource"
-msgstr "Personne-ressource"
-
-#. module: bf_outreach
-#: model:res.groups,comment:bf_outreach.group_bf_outreach_user
-msgid ""
-"Peut mener des campagnes : gérer les cibles et journaliser les interactions."
-msgstr ""
-"Peut mener des campagnes : gérer les cibles et journaliser les interactions."
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Pilotage"
-msgstr "Pilotage"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__date_start
-msgid ""
-"Point de départ de la cadence : une cible jamais contactée est due à cette "
-"date (ou à sa date d'ajout si elle est postérieure)."
-msgstr ""
-"Point de départ de la cadence : une cible jamais contactée est due à cette "
-"date (ou à sa date d'ajout si elle est postérieure)."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__first_reply_date
-msgid "Première réponse"
-msgstr "Première réponse"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__priority
-msgid "Priorité"
-msgstr "Priorité"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-msgid "Prochain"
-msgstr "Prochain"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_call_date
-msgid "Prochain appel"
-msgstr "Prochain appel"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_email_date
-msgid "Prochain courriel"
-msgstr "Prochain courriel"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_action_date
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Prochaine action"
-msgstr "Prochaine action"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_letter_date
-msgid "Prochaine lettre"
-msgstr "Prochaine lettre"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Prochaine relance"
-msgstr "Prochaine relance"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__source
-msgid "Provenance de la cible : liste importée, salon, référencement, etc."
-msgstr "Provenance de la cible : liste importée, salon, référencement, etc."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__source
-msgid "Provenance de la liste, reportée sur chaque cible créée."
-msgstr "Provenance de la liste, reportée sur chaque cible créée."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_target.py:0
-#: model:ir.actions.server,name:bf_outreach.action_target_write_letters
-msgid "Préparer les lettres"
-msgstr "Préparer les lettres"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Période"
-msgstr "Période"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__callback
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__callback
-msgid "Rappel demandé"
-msgstr "Rappel demandé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_mode
-msgid "Rappels automatiques"
-msgstr "Rappels automatiques"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__rating_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__rating_ids
-msgid "Ratings"
-msgstr "Évaluations"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__not_interested
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__not_interested
-msgid "Refus"
-msgstr "Refus"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Regrouper par"
-msgstr "Regrouper par"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_calendar
-msgid "Relances"
-msgstr "Relances"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target_overdue
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__overdue_count
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_target_overdue
-msgid "Relances en retard"
-msgstr "Relances en retard"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Remettre en brouillon"
-msgstr "Remettre en brouillon"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__meeting
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__meeting
-msgid "Rencontre"
-msgstr "Rencontre"
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_meeting
-msgid "Rendez-vous fixé"
-msgstr "Rendez-vous fixé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__fold
-msgid "Repliée"
-msgstr "Repliée"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__working_days_only
-msgid "Reporte au lundi une relance qui tomberait un samedi ou un dimanche."
-msgstr "Reporte au lundi une relance qui tomberait un samedi ou un dimanche."
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__paused_until
-msgid ""
-"Repousse la prochaine relance, par exemple lorsque la cible demande d'être "
-"rappelée plus tard."
-msgstr ""
-"Repousse la prochaine relance, par exemple lorsque la cible demande d'être "
-"rappelée plus tard."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__snooze_days
-msgid "Repousser de (jours)"
-msgstr "Repousser de (jours)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__user_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__user_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Responsable"
-msgstr "Responsable"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_user_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_user_id
-msgid "Responsible User"
-msgstr "Utilisateur responsable"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__kind
-msgid "Reçue par"
-msgstr "Reçue par"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_due
-msgid "Rien à relancer aujourd'hui"
-msgstr "Rien à relancer aujourd'hui"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Règles de relance"
-msgstr "Règles de relance"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__team
-msgid "Répartir dans l'équipe de la campagne"
-msgstr "Répartir dans l'équipe de la campagne"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__is_reply
-msgid "Réponse de la cible"
-msgstr "Réponse de la cible"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__replied
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__replied
-msgid "Réponse reçue"
-msgstr "Réponse reçue"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Réponses reçues"
-msgstr "Réponses reçues"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__outcome
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__outcome
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Résultat"
-msgstr "Résultat"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "Résultats"
-msgstr "Résultats"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__summary
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__summary
-msgid "Résumé"
-msgstr "Résumé"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_sms_error
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Erreur d'envoi SMS"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Sans réponse"
-msgstr "Sans réponse"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__direction
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__direction
-msgid "Sens"
-msgstr "Sens"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__sequence
-msgid "Sequence"
-msgstr "Séquence"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__website
-msgid "Site web"
-msgstr "Site web"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__company_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__company_id
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__company_id
-msgid "Société"
-msgstr "Société"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__direction__out
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__direction__out
-msgid "Sortant"
-msgstr "Sortant"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__source
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__source
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Source"
-msgstr "Source"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_state
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_state
-msgid ""
-"Status based on activities\n"
-"Overdue: Due date is already passed\n"
-"Today: Activity date is today\n"
-"Planned: Future activities."
-msgstr ""
-"Statut basé sur les activités\n"
-"En retard : la date d'échéance est déjà dépassée\n"
-"Aujourd'hui : la date d'activité est aujourd'hui\n"
-"Planifiée : activités futures"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Suivi"
-msgstr "Suivi"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,done_text:bf_outreach.bf_onb_step_touches
-msgid "Suivi en marche"
-msgstr "Suivi en marche"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
-msgid "Supprimer"
-msgstr "Supprimer"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__conversion_rate
-msgid "Taux de conversion (%)"
-msgstr "Taux de conversion (%)"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__reply_rate
-msgid "Taux de réponse (%)"
-msgstr "Taux de réponse (%)"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__done
-msgid "Terminée"
-msgstr "Terminée"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "Terminées"
+msgid "Closed"
 msgstr "Terminées"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__sms
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__sms
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__sms
-msgid "Texto"
-msgstr "Texto"
-
-#. module: bf_outreach
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_target_all
-msgid "Toutes les cibles"
-msgstr "Toutes les cibles"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_overdue
-msgid ""
-"Toutes les cibles sont suivies dans les délais prévus par leur campagne."
-msgstr ""
-"Toutes les cibles sont suivies dans les délais prévus par leur campagne."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__kind
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__stage_type
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__stage_type
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__kind
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
-msgid "Type"
-msgstr "Type"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_action_kind
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Type de prochaine action"
-msgstr "Type de prochaine action"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_exception_decoration
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_exception_decoration
-msgid "Type of the exception activity on record."
-msgstr "Type d'activité d'exception enregistrée."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__phone
-msgid "Téléphone"
-msgstr "Téléphone"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__phone_normalized
-msgid "Téléphone (E.164)"
-msgstr "Téléphone (E.164)"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__target
-msgid "Une activité par cible due"
-msgstr "Une activité par cible due"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__campaign
-msgid "Une activité quotidienne sur la campagne"
-msgstr "Une activité quotidienne sur la campagne"
-
-#. module: bf_outreach
-#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_campaign
-msgid ""
-"Une campagne regroupe une liste de cibles, une cadence de relance\n"
-"                (combien d'appels et de courriels, à quel rythme) et le suivi de\n"
-"                chaque dossier jusqu'à sa conclusion."
-msgstr ""
-"Une campagne regroupe une liste de cibles, une cadence de relance\n"
-"                (combien d'appels et de courriels, à quel rythme) et le suivi de\n"
-"                chaque dossier jusqu'à sa conclusion."
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__2
-msgid "Urgente"
-msgstr "Urgente"
-
-#. module: bf_outreach
-#: model:res.groups,name:bf_outreach.group_bf_outreach_user
-msgid "Utilisateur"
-msgstr "Utilisateur"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__member_ids
-msgid ""
-"Utilisateurs entre qui les nouvelles cibles sont réparties à tour de rôle."
-msgstr ""
-"Utilisateurs entre qui les nouvelles cibles sont réparties à tour de rôle."
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_campaign
-msgid "Voir les campagnes"
-msgstr "Voir les campagnes"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_targets
-msgid "Voir les cibles"
-msgstr "Voir les cibles"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_touches
-msgid "Voir les interactions"
-msgstr "Voir les interactions"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__is_excluded
-msgid ""
-"Vrai lorsque la cible, ou le contact Odoo qui lui est lié, a demandé de ne "
-"plus être sollicité."
-msgstr ""
-"Vrai lorsque la cible, ou le contact Odoo qui lui est lié, a demandé de ne "
-"plus être sollicité."
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__website_message_ids
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__website_message_ids
-msgid "Website Messages"
-msgstr "Messages du site web"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__website_message_ids
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__website_message_ids
-msgid "Website communication history"
-msgstr "Historique de communication du site web"
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_campaign
-msgid ""
-"[action:bf_outreach.action_bf_outreach_campaign] Définissez la période, "
-"l'équipe et la cadence de relance (combien d'appels et de courriels, à quel "
-"intervalle)."
-msgstr ""
-"[action:bf_outreach.action_bf_outreach_campaign] Définissez la période, "
-"l'équipe et la cadence de relance (combien d'appels et de courriels, à quel "
-"intervalle)."
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_targets
-msgid ""
-"[action:bf_outreach.action_bf_outreach_target] Ajoutez les cibles depuis vos"
-" contacts, ou sélectionnez-les dans la liste des contacts et utilisez "
-"l'action « Ajouter à une campagne de démarchage »."
-msgstr ""
-"[action:bf_outreach.action_bf_outreach_target] Ajoutez les cibles depuis vos"
-" contacts, ou sélectionnez-les dans la liste des contacts et utilisez "
-"l'action « Ajouter à une campagne de démarchage »."
-
-#. module: bf_outreach
-#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_touches
-msgid ""
-"[action:bf_outreach.action_bf_outreach_touch] Chaque appel et chaque "
-"courriel se note en deux clics ; les prochaines relances se calculent "
-"seules."
-msgstr ""
-"[action:bf_outreach.action_bf_outreach_touch] Chaque appel et chaque "
-"courriel se note en deux clics ; les prochaines relances se calculent "
-"seules."
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "appels"
-msgstr "appels"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "courriels"
-msgstr "courriels"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-msgid "ex. Démarchage manufacturiers — automne 2026"
-msgstr "ex. Démarchage manufacturiers — automne 2026"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
-msgid "ex. Liste salon 2026"
-msgstr "ex. Liste salon 2026"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-msgid "lettres"
-msgstr "lettres"
-
-#. module: bf_outreach
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__stage_type
-#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__stage_type
-msgid ""
-"« Gagnée » et « Abandonnée » ferment le dossier : la cadence de relance "
-"s'arrête et la cible ne remonte plus dans les retards."
-msgstr ""
-"« Gagnée » et « Abandonnée » ferment le dossier : la cadence de relance "
-"s'arrête et la cible ne remonte plus dans les retards."
-
-#. module: bf_outreach
-#: model:bf.outreach.stage,name:bf_outreach.stage_to_contact
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__todo
-msgid "À contacter"
-msgstr "À contacter"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "À faire"
-msgstr "À faire"
-
-#. module: bf_outreach
-#. odoo-python
-#: code:addons/bf_outreach/models/outreach_campaign.py:0
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target_due
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__due_today_count
-msgid "À faire aujourd'hui"
-msgstr "À faire aujourd'hui"
-
-#. module: bf_outreach
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
-msgid "À quoi correspond cette étape…"
-msgstr "À quoi correspond cette étape…"
-
-#. module: bf_outreach
-#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__1
-msgid "Élevée"
-msgstr "Élevée"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__member_ids
-msgid "Équipe"
-msgstr "Équipe"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__name
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__stage_id
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
-msgid "Étape"
-msgstr "Étape"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_stage
-msgid "Étape de démarchage"
-msgstr "Étape de démarchage"
-
-#. module: bf_outreach
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_stage
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config_stage
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_list
-msgid "Étapes"
-msgstr "Étapes"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__stage_ids
-msgid "Étapes propres à la campagne"
-msgstr "Étapes propres à la campagne"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__state
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__campaign_state
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
-msgid "État"
-msgstr "État"
-
-#. module: bf_outreach
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__name
-msgid "Étiquette"
-msgstr "Étiquette"
-
-#. module: bf_outreach
-#: model:ir.model,name:bf_outreach.model_bf_outreach_tag
-msgid "Étiquette de démarchage"
-msgstr "Étiquette de démarchage"
-
-#. module: bf_outreach
-#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_tag
-#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__tag_ids
-#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config_tag
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_tag_list
-#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
-msgid "Étiquettes"
-msgstr "Étiquettes"
 
 #. module: bf_outreach
 #: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__color_resolved_index
@@ -2419,6 +403,20 @@ msgid "Closest Odoo palette index, for views that only understand 0-11."
 msgstr ""
 "Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
 "comprennent que 0 à 11."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__closed_reason
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__closed_reason
+msgid "Closing reason"
+msgstr "Motif de clôture"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_tag_list
+msgid "Color"
+msgstr "Couleur"
 
 #. module: bf_outreach
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_source
@@ -2446,6 +444,209 @@ msgstr ""
 "les règles automatiques."
 
 #. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__company_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__company_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__done
+msgid "Completed"
+msgstr "Terminée"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_outreach
+#: model:res.groups,comment:bf_outreach.group_bf_outreach_manager
+msgid "Configures stages and tags, and deletes records."
+msgstr "Configure les étapes, les étiquettes et supprime les enregistrements."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Contact details"
+msgstr "Coordonnées"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__contact_name
+msgid "Contact person"
+msgstr "Personne-ressource"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_contacted
+msgid "Contacted"
+msgstr "Contactée"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
+msgid "Contacted targets"
+msgstr "Contactées"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__partner_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__partner_ids
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
+msgid "Contacts to approach"
+msgstr "Contacts à démarcher"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Context, hook, common objections…"
+msgstr "Contexte, accroche, objections fréquentes…"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Context, objections, commitments made…"
+msgstr "Contexte, objections, engagements pris…"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__conversion_rate
+msgid "Conversion rate (%)"
+msgstr "Taux de conversion (%)"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_won
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Converted"
+msgstr "Convertie"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Converted targets"
+msgstr "Converties"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__coverage_rate
+msgid "Coverage (%)"
+msgstr "Couverture (%)"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_campaign
+msgid "Create a campaign"
+msgstr "Créer une campagne"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_campaign
+msgid "Create a first outreach campaign"
+msgstr "Créer une première campagne de démarchage"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_tag
+msgid "Create a tag"
+msgstr "Créer une étiquette"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Create an opportunity"
+msgstr "Créer une opportunité"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Create the contact"
+msgstr "Créer le contact"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__create_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__date
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__not_interested
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__not_interested
+msgid "Declined"
+msgstr "Refus"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_stage
+msgid "Define the follow-up stages"
+msgstr "Définir les étapes du suivi"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
+msgid "Delete"
+msgstr "Supprimer"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__note
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__note
+msgid "Details"
+msgstr "Détails"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
+msgid "Details of the exchange…"
+msgstr "Détails de l'échange…"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__direction
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__direction
+msgid "Direction"
+msgstr "Sens"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__display_name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_outreach
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_resolved
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_resolved
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_resolved
@@ -2460,6 +661,1131 @@ msgid "Displayed color (Odoo palette)"
 msgstr "Couleur affichée (palette d'Odoo)"
 
 #. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+#: model:ir.model,name:bf_outreach.model_bf_outreach_exclude_wizard
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Do not contact"
+msgstr "Ne plus contacter"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Do not contact: request recorded."
+msgstr "Ne plus contacter — demande enregistrée."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__paused_until
+msgid "Do not follow up before"
+msgstr "Ne pas relancer avant"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__skip_existing
+msgid "Does not create a second target for a contact already in the campaign."
+msgstr ""
+"Ne recrée pas une cible pour un contact déjà présent dans la campagne."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__lost
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Dropped"
+msgstr "Abandonnée"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__lost_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Dropped targets"
+msgstr "Abandonnées"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Due"
+msgstr "À faire"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target_due
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__due_today_count
+msgid "Due today"
+msgstr "À faire aujourd'hui"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__duration
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__duration
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_list
+msgid "Duration (min)"
+msgstr "Durée (min)"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__partner_ids
+msgid "Each contact kept becomes a target of the campaign."
+msgstr "Chaque contact retenu devient une cible de la campagne."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_kanban
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_kanban
+msgid "Edit"
+msgstr "Modifier"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__email
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__email
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__email
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__email
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__email_normalized
+msgid ""
+"Email reduced to its canonical form: used for deduplication and for matching"
+" incoming replies."
+msgstr ""
+"Courriel réduit à sa forme canonique : sert au dédoublonnage et au "
+"rapprochement des réponses entrantes."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Email sent"
+msgstr "Courriel envoyé"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__mail_template_id
+msgid "Email template"
+msgstr "Modèle de courriel"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_count
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Emails"
+msgstr "Courriels"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_touch
+msgid "Every call and every email logged from a target shows up here."
+msgstr ""
+"Chaque appel et chaque courriel journalisé depuis une cible apparaît ici."
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_overdue
+msgid "Every target is being followed within the time its campaign allows."
+msgstr ""
+"Toutes les cibles sont suivies dans les délais prévus par leur campagne."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__is_excluded
+msgid "Excluded from outreach"
+msgstr "Exclue du démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Exclusion lifted by %s."
+msgstr "Exclusion levée par %s."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_user_id
+msgid "Exclusion recorded by"
+msgstr "Exclusion notée par"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__do_not_contact
+msgid ""
+"Exclusion requested by the target. The cadence stops for good and the target"
+" can no longer be added to a campaign."
+msgstr ""
+"Exclusion demandée par la cible. La cadence s'arrête définitivement et la "
+"cible ne peut plus être ajoutée à une campagne."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_date
+#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out_date
+#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out_date
+msgid "Exclusion requested on"
+msgstr "Exclusion demandée le"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__failed_message_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_lost
+msgid "File dropped: the follow-up cadence stops."
+msgstr "Dossier abandonné : la cadence de relance s'arrête."
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_won
+msgid "File won: the follow-up cadence stops."
+msgstr "Dossier gagné : la cadence de relance s'arrête."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__first_reply_date
+msgid "First reply"
+msgstr "Première réponse"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__fold
+msgid "Folded"
+msgstr "Repliée"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__fold
+msgid "Folded stages show as a compact column in the kanban."
+msgstr "Les étapes repliées apparaissent en colonne compacte dans le kanban."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Follow-up"
+msgstr "Suivi"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Follow-up rules"
+msgstr "Règles de relance"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,done_text:bf_outreach.bf_onb_step_touches
+msgid "Follow-up under way"
+msgstr "Suivi en marche"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_calendar
+msgid "Follow-ups"
+msgstr "Relances"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_follower_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_partner_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_type_icon
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_crm_lead_search_outreach
+msgid "From outreach"
+msgstr "Issues du démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "From the outreach campaign \"%s\"."
+msgstr "Issue de la campagne de démarchage « %s »."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Generate today's reminders"
+msgstr "Générer les rappels du jour"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__has_message
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__has_reply
+msgid "Has replied"
+msgstr "A répondu"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__1
+msgid "High"
+msgstr "Élevée"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "History"
+msgstr "Historique"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__call_target_count
+msgid "How many calls to place to each target. 0 = no call planned."
+msgstr "Nombre d'appels à faire à chaque cible. 0 = aucun appel prévu."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__email_target_count
+msgid "How many emails to send to each target. 0 = no email planned."
+msgstr ""
+"Nombre de courriels à envoyer à chaque cible. 0 = aucun courriel prévu."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__letter_target_count
+msgid "How many letters to post to each target. 0 = no letter planned."
+msgstr "Nombre de lettres à poster à chaque cible. 0 = aucune lettre prévue."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_mode
+msgid ""
+"How the daily reminder of due contacts is created. \"Per target\" suits "
+"short lists; on a long list, prefer the single reminder on the campaign."
+msgstr ""
+"Comment le rappel quotidien des contacts dus est créé. « Par cible » "
+"convient aux petites listes ; sur une grande liste, préférer le rappel "
+"unique sur la campagne."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "I'm on the team"
+msgstr "Où je suis dans l'équipe"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_exception_icon
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_needaction
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_error
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_sms_error
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_error
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Import a file"
+msgstr "Importer un fichier"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_discussion
+msgid "In discussion"
+msgstr "En discussion"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__direction__in
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__direction__in
+msgid "Incoming"
+msgstr "Entrant"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
+msgid "Interaction"
+msgstr "Interaction"
+
+#. module: bf_outreach
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_touch
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__touch_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__touch_ids
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_touch
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_graph
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_pivot
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Interactions"
+msgstr "Interactions"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__interested
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__interested
+msgid "Interest shown"
+msgstr "Intérêt manifesté"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_interval_days
+msgid "Interval between two calls (days)"
+msgstr "Intervalle entre deux appels (jours)"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_interval_days
+msgid "Interval between two emails (days)"
+msgstr "Intervalle entre deux courriels (jours)"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_interval_days
+msgid "Interval between two letters (days)"
+msgstr "Intervalle entre deux lettres (jours)"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__bounced
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__bounced
+msgid "Invalid address"
+msgstr "Adresse invalide"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__invalid
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__invalid
+msgid "Invalid contact details"
+msgstr "Coordonnées invalides"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_is_follower
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__function
+msgid "Job position"
+msgstr "Fonction"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__write_date
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_call_date
+msgid "Last call"
+msgstr "Dernier appel"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_email_date
+msgid "Last email"
+msgstr "Dernier courriel"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_letter_date
+msgid "Last letter"
+msgstr "Dernière lettre"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__last_touch_date
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Last touch"
+msgstr "Dernier contact"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_log_wizard__stage_id
+msgid "Leave empty to keep the current stage."
+msgstr "Laisser vide pour conserver l'étape actuelle."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_stage__campaign_ids
+msgid "Leave empty to make the stage available in every campaign."
+msgstr ""
+"Laisser vide pour rendre l'étape disponible dans toutes les campagnes."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__stage_ids
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Leave empty to use the stages shared by every campaign."
+msgstr ""
+"Laisser vide pour utiliser les étapes communes à toutes les campagnes."
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__none
+msgid "Leave to the campaign owner"
+msgstr "Laisser au responsable de la campagne"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_touch__duration
+msgid "Length of the call or the meeting, in minutes."
+msgstr "Durée de l'appel ou de la rencontre, en minutes."
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__letter
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__letter
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__next_action_kind__letter
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__letter
+msgid "Letter"
+msgstr "Lettre"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_count
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__letter_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Letters"
+msgstr "Lettres"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Lift the exclusion"
+msgstr "Lever l'exclusion"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Lifting the exclusion restarts outreach on this target. Confirm?"
+msgstr "Lever l'exclusion relance le démarchage de cette cible. Confirmer ?"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__linkedin
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__linkedin
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_targets
+msgid "Load the target list"
+msgstr "Charger la liste de cibles"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
+msgid "Log"
+msgstr "Journaliser"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Log a call"
+msgstr "Journaliser un appel"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Log a letter"
+msgstr "Journaliser une lettre"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
+msgid "Log a touch"
+msgstr "Journaliser un contact"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Log an email"
+msgstr "Journaliser un courriel"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_log_wizard
+msgid "Log an outreach touch"
+msgstr "Journaliser un contact de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__log_touch
+msgid "Log the interaction"
+msgstr "Journaliser l'interaction"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,title:bf_outreach.bf_onb_step_touches
+msgid "Log the touches"
+msgstr "Journaliser les contacts"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_crm_lead__outreach_campaign_id
+msgid "Makes it possible to measure what outreach brings to the pipeline."
+msgstr "Permet de mesurer ce que le démarchage rapporte au pipeline."
+
+#. module: bf_outreach
+#: model:ir.module.category,description:bf_outreach.module_category_bf_outreach
+msgid "Manage outreach campaigns by phone and email."
+msgstr "Gestion des campagnes de démarchage par appels et courriels."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Management"
+msgstr "Pilotage"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:res.groups,name:bf_outreach.group_bf_outreach_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__meeting
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__meeting
+msgid "Meeting"
+msgstr "Rencontre"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_meeting
+msgid "Meeting booked"
+msgstr "Rendez-vous fixé"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_content
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_error
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_search
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_content
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_touch__mail_message_id
+msgid ""
+"Message in the thread this interaction came from, when it was inferred "
+"rather than keyed in."
+msgstr ""
+"Message de la discussion dont cette interaction est issue, lorsqu'elle a été"
+" déduite plutôt que saisie."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_search
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Mine"
+msgstr "Les miennes"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__mobile
+msgid "Mobile"
+msgstr "Cellulaire"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__stage_id
+msgid "Move to stage"
+msgstr "Déplacer à l'étape"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "My campaigns"
+msgstr "Mes campagnes"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "My targets"
+msgstr "Mes cibles"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__untouched_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Never contacted"
+msgstr "Jamais contactées"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__no_answer
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__no_answer
+msgid "Never reached"
+msgstr "Jamais joint"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+msgid "Next"
+msgstr "Prochain"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_summary
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_type_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_action_date
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Next action"
+msgstr "Prochaine action"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_action_kind
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Next action type"
+msgstr "Type de prochaine action"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_call_date
+msgid "Next call"
+msgstr "Prochain appel"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_email_date
+msgid "Next email"
+msgstr "Prochain courriel"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Next follow-up"
+msgstr "Prochaine relance"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__next_letter_date
+msgid "Next letter"
+msgstr "Prochaine lettre"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__no_answer
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__no_answer
+msgid "No answer"
+msgstr "Pas de réponse"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/wizard/outreach_target_import_wizard.py:0
+msgid "No contact selected."
+msgstr "Aucun contact sélectionné."
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_touch
+msgid "No interaction logged"
+msgstr "Aucune interaction journalisée"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "No opportunity is linked to this target."
+msgstr "Aucune opportunité n'est liée à cette cible."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/res_partner.py:0
+#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out
+#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_partner_form_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_res_partner_filter_outreach
+msgid "No outreach"
+msgstr "Ne plus démarcher"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "No recipient: the targets have no contact."
+msgstr "Aucun destinataire : les cibles n'ont pas de contact."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "No reply"
+msgstr "Sans réponse"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/wizard/outreach_exclude_wizard.py:0
+msgid "No target or contact selected."
+msgstr "Aucune cible ni contact sélectionné."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/wizard/outreach_log_wizard.py:0
+msgid "No target selected."
+msgstr "Aucune cible sélectionnée."
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target
+msgid "No target yet"
+msgstr "Aucune cible pour l'instant"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__none
+msgid "None"
+msgstr "Aucune"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__0
+msgid "Normal"
+msgstr "Normale"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__email_normalized
+msgid "Normalized email"
+msgstr "Courriel normalisé"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__not_interested
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__not_interested
+msgid "Not interested"
+msgstr "Pas intéressé"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_lost
+msgid "Not pursued"
+msgstr "Non retenue"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__note
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__description
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Notes and pitch"
+msgstr "Notes et argumentaire"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_overdue
+msgid "Nothing overdue"
+msgstr "Aucun retard"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_due
+msgid "Nothing to follow up today"
+msgstr "Rien à relancer aujourd'hui"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__phone_normalized
+msgid ""
+"Number in international format: used for deduplication and for matching "
+"logged calls."
+msgstr ""
+"Numéro en format international : sert au dédoublonnage et au rapprochement "
+"des appels journalisés."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__touch_count
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__touch_count
+msgid "Number of interactions"
+msgstr "Nombre d'interactions"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_needaction_counter
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__message_has_error_counter
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_target_count
+#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_target_count
+msgid "Number of outreach targets"
+msgstr "Nombre de cibles de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__target_count
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__target_count
+msgid "Number of targets"
+msgstr "Nombre de cibles"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__partner_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__partner_id
+msgid "Odoo contact"
+msgstr "Contact Odoo"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "On behalf of"
+msgstr "Client mandant"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_campaign
+#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_targets
+#: model:onboarding.onboarding.step,step_image_alt:bf_outreach.bf_onb_step_touches
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__target
+msgid "One activity per due target"
+msgstr "Une activité par cible due"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__activity_mode__campaign
+msgid "One daily activity on the campaign"
+msgstr "Une activité quotidienne sur la campagne"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__open_target_count
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Open targets"
+msgstr "Dossiers ouverts"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__lead_id
+msgid "Opportunity"
+msgstr "Opportunité"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Opportunity created: %s"
+msgstr "Opportunité créée : %s"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__name
+msgid "Organization being approached, or the person's name for an individual."
+msgstr ""
+"Organisation démarchée, ou nom de la personne s'il s'agit d'un particulier."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Organization name"
+msgstr "Nom de l'organisation"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__other
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__other
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__other
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__other
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__outcome
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__outcome
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Outcome"
+msgstr "Résultat"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__direction__out
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__direction__out
+msgid "Outgoing"
+msgstr "Sortant"
+
+#. module: bf_outreach
+#: model:ir.module.category,name:bf_outreach.module_category_bf_outreach
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_root
+#: model:onboarding.onboarding,name:bf_outreach.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_partner_form_outreach
+msgid "Outreach"
+msgstr "Démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Outreach call"
+msgstr "Appel de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_campaign
+#: model:ir.model.fields,field_description:bf_outreach.field_crm_lead__outreach_campaign_id
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Outreach campaign"
+msgstr "Campagne de démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Outreach email"
+msgstr "Courriel de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_touch
+msgid "Outreach interaction"
+msgstr "Interaction de démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "Outreach letter"
+msgstr "Lettre de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_stage
+msgid "Outreach stage"
+msgstr "Étape de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_tag
+msgid "Outreach tag"
+msgstr "Étiquette de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model,name:bf_outreach.model_bf_outreach_target
+#: model:ir.model.fields,field_description:bf_outreach.field_crm_lead__outreach_target_id
+msgid "Outreach target"
+msgstr "Cible de démarchage"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_target_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_target_ids
+msgid "Outreach targets"
+msgstr "Cibles de démarchage"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "Outreach: %(due)s contact(s) due, %(late)s of them overdue"
+msgstr "Démarchage : %(due)s contact(s) dus, dont %(late)s en retard"
+
+#. module: bf_outreach
+#: model:ir.actions.server,name:bf_outreach.ir_cron_outreach_followups_ir_actions_server
+msgid "Outreach: follow-up reminders"
+msgstr "Démarchage : rappels de relance"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Overdue"
+msgstr "En retard"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target_overdue
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__overdue_count
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_target_overdue
+msgid "Overdue follow-ups"
+msgstr "Relances en retard"
+
+#. module: bf_outreach
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_hex
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_hex
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_hex
@@ -2467,8 +1793,798 @@ msgid "Own color"
 msgstr "Couleur propre"
 
 #. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__user_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__user_id
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Owner"
+msgstr "Responsable"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Pause"
+msgstr "Mettre en pause"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__paused
+msgid "Paused"
+msgstr "En pause"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__reached
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__reached
+msgid "Person reached"
+msgstr "Personne rejointe"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive, bf_softphone
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__phone_normalized
+msgid "Phone (E.164)"
+msgstr "Téléphone (E.164)"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Pitch"
+msgstr "Argumentaire"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__call_target_count
+msgid "Planned calls per target"
+msgstr "Appels visés par cible"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__email_target_count
+msgid "Planned emails per target"
+msgstr "Courriels visés par cible"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__date_end
+msgid "Planned end date"
+msgstr "Fin prévue"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__letter_target_count
+msgid "Planned letters per target"
+msgstr "Lettres visées par cible"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__planned_touch_count
+msgid "Planned touches"
+msgstr "Contacts prévus"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__snooze_days
+msgid "Postpone by (days)"
+msgstr "Repousser de (jours)"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+#: model:ir.actions.server,name:bf_outreach.action_target_write_letters
+msgid "Prepare the letters"
+msgstr "Préparer les lettres"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__priority
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
+msgid "Progress"
+msgstr "Avancement"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__progress
+msgid "Progress (%)"
+msgstr "Avancement (%)"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__paused_until
+msgid ""
+"Pushes back the next follow-up, for instance when the target asks to be "
+"called back later."
+msgstr ""
+"Repousse la prochaine relance, par exemple lorsque la cible demande d'être "
+"rappelée plus tard."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__working_days_only
+msgid ""
+"Pushes to Monday a follow-up that would land on a Saturday or a Sunday."
+msgstr "Reporte au lundi une relance qui tomberait un samedi ou un dimanche."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__rating_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__do_not_contact_reason
+#: model:ir.model.fields,field_description:bf_outreach.field_res_partner__outreach_opt_out_reason
+#: model:ir.model.fields,field_description:bf_outreach.field_res_users__outreach_opt_out_reason
+msgid "Reason for the exclusion"
+msgstr "Motif de l'exclusion"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__kind
+msgid "Received by"
+msgstr "Reçue par"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_exclude_wizard__log_touch
+msgid ""
+"Records the refusal as an interaction on the targets concerned, so the "
+"request shows up in the history."
+msgstr ""
+"Consigne le refus comme interaction sur les cibles concernées, afin que la "
+"demande apparaisse dans l'historique."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Replied"
+msgstr "Ont répondu"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Replies received"
+msgstr "Réponses reçues"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__is_reply
+msgid "Reply from the target"
+msgstr "Réponse de la cible"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__reply_rate
+msgid "Reply rate (%)"
+msgstr "Taux de réponse (%)"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__replied
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__replied
+msgid "Reply received"
+msgstr "Réponse reçue"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/wizard/outreach_exclude_wizard.py:0
+msgid "Request not to be contacted again"
+msgstr "Demande de ne plus être contacté"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__activity_user_id
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Results"
+msgstr "Résultats"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_campaign__state__running
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__active
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "Running"
+msgstr "En cours"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Running campaigns"
+msgstr "Campagnes en cours"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_campaign
+msgid "See the campaigns"
+msgstr "Voir les campagnes"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_touches
+msgid "See the interactions"
+msgstr "Voir les interactions"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,button_text:bf_outreach.bf_onb_step_targets
+msgid "See the targets"
+msgstr "Voir les cibles"
+
+#. module: bf_outreach
+#: model:ir.actions.server,name:bf_outreach.action_target_send_email
+msgid "Send the campaign email"
+msgstr "Envoyer le courriel de campagne"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Send the email"
+msgstr "Envoyer le courriel"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__sent
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__reply_rate
+msgid "Share of contacted targets that replied."
+msgstr "Part des cibles contactées qui ont répondu."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__coverage_rate
+msgid "Share of targets contacted at least once."
+msgstr "Part des cibles contactées au moins une fois."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__conversion_rate
+msgid "Share of targets that reached a \"Won\" stage."
+msgstr "Part des cibles arrivées à une étape « Gagnée »."
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target_import_wizard__assign_mode__team
+msgid "Share out across the campaign team"
+msgstr "Répartir dans l'équipe de la campagne"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_log_wizard__snooze_days
+msgid ""
+"Shifts the next follow-up, for instance when the target asks to be called "
+"back later. 0 = normal cadence."
+msgstr ""
+"Décale la prochaine relance, par exemple lorsque la cible demande d'être "
+"rappelée plus tard. 0 = cadence normale."
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__skip_existing
+msgid "Skip duplicates"
+msgstr "Ignorer les doublons"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__source
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target_import_wizard__source
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__mail_message_id
+msgid "Source message"
+msgstr "Message d'origine"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__stage_id
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Stage"
+msgstr "Étape"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
+msgid "Stage name"
+msgstr "Nom de l'étape"
+
+#. module: bf_outreach
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_stage
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config_stage
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_list
+msgid "Stages"
+msgstr "Étapes"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_stage
+msgid ""
+"Stages of type \"Won\" or \"Dropped\" close the file and stop the follow-up "
+"cadence."
+msgstr ""
+"Les étapes de type « Gagnée » ou « Abandonnée » ferment le dossier\n"
+"                et arrêtent la cadence de relance."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "Start"
+msgstr "Démarrer"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__date_start
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "Start date"
+msgstr "Début"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__state
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__campaign_state
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_search
+msgid "Status"
+msgstr "État"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_state
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__stop_on_reply
+msgid "Stop at the first reply"
+msgstr "Arrêter à la première réponse"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__summary
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__summary
+msgid "Summary"
+msgstr "Résumé"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__name
+msgid "Tag"
+msgstr "Étiquette"
+
+#. module: bf_outreach
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_tag
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__tag_ids
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_config_tag
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_tag_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+msgid "Tags"
+msgstr "Étiquettes"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_tag
+msgid "Tags are there to segment the targets: sector, size, origin…"
+msgstr ""
+"Les étiquettes servent à segmenter les cibles : secteur, taille, provenance…"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__name
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__target_id
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_to_contact
+msgid "Target added to the campaign, not contacted yet."
+msgstr "Cible ajoutée à la campagne, aucun contact encore fait."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_crm_lead__outreach_target_id
+msgid "Target this opportunity came from."
+msgstr "Cible dont cette opportunité est issue."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+#: model:ir.actions.act_window,name:bf_outreach.action_bf_outreach_target
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__target_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_exclude_wizard__target_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__target_ids
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_targets
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_activity
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_graph
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_list
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_pivot
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+msgid "Targets"
+msgstr "Cibles"
+
+#. module: bf_outreach
+#: model:bf.color.rule,name:bf_outreach.bf_color_rule_target_user
+msgid "Targets by owner"
+msgstr "Cibles selon le responsable"
+
+#. module: bf_outreach
+#: model_terms:ir.actions.act_window,help:bf_outreach.action_bf_outreach_target_due
+msgid "Targets come back here according to the cadence set on their campaign."
+msgstr ""
+"Les cibles réapparaissent ici selon la cadence définie sur leur campagne."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
+msgid "Targets concerned"
+msgstr "Cibles concernées"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__contacted_count
+msgid "Targets contacted"
+msgstr "Cibles contactées"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,done_text:bf_outreach.bf_onb_step_targets
+msgid "Targets loaded"
+msgstr "Cibles chargées"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__replied_count
+msgid "Targets that replied"
+msgstr "Cibles ayant répondu"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__member_ids
+msgid "Team"
+msgstr "Équipe"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__mail_template_id
+msgid ""
+"Template offered by the \"Send the email\" button on targets. Written "
+"against the \"Outreach target\" model, so it can pull in the name, the "
+"contact person and the campaign."
+msgstr ""
+"Modèle proposé par le bouton « Envoyer le courriel » sur les cibles. Rédigé "
+"sur le modèle « Cible de démarchage », il peut donc reprendre le nom, la "
+"personne-ressource et la campagne."
+
+#. module: bf_outreach
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_text
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_text
 #: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_text
 msgid "Text color"
 msgstr "Couleur du texte"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_exclude_wizard__kind__sms
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__kind__sms
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__kind__sms
+msgid "Text message"
+msgstr "Texto"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid "The \"Letter Writer\" module is not installed: letters cannot be prepared."
+msgstr ""
+"Le module « Letter Writer » n'est pas installé : impossible de préparer des "
+"lettres."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__campaign_pitch
+msgid "The campaign's hook and common objections, in view during the call."
+msgstr ""
+"Accroche et objections fréquentes de la campagne, sous les yeux pendant "
+"l'appel."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "The end date cannot come before the start date."
+msgstr "La date de fin ne peut pas précéder la date de début."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
+msgid ""
+"The exclusion applies to every campaign, present and future. It is also set "
+"on the linked Odoo contact, if there is one."
+msgstr ""
+"L'exclusion vaut pour toutes les campagnes, présentes et futures.\n"
+"                        Elle se pose aussi sur le contact Odoo lié, s'il y en a un."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "The interval between two %s must be at least one day."
+msgstr "L'intervalle entre deux %s doit être d'au moins une journée."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_res_partner__outreach_opt_out
+#: model:ir.model.fields,help:bf_outreach.field_res_users__outreach_opt_out
+msgid ""
+"The person asked to receive no further outreach. They can no longer be added"
+" to a campaign, and the cadence stops on all their existing targets."
+msgstr ""
+"La personne a demandé de ne plus recevoir de sollicitation de démarchage. "
+"Elle ne peut plus être ajoutée à une campagne et la cadence s'arrête sur "
+"toutes ses cibles existantes."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "The planned number of %s cannot be negative."
+msgstr "Le nombre de %s visés ne peut pas être négatif."
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,description:bf_outreach.stage_discussion
+msgid "The target replied and the conversation is under way."
+msgstr "La cible a répondu et l'échange est en cours."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid ""
+"These targets asked not to be contacted again:\n"
+"%s"
+msgstr ""
+"Ces cibles ont demandé de ne plus être sollicitées :\n"
+"%s"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_target.py:0
+msgid ""
+"These targets have no email address:\n"
+"%s"
+msgstr ""
+"Ces cibles n'ont pas d'adresse courriel :\n"
+"%s"
+
+#. module: bf_outreach
+#: model:ir.model.constraint,message:bf_outreach.constraint_bf_outreach_tag_name_uniq
+msgid "This tag already exists."
+msgstr "Cette étiquette existe déjà."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "This week"
+msgstr "Cette semaine"
+
+#. module: bf_outreach
+#: model:bf.outreach.stage,name:bf_outreach.stage_to_contact
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__todo
+msgid "To contact"
+msgstr "À contacter"
+
+#. module: bf_outreach
+#: model:ir.ui.menu,name:bf_outreach.menu_bf_outreach_today
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_search
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__progress
+msgid "Touches made against the touches the cadence plans for."
+msgstr "Contacts réalisés par rapport aux contacts prévus par la cadence."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__is_excluded
+msgid ""
+"True when the target, or the Odoo contact linked to it, has asked to receive"
+" no further outreach."
+msgstr ""
+"Vrai lorsque la cible, ou le contact Odoo qui lui est lié, a demandé de ne "
+"plus être sollicité."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_log_wizard__kind
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_stage__stage_type
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__stage_type
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_touch__kind
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__activity_exception_decoration
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__priority__2
+msgid "Urgent"
+msgstr "Urgente"
+
+#. module: bf_outreach
+#. modules: bf_calendar_mobile, bf_outreach, bf_sms_archive, bf_softphone
+#: model:res.groups,name:bf_outreach.group_bf_outreach_user
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__member_ids
+msgid "Users the new targets are shared out among, in rotation."
+msgstr ""
+"Utilisateurs entre qui les nouvelles cibles sont réparties à tour de rôle."
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__outcome__voicemail
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_touch__outcome__voicemail
+msgid "Voicemail"
+msgstr "Boîte vocale"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__website
+msgid "Website"
+msgstr "Site web"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__website_message_ids
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_outreach
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__website_message_ids
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_exclude_wizard_form
+msgid "What the person asked for, in their own words"
+msgstr "Ce que la personne a demandé, dans ses mots"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_exclude_wizard__reason
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__do_not_contact_reason
+msgid ""
+"What the person asked for, in their own words. Kept as evidence that the "
+"request was acted on."
+msgstr ""
+"Ce que la personne a demandé, dans ses mots. Conservé comme preuve du "
+"traitement de la demande."
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_stage_form
+msgid "What this stage stands for…"
+msgstr "À quoi correspond cette étape…"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_log_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_touch_form
+msgid "What was said, in one line"
+msgstr "Ce qui s'est dit, en une ligne"
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__date_start
+msgid ""
+"Where the cadence starts: a target never contacted is due on this date (or "
+"on the date it was added, if that is later)."
+msgstr ""
+"Point de départ de la cadence : une cible jamais contactée est due à cette "
+"date (ou à sa date d'ajout si elle est postérieure)."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target_import_wizard__source
+msgid "Where the list came from, carried over to each target created."
+msgstr "Provenance de la liste, reportée sur chaque cible créée."
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__source
+msgid ""
+"Where the target came from: imported list, trade show, referral, and so on."
+msgstr "Provenance de la cible : liste importée, salon, référencement, etc."
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_stage__stage_type__won
+msgid "Won"
+msgstr "Gagnée"
+
+#. module: bf_outreach
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_log_wizard__closed_reason__converted
+#: model:ir.model.fields.selection,name:bf_outreach.selection__bf_outreach_target__closed_reason__converted
+msgid "Won over"
+msgstr "Converti"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__won_count
+msgid "Won targets"
+msgstr "Gagnées"
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__working_days_only
+msgid "Working days only"
+msgstr "Jours ouvrables seulement"
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_campaign
+msgid ""
+"[action:bf_outreach.action_bf_outreach_campaign] Set the period, the team "
+"and the follow-up cadence (how many calls and emails, at what interval)."
+msgstr ""
+"[action:bf_outreach.action_bf_outreach_campaign] Définissez la période, "
+"l'équipe et la cadence de relance (combien d'appels et de courriels, à quel "
+"intervalle)."
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_targets
+msgid ""
+"[action:bf_outreach.action_bf_outreach_target] Add the targets from your "
+"contacts, or select them in the contact list and use the \"Add to an "
+"outreach campaign\" action."
+msgstr ""
+"[action:bf_outreach.action_bf_outreach_target] Ajoutez les cibles depuis vos"
+" contacts, ou sélectionnez-les dans la liste des contacts et utilisez "
+"l'action « Ajouter à une campagne de démarchage »."
+
+#. module: bf_outreach
+#: model:onboarding.onboarding.step,description:bf_outreach.bf_onb_step_touches
+msgid ""
+"[action:bf_outreach.action_bf_outreach_touch] Every call and every email "
+"takes two clicks to note; the next follow-ups work themselves out."
+msgstr ""
+"[action:bf_outreach.action_bf_outreach_touch] Chaque appel et chaque "
+"courriel se note en deux clics ; les prochaines relances se calculent "
+"seules."
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "calls"
+msgstr "appels"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_campaign_form
+msgid "e.g. Manufacturer outreach, fall 2026"
+msgstr "ex. Démarchage manufacturiers — automne 2026"
+
+#. module: bf_outreach
+#: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_import_wizard_form
+msgid "e.g. trade show list 2026"
+msgstr "ex. Liste salon 2026"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "emails"
+msgstr "courriels"
+
+#. module: bf_outreach
+#. odoo-python
+#: code:addons/bf_outreach/models/outreach_campaign.py:0
+msgid "letters"
+msgstr "lettres"

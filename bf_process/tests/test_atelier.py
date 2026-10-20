@@ -16,7 +16,7 @@ def _pages(octets):
 # ⚠️ Ce qui compte dans cette adresse est sa LONGUEUR, pas son domaine : c'est
 # le pire cas que la carte ait à encoder dans un code QR, et c'est la longueur
 # qui décide si le module reste lisible au format d'atelier.
-# La version d'avant nommait le domaine de Blue Fox, ce qui n'a rien à faire
+# La version d'avant nommait un vrai domaine, ce qui n'a rien à faire
 # dans un module du catalogue public. Le gabarit ci-dessous est plus long, donc
 # strictement plus exigeant, et un contrôle l'empêche de raccourcir en silence.
 _PIRE_ADRESSE = ("https://portail.un-client-au-nom-tres-long.example"
@@ -92,7 +92,7 @@ class TestTirageAtelier(TransactionCase):
     def setUp(self):
         super().setUp()
         self.processus = self.env["bf.process"].create({
-            "name": "Essai atelier", "code": "essai", "pool_name": "Blue Fox"})
+            "name": "Essai atelier", "code": "essai", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeuds = {n.code: n for n in self.processus.diagram_ids.node_ids}
 
@@ -157,7 +157,7 @@ class TestPortailAtelier(HttpCase):
     def setUp(self):
         super().setUp()
         self.processus = self.env["bf.process"].create({
-            "name": "Essai portail", "code": "essai", "pool_name": "Blue Fox"})
+            "name": "Essai portail", "code": "essai", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeud = self.processus.diagram_ids.node_ids.filtered(
             lambda n: n.code == "t1")
@@ -165,21 +165,33 @@ class TestPortailAtelier(HttpCase):
             "node_id": self.noeud.id, "name": "Fiche du décapant",
             "kind": "fiche", "url": "https://exemple.test/sds.pdf"})
         self.noeud._portal_ensure_token()
+        # La page suit la langue du site, plus le français écrit en dur : les
+        # attentes françaises demandent la page française (catalogue chargé).
+        fr = self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
+        self.fr = ""
+        if "website" in self.env:
+            self.env["website"].get_current_website().language_ids |= fr
+            self.fr = "/" + fr.url_code
+        else:
+            # sans site, la langue d'une page publique vient du témoin
+            self.opener.cookies.set("frontend_lang", "fr_CA")
 
     def test_sans_jeton_la_page_refuse(self):
-        r = self.url_open("/carte/etape/%s" % self.noeud.id)
+        r = self.url_open(self.fr + "/carte/etape/%s" % self.noeud.id)
         self.assertEqual(r.status_code, 200)
         self.assertIn("ne mène nulle part", r.text)
         self.assertNotIn("Fiche du décapant", r.text)
 
     def test_avec_un_mauvais_jeton_la_page_refuse(self):
-        r = self.url_open("/carte/etape/%s?access_token=%s"
+        r = self.url_open(self.fr + "/carte/etape/%s?access_token=%s"
                           % (self.noeud.id, "0" * 32))
         self.assertIn("ne mène nulle part", r.text)
         self.assertNotIn("Fiche du décapant", r.text)
 
     def test_avec_le_bon_jeton_la_page_montre_les_consignes(self):
-        r = self.url_open("/carte/etape/%s?access_token=%s"
+        r = self.url_open(self.fr + "/carte/etape/%s?access_token=%s"
                           % (self.noeud.id, self.noeud.access_token))
         self.assertEqual(r.status_code, 200)
         self.assertIn("Fiche du décapant", r.text)

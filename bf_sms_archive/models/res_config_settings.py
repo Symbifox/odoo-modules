@@ -5,27 +5,27 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_sms_voipms_enabled = fields.Boolean(
-        string="Activer la messagerie VOIP.ms",
+        string="Enable VOIP.ms messaging",
         config_parameter="bf_sms_archive.voipms_enabled",
     )
     bf_sms_voipms_api_username = fields.Char(
-        string="VOIP.ms — utilisateur API",
+        string="VOIP.ms: API user",
         config_parameter="bf_sms_archive.voipms_api_username",
     )
     bf_sms_voipms_api_password = fields.Char(
-        string="VOIP.ms — mot de passe API",
+        string="VOIP.ms: API password",
         config_parameter="bf_sms_archive.voipms_api_password",
     )
     bf_sms_public_base_url = fields.Char(
-        string="URL publique (webhook)",
+        string="Public URL (webhook)",
         config_parameter="bf_sms_archive.public_base_url",
-        help="Base HTTPS publique pour l'URL de callback VOIP.ms "
-             "(ex. https://odoo.exemple.com).",
+        help="Public HTTPS base for the VOIP.ms callback URL (e.g. "
+             "https://odoo.example.com).",
     )
     bf_sms_voipms_tz = fields.Char(
-        string="VOIP.ms — fuseau du compte",
+        string="VOIP.ms: account time zone",
         config_parameter="bf_sms_archive.voipms_tz",
-        help="Fuseau dans lequel VOIP.ms émet ses horodatages (réglage « Time "
-             "Zone » du portail VOIP.ms, US/Eastern par défaut). Nom IANA, "
-             "ex. America/New_York.",
+        help="Time zone in which VOIP.ms issues its timestamps (\"Time "
+             "Zone\" setting of the VOIP.ms portal, US/Eastern by "
+             "default). IANA name, e.g. America/New_York.",
     )

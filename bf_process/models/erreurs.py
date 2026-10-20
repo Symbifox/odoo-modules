@@ -47,9 +47,9 @@ def refus_lisible(methode):
                 # déjà quoi, et l'inventer ici donnerait un diagnostic faux.
                 raise UserError(str(exc)) from exc
             raise UserError(_(
-                "Le caractère %s n'est pas dans la table de largeurs de Lexend."
-                " La carte ne peut pas être mesurée sans deviner."
+                "The character %s is not in the Lexend width table. The "
+                "map cannot be measured without guessing."
             ) % exc.caractere) from exc
         except geo.GeometrieIncomplete as exc:
-            raise UserError(_("La carte ne peut pas être tracée : %s") % exc) from exc
+            raise UserError(_("The map cannot be drawn: %s") % exc) from exc
     return enveloppe

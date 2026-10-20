@@ -11,10 +11,20 @@ from .test_aller_retour import CARTE
 @tagged("post_install", "-at_install")
 class TestQuickWins(TransactionCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_process"], ["fr_CA"], overwrite=True)
+
     def setUp(self):
         super().setUp()
+        # Session francophone épinglée : la comparaison se rend dans la
+        # langue du contexte.
+        self.env = self.env(context=dict(self.env.context, lang="fr_CA"))
         self.processus = self.env["bf.process"].create({
-            "name": "Essai versions", "code": "essai", "pool_name": "Blue Fox"})
+            "name": "Essai versions", "code": "essai", "pool_name": "Essai inc."})
         self.processus._charger_niveaux(CARTE)
         self.noeuds = {n.code: n for n in self.processus.diagram_ids.node_ids}
 
@@ -79,7 +89,7 @@ class TestQuickWins(TransactionCase):
         """Un essai laissé derrière ne doit pas coller sur un numéro vivant."""
         # simule un résidu : une « v1.1 » du même nom existe déjà
         self.env["bf.process"].create({
-            "name": self.processus.name, "version": "1.1", "pool_name": "Blue Fox"})
+            "name": self.processus.name, "version": "1.1", "pool_name": "Essai inc."})
         suite = self.env["bf.process"].browse(
             self.processus.action_nouvelle_version()["res_id"])
         self.assertEqual(suite.version, "1.2")
@@ -100,9 +110,10 @@ class TestQuickWins(TransactionCase):
         wiz = self.env["bf.process.compare.wizard"].create({
             "source_id": suite.id, "cible_id": self.processus.id})
         wiz.action_comparer()
-        self.assertIn("renommage", wiz.rapport_html)
+        # le genre se dit par le libellé de sa sélection, plus par sa clé
+        self.assertIn("Renommage", wiz.rapport_html)
         self.assertIn("Qualifier et documenter la demande", wiz.rapport_html)
-        self.assertIn("retrait", wiz.rapport_html)
+        self.assertIn("Retrait", wiz.rapport_html)
         self.assertGreaterEqual(wiz.ecart_count, 2)
 
     def test_comparaison_echappe_les_libelles(self):

@@ -40,6 +40,10 @@ Le suivi se relit et repart **chaque jour**, et à la demande. Un écart décid�
 le client survit aux rafraîchissements des deux côtés. Un suivi dont la campagne
 a disparu ne prive pas les autres de leur rafraîchissement.
 
+## Langue (18.0.1.0.2)
+
+Les libellés d'une cible et de ses touches (genre, sens, issue) viennent du démarchage, dont la source est l'anglais depuis `bf_outreach` 18.0.1.5.0. Le rafraîchissement planifié les lit dans la langue du client mandant, à défaut dans celle de la société : le suivi qui part chez un client francophone reste en français.
+
 ## Dépendances
 
 `bf_federation`. L'agence a besoin de `bf_outreach` pour tirer un suivi d'une

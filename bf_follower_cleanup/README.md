@@ -69,6 +69,10 @@ Four system parameters (`ir.config_parameter`) govern the behaviour:
 | `bf_follower_cleanup.crm_lead_unfollow_user_ids` | *(empty)* | `res.users` IDs to unsubscribe from the leads they do not sell. Empty by default, so a system that never opted in is untouched. |
 | `bf_follower_cleanup.crm_lead_keep_ids` | *(empty)* | `crm.lead` IDs those users stay subscribed to whoever the salesperson is. |
 
+## Languages (18.0.2.3.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. On upgrade, the names of the two scheduled jobs switch to English only where the database still holds the name that was shipped; a renamed job keeps its name.
+
 ## Dependencies
 
 `mail`.
@@ -78,6 +82,10 @@ Four system parameters (`ir.config_parameter`) govern the behaviour:
 Distributed under the **LGPL-3** licence. See the `LICENSE` file.
 
 ## Changelog
+
+### 18.0.2.3.0
+
+- **Source language.** Labels are written in English; the French ships in `i18n/fr_CA.po`. The two scheduled jobs are renamed on upgrade unless their name was edited. See the Languages section.
 
 ### 18.0.2.2.1
 

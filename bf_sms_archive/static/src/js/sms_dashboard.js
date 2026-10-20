@@ -2,15 +2,21 @@
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { _t } from "@web/core/l10n/translation";
+import { user } from "@web/core/user";
 
-const PERIOD_OPTIONS = [
-    { value: "3m", label: "3 mois" },
-    { value: "6m", label: "6 mois" },
-    { value: "1y", label: "1 an" },
-    { value: "2y", label: "2 ans" },
-    { value: "all", label: "Tout" },
-    { value: "custom", label: "Personnalise" },
-];
+// Construite à l'ouverture et non au chargement du module : les libellés
+// passent par _t() dans la langue de l'usager.
+function periodOptions() {
+    return [
+        { value: "3m", label: _t("3 months") },
+        { value: "6m", label: _t("6 months") },
+        { value: "1y", label: _t("1 year") },
+        { value: "2y", label: _t("2 years") },
+        { value: "all", label: _t("All dates") },
+        { value: "custom", label: _t("Custom") },
+    ];
+}
 
 class SmsDashboard extends Component {
     static template = "bf_sms_archive.Dashboard";
@@ -20,7 +26,7 @@ class SmsDashboard extends Component {
         this.action = useService("action");
         this.notification = useService("notification");
 
-        this.periodOptions = PERIOD_OPTIONS;
+        this.periodOptions = periodOptions();
 
         this.state = useState({
             data: null,
@@ -70,7 +76,7 @@ class SmsDashboard extends Component {
                 { date_from: range.date_from, date_to: range.date_to }
             );
         } catch (e) {
-            this.notification.add("Erreur lors du chargement du tableau de bord", {
+            this.notification.add(_t("Error while loading the dashboard"), {
                 type: "danger",
             });
         } finally {
@@ -137,13 +143,26 @@ class SmsDashboard extends Component {
     }
 
     formatMonth(ym) {
-        const months = [
-            "Jan", "Fev", "Mar", "Avr", "Mai", "Juin",
-            "Juil", "Aout", "Sep", "Oct", "Nov", "Dec",
-        ];
+        // Mois abrégé dans la langue de l'usager (fr_CA → fr-CA), plus une
+        // table de mois français pour tous.
         const parts = ym.split("-");
         const idx = parseInt(parts[1], 10) - 1;
-        return `${months[idx]} ${parts[0].slice(2)}`;
+        const locale = (user.lang || "en_US").replace("_", "-");
+        const month = new Date(2000, idx, 1).toLocaleDateString(locale, { month: "short" });
+        return `${month} ${parts[0].slice(2)}`;
+    }
+
+    /** Info-bulle d'une barre du graphique mensuel. */
+    barTitle(kind, value) {
+        const n = value || 0;
+        switch (kind) {
+            case "received": return _t("%s received", n);
+            case "sent": return _t("%s sent", n);
+            case "incoming": return _t("%s incoming", n);
+            case "outgoing": return _t("%s outgoing", n);
+            case "missed": return _t("%s missed", n);
+        }
+        return String(n);
     }
 
     getMaxSms() {
@@ -183,27 +202,27 @@ class SmsDashboard extends Component {
     }
 
     openThreads() {
-        this.openModel("sms.archive.thread", "Conversations");
+        this.openModel("sms.archive.thread", _t("Conversations"));
     }
 
     openUnmatchedThreads() {
         this.openModel(
-            "sms.archive.thread", "Contacts non lies",
+            "sms.archive.thread", _t("Unlinked contacts"),
             "list", [["partner_id", "=", false]]
         );
     }
 
     openMessages() {
-        this.openModel("sms.archive.message", "Messages");
+        this.openModel("sms.archive.message", _t("Messages"));
     }
 
     openCalls() {
-        this.openModel("call.archive.call", "Journal d'appels");
+        this.openModel("call.archive.call", _t("Call log"));
     }
 
     openMissedCalls() {
         this.openModel(
-            "call.archive.call", "Appels manques",
+            "call.archive.call", _t("Missed calls"),
             "list", [["call_type", "=", "missed"]]
         );
     }

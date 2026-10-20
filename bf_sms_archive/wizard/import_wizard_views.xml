@@ -8,30 +8,30 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_import" string="Importer"
+                    <button name="action_import" string="Import"
                             type="object" class="btn-primary"/>
                     <button name="action_disk_import_now"
-                            string="Importer depuis /mnt/sms-inbox"
+                            string="Import from /mnt/sms-inbox"
                             type="object" class="btn-secondary"
-                            help="Traite immédiatement les XML déposés dans sms-inbox sur le serveur (aucune limite de taille)."/>
+                            help="Immediately processes the XML files dropped into sms-inbox on the server (no size limit)."/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="file_data" filename="file_name"
-                                   string="Fichier de sauvegarde SMS (XML ou ZIP)"/>
+                                   string="SMS backup file (XML or ZIP)"/>
                             <field name="file_name" invisible="1"/>
                         </group>
                     </group>
                     <div class="alert alert-info" role="alert">
-                        <strong>Fichiers volumineux (+1 Go)</strong> : déposez-les via
-                        <code>scp</code> dans le bind mount <code>sms-inbox/</code>
-                        du compose (monté sur <code>/mnt/sms-inbox</code> côté
-                        container), puis cliquez sur « Importer depuis /mnt/sms-inbox ».
-                        L'import disque contourne la limite HTTP/mémoire du formulaire.
+                        <strong>Large files (over 1 GB)</strong>: drop them via
+                        <code>scp</code> into the <code>sms-inbox/</code> bind mount
+                        of the compose file (mounted at <code>/mnt/sms-inbox</code> in the
+                        container), then click "Import from /mnt/sms-inbox".
+                        The disk import bypasses the form's HTTP/memory limit.
                     </div>
                     <group invisible="not result_message">
-                        <field name="result_message" string="Résultat" readonly="1"
+                        <field name="result_message" string="Result" readonly="1"
                                widget="text"/>
                     </group>
                 </sheet>
@@ -41,7 +41,7 @@
 
     <!-- Import Wizard Action -->
     <record id="sms_import_wizard_action" model="ir.actions.act_window">
-        <field name="name">Importer des SMS</field>
+        <field name="name">Import SMS</field>
         <field name="res_model">sms.archive.import.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>

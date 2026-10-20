@@ -21,7 +21,7 @@ class TestPdf(TransactionCase):
     def setUp(self):
         super().setUp()
         self.processus = self.env["bf.process"].create({
-            "name": "Essai PDF", "code": "pdf", "pool_name": "Blue Fox",
+            "name": "Essai PDF", "code": "pdf", "pool_name": "Essai inc.",
             "source": "Entrevue du 14 août 2026."})
         self.processus._charger_niveaux(CARTE)
         self.niveau = self.processus.diagram_ids
@@ -47,7 +47,7 @@ class TestPdf(TransactionCase):
     def test_une_page_par_niveau(self):
         carte = [dict(CARTE[0]), dict(CARTE[0], title="Deuxième niveau")]
         p = self.env["bf.process"].create({"name": "Deux pages",
-                                           "pool_name": "Blue Fox"})
+                                           "pool_name": "Essai inc."})
         p._charger_niveaux(carte)
         self.assertIn(b"/Count 2", p._pdf_octets())
 

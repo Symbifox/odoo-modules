@@ -17,10 +17,10 @@
                 <field name="contact_name" string="Contact"/>
                 <field name="thread_id" string="Conversation" optional="hide"/>
                 <field name="date" string="Date"/>
-                <field name="duration_display" string="Durée"/>
-                <field name="duration" string="Durée (s)" optional="hide"/>
-                <field name="presentation" string="Présentation" optional="hide"/>
-                <field name="recording_url" string="Enregistrement" widget="url" optional="hide"/>
+                <field name="duration_display" string="Duration"/>
+                <field name="duration" string="Duration (s)" optional="hide"/>
+                <field name="presentation" string="Presentation" optional="hide"/>
+                <field name="recording_url" string="Recording" widget="url" optional="hide"/>
             </list>
         </field>
     </record>
@@ -33,29 +33,29 @@
             <form>
                 <header>
                     <button name="action_post_to_task" type="object"
-                            string="Poster sur une fiche" class="btn-primary"
+                            string="Post to a record" class="btn-primary"
                             groups="bf_sms_archive.group_sms_user"/>
                 </header>
                 <sheet>
                     <group>
-                        <group string="Appel">
+                        <group string="Call">
                             <field name="call_type" string="Type" readonly="1"/>
                             <field name="date" string="Date" readonly="1"/>
-                            <field name="duration_display" string="Durée" readonly="1"/>
-                            <field name="duration" string="Durée (s)" readonly="1"/>
+                            <field name="duration_display" string="Duration" readonly="1"/>
+                            <field name="duration" string="Duration (s)" readonly="1"/>
                         </group>
                         <group string="Contact">
                             <field name="contact_name" string="Contact" readonly="1"/>
                             <field name="thread_id" string="Conversation" readonly="1"/>
-                            <field name="presentation" string="Présentation" readonly="1"/>
-                            <field name="recording_url" string="Enregistrement" widget="url" readonly="1"/>
+                            <field name="presentation" string="Presentation" readonly="1"/>
+                            <field name="recording_url" string="Recording" widget="url" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Technique" groups="base.group_no_one">
+                    <group string="Technical" groups="base.group_no_one">
                         <field name="call_hash" string="Hash" readonly="1"/>
                         <field name="date_ms" string="Timestamp (ms)" readonly="1"/>
-                        <field name="import_batch_id" string="Lot d'import" readonly="1"/>
-                        <field name="owner_id" string="Propriétaire" readonly="1"/>
+                        <field name="import_batch_id" string="Import batch" readonly="1"/>
+                        <field name="owner_id" string="Owner" readonly="1"/>
                     </group>
                 </sheet>
             </form>
@@ -71,26 +71,26 @@
                 <field name="contact_name" string="Contact"/>
                 <field name="thread_id" string="Conversation"/>
                 <separator/>
-                <filter name="filter_incoming" string="Entrants"
+                <filter name="filter_incoming" string="Incoming calls"
                         domain="[('call_type', '=', 'incoming')]"/>
-                <filter name="filter_outgoing" string="Sortants"
+                <filter name="filter_outgoing" string="Outgoing calls"
                         domain="[('call_type', '=', 'outgoing')]"/>
-                <filter name="filter_missed" string="Manqués"
+                <filter name="filter_missed" string="Missed calls"
                         domain="[('call_type', '=', 'missed')]"/>
-                <filter name="filter_voicemail" string="Messagerie vocale"
+                <filter name="filter_voicemail" string="Voicemail"
                         domain="[('call_type', '=', 'voicemail')]"/>
                 <separator/>
-                <filter name="filter_this_week" string="Cette semaine"
+                <filter name="filter_this_week" string="This week"
                         domain="[('date', '>=', (context_today() - relativedelta(weeks=1)).strftime('%%Y-%%m-%%d'))]"/>
-                <filter name="filter_this_month" string="Ce mois"
+                <filter name="filter_this_month" string="This month"
                         domain="[('date', '>=', time.strftime('%%Y-%%m-01'))]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_type" string="Type d'appel"
+                <group expand="0" string="Group by">
+                    <filter name="group_type" string="Call type"
                             context="{'group_by': 'call_type'}"/>
                     <filter name="group_thread" string="Contact"
                             context="{'group_by': 'thread_id'}"/>
-                    <filter name="group_month" string="Mois"
+                    <filter name="group_month" string="Month"
                             context="{'group_by': 'date:month'}"/>
                 </group>
             </search>
@@ -102,7 +102,7 @@
         <field name="name">call.archive.call.graph</field>
         <field name="model">call.archive.call</field>
         <field name="arch" type="xml">
-            <graph string="Journal d'appels" type="bar">
+            <graph string="Call log" type="bar">
                 <field name="date" interval="month"/>
                 <field name="call_type"/>
             </graph>
@@ -114,7 +114,7 @@
         <field name="name">call.archive.call.pivot</field>
         <field name="model">call.archive.call</field>
         <field name="arch" type="xml">
-            <pivot string="Journal d'appels">
+            <pivot string="Call log">
                 <field name="date" interval="month" type="row"/>
                 <field name="call_type" type="col"/>
             </pivot>
@@ -123,7 +123,7 @@
 
     <!-- Call: Actions -->
     <record id="call_action" model="ir.actions.act_window">
-        <field name="name">Journal d'appels</field>
+        <field name="name">Call log</field>
         <field name="res_model">call.archive.call</field>
         <field name="view_mode">list,form,graph,pivot</field>
         <field name="search_view_id" ref="call_archive_view_search"/>

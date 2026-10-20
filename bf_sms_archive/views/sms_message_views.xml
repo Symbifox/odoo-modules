@@ -14,13 +14,13 @@
                        decoration-info="direction == 'out'"
                        decoration-success="direction == 'in'"
                        decoration-muted="direction == 'draft'"/>
-                <field name="body" string="Contenu"/>
+                <field name="body" string="Content"/>
                 <field name="date_sent" string="Date"/>
                 <field name="contact_name" string="Contact" optional="show"/>
-                <field name="line_id" string="Ligne" optional="show"/>
-                <field name="sent_by_id" string="Envoyé par" optional="hide"/>
+                <field name="line_id" string="Line" optional="show"/>
+                <field name="sent_by_id" string="Sent by" optional="hide"/>
                 <field name="is_mms" string="MMS" optional="hide"/>
-                <field name="link_count" string="Fiches" optional="show"/>
+                <field name="link_count" string="Records" optional="show"/>
             </list>
         </field>
     </record>
@@ -32,7 +32,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_post_to_task" string="Poster sur une fiche"
+                    <button name="action_post_to_task" string="Post to a record"
                             type="object" class="btn-primary" icon="fa-tasks"/>
                 </header>
                 <sheet>
@@ -42,43 +42,43 @@
                             <field name="direction" string="Direction" readonly="1"/>
                             <field name="date_sent" string="Date" readonly="1"/>
                             <field name="contact_name" string="Contact"/>
-                            <field name="line_id" string="Ligne" readonly="1"/>
-                            <field name="sent_by_id" string="Envoyé par" readonly="1"
+                            <field name="line_id" string="Line" readonly="1"/>
+                            <field name="sent_by_id" string="Sent by" readonly="1"
                                    invisible="direction != 'out'"/>
                         </group>
-                        <group string="Technique">
+                        <group string="Technical">
                             <field name="message_hash" string="Hash" readonly="1"/>
                             <field name="date_sent_ms" string="Timestamp (ms)" readonly="1"/>
-                            <field name="import_batch_id" string="Lot d'import" readonly="1"/>
+                            <field name="import_batch_id" string="Import batch" readonly="1"/>
                             <field name="is_mms" string="MMS" readonly="1"/>
                         </group>
                     </group>
-                    <separator string="Contenu"/>
+                    <separator string="Content"/>
                     <field name="body" nolabel="1" readonly="1"/>
-                    <separator string="Rattachements" invisible="link_count == 0"/>
+                    <separator string="Links" invisible="link_count == 0"/>
                     <field name="link_ids" nolabel="1" readonly="1"
                            invisible="link_count == 0">
                         <list create="false">
                             <field name="res_model_label" string="Type"/>
-                            <field name="res_name" string="Fiche"/>
-                            <field name="is_auto" string="Suivi auto"
+                            <field name="res_name" string="Record"/>
+                            <field name="is_auto" string="Auto follow-up"
                                    widget="boolean_toggle" readonly="1"/>
-                            <field name="create_date" string="Le"/>
+                            <field name="create_date" string="Linked on"/>
                             <button name="action_open_target" type="object"
-                                    icon="fa-external-link" title="Ouvrir la fiche"/>
+                                    icon="fa-external-link" title="Open the record"/>
                             <button name="action_undo" type="object"
-                                    icon="fa-chain-broken" title="Défaire"
-                                    confirm="Retirer ce rattachement ? La note du chatter part avec lui si plus aucun message ne la vise."/>
+                                    icon="fa-chain-broken" title="Undo"
+                                    confirm="Remove this link? The chatter note goes with it if no message points to it anymore."/>
                         </list>
                     </field>
                     <field name="link_count" invisible="1"/>
-                    <separator string="Pièces jointes MMS" invisible="not is_mms"/>
+                    <separator string="MMS attachments" invisible="not is_mms"/>
                     <field name="mms_part_ids" nolabel="1" readonly="1"
                            invisible="not is_mms">
                         <list>
-                            <field name="filename" string="Fichier"/>
+                            <field name="filename" string="File"/>
                             <field name="content_type" string="Type"/>
-                            <field name="attachment_id" string="Télécharger"
+                            <field name="attachment_id" string="Download"
                                    widget="many2one"/>
                         </list>
                     </field>
@@ -93,20 +93,20 @@
         <field name="model">sms.archive.message</field>
         <field name="arch" type="xml">
             <search>
-                <field name="body" string="Contenu"/>
+                <field name="body" string="Content"/>
                 <field name="thread_id" string="Conversation"/>
                 <field name="contact_name" string="Contact"/>
-                <filter name="filter_received" string="Reçus"
+                <filter name="filter_received" string="Received messages"
                         domain="[('direction', '=', 'in')]"/>
-                <filter name="filter_sent" string="Envoyés"
+                <filter name="filter_sent" string="Sent messages"
                         domain="[('direction', '=', 'out')]"/>
                 <separator/>
-                <filter name="filter_this_week" string="Cette semaine"
+                <filter name="filter_this_week" string="This week"
                         domain="[('date_sent', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_this_month" string="Ce mois"
+                <filter name="filter_this_month" string="This month"
                         domain="[('date_sent', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_thread" string="Conversation"
                             context="{'group_by': 'thread_id'}"/>
                     <filter name="group_direction" string="Direction"
@@ -123,7 +123,7 @@
         <field name="name">sms.archive.message.graph</field>
         <field name="model">sms.archive.message</field>
         <field name="arch" type="xml">
-            <graph string="Messages SMS" type="bar">
+            <graph string="SMS messages" type="bar">
                 <field name="date_sent" interval="month" type="col"/>
                 <field name="direction" type="col"/>
             </graph>
@@ -135,7 +135,7 @@
         <field name="name">sms.archive.message.pivot</field>
         <field name="model">sms.archive.message</field>
         <field name="arch" type="xml">
-            <pivot string="Messages SMS">
+            <pivot string="SMS messages">
                 <field name="date_sent" interval="month" type="row"/>
                 <field name="direction" type="col"/>
             </pivot>
@@ -152,7 +152,7 @@
 
     <!-- Dashboard Action (graph + pivot + list) -->
     <record id="sms_dashboard_action" model="ir.actions.act_window">
-        <field name="name">Tableau de bord SMS</field>
+        <field name="name">SMS dashboard</field>
         <field name="res_model">sms.archive.message</field>
         <field name="view_mode">graph,pivot,list</field>
         <field name="search_view_id" ref="sms_message_view_search"/>
@@ -160,7 +160,7 @@
 
     <!-- Bulk export bindings: appear in the multi-select Actions menu on the messages list -->
     <record id="action_sms_export_csv_bulk" model="ir.actions.server">
-        <field name="name">Exporter en CSV</field>
+        <field name="name">Export to CSV</field>
         <field name="model_id" ref="model_sms_archive_message"/>
         <field name="binding_model_id" ref="model_sms_archive_message"/>
         <field name="binding_view_types">list</field>
@@ -169,7 +169,7 @@
     </record>
 
     <record id="action_sms_export_xml_bulk" model="ir.actions.server">
-        <field name="name">Exporter en XML</field>
+        <field name="name">Export to XML</field>
         <field name="model_id" ref="model_sms_archive_message"/>
         <field name="binding_model_id" ref="model_sms_archive_message"/>
         <field name="binding_view_types">list</field>

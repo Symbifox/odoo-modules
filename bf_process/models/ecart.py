@@ -24,6 +24,8 @@ entorse au gel dans ce module : la carte est la pièce datée, le plan de
 transformation est ce qui vit après elle. Valider la cible puis découvrir qu'on
 ne peut plus cocher « fait » serait un piège.
 """
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -32,19 +34,19 @@ from .comparaison import COTES, PORTEES, calculer_ecarts
 #: Ce qu'on cherche à obtenir en changeant l'étape. Volontairement court : une
 #: liste d'intentions qu'on ne peut pas tenir de tête ne se remplit pas.
 INTENTIONS = [
-    ("automatiser", "Automatiser"),
-    ("eliminer", "Éliminer"),
-    ("simplifier", "Simplifier"),
-    ("deleguer", "Déléguer"),
-    ("controler", "Contrôler"),
-    ("outiller", "Outiller"),
+    ("automatiser", "Automate"),
+    ("eliminer", "Eliminate"),
+    ("simplifier", "Simplify"),
+    ("deleguer", "Delegate"),
+    ("controler", "Control"),
+    ("outiller", "Provide tooling"),
 ]
 
 ETATS = [
-    ("a_decider", "À décider"),
-    ("retenu", "Retenu"),
-    ("ecarte", "Écarté"),
-    ("fait", "Fait"),
+    ("a_decider", "To decide"),
+    ("retenu", "Selected"),
+    ("ecarte", "Dismissed"),
+    ("fait", "Done"),
 ]
 
 #: Les teintes de la vue delta, par côté. Un retrait se montre sur la carte
@@ -54,73 +56,73 @@ TEINTES = {"ajout": "vert", "retrait": "rouge"}
 
 class BfProcessEcart(models.Model):
     _name = "bf.process.ecart"
-    _description = "Écart entre l'état actuel et le processus souhaité"
+    _description = "Gap between the current state and the target process"
     _order = "cible_id, diagram_code, sequence, id"
 
     cible_id = fields.Many2one(
-        "bf.process", string="Processus souhaité", required=True,
+        "bf.process", string="Target process", required=True,
         ondelete="cascade", index=True,
         domain=[("nature", "=", "cible")])
     origine_id = fields.Many2one(
-        "bf.process", string="État actuel", related="cible_id.origine_id",
+        "bf.process", string="Current state", related="cible_id.origine_id",
         store=True, index=True)
     partner_id = fields.Many2one(
         "res.partner", string="Client", related="cible_id.partner_id", store=True)
-    sequence = fields.Integer(string="Ordre", default=10)
+    sequence = fields.Integer(string="Order", default=10)
 
     # --- la moitié mécanique, semée depuis le diff ---------------------------
     genre = fields.Selection(
-        [("ajout", "Ajout"), ("retrait", "Retrait"), ("renommage", "Renommage"),
-         ("nature", "Changement de type"), ("couloir", "Changement de couloir"),
-         ("ton", "Changement de ton"), ("porte", "Changement de porte"),
-         ("libelle", "Changement de libellé")],
-        string="Genre", required=True, default="ajout")
+        [("ajout", "Addition"), ("retrait", "Removal"), ("renommage", "Renaming"),
+         ("nature", "Type change"), ("couloir", "Lane change"),
+         ("ton", "Tone change"), ("porte", "Gate change"),
+         ("libelle", "Label change")],
+        string="Kind", required=True, default="ajout")
     portee = fields.Selection(
         [(cle, titre) for cle, titre in PORTEES],
-        string="Portée", required=True, default="noeud")
+        string="Scope", required=True, default="noeud")
     cle = fields.Char(
-        string="Clé", required=True, index=True, copy=False,
-        help="Ce qui permet à un nouveau semis de reconnaître cet écart"
-             " plutôt que d'en créer un jumeau.")
-    libelle = fields.Char(string="Écart", required=True)
-    diagram_code = fields.Char(string="Code du niveau")
-    diagram_titre = fields.Char(string="Niveau")
-    node_code = fields.Char(string="Code de l'étape")
+        string="Key", required=True, index=True, copy=False,
+        help="What lets a new seeding recognize this gap rather than "
+             "create a twin.")
+    libelle = fields.Char(string="Gap", required=True)
+    diagram_code = fields.Char(string="Level code")
+    diagram_titre = fields.Char(string="Level")
+    node_code = fields.Char(string="Step code")
     node_actuel_id = fields.Many2one(
-        "bf.process.node", string="Étape actuelle", ondelete="set null")
+        "bf.process.node", string="Current step", ondelete="set null")
     node_cible_id = fields.Many2one(
-        "bf.process.node", string="Étape souhaitée", ondelete="set null")
+        "bf.process.node", string="Target step", ondelete="set null")
     source = fields.Selection(
-        [("seme", "Semé depuis les cartes"), ("manuel", "Ajouté à la main")],
+        [("seme", "Seeded from the maps"), ("manuel", "Added by hand")],
         string="Provenance", required=True, default="manuel",
-        help="Un écart semé se rafraîchit au semis suivant ; un écart ajouté"
-             " à la main n'est jamais touché.")
+        help="A seeded gap is refreshed at the next seeding; a gap added "
+             "by hand is never touched.")
     caduc = fields.Boolean(
-        string="Caduc",
-        help="Les cartes ne montrent plus cet écart, mais quelqu'un avait"
-             " écrit dessus : il reste, marqué, plutôt que de disparaître"
-             " sans que personne ne le voie partir.")
+        string="Lapsed",
+        help="The maps no longer show this gap, but someone had written "
+             "on it: it stays, flagged, rather than disappearing without "
+             "anyone seeing it go.")
 
     # --- la moitié humaine, qu'un semis ne touche jamais ---------------------
-    intention = fields.Selection(INTENTIONS, string="Intention")
+    intention = fields.Selection(INTENTIONS, string="Intent")
     gain = fields.Text(
-        string="Gain attendu",
-        help="Ce que le changement rapporte, en délai, en coût, en risque ou"
-             " en conformité. Un écart sans gain est une préférence.")
+        string="Expected gain",
+        help="What the change brings, in lead time, cost, risk or "
+             "compliance. A gap without a gain is a preference.")
     effort = fields.Selection(
-        [("faible", "Faible"), ("moyen", "Moyen"), ("eleve", "Élevé")],
+        [("faible", "Low"), ("moyen", "Medium"), ("eleve", "High")],
         string="Effort")
-    responsable_id = fields.Many2one("res.users", string="Responsable")
-    etat = fields.Selection(ETATS, string="État", required=True,
+    responsable_id = fields.Many2one("res.users", string="Assignee")
+    etat = fields.Selection(ETATS, string="State", required=True,
                             default="a_decider", index=True)
     task_id = fields.Many2one(
-        "project.task", string="Tâche", ondelete="set null",
-        help="Là où le changement se fait vraiment.")
-    note = fields.Text(string="Remarque")
+        "project.task", string="Task", ondelete="set null",
+        help="Where the change actually happens.")
+    note = fields.Text(string="Note")
 
     _sql_constraints = [
         ("cle_uniq", "unique (cible_id, cle)",
-         "Cet écart est déjà consigné pour ce processus souhaité."),
+         "This gap is already recorded for this target process."),
     ]
 
     @api.depends("libelle", "cle")
@@ -146,13 +148,13 @@ class BfProcessEcart(models.Model):
         """Fait descendre l'écart là où le travail se suit vraiment."""
         self.ensure_one()
         if self.task_id:
-            raise UserError(_("Cet écart porte déjà la tâche « %s ».")
+            raise UserError(_("This gap already has the task \"%s\".")
                             % self.task_id.display_name)
         projet = self.cible_id.project_id
         if not projet:
             raise UserError(_(
-                "« %s » n'est rattaché à aucun projet : une tâche n'aurait"
-                " nulle part où aller.") % self.cible_id.display_name)
+                "\"%s\" is not linked to any project: a task would have "
+                "nowhere to go.") % self.cible_id.display_name)
         self.task_id = self.env["project.task"].create({
             "name": self.libelle,
             "project_id": projet.id,
@@ -169,18 +171,27 @@ class BfProcessEcart(models.Model):
         }
 
     def _description_tache(self):
-        """Le pourquoi part avec la tâche : sinon elle arrive sans son dossier."""
+        """Le pourquoi part avec la tâche : sinon elle arrive sans son dossier.
+
+        Écrite pour qui fera le travail : dans la langue du responsable de
+        l'écart, à défaut dans celle du livrable. Un paragraphe par ligne : la
+        description est un champ Html, où un saut de ligne se colle.
+        """
         self.ensure_one()
-        lignes = [_("Écart relevé entre « %s » et « %s ».")
-                  % (self.origine_id.display_name, self.cible_id.display_name)]
+        moi = self.with_context(lang=self.responsable_id.lang
+                                or self.cible_id._langue_livrable())
+        env = moi.env
+        lignes = [env._("Gap found between \"%s\" and \"%s\".",
+                        moi.origine_id.display_name, moi.cible_id.display_name)]
         if self.diagram_titre:
-            lignes.append(_("Niveau : %s") % self.diagram_titre)
+            lignes.append(env._("Level: %s", self.diagram_titre))
         if self.intention:
-            lignes.append(_("Intention : %s")
-                          % dict(INTENTIONS)[self.intention])
+            intentions = dict(
+                self._fields["intention"]._description_selection(env))
+            lignes.append(env._("Intent: %s", intentions[self.intention]))
         if (self.gain or "").strip():
-            lignes.append(_("Gain attendu : %s") % self.gain.strip())
-        return "\n".join(lignes)
+            lignes.append(env._("Expected gain: %s", self.gain.strip()))
+        return Markup("").join(Markup("<p>%s</p>") % l for l in lignes)
 
 
 class BfProcessCible(models.Model):
@@ -189,16 +200,16 @@ class BfProcessCible(models.Model):
     _inherit = "bf.process"
 
     ecart_ids = fields.One2many(
-        "bf.process.ecart", "cible_id", string="Écarts")
+        "bf.process.ecart", "cible_id", string="Gaps")
     ecart_count = fields.Integer(compute="_compute_ecarts")
     ecart_retenu_count = fields.Integer(compute="_compute_ecarts")
     ecart_fait_count = fields.Integer(compute="_compute_ecarts")
     ecart_a_decider_count = fields.Integer(compute="_compute_ecarts")
     taux_transformation = fields.Float(
         string="Transformation", compute="_compute_ecarts",
-        help="Part des écarts retenus qui sont faits. Les écarts encore à"
-             " décider n'y comptent pas : on ne mesure pas l'avancement d'un"
-             " plan qu'on n'a pas arrêté.")
+        help="Share of selected gaps that are done. Gaps still to decide "
+             "do not count: you do not measure progress on a plan that "
+             "has not been settled.")
 
     @api.depends("ecart_ids.etat")
     def _compute_ecarts(self):
@@ -221,15 +232,18 @@ class BfProcessCible(models.Model):
         self.ensure_one()
         if self.nature != "cible":
             raise UserError(_(
-                "Les écarts se sèment sur un processus souhaité : « %s »"
-                " décrit l'état actuel.") % self.display_name)
+                "Gaps are seeded on a target process: \"%s\" describes "
+                "the current state.") % self.display_name)
         if not self.origine_id:
             raise UserError(_(
-                "« %s » ne dit pas d'après quel état actuel il est dessiné."
+                "\"%s\" does not say which current state it is drawn from."
             ) % self.display_name)
 
         Ecart = self.env["bf.process.ecart"]
-        lignes = calculer_ecarts(self.origine_id, self)
+        # le libellé d'un écart est stocké et part au plan de transformation du
+        # livrable : il se compose dans la langue du client
+        livrable = self._livrable()
+        lignes = calculer_ecarts(livrable.origine_id, livrable)
         existants = {e.cle: e for e in self.ecart_ids if e.source == "seme"}
         noeuds_avant = self.origine_id._noeuds_par_cle()
         noeuds_apres = self._noeuds_par_cle()
@@ -275,7 +289,7 @@ class BfProcessCible(models.Model):
             cree, maj, len(gardes), len(jetables)))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Écarts"),
+            "name": _("Gaps"),
             "res_model": "bf.process.ecart",
             "view_mode": "list,form",
             "domain": [("cible_id", "=", self.id)],
@@ -285,19 +299,21 @@ class BfProcessCible(models.Model):
     def _compte_rendu_semis(self, cree, maj, gardes, jetables):
         """Dire ce qui a bougé, y compris ce qui est parti."""
         self.ensure_one()
-        bouts = [_("Semis des écarts contre <b>%s</b> : %d nouveau(x), "
-                   "%d rafraîchi(s).") % (self.origine_id.display_name, cree, maj)]
+        bouts = [Markup(_(
+            "Gaps seeded against <b>%s</b>: %d new, %d refreshed."))
+            % (self.origine_id.display_name, cree, maj)]
         if gardes:
             bouts.append(_(
-                "%d écart(s) ne figurent plus sur les cartes mais portaient du "
-                "travail : gardés et marqués caducs.") % gardes)
+                "%d gap(s) no longer appear on the maps but carried work: "
+                "kept and marked as lapsed.") % gardes)
         if jetables:
             bouts.append(_(
-                "%d écart(s) devenus sans objet, sur lesquels rien n'était "
-                "écrit, ont été retirés.") % jetables)
+                "%d gap(s) that no longer applied, with nothing written "
+                "on them, were removed.") % jetables)
         if not self.ecart_ids:
-            bouts.append(_("Les deux cartes disent la même chose."))
-        return " ".join(bouts)
+            bouts.append(_("Both maps say the same thing."))
+        # `Markup.join` échappe les morceaux en `str` et garde le gras du premier
+        return Markup(" ").join(bouts)
 
     def _noeuds_par_cle(self):
         """{(code du niveau, code du nœud): nœud} pour cette carte."""
@@ -362,7 +378,8 @@ class BfProcessCible(models.Model):
         if not cible:
             return ""
         if self.nature == "cible":
-            return _("Vue delta contre « %s » : vert = ajouté, ambre = modifié."
+            return _("Delta view against \"%s\": green = added, amber = "
+                     "changed."
                      ) % (self.origine_id.display_name or "")
-        return _("Vue delta d'après « %s » : rouge = retiré, ambre = modifié."
+        return _("Delta view based on \"%s\": red = removed, amber = changed."
                  ) % cible.display_name

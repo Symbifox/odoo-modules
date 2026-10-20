@@ -126,7 +126,7 @@ export class VisualiseurCartographie extends Component {
     async charger(niveauId) {
         const id = this.resId;
         if (!id) {
-            this.state.erreur = _t("Enregistrez d'abord, le tracé suivra.");
+            this.state.erreur = _t("Save first; the drawing will follow.");
             return;
         }
         try {
@@ -232,22 +232,36 @@ export class VisualiseurCartographie extends Component {
 
     get outils() {
         return [
-            { code: "consulter", nom: _t("Consulter"),
-              aide: _t("Ouvrir la fiche d'une étape ou sa page dépliée.") },
-            { code: "deplacer", nom: _t("Déplacer"),
-              aide: _t("Glisser une forme. Elle se cale sur la grille.") },
-            { code: "poser", nom: _t("Poser"),
-              aide: _t("Cliquer sur le fond pour ajouter la forme choisie.") },
-            { code: "lier", nom: _t("Lier"),
-              aide: _t("Cliquer l'origine, puis la cible.") },
-            { code: "retirer", nom: _t("Retirer"),
-              aide: _t("Cliquer une forme ou un lien pour l'enlever.") },
+            { code: "consulter", nom: _t("Browse map"),
+              aide: _t("Open a step's record or its expanded page.") },
+            { code: "deplacer", nom: _t("Move shape"),
+              aide: _t("Drag a shape. It snaps to the grid.") },
+            { code: "poser", nom: _t("Place shape"),
+              aide: _t("Click the background to add the chosen shape.") },
+            { code: "lier", nom: _t("Link shapes"),
+              aide: _t("Click the origin, then the target.") },
+            { code: "retirer", nom: _t("Remove shape"),
+              aide: _t("Click a shape or a link to remove it.") },
         ];
     }
 
     get aideOutil() {
         const o = this.outils.find((x) => x.code === this.state.outil);
         return o ? o.aide : "";
+    }
+
+    /** Les libellés du bouton plein écran : un ternaire du gabarit ne passe
+     *  pas par la traduction, un getter si. */
+    get titrePleinEcran() {
+        return this.state.plein ? _t("Exit full screen") : _t("Full screen");
+    }
+
+    get libellePleinEcran() {
+        return this.state.plein ? _t("Collapse") : _t("Full screen");
+    }
+
+    get originePrise() {
+        return " — " + _t("origin picked: %s", this.state.depuis);
     }
 
     choisirOutil(code) {
@@ -352,12 +366,11 @@ export class VisualiseurCartographie extends Component {
             this.state.depuis = null;
         } else if (this.state.outil === "retirer") {
             this.dialog.add(ConfirmationDialog, {
-                title: _t("Retirer cette forme"),
+                title: _t("Remove this shape"),
                 body: _t(
-                    "« %s » et tout ce qui s'y raccorde seront retirés du tracé."
-                    + " Cette opération est inscrite au fil du processus.",
+                    "\"%s\" and everything connected to it will be removed from the drawing. This operation is logged in the process chatter.",
                     n.nom || n.id),
-                confirmLabel: _t("Retirer"),
+                confirmLabel: _t("Remove shape"),
                 confirm: () => this._ecrire("supprimer_noeud", [n.id]),
                 cancel: () => {},
             });
@@ -407,21 +420,21 @@ export class VisualiseurCartographie extends Component {
      * l'expression tenait sur une ligne de gabarit devenue illisible.
      */
     infobulle(n) {
-        const parts = [n.enfant ? _t("Ouvrir le niveau déplié")
-                                : _t("Ouvrir la fiche")];
+        const parts = [n.enfant ? _t("Open the expanded level")
+                                : _t("Open the record")];
         if (n.fil) {
             parts.push(_t("%s message(s)", n.fil));
         }
-        const dit = { validee: _t("validée"), conteste: _t("contestée"),
-                      partielle: _t("validation partielle") }[n.validation];
+        const dit = { validee: _t("validated"), conteste: _t("disputed"),
+                      partielle: _t("partially validated") }[n.validation];
         if (dit) {
             parts.push(dit);
         }
         if (n.ressources) {
-            parts.push(_t("%s ressource(s)", n.ressources));
+            parts.push(_t("%s resource(s)", n.ressources));
         }
         if (n.traces) {
-            parts.push(_t("%s décision(s) consignée(s)", n.traces));
+            parts.push(_t("%s recorded decision(s)", n.traces));
         }
         return parts.join(" · ");
     }

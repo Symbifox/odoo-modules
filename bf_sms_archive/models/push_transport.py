@@ -248,7 +248,7 @@ def push_request(payload, p256dh=None, auth=None, ttl=TTL_DEFAUT):
 
 class SmsUnifiedPush(models.AbstractModel):
     _name = "sms.archive.unifiedpush"
-    _description = "Envoi push UnifiedPush/ntfy (app native, sans Google)"
+    _description = "UnifiedPush/ntfy push sending (native app, without Google)"
 
     @api.model
     def _devices(self, owner):
@@ -347,16 +347,17 @@ class SmsUnifiedPush(models.AbstractModel):
     @api.model
     def _notify_new_message(self, msg):
         thread = msg.thread_id
-        payload = {
-            "type": "sms",
-            "title": thread.contact_name or thread.phone_normalized or "Nouveau SMS",
-            "body": (msg.body or "")[:180] or "📎 Pièce jointe",
-            "thread_id": thread.id,
-            "message_id": msg.id,
-        }
         for user in msg._notify_users():
             if self._devices(user):
-                self._send(user, dict(payload))
+                # Texte dans la langue de l'usager qui recevra la notification.
+                title, body = msg._push_texts(user.lang, 180)
+                self._send(user, {
+                    "type": "sms",
+                    "title": title,
+                    "body": body,
+                    "thread_id": thread.id,
+                    "message_id": msg.id,
+                })
 
     @api.model
     def _reveiller(self, appareils):

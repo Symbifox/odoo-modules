@@ -1,6 +1,7 @@
 /** @odoo-module **/
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { _t } from "@web/core/l10n/translation";
 
 export class SoftphonePanel extends Component {
     static template = "bf_softphone.Panel";
@@ -53,6 +54,14 @@ export class SoftphonePanel extends Component {
     }
     callNumber(n) { this.phone.callNumber(n); }
 
+    // ---------- libellés traduits du gabarit ----------
+    get muteTitle() {
+        return this.state.muted ? _t("Unmute microphone") : _t("Mute microphone");
+    }
+    get dtmfLabel() {
+        return _t("Sent: %s", this.local.dtmf);
+    }
+
     answer() { this.phone.answer(); }
     hangup() { this.phone.hangup(); }
     mute() { this.phone.toggleMute(); }
@@ -84,7 +93,7 @@ export class SoftphonePanel extends Component {
             );
             this.local.history = rows.map((r) => ({
                 id: r.id,
-                name: r.contact_name || (r.thread_id && r.thread_id[1]) || "Inconnu",
+                name: r.contact_name || (r.thread_id && r.thread_id[1]) || _t("Unknown"),
                 type: r.call_type,
                 date: r.date,
             }));

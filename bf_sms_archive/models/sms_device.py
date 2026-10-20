@@ -8,44 +8,45 @@ _logger = logging.getLogger(__name__)
 
 class SmsArchiveDevice(models.Model):
     _name = "sms.archive.device"
-    _description = "Appareil Android autorisé à pousser des SMS/MMS/appels en direct"
+    _description = "Android device allowed to push SMS/MMS/calls live"
     _order = "last_sync_at desc, id desc"
 
     name = fields.Char(
-        string="Nom",
+        string="Name",
         required=True,
-        help="Identification humaine (ex. « Pixel 8 »)",
+        help="Human-readable name (e.g. \"Pixel 8\")",
     )
     owner_id = fields.Many2one(
         comodel_name="res.users",
-        string="Propriétaire",
+        string="Owner",
         required=True,
         default=lambda self: self.env.user,
         index=True,
-        help="Les SMS/appels reçus seront imputés à cet utilisateur.",
+        help="Received SMS/calls will be assigned to this user.",
     )
     api_token = fields.Char(
-        string="Token API",
+        string="API token",
         required=True,
         copy=False,
         default=lambda self: secrets.token_urlsafe(32),
         groups="bf_sms_archive.group_sms_manager",
-        help="Bearer token utilisé par l'app Android. Régénérable via le bouton.",
+        help="Bearer token used by the Android app. Can be regenerated "
+             "with the button.",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
     last_sync_at = fields.Datetime(
-        string="Dernière synchronisation",
+        string="Last sync",
         readonly=True,
     )
     last_sync_count = fields.Integer(
-        string="Entries (dernier batch)",
+        string="Entries (last batch)",
         readonly=True,
     )
     total_received = fields.Integer(
-        string="Total reçus (lifetime)",
+        string="Total received (lifetime)",
         readonly=True,
         default=0,
     )
@@ -57,7 +58,7 @@ class SmsArchiveDevice(models.Model):
         (
             "token_unique",
             "UNIQUE(api_token)",
-            "Ce token est déjà utilisé par un autre appareil.",
+            "This token is already used by another device.",
         ),
     ]
 

@@ -28,11 +28,11 @@ class BfProcessNodeTracabilite(models.Model):
         "project.knowledge.item",
         "bf_process_node_knowledge_item_rel",
         "node_id", "knowledge_item_id",
-        string="Décisions et éléments de matrice",
-        help="Ce qui explique cette étape : la décision qui l'a créée, la"
-             " contrainte qu'elle satisfait, la question qui reste ouverte.")
+        string="Decisions and matrix items",
+        help="What explains this step: the decision that created it, the "
+             "constraint it satisfies, the question that remains open.")
     knowledge_item_count = fields.Integer(
-        string="Éléments de matrice", compute="_compute_tracabilite")
+        string="Matrix items", compute="_compute_tracabilite")
     # ⚠️ PAS de champ typé sur `meeting.record` ici, et c'est délibéré.
     # Un Many2many vers ce modèle rend la dépendance à `bf_meeting` OBLIGATOIRE,
     # même calculé, même gardé : Odoo résout le comodèle au chargement du
@@ -43,12 +43,12 @@ class BfProcessNodeTracabilite(models.Model):
     # Seul un COMPTE est stocké en champ ; les enregistrements se retrouvent à
     # la demande, quand on clique.
     meeting_count = fields.Integer(
-        string="Rencontres", compute="_compute_tracabilite",
-        help="Déduit des éléments de matrice : on ne rattache pas une étape à"
-             " une rencontre à la main, on la rattache à ce qui s'y est décidé.")
+        string="Meetings", compute="_compute_tracabilite",
+        help="Derived from matrix items: a step is not linked to a "
+             "meeting by hand, it is linked to what was decided there.")
     tracee = fields.Boolean(
-        string="Tracée", compute="_compute_tracabilite",
-        help="L'étape est adossée à au moins une décision consignée.")
+        string="Traced", compute="_compute_tracabilite",
+        help="The step is backed by at least one recorded decision.")
 
     def _rencontres_ids(self):
         """Les comptes rendus d'où viennent les décisions de cette étape.
@@ -84,7 +84,7 @@ class BfProcessNodeTracabilite(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Pourquoi cette étape — %s") % (self.name or self.code),
+            "name": _("Why this step: %s") % (self.name or self.code),
             "res_model": "project.knowledge.item",
             "view_mode": "list,form",
             "domain": [("id", "in", self.knowledge_item_ids.ids)],
@@ -96,7 +96,7 @@ class BfProcessNodeTracabilite(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Où ça s'est dit — %s") % (self.name or self.code),
+            "name": _("Where it was said: %s") % (self.name or self.code),
             "res_model": "meeting.record",
             "view_mode": "list,form",
             "domain": [("id", "in", self._rencontres_ids())],
@@ -108,12 +108,12 @@ class BfProcessTracabilite(models.Model):
     _inherit = "bf.process"
 
     activite_tracee_count = fields.Integer(
-        string="Activités tracées", compute="_compute_tracabilite")
+        string="Traced activities", compute="_compute_tracabilite")
     taux_tracabilite = fields.Float(
-        string="Traçabilité", compute="_compute_tracabilite",
-        help="Part des activités adossées à au moins une décision consignée."
-             " Le pendant du taux de validation : l'un dit que la carte est"
-             " juste, l'autre dit qu'on sait pourquoi.")
+        string="Traceability", compute="_compute_tracabilite",
+        help="Share of activities backed by at least one recorded "
+             "decision. The counterpart of the validation rate: one says "
+             "the map is right, the other says we know why.")
 
     @api.depends("diagram_ids.node_ids.knowledge_item_ids",
                  "diagram_ids.node_ids.kind")

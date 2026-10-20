@@ -11,11 +11,11 @@
                         name="action_view_outreach_targets"
                         groups="bf_outreach.group_bf_outreach_user"
                         invisible="outreach_target_count == 0">
-                    <field name="outreach_target_count" widget="statinfo" string="Démarchage"/>
+                    <field name="outreach_target_count" widget="statinfo" string="Outreach"/>
                 </button>
             </div>
             <xpath expr="//sheet" position="before">
-                <widget name="web_ribbon" title="Ne plus démarcher" bg_color="text-bg-danger"
+                <widget name="web_ribbon" title="No outreach" bg_color="text-bg-danger"
                         invisible="not outreach_opt_out"
                         groups="bf_outreach.group_bf_outreach_user"/>
             </xpath>
@@ -40,7 +40,7 @@
         <field name="arch" type="xml">
             <filter name="type_company" position="after">
                 <separator/>
-                <filter name="outreach_do_not_contact" string="Ne plus démarcher"
+                <filter name="outreach_do_not_contact" string="No outreach"
                         domain="[('outreach_opt_out', '=', True)]"
                         groups="bf_outreach.group_bf_outreach_user"/>
             </filter>

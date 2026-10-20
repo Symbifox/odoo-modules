@@ -12,16 +12,6 @@ from odoo.http import content_disposition, request
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
-GENRES = {
-    "procedure": "Procédure",
-    "fiche": "Fiche signalétique",
-    "formation": "Formation",
-    "video": "Vidéo",
-    "gabarit": "Gabarit",
-    "reference": "Référence",
-}
-
-
 class CarteAtelier(CustomerPortal):
 
     def _etape(self, node_id, access_token):
@@ -33,6 +23,10 @@ class CarteAtelier(CustomerPortal):
         """Ce que le gabarit reçoit : jamais l'enregistrement lui-même."""
         ressources = noeud.resource_ids.sorted(
             key=lambda r: (not r.critique, r.sequence, r.id))
+        # le genre dans la langue de la page (celle du visiteur, négociée par
+        # le site), lu sur la sélection plutôt que dans une table à part
+        genres = dict(request.env["bf.process.node.resource"]
+                      ._fields["kind"]._description_selection(request.env))
         return {
             "etape": noeud.name or noeud.code,
             "processus": "%s · v%s" % (noeud.process_id.name,
@@ -44,7 +38,7 @@ class CarteAtelier(CustomerPortal):
             "ressources": [{
                 "id": r.id,
                 "nom": r.name,
-                "genre": GENRES.get(r.kind, r.kind),
+                "genre": genres.get(r.kind, r.kind),
                 "critique": r.critique,
                 "note": r.note or "",
                 "externe": bool(r.url),

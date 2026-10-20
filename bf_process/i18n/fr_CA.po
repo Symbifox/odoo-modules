@@ -1,0 +1,4422 @@
+# Translation of Cartographie de processus - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_process 18.0.5.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 12:13+0000\n"
+"PO-Revision-Date: 2026-10-19 12:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid " (continued)"
+msgstr " (suite)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid " (target)"
+msgstr " (souhaité)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "\"%(avant)s\" to \"%(apres)s\""
+msgstr "« %(avant)s » vers « %(apres)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "\"%(avant)s\" to \"%(apres)s\" in \"%(niveau)s\""
+msgstr "« %(avant)s » vers « %(apres)s » dans « %(niveau)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "\"%(libelle)s\""
+msgstr "« %(libelle)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "\"%(nom)s\": %(avant)s to %(apres)s in \"%(niveau)s\""
+msgstr "« %(nom)s » : %(avant)s vers %(apres)s dans « %(niveau)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid ""
+"\"%s v%s\" is a validated version: its drawing can no longer be edited. "
+"Create the next version, or reopen this one."
+msgstr ""
+"« %s v%s » est une version validée : son tracé ne se modifie plus. Créez la "
+"version suivante, ou rouvrez celle-ci."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid ""
+"\"%s\" and everything connected to it will be removed from the drawing. This"
+" operation is logged in the process chatter."
+msgstr ""
+"« %s » et tout ce qui s'y raccorde seront retirés du tracé. Cette opération "
+"est inscrite au fil du processus."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "\"%s\" does not say which current state it is drawn from."
+msgstr "« %s » ne dit pas d'après quel état actuel il est dessiné."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"\"%s\" has changed since the analysis. Run the analysis again: the gaps "
+"shown were computed against a state that no longer exists."
+msgstr ""
+"« %s » a changé depuis l'analyse. Relancez l'analyse : les écarts affichés "
+"ont été calculés contre un état qui n'existe plus."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"\"%s\" has no body. An empty section gets numbered and reads as an omission:"
+" write it, or remove it."
+msgstr ""
+"« %s » n'a pas de corps. Une section vide se numérote et se lit comme une "
+"omission : écrivez-la, ou retirez-la."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "\"%s\" has no level yet: there is no map to put in a document."
+msgstr ""
+"« %s » n'a encore aucun niveau : il n'y a pas de carte à mettre dans un "
+"document."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"\"%s\" has no level: there is nothing to start from to draw what we would "
+"want instead."
+msgstr ""
+"« %s » n'a aucun niveau : il n'y a rien à reprendre pour dessiner ce qu'on "
+"voudrait à la place."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid ""
+"\"%s\" has several targets. A QR code opens only one: choose which, and make"
+" two resources if both matter."
+msgstr ""
+"« %s » a plusieurs cibles. Un code QR n'en ouvre qu'une : choisissez "
+"laquelle, et faites-en deux ressources si les deux comptent."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/gel.py:0
+msgid ""
+"\"%s\" is a validated version: it can no longer be edited.\n"
+"\n"
+"Create the next version, or reopen this one from its record if the validation was premature."
+msgstr ""
+"« %s » est une version validée : elle ne se modifie plus.\n"
+"\n"
+"Créez la version suivante, ou rouvrez celle-ci depuis sa fiche si la validation était prématurée."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"\"%s\" is a validated version: it can no longer be edited. Create the next "
+"version, or reopen this one, before merging a file into it."
+msgstr ""
+"« %s » est une version validée : elle ne se modifie plus. Créez la version "
+"suivante, ou rouvrez celle-ci, avant de fusionner un fichier dedans."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"\"%s\" is a validated version: its content can no longer be edited. Create "
+"the next version, or reopen this one."
+msgstr ""
+"« %s » est une version validée : son contenu ne se modifie plus. Créez la "
+"version suivante, ou rouvrez celle-ci."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"\"%s\" is already a target process. A target is drawn from the current "
+"state."
+msgstr ""
+"« %s » est déjà un processus souhaité. Une cible se dessine d'après l'état "
+"actuel."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"\"%s\" is already a target process: a target is drawn from the current "
+"state, not from another target."
+msgstr ""
+"« %s » est déjà un processus souhaité : une cible se dessine d'après l'état "
+"actuel, pas d'après une autre cible."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "\"%s\" is not a node type."
+msgstr "« %s » n'est pas un type de nœud."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "\"%s\" is not in the file"
+msgstr "« %s » n'est pas dans le fichier"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "\"%s\" is not linked to any project: a task would have nowhere to go."
+msgstr ""
+"« %s » n'est rattaché à aucun projet : une tâche n'aurait nulle part où "
+"aller."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid ""
+"\"%s\" leads nowhere: give it a file, an address, or a policy from the "
+"knowledge base."
+msgstr ""
+"« %s » ne mène nulle part : donnez-lui un fichier, une adresse, ou une "
+"politique de la base de connaissances."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid ""
+"\"%s\" opens level \"%s\". Detach the page before removing the subprocess "
+"that leads to it, otherwise it becomes unreachable without anything saying "
+"so."
+msgstr ""
+"« %s » ouvre le niveau « %s ». Détachez la page avant de retirer le sous-"
+"processus qui y mène, sinon elle devient inatteignable sans que rien ne le "
+"dise."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid ""
+"\"%s\": this file is attached to another record. Attach it to the step or "
+"upload it in the resource."
+msgstr ""
+"« %s » : ce fichier est rattaché à un autre dossier. Joignez-le à l'étape ou"
+" téléversez-le dans la ressource."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid "\"%s\": you do not have access to this document."
+msgstr "« %s » : vous n'avez pas accès à ce document."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid "\"%s\": you do not have access to this file."
+msgstr "« %s » : vous n'avez pas accès à ce fichier."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "%(depart)s to %(cible)s"
+msgstr "%(depart)s vers %(cible)s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "%(depart)s to %(cible)s: \"%(avant)s\" to \"%(apres)s\""
+msgstr "%(depart)s vers %(cible)s : « %(avant)s » vers « %(apres)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "%(genre)s \"%(nom)s\" in \"%(niveau)s\""
+msgstr "%(genre)s « %(nom)s » dans « %(niveau)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "%(genre)s: %(libelle)s"
+msgstr "%(genre)s : %(libelle)s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+msgid "%(nom)s · %(avant)s to %(apres)s"
+msgstr "%(nom)s · %(avant)s vers %(apres)s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "%(quoi)s \"%(nom)s\""
+msgstr "%(quoi)s « %(nom)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "%d element(s) of the file were not read."
+msgstr "%d élément(s) du fichier n'ont pas été lus."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid ""
+"%d gap(s) no longer appear on the maps but carried work: kept and marked as "
+"lapsed."
+msgstr ""
+"%d écart(s) ne figurent plus sur les cartes mais portaient du travail : "
+"gardés et marqués caducs."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid ""
+"%d gap(s) that no longer applied, with nothing written on them, were "
+"removed."
+msgstr ""
+"%d écart(s) devenus sans objet, sur lesquels rien n'était écrit, ont été "
+"retirés."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "%s message(s)"
+msgstr "%s message(s)"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "%s recorded decision(s)"
+msgstr "%s décision(s) consignée(s)"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "%s resource(s)"
+msgstr "%s ressource(s)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "%s: unfolded map"
+msgstr "%s — carte dépliée"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__fichier
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__fichier
+msgid ".bpmn file"
+msgstr "Fichier .bpmn"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"<b>%(n)s page(s) of the map are not in the file</b>: %(titres)s.<br/>Several"
+" editors only re-export the open diagram. Removals are therefore proposed as"
+" \"Ignore\": only apply them if the page was really deleted."
+msgstr ""
+"<b>%(n)s page(s) de la carte ne sont pas dans le fichier</b> : "
+"%(titres)s.<br/>Plusieurs éditeurs ne réexportent que le diagramme ouvert. "
+"Les retraits sont donc proposés à « Ignorer » : ne les appliquez que si la "
+"page a vraiment été supprimée."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "<span class=\"oe_inline\"> %</span>"
+msgstr "<span class=\"oe_inline\"> %</span>"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "<span class=\"oe_inline\"> · </span>"
+msgstr "<span class=\"oe_inline\"> · </span>"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"A current-state map is not drawn from anything: it describes what happens."
+msgstr ""
+"Une carte de l'état actuel ne se dessine d'après rien : elle décrit ce qui "
+"se passe."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+#: code:addons/bf_process/models/flux.py:0
+msgid "A flow cannot loop back on itself."
+msgstr "Un flux ne peut pas boucler sur lui-même."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "A flow needs two nodes of this level."
+msgstr "Il faut deux nœuds de ce niveau pour un flux."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/flux.py:0
+msgid "A flow only links nodes of the same level."
+msgstr "Un flux ne relie que des nœuds du même niveau."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "A map cannot be drawn from itself."
+msgstr "Une carte ne se dessine pas d'après elle-même."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/flux.py:0
+msgid "A message flow links a node and a pool of the same level."
+msgstr "Un flux de message relie un nœud et un pool du même niveau."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "A node cannot open its own page."
+msgstr "Un nœud ne peut pas ouvrir sa propre page."
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process_resource
+msgid ""
+"A procedure, a safety data sheet or a video attached to a step becomes a QR "
+"code on the printed map."
+msgstr ""
+"Une procédure, une fiche signalétique ou une vidéo posée sur une\n"
+"                étape devient un code QR sur la carte imprimée."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "A process map without a level cannot be validated."
+msgstr "Une cartographie sans niveau ne se valide pas."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_node_resource_libelle_non_vide
+msgid "A resource without a label does not get opened, it gets ignored."
+msgstr "Une ressource sans libellé ne s'ouvre pas, elle s'ignore."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__source
+msgid ""
+"A seeded gap is refreshed at the next seeding; a gap added by hand is never "
+"touched."
+msgstr ""
+"Un écart semé se rafraîchit au semis suivant ; un écart ajouté à la main "
+"n'est jamais touché."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid ""
+"A tabloid tiling at 1:1 scale, with a QR code on each step that has a "
+"resource. To hang on the wall, not to file away."
+msgstr ""
+"Pavé en tabloïd à l'échelle 1:1, avec un code"
+"                                   QR sur chaque étape qui porte une "
+"ressource.                                   À afficher au mur, pas à mettre"
+" au dossier."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"A target process is drawn from a current state. Without one, there is no gap"
+" to show, just a second map."
+msgstr ""
+"Un processus souhaité se dessine d'après un état actuel. Sans lui, il n'y a "
+"pas d'écart à montrer, juste une deuxième carte."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "A target process was drawn from this version: <b>%s</b>."
+msgstr ""
+"Un processus souhaité a été dessiné d'après cette version : <b>%s</b>."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "A validated version can no longer be edited. Continue?"
+msgstr "Une version validée ne se modifie plus. Continuer ?"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid ""
+"A validated version can no longer be edited. Reopen it, or create the next "
+"one."
+msgstr ""
+"Une version validée ne se modifie plus. Rouvrez-la, ou créez la suivante."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "A validated version cannot be deleted. Mark it obsolete."
+msgstr "Une version validée ne se supprime pas. Marquez-la obsolète."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_pool__position__top
+msgid "Above"
+msgstr "Au-dessus"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__access_warning
+msgid "Access warning"
+msgstr "Avertissement d'accès"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Accurate / needs correction"
+msgstr "Conforme / à corriger"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_needaction
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__activite_count
+msgid "Activite Count"
+msgstr "Nombre d'activités"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_ids
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Activity\n"
+"(verb + object)"
+msgstr ""
+"Activité\n"
+"(verbe + complément)"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Activity performed\n"
+"by a person"
+msgstr ""
+"Activité tenue\n"
+"par une personne"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Activity that receives\n"
+"a message"
+msgstr ""
+"Activité qui reçoit\n"
+"un message"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Activity that sends\n"
+"a message"
+msgstr ""
+"Activité qui émet\n"
+"un message"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__source__manuel
+msgid "Added by hand"
+msgstr "Ajouté à la main"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__ajout
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__ajout
+msgid "Addition"
+msgstr "Ajout"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__url
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "All levels on a single page, to browse on screen"
+msgstr "Tous les niveaux sur une seule page, à parcourir à l’écran"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"An AS-IS map is only worth something once it is recognized by the people who"
+" do the work. Fill in and return with your corrections."
+msgstr ""
+"Une carte AS-IS n’a de valeur qu’une fois reconnue par ceux qui exécutent le"
+" travail. À compléter et à retourner avec les corrections."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "An activity must be named, as verb + object."
+msgstr "Une activité doit être nommée, en verbe + complément."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ressource.py:0
+msgid ""
+"An annotation does not carry a resource: attach it to the step the "
+"annotation comments on."
+msgstr ""
+"Une annotation ne porte pas de ressource : accrochez-la à l'étape que "
+"l'annotation commente."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/flux.py:0
+msgid "An annotation is linked by an association, not by a sequence flow."
+msgstr ""
+"Une annotation se relie par une association, pas par un flux de séquence."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "An annotation without text says nothing."
+msgstr "Une annotation sans texte ne dit rien."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/flux.py:0
+msgid "An association must touch an annotation."
+msgstr "Une association doit toucher une annotation."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Analyze"
+msgstr "Analyser"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__anchor_source
+msgid "Anchor at origin"
+msgstr "Accroche à l'origine"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__anchor_target
+msgid "Anchor at target"
+msgstr "Accroche à la cible"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__note
+msgid "Annotation"
+msgstr "Annotation"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__tone
+msgid "Annotations only. Two tones, and only two."
+msgstr "Annotations seulement. Deux tons, et seulement deux."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Appendix"
+msgstr "Annexe"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__annexe
+msgid "Appendix page"
+msgstr "Page d'annexe"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__decision__appliquer
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Apply all"
+msgstr "Tout appliquer"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Apply what is selected"
+msgstr "Appliquer ce qui est retenu"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__dx
+msgid "Arrival point offset"
+msgstr "Décalage du point d'arrivée"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__responsable_id
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Assignee"
+msgstr "Responsable"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__assoc
+msgid "Association to an annotation"
+msgstr "Association vers une annotation"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__hypothese
+msgid "Assumption"
+msgstr "Hypothèse"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Assumptions and open questions"
+msgstr "Hypothèses et questions ouvertes"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Assumptions made to draw the map"
+msgstr "Hypothèses retenues pour dessiner la carte"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_attachment_count
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__automatiser
+msgid "Automate"
+msgstr "Automatiser"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__auto
+msgid "Automatic"
+msgstr "Automatique"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_lecture
+msgid "BPMN 2.0 reader"
+msgstr "Lecture d'un BPMN 2.0"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__bpmn_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__bpmn_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__bpmn_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__bpmn_id
+msgid "BPMN ID"
+msgstr "Identifiant BPMN"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "BPMN type \"%s\" that the module does not draw"
+msgstr "type BPMN « %s » que le module ne trace pas"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_pool__position__bottom
+msgid "Below"
+msgstr "En dessous"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Black-box pools"
+msgstr "Pools boîte noire"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__body
+msgid "Body"
+msgstr "Corps"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Both maps say the same thing."
+msgstr "Les deux cartes disent la même chose."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_source__b
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_target__b
+msgid "Bottom"
+msgstr "Bas"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"Bound %(attr)s of shape \"%(quoi)s\" is %(brut)s. Such a value raises no "
+"error as it spreads: it would silently corrupt the map."
+msgstr ""
+"La borne %(attr)s de la forme « %(quoi)s » vaut %(brut)s. Une valeur "
+"pareille ne lève aucune erreur en se propageant : elle contaminerait la "
+"carte en silence."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "Bound %(attr)s of shape \"%(quoi)s\" is not a number: %(brut)s."
+msgstr ""
+"La borne %(attr)s de la forme « %(quoi)s » n'est pas un nombre : %(brut)s."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Browse map"
+msgstr "Consulter"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__cible_count
+msgid "Cible Count"
+msgstr "Nombre de processus souhaités"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Click a shape or a link to remove it."
+msgstr "Cliquer une forme ou un lien pour l'enlever."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Click the background to add the chosen shape."
+msgstr "Cliquer sur le fond pour ajouter la forme choisie."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Click the origin, then the target."
+msgstr "Cliquer l'origine, puis la cible."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__partner_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__partner_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_compare_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__code
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__code
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__code
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__code
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Collapse"
+msgstr "Réduire"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__col
+msgid "Column"
+msgstr "Colonne"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Column %d/%d · Row %d/%d"
+msgstr "Colonne %d/%d · Rangée %d/%d"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__col_w
+msgid "Column width"
+msgstr "Largeur de colonne"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_compare_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Compare"
+msgstr "Comparer"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+#: model:ir.model,name:bf_process.model_bf_process_compare_wizard
+msgid "Compare two maps"
+msgstr "Comparer deux cartes"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_compare
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_compare_form
+msgid "Compare two versions"
+msgstr "Comparer deux versions"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__cible_id
+msgid "Compare with"
+msgstr "Comparer avec"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "Comparing a map with itself says nothing."
+msgstr "Comparer une carte avec elle-même ne dit rien."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Contents"
+msgstr "Sommaire"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__conteste_count
+msgid "Conteste Count"
+msgstr "Nombre d'étapes contestées"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__conteste
+msgid "Contested"
+msgstr "Contesté"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__controler
+msgid "Control"
+msgstr "Contrôler"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__couverture
+msgid "Cover block"
+msgstr "Bloc de couverture"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "Create the task"
+msgstr "Créer la tâche"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_list
+msgid "Create the task that carries this change"
+msgstr "Créer la tâche qui porte ce changement"
+
+#. module: bf_process
+#: model:res.groups,comment:bf_process.group_bf_process_manager
+msgid "Create, load and export process maps."
+msgstr "Créer, charger et exporter les cartographies."
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__create_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__create_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__critique
+msgid "Critical"
+msgstr "Critique"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "Critical resources"
+msgstr "Critiques"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__origine_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process__nature__actuel
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Current state"
+msgstr "État actuel"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid "Current state (AS-IS), from … to …"
+msgstr "État actuel (AS-IS), de … à …"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__node_actuel_id
+msgid "Current step"
+msgstr "Étape actuelle"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__access_url
+msgid "Customer Portal URL"
+msgstr "URL du portail client"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Cut this link"
+msgstr "Couper ce lien"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__store
+msgid "Data store"
+msgstr "Réserve de données"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__decision
+msgid "Decision"
+msgstr "Décision"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__knowledge_item_ids
+msgid "Decisions and matrix items"
+msgstr "Décisions et éléments de matrice"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__deleguer
+msgid "Delegate"
+msgstr "Déléguer"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__section_ids
+msgid "Deliverable sections"
+msgstr "Sections du livrable"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Delta view (PDF)"
+msgstr "Vue delta (PDF)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Delta view against \"%s\": green = added, amber = changed."
+msgstr "Vue delta contre « %s » : vert = ajouté, ambre = modifié."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Delta view based on \"%s\": red = removed, amber = changed."
+msgstr "Vue delta d'après « %s » : rouge = retiré, ambre = modifié."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+msgid ""
+"Delta view: green = step added, red = step removed, amber = step changed. "
+"Dismissed gaps are not tinted."
+msgstr ""
+"Vue delta : vert = étape ajoutée, rouge = étape retirée, ambre = étape "
+"modifiée. Les écarts mis de côté ne sont pas teintés."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__meeting_count
+msgid ""
+"Derived from matrix items: a step is not linked to a meeting by hand, it is "
+"linked to what was decided there."
+msgstr ""
+"Déduit des éléments de matrice : on ne rattache pas une étape à une "
+"rencontre à la main, on la rattache à ce qui s'y est décidé."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__note
+msgid "Details"
+msgstr "Précision"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__above
+msgid "Detour above"
+msgstr "Détour par le haut"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__below
+msgid "Detour below"
+msgstr "Détour par le bas"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__detour
+msgid "Detour depth"
+msgstr "Profondeur du détour"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__diagram_count
+msgid "Diagram Count"
+msgstr "Nombre de niveaux"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__direction
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__sens
+msgid "Direction"
+msgstr "Sens"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__etat__ecarte
+msgid "Dismissed"
+msgstr "Écarté"
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__display_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__level
+msgid "Displayed label, for example \"Level 2\"."
+msgstr "Libellé affiché, par exemple « Niveau 2 »."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__validation__conteste
+msgid "Disputed"
+msgstr "Contestée"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Disputed steps"
+msgstr "Contestées"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__date_document
+msgid "Document date"
+msgstr "Date du document"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__pied_document
+msgid "Document footer"
+msgstr "Pied de page du document"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__sous_titre
+msgid "Document subtitle"
+msgstr "Sous-titre du document"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__etat__fait
+msgid "Done"
+msgstr "Fait"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Done gaps"
+msgstr "Faits"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Download the drawing as SVG"
+msgstr "Télécharger le tracé en SVG"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process__state__brouillon
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Drafts"
+msgstr "Brouillons"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Drag a shape. It snaps to the grid."
+msgstr "Glisser une forme. Elle se cale sur la grille."
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process_ecart
+msgid ""
+"Draw a target process from a current-state map, edit it, then seed the gaps."
+msgstr ""
+"Dessinez un processus souhaité d'après une carte de l'état\n"
+"               actuel, retouchez-le, puis semez les écarts."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Draw the target process"
+msgstr "Dessiner le processus souhaité"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Drawing"
+msgstr "Tracé"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__origine_id
+msgid "Drawn from"
+msgstr "Dessinée d'après"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid ""
+"Each one fills in something the source does not say. A wrong assumption "
+"moves arrows, never real work."
+msgstr ""
+"Chacune comble un silence de la source. Une hypothèse fausse déplace des "
+"flèches, jamais du travail réel."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__ecart_a_decider_count
+msgid "Ecart A Decider Count"
+msgstr "Nombre d'écarts à décider"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__ecart_count
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__ecart_count
+msgid "Ecart Count"
+msgstr "Nombre d'écarts"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__ecart_fait_count
+msgid "Ecart Fait Count"
+msgstr "Nombre d'écarts faits"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__ecart_retenu_count
+msgid "Ecart Retenu Count"
+msgstr "Nombre d'écarts retenus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "Editing a drawing requires the process map management right."
+msgstr "Modifier un tracé demande le droit de gestion des cartographies."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Editing tools"
+msgstr "Outils d'édition"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__effort
+msgid "Effort"
+msgstr "Effort"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__eliminer
+msgid "Eliminate"
+msgstr "Éliminer"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__empreinte
+msgid "Empreinte"
+msgstr "Empreinte"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__ext_header
+msgid ""
+"Empty: measured from the longest participant name. A value here is an "
+"override, and it survives recomputation."
+msgstr ""
+"Vide : mesurée à partir du plus long nom de participant. Une valeur ici est "
+"une surcharge, et elle survit au recalcul."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Empty: measured. A value is an override."
+msgstr "Vide : mesurée. Une valeur est une surcharge."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__pool_name
+msgid "Empty: the process's pool name applies."
+msgstr "Vide : celui du processus s'applique."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__end
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"End, named by\n"
+"the state reached"
+msgstr ""
+"Fin, nommée par\n"
+"l’état atteint"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__etat
+msgid "Etat"
+msgstr "État"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Exclusive choice\n"
+"(one path only)"
+msgstr ""
+"Choix exclusif\n"
+"(une seule voie)"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__xor
+msgid "Exclusive gateway"
+msgstr "Passerelle exclusive"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Exit full screen"
+msgstr "Quitter le plein écran"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Expanded at level"
+msgstr "Déplié au niveau"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__child_diagram_id
+msgid "Expanded level"
+msgstr "Niveau déplié"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__gain
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "Expected gain"
+msgstr "Gain attendu"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Expected gain: %s"
+msgstr "Gain attendu : %s"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Export for diagrams.net"
+msgstr "Exporter pour diagrams.net"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Export to BPMN 2.0"
+msgstr "Exporter en BPMN 2.0"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "External address"
+msgstr "Adresse externe"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__pool_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__pool
+msgid "External participant"
+msgstr "Participant externe"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_pool
+msgid "External pool"
+msgstr "Pool externe"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__ext_header
+msgid "External pool height"
+msgstr "Hauteur des pools externes"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__pool_ids
+msgid "External pools"
+msgstr "Pools externes"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__failed_message_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__attachment_id
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"File <b>%(fichier)s</b>: %(lues)s page(s) read, %(communes)s in common with "
+"<b>%(carte)s</b>."
+msgstr ""
+"Fichier <b>%(fichier)s</b> — %(lues)s page(s) lue(s), %(communes)s en commun"
+" avec <b>%(carte)s</b>."
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__nom_fichier
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__nom_fichier
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__constat
+msgid "Finding"
+msgstr "Constat"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Findings and ideas"
+msgstr "Constats et pistes"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Fit drawing"
+msgstr "Ajuster"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Fit drawing to width"
+msgstr "Ajuster à la largeur"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__flow_ids
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__portee__flux
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__flux
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Flows"
+msgstr "Flux"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_follower_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_partner_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "From <b>%s</b> to <b>%s</b>."
+msgstr "De <b>%s</b> vers <b>%s</b>."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_message__direction__in
+msgid "From the participant"
+msgstr "Depuis le participant"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Full screen"
+msgstr "Plein écran"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__libelle
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__operation
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "Gap"
+msgstr "Écart"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_ecart
+msgid "Gap between the current state and the target process"
+msgstr "Écart entre l'état actuel et le processus souhaité"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Gap found between \"%s\" and \"%s\"."
+msgstr "Écart relevé entre « %s » et « %s »."
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_merge_line
+msgid "Gap proposed by a merge"
+msgstr "Écart proposé par une fusion"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_ecart
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__ecart_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__rapport_html
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__line_ids
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_ecart
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Gaps"
+msgstr "Écarts"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Gaps are seeded on a target process: \"%s\" describes the current state."
+msgstr ""
+"Les écarts se sèment sur un processus souhaité : « %s » décrit l'état "
+"actuel."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Gaps seeded against <b>%s</b>: %d new, %d refreshed."
+msgstr "Semis des écarts contre <b>%s</b> : %d nouveau(x), %d rafraîchi(s)."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Gaps that do not yet say what they bring."
+msgstr "Les écarts qui ne disent pas encore ce qu'ils rapportent."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__label
+msgid "Gate"
+msgstr "Porte"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__porte
+msgid "Gate change"
+msgstr "Changement de porte"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Gate of %s"
+msgstr "Porte de %s"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid "Generate the document"
+msgstr "Générer le document"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__pas_grille
+msgid "Grid step"
+msgstr "Pas de la grille"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__has_message
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__name
+msgid "Heading"
+msgstr "Intitulé"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__height
+msgid "Height"
+msgstr "Hauteur"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__effort__eleve
+msgid "High"
+msgstr "Élevé"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__h
+msgid "Horizontal"
+msgstr "Horizontal"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__hv
+msgid "Horizontal then vertical"
+msgstr "Horizontal puis vertical"
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_needaction
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_has_error
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_has_sms_error
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_has_error
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid "If empty, the first line of the source."
+msgstr "À défaut, la première ligne de la source."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__decision__ignorer
+msgid "Ignore"
+msgstr "Ignorer"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Ignore all"
+msgstr "Tout ignorer"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Ignore removals"
+msgstr "Ignorer les retraits"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid "Import"
+msgstr "Importer"
+
+#. module: bf_process
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_import
+msgid "Import BPMN"
+msgstr "Importer un BPMN"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_import
+#: model:ir.model,name:bf_process.model_bf_process_import_wizard
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid "Import BPMN 2.0"
+msgstr "Importer un BPMN 2.0"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "Import of <b>%s</b>: %s level(s), %s node(s)."
+msgstr "Import de <b>%s</b> : %s niveau(x), %s nœud(s)."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "Imported from the BPMN 2.0 file \"%s\"."
+msgstr "Importé du fichier BPMN 2.0 « %s »."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "Imported level"
+msgstr "Niveau importé"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__tone__ai
+msgid "Improvement idea"
+msgstr "Piste d'amélioration"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Improvement ideas"
+msgstr "Pistes d'amélioration"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Improvement or"
+msgstr "Piste d’amélioration"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__apres
+msgid "In the file"
+msgstr "Dans le fichier"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__avant
+msgid "In the map"
+msgstr "Dans la carte"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__resource_critique_count
+msgid "Including critical"
+msgstr "Dont critiques"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Inclusive choice\n"
+"(one or more)"
+msgstr ""
+"Choix inclusif\n"
+"(une ou plusieurs)"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__or
+msgid "Inclusive gateway"
+msgstr "Passerelle inclusive"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__intention
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Intent"
+msgstr "Intention"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Intent: %s"
+msgstr "Intention : %s"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_is_follower
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__cle
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__cle
+msgid "Key"
+msgstr "Clé"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__genre
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__kind
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__kind
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "Kind"
+msgstr "Genre"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__name
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__renommage
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__libelle
+msgid "Label change"
+msgstr "Changement de libellé"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__label_dx
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__label_dx
+msgid "Label offset X"
+msgstr "Décalage d'étiquette en X"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__label_dy
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__label_dy
+msgid "Label offset Y"
+msgstr "Décalage d'étiquette en Y"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__label_width
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__label_width
+msgid "Label width"
+msgstr "Largeur d'étiquette"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: model:ir.model,name:bf_process.model_bf_process_lane
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__lane_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__couloir
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__couloir
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Lane"
+msgstr "Couloir"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__couloir
+msgid "Lane change"
+msgstr "Changement de couloir"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__lane_pad
+msgid "Lane padding"
+msgstr "Marge de couloir"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__lane_ids
+msgid "Lanes"
+msgstr "Couloirs"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Lanes and participants"
+msgstr "Couloirs et participants"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__caduc
+msgid "Lapsed"
+msgstr "Caduc"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Lapsed gaps"
+msgstr "Caducs"
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__write_uid
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_process
+#. modules: bf_calendar_mobile, bf_outreach, bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__write_date
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Layout"
+msgstr "Mise en page"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_source__l
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_target__l
+msgid "Left"
+msgstr "Gauche"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Legend"
+msgstr "Légende"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__level
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__diagram_titre
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__diagram_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__diagram_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__niveau
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__diagram_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__diagram_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__diagram_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__niveau
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Level"
+msgstr "Niveau"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Level 2"
+msgstr "Niveau 2"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__diagram_code
+msgid "Level code"
+msgstr "Code du niveau"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "Level: %s"
+msgstr "Niveau : %s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_diagram
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__diagram_ids
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__portee__niveau
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_diagram
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_list
+msgid "Levels"
+msgstr "Niveaux"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Link shapes"
+msgstr "Lier"
+
+#. module: bf_process
+#: model:ir.module.category,description:bf_process.module_category_bf_process
+msgid "Living BPMN process maps."
+msgstr "Cartographies BPMN vivantes."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+msgid "Loading a map requires the process map management right."
+msgstr "Charger une carte demande le droit de gestion des cartographies."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__effort__faible
+msgid "Low"
+msgstr "Faible"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__pool_name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__pool_name
+msgid "Main pool"
+msgstr "Pool principal"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:res.groups,name:bf_process.group_bf_process_manager
+msgid "Manager"
+msgstr "Gestion"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__nature
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Map type"
+msgstr "Nature"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__knowledge_item_count
+msgid "Matrix items"
+msgstr "Éléments de matrice"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__effort__moyen
+msgid "Medium"
+msgstr "Moyen"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__meeting_count
+msgid "Meetings"
+msgstr "Rencontres"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_merge
+#: model:ir.model,name:bf_process.model_bf_process_merge_wizard
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Merge BPMN 2.0"
+msgstr "Fusionner un BPMN 2.0"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "Merge a BPMN 2.0 file"
+msgstr "Fusionner un fichier BPMN 2.0"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Merge a file"
+msgstr "Fusionner un fichier"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"Merge of <b>%(fichier)s</b>: <b>%(faits)s</b> gap(s) applied, %(ignores)s "
+"ignored."
+msgstr ""
+"Fusion de <b>%(fichier)s</b> : <b>%(faits)s</b> écart(s) appliqué(s), "
+"%(ignores)s ignoré(s)."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Merging a file requires the process map management right."
+msgstr "Fusionner un fichier demande le droit de gestion des cartographies."
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__label
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_content
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_has_error
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_search
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_content
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Message direction"
+msgstr "Sens du message"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_message
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__message_ids
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__portee__message
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__message
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Message flow"
+msgstr "Flux de message"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Message label"
+msgstr "Libellé du message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_search
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__msgstart
+msgid "Message start"
+msgstr "Début sur message"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Move shape"
+msgstr "Déplacer"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "New \"%s\""
+msgstr "Nouveau « %s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "New %(genre)s \"%(nom)s\""
+msgstr "Nouveau %(genre)s « %(nom)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "New link %s"
+msgstr "Nouveau lien %s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "New message \"%s\""
+msgstr "Nouveau message « %s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "New page \"%(titre)s\" (%(n)d node(s))"
+msgstr "Nouvelle page « %(titre)s » (%(n)d nœud(s))"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "New version"
+msgstr "Nouvelle version"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__version_suivante_ids
+msgid "Next versions"
+msgstr "Versions suivantes"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "No gain written"
+msgstr "Sans gain écrit"
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process_ecart
+msgid "No gap"
+msgstr "Aucun écart"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "No gap in what could be read."
+msgstr "Aucun écart dans ce qui a pu être lu."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "No gap selected: there is nothing to write."
+msgstr "Aucun écart retenu : il n'y a rien à écrire."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "No gap: both maps say the same thing."
+msgstr "Aucun écart : les deux cartes disent la même chose."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "No gap: the file says exactly what the map already says."
+msgstr "Aucun écart : le fichier dit exactement ce que la carte dit déjà."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"No level in this file matches a level of \"%(carte)s\". The IDs were "
+"probably renamed by the editor that produced it, or the file comes from "
+"another process map. Merging here would remove everything to put everything "
+"back, keeping neither the discussions nor the validation register: import it"
+" as a new process map instead."
+msgstr ""
+"Aucun niveau de ce fichier ne correspond à un niveau de « %(carte)s ». Les "
+"identifiants ont probablement été renommés par l'éditeur qui l'a produit, ou"
+" le fichier vient d'une autre cartographie. Fusionner ici retirerait tout "
+"pour tout remettre, sans conserver ni les discussions ni le registre de "
+"validation : importez-le plutôt comme une nouvelle cartographie."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "No node \"%s\" on this level."
+msgstr "Aucun nœud « %s » sur ce niveau."
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process
+msgid "No process map"
+msgstr "Aucune cartographie"
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process_resource
+msgid "No resource attached to steps"
+msgstr "Aucune ressource accrochée aux étapes"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/portail.py:0
+msgid ""
+"No step of \"%s\" has a resource: the workshop print would be the same map, on more pages.\n"
+"\n"
+"First attach a procedure, a sheet or a video to the steps that need one."
+msgstr ""
+"Aucune étape de « %s » ne porte de ressource : le tirage d'atelier serait la même carte, en plus de pages.\n"
+"\n"
+"Accrochez d'abord une procédure, une fiche ou une vidéo aux étapes qui en demandent."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"No usable diagram: the DI part (the coordinates) is needed, not just the "
+"semantics."
+msgstr ""
+"Aucun diagramme exploitable : il faut la partie DI (les coordonnées), pas "
+"seulement la sémantique."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__node_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__portee__noeud
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Node"
+msgstr "Nœud"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "Node <b>%s</b> added to level \"%s\" from the drawing."
+msgstr "Nœud <b>%s</b> ajouté au niveau « %s » depuis le tracé."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "Node <b>%s</b> removed from level \"%s\" from the drawing."
+msgstr "Nœud <b>%s</b> retiré du niveau « %s » depuis le tracé."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__node_count
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__node_count
+msgid "Node Count"
+msgstr "Nombre de nœuds"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_node
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__node_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__node_ids
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__portee__noeud
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_node
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Nodes"
+msgstr "Nœuds"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__note
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__remarque
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "Note"
+msgstr "Remarque"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__ecart_count
+msgid "Number of gaps"
+msgstr "Nombre d'écarts"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_needaction_counter
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__message_has_error_counter
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__resource_count
+msgid "Number of resources"
+msgstr "Nombre de ressources"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process__state__obsolete
+msgid "Obsolete"
+msgstr "Obsolète"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "Only a subprocess opens a level: \"%s\" is of type %s."
+msgstr "Seul un sous-processus ouvre un niveau : « %s » est un %s."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Open a step's record or its expanded page."
+msgstr "Ouvrir la fiche d'une étape ou sa page dépliée."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__question
+msgid "Open question"
+msgstr "Question ouverte"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Open questions"
+msgstr "Questions ouvertes"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Open the expanded level"
+msgstr "Ouvrir le niveau déplié"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Open the record"
+msgstr "Ouvrir la fiche"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_list
+msgid "Open the resource"
+msgstr "Ouvrir la ressource"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__parent_node_ids
+msgid "Opened from"
+msgstr "Ouvert depuis"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid ""
+"Opens a branch: the same map, to be edited to say what we would want "
+"instead. The current state is not touched."
+msgstr ""
+"Ouvre une branche : la même carte, à                                   "
+"retoucher pour dire ce qu'on voudrait à la"
+"                                   place. L'état actuel n'est pas touché."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__sequence
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__sequence
+msgid "Order"
+msgstr "Ordre"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__source_id
+msgid "Origin"
+msgstr "Origine"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__height
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__width
+msgid "Override; empty = computed."
+msgstr "Surcharge ; vide = calculée."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__niveau_titre
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Page"
+msgstr "Page"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Page title"
+msgstr "Titre de la page"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__and
+msgid "Parallel gateway"
+msgstr "Passerelle parallèle"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Parallelism\n"
+"(all paths)"
+msgstr ""
+"Parallélisme\n"
+"(toutes les voies)"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__parent_count
+msgid "Parent Count"
+msgstr "Nombre d'appelants"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__validation__partielle
+msgid "Partial validation"
+msgstr "Validation partielle"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__name
+msgid "Participant"
+msgstr "Participant"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Participant side"
+msgstr "Côté du participant"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Place shape"
+msgstr "Poser"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__document_id
+msgid "Policy or procedure"
+msgstr "Politique ou procédure"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__access_url
+msgid "Portal Access URL"
+msgstr "URL d'accès au portail"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__position
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__position
+msgid "Position"
+msgstr "Position"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__code
+msgid "Prefix of the exported BPMN IDs."
+msgstr "Préfixe des identifiants BPMN exportés."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__version_precedente_id
+msgid "Previous version"
+msgstr "Version précédente"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__procedure
+msgid "Procedure"
+msgstr "Procédure"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__name
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_lane__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_message__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_pool__process_id
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "Process"
+msgstr "Processus"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__process_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_section__process_id
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Process map"
+msgstr "Cartographie"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Process map (AS-IS)"
+msgstr "Cartographie des processus (AS-IS)"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_section
+msgid "Process map deliverable section"
+msgstr "Section du livrable d'une cartographie"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_diagram
+msgid "Process map level"
+msgstr "Niveau de cartographie"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__name
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid "Process map name"
+msgstr "Nom de la cartographie"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model,name:bf_process.model_bf_process
+#: model:ir.module.category,name:bf_process.module_category_bf_process
+msgid "Process mapping"
+msgstr "Cartographie de processus"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process
+#: model:ir.ui.menu,name:bf_process.menu_bf_process
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_root
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Process maps"
+msgstr "Cartographies"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Process name"
+msgstr "Nom du processus"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_node
+msgid "Process node"
+msgstr "Nœud de processus"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__col
+msgid "Progress."
+msgstr "L'avancement."
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__project_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__project_id
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__source
+msgid "Provenance"
+msgstr "Provenance"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__outiller
+msgid "Provide tooling"
+msgstr "Outiller"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__rating_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_process
+#: model:res.groups,name:bf_process.group_bf_process_user
+msgid "Read-only"
+msgstr "Lecture"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Reading of the map, with no tool recommendation"
+msgstr "Lecture de la carte, sans recommandation d’outil"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__receive
+msgid "Receive task"
+msgstr "Tâche de réception"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_compare_wizard__source_id
+msgid "Recent version"
+msgstr "Version récente"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid ""
+"Reimporting a file produced by this module rebuilds the same records. A file"
+" from another editor also works, but its grid is inferred as best it can be:"
+" review the map before validating it."
+msgstr ""
+"Réimporter un fichier produit par ce module reconstitue les mêmes\n"
+"                    enregistrements. Un fichier venu d'un autre éditeur passe aussi,\n"
+"                    mais sa grille est déduite au mieux : relisez la carte avant de\n"
+"                    la valider."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__retrait
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__retrait
+msgid "Removal"
+msgstr "Retrait"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Remove shape"
+msgstr "Retirer"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Remove this shape"
+msgstr "Retirer cette forme"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Removing a page removes its nodes and their discussions."
+msgstr "Retirer une page retire ses nœuds et leurs discussions."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__renommage
+msgid "Renaming"
+msgstr "Renommage"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Render as PDF"
+msgstr "Tracer en PDF"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "Render this level as PDF"
+msgstr "Tracer ce niveau en PDF"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid ""
+"Replays the comparison with the current state. What was written on a gap "
+"(intent, gain, assignee, state) is never overwritten."
+msgstr ""
+"Rejoue la comparaison avec l'état actuel.                                   "
+"Ce qui a été écrit sur un écart (intention,"
+"                                   gain, responsable, état) n'est jamais"
+"                                   écrasé."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_form
+msgid "Resource"
+msgstr "Ressource"
+
+#. module: bf_process
+#: model:ir.actions.act_window,name:bf_process.action_bf_process_resource
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__resource_ids
+#: model:ir.ui.menu,name:bf_process.menu_bf_process_resource
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_list
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "Resources"
+msgstr "Ressources"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__retenu_count
+msgid "Retenu Count"
+msgstr "Nombre de lignes retenues"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_wizard__etat__arbitrage
+msgid "Review"
+msgstr "Arbitrage"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_source__r
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_target__r
+msgid "Right"
+msgstr "Droite"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Role"
+msgstr "Rôle"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__routing
+msgid "Routing"
+msgstr "Routage"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__row
+msgid "Row"
+msgstr "Rangée"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__row_h
+msgid "Row height"
+msgstr "Hauteur de rangée"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "SVG"
+msgstr "SVG"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__fiche
+msgid "Safety data sheet"
+msgstr "Fiche signalétique"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node_resource__critique
+msgid "Safety, or a movement to reproduce: listed first when printed."
+msgstr "Sécurité ou geste à reproduire : passe en tête à l'impression."
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "Save first; the drawing will follow."
+msgstr "Enregistrez d'abord, le tracé suivra."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Scaled to %d %% to fit on a PDF page."
+msgstr "Réduit à %d %% pour tenir dans une page PDF."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__portee
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__portee
+msgid "Scope"
+msgstr "Portée"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__section_count
+msgid "Section Count"
+msgstr "Nombre de sections"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__access_token
+msgid "Security Token"
+msgstr "Jeton de sécurité"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Seed the gaps"
+msgstr "Semer les écarts"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__source__seme
+msgid "Seeded from the maps"
+msgstr "Semé depuis les cartes"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__etat__retenu
+msgid "Selected"
+msgstr "Retenu"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Selected but not applied:"
+msgstr "Retenu mais non appliqué :"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "Selected gaps"
+msgstr "Retenus"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__send
+msgid "Send task"
+msgstr "Tâche d'envoi"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_flow
+msgid "Sequence flow"
+msgstr "Flux de séquence"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"Shape \"%s\" has no <dc:Bounds>: this file carries its semantics, not its "
+"coordinates."
+msgstr ""
+"La forme « %s » n'a pas de <dc:Bounds> : ce fichier porte sa sémantique, pas"
+" ses coordonnées."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__taux_tracabilite
+msgid ""
+"Share of activities backed by at least one recorded decision. The "
+"counterpart of the validation rate: one says the map is right, the other "
+"says we know why."
+msgstr ""
+"Part des activités adossées à au moins une décision consignée. Le pendant du"
+" taux de validation : l'un dit que la carte est juste, l'autre dit qu'on "
+"sait pourquoi."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__taux_validation
+msgid "Share of activities validated by the owner AND by a performer."
+msgstr "Part des activités validées par le propriétaire ET par un exécutant."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__taux_transformation
+msgid ""
+"Share of selected gaps that are done. Gaps still to decide do not count: you"
+" do not measure progress on a plan that has not been settled."
+msgstr ""
+"Part des écarts retenus qui sont faits. Les écarts encore à décider n'y "
+"comptent pas : on ne mesure pas l'avancement d'un plan qu'on n'a pas arrêté."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__code
+msgid "Short identifier of the level, unique within the process."
+msgstr "Identifiant court du niveau, unique dans le processus."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__intention__simplifier
+msgid "Simplify"
+msgstr "Simplifier"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Single page"
+msgstr "Une seule page"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__flat
+msgid "Single page gathering all levels."
+msgstr "Page unique rassemblant tous les niveaux."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__taille
+msgid "Size"
+msgstr "Taille"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__conteste
+msgid "Someone says the step does not happen this way."
+msgstr "Quelqu'un dit que l'étape ne se passe pas comme ça."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__source
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__bpmn_id
+msgid ""
+"Stable, never regenerated: it is what lets a reimport merge instead of "
+"duplicating."
+msgstr ""
+"Stable, jamais régénéré : c'est lui qui permet à un réimport de fusionner au"
+" lieu de dupliquer."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__bpmn_id
+msgid "Stable, never regenerated: without it, a reimport duplicates."
+msgstr "Stable, jamais régénéré : sans lui, un réimport duplique."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Start event,\n"
+"named by its state"
+msgstr ""
+"Événement de début\n"
+"nommé par son état"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__state
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__etat
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__node_id
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_search
+msgid "Step"
+msgstr "Étape"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__node_code
+msgid "Step code"
+msgstr "Code de l'étape"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_node_resource
+msgid "Step resource"
+msgstr "Ressource d'une étape"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Stored data"
+msgstr "Dépôt de données"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__sub
+msgid "Subprocess"
+msgstr "Sous-processus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Subprocess\n"
+"detailed further on"
+msgstr ""
+"Sous-processus\n"
+"détaillé plus loin"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "Subprocesses that open no page:"
+msgstr "Sous-processus qui n'ouvrent aucune page :"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"Taken over from version <b>%s</b>: %d levels, %d nodes. The validation "
+"register starts over."
+msgstr ""
+"Reprise de la version <b>%s</b> : %d niveaux, %d nœuds. Le registre de "
+"validation repart à zéro."
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_flow__target_id
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node_resource__cible
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+#: code:addons/bf_process/models/serialisation.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__cible_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process__nature__cible
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "Target process"
+msgstr "Processus souhaité"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Target process (TO-BE)"
+msgstr "Processus souhaité (TO-BE)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"Target process drawn from <b>%s</b>: %d levels, %d nodes, identical for now."
+" Gaps appear as the target is edited."
+msgstr ""
+"Processus souhaité dessiné d'après <b>%s</b> : %d niveaux, %d nœuds, "
+"identiques pour l'instant. Les écarts apparaissent à mesure que la cible est"
+" retouchée."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__cible_ids
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Target processes"
+msgstr "Processus souhaités"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__node_cible_id
+msgid "Target step"
+msgstr "Étape souhaitée"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_form
+msgid "Target: only one"
+msgstr "Cible — une seule"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Targets"
+msgstr "Souhaités"
+
+#. module: bf_process
+#. modules: bf_process, bf_sms_archive
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_ecart__task_id
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__task
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__gabarit
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node_resource__cible
+msgid "The address the QR code opens."
+msgstr "L'adresse que le code QR ouvre."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_section__name
+msgid ""
+"The block title, the statement of the assumption, or the role expected in "
+"the validation register."
+msgstr ""
+"Le titre du bloc, l'énoncé de l'hypothèse, ou le rôle attendu au registre de"
+" validation."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "The bounds of shape \"%(quoi)s\" have no %(attr)s attribute."
+msgstr "Les bornes de la forme « %(quoi)s » n'ont pas d'attribut %(attr)s."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/erreurs.py:0
+msgid ""
+"The character %s is not in the Lexend width table. The map cannot be "
+"measured without guessing."
+msgstr ""
+"Le caractère %s n'est pas dans la table de largeurs de Lexend. La carte ne "
+"peut pas être mesurée sans deviner."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form_document
+msgid ""
+"The complete deliverable: cover, legend, table of contents, one level per "
+"page, appendices, validation register and unfolded map. The \"Render as "
+"PDF\" button only renders the bare drawing."
+msgstr ""
+"Le livrable complet : couverture, légende,                               "
+"sommaire, un niveau par page, annexes, registre"
+"                               de validation et carte dépliée. Le bouton"
+"                               « Tracer en PDF » ne rend que le tracé nu."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__origine_id
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__origine_id
+msgid ""
+"The current-state version this target process is drawn from. Gaps are "
+"computed against it, and it does not move when the current state is "
+"remapped: the target was drawn from that snapshot."
+msgstr ""
+"La version de l'état actuel dont ce processus souhaité est tiré. C'est "
+"contre elle que les écarts se calculent, et elle ne bouge pas quand l'état "
+"actuel est recartographié : la cible a été dessinée d'après cette photo-là."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid ""
+"The decision that produced the step. The item's record holds the decision "
+"maker, the rationale and the alternatives set aside; the meeting report is "
+"derived from there, it is not entered by hand."
+msgstr ""
+"La décision qui a produit l'étape. La fiche de\n"
+"                                l'élément porte le décideur, le rationnel et les\n"
+"                                alternatives écartées ; le compte rendu se\n"
+"                                déduit de là, il ne se saisit pas à la main."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+msgid ""
+"The delta view compares a target process with the current state it is drawn "
+"from. \"%s\" describes the current state: first draw what we would want "
+"instead."
+msgstr ""
+"La vue delta compare un processus souhaité à l'état actuel dont il est tiré."
+" « %s » décrit l'état actuel : dessinez d'abord ce qu'on voudrait à la "
+"place."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "The expanded page must belong to the same process."
+msgstr "La page dépliée doit appartenir au même processus."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "The expected root is <bpmn:definitions>."
+msgstr "La racine attendue est <bpmn:definitions>."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid ""
+"The file comes back <b>into</b> this process map: levels and nodes are "
+"recognized by their BPMN ID, so the discussions held on the steps and the "
+"validation register stay in place. Nothing is written until you have "
+"reviewed each gap."
+msgstr ""
+"Le fichier revient <b>dans</b> cette cartographie : les\n"
+"                    niveaux et les nœuds sont reconnus par leur identifiant BPMN,\n"
+"                    donc les discussions tenues sur les étapes et le registre de\n"
+"                    validation restent en place. Rien n'est écrit avant que vous\n"
+"                    ayez arbitré chaque écart."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_flow__label
+msgid ""
+"The gate's name. The gates of a parallel or inclusive gateway are never "
+"named."
+msgstr ""
+"Le nom de la porte. Les portes d'une passerelle parallèle ou inclusive ne se"
+" nomment jamais."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__sous_titre
+msgid ""
+"The line under the title, on the cover. For example: \"current state (AS-"
+"IS), from the opening of the fiscal year to the financial statements\"."
+msgstr ""
+"La ligne sous le titre, en couverture. Par exemple : « état actuel (AS-IS), "
+"de l'ouverture de l'exercice aux états financiers »."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "The link %s is not in the file"
+msgstr "Le lien %s n'est pas dans le fichier"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.portail_etape_refus
+msgid ""
+"The link is incomplete, or the step was removed from the map since printing."
+" Ask for an up-to-date print."
+msgstr ""
+"Le lien est incomplet, ou l'étape a été retirée de la carte\n"
+"                    depuis l'impression. Demandez un tirage à jour."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "The link to \"%s\" is kept despite the name change."
+msgstr "Le lien vers « %s » est conservé malgré le changement de nom."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/erreurs.py:0
+msgid "The map cannot be drawn: %s"
+msgstr "La carte ne peut pas être tracée : %s"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_merge_wizard__process_id
+msgid "The map the file comes back into."
+msgstr "La carte dans laquelle le fichier revient."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__caduc
+msgid ""
+"The maps no longer show this gap, but someone had written on it: it stays, "
+"flagged, rather than disappearing without anyone seeing it go."
+msgstr ""
+"Les cartes ne montrent plus cet écart, mais quelqu'un avait écrit dessus : "
+"il reste, marqué, plutôt que de disparaître sans que personne ne le voie "
+"partir."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid ""
+"The maps no longer show this gap. It is kept because someone wrote on it: "
+"decide, then remove it."
+msgstr ""
+"Les cartes ne montrent plus cet écart. Il est gardé\n"
+"                        parce que quelqu'un a écrit dessus : tranchez, puis\n"
+"                        retirez-le."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "The merge neither created nor removed them."
+msgstr "La fusion ne les a ni créés ni retirés."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "The message \"%s\" is not in the file"
+msgstr "Le message « %s » n'est pas dans le fichier"
+
+#. module: bf_process
+#: model_terms:ir.actions.act_window,help:bf_process.action_bf_process
+msgid "The model is the truth: the PDF and the XML are only renderings of it."
+msgstr "Le modèle est la vérité : le PDF et le XML n'en sont que des rendus."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_message__label
+msgid "The name of the thing exchanged, never a verb or a state."
+msgstr "Un nom de chose échangée, jamais un verbe ni un état."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__row
+msgid "The offset within the lane."
+msgstr "Le décalage dans le couloir."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__pool_name
+msgid ""
+"The organization that performs the process. Performers are lanes; external "
+"participants are black-box pools."
+msgstr ""
+"L'organisation qui exécute le processus. Les exécutants sont des couloirs, "
+"les participants externes des pools boîte noire."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "The page \"%(titre)s\" is not in the file"
+msgstr "La page « %(titre)s » n'est pas dans le fichier"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__child_diagram_id
+msgid ""
+"The page this subprocess opens. The same page can be opened from several "
+"places: a shared subprocess does not have a single caller."
+msgstr ""
+"La page que ce sous-processus ouvre. Une même page peut être ouverte depuis "
+"plusieurs endroits : un sous-processus commun n'a pas un appelant unique."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "The performing organization"
+msgstr "L'organisation qui exécute"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_section__body
+msgid ""
+"The section text. For a register line, the name of the expected person."
+msgstr ""
+"Le texte de la section. Pour une ligne de registre, le nom de la personne "
+"attendue."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "The selected gaps will be written to the process map. Continue?"
+msgstr "Les écarts retenus seront écrits dans la cartographie. Continuer ?"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__tracee
+msgid "The step is backed by at least one recorded decision."
+msgstr "L'étape est adossée à au moins une décision consignée."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__parent_node_ids
+msgid ""
+"The subprocesses that open this page. There can be several: a shared "
+"subprocess is called from several places."
+msgstr ""
+"Les sous-processus qui ouvrent cette page. Il peut y en avoir plusieurs : un"
+" sous-processus commun est appelé de plusieurs endroits."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node_resource__document_id
+msgid ""
+"The versioned document in the knowledge base. It carries the versions, "
+"approvals and distribution: the process map links to it rather than keeping "
+"a copy."
+msgstr ""
+"La pièce versionnée de la base de connaissances. C'est elle qui porte les "
+"versions, les approbations et la diffusion : la cartographie s'y raccorde "
+"plutôt que d'en garder une copie."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "These two nodes are already linked."
+msgstr "Ces deux nœuds sont déjà reliés."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/edition.py:0
+msgid "These two nodes are not linked."
+msgstr "Ces deux nœuds ne sont pas reliés."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"They are not in any gap below: a new element will not be created, and an "
+"element the map already has is not proposed for removal."
+msgstr ""
+"Ils ne figurent dans aucun écart ci-dessous : un élément neuf ne sera pas "
+"créé, et un élément que la carte porte déjà n'est pas proposé au retrait."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"They are not in the map: place them here by hand, or fix them in the "
+"original editor before reimporting."
+msgstr ""
+"Ils ne sont pas dans la carte : posez-les ici à la main, ou corrigez-les "
+"dans l'éditeur d'origine avant de réimporter."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_diagram_bpmn_id_uniq
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_flow_bpmn_id_uniq
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_message_bpmn_id_uniq
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_node_bpmn_id_uniq
+msgid "This BPMN ID is already used in this process."
+msgstr "Cet identifiant BPMN est déjà pris dans ce processus."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.portail_etape_refus
+msgid "This code leads nowhere"
+msgstr "Ce code ne mène nulle part"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_import_form
+msgid ""
+"This creates a <b>new</b> process map. To bring an edited file back into a "
+"map that already exists (keeping its discussions and its validation "
+"register), open that map and use <b>Merge a file</b>."
+msgstr ""
+"Ceci crée une cartographie <b>neuve</b>. Pour faire revenir un\n"
+"                    fichier retouché dans une carte qui existe déjà — en gardant ses\n"
+"                    discussions et son registre de validation — ouvrez cette carte et\n"
+"                    utilisez <b>Fusionner un fichier</b>."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "This file is not readable XML: %s"
+msgstr "Ce fichier n'est pas du XML lisible : %s"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/ecart.py:0
+msgid "This gap already has the task \"%s\"."
+msgstr "Cet écart porte déjà la tâche « %s »."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_ecart_cle_uniq
+msgid "This gap is already recorded for this target process."
+msgstr "Cet écart est déjà consigné pour ce processus souhaité."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_lane_code_uniq
+msgid "This lane code is already used in this level."
+msgstr "Ce code de couloir est déjà pris dans ce niveau."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_diagram_code_uniq
+msgid "This level code is already used in this process."
+msgstr "Ce code de niveau est déjà pris dans ce processus."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid ""
+"This merge has not been analyzed. Run the analysis: it records the state of "
+"the map the gaps refer to."
+msgstr ""
+"Cette fusion n'a pas été analysée. Lancez l'analyse : c'est elle qui relève "
+"l'état de la carte auquel les écarts se rapportent."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_node_code_uniq
+msgid "This node code is already used in this level."
+msgstr "Ce code de nœud est déjà pris dans ce niveau."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.portail_etape
+msgid "This page only shows the instructions for this step."
+msgstr "Cette page ne montre que les consignes de cette étape."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_pool_code_uniq
+msgid "This pool code is already used in this level."
+msgstr "Ce code de pool est déjà pris dans ce niveau."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/serialisation.py:0
+msgid "This process map has no level yet."
+msgstr "Cette cartographie n'a encore aucun niveau."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "This step has a discussion."
+msgstr "Cette étape porte une discussion."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.portail_etape
+msgid "This step no longer has an attached resource."
+msgstr "Cette étape n'a plus de ressource attachée."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "This subprocess opens \"%s\": the page would become unreachable."
+msgstr "Ce sous-processus ouvre « %s » : la page deviendrait inatteignable."
+
+#. module: bf_process
+#: model:ir.model.constraint,message:bf_process.constraint_bf_process_name_version_uniq
+msgid "This version of this process already exists."
+msgstr "Cette version de ce processus existe déjà."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__title
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "To be named"
+msgstr "À nommer"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "To be written"
+msgstr "À écrire"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__etat__a_decider
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_search
+msgid "To decide"
+msgstr "À décider"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_message__direction__out
+msgid "To the participant"
+msgstr "Vers le participant"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__validation__a_valider
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "To validate"
+msgstr "À valider"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__tone
+msgid "Tone"
+msgstr "Ton"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__ton
+msgid "Tone change"
+msgstr "Changement de ton"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/structure.py:0
+msgid "Tone only applies to annotations."
+msgstr "Le ton ne s'applique qu'aux annotations."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_source__t
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__anchor_target__t
+msgid "Top"
+msgstr "Haut"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__taux_tracabilite
+msgid "Traceability"
+msgstr "Traçabilité"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__tracee
+msgid "Traced"
+msgstr "Tracée"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__activite_tracee_count
+msgid "Traced activities"
+msgstr "Activités tracées"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__formation
+msgid "Training"
+msgstr "Formation"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__taux_transformation
+msgid "Transformation"
+msgstr "Transformation"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Transformation plan"
+msgstr "Plan de transformation"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process, bf_sms_archive
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__kind
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_line__operation__nature
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_ecart__genre__nature
+msgid "Type change"
+msgstr "Changement de type"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_diagram__flat
+msgid "Unfolded map"
+msgstr "Carte dépliée"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_merge_wizard__etat__depot
+msgid "Upload"
+msgstr "Dépôt"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__user
+msgid "User task"
+msgstr "Tâche humaine"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_compare_wizard__cible_id
+msgid ""
+"Usually the previous version, or the current state a target process is drawn"
+" from."
+msgstr ""
+"En général la version précédente, ou l'état actuel dont un processus "
+"souhaité est tiré."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Validate and freeze"
+msgstr "Valider et geler"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process__state__valide
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__validation__validee
+msgid "Validated"
+msgstr "Validée"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__valide_executant
+msgid "Validated by a performer"
+msgstr "Validé par un exécutant"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__valide_proprietaire
+msgid "Validated by the owner"
+msgstr "Validé par le propriétaire"
+
+#. module: bf_process
+#: model:ir.model,name:bf_process.model_bf_process_gel
+msgid "Validated version freeze"
+msgstr "Gel d'une version validée"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Validated version · read-only"
+msgstr "Version validée · lecture seule"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_search
+msgid "Validated versions"
+msgstr "Validées"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__taux_validation
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__validation
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Validation"
+msgstr "Validation"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__note_validation
+msgid "Validation note"
+msgstr "Remarque de validation"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Validation register"
+msgstr "Registre de validation"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_section__kind__validation
+msgid "Validation register line"
+msgstr "Ligne du registre de validation"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__validee_count
+msgid "Validee Count"
+msgstr "Activités validées"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Verb + object"
+msgstr "Verbe + complément"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__version
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__version
+msgid "Version"
+msgstr "Version"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid "Version <b>%s</b> reopened: it can be edited again."
+msgstr "Version <b>%s</b> rouverte : elle redevient modifiable."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/process.py:0
+msgid ""
+"Version <b>%s</b> validated and frozen: %d of %d activities validated in the"
+" register."
+msgstr ""
+"Version <b>%s</b> validée et gelée — %d activité(s) sur %d validées au "
+"registre."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__v
+msgid "Vertical"
+msgstr "Vertical"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_flow__routing__vh
+msgid "Vertical then horizontal"
+msgstr "Vertical puis horizontal"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node_resource__kind__video
+msgid "Video"
+msgstr "Vidéo"
+
+#. module: bf_process
+#: model:res.groups,comment:bf_process.group_bf_process_user
+msgid "View process maps and discuss steps."
+msgstr "Consulter les cartographies et discuter des étapes."
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__timercatch
+msgid "Wait for a delay"
+msgstr "Attente d'un délai"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__kind__msgcatch
+msgid "Wait for a message"
+msgstr "Attente d'un message"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Waiting for\n"
+"a deadline"
+msgstr ""
+"Attente d’une\n"
+"échéance"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"Waiting for an\n"
+"external event"
+msgstr ""
+"Attente d’un\n"
+"événement externe"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "Weak point or"
+msgstr "Point de fragilité ou"
+
+#. module: bf_process
+#: model:ir.model.fields.selection,name:bf_process.selection__bf_process_node__tone__risk
+msgid "Weak point or missing information"
+msgstr "Fragilité ou information manquante"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_search
+msgid "Weak points found"
+msgstr "Fragilités relevées"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process__website_message_ids
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_process
+#. modules: bf_outreach, bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__website_message_ids
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_diagram__pas_grille
+msgid ""
+"What a move snaps to, as a fraction of a column and a row. 0.05 is the step "
+"of the maps produced by the generator."
+msgstr ""
+"Sur quoi un déplacement se cale, en fraction de colonne et de rangée. 0,05 "
+"est le pas des cartes produites par le générateur."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__libelle
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_merge_form
+msgid "What changes"
+msgstr "Ce qui change"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node__knowledge_item_ids
+msgid ""
+"What explains this step: the decision that created it, the constraint it "
+"satisfies, the question that remains open."
+msgstr ""
+"Ce qui explique cette étape : la décision qui l'a créée, la contrainte "
+"qu'elle satisfait, la question qui reste ouverte."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__cle
+msgid "What lets a new seeding recognize this gap rather than create a twin."
+msgstr ""
+"Ce qui permet à un nouveau semis de reconnaître cet écart plutôt que d'en "
+"créer un jumeau."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid ""
+"What separates the current state from the target process, and what each "
+"change brings"
+msgstr ""
+"Ce qui sépare l’état actuel du processus souhaité, et ce que chaque "
+"changement rapporte"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__pied_document
+msgid ""
+"What the bottom of each page says: where the map comes from, and what was "
+"not done. If empty, the first line of the source is used."
+msgstr ""
+"Ce que porte le bas de chaque page : d'où vient la carte, et ce qui n'a pas "
+"été fait. À défaut, la première ligne de la source sert."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__gain
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid ""
+"What the change brings, in lead time, cost, risk or compliance. A gap "
+"without a gain is a preference."
+msgstr ""
+"Ce que le changement rapporte, en délai, en coût, en risque ou en "
+"conformité. Un écart sans gain est une préférence."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_wizard__resume_html
+msgid "What the file says"
+msgstr "Ce que dit le fichier"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "What the map assumes, and what it does not know yet"
+msgstr "Ce que la carte suppose, et ce qu’elle ne sait pas encore"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__nature
+msgid "What the map describes: what happens today, or what we want to happen."
+msgstr ""
+"Ce que la carte décrit : ce qui se passe aujourd'hui, ou ce qu'on veut qu'il"
+" se passe."
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "What the map reveals"
+msgstr "Ce que la carte fait apparaître"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "What the maps say"
+msgstr "Ce que les cartes disent"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_form
+msgid "What the person is looking for"
+msgstr "Ce que la personne cherche"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node_resource__name
+msgid "What the person is looking for, not the file name."
+msgstr "Ce que la personne cherche, pas le nom du fichier."
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_import_wizard__rapport
+msgid "What was read"
+msgstr "Ce qui a été lu"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "What was said at review"
+msgstr "Ce qui a été dit à la relecture"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_ecart_form
+msgid "What we do about it"
+msgstr "Ce qu'on en fait"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid ""
+"What you need at hand to perform the step. It is what the QR code on the "
+"printed map opens."
+msgstr ""
+"Ce qu'il faut avoir sous la main pour exécuter\n"
+"                                l'étape. C'est ce que le code QR de la carte\n"
+"                                imprimée ouvre."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_form
+msgid "When to use it, or what to remember from it"
+msgstr "Quand s'en servir, ou ce qu'il faut en retenir"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_node_resource__note
+msgid "When to use it, or what to remember from it."
+msgstr "Quand s'en servir, ou ce qu'il faut en retenir."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Where it was said"
+msgstr "Où ça s'est dit"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/tracabilite.py:0
+msgid "Where it was said: %s"
+msgstr "Où ça s'est dit — %s"
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process_ecart__task_id
+msgid "Where the change actually happens."
+msgstr "Là où le changement se fait vraiment."
+
+#. module: bf_process
+#: model:ir.model.fields,help:bf_process.field_bf_process__source
+msgid ""
+"Where the map comes from, and what was not done. An AS-IS map without its "
+"source is not a deliverable."
+msgstr ""
+"D'où vient la carte, et ce qui n'a pas été fait. Une carte AS-IS sans sa "
+"source n'est pas un livrable."
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid ""
+"Where the map comes from, and what was not done: no field observation, no "
+"system data…"
+msgstr ""
+"D'où vient la carte, et ce qui n'a pas été fait : aucune observation "
+"terrain, aucune donnée de système…"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Why this step"
+msgstr "Pourquoi cette étape"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/tracabilite.py:0
+msgid "Why this step: %s"
+msgstr "Pourquoi cette étape — %s"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_node__width
+msgid "Width"
+msgstr "Largeur"
+
+#. module: bf_process
+#: model:ir.model.fields,field_description:bf_process.field_bf_process_merge_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_node_form
+msgid "Workshop page"
+msgstr "Page d'atelier"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "Workshop print (11x17 + QR codes)"
+msgstr "Tirage d'atelier (11x17 + codes QR)"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Zoom in (Ctrl + wheel)"
+msgstr "Agrandir (Ctrl + molette)"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.xml:0
+msgid "Zoom out of the drawing"
+msgstr "Réduire"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "activities"
+msgstr "activités"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "activities backed by a recorded decision"
+msgstr ""
+"activités adossées à une\n"
+"                                    décision consignée"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "annotation \"%(nom)s…\": %(avant)s to %(apres)s in \"%(niveau)s\""
+msgstr ""
+"annotation « %(nom)s… » : %(avant)s vers %(apres)s dans « %(niveau)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "automation idea"
+msgstr "ou d’automatisation"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "code"
+msgstr "code"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "disputed"
+msgstr "contestée"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "disputed step(s)"
+msgstr "contestée(s)"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "done out of"
+msgstr ""
+"fait(s)\n"
+"                                    sur"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "draft, to be validated"
+msgstr "projet, à valider"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"drawn outside the process the module reads (in an expanded subprocess, "
+"another participant's process or the collaboration)"
+msgstr ""
+"dessiné hors du processus que le module lit (dans un sous-processus déplié, "
+"le processus d'un autre participant ou la collaboration)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "element"
+msgstr "élément"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_resource_form
+msgid "https://"
+msgstr "https://"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid ""
+"it does not link a step that was read to an external participant that was "
+"read"
+msgstr "il ne relie pas une étape lue à un participant externe lu"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "it opens the page \"%s\""
+msgstr "il ouvre la page « %s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "lane"
+msgstr "couloir"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "level \"%(titre)s\""
+msgstr "niveau « %(titre)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "link from \"%(de)s\" to \"%(vers)s\""
+msgstr "lien de « %(de)s » vers « %(vers)s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "message"
+msgstr "message"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "missing information"
+msgstr "information manquante"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "no gate"
+msgstr "sans porte"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "no shape in the graphical part (DI), so no position to carry over"
+msgstr ""
+"aucune forme dans la partie graphique (DI), donc aucune position à reprendre"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/comparaison.py:0
+msgid "none"
+msgstr "aucun"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+msgid "obsolete version"
+msgstr "version obsolète"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "one of its ends is not a step that was read"
+msgstr "une de ses extrémités n'est pas une étape lue"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "one of the two nodes does not exist here"
+msgstr "un des deux nœuds n'existe pas ici"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "origin picked: %s"
+msgstr "origine prise : %s"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "out of"
+msgstr "sur"
+
+#. module: bf_process
+#. odoo-javascript
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "partially validated"
+msgstr "validation partielle"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/importation.py:0
+msgid "participant"
+msgstr "participant"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_diagram_form
+msgid "same as the process"
+msgstr "celui du processus"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "selected,"
+msgstr "retenu(s),"
+
+#. module: bf_process
+#: model_terms:ir.ui.view,arch_db:bf_process.view_bf_process_form
+msgid "still to decide"
+msgstr "encore à décider"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "the lane no longer exists"
+msgstr "le couloir n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "the node no longer exists"
+msgstr "le nœud n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "the node or the participant is missing here"
+msgstr "le nœud ou le participant manque ici"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "the page no longer exists"
+msgstr "la page n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "the participant no longer exists"
+msgstr "le participant n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "this lane still holds %d node(s)"
+msgstr "ce couloir porte encore %d nœud(s)"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "this link no longer exists"
+msgstr "ce lien n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "this message no longer exists"
+msgstr "ce message n'existe plus"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "this page is opened from \"%s\""
+msgstr "cette page est ouverte depuis « %s »"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "unknown scope"
+msgstr "portée inconnue"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+#: code:addons/bf_process/models/importation.py:0
+msgid "unnamed"
+msgstr "sans nom"
+
+#. module: bf_process
+#. odoo-python
+#: code:addons/bf_process/models/fusion.py:0
+msgid "unnamed file"
+msgstr "fichier sans nom"
+
+#. module: bf_process
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_process/models/document.py:0
+#: code:addons/bf_process/static/src/visualiseur/visualiseur.js:0
+msgid "validated"
+msgstr "validée"

@@ -220,6 +220,12 @@ class FederationOutreachReport(models.Model):
         links = self.env["federation.link"].sudo().search(
             [("res_model", "=", self._name), ("origin", "=", "local"), ("active", "=", True)])
         for report in self.sudo().browse(links.mapped("res_id")).exists():
+            # Le travail planifié n'a pas de langue : les libellés de bf_outreach (genre, sens,
+            # étape) se liraient dans la source anglaise. Le suivi part chez le client : sa langue,
+            # à défaut celle de la société.
+            langue = report.client_partner_id.lang or report.env.company.partner_id.lang
+            if langue:
+                report = report.with_context(lang=langue)
             try:
                 with self.env.cr.savepoint():
                     report._refresh_from_campaign()

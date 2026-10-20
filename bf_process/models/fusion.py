@@ -37,27 +37,26 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from .erreurs import refus_lisible
-from .structure import ACTIVITES, KINDS
 
 from ..generateur import geometrie as geo
 
 PORTEES = [
-    ("niveau", "Niveau"),
-    ("couloir", "Couloir"),
-    ("pool", "Participant externe"),
-    ("noeud", "Nœud"),
-    ("flux", "Flux"),
-    ("message", "Flux de message"),
+    ("niveau", "Level"),
+    ("couloir", "Lane"),
+    ("pool", "External participant"),
+    ("noeud", "Node"),
+    ("flux", "Flows"),
+    ("message", "Message flow"),
 ]
 OPERATIONS = [
-    ("ajout", "Ajout"),
-    ("retrait", "Retrait"),
-    ("renommage", "Libellé"),
+    ("ajout", "Addition"),
+    ("retrait", "Removal"),
+    ("renommage", "Label"),
     ("nature", "Type"),
-    ("couloir", "Couloir"),
+    ("couloir", "Lane"),
     ("position", "Position"),
-    ("taille", "Taille"),
-    ("sens", "Sens"),
+    ("taille", "Size"),
+    ("sens", "Direction"),
 ]
 # ce qui, faute d'être regardé, ne doit surtout pas s'appliquer tout seul
 DEFAUT_IGNORE = ("retrait",)
@@ -87,24 +86,24 @@ class BfProcessMergeLine(models.TransientModel):
     """Un écart, et ce qu'on a décidé d'en faire."""
 
     _name = "bf.process.merge.line"
-    _description = "Écart proposé par une fusion"
+    _description = "Gap proposed by a merge"
     _order = "wizard_id, sequence, id"
 
     wizard_id = fields.Many2one(
         "bf.process.merge.wizard", required=True, ondelete="cascade", index=True)
-    sequence = fields.Integer(string="Ordre", default=10)
-    portee = fields.Selection(PORTEES, string="Portée", required=True)
-    operation = fields.Selection(OPERATIONS, string="Écart", required=True)
-    niveau = fields.Char(string="Niveau")
+    sequence = fields.Integer(string="Order", default=10)
+    portee = fields.Selection(PORTEES, string="Scope", required=True)
+    operation = fields.Selection(OPERATIONS, string="Gap", required=True)
+    niveau = fields.Char(string="Level")
     niveau_titre = fields.Char(string="Page")
-    cle = fields.Char(string="Clé")
-    libelle = fields.Char(string="Ce qui change")
-    avant = fields.Char(string="Dans la carte")
-    apres = fields.Char(string="Dans le fichier")
+    cle = fields.Char(string="Key")
+    libelle = fields.Char(string="What changes")
+    avant = fields.Char(string="In the map")
+    apres = fields.Char(string="In the file")
     decision = fields.Selection(
-        [("appliquer", "Appliquer"), ("ignorer", "Ignorer")],
-        string="Décision", required=True, default="appliquer")
-    remarque = fields.Char(string="Remarque", readonly=True)
+        [("appliquer", "Apply"), ("ignorer", "Ignore")],
+        string="Decision", required=True, default="appliquer")
+    remarque = fields.Char(string="Note", readonly=True)
 
 
 class BfProcessMergeWizard(models.TransientModel):
@@ -112,21 +111,21 @@ class BfProcessMergeWizard(models.TransientModel):
 
     _name = "bf.process.merge.wizard"
     _inherit = ["bf.process.lecture"]
-    _description = "Fusionner un BPMN 2.0"
+    _description = "Merge BPMN 2.0"
 
     process_id = fields.Many2one(
-        "bf.process", string="Cartographie", required=True,
-        help="La carte dans laquelle le fichier revient.")
-    fichier = fields.Binary(string="Fichier .bpmn", required=True)
-    nom_fichier = fields.Char(string="Nom du fichier")
+        "bf.process", string="Process map", required=True,
+        help="The map the file comes back into.")
+    fichier = fields.Binary(string=".bpmn file", required=True)
+    nom_fichier = fields.Char(string="File name")
     etat = fields.Selection(
-        [("depot", "Dépôt"), ("arbitrage", "Arbitrage")],
+        [("depot", "Upload"), ("arbitrage", "Review")],
         default="depot", required=True)
     line_ids = fields.One2many(
-        "bf.process.merge.line", "wizard_id", string="Écarts")
+        "bf.process.merge.line", "wizard_id", string="Gaps")
     # `sanitize` reste actif, et chaque valeur interpolée est échappée : les
     # libellés viennent d'un fichier tiers, ils ne sont pas sûrs.
-    resume_html = fields.Html(string="Ce que dit le fichier", readonly=True)
+    resume_html = fields.Html(string="What the file says", readonly=True)
     empreinte = fields.Char(readonly=True)
     ecart_count = fields.Integer(compute="_compute_compte")
     retenu_count = fields.Integer(compute="_compute_compte")
@@ -145,7 +144,8 @@ class BfProcessMergeWizard(models.TransientModel):
         self.ensure_one()
         cible = self.process_id
         self._exiger_modifiable(cible)
-        diagrammes = self._lire_fichier(
+        diagrammes = self.with_context(
+            bf_process_langue_livrable=cible._langue_livrable())._lire_fichier(
             base64.b64decode(self.fichier or b""), grilles=self._grilles(cible))
 
         self._exiger_niveaux_communs(cible, diagrammes)
@@ -173,30 +173,32 @@ class BfProcessMergeWizard(models.TransientModel):
 
         Contrôlé à l'analyse ET à l'application : ce sont deux points d'entrée
         RPC distincts, et un invariant qui ne tient qu'au premier ne tient pas.
+
+        Le refus passe par `cible.env._()` : dans une méthode statique, `_()`
+        ne trouve la langue qu'à la requête HTTP, et sortait en anglais en
+        XML-RPC hors requête.
         """
         connus = {d.bpmn_id for d in cible.diagram_ids}
         lus = {d.get("bpmn_id") for d in diagrammes if d.get("bpmn_id")}
         if not (connus & lus):
-            raise UserError(_(
-                "Aucun niveau de ce fichier ne correspond à un niveau de "
-                "« %(carte)s ». Les identifiants ont probablement été "
-                "renommés par l'éditeur qui l'a produit, ou le fichier vient "
-                "d'une autre cartographie. Fusionner ici retirerait tout pour "
-                "tout remettre, sans conserver ni les discussions ni le "
-                "registre de validation : importez-le plutôt comme une "
-                "nouvelle cartographie.",
+            raise UserError(cible.env._(
+                "No level in this file matches a level of \"%(carte)s\". "
+                "The IDs were probably renamed by the editor that "
+                "produced it, or the file comes from another process map. "
+                "Merging here would remove everything to put everything "
+                "back, keeping neither the discussions nor the validation "
+                "register: import it as a new process map instead.",
                 carte=cible.display_name))
 
     def _exiger_modifiable(self, cible):
         if cible.state == "valide":
             raise UserError(_(
-                "« %s » est une version validée : elle ne se modifie plus. "
-                "Créez la version suivante, ou rouvrez celle-ci, avant de "
-                "fusionner un fichier dedans.") % cible.display_name)
+                "\"%s\" is a validated version: it can no longer be "
+                "edited. Create the next version, or reopen this one, "
+                "before merging a file into it.") % cible.display_name)
         if not all(self.env[m].has_access("write") for m in self.MODELES_ECRITS):
             raise UserError(_(
-                "Fusionner un fichier demande le droit de gestion des "
-                "cartographies."))
+                "Merging a file requires the process map management right."))
 
     @staticmethod
     def _grilles(cible):
@@ -379,23 +381,24 @@ class BfProcessMergeWizard(models.TransientModel):
                              else "appliquer"),
             })
 
-        genres = dict(KINDS)
+        genres = dict(self.env["bf.process.node"]._fields["kind"]
+                      ._description_selection(self.env))
 
         # --- niveaux ---------------------------------------------------------
         for code in sorted(set(f_niv) - set(c_niv)):
             d = f_niv[code]
             ajoute("niveau", "ajout", code, "",
-                   _("Nouvelle page « %(titre)s » (%(n)d nœud(s))",
+                   _("New page \"%(titre)s\" (%(n)d node(s))",
                      titre=d["title"], n=len(d.get("nodes") or [])),
                    apres=d["title"])
         for code in sorted(set(c_niv) - set(f_niv)):
             d = c_niv[code]
             ajoute("niveau", "retrait", code, "",
-                   _("La page « %(titre)s » n'est pas dans le fichier",
+                   _("The page \"%(titre)s\" is not in the file",
                      titre=d.title),
                    avant=d.title,
-                   remarque=_("Retirer une page retire ses nœuds et leurs "
-                              "discussions."))
+                   remarque=_("Removing a page removes its nodes and "
+                              "their discussions."))
         for code in sorted(set(c_niv) & set(f_niv)):
             # On compare le nom du diagramme, pas le titre seul : c'est ce que
             # l'export écrit, des deux côtés, sans découpage à deviner. Un
@@ -405,7 +408,7 @@ class BfProcessMergeWizard(models.TransientModel):
             la = f_niv[code].get("nom_diagramme") or f_niv[code]["title"]
             if ici != la:
                 ajoute("niveau", "renommage", code, "",
-                       _("Titre de la page"), avant=ici, apres=la)
+                       _("Page title"), avant=ici, apres=la)
 
         communs = sorted(set(c_niv) & set(f_niv))
 
@@ -416,26 +419,26 @@ class BfProcessMergeWizard(models.TransientModel):
             for niv, code in sorted(k for k in set(dehors) - set(dedans)
                                     if k[0] in communs):
                 ajoute(famille, "ajout", niv, code,
-                       _("Nouveau « %s »") % dehors[(niv, code)][nom_dict],
+                       _("New \"%s\"") % dehors[(niv, code)][nom_dict],
                        apres=dehors[(niv, code)][nom_dict])
             for niv, code in sorted(k for k in set(dedans) - set(dehors)
                                     if k[0] in communs
                                     and (famille, *k) not in ecartes):
                 ajoute(famille, "retrait", niv, code,
-                       _("« %s » n'est pas dans le fichier")
+                       _("\"%s\" is not in the file")
                        % dedans[(niv, code)][nom_rec],
                        avant=dedans[(niv, code)][nom_rec])
             for niv, code in sorted(k for k in set(dedans) & set(dehors)
                                     if k[0] in communs):
                 a, b = dedans[(niv, code)], dehors[(niv, code)]
                 if (a[nom_rec] or "") != (b[nom_dict] or ""):
-                    ajoute(famille, "renommage", niv, code, _("Libellé"),
+                    ajoute(famille, "renommage", niv, code, _("Label"),
                            avant=a[nom_rec], apres=b[nom_dict])
         for niv, code in sorted(k for k in set(c_pool) & set(f_pool)
                                 if k[0] in communs):
             a, b = c_pool[(niv, code)], f_pool[(niv, code)]
             if a.position != b.get("pos", "top"):
-                ajoute("pool", "sens", niv, code, _("Côté du participant"),
+                ajoute("pool", "sens", niv, code, _("Participant side"),
                        avant=a.position, apres=b.get("pos", "top"))
 
         # --- nœuds -----------------------------------------------------------
@@ -446,7 +449,7 @@ class BfProcessMergeWizard(models.TransientModel):
                                if k[0] in communs):
             n = f_noeud[(niv, cle)]
             ajoute("noeud", "ajout", niv, cle,
-                   _("Nouveau %(genre)s « %(nom)s »",
+                   _("New %(genre)s \"%(nom)s\"",
                      genre=genres.get(n["kind"], n["kind"]).lower(),
                      nom=n.get("name") or cle),
                    apres=n.get("name") or cle)
@@ -456,13 +459,13 @@ class BfProcessMergeWizard(models.TransientModel):
             n = c_noeud[(niv, cle)]
             remarque = ""
             if n.child_diagram_id:
-                remarque = _("Ce sous-processus ouvre « %s » : la page "
-                             "deviendrait inatteignable.") \
+                remarque = _("This subprocess opens \"%s\": the page "
+                             "would become unreachable.") \
                     % n.child_diagram_id.display_name
             elif n.message_ids.filtered(lambda m: m.message_type == "comment"):
-                remarque = _("Cette étape porte une discussion.")
+                remarque = _("This step has a discussion.")
             ajoute("noeud", "retrait", niv, cle,
-                   _("« %s » n'est pas dans le fichier") % (n.name or cle),
+                   _("\"%s\" is not in the file") % (n.name or cle),
                    avant=n.name or cle, remarque=remarque)
 
         for niv, cle in sorted(k for k in set(c_noeud) & set(f_noeud)
@@ -474,10 +477,10 @@ class BfProcessMergeWizard(models.TransientModel):
             if (rec.name or "") != (n.get("name") or ""):
                 remarque = ""
                 if rec.child_diagram_id:
-                    remarque = _("Le lien vers « %s » est conservé malgré le "
-                                 "changement de nom.") \
+                    remarque = _("The link to \"%s\" is kept despite the "
+                                 "name change.") \
                         % rec.child_diagram_id.display_name
-                ajoute("noeud", "renommage", niv, cle, _("Libellé"),
+                ajoute("noeud", "renommage", niv, cle, _("Label"),
                        avant=rec.name or "", apres=n.get("name") or "",
                        remarque=remarque)
             if rec.kind != n["kind"]:
@@ -489,7 +492,7 @@ class BfProcessMergeWizard(models.TransientModel):
             ici = self._couloir_effectif(rec.lane_id.code or "", rec_premier)
             la = self._couloir_effectif(n.get("lane") or "", f_premier)
             if ici != la and not n.get("couloir_inconnu"):
-                ajoute("noeud", "couloir", niv, cle, _("Couloir"),
+                ajoute("noeud", "couloir", niv, cle, _("Lane"),
                        avant=rec.lane_id.name or "—",
                        apres=(f_lane.get((niv, la)) or {}).get("name") or "—")
             col, row = self._pose(n, ancrage)
@@ -504,48 +507,48 @@ class BfProcessMergeWizard(models.TransientModel):
             # et la comparer à un champ rempli faisait passer dix-neuf formes
             # pour redimensionnées alors qu'elles occupaient le même espace.
             if self._boites_differentes(rec, n):
-                ajoute("noeud", "taille", niv, cle, _("Taille"),
+                ajoute("noeud", "taille", niv, cle, _("Size"),
                        avant=self._dire_boite(geo.node_box(rec.to_dict())),
                        apres=self._dire_boite(geo.node_box(n)))
 
         # --- flux et messages -------------------------------------------------
         for niv, cle in sorted(k for k in set(f_flux) - set(c_flux)
                                if k[0] in communs):
-            ajoute("flux", "ajout", niv, cle, _("Nouveau lien %s") % cle,
+            ajoute("flux", "ajout", niv, cle, _("New link %s") % cle,
                    apres=f_flux[(niv, cle)].get("label") or "")
         for niv, cle in sorted(k for k in set(c_flux) - set(f_flux)
                                if k[0] in communs
                                and ("flux", *k) not in ecartes):
             ajoute("flux", "retrait", niv, cle,
-                   _("Le lien %s n'est pas dans le fichier") % cle,
+                   _("The link %s is not in the file") % cle,
                    avant=c_flux[(niv, cle)].label or "")
         for niv, cle in sorted(k for k in set(c_flux) & set(f_flux)
                                if k[0] in communs):
             rec, f = c_flux[(niv, cle)], f_flux[(niv, cle)]
             if (rec.label or "") != (f.get("label") or ""):
-                ajoute("flux", "renommage", niv, cle, _("Porte de %s") % cle,
+                ajoute("flux", "renommage", niv, cle, _("Gate of %s") % cle,
                        avant=rec.label or "—", apres=f.get("label") or "—")
 
         for niv, cle in sorted(k for k in set(f_msg) - set(c_msg)
                                if k[0] in communs):
             ajoute("message", "ajout", niv, cle,
-                   _("Nouveau message « %s »") % (f_msg[(niv, cle)].get("label") or ""),
+                   _("New message \"%s\"") % (f_msg[(niv, cle)].get("label") or ""),
                    apres=f_msg[(niv, cle)].get("label") or "")
         for niv, cle in sorted(k for k in set(c_msg) - set(f_msg)
                                if k[0] in communs
                                and ("message", *k) not in ecartes):
             ajoute("message", "retrait", niv, cle,
-                   _("Le message « %s » n'est pas dans le fichier")
+                   _("The message \"%s\" is not in the file")
                    % (c_msg[(niv, cle)].label or ""),
                    avant=c_msg[(niv, cle)].label or "")
         for niv, cle in sorted(k for k in set(c_msg) & set(f_msg)
                                if k[0] in communs):
             rec, m = c_msg[(niv, cle)], f_msg[(niv, cle)]
             if (rec.label or "") != (m.get("label") or ""):
-                ajoute("message", "renommage", niv, cle, _("Libellé du message"),
+                ajoute("message", "renommage", niv, cle, _("Message label"),
                        avant=rec.label or "", apres=m.get("label") or "")
             if rec.direction != m.get("dir", "out"):
-                ajoute("message", "sens", niv, cle, _("Sens du message"),
+                ajoute("message", "sens", niv, cle, _("Message direction"),
                        avant=rec.direction, apres=m.get("dir", "out"))
         return lignes
 
@@ -554,38 +557,40 @@ class BfProcessMergeWizard(models.TransientModel):
         """Ce que le fichier dit avant même qu'on regarde les écarts."""
         connus = {d.bpmn_id for d in cible.diagram_ids}
         lus = {d.get("bpmn_id") for d in diagrammes if d.get("bpmn_id")}
-        blocs = [Markup("<p>Fichier <b>%s</b> — %s page(s) lue(s), "
-                        "%s en commun avec <b>%s</b>.</p>") % (
-            self.nom_fichier or _("sans nom"), len(diagrammes),
-            len(connus & lus), cible.display_name)]
+        blocs = [Markup("<p>%s</p>") % (Markup(_(
+            "File <b>%(fichier)s</b>: %(lues)s page(s) read, %(communes)s in "
+            "common with <b>%(carte)s</b>.")) % {
+                "fichier": self.nom_fichier or _("unnamed"),
+                "lues": len(diagrammes), "communes": len(connus & lus),
+                "carte": cible.display_name})]
         manquantes = connus - lus
         if manquantes:
             titres = ", ".join(sorted(
                 d.title for d in cible.diagram_ids if d.bpmn_id in manquantes))
             blocs.append(Markup(
-                "<div class='alert alert-warning' role='alert'>"
-                "<b>%s page(s) de la carte ne sont pas dans le fichier</b> :"
-                " %s.<br/>Plusieurs éditeurs ne réexportent que le diagramme"
-                " ouvert. Les retraits sont donc proposés à « Ignorer » :"
-                " ne les appliquez que si la page a vraiment été supprimée."
-                "</div>") % (len(manquantes), titres))
+                "<div class='alert alert-warning' role='alert'>%s</div>") % (
+                Markup(_(
+                    "<b>%(n)s page(s) of the map are not in the file</b>: "
+                    "%(titres)s.<br/>Several editors only re-export the open "
+                    "diagram. Removals are therefore proposed as \"Ignore\": "
+                    "only apply them if the page was really deleted.")) % {
+                    "n": len(manquantes), "titres": titres}))
         # Avant le verdict « aucun écart » : c'est précisément quand la liste
         # est vide que ce qui n'a pas été lu doit sauter aux yeux.
         ecartes = self._dire_ecartes(diagrammes, _(
-            "Ils ne figurent dans aucun écart ci-dessous : un élément neuf ne "
-            "sera pas créé, et un élément que la carte porte déjà n'est pas "
-            "proposé au retrait."))
+            "They are not in any gap below: a new element will not be "
+            "created, and an element the map already has is not proposed "
+            "for removal."))
         if ecartes:
             blocs.append(Markup(
                 "<div class='alert alert-warning' role='alert'>%s</div>")
                 % ecartes)
         if not lignes and ecartes:
             blocs.append(Markup("<p>%s</p>") % _(
-                "Aucun écart dans ce qui a pu être lu."))
+                "No gap in what could be read."))
         elif not lignes:
             blocs.append(Markup("<p>%s</p>") % _(
-                "Aucun écart : le fichier dit exactement ce que la carte dit "
-                "déjà."))
+                "No gap: the file says exactly what the map already says."))
         return Markup("").join(blocs)
 
     @staticmethod
@@ -636,19 +641,19 @@ class BfProcessMergeWizard(models.TransientModel):
         # comparée quand elle existe.
         if not self.empreinte:
             raise UserError(_(
-                "Cette fusion n'a pas été analysée. Lancez l'analyse : c'est "
-                "elle qui relève l'état de la carte auquel les écarts se "
-                "rapportent."))
+                "This merge has not been analyzed. Run the analysis: it "
+                "records the state of the map the gaps refer to."))
         if self.empreinte != self._empreinte(cible):
             raise UserError(_(
-                "« %s » a changé depuis l'analyse. Relancez l'analyse : les "
-                "écarts affichés ont été calculés contre un état qui n'existe "
-                "plus.") % cible.display_name)
+                "\"%s\" has changed since the analysis. Run the analysis "
+                "again: the gaps shown were computed against a state that "
+                "no longer exists.") % cible.display_name)
         retenues = self.line_ids.filtered(lambda l: l.decision == "appliquer")
         if not retenues:
-            raise UserError(_("Aucun écart retenu : il n'y a rien à écrire."))
+            raise UserError(_("No gap selected: there is nothing to write."))
 
-        diagrammes = self._lire_fichier(
+        diagrammes = self.with_context(
+            bf_process_langue_livrable=cible._langue_livrable())._lire_fichier(
             base64.b64decode(self.fichier or b""), grilles=self._grilles(cible))
         # Le refus « aucun niveau en commun » vivait dans l'analyse seule. Un
         # appel direct à l'application le contournait, et un fichier étranger
@@ -730,14 +735,16 @@ class BfProcessMergeWizard(models.TransientModel):
             niveau = c_niv.get(ligne.niveau)
             f = f_flux.get((ligne.niveau, ligne.cle))
             if niveau and f and not self._creer_flux(niveau, f):
-                refuse.append((ligne, _("un des deux nœuds n'existe pas ici")))
+                refuse.append((ligne, _("one of the two nodes does not "
+                                        "exist here")))
             elif niveau and f:
                 fait.append(ligne)
         for ligne in par("message", "ajout"):
             niveau = c_niv.get(ligne.niveau)
             m = f_msg.get((ligne.niveau, ligne.cle))
             if niveau and m and not self._creer_message(niveau, m):
-                refuse.append((ligne, _("le nœud ou le participant manque ici")))
+                refuse.append((ligne, _("the node or the participant is "
+                                        "missing here")))
             elif niveau and m:
                 fait.append(ligne)
 
@@ -818,13 +825,10 @@ class BfProcessMergeWizard(models.TransientModel):
     def _creer_noeud(self, niveau, n, ancrage):
         couloir = niveau.lane_ids.filtered(lambda l: l.code == n.get("lane"))
         col, row = self._pose(n, ancrage or self._ancrage_neutre(niveau))
-        nom = n.get("name") or ""
-        if not nom and n["kind"] in ACTIVITES:
-            # une activité doit être nommée : mieux vaut le dire sur la carte
-            # que refuser la fusion entière pour un libellé vide
-            nom = _("À nommer")
-        if not nom and n["kind"] == "note":
-            nom = _("À écrire")
+        # une activité doit être nommée : mieux vaut le dire sur la carte que
+        # refuser la fusion entière pour un libellé vide. Le nom s'imprime :
+        # langue du livrable, pas celle de qui fusionne.
+        nom = n.get("name") or niveau.process_id._nom_par_defaut(n["kind"])
         return self.env["bf.process.node"].create({
             "diagram_id": niveau.id,
             "sequence": (max(niveau.node_ids.mapped("sequence"), default=0) + 10),
@@ -932,19 +936,19 @@ class BfProcessMergeWizard(models.TransientModel):
         """Rend True, ou le motif du refus."""
         niveau = c_niv.get(ligne.niveau)
         if not niveau:
-            return _("la page n'existe plus")
+            return _("the page no longer exists")
         if portee == "niveau":
             if niveau.parent_node_ids:
-                return _("cette page est ouverte depuis « %s »") \
+                return _("this page is opened from \"%s\"") \
                     % niveau.parent_node_ids[0].display_name
             niveau.unlink()
             return True
         if portee == "noeud":
             rec = niveau.node_ids.filtered(lambda x: x.code == ligne.cle)
             if not rec:
-                return _("le nœud n'existe plus")
+                return _("the node no longer exists")
             if rec.child_diagram_id:
-                return _("il ouvre la page « %s »") \
+                return _("it opens the page \"%s\"") \
                     % rec.child_diagram_id.display_name
             rec.unlink()
             return True
@@ -954,15 +958,15 @@ class BfProcessMergeWizard(models.TransientModel):
         if portee == "couloir":
             rec = niveau.lane_ids.filtered(lambda x: x.code == ligne.cle)
             if not rec:
-                return _("le couloir n'existe plus")
+                return _("the lane no longer exists")
             if rec.node_ids:
-                return _("ce couloir porte encore %d nœud(s)") % len(rec.node_ids)
+                return _("this lane still holds %d node(s)") % len(rec.node_ids)
             rec.unlink()
             return True
         if portee == "pool":
             rec = niveau.pool_ids.filtered(lambda x: x.code == ligne.cle)
             if not rec:
-                return _("le participant n'existe plus")
+                return _("the participant no longer exists")
             rec.unlink()
             return True
         if portee == "flux":
@@ -970,7 +974,7 @@ class BfProcessMergeWizard(models.TransientModel):
             rec = niveau.flow_ids.filtered(
                 lambda x: x.source_id.code == src and x.target_id.code == tgt)
             if not rec:
-                return _("ce lien n'existe plus")
+                return _("this link no longer exists")
             rec.unlink()
             return True
         if portee == "message":
@@ -978,10 +982,10 @@ class BfProcessMergeWizard(models.TransientModel):
             rec = niveau.message_ids.filtered(
                 lambda x: x.node_id.code == noeud and x.pool_id.code == pool)
             if not rec:
-                return _("ce message n'existe plus")
+                return _("this message no longer exists")
             rec.unlink()
             return True
-        return _("portée inconnue")
+        return _("unknown scope")
 
     @staticmethod
     def _raccorder(cible):
@@ -1014,9 +1018,11 @@ class BfProcessMergeWizard(models.TransientModel):
         session de quiconque ouvre la cartographie.
         """
         ignore = len(self.line_ids) - len(fait) - len(refuse)
-        blocs = [Markup("<p>Fusion de <b>%s</b> : <b>%s</b> écart(s) appliqué(s), "
-                        "%s ignoré(s).</p>") % (
-            self.nom_fichier or _("fichier sans nom"), len(fait), ignore)]
+        blocs = [Markup("<p>%s</p>") % (Markup(_(
+            "Merge of <b>%(fichier)s</b>: <b>%(faits)s</b> gap(s) applied, "
+            "%(ignores)s ignored.")) % {
+                "fichier": self.nom_fichier or _("unnamed file"),
+                "faits": len(fait), "ignores": ignore})]
         if fait:
             items = Markup("").join(
                 Markup("<li>%s — %s%s</li>") % (
@@ -1032,7 +1038,7 @@ class BfProcessMergeWizard(models.TransientModel):
                 for l, motif in refuse)
             blocs.append(Markup(
                 "<p><b>%s</b></p><ul>%s</ul>") % (
-                _("Retenu mais non appliqué :"), items))
+                _("Selected but not applied:"), items))
         if orphelins:
             items = Markup("").join(
                 Markup("<li>%s — %s</li>") % (
@@ -1040,9 +1046,9 @@ class BfProcessMergeWizard(models.TransientModel):
                 for n in orphelins)
             blocs.append(Markup(
                 "<p><b>%s</b></p><ul>%s</ul>") % (
-                _("Sous-processus qui n'ouvrent aucune page :"), items))
+                _("Subprocesses that open no page:"), items))
         blocs.append(self._dire_ecartes(diagrammes, _(
-            "La fusion ne les a ni créés ni retirés.")))
+            "The merge neither created nor removed them.")))
         return Markup("").join(blocs)
 
     # ---------------------------------------------------------------- outils

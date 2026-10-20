@@ -56,7 +56,7 @@ def _jour(valeur):
     except (TypeError, ValueError):
         jour = None
     if not jour:
-        raise UserError(_("Date invalide."))
+        raise UserError(_("Invalid date."))
     return jour
 
 
@@ -182,7 +182,7 @@ class MailActivity(models.Model):
         self.ensure_one()
         mot = (feedback or "").strip()
         if len(mot) > MAX_FEEDBACK:
-            raise UserError(_("Le commentaire est trop long."))
+            raise UserError(_("The comment is too long."))
         cloture = self._mobile_cloture()
         if cloture:
             fiche = cloture.__self__
@@ -204,8 +204,8 @@ class MailActivity(models.Model):
         jour = _jour(date)
         if self._mobile_event():
             raise UserError(_(
-                "Cette activité suit une rencontre : déplacez la rencontre, "
-                "l'activité suivra."))
+                "This activity follows a meeting: move the meeting and "
+                "the activity will follow."))
         self.write({"date_deadline": jour})
         return {"ok": True, "activity": self._mobile_payload()}
 
@@ -215,24 +215,25 @@ class MailActivity(models.Model):
         vals = vals or {}
         res_model = vals.get("res_model")
         if res_model not in PLANIFIABLES or res_model not in self.env:
-            raise UserError(_("Ce type de fiche n'accepte pas d'activité depuis le téléphone."))
+            raise UserError(_("This type of record does not accept "
+                              "activities from the phone."))
         try:
             res_id = int(vals.get("res_id") or 0)
             type_id = int(vals.get("activity_type_id") or 0)
         except (TypeError, ValueError):
-            raise UserError(_("Fiche ou type d'activité invalide.")) from None
+            raise UserError(_("Invalid record or activity type.")) from None
         fiche = self.env[res_model].browse(res_id).exists()
         if not fiche:
-            raise UserError(_("Fiche introuvable."))
+            raise UserError(_("Record not found."))
         fiche.check_access("read")
         type_activite = self.env["mail.activity.type"].browse(type_id).exists()
         offerts = {t["id"] for t in self.mobile_types(res_model)["types"]}
         if not type_activite or type_activite.id not in offerts:
-            raise UserError(_("Type d'activité inconnu pour cette fiche."))
+            raise UserError(_("Unknown activity type for this record."))
         resume = (vals.get("summary") or "").strip()
         note = (vals.get("note") or "").strip()
         if len(resume) > MAX_SUMMARY or len(note) > MAX_NOTE:
-            raise UserError(_("Le résumé ou la note est trop long."))
+            raise UserError(_("The summary or the note is too long."))
         activite = fiche.activity_schedule(
             activity_type_id=type_activite.id,
             date_deadline=_jour(vals.get("date")),
