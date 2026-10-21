@@ -663,6 +663,10 @@ Hosting
 
 ## Changelog
 
+### Version 18.0.2.62.2
+- An internal user without the "Hosting user" group can open contact forms and projects again. The hosting smart buttons, the "Client under SLA" toggle and the "IT assets" tab on the contact form, and the "Licences" button on the project form, now carry the group: the web client reads every field of a form, hidden ones included, and one field over a hosting model was enough to refuse the whole form to anyone without access to that model.
+- New test `tests/test_fiche_sans_groupe.py`: opens both forms as a user without the group, field by field.
+
 ### Version 18.0.2.62.1
 - Fix: the "booking change notices" health check read `nextcloud.calendar.sync.config` one line before checking that the model exists. Without `calendar_nextcloud_sync` it raised a `KeyError` instead of reporting that the independent half was not measured.
 - Tests: the restic test posts what the agent really sends (`partial` with a non-zero exit) and expects `warning`; the notices check skips unless both `calendar_nextcloud_sync` and `bf_calendar_invite` are installed.
@@ -931,7 +935,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Support

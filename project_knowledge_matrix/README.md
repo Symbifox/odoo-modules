@@ -209,6 +209,13 @@ and moving a matrix to another project aligns its company the same way; a
 company chosen explicitly is kept, including when the same project is written
 again (an import, a bulk edit).
 
+### Projects Without the Knowledge Group (13.5.1)
+
+The two matrix buttons of the project form and the matrix fields of the project
+kanban carry the knowledge user group. The web client reads every field of a view,
+hidden ones included: an internal user without that group could open neither the
+project list nor a project form.
+
 ### Automatic Follow-up Activities
 
 Daily cron job creates Odoo activities to keep matrix items on track:
@@ -767,7 +774,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Credits

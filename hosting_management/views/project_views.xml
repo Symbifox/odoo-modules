@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_licenses" type="object"
-                        class="oe_stat_button" icon="fa-key"
+                        class="oe_stat_button" groups="hosting_management.group_hosting_user" icon="fa-key"
                         invisible="license_seat_count == 0">
                     <field name="license_seat_count" widget="statinfo" string="Licences"/>
                 </button>

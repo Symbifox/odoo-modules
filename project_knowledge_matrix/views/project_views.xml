@@ -11,6 +11,7 @@
                 <button class="oe_stat_button" type="object"
                         name="action_view_knowledge_matrix"
                         icon="fa-th-list"
+                        groups="project_knowledge_matrix.group_knowledge_user"
                         invisible="knowledge_matrix_count == 0">
                     <div class="o_stat_info">
                         <field name="knowledge_progress" widget="percentpie"/>
@@ -20,6 +21,7 @@
                 <button class="oe_stat_button" type="object"
                         name="action_create_knowledge_matrix"
                         icon="fa-plus"
+                        groups="project_knowledge_matrix.group_knowledge_user"
                         invisible="knowledge_matrix_count != 0">
                     <div class="o_stat_info">
                         <span class="o_stat_text">Add Knowledge Matrix</span>
@@ -128,8 +130,8 @@
         <field name="inherit_id" ref="project.view_project_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//kanban" position="inside">
-                <field name="knowledge_matrix_count"/>
-                <field name="knowledge_progress"/>
+                <field name="knowledge_matrix_count" groups="project_knowledge_matrix.group_knowledge_user"/>
+                <field name="knowledge_progress" groups="project_knowledge_matrix.group_knowledge_user"/>
             </xpath>
         </field>
     </record>

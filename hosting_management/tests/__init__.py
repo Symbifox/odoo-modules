@@ -10,3 +10,4 @@ from . import test_couleur_libre
 from . import test_sante_concurrence
 from . import test_logiciel_sans_version
 from . import test_mise_en_page_commune
+from . import test_fiche_sans_groupe
