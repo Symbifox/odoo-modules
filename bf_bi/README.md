@@ -59,23 +59,66 @@ person looking, under their own rights** (never as superuser), and follows the
 *Period* and *Customer* filters. Filters coming from the browser can only
 narrow the result, and are validated term by term.
 
-## External sources (Grist)
+## External sources
 
 A **data connection** (*Dashboards › Configuration › Data connections*,
-administrators) describes a source: a Grist document and its API key.
+administrators) describes one source:
+
+| Type | What it reads |
+|---|---|
+| Excel or CSV file | a workbook (.xlsx) or CSV file uploaded to the connection, 25 MB at most: each sheet is a table |
+| Nextcloud file | a .xlsx or .csv file in a Nextcloud account, read over WebDAV with an app password |
+| OneDrive or SharePoint file | a file shared by link, read through Microsoft Graph with a Microsoft Entra application (client credentials). Graph requires the application permission Files.ReadWrite.All, granted by an administrator: it opens every file of the directory to that application, while Odoo only reads the shared file |
+| Google Sheets | a spreadsheet shared with a Google Cloud service account (read-only scope): each tab is a table |
+| Web API | JSON (with the path to the list of records), CSV, or OData v4 with its pages followed; no authentication, bearer token, key in a header or in the address, or user name and password |
+| PostgreSQL | one read-only query per table, written by the administrator |
+| Grist | the tables of a Grist document |
+
+Old .xls workbooks are not read: save them as .xlsx.
 
 - **Closed by default**: until a group or a person is allowed, nobody sees its
   data.
+- **Tables defined by the administrator** for a web API or a database: a path
+  added to the base address, or one single `SELECT`. People reading dashboards
+  only pick a table by name. A database query runs in a read-only transaction,
+  with a time limit applied by the remote server and a cut-off on the Odoo side.
 - In a dashboard, `=BF.SOURCE("code", "Table")` (or *Insert a source* in the
-  editor) spills the table, header included. Dates stay dates, lists become
-  text, Grist's internal columns are left out, and a row cap is reported.
+  editor) spills the table, header included. Dates stay dates, numbers stay
+  numbers, and a row cap (5,000 by default, per connection) is reported.
 - Every read is made **on behalf of the person looking**: the server checks
-  that they are allowed on the connection before calling Grist. Without the
+  that they are allowed on the connection before calling the source. Without the
   right, the cell shows an error, never the figures. An unknown code and a
   refused one give the same message.
-- The API key is visible to administrators only, and is never sent to the
-  people reading dashboards; Grist's error bodies are not passed on.
-- 60-second cache per table, cleared as soon as the connection is changed.
+- **Secrets stay on the server.** Keys, tokens and passwords are visible to
+  administrators only (a Google service account key is never shown again once
+  saved), never sent to the people reading dashboards, and a provider's error
+  body is not passed on.
+- **Network guard.** A connection cannot reach a private, loopback, link-local
+  or shared (CGNAT) address, in IPv4 or IPv6: the check is made on the very
+  address being connected to, and again on every redirect. A redirect to another
+  host never carries the secret. Internal hosts can be allowed, and public ones
+  refused, only in the server's configuration file (`bf_bi_allowed_private_hosts`,
+  `bf_bi_denied_hosts`), never from the database.
+- **Read live, not copied**: a remote source is read when a dashboard needs it,
+  with a 60-second cache per table, cleared as soon as the connection changes.
+  Nothing from it is stored in Odoo, except the customer values copied into
+  the correspondence table (see below); an uploaded file is an attachment of its
+  connection.
+
+### Measures on an external source
+
+A named measure can also be of kind **External source**: a connection, a table,
+the column to aggregate (empty: count the rows), the aggregation, and the date
+and customer columns the dashboard's *Period* and *Customer* filters apply to.
+It works everywhere a measure does: `=BF.MEASURE`, tiles, formulas that combine
+it with Odoo measures (`revenue / planned_revenue`), and the reports of
+[`bf_bi_report`](../bf_bi_report), split by month, quarter, year or customer.
+
+The customer column is matched to Odoo contacts through a **correspondence
+table** on the connection. *Collect customer values* reads the values the
+measures use and suggests a contact for each (by reference, business number,
+email, then name without accents, punctuation or legal form); the administrator
+checks the suggestions. Values without a contact count under no customer.
 
 ## Ready-made dashboards
 
@@ -106,6 +149,22 @@ legends) follow the language of the person reading, on every dashboard.
 
 ## Dependencies and license
 
-Depends on `spreadsheet_dashboard` (Odoo, LGPL-3) only. No third-party code is
+Depends on `spreadsheet_dashboard` (Odoo, LGPL-3) only. The connectors use
+libraries Odoo 18 already requires (`requests`, `openpyxl`, `psycopg2`,
+`cryptography`), and no vendor SDK. Google Sheets also needs **PyJWT**
+(`pip install PyJWT`), which Odoo does not ship: without it the module installs
+and every other type works, and *Test the connection* on a Google Sheets
+connection reports `No module named 'jwt'`. No third-party code is
 copied into this module. Business Source License 1.1 (see `LICENSE`): each
 version becomes LGPL-3 on its Change Date.
+
+## Version history
+
+- **18.0.1.9.0**: Nextcloud, OneDrive or SharePoint and Google Sheets files; OData
+  v4 pages for web APIs. A redirect written with a backslash before the `@` is
+  read as the connection reads it, so it can no longer pass for the same host.
+- **18.0.1.8.0**: measures on an external source, and the customer
+  correspondence table.
+- **18.0.1.7.0**: uploaded Excel or CSV files, web APIs and PostgreSQL queries;
+  network guard for every connection type, Grist included.
+- **18.0.1.6.1**: first public version.

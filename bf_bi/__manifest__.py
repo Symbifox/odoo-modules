@@ -1,6 +1,6 @@
 {
     "name": "BF BI",
-    "version": "18.0.1.6.1",
+    "version": "18.0.1.9.0",
     "category": "Productivity/Dashboard",
     "summary": "Design and edit dashboards on screen, straight from Odoo's views",
     "description": """
@@ -29,11 +29,16 @@ Named measures: "Margin", "Billable hours"... defined once, used everywhere with
 =BF.MEASURE("code"), always computed for the person looking, under their own
 rights, following the dashboard's Period and Customer filters.
 
-External sources (Grist): a "data connection" closed by default, opened to
+External sources: Excel or CSV file, dropped in Odoo or kept in Nextcloud,
+OneDrive or SharePoint; Google Sheets spreadsheet; web API (JSON, CSV or
+OData); PostgreSQL database; Grist document. A "data connection" is closed by default, opened to
 groups or people. The formula =BF.SOURCE("code", "Table") spills the table in
-the spreadsheet; every read checks the rights of the person looking, and the
-API key is only ever seen by administrators:
-it is never sent to the people reading dashboards.
+the spreadsheet; every read checks the rights of the person looking, and keys
+and passwords are only ever seen by administrators: they are never sent to the
+people reading dashboards. For a web API or a database, the administrator
+defines the tables (a path, or one read-only query): readers only pick a name.
+Addresses of private or internal networks are refused, unless the server's
+configuration file allows them (bf_bi_allowed_private_hosts).
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 import requests
@@ -8,19 +9,15 @@ from odoo.tests import TransactionCase, new_test_user, tagged
 from odoo.addons.bf_bi.models import bf_bi_connection
 
 CLE = "cle-secrete-banc-0123456789"
-GET = "odoo.addons.bf_bi.models.bf_bi_connection.requests.get"
+GET = "odoo.addons.bf_bi.models.bf_bi_network.http_get"
 
 
-class FakeResponse:
-    def __init__(self, status, payload):
-        self.status_code = status
-        self._payload = payload
-
-    def json(self):
-        return self._payload
+def FakeResponse(status, payload):
+    """Ce que rend bf_bi_network.http_get : (statut, corps, type de contenu)."""
+    return status, json.dumps(payload).encode(), "application/json"
 
 
-def fake_grist(url, params=None, timeout=None, headers=None):
+def fake_grist(url, params=None, headers=None, secret_bound=False, max_bytes=None):
     """Un Grist minimal : une table Budget, et la clé exigée."""
     if headers.get("Authorization") != "Bearer " + CLE:
         return FakeResponse(401, {"error": "détail interne du serveur"})
@@ -138,6 +135,13 @@ class TestBfBiConnection(TransactionCase):
         self.connection.user_ids = [(6, 0, [self.reader.id])]
         self.assertNotIn(CLE, repr(self.fetch(self.reader)))
 
+    def test_grist_key_is_bound_to_its_host(self):
+        # La clé part dans un en-tête : aucune redirection vers une autre origine ne la suit.
+        self.connection.user_ids = [(6, 0, [self.reader.id])]
+        self.fetch(self.reader)
+        self.assertTrue(self.get.call_args_list)
+        self.assertTrue(all(call.kwargs.get("secret_bound") is True for call in self.get.call_args_list))
+
     def test_grist_error_body_is_not_passed_on(self):
         self.connection.sudo().grist_api_key = "mauvaise"
         self.connection.user_ids = [(6, 0, [self.reader.id])]
@@ -201,6 +205,10 @@ class TestBfBiConnection(TransactionCase):
     def test_only_administrators_test_a_connection(self):
         with self.assertRaises(AccessError):
             self.connection.with_user(self.finance).action_test_connection()
+        # Appelée en sudo pour la personne (un pont, un bouton), les droits du modèle ne jouent
+        # plus : le contrôle porte sur la personne elle-même.
+        with self.assertRaises(AccessError):
+            self.connection.with_user(self.finance).sudo().action_test_connection()
         self.assertEqual(self.get.call_count, 0, "Grist ne doit pas être appelé")
 
     def test_connection_follows_the_active_companies(self):

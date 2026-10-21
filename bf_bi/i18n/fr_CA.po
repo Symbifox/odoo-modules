@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 02:15+0000\n"
+"POT-Creation-Date: 2026-10-12 02:41+0000\n"
 "PO-Revision-Date: 2026-09-30 02:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -33,13 +33,9 @@ msgstr ""
 "l'historique des versions)."
 
 #. module: bf_bi
-#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_connections
-msgid ""
-"A Grist document, for example, readable in dashboards by the groups you "
-"choose."
-msgstr ""
-"Un document Grist, par exemple, lisible dans les tableaux de bord par les "
-"groupes que vous choisissez."
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "/customers?status=active, or SELECT name, budget FROM projects"
+msgstr "/clients?statut=actif, ou SELECT nom, budget FROM projets"
 
 #. module: bf_bi
 #. odoo-javascript
@@ -71,6 +67,12 @@ msgid "Add as"
 msgstr "Forme de l'ajout"
 
 #. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Add at least one table to test this connection."
+msgstr "Ajoutez au moins une table pour tester cette connexion."
+
+#. module: bf_bi
 #. odoo-javascript
 #: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
 msgid "Add to a dashboard"
@@ -92,6 +94,18 @@ msgid "Amount"
 msgstr "Montant"
 
 #. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_connections
+msgid ""
+"An Excel or CSV file, dropped here or kept in Nextcloud, OneDrive or SharePoint, a Google\n"
+"            Sheets spreadsheet, a web API (JSON, CSV or OData), a PostgreSQL database or a Grist document,\n"
+"            readable in dashboards by the groups you choose."
+msgstr ""
+"Un fichier Excel ou CSV, déposé ici ou gardé dans Nextcloud, OneDrive ou "
+"SharePoint, une feuille Google Sheets, une API web (JSON, CSV ou OData), une"
+" base PostgreSQL ou un document Grist, lisibles dans les tableaux de bord "
+"par les groupes que vous choisissez."
+
+#. module: bf_bi
 #. odoo-python
 #: code:addons/bf_bi/models/bf_bi_measure.py:0
 msgid "An aggregate measure needs a model."
@@ -102,6 +116,11 @@ msgstr "Une mesure d'agrégat demande un modèle."
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "Archived"
 msgstr "Archivée"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__web_auth
+msgid "Authentication"
+msgstr "Authentification"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__group_ids
@@ -129,6 +148,11 @@ msgid "BI Designer"
 msgstr "Concepteur BI"
 
 #. module: bf_bi
+#: model:ir.model,name:bf_bi.model_bf_bi_connection_table
+msgid "BI connection table"
+msgstr "Table d'une connexion BI"
+
+#. module: bf_bi
 #: model:ir.model,name:bf_bi.model_bf_bi_connection
 msgid "BI data connection"
 msgstr "Connexion de données BI"
@@ -139,10 +163,25 @@ msgid "BI named measure"
 msgstr "Mesure nommée BI"
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__web_url
+msgid "Base address"
+msgstr "Adresse de base"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__web_auth__bearer
+msgid "Bearer token"
+msgstr "Jeton (Bearer)"
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_version_view_list
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
 msgid "By"
 msgstr "Par"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection_table__fmt__csv
+msgid "CSV"
+msgstr "CSV"
 
 #. module: bf_bi
 #. odoo-javascript
@@ -186,6 +225,7 @@ msgstr "Code de la mesure nommée."
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__company_id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__company_id
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__company_id
 msgid "Company"
 msgstr "Société"
@@ -213,6 +253,8 @@ msgstr "Brancher une source externe"
 #. module: bf_bi
 #. odoo-javascript
 #: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__connection_id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__connection_id
 msgid "Connection"
 msgstr "Connexion"
 
@@ -225,8 +267,45 @@ msgstr "Connexion réussie : %(n)s table(s) (%(names)s)."
 #. module: bf_bi
 #. odoo-python
 #: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” has no file yet."
+msgstr "La connexion « %s » n'a pas encore de fichier."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
 msgid "Connection “%s” is incomplete: address, document and key are required."
 msgstr "Connexion « %s » incomplète : adresse, document et clé sont requis."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: server, database and user are required."
+msgstr ""
+"La connexion « %s » est incomplète : serveur, base de données et usager sont"
+" exigés."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: the base address is required."
+msgstr "La connexion « %s » est incomplète : l'adresse de base est exigée."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"Connection “%s” is incomplete: the header or parameter name is missing."
+msgstr ""
+"La connexion « %s » est incomplète : le nom de l'en-tête ou du paramètre "
+"manque."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: the key, token or password is missing."
+msgstr ""
+"La connexion « %s » est incomplète : la clé, le jeton ou le mot de passe "
+"manque."
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__spreadsheet_data
@@ -250,6 +329,8 @@ msgstr "Créer un tableau de bord"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__create_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__create_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__create_uid
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__create_uid
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__create_uid
 msgid "Created by"
@@ -257,6 +338,8 @@ msgstr "Créé par"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__create_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__create_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__create_date
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__create_date
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__create_date
 msgid "Created on"
@@ -320,6 +403,7 @@ msgid "Dashboards"
 msgstr "Tableaux de bord"
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__connection_code
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
 msgid "Data connection"
 msgstr "Connexion de données"
@@ -330,6 +414,11 @@ msgstr "Connexion de données"
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_list
 msgid "Data connections"
 msgstr "Connexions de données"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_name
+msgid "Database"
+msgstr "Base de données"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_id
@@ -354,6 +443,8 @@ msgstr "Concevoir"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__display_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__display_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__display_name
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__display_name
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__display_name
 msgid "Display Name"
@@ -395,6 +486,42 @@ msgid "Empty: count the records."
 msgstr "Vide : compter les enregistrements."
 
 #. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__db_sslmode__require
+msgid "Encrypted (required)"
+msgstr "Chiffré (exigé)"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__db_sslmode__prefer
+msgid "Encrypted if possible"
+msgstr "Chiffré si possible"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__db_sslmode__verify-full
+msgid "Encrypted, certificate verified"
+msgstr "Chiffré, certificat vérifié"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_sslmode
+msgid "Encryption"
+msgstr "Chiffrement"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__file
+msgid "Excel or CSV file"
+msgstr "Fichier Excel ou CSV"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"Excel workbook (.xlsx) or CSV file, 25 MB at most. Each sheet is a table,\n"
+"                            its first row the header; a CSV file is the table “Data”.\n"
+"                            To update the data, upload the new version of the file."
+msgstr ""
+"Classeur Excel (.xlsx) ou fichier CSV, 25 Mo au plus. Chaque feuille est une"
+" table, sa première ligne l'en-tête ; un fichier CSV est la table « Data ». "
+"Pour mettre les données à jour, déposez la nouvelle version du fichier."
+
+#. module: bf_bi
 #. odoo-javascript
 #: code:addons/bf_bi/static/src/bundle/source_function.js:0
 msgid "External sources are unavailable here."
@@ -406,16 +533,9 @@ msgid "Field"
 msgstr "Champ"
 
 #. module: bf_bi
-#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_name
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__field_name
-#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__partner_field_name
 msgid "Field Name"
 msgstr "Nom du champ"
-
-#. module: bf_bi
-#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_type
-msgid "Field Type"
-msgstr "Type de champ"
 
 #. module: bf_bi
 #: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__partner_field_id
@@ -428,9 +548,25 @@ msgid "Field the dashboard's Period filter applies to."
 msgstr "Champ auquel s'applique le filtre Période du tableau de bord."
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__file_data
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__file_name
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__domain
 msgid "Filter"
 msgstr "Filtre"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__fmt
+msgid "Format"
+msgstr "Format"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__expression
@@ -469,6 +605,11 @@ msgid "Grist server address"
 msgstr "Adresse du serveur Grist"
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__web_auth_name
+msgid "Header or parameter name"
+msgstr "Nom de l'en-tête ou du paramètre"
+
+#. module: bf_bi
 #: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__hours
 msgid "Hours"
 msgstr "Heures"
@@ -486,6 +627,8 @@ msgstr ""
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__id
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__id
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__id
 msgid "ID"
@@ -509,11 +652,14 @@ msgstr ""
 msgid ""
 "In a dashboard: <code>=BF.SOURCE(\"code\", \"Table\")</code>, or the editor's\n"
 "                        “Insert a source” button. Every read checks the rights of the person\n"
-"                        who opens the dashboard; the key never leaves the server."
+"                        who opens the dashboard; keys and passwords never leave the server.\n"
+"                        Addresses of private or internal networks are refused."
 msgstr ""
-"Dans un tableau de bord : <code>=BF.SOURCE(\"code\", \"Table\")</code>, ou le bouton\n"
-"                        « Insérer une source » de l'éditeur. Chaque lecture vérifie les droits de la personne\n"
-"                        qui ouvre le tableau de bord ; la clé ne quitte jamais le serveur."
+"Dans un tableau de bord : <code>=BF.SOURCE(\"code\", \"Table\")</code>, ou "
+"le bouton « Insérer une source » de l'éditeur. Chaque lecture vérifie les "
+"droits de la personne qui ouvre le tableau de bord ; clés et mots de passe "
+"ne quittent jamais le serveur. Les adresses de réseaux privés ou internes "
+"sont refusées."
 
 #. module: bf_bi
 #: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__comparison__percentage
@@ -586,12 +732,43 @@ msgid "Invalid filters."
 msgstr "Filtres invalides."
 
 #. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection_table__fmt__json
+msgid "JSON"
+msgstr "JSON"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection_table__records_path
+msgid ""
+"JSON only: where the list of records sits in the answer, e.g. "
+"result.records. Empty: the answer itself."
+msgstr ""
+"JSON seulement : où se trouve la liste des enregistrements dans la réponse, "
+"ex. result.records. Vide : la réponse elle-même."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__web_auth__header
+msgid "Key in a header"
+msgstr "Clé dans un en-tête"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__web_auth__query
+msgid "Key in the address"
+msgstr "Clé dans l'adresse"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__web_secret
+msgid "Key, token or password"
+msgstr "Clé, jeton ou mot de passe"
+
+#. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__kind
 msgid "Kind"
 msgstr "Sorte"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__write_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__write_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__write_uid
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__write_uid
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__write_uid
 msgid "Last Updated by"
@@ -599,6 +776,8 @@ msgstr "Dernière modification par"
 
 #. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__write_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__write_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__write_date
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__write_date
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__write_date
 msgid "Last Updated on"
@@ -734,6 +913,11 @@ msgid "Name of the table in the source."
 msgstr "Nom de la table dans la source."
 
 #. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection_table__name
+msgid "Name used in formulas: =BF.SOURCE(\"code\", \"Table\")."
+msgstr "Nom employé dans les formules : =BF.SOURCE(\"code\", \"Table\")."
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "Named measure"
 msgstr "Mesure nommée"
@@ -776,6 +960,16 @@ msgstr ""
 "zéro)."
 
 #. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__web_auth__none
+msgid "None"
+msgstr "Aucune"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__db_sslmode__disable
+msgid "Not encrypted"
+msgstr "Non chiffré"
+
+#. module: bf_bi
 #: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__note
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
 msgid "Notes"
@@ -790,6 +984,14 @@ msgstr "Nombre"
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "Number of records"
 msgstr "Nombre d'enregistrements"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Old .xls workbooks are not read: save the file as .xlsx."
+msgstr ""
+"Les anciens classeurs .xls ne sont pas lus : enregistrez le fichier en "
+".xlsx."
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_version_view_list
@@ -851,6 +1053,16 @@ msgstr ""
 "Codes d'autres mesures avec + - * / et des parenthèses, ex. revenus - couts."
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_password
+msgid "Password"
+msgstr "Mot de passe"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__request
+msgid "Path or query"
+msgstr "Chemin ou requête"
+
+#. module: bf_bi
 #: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__percent
 msgid "Percentage"
 msgstr "Pourcentage"
@@ -876,12 +1088,28 @@ msgid "Pivot table"
 msgstr "Tableau croisé"
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_port
+msgid "Port"
+msgstr "Port"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__postgresql
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "PostgreSQL"
+msgstr "PostgreSQL"
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
 msgid ""
 "Put this version back in service? The current state will stay in the "
 "history."
 msgstr ""
 "Remettre cette version en service? L'état actuel restera dans l'historique."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__records_path
+msgid "Records path"
+msgstr "Chemin des enregistrements"
 
 #. module: bf_bi
 #: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__domain
@@ -952,6 +1180,16 @@ msgid "Section"
 msgstr "Section"
 
 #. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_host
+msgid "Server"
+msgstr "Serveur"
+
+#. module: bf_bi
 #: model:res.groups,name:bf_bi.group_bi_share
 msgid "Share a dashboard by public link"
 msgstr "Partager un tableau de bord par lien public"
@@ -1011,8 +1249,26 @@ msgstr "Source"
 #. module: bf_bi
 #. odoo-python
 #: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%(code)s”: %(reason)s."
+msgstr "Source « %(code)s » : %(reason)s."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
 msgid "Source “%(code)s”: Grist answered %(status)s."
 msgstr "Source « %(code)s » : Grist a répondu %(status)s."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%(code)s”: no table named “%(table)s”."
+msgstr "Source « %(code)s » : aucune table nommée « %(table)s »."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%(code)s”: the server answered %(status)s."
+msgstr "Source « %(code)s » : le serveur a répondu %(status)s."
 
 #. module: bf_bi
 #. odoo-python
@@ -1027,13 +1283,35 @@ msgid "Source “%s”: access denied."
 msgstr "Source « %s » : accès refusé."
 
 #. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%s”: the answer is too large."
+msgstr "Source « %s » : la réponse est trop volumineuse."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%s”: the database refused the connection or the query."
+msgstr ""
+"Source « %s » : la base de données a refusé la connexion ou la requête."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"Source “%s”: this address is not allowed (private or internal network)."
+msgstr ""
+"Source « %s » : cette adresse n'est pas permise (réseau privé ou interne)."
+
+#. module: bf_bi
 #. odoo-javascript
 #: code:addons/bf_bi/static/src/bundle/source_function.js:0
 msgid ""
-"Spills a table from an external data connection (Grist), with its header."
+"Spills a table from an external data connection (file, web API, database, "
+"Grist), with its header."
 msgstr ""
-"Déploie une table d'une connexion de données externe (Grist), avec son en-"
-"tête."
+"Déploie une table d'une connexion de données externe (fichier, API web, base"
+" de données, Grist), avec son en-tête."
 
 #. module: bf_bi
 #: model:ir.model,name:bf_bi.model_spreadsheet_dashboard
@@ -1048,8 +1326,17 @@ msgstr "Somme"
 #. module: bf_bi
 #. odoo-javascript
 #: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_table__name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__source_table
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
 msgid "Table"
 msgstr "Table"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__table_ids
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Tables"
+msgstr "Tables"
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
@@ -1064,8 +1351,8 @@ msgstr "Tester la connexion"
 #. module: bf_bi
 #. odoo-python
 #: code:addons/bf_bi/models/bf_bi_connection.py:0
-msgid "The Grist address must start with https:// (or http://)."
-msgstr "L'adresse Grist doit commencer par https:// (ou http://)."
+msgid "The address must start with https:// (or http://)."
+msgstr "L'adresse doit commencer par https:// (ou http://)."
 
 #. module: bf_bi
 #. odoo-python
@@ -1091,6 +1378,25 @@ msgstr ""
 "Le filtre « Période » du tableau de bord s'appliquera aussi à cet ajout."
 
 #. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The file is too big (25 MB at most)."
+msgstr "Le fichier est trop gros (25 Mo au plus)."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The path is added to the base address: no spaces, no other address."
+msgstr ""
+"Le chemin s'ajoute à l'adresse de base : pas d'espace, pas d'autre adresse."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The port goes from 1 to 65535."
+msgstr "Le port va de 1 à 65535."
+
+#. module: bf_bi
 #: model:res.groups,comment:bf_bi.group_bi_share
 msgid ""
 "The public link shows a snapshot of what the sharing person sees, to anyone "
@@ -1098,6 +1404,12 @@ msgid ""
 msgstr ""
 "Le lien public montre un instantané de ce que voit la personne qui partage, "
 "à quiconque a le lien."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The query must be one single statement."
+msgstr "La requête doit être une seule instruction."
 
 #. module: bf_bi
 #. odoo-python
@@ -1126,9 +1438,26 @@ msgstr ""
 "                        « Dupliquer et modifier » en fait une copie qui vous appartient."
 
 #. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "This header name cannot carry a key."
+msgstr "Ce nom d'en-tête ne peut pas porter une clé."
+
+#. module: bf_bi
 #: model:ir.model.constraint,message:bf_bi.constraint_bf_bi_measure_code_unique
 msgid "This measure code already exists."
 msgstr "Ce code de mesure existe déjà."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "This parameter name is not valid."
+msgstr "Ce nom de paramètre n'est pas valide."
+
+#. module: bf_bi
+#: model:ir.model.constraint,message:bf_bi.constraint_bf_bi_connection_table_name_unique
+msgid "This table name already exists in the connection."
+msgstr "Ce nom de table existe déjà dans la connexion."
 
 #. module: bf_bi
 #. odoo-javascript
@@ -1159,6 +1488,31 @@ msgstr "Mesure « %s » inconnue."
 #: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
 msgid "Unsaved changes"
 msgstr "Modifications non enregistrées"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"Use an account that can only read: queries already run in a read-only\n"
+"                            transaction, but only the account's own rights truly protect the database."
+msgstr ""
+"Employez un compte qui ne peut que lire : les requêtes roulent déjà dans une"
+" transaction en lecture seule, mais seuls les droits du compte protègent "
+"vraiment la base."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__db_user
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__web_username
+msgid "User name"
+msgstr "Nom d'usager"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__web_auth__basic
+msgid "User name and password"
+msgstr "Nom d'usager et mot de passe"
 
 #. module: bf_bi
 #. odoo-python
@@ -1201,6 +1555,25 @@ msgid "Visible to"
 msgstr "Visible par"
 
 #. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Web API"
+msgstr "API web"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__web
+msgid "Web API (JSON, CSV or OData)"
+msgstr "API web (JSON, CSV ou OData)"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection_table__request
+msgid ""
+"Web API: the path added to the base address, e.g. /customers?status=active. "
+"Database: one SELECT query."
+msgstr ""
+"API web : le chemin ajouté à l'adresse de base, ex. /clients?statut=actif. "
+"Base de données : une seule requête SELECT."
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "What this measure means, for the people who read it"
 msgstr "Ce que veut dire cette mesure, pour les personnes qui la lisent"
@@ -1211,19 +1584,40 @@ msgid "Who sees this data"
 msgstr "Qui voit ces données"
 
 #. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Write the query of this table."
+msgstr "Écrivez la requête de cette table."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "db.example.com"
+msgstr "db.exemple.com"
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "e.g. Billable hours"
 msgstr "ex. Heures facturables"
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
-msgid "e.g. Budgets per customer (Grist)"
-msgstr "ex. Budgets par client (Grist)"
+msgid "e.g. Budgets per customer"
+msgstr "ex. Budgets par client"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "e.g. Customers"
+msgstr "ex. Clients"
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
 msgid "e.g. Hours and margin per customer"
 msgstr "ex. Heures et marge par client"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__web_auth_name
+msgid "e.g. X-API-Key (header) or api_key (address parameter)."
+msgstr "ex. X-API-Key (en-tête) ou api_key (paramètre de l'adresse)."
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
@@ -1232,8 +1626,15 @@ msgstr "ex. heures_facturables"
 
 #. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "e.g. budgets"
 msgstr "ex. budgets"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__web_url
+msgid "e.g. https://api.example.com/v1. Each table adds its own path to it."
+msgstr ""
+"ex. https://api.exemple.com/v1. Chaque table y ajoute son propre chemin."
 
 #. module: bf_bi
 #: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__grist_url
@@ -1241,9 +1642,19 @@ msgid "e.g. https://grist.example.com"
 msgstr "ex. https://grist.exemple.com"
 
 #. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "e.g. result.records"
+msgstr "ex. result.records"
+
+#. module: bf_bi
 #: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
 msgid "e.g. revenue - cost"
 msgstr "ex. revenus - couts"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "https://api.example.com/v1"
+msgstr "https://api.exemple.com/v1"
 
 #. module: bf_bi
 #. odoo-javascript
@@ -1254,6 +1665,60 @@ msgid ""
 msgstr ""
 "sur la\n"
 "                    période choisie, comparé à la période précédente entière."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the CSV file cannot be read"
+msgstr "le fichier CSV ne se lit pas"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the answer is not JSON"
+msgstr "la réponse n'est pas du JSON"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the data cannot be read"
+msgstr "les données ne se lisent pas"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the file is not a valid Excel workbook (.xlsx)"
+msgstr "le fichier n'est pas un classeur Excel valide (.xlsx)"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the file is too big once unpacked"
+msgstr "le fichier est trop gros une fois décompressé"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the query must be one single statement"
+msgstr "la requête doit être une seule instruction"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the records path does not lead to a list"
+msgstr "le chemin des enregistrements ne mène pas à une liste"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "the text encoding is not recognized"
+msgstr "l'encodage du texte n'est pas reconnu"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "this sheet does not exist"
+msgstr "cette feuille n'existe pas"
 
 #. module: bf_bi
 #. odoo-javascript
@@ -1319,3 +1784,547 @@ msgstr "… %s lignes de plus non affichées"
 #: code:addons/bf_bi/static/src/bundle/source_function.js:0
 msgid "… table cut at the connection's row limit"
 msgstr "… table tronquée au plafond de la connexion"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"%(new)s new customer value(s), %(found)s matched to a contact: check them. "
+"Values without a contact count under no customer."
+msgstr ""
+"%(new)s nouvelle(s) valeur(s) client, dont %(found)s rapprochée(s) d'un "
+"contact : à vérifier. Les valeurs sans contact comptent sans client."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "An external measure needs a data connection and a table."
+msgstr "Une mesure externe demande une connexion de données et une table."
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_bf_bi_connection_customer
+msgid "BI connection customer correspondence"
+msgstr "Correspondance des clients d'une connexion BI"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__connection_code
+msgid "Code of the data connection, as in =BF.SOURCE(\"code\", \"Table\")."
+msgstr "Code de la connexion de données, comme dans =BF.SOURCE(\"code\", \"Table\")."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Collect customer values"
+msgstr "Relever les valeurs client"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid ""
+"Column names as in the table's header row. The Customer filter follows the customer\n"
+"                        correspondence of the data connection, which its administrator fills in."
+msgstr ""
+"Noms de colonnes tels qu'à la ligne d'en-tête de la table. Le filtre Client "
+"suit la correspondance des clients de la connexion de données, que son "
+"administration remplit."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__customer_column
+msgid ""
+"Column the dashboard's Customer filter applies to, through the connection's "
+"customer correspondence."
+msgstr ""
+"Colonne à laquelle s'applique le filtre Client du tableau de bord, par la "
+"correspondance des clients de la connexion."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__date_column
+msgid "Column the dashboard's Period filter applies to."
+msgstr "Colonne à laquelle s'applique le filtre Période du tableau de bord."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__value_column
+msgid "Column to aggregate"
+msgstr "Colonne à agréger"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__customer_column
+msgid "Customer column"
+msgstr "Colonne client"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__customer_ids
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Customers"
+msgstr "Clients"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__date_field_type__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_name
+msgid "Date Field Name"
+msgstr "Nom du champ de date"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_type
+msgid "Date Field Type"
+msgstr "Type du champ de date"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__date_field_type__datetime
+msgid "Date and time"
+msgstr "Date et heure"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_column
+msgid "Date column"
+msgstr "Colonne de date"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__value_column
+msgid "Empty: count the rows."
+msgstr "Vide : compter les lignes."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection_customer__partner_id
+msgid "Empty: rows with this value count under no customer."
+msgstr "Vide : les lignes de cette valeur comptent sans client."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__kind__external
+msgid "External source"
+msgstr "Source externe"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"For the dashboards' Customer filter: which contact each customer value of the source\n"
+"                        stands for, for the external measures of this connection. Values without a contact\n"
+"                        count under no customer."
+msgstr ""
+"Pour le filtre Client des tableaux de bord : le contact que désigne chaque "
+"valeur client de la source, pour les mesures externes de cette connexion. "
+"Les valeurs sans contact comptent sans client."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__key
+msgid "Key"
+msgstr "Clé"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection_customer__suggested
+msgid "Matched automatically: check it."
+msgstr "Rapproché automatiquement : à vérifier."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%(code)s”: column “%(column)s” does not hold dates only."
+msgstr ""
+"Mesure « %(code)s » : la colonne « %(column)s » ne contient pas que des "
+"dates."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%(code)s”: column “%(column)s” does not hold numbers only."
+msgstr ""
+"Mesure « %(code)s » : la colonne « %(column)s » ne contient pas que des "
+"nombres."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid ""
+"Measure “%(code)s”: the table has more rows than the connection's maximum "
+"(%(limit)s); the administrator can raise it."
+msgstr ""
+"Mesure « %(code)s » : la table a plus de lignes que le maximum de la "
+"connexion (%(limit)s) ; l'administration peut le relever."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%(code)s”: the table has no column “%(column)s”."
+msgstr "Mesure « %(code)s » : la table n'a pas de colonne « %(column)s »."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: choose an aggregation."
+msgstr "Mesure « %s » : choisissez une agrégation."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: you cannot use this data connection."
+msgstr ""
+"Mesure « %s » : vous ne pouvez pas utiliser cette connexion de données."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "No external measure of this connection has a customer column."
+msgstr "Aucune mesure externe de cette connexion n'a de colonne client."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "Number of rows"
+msgstr "Nombre de lignes"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Only administrators can fill the customer correspondence."
+msgstr "Seule l'administration peut remplir la correspondance des clients."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__partner_field_name
+msgid "Partner Field Name"
+msgstr "Nom du champ client"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__suggested
+msgid "Suggested by Odoo"
+msgstr "Suggéré par Odoo"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__source_table
+msgid ""
+"Table of the connection: a sheet, or a table the administrator defined."
+msgstr ""
+"Table de la connexion : une feuille, ou une table définie par "
+"l'administration."
+
+#. module: bf_bi
+#: model:ir.model.constraint,message:bf_bi.constraint_bf_bi_connection_customer_key_unique
+msgid "This value already has a correspondence in the connection."
+msgstr "Cette valeur a déjà une correspondance dans la connexion."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection_customer__name
+msgid "Value in the source"
+msgstr "Valeur dans la source"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Write the value as it appears in the source."
+msgstr "Écrivez la valeur telle qu'elle figure dans la source."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. Customer"
+msgstr "p. ex. Client"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. Date"
+msgstr "p. ex. Date"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. Invoices"
+msgstr "p. ex. Factures"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "/Finances/Budget 2026.xlsx"
+msgstr "/Finances/Budget 2026.xlsx"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"A Google Cloud service account key (JSON). Share the spreadsheet with the service\n"
+"                            account's address, as a viewer. Each tab is a table."
+msgstr ""
+"Une clé de compte de service Google Cloud (JSON). Partagez la feuille avec "
+"l'adresse du compte de service, en lecture. Chaque onglet est une table."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"An Excel workbook (.xlsx) or a CSV file in this user's files, read at each opening:\n"
+"                            each sheet is a table. Use an app password, never the account password."
+msgstr ""
+"Un classeur Excel (.xlsx) ou un fichier CSV dans les fichiers de cet usager,"
+" lu à chaque ouverture : chaque feuille est une table. Utilisez un mot de "
+"passe d'application, jamais le mot de passe du compte."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"An application registered in Microsoft Entra, with the Files.ReadWrite.All application\n"
+"                            permission granted by an administrator: the least one Microsoft accepts for sharing\n"
+"                            links, and it opens every file of the directory to this application. Odoo only reads\n"
+"                            the file. The file, an Excel workbook or a CSV file, is read at each opening: each\n"
+"                            sheet is a table."
+msgstr ""
+"Une application inscrite dans Microsoft Entra, avec la permission "
+"d'application Files.ReadWrite.All accordée par une personne de "
+"l'administration : la plus petite que Microsoft accepte pour les liens de "
+"partage, et elle ouvre à cette application tous les fichiers de l'annuaire. "
+"Odoo ne fait que lire le fichier. Le fichier, un classeur Excel ou un "
+"fichier CSV, est lu à chaque ouverture : chaque feuille est une table."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__nc_password
+msgid "App password"
+msgstr "Mot de passe d'application"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__ms_client_id
+msgid "Application (client) ID"
+msgstr "ID d'application (client)"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__ms_client_secret
+msgid "Client secret"
+msgstr "Secret client"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"Connection “%s” is incomplete: address, user, app password and file path are"
+" required."
+msgstr ""
+"La connexion « %s » est incomplète : adresse, usager, mot de passe "
+"d'application et chemin du fichier sont requis."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"Connection “%s” is incomplete: directory ID, application ID and client "
+"secret are required."
+msgstr ""
+"La connexion « %s » est incomplète : ID d'annuaire, ID d'application et "
+"secret client sont requis."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: the file sharing link is required."
+msgstr ""
+"La connexion « %s » est incomplète : le lien de partage du fichier est "
+"requis."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: the service account key is required."
+msgstr ""
+"La connexion « %s » est incomplète : la clé du compte de service est "
+"requise."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: the spreadsheet is required."
+msgstr ""
+"La connexion « %s » est incomplète : la feuille de calcul est requise."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s”: the service account key cannot be read."
+msgstr "Connexion « %s » : la clé du compte de service est illisible."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__nc_password
+msgid ""
+"Created in Nextcloud, Personal settings > Security > Devices and sessions. "
+"Never the account password."
+msgstr ""
+"Créé dans Nextcloud, Paramètres personnels > Sécurité > Appareils et "
+"sessions. Jamais le mot de passe du compte."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__ms_tenant
+msgid "Directory (tenant) ID"
+msgstr "ID d'annuaire (locataire)"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__nc_path
+msgid "File path"
+msgstr "Chemin du fichier"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__ms_share_url
+msgid "File sharing link"
+msgstr "Lien de partage du fichier"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__google
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Google Sheets"
+msgstr "Google Sheets"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__gs_spreadsheet
+msgid "Its address or its ID."
+msgstr "Son adresse ou son ID."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__ms_tenant
+msgid "Microsoft Entra: the directory ID, or its domain."
+msgstr "Microsoft Entra : l'ID d'annuaire, ou son domaine."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Nextcloud"
+msgstr "Nextcloud"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__nc_url
+msgid "Nextcloud address"
+msgstr "Adresse Nextcloud"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__nextcloud
+msgid "Nextcloud file"
+msgstr "Fichier Nextcloud"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__nc_user
+msgid "Nextcloud user"
+msgstr "Usager Nextcloud"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection_table__fmt__odata
+msgid "OData"
+msgstr "OData"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "OneDrive or SharePoint"
+msgstr "OneDrive ou SharePoint"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__microsoft
+msgid "OneDrive or SharePoint file"
+msgstr "Fichier OneDrive ou SharePoint"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__nc_path
+msgid "Path in the user's files, e.g. /Finances/Budget 2026.xlsx"
+msgstr ""
+"Chemin dans les fichiers de l'usager, p. ex. /Finances/Budget 2026.xlsx"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__gs_key_input
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__gs_service_account
+msgid "Service account key (JSON)"
+msgstr "Clé du compte de service (JSON)"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__gs_service_account
+msgid "Share the spreadsheet with the service account's address, as a viewer."
+msgstr "Partagez la feuille avec l'adresse du compte de service, en lecture."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%(code)s”: Google answered %(status)s."
+msgstr "Source « %(code)s » : Google a répondu %(status)s."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid ""
+"Source “%(code)s”: the identity provider refused the credentials "
+"(%(status)s)."
+msgstr ""
+"Source « %(code)s » : le fournisseur d'identité a refusé les identifiants "
+"(%(status)s)."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__gs_spreadsheet
+msgid "Spreadsheet"
+msgstr "Feuille de calcul"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The application ID is a GUID."
+msgstr "L'ID d'application est un GUID."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The directory ID is a GUID or a domain name."
+msgstr "L'ID d'annuaire est un GUID ou un nom de domaine."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The file path stays in the user's files: no “..”."
+msgstr "Le chemin reste dans les fichiers de l'usager : pas de « .. »."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__ms_share_url
+msgid "The link from Share > Copy link, for an .xlsx or .csv file."
+msgstr "Le lien de Partager > Copier le lien, pour un fichier .xlsx ou .csv."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "This is not a Google Sheets address or ID."
+msgstr "Ce n'est pas une adresse ni un ID de Google Sheets."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "This is not a Google service account key (JSON)."
+msgstr "Ce n'est pas une clé de compte de service Google (JSON)."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__nc_url
+msgid "e.g. https://cloud.example.com"
+msgstr "p. ex. https://cloud.example.com"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "https://cloud.example.com"
+msgstr "https://cloud.example.com"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "https://docs.google.com/spreadsheets/d/..."
+msgstr "https://docs.google.com/spreadsheets/d/..."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Paste the JSON key here. It is never shown again."
+msgstr "Collez la clé JSON ici. Elle ne s'affiche plus jamais."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__gs_key_input
+msgid ""
+"Paste the JSON key of a Google Cloud service account. It is kept but never "
+"shown again; paste a new one to replace it. Share the spreadsheet with the "
+"service account's address, as a viewer."
+msgstr ""
+"Collez la clé JSON d'un compte de service Google Cloud. Elle est gardée, "
+"mais ne s'affiche plus jamais ; collez-en une nouvelle pour la remplacer. "
+"Partagez la feuille avec l'adresse du compte de service, en lecture."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__gs_client_email
+msgid "Service account"
+msgstr "Compte de service"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "old Excel workbooks (.xls) are not read: save it as .xlsx"
+msgstr ""
+"les anciens classeurs Excel (.xls) ne sont pas lus : enregistrez-le en .xlsx"

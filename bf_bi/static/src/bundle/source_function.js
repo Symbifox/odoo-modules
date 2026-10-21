@@ -39,7 +39,7 @@ function cell(value, type) {
 }
 
 functionRegistry.add("BF.SOURCE", {
-    description: _t("Spills a table from an external data connection (Grist), with its header."),
+    description: _t("Spills a table from an external data connection (file, web API, database, Grist), with its header."),
     category: "Odoo",
     compute: function (code, table, maxRows) {
         const data = this.getters.getBfBiSource(toString(code), toString(table));

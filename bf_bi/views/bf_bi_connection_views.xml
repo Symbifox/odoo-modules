@@ -32,7 +32,7 @@
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="e.g. Budgets per customer (Grist)"/></h1>
+                        <h1><field name="name" placeholder="e.g. Budgets per customer"/></h1>
                     </div>
                     <group>
                         <group string="Source">
@@ -53,10 +53,110 @@
                         <field name="grist_doc_id" required="kind == 'grist'"/>
                         <field name="grist_api_key" password="True" required="kind == 'grist'"/>
                     </group>
+                    <group string="File" invisible="kind != 'file'">
+                        <field name="file_data" filename="file_name" required="kind == 'file'"/>
+                        <field name="file_name" invisible="1"/>
+                        <div class="text-muted" colspan="2">
+                            Excel workbook (.xlsx) or CSV file, 25 MB at most. Each sheet is a table,
+                            its first row the header; a CSV file is the table “Data”.
+                            To update the data, upload the new version of the file.
+                        </div>
+                    </group>
+                    <group string="Web API" invisible="kind != 'web'">
+                        <field name="web_url" required="kind == 'web'" placeholder="https://api.example.com/v1"/>
+                        <field name="web_auth" required="kind == 'web'"/>
+                        <field name="web_auth_name" invisible="web_auth not in ('header', 'query')"
+                               required="kind == 'web' and web_auth in ('header', 'query')"/>
+                        <field name="web_username" invisible="web_auth != 'basic'"/>
+                        <field name="web_secret" password="True" invisible="web_auth in (False, 'none')"
+                               required="kind == 'web' and web_auth not in (False, 'none')"/>
+                    </group>
+                    <group string="PostgreSQL" invisible="kind != 'postgresql'">
+                        <field name="db_host" required="kind == 'postgresql'" placeholder="db.example.com"/>
+                        <field name="db_port" required="kind == 'postgresql'" options="{'format': false}"/>
+                        <field name="db_name" required="kind == 'postgresql'"/>
+                        <field name="db_user" required="kind == 'postgresql'"/>
+                        <field name="db_password" password="True"/>
+                        <field name="db_sslmode" required="kind == 'postgresql'"/>
+                        <div class="text-muted" colspan="2">
+                            Use an account that can only read: queries already run in a read-only
+                            transaction, but only the account's own rights truly protect the database.
+                        </div>
+                    </group>
+                    <group string="Nextcloud" invisible="kind != 'nextcloud'">
+                        <field name="nc_url" required="kind == 'nextcloud'" placeholder="https://cloud.example.com"/>
+                        <field name="nc_user" required="kind == 'nextcloud'"/>
+                        <field name="nc_password" password="True" required="kind == 'nextcloud'"/>
+                        <field name="nc_path" required="kind == 'nextcloud'" placeholder="/Finances/Budget 2026.xlsx"/>
+                        <div class="text-muted" colspan="2">
+                            An Excel workbook (.xlsx) or a CSV file in this user's files, read at each opening:
+                            each sheet is a table. Use an app password, never the account password.
+                        </div>
+                    </group>
+                    <group string="OneDrive or SharePoint" invisible="kind != 'microsoft'">
+                        <field name="ms_tenant" required="kind == 'microsoft'"/>
+                        <field name="ms_client_id" required="kind == 'microsoft'"/>
+                        <field name="ms_client_secret" password="True" required="kind == 'microsoft'"/>
+                        <field name="ms_share_url" required="kind == 'microsoft'"/>
+                        <div class="text-muted" colspan="2">
+                            An application registered in Microsoft Entra, with the Files.ReadWrite.All application
+                            permission granted by an administrator: the least one Microsoft accepts for sharing
+                            links, and it opens every file of the directory to this application. Odoo only reads
+                            the file. The file, an Excel workbook or a CSV file, is read at each opening: each
+                            sheet is a table.
+                        </div>
+                    </group>
+                    <group string="Google Sheets" invisible="kind != 'google'">
+                        <field name="gs_spreadsheet" required="kind == 'google'"
+                               placeholder="https://docs.google.com/spreadsheets/d/..."/>
+                        <field name="gs_client_email" invisible="not gs_client_email"/>
+                        <field name="gs_key_input" required="kind == 'google' and not gs_client_email"
+                               placeholder="Paste the JSON key here. It is never shown again."/>
+                        <div class="text-muted" colspan="2">
+                            A Google Cloud service account key (JSON). Share the spreadsheet with the service
+                            account's address, as a viewer. Each tab is a table.
+                        </div>
+                    </group>
+                    <field name="table_ids" invisible="kind not in ('web', 'postgresql')">
+                        <list string="Tables">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="request"/>
+                            <field name="fmt" column_invisible="parent.kind != 'web'"/>
+                            <field name="records_path" column_invisible="parent.kind != 'web'"/>
+                        </list>
+                        <form string="Table">
+                            <group>
+                                <field name="name" placeholder="e.g. Customers"/>
+                                <field name="request" required="parent.kind == 'postgresql'"
+                                       placeholder="/customers?status=active, or SELECT name, budget FROM projects"/>
+                                <field name="fmt" invisible="parent.kind != 'web'"/>
+                                <field name="records_path" invisible="parent.kind != 'web' or fmt in ('csv', 'odata')"
+                                       placeholder="e.g. result.records"/>
+                            </group>
+                        </form>
+                    </field>
+                    <separator string="Customers" invisible="not id"/>
+                    <div class="text-muted" invisible="not id">
+                        For the dashboards' Customer filter: which contact each customer value of the source
+                        stands for, for the external measures of this connection. Values without a contact
+                        count under no customer.
+                        <button name="action_collect_customers" type="object" string="Collect customer values"
+                                class="btn-link" icon="fa-refresh"/>
+                    </div>
+                    <field name="customer_ids" invisible="not id">
+                        <list string="Customers" editable="bottom">
+                            <field name="name"/>
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="suggested" widget="boolean_toggle" readonly="1"/>
+                        </list>
+                    </field>
                     <p class="text-muted">
                         In a dashboard: <code>=BF.SOURCE("code", "Table")</code>, or the editor's
                         “Insert a source” button. Every read checks the rights of the person
-                        who opens the dashboard; the key never leaves the server.
+                        who opens the dashboard; keys and passwords never leave the server.
+                        Addresses of private or internal networks are refused.
                     </p>
                     <field name="note" placeholder="Notes"/>
                 </sheet>
@@ -70,7 +170,9 @@
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Connect an external source</p>
-            <p>A Grist document, for example, readable in dashboards by the groups you choose.</p>
+            <p>An Excel or CSV file, dropped here or kept in Nextcloud, OneDrive or SharePoint, a Google
+            Sheets spreadsheet, a web API (JSON, CSV or OData), a PostgreSQL database or a Grist document,
+            readable in dashboards by the groups you choose.</p>
         </field>
     </record>
 

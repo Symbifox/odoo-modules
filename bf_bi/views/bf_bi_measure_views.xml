@@ -48,6 +48,14 @@
                         <group invisible="kind != 'formula'">
                             <field name="expression" required="kind == 'formula'" placeholder="e.g. revenue - cost"/>
                         </group>
+                        <group invisible="kind != 'external'">
+                            <field name="connection_code" required="kind == 'external'" placeholder="e.g. budgets"/>
+                            <field name="source_table" required="kind == 'external'" placeholder="e.g. Invoices"/>
+                            <field name="aggregator" required="kind == 'external'"/>
+                            <field name="value_column" placeholder="Number of rows"/>
+                            <field name="date_column" placeholder="e.g. Date"/>
+                            <field name="customer_column" placeholder="e.g. Customer"/>
+                        </group>
                     </group>
                     <group invisible="kind != 'aggregate' or not model_name">
                         <field name="domain" widget="domain" options="{'model': 'model_name', 'in_dialog': True}"/>
@@ -57,6 +65,10 @@
                         for the previous period; or the editor's “Insert a measure” button. The value is always
                         computed for the person looking at the dashboard, under their own access rights, and
                         follows the dashboard's Period and Customer filters.
+                    </p>
+                    <p class="text-muted" invisible="kind != 'external'">
+                        Column names as in the table's header row. The Customer filter follows the customer
+                        correspondence of the data connection, which its administrator fills in.
                     </p>
                     <field name="description" placeholder="What this measure means, for the people who read it"/>
                 </sheet>
