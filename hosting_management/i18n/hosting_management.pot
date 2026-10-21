@@ -12225,6 +12225,45 @@ msgid ""
 msgstr ""
 
 #. module: hosting_management
+#. odoo-python
 #: code:addons/hosting_management/models/hosting_maintenance_window.py:0
 msgid "A maintenance window needs at least one service affected."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"One of the contacts that would disappear, or one of its own contacts, "
+"carries hosting services. Merging would move them to another client, "
+"onto its status page and into its maintenance notices. Keep the record "
+"that carries the services as the destination, or ask a hosting manager."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"The merge would attach the destination contact to another client, and it "
+"carries hosting services, which would follow it onto that client's "
+"status page and into its maintenance notices. Only a hosting manager can "
+"merge it."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"The merge would make the destination a contact of one of its own "
+"contacts. Unarchive the contacts concerned, or merge them in another "
+"order."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"Merging everything automatically would turn subsidiaries into plain "
+"contacts of their parent company, and some of them carry hosting "
+"services. Only a hosting manager can run it."
 msgstr ""

@@ -143,6 +143,14 @@ When a service is activated:
 - **Access**: hosting users read windows, hosting managers create and edit them; the "Clients affected" list is restricted to managers
 - The daily alert-suppression window (Settings > Maintenance Window, below) is a separate mechanism and does not read these records
 
+### Merging Contacts (18.0.2.63.2)
+Odoo's contact merge rewrites every foreign key to the merged record in SQL, hosting services included, and moves the merged record's own contacts under the destination: merging a record into a client would put its services in that client's maintenance notices and on its status page. Outside the Hosting Manager group, administrators included, the merge is refused:
+- when a record that would disappear, or one of its contacts at any depth, carries a hosting service, whatever its state or archiving;
+- when the record that stays carries services and would change client: Odoo gives it a source's parent when it has none, and makes it a company when a source is one;
+- when it would make the destination a contact of one of its own archived contacts, a parent loop that Odoo's own check misses.
+
+The wizard's "merge everything automatically" button is refused too when a subsidiary carries hosting services, since it turns every subsidiary into a plain contact of its parent company in raw SQL. Keeping the record that carries the services as the destination is usually enough; the refusal says so.
+
 ### Activity Integration
 - **Automatic Activity Creation**: Maintenance schedules automatically create Odoo activities
 - **Activity Inbox**: Tasks appear in the clock icon (activity inbox) for easy tracking
@@ -679,6 +687,11 @@ Hosting
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it, not of whatever triggers it. What the hosting team reads is written in the company's language, even when a scheduled job, a public route (backup and provisioning reports) or a user set to another language triggers it: health alerts by email and ntfy, the probes' findings, notes left on services, domains and backups, the audit log, stored names and the end-of-support tag of an endpoint. Activities (service, domain and SSL expiry, setup tasks from a template, maintenance) are written in the assignee's language and created in their environment, so Odoo's "assigned to you" notice follows the assignee too. The email digest is written in each recipient's language, subject and status badges included. The fleet warranty alert follows the user in charge of the client's service, and the license expiry email its recipient. Action names, validation errors, VOIP.ms errors and notifications shown to a user follow that user. A language that a contact or the company still holds but that has been deactivated is passed over for an installed one. On upgrade, the shipped scheduled jobs, activity types, backup report template, maintenance colour rule and software notes switch to English only where the database still holds the text that was shipped; an edited value is left alone.
 
 ## Changelog
+
+### Version 18.0.2.63.2
+- New: a guard on Odoo's contact merge. See the "Merging Contacts" section.
+- Fix: the error messages added in 18.0.2.63.1 showed in English to French users. Odoo only translates a Python message when the catalogue marks it `#. odoo-python`; the `fr_CA.po` entries now carry it. The new messages are also in `fr.po`.
+- New test `tests/test_fusion_contacts.py`, and a French-language check in `tests/test_fenetres_maintenance.py`.
 
 ### Version 18.0.2.63.1
 - New: announced maintenance windows (`hosting.maintenance.window`). See the "Announced Maintenance Windows" section.

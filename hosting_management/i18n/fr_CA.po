@@ -13171,6 +13171,60 @@ msgstr ""
 "changer de nouveau remplace la liste."
 
 #. module: hosting_management
+#. odoo-python
 #: code:addons/hosting_management/models/hosting_maintenance_window.py:0
 msgid "A maintenance window needs at least one service affected."
 msgstr "Une fenêtre de maintenance doit toucher au moins un service."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"One of the contacts that would disappear, or one of its own contacts, "
+"carries hosting services. Merging would move them to another client, "
+"onto its status page and into its maintenance notices. Keep the record "
+"that carries the services as the destination, or ask a hosting manager."
+msgstr ""
+"Une des fiches qui disparaîtraient, ou l'un de ses contacts, porte des "
+"services d'hébergement. La fusion les déplacerait vers un autre client, "
+"sur sa page d'état et dans ses avis de maintenance. Gardez comme "
+"destination la fiche qui porte les services, ou demandez à un "
+"gestionnaire d'hébergement."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"The merge would attach the destination contact to another client, and it "
+"carries hosting services, which would follow it onto that client's "
+"status page and into its maintenance notices. Only a hosting manager can "
+"merge it."
+msgstr ""
+"La fusion rattacherait la fiche de destination à un autre client, et "
+"elle porte des services d'hébergement, qui la suivraient sur la page "
+"d'état de ce client et dans ses avis de maintenance. Seul un "
+"gestionnaire d'hébergement peut la fusionner."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"The merge would make the destination a contact of one of its own "
+"contacts. Unarchive the contacts concerned, or merge them in another "
+"order."
+msgstr ""
+"La fusion ferait de la fiche de destination un contact de l'un de ses "
+"propres contacts. Désarchivez les contacts concernés, ou fusionnez-les "
+"dans un autre ordre."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid ""
+"Merging everything automatically would turn subsidiaries into plain "
+"contacts of their parent company, and some of them carry hosting "
+"services. Only a hosting manager can run it."
+msgstr ""
+"Tout fusionner automatiquement ferait des filiales de simples contacts "
+"de leur société mère, et certaines portent des services d'hébergement. "
+"Seul un gestionnaire d'hébergement peut le lancer."

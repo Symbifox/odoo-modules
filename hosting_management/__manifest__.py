@@ -8,7 +8,9 @@
     #   en français.
     # 18.0.2.63.1: fenêtres de maintenance annoncées aux clients
     #   (hosting.maintenance.window), lues par l'avis et la page d'état.
-    "version": "18.0.2.63.1",
+    # 18.0.2.63.2: la fusion de contacts refuse, hors gestionnaire d'hébergement, de faire
+    #   changer de client des services d'hébergement.
+    "version": "18.0.2.63.2",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

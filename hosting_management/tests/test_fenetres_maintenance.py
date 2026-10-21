@@ -125,6 +125,16 @@ class TestFenetresMaintenance(TransactionCase):
         with self.assertRaises(ValidationError):
             vide.action_announce()
 
+    def test_le_refus_parle_francais(self):
+        """Les messages Python ne se traduisent que marqués `#. odoo-python` au catalogue."""
+        if "fr_CA" not in dict(self.env["res.lang"].get_installed()):
+            self.skipTest("fr_CA inactive")
+        vide = self.env["hosting.maintenance.window"].with_context(lang="fr_CA").create({
+            "name": "Vide", "date_start": fields.Datetime.now() + timedelta(days=1),
+            "date_end": fields.Datetime.now() + timedelta(days=1, hours=1)})
+        with self.assertRaisesRegex(ValidationError, "au moins un service"):
+            vide.action_announce()
+
     def test_les_droits(self):
         usager = new_test_user(self.env, login="essai_fenetre_usager",
                                groups="base.group_user,hosting_management.group_hosting_user")
