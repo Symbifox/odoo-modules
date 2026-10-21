@@ -1,0 +1,287 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_hosting_status
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 11:22+0000\n"
+"PO-Revision-Date: 2026-10-21 11:22+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid ""
+"\"Error\" means the service answered with an error; \"Unreachable\" means it"
+" did not answer. A status changes only after %(count)s consecutive checks."
+msgstr ""
+"« Erreur » veut dire que le service a répondu par une erreur ; « Injoignable"
+" », qu'il n'a pas répondu. Un état ne change qu'après %(count)s "
+"vérifications consécutives."
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "30 days"
+msgstr "30 jours"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid ""
+"A page for this client, opened by a private link without an account:\n"
+"                        its active services, their version, their status and the updates of the\n"
+"                        last 30 days. No security advisory and no server detail."
+msgstr ""
+"Une page pour ce client, ouverte par un lien privé, sans compte :\n"
+"                        ses services actifs, leur version, leur état et les mises à jour des\n"
+"                        30 derniers jours. Aucun avis de sécurité, aucun détail de serveur."
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid ""
+"A status page belongs to the client company (%(company)s), not to one of its"
+" contacts."
+msgstr ""
+"Une page d'état appartient à la société cliente (%(company)s), pas à l'un de"
+" ses contacts."
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_hosting_status
+#: model:ir.model,name:bf_hosting_status.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "Copy the address"
+msgstr "Copier l'adresse"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Development"
+msgstr "Développement"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Error"
+msgstr "Erreur"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Last check:"
+msgstr "Dernière vérification :"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Maintenance in progress"
+msgstr "Maintenance en cours"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "New address"
+msgstr "Nouvelle adresse"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "No active service."
+msgstr "Aucun service actif."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "No check recorded yet."
+msgstr "Aucune vérification enregistrée pour l'instant."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "No update in the last 30 days."
+msgstr "Aucune mise à jour ces 30 derniers jours."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Not monitored"
+msgstr "Non surveillé"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Only a hosting manager can publish a client's status page."
+msgstr ""
+"Seul un gestionnaire d'hébergement peut publier la page d'état d'un client."
+
+#. module: bf_hosting_status
+#: model:ir.model.fields,help:bf_hosting_status.field_res_partner__hosting_status_published
+#: model:ir.model.fields,help:bf_hosting_status.field_res_users__hosting_status_published
+msgid ""
+"Opens the status page to whoever holds its address. Unchecked, the address "
+"answers \"not found\", even with the right token."
+msgstr ""
+"Ouvre la page d'état à quiconque en détient l'adresse. Décochée, l'adresse "
+"répond « introuvable », même avec le bon jeton."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Operational"
+msgstr "En service"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Planned maintenance"
+msgstr "Maintenances planifiées"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Production"
+msgstr "Production"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "Publish"
+msgstr "Publier"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Publish the status page first."
+msgstr "Publiez d'abord la page d'état."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Recent maintenance (30 days)"
+msgstr "Maintenances récentes (30 jours)"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Service"
+msgstr "Service"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Services affected:"
+msgstr "Services touchés :"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Staging"
+msgstr "Préproduction"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Status"
+msgstr "État"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Status of your services"
+msgstr "État de vos services"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "Status page"
+msgstr "Page d'état"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Status page address"
+msgstr "Adresse de la page d'état"
+
+#. module: bf_hosting_status
+#: model:ir.model.fields,field_description:bf_hosting_status.field_res_partner__hosting_status_published
+#: model:ir.model.fields,field_description:bf_hosting_status.field_res_users__hosting_status_published
+msgid "Status page published"
+msgstr "Page d'état publiée"
+
+#. module: bf_hosting_status
+#: model:ir.model.fields,field_description:bf_hosting_status.field_res_partner__hosting_status_token
+#: model:ir.model.fields,field_description:bf_hosting_status.field_res_users__hosting_status_token
+msgid "Status page token"
+msgstr "Jeton de la page d'état"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Status unknown"
+msgstr "État inconnu"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid "Test"
+msgstr "Test"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "The current address will stop working. Continue?"
+msgstr "L'adresse actuelle cessera de fonctionner. Continuer ?"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid ""
+"The status page makes this client's services readable without an account. "
+"This action requires the \"Hosting Manager\" group."
+msgstr ""
+"La page d'état rend les services de ce client lisibles sans compte. Cette "
+"action exige le groupe « Gestionnaire d'hébergement »."
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+msgid ""
+"The status page token must be %(min)s to %(max)s printable ASCII characters,"
+" without spaces."
+msgstr ""
+"Le jeton de la page d'état doit compter de %(min)s à %(max)s caractères "
+"ASCII visibles, sans espace."
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
+msgid "Unpublish"
+msgstr "Dépublier"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Unreachable"
+msgstr "Injoignable"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Updates applied (30 days)"
+msgstr "Mises à jour appliquées (30 jours)"
+
+#. module: bf_hosting_status
+#. odoo-python
+#: code:addons/bf_hosting_status/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Version"
+msgstr "Version"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "Your services"
+msgstr "Vos services"

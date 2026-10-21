@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La page que le client hébergé ouvre sans compte. Le gabarit ne reçoit que
+         des chaînes et des nombres (res_partner._hosting_status_valeurs), et la
+         société émettrice pour son logo.
+         🔴 Page AUTONOME, pas web.frontend_layout : la mise en page du site charge
+         le script de statistiques (qui envoie l'adresse, jeton compris, au serveur
+         de statistiques) et des polices Google. Ici, rien d'externe. -->
+    <!-- Le doctype vit seul ici : un texte « <!DOCTYPE » en tête d'un gabarit fait
+         sauter TOUS ses termes à l'outil de traduction d'Odoo (0 terme exporté). -->
+    <template id="status_page" name="Hosting: client status page">&lt;!DOCTYPE html&gt;
+        <t t-call="bf_hosting_status.status_page_html"/>
+    </template>
+
+    <template id="status_page_html" name="Hosting: client status page (document)">
+        <html t-att-lang="html_lang">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="no-referrer"/>
+                <title t-out="page_title"/>
+                <style>
+                    :root { color-scheme: light dark; --fond: #ffffff; --texte: #1f2328; --pale: #59636e;
+                            --trait: #d1d9e0; --ok: #1a7f37; --mal: #cf222e; --info: #0969da; --neutre: #59636e; --doute: #9a6700; }
+                    @media (prefers-color-scheme: dark) {
+                        :root { --fond: #1f2328; --texte: #f0f6fc; --pale: #9198a1; --trait: #3d444d;
+                                --ok: #3fb950; --mal: #f85149; --info: #4493f8; --neutre: #9198a1; --doute: #d29922; } }
+                    body { margin: 0; background: var(--fond); color: var(--texte);
+                           font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+                    main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+                    header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: var(--pale); }
+                    header img { max-height: 48px; max-width: 160px; }
+                    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+                    h2 { font-size: 1.15rem; margin: 28px 0 8px; }
+                    .pale { color: var(--pale); } .petit { font-size: .875rem; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+                    th:last-child, td:last-child { text-align: right; white-space: nowrap; }
+                    .etiquette { font-size: .75rem; border: 1px solid var(--trait); border-radius: 10px; padding: 1px 7px; margin-left: 6px; white-space: nowrap; }
+                    .etat { font-weight: 600; white-space: nowrap; }
+                    .up { color: var(--ok); } .error, .unreachable { color: var(--mal); } .maintenance { color: var(--info); }
+                    .not_monitored { color: var(--neutre); } .unknown { color: var(--doute); }
+                    ul { list-style: none; padding: 0; }
+                    .fenetre { border: 1px solid var(--trait); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+                    @media (max-width: 640px) {
+                        thead { display: none; }
+                        tr { display: block; border-bottom: 1px solid var(--trait); padding: 8px 0; }
+                        td { display: block; border: 0; padding: 2px 0; text-align: left; }
+                        td:last-child { text-align: left; }
+                        td[data-titre]::before { content: attr(data-titre) " : "; color: var(--pale); }
+                    }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <header>
+                        <img t-attf-src="/web/binary/company_logo?company=#{company.id}" t-att-alt="company.name"/>
+                        <span t-out="company.name"/>
+                    </header>
+
+                    <h1>Status of your services</h1>
+                    <div class="pale" t-out="client_name"/>
+                    <div class="pale petit">
+                        <t t-if="checked_at">Last check: <span t-out="checked_at_text"/></t>
+                        <t t-else="">No check recorded yet.</t>
+                    </div>
+
+                    <t t-if="windows_ahead">
+                        <h2>Planned maintenance</h2>
+                        <div t-foreach="windows_ahead" t-as="w" class="fenetre">
+                            <div>
+                                <strong t-out="w['name']"/>
+                                <span t-if="w['phase'] == 'in_progress'" class="etiquette maintenance">In progress</span>
+                            </div>
+                            <div class="pale petit">
+                                <span t-out="w['start_text']"/> → <span t-out="w['end_text']"/>
+                            </div>
+                            <div t-if="w['impact']" t-out="w['impact']" style="white-space: pre-line;"/>
+                            <div class="pale petit">Services affected: <span t-out="w['services']"/></div>
+                        </div>
+                    </t>
+
+                    <h2>Your services</h2>
+                    <p t-if="not services" class="pale">No active service.</p>
+                    <table t-else="">
+                        <thead>
+                            <tr><th>Service</th><th>Address</th><th>Version</th><th>Status</th><th>30 days</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="services" t-as="s">
+                                <td>
+                                    <span t-out="s['name']"/>
+                                    <span t-if="s['environment'] != 'production'" class="etiquette" t-out="s['environment_label']"/>
+                                </td>
+                                <td t-att-data-titre="label_address"><t t-if="s['address']"><span t-out="s['address']"/></t><t t-else="">—</t></td>
+                                <td t-att-data-titre="label_version"><span t-out="s['software']"/> <span t-out="s['version']"/></td>
+                                <td t-att-class="'etat ' + s['state']">
+                                    <t t-if="s['state'] == 'up'">Operational</t>
+                                    <t t-elif="s['state'] == 'error'">Error</t>
+                                    <t t-elif="s['state'] == 'unreachable'">Unreachable</t>
+                                    <t t-elif="s['state'] == 'maintenance'">Maintenance in progress</t>
+                                    <t t-elif="s['state'] == 'not_monitored'">Not monitored</t>
+                                    <t t-else="">Status unknown</t>
+                                </td>
+                                <td t-att-data-titre="label_uptime">
+                                    <t t-if="s['uptime_text']"><t t-out="s['uptime_text']"/></t>
+                                    <t t-else="">—</t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Updates applied (30 days)</h2>
+                    <p t-if="not updates" class="pale">No update in the last 30 days.</p>
+                    <ul t-else="">
+                        <li t-foreach="updates" t-as="u">
+                            <span t-out="u['date_text']"/> · <span t-out="u['service']"/> :
+                            <t t-if="u['from']"><span t-out="u['from']"/> → </t><span t-out="u['to']"/>
+                        </li>
+                    </ul>
+
+                    <t t-if="windows_past">
+                        <h2>Recent maintenance (30 days)</h2>
+                        <ul>
+                            <li t-foreach="windows_past" t-as="w">
+                                <span t-out="w['start_text']"/> · <span t-out="w['name']"/>
+                                (<span t-out="w['services']"/>)
+                            </li>
+                        </ul>
+                    </t>
+
+                    <p class="pale petit" t-out="footer_text"/>
+                </main>
+            </body>
+        </html>
+    </template>
+
+</odoo>

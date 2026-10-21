@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**248 modules are BUSL-1.1.** The source is published and auditable, and **you
+**249 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -231,6 +231,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_home` | Accueil Symbifox | 18.0.2.1.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.6.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.2.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
+| `bf_hosting_status` | Hosting Status Page | 18.0.1.1.0 | BUSL-1.1 | A status page per hosted client, opened by a private link: services, versions, health and recent updates. |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.4 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_household_base` | Household Base | 18.0.1.0.0 | LGPL-3 | The household group of a Symbifox Personal instance: who belongs to the household, at most ten accounts, and never an administrator among them |
 | `bf_household_family` | Household Family | 18.0.1.1.0 | LGPL-3 | The family of a household instance: members and their roles, children, family papers and emergency cards |
@@ -466,7 +467,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **248 modules: BUSL-1.1.** Production use for your own internal business
+- **249 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

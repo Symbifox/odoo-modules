@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 🔴 Chaque nœud porte le groupe : le client web lit tous les champs de la
+         vue, invisibles compris, et les deux champs sont réservés aux gestionnaires
+         d'hébergement. Sans `groups=`, un interne sans le groupe n'ouvrirait plus
+         aucune fiche contact. -->
+    <record id="res_partner_view_form_hosting_status" model="ir.ui.view">
+        <field name="name">res.partner.form.hosting.status</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Status page" name="hosting_status"
+                      groups="hosting_management.group_hosting_manager"
+                      invisible="parent_id and not is_company">
+                    <group>
+                        <field name="hosting_status_published" readonly="1"/>
+                    </group>
+                    <p class="text-muted">
+                        A page for this client, opened by a private link without an account:
+                        its active services, their version, their status and the updates of the
+                        last 30 days. No security advisory and no server detail.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <button name="action_hosting_status_publish" type="object"
+                                string="Publish" class="btn-primary"
+                                invisible="hosting_status_published"/>
+                        <button name="action_hosting_status_copy_link" type="object"
+                                string="Copy the address" class="btn-primary"
+                                invisible="not hosting_status_published"/>
+                        <button name="action_hosting_status_regenerate_token" type="object"
+                                string="New address" class="btn-secondary"
+                                confirm="The current address will stop working. Continue?"
+                                invisible="not hosting_status_published"/>
+                        <button name="action_hosting_status_unpublish" type="object"
+                                string="Unpublish" class="btn-secondary"
+                                invisible="not hosting_status_published"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

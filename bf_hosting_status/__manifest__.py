@@ -1,0 +1,27 @@
+{
+    "name": "Hosting Status Page",
+    "summary": "A status page per hosted client, opened by a private link: "
+               "services, versions, health and recent updates.",
+    # 18.0.1.0.0: première version de la page d'état. Une page par client
+    #   commercial, à jeton propre, sans compte : ses services actifs, leur
+    #   version, un état lissé au seuil de l'alerte avec l'heure du relevé, la
+    #   disponibilité sur 30 jours et les mises à jour appliquées. Ni avis de
+    #   sécurité ni fenêtre ponctuelle.
+    # 18.0.1.1.0: les fenêtres de maintenance annoncées (hosting.maintenance.window,
+    #   hosting_management 18.0.2.63.1) : à venir et des 30 derniers jours, avec les seuls
+    #   services du client ; « Maintenance en cours » pendant une fenêtre.
+    "version": "18.0.1.1.0",
+    "category": "Services",
+    "website": "https://symbifox.com",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "license": "Other proprietary",
+    "installable": True,
+    "depends": [
+        "hosting_management",
+        "portal",
+    ],
+    "data": [
+        "views/res_partner_views.xml",
+        "views/status_templates.xml",
+    ],
+}
