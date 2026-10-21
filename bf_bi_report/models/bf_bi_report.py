@@ -119,7 +119,7 @@ def is_additive(measure, _memo=None, _path=()):
         return memo[measure.code]
     if measure.code in _path or len(_path) > 10:
         return False
-    if measure.kind == "aggregate":
+    if measure.kind in ("aggregate", "external"):
         memo[measure.code] = measure.aggregator in ("sum", "count")
         return memo[measure.code]
     try:
@@ -407,6 +407,8 @@ class BfBiReport(models.Model):
                 # de sensible).
                 group = self.env["ir.model"].sudo()._get(measure.model_name).with_context(lang=self.env.lang).name \
                     or self.env[measure.model_name]._description
+            elif measure.kind == "external":
+                group = _("External source “%s”", measure.connection_code)
             else:
                 group = _("Formulas")
             out.append({
@@ -792,20 +794,30 @@ class BfBiReport(models.Model):
             partner = leaf.partner_field_name
             if not partner or len(members) >= MAX_MEMBERS:
                 continue
-            Model = self.env[leaf.model_name]  # PAS de sudo : la personne ne voit que ses lignes
-            domain = expression.AND([leaf._eval_domain(),
-                                     self._bf_leaf_domains(leaf, start, end, customers=base["customers"],
-                                                           customer=base["customer"])[leaf.code],
-                                     [(partner, "!=", False)]])
-            spec = "__count" if not leaf.field_name or leaf.aggregator == "count" else "%s:%s" % (leaf.field_name, leaf.aggregator)
-            try:
-                groups = Model._read_group(domain, [partner], [spec], limit=MAX_MEMBERS, order="%s DESC" % spec)
-            except (AccessError, UserError, ValueError):
-                continue  # champ client illisible pour la personne : ce découpage-là est sauté
+            leaf_domain = self._bf_leaf_domains(leaf, start, end, customers=base["customers"],
+                                                customer=base["customer"])[leaf.code]
+            if leaf.kind == "external":
+                # Lignes de la source, au nom de la personne ; leur client vient de la correspondance.
+                try:
+                    groups = [(self.env["res.partner"].browse(partner_id), value)
+                              for partner_id, value in leaf._bf_external_groups(leaf_domain, MAX_MEMBERS)]
+                except (AccessError, UserError):
+                    continue
+            else:
+                Model = self.env[leaf.model_name]  # PAS de sudo : la personne ne voit que ses lignes
+                domain = expression.AND([leaf._eval_domain(), leaf_domain, [(partner, "!=", False)]])
+                spec = "__count" if not leaf.field_name or leaf.aggregator == "count" else "%s:%s" % (leaf.field_name, leaf.aggregator)
+                try:
+                    groups = Model._read_group(domain, [partner], [spec], limit=MAX_MEMBERS, order="%s DESC" % spec)
+                except (AccessError, UserError, ValueError):
+                    continue  # champ client illisible pour la personne : ce découpage-là est sauté
             for record, _value in groups:
                 if record and record.id not in members:
+                    # Contrôle explicite : un nom déjà au cache de la transaction (lu ailleurs en
+                    # sudo) serait rendu sans lever AccessError.
                     try:
-                        members[record.id] = record.display_name
+                        readable = record.has_access("read")
+                        members[record.id] = record.display_name if readable else _("Customer #%s", record.id)
                     except AccessError:
                         members[record.id] = _("Customer #%s", record.id)
         return members

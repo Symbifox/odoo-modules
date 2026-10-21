@@ -90,7 +90,13 @@ splits a measure by month, quarter, year or customer by adding one term to the
 filter of each base measure, then calls the same computation as a dashboard
 cell. A measure the person cannot read shows an error in that visual only.
 
+A measure on an **external source** (a workbook, an API or a database, see
+`bf_bi`) is split the same way: its rows are read on behalf of the person
+looking, and its customers come from the connection's correspondence table, so
+a budget kept in Excel can sit next to Odoo's revenue in the same visual.
+
 Customers are ranked by the first measure; the rest is grouped as *Others*.
+A customer the person cannot read is shown as *Customer #id*, never by name.
 Date-time fields follow the person's time zone.
 
 ## Access
@@ -103,6 +109,15 @@ Date-time fields follow the person's time zone.
 ## Translations
 
 Source labels are in English; French comes from `i18n/fr_CA.po`.
+
+## Version history
+
+- **18.0.1.0.2**: measures on an external source of `bf_bi` (18.0.1.8.0 or later)
+  are split by month, quarter, year and customer like Odoo measures; a customer
+  name is shown only to people allowed to read that contact.
+- **18.0.1.0.1**: labels of their own (no collision with other modules'
+  translations), translated messages, page names kept by versions.
+- **18.0.1.0.0**: first public version.
 
 ## License
 

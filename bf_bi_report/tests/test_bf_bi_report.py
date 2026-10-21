@@ -793,14 +793,10 @@ class TestTemplates(TransactionCase):
         measure = self.env["bf.bi.measure"].search([("code", "=", "hour_bank_adjustments")])
         if not measure:
             self.skipTest("pont des banques d'heures absent")
-        # Ce qui manquait déjà avant : le rapport de direction lit aussi des
-        # mesures d'autres ponts (hébergement), absents d'une base sans eux.
-        before = {t["key"]: t["missing_codes"] for t in Report.bf_list_templates()}
         measure.active = False
         statuses = {t["key"]: t for t in Report.bf_list_templates()}
         for key in ("hour_bank", "management"):
-            expected = sorted(set(before[key]) | {"hour_bank_adjustments"})
-            self.assertEqual((statuses[key]["available"], sorted(statuses[key]["missing_codes"])), (False, expected))
+            self.assertEqual((statuses[key]["available"], statuses[key]["missing_codes"]), (False, ["hour_bank_adjustments"]))
             with self.assertRaises(UserError):
                 Report.bf_create_from_template(key)
 
@@ -814,3 +810,108 @@ class TestTemplates(TransactionCase):
         for key in missing:
             with self.assertRaises(UserError):
                 Report.with_user(self.designer).bf_create_from_template(key)
+
+
+@tagged("post_install", "-at_install")
+class TestExternalMeasures(TransactionCase):
+    """Une mesure sur une source externe se découpe comme une mesure Odoo."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from odoo.addons.bf_bi.tests.test_bf_bi_external import factures
+        from odoo.addons.bf_bi.tests.test_bf_bi_sources import b64
+        cls.Report = cls.env["bf.bi.report"]
+        Partner = cls.env["res.partner"].with_context(tracking_disable=True)
+        cls.alpha = Partner.create({"name": "Banc rapport ext Alpha", "is_company": True})
+        cls.beta = Partner.create({"name": "Banc rapport ext Bêta", "is_company": True})
+        cls.reader = new_test_user(cls.env, "bi-rapport-ext", groups="base.group_user")
+        cls.outsider = new_test_user(cls.env, "bi-rapport-ext-dehors", groups="base.group_user")
+        cls.env["bf.bi.connection"].create({
+            "name": "Factures", "code": "essai_rapport_ext", "kind": "file", "file_data": b64(factures()),
+            "file_name": "factures.xlsx", "user_ids": [(6, 0, [cls.reader.id])],
+            "customer_ids": [(0, 0, {"name": "Alpha", "partner_id": cls.alpha.id}),
+                             (0, 0, {"name": "Bêta", "partner_id": cls.beta.id})],
+        })
+        base = {"kind": "external", "connection_code": "essai_rapport_ext", "source_table": "Factures",
+                "value_column": "Montant", "date_column": "Date"}
+        Measure = cls.env["bf.bi.measure"]
+        cls.amount = Measure.create(dict(base, name="Montant", code="essai_rapport_ext_montant", aggregator="sum",
+                                         customer_column="Client"))
+        cls.average = Measure.create(dict(base, name="Moyenne", code="essai_rapport_ext_moyenne", aggregator="avg",
+                                          customer_column="Client"))
+        cls.no_customer = Measure.create(dict(base, name="Sans client", code="essai_rapport_ext_sans_client",
+                                              aggregator="sum"))
+
+    def query(self, spec, user=None):
+        filters = {"period": {"preset": "year"}, "customers": [], "selection": None}
+        with patch.object(BfBiReport, "_bf_today", lambda self: D(2026, 3, 15)):
+            # Messages lus en anglais (texte source), même sur une base en fr_CA.
+            return self.Report.with_user(user or self.reader).with_context(tz="America/Toronto", lang="en_US").bf_query(
+                spec, filters)
+
+    def test_total_and_previous_period(self):
+        r = self.query({"measures": ["essai_rapport_ext_montant"]})
+        self.assertEqual((r["total"], r["previous"]), ([187.0], [40.0]))
+
+    def test_by_month(self):
+        r = self.query({"measures": ["essai_rapport_ext_montant"], "dimension": "month"})
+        self.assertEqual([(row["label"], row["values"][0]) for row in r["rows"]],
+                         [("2026-01", 150.0), ("2026-02", 30.0), ("2026-03", 7.0)])
+
+    def test_by_customer_through_the_correspondence(self):
+        r = self.query({"measures": ["essai_rapport_ext_montant"], "dimension": "customer", "limit": 10})
+        self.assertEqual([(row["key"], row["values"][0]) for row in r["rows"]],
+                         [(self.alpha.id, 150.0), (self.beta.id, 30.0), ("others", 7.0)])
+        self.assertEqual(r["rows"][0]["label"], "Banc rapport ext Alpha")
+        self.assertEqual(sum(row["values"][0] for row in r["rows"]), r["total"][0])
+
+    def test_waterfall_by_customer_adds_up(self):
+        r = self.query({"measures": ["essai_rapport_ext_montant"], "dimension": "customer", "limit": 10,
+                        "kind": "waterfall"})
+        deltas = {row["key"]: row["delta"] for row in r["rows"]}
+        self.assertEqual(deltas, {self.alpha.id: 110.0, self.beta.id: 30.0, "others": 7.0})
+        self.assertEqual(r["previous"][0] + sum(deltas.values()), r["total"][0])
+
+    def test_a_sum_adds_up_an_average_does_not(self):
+        self.assertTrue(is_additive(self.amount))
+        self.assertFalse(is_additive(self.average))
+        r = self.query({"measures": ["essai_rapport_ext_moyenne"], "dimension": "customer", "kind": "waterfall"})
+        self.assertTrue(r["error"])
+
+    def test_without_customer_column_no_split_by_customer(self):
+        r = self.query({"measures": ["essai_rapport_ext_sans_client"], "dimension": "customer", "kind": "heatmap"})
+        self.assertIn("customer field", r["error"])
+
+    def test_a_contact_the_reader_cannot_read_stays_anonymous(self):
+        """La correspondance relie une valeur à un contact que le lecteur ne peut pas lire : il voit
+        ses montants, pas son nom, même si ce nom est déjà au cache de la transaction (lu en sudo).
+
+        Entre sociétés, la correspondance le refuse déjà (check_company) ; une règle
+        d'enregistrement posée pour l'essai rend le contact illisible autrement."""
+        cache = self.env["res.partner"].create({"name": "Banc rapport ext Caché", "is_company": True})
+        self.env["ir.rule"].create({
+            "name": "Banc : contact caché", "model_id": self.env["ir.model"]._get("res.partner").id,
+            "groups": [Command.link(self.env.ref("base.group_user").id)],
+            "domain_force": "[('id', '!=', %d)]" % cache.id})
+        connection = self.env["bf.bi.connection"].search([("code", "=", "essai_rapport_ext")])
+        self.env["bf.bi.connection.customer"].create(
+            {"connection_id": connection.id, "name": "Inconnu", "partner_id": cache.id})
+        self.assertTrue(cache.sudo().display_name)
+        r = self.query({"measures": ["essai_rapport_ext_montant"], "dimension": "customer", "limit": 10})
+        row = next(row for row in r["rows"] if row["key"] == cache.id)
+        self.assertEqual((row["label"], row["values"][0]), ("Customer #%s" % cache.id, 7.0))
+
+    def test_the_designer_sees_external_measures_under_their_source(self):
+        designer = new_test_user(self.env, "bi-rapport-ext-concepteur", groups="base.group_user,bf_bi.group_bi_designer")
+        fields_ = {f["code"]: f for f in self.Report.with_user(designer).with_context(lang="en_US").bf_designer_fields()}
+        montant = fields_["essai_rapport_ext_montant"]
+        self.assertEqual(montant["group"], "External source “essai_rapport_ext”")
+        self.assertEqual((montant["has_date"], montant["has_partner"], montant["additive"]), (True, True, True))
+        self.assertFalse(fields_["essai_rapport_ext_sans_client"]["has_partner"])
+
+    def test_the_reader_needs_the_connection(self):
+        r = self.query({"measures": ["essai_rapport_ext_montant"], "dimension": "customer"}, user=self.outsider)
+        self.assertEqual(r["total"], [None])
+        self.assertIn("essai_rapport_ext_montant", r["errors"])
+        self.assertEqual([row["key"] for row in r["rows"]], [])
