@@ -102,11 +102,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
 | `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
 | `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.0.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link |
-| `bf_bi` | BF BI | 18.0.1.6.1 | BUSL-1.1 | Design and edit dashboards on screen, straight from Odoo's views |
+| `bf_bi` | BF BI | 18.0.1.9.0 | BUSL-1.1 | Design and edit dashboards on screen, straight from Odoo's views, with external sources: Excel, Nextcloud, OneDrive, Google Sheets, web APIs, PostgreSQL |
 | `bf_bi_cx` | BF BI - Customer experience | 18.0.1.0.3 | BUSL-1.1 | Customer experience dashboard: NPS, responses, complaints and resolution time |
 | `bf_bi_hosting` | BF BI - Hosting | 18.0.1.0.3 | BUSL-1.1 | Hosting dashboard: services, uptime, backups, storage, expiring domains |
 | `bf_bi_hour_bank` | BF BI - Hour banks | 18.0.1.0.4 | BUSL-1.1 | Hour banks dashboard: balances computed by the hour bank module, adjustments |
-| `bf_bi_report` | BF BI Reports | 18.0.1.0.1 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
+| `bf_bi_report` | BF BI Reports | 18.0.1.0.2 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
