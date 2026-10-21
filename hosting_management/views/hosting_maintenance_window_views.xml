@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Fenêtres de maintenance annoncées aux clients. -->
+    <record id="hosting_maintenance_window_view_list" model="ir.ui.view">
+        <field name="name">hosting.maintenance.window.list</field>
+        <field name="model">hosting.maintenance.window</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'" decoration-info="state == 'draft'">
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="name"/>
+                <field name="server_id"/>
+                <field name="phase" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'announced'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_maintenance_window_view_form" model="ir.ui.view">
+        <field name="name">hosting.maintenance.window.form</field>
+        <field name="model">hosting.maintenance.window</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_announce" type="object" string="Announce"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="hosting_management.group_hosting_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state == 'cancelled'"
+                            groups="hosting_management.group_hosting_manager"/>
+                    <button name="action_reset_to_draft" type="object" string="Back to draft"
+                            invisible="state != 'cancelled'"
+                            groups="hosting_management.group_hosting_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,announced"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Server upgrade"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="phase" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="server_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="impact" placeholder="e.g. About 45 minutes of interruption within the window."/>
+                    </group>
+                    <notebook>
+                        <page string="Services affected" name="services">
+                            <field name="service_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="environment"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Clients affected" name="clients"
+                              groups="hosting_management.group_hosting_manager">
+                            <field name="partner_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Internal notes" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_maintenance_window_view_search" model="ir.ui.view">
+        <field name="name">hosting.maintenance.window.search</field>
+        <field name="model">hosting.maintenance.window</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="server_id"/>
+                <field name="service_ids"/>
+                <filter name="announced" string="Announced" domain="[('state', '=', 'announced')]"/>
+                <filter name="to_come" string="Not finished" domain="[('date_end', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_maintenance_window_action" model="ir.actions.act_window">
+        <field name="name">Maintenance windows</field>
+        <field name="res_model">hosting.maintenance.window</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_come': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">Announce a maintenance window</p>
+            <p>A one-off interruption announced to the clients concerned: a server, a start,
+               an end, a subject and an impact written for them.</p>
+        </field>
+    </record>
+
+</odoo>

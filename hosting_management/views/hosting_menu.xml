@@ -52,6 +52,13 @@
         sequence="15"/>
 
     <menuitem
+        id="hosting_menu_maintenance_windows"
+        name="Maintenance windows"
+        parent="hosting_menu_maintenance"
+        action="hosting_maintenance_window_action"
+        sequence="5"/>
+
+    <menuitem
         id="hosting_menu_maintenance_all"
         name="All schedules"
         parent="hosting_menu_maintenance"

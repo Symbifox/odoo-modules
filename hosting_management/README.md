@@ -132,6 +132,17 @@ When a service is activated:
 - **Digest Integration**: Include overdue and upcoming maintenance in email digests
 - **Multiple Views**: List, kanban, and calendar views for maintenance schedules
 
+### Announced Maintenance Windows (18.0.2.63.1)
+- **One record per announced interruption**: subject, start, end, server, the services affected and the expected impact, under Hosting > Maintenance > Maintenance windows
+- **Services filled from the server**: choosing a server lists every active service on it; the list can then be edited by hand, and choosing the server again replaces it
+- **Draft, Announced, Cancelled**: only announced windows are read by client-facing surfaces, and a window cannot be announced without at least one service
+- **Phase computed from the clock**: upcoming, in progress or done
+- **Per-client notice context**: `_hosting_notice_context(partner)` gives a notice template the window's date in the client's language and time zone (the end time alone when the window starts and ends on the same local day, the full end date otherwise), its duration, the expected impact, and only that client's own services
+- **Client resolution that does not trust a stored value**: the client of a contact is found by Odoo's rule (company, or contact without a parent) rather than by the stored `commercial_partner_id`, which older records can hold empty: otherwise two clients with an empty value would see each other's services
+- **Subject and impact are shared text**: every client a window touches reads them, so they must never name a client (the field help says so); services, by contrast, are filtered per client
+- **Access**: hosting users read windows, hosting managers create and edit them; the "Clients affected" list is restricted to managers
+- The daily alert-suppression window (Settings > Maintenance Window, below) is a separate mechanism and does not read these records
+
 ### Activity Integration
 - **Automatic Activity Creation**: Maintenance schedules automatically create Odoo activities
 - **Activity Inbox**: Tasks appear in the clock icon (activity inbox) for easy tracking
@@ -559,6 +570,7 @@ The shared helper at `~/lib/hosting-report.sh` is sourced by both wizard scripts
 | `hosting.health.check` | Health check results with timestamps |
 | `hosting.maintenance.schedule` | Scheduled maintenance tasks for services |
 | `hosting.maintenance.template` | Maintenance task templates by software type |
+| `hosting.maintenance.window` | Announced, one-off maintenance windows shown to the clients concerned |
 | `hosting.maintenance.template.line` | Individual task definitions within templates |
 | `hosting.digest` | Email digest configuration |
 | `hosting.dashboard` | Transient model for dashboard KPIs |
@@ -636,6 +648,7 @@ Hosting
 │   ├── Expiring Soon
 │   └── Updates Available
 ├── Maintenance
+│   ├── Maintenance Windows
 │   ├── All Schedules
 │   ├── Overdue
 │   ├── Due This Week
@@ -666,6 +679,11 @@ Hosting
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it, not of whatever triggers it. What the hosting team reads is written in the company's language, even when a scheduled job, a public route (backup and provisioning reports) or a user set to another language triggers it: health alerts by email and ntfy, the probes' findings, notes left on services, domains and backups, the audit log, stored names and the end-of-support tag of an endpoint. Activities (service, domain and SSL expiry, setup tasks from a template, maintenance) are written in the assignee's language and created in their environment, so Odoo's "assigned to you" notice follows the assignee too. The email digest is written in each recipient's language, subject and status badges included. The fleet warranty alert follows the user in charge of the client's service, and the license expiry email its recipient. Action names, validation errors, VOIP.ms errors and notifications shown to a user follow that user. A language that a contact or the company still holds but that has been deactivated is passed over for an installed one. On upgrade, the shipped scheduled jobs, activity types, backup report template, maintenance colour rule and software notes switch to English only where the database still holds the text that was shipped; an edited value is left alone.
 
 ## Changelog
+
+### Version 18.0.2.63.1
+- New: announced maintenance windows (`hosting.maintenance.window`). See the "Announced Maintenance Windows" section.
+- `_hosting_windows_for_services(services)` returns the announced windows touching those services, upcoming ones and those that ended within the last 30 days, for a client-facing status page. It flushes the computed service list first, so a window created in the same transaction is found.
+- New test `tests/test_fenetres_maintenance.py`: services filled from the server, dates, draft and cancelled windows left out, phase, per-client services in the notice, two-day windows, English notice, empty `commercial_partner_id`, announcing without a service, and access rights.
 
 ### Version 18.0.2.63.0
 - Change: labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Each text follows its reader: the company's language for what the hosting team reads, the assignee's for activities, the recipient's for the digest and the expiry emails, the user's for what is shown on screen. See the Languages section.

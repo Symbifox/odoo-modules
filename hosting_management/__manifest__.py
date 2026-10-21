@@ -6,7 +6,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.63.0",
+    # 18.0.2.63.1: fenêtres de maintenance annoncées aux clients
+    #   (hosting.maintenance.window), lues par l'avis et la page d'état.
+    "version": "18.0.2.63.1",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -53,6 +55,7 @@
         "views/hosting_health_check_views.xml",
         "views/hosting_health_daily_snapshot_views.xml",
         "views/hosting_maintenance_schedule_views.xml",
+        "views/hosting_maintenance_window_views.xml",
         "views/hosting_maintenance_template_views.xml",
         "views/hosting_service_views.xml",  # Must come after maintenance_schedule (references action)
         "views/hosting_dashboard_views.xml",

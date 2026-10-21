@@ -13037,3 +13037,140 @@ msgid ""
 msgstr ""
 "⚠️ La route de réveil a ACCEPTÉ un jeton invalide (HTTP %(code)s). La porte "
 "est ouverte."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_maintenance_window.py:0
+msgid "A maintenance window must end after it starts."
+msgstr "Une fenêtre de maintenance doit finir après son début."
+
+#. module: hosting_management
+#: model_terms:ir.actions.act_window,help:hosting_management.hosting_maintenance_window_action
+msgid ""
+"A one-off interruption announced to the clients concerned: a server, a start,\n"
+"               an end, a subject and an impact written for them."
+msgstr ""
+"Une interruption ponctuelle annoncée aux clients concernés : un serveur, un début,\n"
+"               une fin, un objet et un impact rédigés pour eux."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "Announce"
+msgstr "Annoncer"
+
+#. module: hosting_management
+#: model_terms:ir.actions.act_window,help:hosting_management.hosting_maintenance_window_action
+msgid "Announce a maintenance window"
+msgstr "Annoncer une fenêtre de maintenance"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_maintenance_window__state__announced
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_search
+msgid "Announced"
+msgstr "Annoncée"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "Back to draft"
+msgstr "Remettre en brouillon"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_maintenance_window__state__cancelled
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_search
+msgid "Cancelled"
+msgstr "Annulée"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_maintenance_window__partner_ids
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "Clients affected"
+msgstr "Clients touchés"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_maintenance_window__impact
+msgid "Expected impact"
+msgstr "Impact prévu"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_maintenance_window__phase__in_progress
+msgid "In progress"
+msgstr "En cours"
+
+#. module: hosting_management
+#: model:ir.actions.act_window,name:hosting_management.hosting_maintenance_window_action
+#: model:ir.ui.menu,name:hosting_management.hosting_menu_maintenance_windows
+msgid "Maintenance windows"
+msgstr "Fenêtres de maintenance"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_maintenance_window__note
+msgid "Never shown to clients."
+msgstr "Jamais montré aux clients."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_search
+msgid "Not finished"
+msgstr "Non terminées"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_maintenance_window__phase
+msgid "Phase"
+msgstr "Phase"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_maintenance_window__service_ids
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "Services affected"
+msgstr "Services touchés"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_maintenance_window__name
+msgid ""
+"Shown to every client concerned, on the status page and in the notice: never"
+" name a client here."
+msgstr ""
+"Montré à chaque client concerné, sur la page d'état et dans l'avis : ne "
+"jamais nommer un client ici."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_maintenance_window__impact
+msgid ""
+"Shown to every client concerned. Example: about 45 minutes of interruption "
+"within the window."
+msgstr ""
+"Montré à chaque client concerné. Exemple : environ 45 minutes d'interruption"
+" dans la fenêtre."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_maintenance_window__name
+msgid "Subject"
+msgstr "Objet"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_maintenance_window__phase__upcoming
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "e.g. About 45 minutes of interruption within the window."
+msgstr "ex. Environ 45 minutes d'interruption dans la fenêtre."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_maintenance_window_view_form
+msgid "e.g. Server upgrade"
+msgstr "ex. Mise à niveau du serveur"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_maintenance_window__server_id
+msgid ""
+"Fills in the services affected: every active service on this server. "
+"Changing it again replaces the list."
+msgstr ""
+"Remplit les services touchés : chaque service actif de ce serveur. Le "
+"changer de nouveau remplace la liste."
+
+#. module: hosting_management
+#: code:addons/hosting_management/models/hosting_maintenance_window.py:0
+msgid "A maintenance window needs at least one service affected."
+msgstr "Une fenêtre de maintenance doit toucher au moins un service."
