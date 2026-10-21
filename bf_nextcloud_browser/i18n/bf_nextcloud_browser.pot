@@ -1,0 +1,2607 @@
+# Translation template for Nextcloud File Browser.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_nextcloud_browser 18.0.4.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_client_folder.py:0
+msgid ""
+"\"%(a)s\" and \"%(b)s\" are nested: a client folder cannot contain another "
+"one."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "\"%s\" contains a %%XX sequence: the browser does not support this name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "\"%s\" exceeds the %s MB limit and was not sent."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "%(n)s attachment(s) copied to %(where)s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "%(name)s: %(error)s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "%(name)s: %(url)s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "%d folders under %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "%s (client folder)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s B"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s GB"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s KB"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s MB"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s PB"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s TB"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "%s already has a folder: %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s files exceed the %s MB limit and were not sent."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s files uploaded."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s hidden file(s)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "%s is invalid."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s other share(s): see the shares"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s public link(s): see the shares"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "%s selected"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "(PROJETS)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_project_form_nc_browser
+msgid "(PROJETS)/001 - Project name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "(expires on %s)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_task_form2_nc_browser
+msgid "(optional) task-specific subfolder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "(the 100 most recent; refine the search)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_folder_pick_form
+msgid ""
+".\n"
+"                    The folders closest to the name come first."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_share_preset__expiry_days
+msgid "0 = no expiry."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid ""
+"A Nextcloud window will open. Approve the access Odoo asks for,\n"
+"                            then close that window. You can remove the access at any time,\n"
+"                            here or in Nextcloud (Settings, Security, Devices and sessions)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_client_folder.py:0
+msgid "A client folder cannot be the browser's root."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_client_folder.py:0
+msgid "A client folder cannot be the client folders root."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_client_folder.py:0
+msgid "A client folder cannot be the root '/'."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "A file or folder with this name already exists at the destination."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid ""
+"A folder \"%s\" already exists for this client: check its contents, then "
+"link it (\"Link a Nextcloud folder\")."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "A folder \"%s\" already exists under %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "A folder with this name already exists at the destination."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "A new client folder name cannot contain \"/\"."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "A new client folder name must contain {client}."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_user_credential
+msgid "A person's Nextcloud connection"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__access
+msgid "Access"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Access to the Nextcloud browser is not allowed."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Actions"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_link_hosts
+msgid ""
+"Additional hostnames, comma-separated, under which this same Nextcloud is "
+"reached (for example a second domain). Chatter links that use them are "
+"recognized in \"Linked Nextcloud files\". The configuration's address is "
+"always recognized."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__taken_by
+msgid "Already linked to"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__app_password_encrypted
+msgid "App Password Encrypted"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Article not found."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "At most"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "At most %s attachments at a time."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Attachments copied to Nextcloud, %(dossier)s: %(noms)s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__bf_nc_user_credential__state__pending
+msgid "Awaiting approval"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Back to the default size"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Back to the folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_client_folder_create_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Cannot delete the root folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid "Cannot reach Nextcloud: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Cannot rename the root folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_folder_pick_form
+msgid "Choose"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_folder_pick
+msgid "Choose a Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Choose a share type:"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Choose at least one attachment."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_folder_pick_form
+msgid "Choose the Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_project_form_nc_browser
+msgid "Choose the project folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Circle"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Cited"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Clear search"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Clear selection"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Click a file, or \"Insert\" for a folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__partner_id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_client_folder_search
+msgid "Client"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_project__nc_client_partner_id
+msgid "Client (folder)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_project__nc_client_folder_id
+msgid "Client folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "Client folder created in Nextcloud: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_client_template
+msgid "Client folder template"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.actions.act_window,name:bf_nextcloud_browser.action_bf_nc_client_folder
+#: model:ir.ui.menu,name:bf_nextcloud_browser.menu_bf_nc_client_folder
+msgid "Client folders"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_clients_root
+msgid "Client folders root"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_folder_pick_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Close (Esc)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_folder_color
+msgid ""
+"Color (hex) of the folder icons in the browser. Default: charcoal. Set the "
+"accent color (#29ABE2) for contrast."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__config_id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__config_id
+#: model:ir.ui.menu,name:bf_nextcloud_browser.menu_nc_browser_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Connect my Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Connect your Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid ""
+"Connect your Nextcloud (Nextcloud button in the top bar) to see the status "
+"of these files."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Connect your Nextcloud account to browse these files."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__bf_nc_user_credential__state__connected
+msgid "Connected"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__connected_on
+msgid "Connected on"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.ui.menu,name:bf_nextcloud_browser.menu_bf_nc_user_credential
+msgid "Connections"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Copy"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Copy link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__template
+msgid "Copy of"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid ""
+"Copy the internal link (opens for people who already have access in "
+"Nextcloud)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Could not create the share link."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_client_folder_create_form
+msgid "Create"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_client_folder_create
+msgid "Create a client's Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_client_folder_create_form
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_partner_form_nc_browser
+msgid "Create the client folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__create_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__create_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Creates a public link: it opens for anyone who receives it."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Default link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Default public link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Delete"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Delete selection"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Disconnect"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Disconnect Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__display_name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Download"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_user_credential
+msgid ""
+"Each person connects their own account from the file browser.\n"
+"               Deleting a line also revokes their access on the Nextcloud side."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Edit in Collabora"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Edit in Collabora (new tab)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_credentials, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Email"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Empty folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "Empty folder name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Error during the Nextcloud search: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Error while copying: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Error while deleting: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Error while moving: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Error while storing the file: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Error."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__browser_root_prefix
+msgid ""
+"Every path reachable from the embedded file browser must be under this "
+"prefix (e.g. /Company/). Defense in depth on top of each record's own "
+"folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Existing shares"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Expires on"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__expiry_days
+msgid "Expiry (days)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Expiry not checked"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_open_extensions
+msgid ""
+"Extensions (comma-separated) whose click opens the file directly in "
+"Nextcloud (e.g. Collabora) rather than in the built-in preview."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_open_extensions
+msgid "Extensions opening Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "External"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Failed for: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Federated"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid ""
+"Fewer than 3 characters: filters the folder. From 3 on: searches all "
+"folders."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "File"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "File attachments in the client folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "File linked."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "File name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "File no. %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "File too large (at most %s MB per upload)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "File uploaded."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Filter or search…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/project_project.py:0
+msgid "First link a Nextcloud folder to the client %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__flow_poll_endpoint
+msgid "Flow Poll Endpoint"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__flow_poll_token_encrypted
+msgid "Flow Poll Token Encrypted"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__flow_started_on
+msgid "Flow Started On"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__name
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__folder_id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__name
+msgid "Folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_folder_color
+msgid "Folder color"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__name
+msgid "Folder name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__line_ids
+msgid "Folders"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__target_name
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_folder_pick_form
+msgid "For"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_share_preset__password_protected
+msgid "Generates a random password for the link."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:res.groups,comment:bf_nextcloud_browser.group_nc_browser_user
+msgid ""
+"Gives access to the Nextcloud file browser embedded in projects and tasks."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Group"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_panel_height_pct
+msgid ""
+"Height, as a percentage of the window, of the embedded panel opened from the"
+" systray. Same rule as the width: it is a starting value, replaced by each "
+"person's preference."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Hide hidden files"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Insert"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Insert a Nextcloud link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Insert a link to this item in the message"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Insert: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__root
+msgid "Inside"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Internal"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Internal link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Internal link (for people who already have access in Nextcloud)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid ""
+"Internal link copied: it opens for people who already have access to the "
+"file in Nextcloud."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Invalid ID."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Invalid file content."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Invalid file name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "Invalid folder name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Invalid name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid ""
+"It only opens for people who already have access to this file in Nextcloud. "
+"No share is created."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid ""
+"It only opens for people who already have access to this folder in "
+"Nextcloud. No share is created."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Knowledge article"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__write_uid
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_browser__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder_create__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__write_date
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_partner_form_nc_browser
+msgid "Link a Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_client_folder
+msgid "Link a folder from the \"Nextcloud folder\" tab of a company."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Link address"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Link copied."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Link copied. Password: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Link file"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Link the file"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Link to the matrix / Knowledge"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Link type"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Linked Nextcloud files"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Loading error."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_security_awareness
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Loading…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Matrix item"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Matrix item not found."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "Model not supported: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Modified"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__nc_display_name
+msgid "Name in Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_projects_subfolder
+msgid ""
+"Name of the subfolder, in each client folder, holding one folder per "
+"project. A project's folder is chosen there. Empty: projects are chosen "
+"directly in the client's folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_project__nc_client_folder_available
+msgid "Nc Client Folder Available"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_partner__nc_client_folder_creation_enabled
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_users__nc_client_folder_creation_enabled
+msgid "Nc Client Folder Creation Enabled"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_partner__nc_client_folders_enabled
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_users__nc_client_folders_enabled
+msgid "Nc Client Folders Enabled"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_partner__nc_documents_config_id
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_users__nc_documents_config_id
+msgid "Nc Documents Config"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_client_name_pattern
+msgid "New client folder name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "New folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "New name"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "New share"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.actions.client,name:bf_nextcloud_browser.action_nc_browser_app
+#: model:ir.ui.menu,name:bf_nextcloud_browser.menu_nc_browser_root
+msgid "Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Nextcloud OCS error: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__nc_user_id
+msgid "Nextcloud account"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Nextcloud account: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid ""
+"Nextcloud answered with an address that is not the configured server's."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:res.groups,name:bf_nextcloud_browser.group_nc_browser_user
+msgid "Nextcloud browser"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_client_folder
+msgid "Nextcloud client folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_task__nc_documents_config_id
+msgid "Nextcloud config"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Nextcloud connected: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.actions.act_window,name:bf_nextcloud_browser.action_bf_nc_user_credential
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_user_credential_list
+msgid "Nextcloud connections"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Nextcloud did not return the ID of \"%s\"."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Nextcloud does not let you remove this share."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Nextcloud file"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_browser
+msgid "Nextcloud file browser RPC facade"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: model:ir.ui.menu,name:bf_nextcloud_browser.menu_nc_browser_app
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_project_form_nc_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_task_form2_nc_browser
+msgid "Nextcloud files"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Nextcloud files linked in this thread"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_task__nc_documents_folder
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_partner_form_nc_browser
+msgid "Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_project__nc_browser_folder
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_task__nc_browser_folder
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_partner__nc_browser_folder
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_users__nc_browser_folder
+msgid "Nextcloud folder (browser)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_client_template
+msgid ""
+"Nextcloud folder copied to create a new client's folder (e.g. "
+"/Company/(Clients)/(TEMPLATE FOLDER)). Empty: no creation from Odoo."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_clients_root
+msgid ""
+"Nextcloud folder holding one folder per client (e.g. /Company/(Clients)/). A"
+" company's folder is chosen there. Must be under the browser's root prefix."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_partner__nc_client_folder_ids
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_res_users__nc_client_folder_ids
+msgid "Nextcloud folders"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid ""
+"Nextcloud granted access, but refuses to say which account it belongs to."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Nextcloud identity refused."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__nc_login
+msgid "Nextcloud login"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__path
+msgid "Nextcloud path"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid "Nextcloud refused the connection (HTTP %s)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Nextcloud refused the file: HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid "Nextcloud refused to open a connection (HTTP %s)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"Nextcloud refused your connection: it was revoked. Reconnect your account."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"Nextcloud refuses access to your account for now (account disabled, or "
+"server under maintenance)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Nextcloud search error: HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_nextcloud_share_preset
+msgid "Nextcloud share preset"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_task__nc_task_subfolder
+msgid "Nextcloud subfolder (task)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "No Nextcloud configuration available."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "No Nextcloud folder is set for this record."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid ""
+"No Nextcloud link in this record's messages. To add one, use the cloud in "
+"the composer."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "No attachments in this thread."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_client_folder
+msgid "No client folder linked."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "No expiry"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "No file or folder has this name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "No matrix item for this project."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "No shares."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "No usable Nextcloud configuration (browser root prefix)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_user_credential
+msgid "Nobody has connected their Nextcloud yet."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Not copied"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Not found: deleted, or not shared with you"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Not in your shares: removed, or created by someone else"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "OCS error (share list): HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "OCS error (share removal): HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "OCS error (share): HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid ""
+"One of the attachments does not belong to this thread, or you cannot read "
+"it."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.constraint,message:bf_nextcloud_browser.constraint_bf_nc_user_credential_user_config_uniq
+msgid "Only one Nextcloud connection per person and per configuration."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Only the 200 most recent links are shown."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Open full page"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Open in Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Open link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Open the folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_project_task__nc_task_subfolder
+msgid ""
+"Optional subpath under the project's Nextcloud folder, specific to this task"
+" (e.g. 'Attachments')."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. hosting_management
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Other"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_link_hosts
+msgid "Other addresses of this Nextcloud"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_panel_height_pct
+msgid "Panel height (%)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_panel_width_pct
+msgid "Panel width (%)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_securetransfer
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__password_protected
+msgid "Password protected"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Password: "
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__path
+msgid "Path"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_project_project__nc_project_subfolder
+msgid ""
+"Path relative to the client folder, e.g. (PROJETS)/001 - Rollout. Empty: the"
+" project opens the client's folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_user_credential_ids
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "People's connections"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Permanently delete \"%s\"?"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Permanently delete %s item(s)?"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, bf_security_awareness
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__user_id
+msgid "Person"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__pick_id
+msgid "Pick"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Preview"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_project__nc_project_subfolder
+msgid "Project subfolder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_projects_subfolder
+msgid "Projects subfolder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Public link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__nextcloud_share_preset__access__read_write
+msgid "Read / write"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__nextcloud_share_preset__access__read
+msgid "Read only"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Reading messages and Nextcloud…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Reading shares…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Reading the thread…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "Record not found."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_security_awareness
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Refresh"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Reload"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Remove"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Remove share"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Remove this share"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Rename"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Reopen the window"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_require_email_match
+msgid "Require the person's login"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__res_id
+msgid "Res"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick__res_model
+msgid "Res Model"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Resize"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Root folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__browser_root_prefix
+msgid "Root prefix (browser)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Save this record first to browse its files."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Search term"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Searching all folders…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Selection deleted."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_client_folder__sequence
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_nextcloud_browser, hosting_management
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__nc_server
+msgid "Server"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Server:"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid ""
+"Set \"Client folders root\" and \"Client folder template\" on the Nextcloud "
+"configuration."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid ""
+"Set \"Client folders root\" on the Nextcloud configuration (e.g. "
+"/Company/(Clients)/)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Share \"%s\""
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Share %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Share link"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Share link copied to the clipboard."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Share password, to send separately: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__share_preset_ids
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "Share presets"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Share removed."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Share:"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "Share: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Shares"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__score
+msgid "Similarity (%)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. hosting_management
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Size"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__state
+msgid "Status"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_folder_pick_line__subfolder
+msgid "Subfolder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_folder_pick_line
+msgid "Suggested Nextcloud folder"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Talk conversation"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Team"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The Nextcloud search took too long (30 s)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_bf_nc_user_credential__nc_server
+msgid ""
+"The Nextcloud server that issued the app password. It is never sent anywhere"
+" else."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "The Odoo Knowledge app is not installed on this instance."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid ""
+"The approved Nextcloud account does not match your Odoo login. Log in to "
+"Nextcloud with your own account, then try again. An administrator can turn "
+"off this check on the configuration."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "The attachment is copied, it also stays in Odoo."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid ""
+"The browser acts on your behalf: you see the files Nextcloud\n"
+"                            lets you see, and share links carry your name."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid ""
+"The browser requires a root prefix. Set \"Root prefix (browser)\" (e.g. "
+"/Company/) on the Nextcloud configuration."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid ""
+"The browser will no longer have access to your files, and the access given "
+"to Odoo will be removed from your Nextcloud."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_project_project__nc_client_folder_id
+msgid ""
+"The client folder this project lives in. Picked automatically when the "
+"client has only one."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The client folders root cannot be '/'."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_bf_nc_client_folder__partner_id
+msgid "The company, or the person who is a client themselves."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"The configuration's WebDAV path must end with /files so that each person "
+"uses their own account."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"The configuration's WebDAV path must end with /files so that the search "
+"knows which files to search."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "The connection request expired. Start again."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "The destination is not a folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "The folder is linked to the company: %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_client_folder.py:0
+msgid "The folder path is required."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The panel %(dim)s must be between 40 and 100."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The projects subfolder is a folder name, not a path: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid ""
+"The public link to \"%s\" will stop working for everyone who received it, "
+"including in messages already sent."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "The record's Nextcloud folder cannot be the root '/'."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "The root folder cannot be shared through a public link."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid ""
+"The standalone browser requires a root prefix. Set \"Root prefix (browser)\""
+" (e.g. /Company/) on the Nextcloud configuration before using this app."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The template cannot be found in your Nextcloud: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid "The template cannot contain the client folders root."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/res_partner.py:0
+msgid ""
+"The template is a client's folder: its files would be copied everywhere."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_bf_nc_client_folder_create_form
+msgid ""
+"The template is copied as is, with its subfolders, then the folder is\n"
+"                    linked to the company. The number follows the highest one already there."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "The template requires a client folders root."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.constraint,message:bf_nextcloud_browser.constraint_bf_nc_client_folder_path_uniq
+msgid "This Nextcloud folder is already linked to a client."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"This folder cannot be found in your Nextcloud, or it is not shared with you."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "This folder does not belong to the project's client."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_folder_pick.py:0
+msgid "This folder is already linked to %s."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid ""
+"This name could not be read back (a character Windows refuses?): numbering "
+"would always restart at 1."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "This record has no client folder: choose where to copy."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "This share is not cited in this thread."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid ""
+"This share is not yours: remove it in Nextcloud if you have the right to."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "This share is outside the browser's folder."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid ""
+"This share no longer exists, or Nextcloud does not show it to you: nothing "
+"was removed."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "Thread attachments"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "Too large, left in Odoo: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Too many files already have the name \"%s\"."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
+#. bf_nextcloud_browser, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Type"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Unknown link type."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Unreadable answer from Nextcloud (shares)."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid "Unreadable answer from Nextcloud."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "Unsupported model: %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Upload"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "View in Nextcloud (new tab)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Waiting for your approval in the Nextcloud window…"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "WebDAV COPY error: HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "WebDAV DELETE error: HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "WebDAV MOVE error: HTTP %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_require_email_match
+msgid ""
+"When a person connects their Nextcloud account, the approved account (their "
+"Nextcloud login or email address) must match the login of their Odoo user, "
+"which only an administrator can change. Without this check, a login page "
+"forwarded to someone else would connect the sender to the recipient's files."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "Which link to put in the message?"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_panel_width_pct
+msgid ""
+"Width, as a percentage of the window, of the embedded panel opened from the "
+"systray. Starting value only: each person can then resize the panel, and "
+"their preference wins."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "Your Nextcloud connection is unreadable. Reconnect."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid ""
+"Your connection was revoked in Nextcloud. Reconnect your account to "
+"continue."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "attachment(s) to «"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "attachments at a time."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "e.g. /Company/(Clients)/"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "e.g. /Company/(Clients)/(TEMPLATE FOLDER)"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
+msgid "e.g. nextcloud.other-domain.com"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "expires after %s days"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "expires on %s"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "expiry not checked"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
+msgid "file missing from Odoo's storage"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "height"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "no expiry"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/project_project.py:0
+msgid "of the project"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "password"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
+msgid "pending"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "read / write"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
+msgid "read only"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "result(s) for «"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "times"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "to:"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-python
+#: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
+msgid "width"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/js/nc_links.js:0
+msgid "write allowed"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_client_name_pattern
+msgid ""
+"{NNN}: next number, on at least as many digits as there are Ns. {client}: "
+"the company name, cleaned of the characters Windows refuses."
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "· by"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "· password"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_links.xml:0
+msgid "· too large"
+msgstr ""
+
+#. module: bf_nextcloud_browser
+#. odoo-javascript
+#: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
+msgid "», in all folders"
+msgstr ""

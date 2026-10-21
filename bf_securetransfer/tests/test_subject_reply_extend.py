@@ -33,6 +33,10 @@ class TestSubjectReplyExtend(BaseNeuve, TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_securetransfer"], ["fr_CA"], overwrite=True)
         cls.brand = cls.env.ref("bf_securetransfer.brand_default")
         icp = cls.env["ir.config_parameter"].sudo()
         icp.set_param("bf_securetransfer.quota_daily_transfers_per_ip", "500")

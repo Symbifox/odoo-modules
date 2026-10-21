@@ -32,7 +32,7 @@
                         </h1>
                         <label for="version"/>
                         <h2>
-                            <field name="version" placeholder="Numéro de version"/>
+                            <field name="version" placeholder="Version number"/>
                         </h2>
                     </div>
                     <group>
@@ -47,13 +47,13 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Notes de version" name="release_notes">
+                        <page string="Release notes" name="release_notes">
                             <field name="release_notes"/>
                         </page>
-                        <page string="Changements incompatibles" name="breaking_changes">
+                        <page string="Incompatible changes" name="breaking_changes">
                             <field name="breaking_changes"/>
                         </page>
-                        <page string="Notes de migration" name="migration_notes">
+                        <page string="Migration notes" name="migration_notes">
                             <field name="migration_notes"/>
                         </page>
                         <page string="Services" name="services">
@@ -81,16 +81,16 @@
             <search>
                 <field name="software_id"/>
                 <field name="version"/>
-                <filter name="filter_lts" string="LTS uniquement" domain="[('is_lts', '=', True)]"/>
+                <filter name="filter_lts" string="LTS only" domain="[('is_lts', '=', True)]"/>
                 <separator/>
-                <filter name="filter_supported" string="Supporté" domain="[('support_status', '=', 'supported')]"/>
-                <filter name="filter_security" string="Sécurité uniquement" domain="[('support_status', '=', 'security_only')]"/>
-                <filter name="filter_deprecated" string="Obsolète" domain="[('support_status', '=', 'deprecated')]"/>
-                <filter name="filter_eol" string="Fin de vie" domain="[('support_status', '=', 'eol')]"/>
-                <group expand="0" string="Grouper par">
-                    <filter name="group_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
-                    <filter name="group_status" string="État du support" context="{'group_by': 'support_status'}"/>
-                    <filter name="group_impact" string="Impact de la mise à jour" context="{'group_by': 'update_impact'}"/>
+                <filter name="filter_supported" string="Supported" domain="[('support_status', '=', 'supported')]"/>
+                <filter name="filter_security" string="Security only" domain="[('support_status', '=', 'security_only')]"/>
+                <filter name="filter_deprecated" string="Obsolete" domain="[('support_status', '=', 'deprecated')]"/>
+                <filter name="filter_eol" string="End of life" domain="[('support_status', '=', 'eol')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_software" string="Software" context="{'group_by': 'software_id'}"/>
+                    <filter name="group_status" string="Support status" context="{'group_by': 'support_status'}"/>
+                    <filter name="group_impact" string="Impact of the update" context="{'group_by': 'update_impact'}"/>
                 </group>
             </search>
         </field>
@@ -98,16 +98,16 @@
 
     <!-- Software Version Action -->
     <record id="hosting_software_version_action" model="ir.actions.act_window">
-        <field name="name">Versions logicielles</field>
+        <field name="name">Software versions</field>
         <field name="res_model">hosting.software.version</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_software_version_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Suivre les versions logicielles
+                Track software versions
             </p>
             <p>
-                Suivez les versions logicielles, les notes de version et les instructions de migration.
+                Track software versions, release notes and migration instructions.
             </p>
         </field>
     </record>

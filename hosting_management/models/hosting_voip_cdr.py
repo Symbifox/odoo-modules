@@ -18,34 +18,34 @@ _NON_DIGIT = re.compile(r"\D")
 
 class HostingVoipCdr(models.Model):
     _name = "hosting.voip.cdr"
-    _description = "Appel VOIP.ms (CDR)"
+    _description = "VOIP.ms call (CDR)"
     _order = "call_date desc"
     _rec_name = "voipms_uniqueid"
 
     call_date = fields.Datetime(string="Date", index=True)
-    caller = fields.Char(string="Appelant")
+    caller = fields.Char(string="Caller")
     destination = fields.Char(string="Destination")
     direction = fields.Selection(
-        [("incoming", "Entrant"), ("outgoing", "Sortant")], string="Sens")
+        [("incoming", "Incoming"), ("outgoing", "Outgoing")], string="Direction")
     disposition = fields.Selection(
-        [("answered", "Répondu"), ("noanswer", "Sans réponse"),
-         ("busy", "Occupé"), ("failed", "Échoué")],
-        string="Issue")
-    seconds = fields.Integer(string="Durée (s)")
-    minutes = fields.Float(string="Durée (min)", compute="_compute_minutes", store=True)
-    cost = fields.Float(string="Coût")
-    voipms_uniqueid = fields.Char(string="ID unique VOIP.ms", index=True)
-    voipms_account = fields.Char(string="Sous-compte")
+        [("answered", "Answered"), ("noanswer", "No answer"),
+         ("busy", "Busy"), ("failed", "Failed")],
+        string="Outcome")
+    seconds = fields.Integer(string="Duration (s)")
+    minutes = fields.Float(string="Duration (min)", compute="_compute_minutes", store=True)
+    cost = fields.Float(string="Cost")
+    voipms_uniqueid = fields.Char(string="VOIP.ms unique ID", index=True)
+    voipms_account = fields.Char(string="Sub-account")
     did_id = fields.Many2one(
         "hosting.voip.did", string="DID", ondelete="set null", index=True)
     partner_id = fields.Many2one(
         "res.partner", related="did_id.partner_id", store=True,
         string="Client", readonly=True)
-    dedup_hash = fields.Char(string="Hash dédup", index=True)
+    dedup_hash = fields.Char(string="Dedup hash", index=True)
 
     _sql_constraints = [
         ("dedup_hash_uniq", "unique(dedup_hash)",
-         "Cet appel CDR existe déjà (déduplication)."),
+         "This CDR call already exists (deduplication)."),
     ]
 
     @api.depends("seconds")

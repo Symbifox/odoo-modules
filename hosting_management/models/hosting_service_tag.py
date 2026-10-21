@@ -5,22 +5,22 @@ from odoo import fields, models
 
 class HostingServiceTag(models.Model):
     _name = "hosting.service.tag"
-    _description = "Étiquette de service d'hébergement"
+    _description = "Hosting service tag"
     _order = "name"
 
     name = fields.Char(
-        string="Nom de l'étiquette",
+        string="Tag name",
         required=True,
         translate=True,
     )
     color = fields.Integer(
-        string="Index de couleur",
+        string="Color index",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 
     _sql_constraints = [
-        ("name_uniq", "UNIQUE(name)", "Le nom de l'étiquette doit être unique !"),
+        ("name_uniq", "UNIQUE(name)", "The tag name must be unique!"),
     ]

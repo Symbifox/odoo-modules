@@ -30,7 +30,7 @@
             <form>
                 <header>
                     <button name="action_test_connection" type="object"
-                        string="Tester la connexion" class="btn-primary"/>
+                        string="Test connection" class="btn-primary"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" title="Archive" bg_color="text-bg-danger"
@@ -38,11 +38,11 @@
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="ex: Nextcloud Blue Fox"/>
+                            <field name="name" placeholder="e.g. Blue Fox Nextcloud"/>
                         </h1>
                     </div>
                     <group>
-                        <group name="nextcloud" string="Configuration Nextcloud">
+                        <group name="nextcloud" string="Nextcloud configuration">
                             <field name="nextcloud_base_url"
                                 placeholder="https://nextcloud.example.com"/>
                             <field name="webdav_path"
@@ -53,19 +53,19 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active"/>
                         </group>
-                        <group name="sharing" string="Parametres de partage">
+                        <group name="sharing" string="Share settings">
                             <field name="default_share_expiry_days"/>
                             <field name="share_password_enabled"/>
                         </group>
                     </group>
-                    <group name="tls" string="Securite TLS" groups="base.group_system">
+                    <group name="tls" string="TLS security" groups="base.group_system">
                         <group>
                             <field name="ca_bundle_path"
                                 placeholder="/etc/ssl/certs/ca-certificates.crt"/>
                             <field name="allow_insecure"/>
                         </group>
                     </group>
-                    <group name="status" string="Statut" invisible="not last_sync">
+                    <group name="status" string="Sync status" invisible="not last_sync">
                         <group>
                             <field name="last_sync"/>
                             <field name="last_sync_status" widget="badge"
@@ -90,26 +90,26 @@
             <search>
                 <field name="name"/>
                 <field name="nextcloud_user"/>
-                <filter name="active" string="Actifs" domain="[('active', '=', True)]"/>
-                <filter name="inactive" string="Archives" domain="[('active', '=', False)]"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
             </search>
         </field>
     </record>
 
     <!-- Action -->
     <record id="action_nextcloud_document_config" model="ir.actions.act_window">
-        <field name="name">Configurations Nextcloud Documents</field>
+        <field name="name">Nextcloud Documents configurations</field>
         <field name="res_model">nextcloud.document.config</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_nextcloud_document_config_search"/>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Configurer une connexion Nextcloud pour les documents
+                Set up a Nextcloud connection for documents
             </p>
             <p>
-                Ajoutez une configuration pour connecter vos documents Odoo
-                au stockage Nextcloud via WebDAV.
+                Add a configuration to connect your Odoo documents
+                to Nextcloud storage through WebDAV.
             </p>
         </field>
     </record>

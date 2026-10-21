@@ -42,6 +42,15 @@ export class NcLinkDialog extends Component {
         return this.props.presets || [];
     }
 
+    // Texts the template cannot translate (an OWL expression is never a term).
+    get title() {
+        return _t("Link the file");
+    }
+
+    presetOption(p) {
+        return _t("Share: %s", p.name);
+    }
+
     get canConfirm() {
         return this.state.target === "item" ? !!this.state.itemId : !!this.state.articleId;
     }
@@ -131,19 +140,27 @@ export class NcShareDialog extends Component {
             this.state.shares = (res && res.shares) || [];
             this.state.error = "";
         } catch (e) {
-            this.state.error = (e && e.data && e.data.message) || (e && e.message) || _t("Erreur.");
+            this.state.error = (e && e.data && e.data.message) || (e && e.message) || _t("Error.");
         } finally {
             this.state.loading = false;
         }
     }
 
+    get title() {
+        return _t("Share \"%s\"", this.props.filename);
+    }
+
+    accessLabel(share) {
+        return " (" + (share.writable ? _t("read / write") : _t("read only")) + ")";
+    }
+
     presetLabel(p) {
-        const parts = [p.access === "read_write" ? _t("lecture / écriture") : _t("lecture seule")];
+        const parts = [p.access === "read_write" ? _t("read / write") : _t("read only")];
         // Toujours une echeance : le serveur rend l'echeance reelle (celle du
         // prereglage, ou la duree par defaut de la configuration).
-        parts.push(p.expiry_days ? _t("expire après %s jours", p.expiry_days) : _t("sans expiration"));
+        parts.push(p.expiry_days ? _t("expires after %s days", p.expiry_days) : _t("no expiry"));
         if (p.password_protected) {
-            parts.push(_t("mot de passe"));
+            parts.push(_t("password"));
         }
         return "(" + parts.join(", ") + ")";
     }
@@ -151,9 +168,9 @@ export class NcShareDialog extends Component {
     async copy(share) {
         try {
             await navigator.clipboard.writeText(share.url);
-            this.notification.add(_t("Lien copié."), { type: "success" });
+            this.notification.add(_t("Link copied."), { type: "success" });
         } catch {
-            this.notification.add(share.url, { title: _t("Lien de partage"), sticky: true });
+            this.notification.add(share.url, { title: _t("Share link"), sticky: true });
         }
     }
 
@@ -165,15 +182,15 @@ export class NcShareDialog extends Component {
             const res = await this.props.revokeShare(share);
             if (res && res.gone) {
                 this.notification.add(
-                    _t("Ce partage n'existe plus, ou Nextcloud ne vous le montre pas : rien n'a été retiré."),
+                    _t("This share no longer exists, or Nextcloud does not show it to you: nothing was removed."),
                     { type: "warning" }
                 );
             } else {
-                this.notification.add(_t("Partage retiré."), { type: "success" });
+                this.notification.add(_t("Share removed."), { type: "success" });
             }
         } catch (e) {
             this.notification.add(
-                (e && e.data && e.data.message) || (e && e.message) || _t("Erreur."),
+                (e && e.data && e.data.message) || (e && e.message) || _t("Error."),
                 { type: "danger" }
             );
         }
@@ -199,6 +216,17 @@ export class NcInsertDialog extends Component {
 
     presetLabel(p) {
         return NcShareDialog.prototype.presetLabel.call(this, p);
+    }
+
+    get title() {
+        return _t("Insert: %s", this.props.filename);
+    }
+
+    /** One sentence per case: "this folder" / "this file" do not agree alike in every language. */
+    get internalHint() {
+        return this.props.isDir
+            ? _t("It only opens for people who already have access to this folder in Nextcloud. No share is created.")
+            : _t("It only opens for people who already have access to this file in Nextcloud. No share is created.");
     }
 
     choose(mode, preset) {
@@ -366,7 +394,7 @@ export class NcBrowser extends Component {
             this._applyConnection(await this._call("nc_status", []));
         } catch (e) {
             this.state.error =
-                (e && e.data && e.data.message) || (e && e.message) || _t("Erreur de chargement.");
+                (e && e.data && e.data.message) || (e && e.message) || _t("Loading error.");
             this.state.ready = true;
             return;
         }
@@ -439,7 +467,7 @@ export class NcBrowser extends Component {
         if (this._handleConnectionError(e)) {
             return;
         }
-        const msg = (e && e.data && e.data.message) || (e && e.message) || _t("Erreur.");
+        const msg = (e && e.data && e.data.message) || (e && e.message) || _t("Error.");
         this.notification.add(msg, { type: "danger" });
     }
 
@@ -567,7 +595,7 @@ export class NcBrowser extends Component {
                 this._stopPolling();
                 this.state.conn.loginUrl = "";
                 this.notification.add(
-                    _t("La demande de connexion a expire. Recommencez."),
+                    _t("The connection request expired. Start again."),
                     { type: "warning" }
                 );
                 if (res.connected) {
@@ -579,7 +607,7 @@ export class NcBrowser extends Component {
                 this._stopPolling();
                 this.state.conn.loginUrl = "";
                 this.notification.add(
-                    _t("Nextcloud connecte : %s", this.state.conn.displayName),
+                    _t("Nextcloud connected: %s", this.state.conn.displayName),
                     { type: "success" }
                 );
                 await this.load(this._rememberedPath());
@@ -616,11 +644,10 @@ export class NcBrowser extends Component {
 
     disconnect() {
         this.dialog.add(ConfirmationDialog, {
-            title: _t("Deconnecter Nextcloud"),
-            body: _t(
-                "Le navigateur n'aura plus acces a vos fichiers, et l'acces donne a Odoo sera supprime de votre Nextcloud."
+            title: _t("Disconnect Nextcloud"),
+            body: _t("The browser will no longer have access to your files, and the access given to Odoo will be removed from your Nextcloud."
             ),
-            confirmLabel: _t("Deconnecter"),
+            confirmLabel: _t("Disconnect"),
             confirm: async () => {
                 try {
                     this._applyConnection(await this._call("nc_disconnect", []));
@@ -641,7 +668,7 @@ export class NcBrowser extends Component {
 
     async load(relPath) {
         if (this.needsRecord && !this.resId) {
-            this.state.error = _t("Enregistrez d'abord cette fiche pour parcourir ses fichiers.");
+            this.state.error = _t("Save this record first to browse its files.");
             this.state.ready = true;
             return;
         }
@@ -693,7 +720,7 @@ export class NcBrowser extends Component {
             this.state.entries = [];
             this.state.breadcrumb = [];
             this.state.error =
-                (e && e.data && e.data.message) || (e && e.message) || _t("Erreur de chargement.");
+                (e && e.data && e.data.message) || (e && e.message) || _t("Loading error.");
         } finally {
             this.state.loading = false;
             this.state.ready = true;
@@ -718,7 +745,7 @@ export class NcBrowser extends Component {
     _rootNode() {
         if (!this.state.tree.length) {
             this.state.tree = [
-                { rel: "", name: _t("Racine"), expanded: true, loaded: false, loading: false, children: [] },
+                { rel: "", name: _t("Root folder"), expanded: true, loaded: false, loading: false, children: [] },
             ];
         }
         return this.state.tree[0];
@@ -827,9 +854,9 @@ export class NcBrowser extends Component {
 
     _typeLabel(entry) {
         if (entry.is_dir) {
-            return _t("Dossier");
+            return _t("Folder");
         }
-        return entry.name.includes(".") ? this._ext(entry.name).toUpperCase() : _t("Fichier");
+        return entry.name.includes(".") ? this._ext(entry.name).toUpperCase() : _t("File");
     }
 
     get sortedEntries() {
@@ -917,6 +944,36 @@ export class NcBrowser extends Component {
         return this.state.entries.filter((e) => e.is_hidden).length;
     }
 
+    // Texts the template cannot translate (an OWL expression is never a term).
+    get selectedLabel() {
+        return _t("%s selected", this.state.selected.length);
+    }
+
+    get hiddenToggleTitle() {
+        return this.state.showHidden
+            ? _t("Hide hidden files")
+            : _t("%s hidden file(s)", this.hiddenCount);
+    }
+
+    get accountTitle() {
+        return _t("Nextcloud account: %s", this.state.conn.login);
+    }
+
+    entryTitle(entry) {
+        if (entry.is_dir) {
+            return _t("Open the folder");
+        }
+        return this.isOfficeFile(entry) ? _t("Edit in Collabora") : _t("Preview");
+    }
+
+    publicSharesTitle(count) {
+        return _t("%s public link(s): see the shares", count);
+    }
+
+    otherSharesTitle(count) {
+        return _t("%s other share(s): see the shares", count);
+    }
+
     // ----------------------------------------------------------------
     // Recherche dans l'arbre (18.0.4.1.0)
     // ----------------------------------------------------------------
@@ -977,7 +1034,7 @@ export class NcBrowser extends Component {
 
     /** A search hit's folder, as shown under its name. */
     parentLabel(entry) {
-        return entry.parent_rel ? entry.parent_rel : _t("Racine");
+        return entry.parent_rel ? entry.parent_rel : _t("Root folder");
     }
 
     // ----------------------------------------------------------------
@@ -1007,11 +1064,11 @@ export class NcBrowser extends Component {
         try {
             await navigator.clipboard.writeText(entry.link_url);
             this.notification.add(
-                _t("Lien interne copié : il s'ouvre pour qui a déjà accès au fichier dans Nextcloud."),
+                _t("Internal link copied: it opens for people who already have access to the file in Nextcloud."),
                 { type: "success" }
             );
         } catch {
-            this.notification.add(entry.link_url, { title: _t("Lien interne"), sticky: true });
+            this.notification.add(entry.link_url, { title: _t("Internal link"), sticky: true });
         }
     }
 
@@ -1078,9 +1135,9 @@ export class NcBrowser extends Component {
             return;
         }
         this.dialog.add(ConfirmationDialog, {
-            title: _t("Supprimer la selection"),
-            body: _t("Supprimer definitivement %s element(s) ?", rels.length),
-            confirmLabel: _t("Supprimer"),
+            title: _t("Delete selection"),
+            body: _t("Permanently delete %s item(s)?", rels.length),
+            confirmLabel: _t("Delete"),
             confirm: async () => {
                 this.state.loading = true;
                 try {
@@ -1088,7 +1145,7 @@ export class NcBrowser extends Component {
                         await this._call("delete_entry", [rel]);
                     }
                     this.state.selected = [];
-                    this.notification.add(_t("Selection supprimee."), { type: "success" });
+                    this.notification.add(_t("Selection deleted."), { type: "success" });
                     await this.load(this.state.relPath);
                 } catch (e) {
                     this._err(e);
@@ -1209,8 +1266,8 @@ export class NcBrowser extends Component {
             const capMo = Math.floor(cap / (1024 * 1024));
             this.notification.add(
                 tooBig.length === 1
-                    ? _t("« %s » depasse la limite de %s Mo et n'a pas ete envoye.", tooBig[0].name, capMo)
-                    : _t("%s fichiers depassent la limite de %s Mo et n'ont pas ete envoyes.", tooBig.length, capMo),
+                    ? _t("\"%s\" exceeds the %s MB limit and was not sent.", tooBig[0].name, capMo)
+                    : _t("%s files exceed the %s MB limit and were not sent.", tooBig.length, capMo),
                 { type: "warning", sticky: true }
             );
         }
@@ -1235,13 +1292,13 @@ export class NcBrowser extends Component {
             }
             if (sent) {
                 this.notification.add(
-                    sent > 1 ? _t("%s fichiers televerses.", sent) : _t("Fichier televerse."),
+                    sent > 1 ? _t("%s files uploaded.", sent) : _t("File uploaded."),
                     { type: "success" }
                 );
             }
             if (failed.length) {
                 this.notification.add(
-                    _t("Echec pour : %s", failed.join(", ")),
+                    _t("Failed for: %s", failed.join(", ")),
                     { type: "danger", sticky: true }
                 );
             }
@@ -1356,19 +1413,19 @@ export class NcBrowser extends Component {
     // ----------------------------------------------------------------
     newFolder() {
         this.dialog.add(NcPromptDialog, {
-            title: _t("Nouveau dossier"),
-            label: _t("Nom du dossier"),
-            confirmLabel: _t("Creer"),
+            title: _t("New folder"),
+            label: _t("Folder name"),
+            confirmLabel: _t("Create"),
             onConfirm: (name) => this._do("make_folder", [this.state.relPath, name]),
         });
     }
 
     rename(entry) {
         this.dialog.add(NcPromptDialog, {
-            title: _t("Renommer"),
-            label: _t("Nouveau nom"),
+            title: _t("Rename"),
+            label: _t("New name"),
             value: entry.name,
-            confirmLabel: _t("Renommer"),
+            confirmLabel: _t("Rename"),
             onConfirm: (name) => {
                 if (name !== entry.name) {
                     this._do("rename_entry", [entry.rel, name]);
@@ -1379,9 +1436,9 @@ export class NcBrowser extends Component {
 
     remove(entry) {
         this.dialog.add(ConfirmationDialog, {
-            title: _t("Supprimer"),
-            body: _t("Supprimer definitivement « %s » ?", entry.name),
-            confirmLabel: _t("Supprimer"),
+            title: _t("Delete"),
+            body: _t("Permanently delete \"%s\"?", entry.name),
+            confirmLabel: _t("Delete"),
             confirm: () => this._do("delete_entry", [entry.rel]),
             cancel: () => {},
         });
@@ -1419,17 +1476,17 @@ export class NcBrowser extends Component {
             if (!this.searching) {
                 this._loadShareStates(this.state.relPath);
             }
-            const body = res.password ? res.url + "\n" + _t("Mot de passe : ") + res.password : res.url;
+            const body = res.password ? res.url + "\n" + _t("Password: ") + res.password : res.url;
             try {
                 await navigator.clipboard.writeText(res.url);
                 this.notification.add(
                     res.password
-                        ? _t("Lien copie. Mot de passe : %s", res.password)
-                        : _t("Lien de partage copie dans le presse-papiers."),
+                        ? _t("Link copied. Password: %s", res.password)
+                        : _t("Share link copied to the clipboard."),
                     { type: "success", sticky: !!res.password }
                 );
             } catch {
-                this.notification.add(body, { title: _t("Lien de partage"), sticky: true });
+                this.notification.add(body, { title: _t("Share link"), sticky: true });
             }
         } catch (e) {
             this._err(e);
@@ -1455,11 +1512,11 @@ export class NcBrowser extends Component {
                         target === "item"
                             ? await this._call("link_to_knowledge_item", [entry.rel, id, mode, presetId || false])
                             : await this._call("link_to_article", [entry.rel, id, mode, presetId || false]);
-                    this.notification.add(_t("Fichier lie."), { type: "success" });
+                    this.notification.add(_t("File linked."), { type: "success" });
                     if (res && res.password) {
                         // Sinon personne ne connait le mot de passe du lien joint.
                         this.notification.add(
-                            _t("Mot de passe du partage, à transmettre séparément : %s", res.password),
+                            _t("Share password, to send separately: %s", res.password),
                             { type: "warning", sticky: true }
                         );
                     }

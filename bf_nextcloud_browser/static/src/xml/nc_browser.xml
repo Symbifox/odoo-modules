@@ -6,42 +6,42 @@
              t-on-dragover="onDragOver" t-on-dragleave="onDragLeave" t-on-drop="onDrop">
             <t t-if="!state.ready">
                 <div class="text-muted p-3">
-                    <i class="fa fa-spinner fa-spin me-1"/> Chargement…
+                    <i class="fa fa-spinner fa-spin me-1"/> Loading…
                 </div>
             </t>
             <t t-elif="showConnectCard">
                 <div class="o_nc_connect card mx-auto my-4">
                     <div class="card-body">
                         <h5 class="card-title mb-2">
-                            <i class="fa fa-cloud me-2"/>Connectez votre Nextcloud
+                            <i class="fa fa-cloud me-2"/>Connect your Nextcloud
                         </h5>
                         <div t-if="state.conn.rejected" class="alert alert-warning py-2">
-                            Votre connexion a ete revoquee dans Nextcloud. Reconnectez votre compte pour continuer.
+                            Your connection was revoked in Nextcloud. Reconnect your account to continue.
                         </div>
                         <p class="mb-2">
-                            Le navigateur agit en votre nom : vous voyez les fichiers que Nextcloud
-                            vous donne le droit de voir, et les liens de partage portent votre nom.
+                            The browser acts on your behalf: you see the files Nextcloud
+                            lets you see, and share links carry your name.
                         </p>
                         <p class="text-muted small mb-3">
-                            Une fenetre Nextcloud va s'ouvrir. Approuvez l'acces demande par Odoo,
-                            puis fermez cette fenetre. Vous pourrez retirer l'acces a tout moment,
-                            ici ou dans Nextcloud (Parametres, Securite, Appareils et sessions).
-                            <t t-if="state.conn.server"><br/>Serveur : <t t-esc="state.conn.server"/></t>
+                            A Nextcloud window will open. Approve the access Odoo asks for,
+                            then close that window. You can remove the access at any time,
+                            here or in Nextcloud (Settings, Security, Devices and sessions).
+                            <t t-if="state.conn.server"><br/>Server: <t t-esc="state.conn.server"/></t>
                         </p>
                         <t t-if="!state.conn.pending">
                             <button class="btn btn-primary" t-on-click="connect">
-                                <i class="fa fa-sign-in me-1"/> Connecter mon Nextcloud
+                                <i class="fa fa-sign-in me-1"/> Connect my Nextcloud
                             </button>
                         </t>
                         <t t-else="">
                             <div class="d-flex align-items-center flex-wrap gap-2">
                                 <span class="text-muted">
-                                    <i class="fa fa-spinner fa-spin me-1"/> En attente de votre approbation dans la fenetre Nextcloud…
+                                    <i class="fa fa-spinner fa-spin me-1"/> Waiting for your approval in the Nextcloud window…
                                 </span>
                                 <button t-if="state.conn.loginUrl" class="btn btn-sm btn-link" t-on-click="reopenConnectWindow">
-                                    Rouvrir la fenetre
+                                    Reopen the window
                                 </button>
-                                <button class="btn btn-sm btn-secondary" t-on-click="cancelConnect">Annuler</button>
+                                <button class="btn btn-sm btn-secondary" t-on-click="cancelConnect">Cancel</button>
                             </div>
                         </t>
                     </div>
@@ -49,14 +49,14 @@
             </t>
             <t t-else="">
                 <div class="o_nc_toolbar d-flex align-items-center flex-wrap gap-2 mb-2">
-                    <button class="btn btn-sm btn-secondary" t-on-click="() => this.load(state.relPath)" title="Rafraichir">
+                    <button class="btn btn-sm btn-secondary" t-on-click="() => this.load(state.relPath)" title="Refresh">
                         <i class="fa fa-refresh"/>
                     </button>
                     <button class="btn btn-sm btn-primary" t-on-click="triggerUpload" t-att-disabled="!canMutate">
-                        <i class="fa fa-upload me-1"/> Televerser
+                        <i class="fa fa-upload me-1"/> Upload
                     </button>
                     <button class="btn btn-sm btn-secondary" t-on-click="newFolder" t-att-disabled="!canMutate">
-                        <i class="fa fa-folder-o me-1"/> Nouveau dossier
+                        <i class="fa fa-folder-o me-1"/> New folder
                     </button>
                     <input type="file" class="d-none" t-ref="fileInput" multiple="multiple" t-on-change="onFileChosen"/>
                     <ol class="breadcrumb mb-0 ms-2 align-items-center">
@@ -78,17 +78,17 @@
                     </t>
                     <div class="ms-auto d-flex align-items-center gap-2">
                         <t t-if="state.selected.length">
-                            <span class="badge bg-secondary" t-esc="state.selected.length + ' sélectionné(s)'"/>
-                            <button class="btn btn-sm btn-outline-danger" t-on-click="bulkDelete" t-att-disabled="!canSelect" title="Supprimer la sélection">
-                                <i class="fa fa-trash me-1"/> Supprimer
+                            <span class="badge bg-secondary" t-esc="selectedLabel"/>
+                            <button class="btn btn-sm btn-outline-danger" t-on-click="bulkDelete" t-att-disabled="!canSelect" title="Delete selection">
+                                <i class="fa fa-trash me-1"/> Delete
                             </button>
-                            <button class="btn btn-sm btn-link p-0" t-on-click="clearSelection" title="Effacer la sélection">
+                            <button class="btn btn-sm btn-link p-0" t-on-click="clearSelection" title="Clear selection">
                                 <i class="fa fa-times"/>
                             </button>
                         </t>
                         <button t-if="hiddenCount" class="btn btn-sm btn-link p-0 me-1"
                                 t-on-click="toggleHidden"
-                                t-att-title="state.showHidden ? 'Masquer les fichiers caches' : hiddenCount + ' fichier(s) cache(s)'">
+                                t-att-title="hiddenToggleTitle">
                             <i class="fa" t-att-class="state.showHidden ? 'fa-eye-slash' : 'fa-eye'"/>
                         </button>
                         <div class="input-group input-group-sm o_nc_filter">
@@ -96,18 +96,18 @@
                                 <i t-if="state.search.loading" class="fa fa-spinner fa-spin"/>
                                 <i t-else="" class="fa fa-search"/>
                             </span>
-                            <input type="text" class="form-control" placeholder="Filtrer ou chercher…"
-                                   title="Moins de 3 caractères : filtre le dossier. À partir de 3 : cherche dans tous les dossiers."
+                            <input type="text" class="form-control" placeholder="Filter or search…"
+                                   title="Fewer than 3 characters: filters the folder. From 3 on: searches all folders."
                                    t-model="state.filter" t-on-input="onFilterInput"/>
                             <button t-if="state.filter" class="btn btn-outline-secondary" type="button"
-                                    t-on-click="clearSearch" title="Effacer la recherche">
+                                    t-on-click="clearSearch" title="Clear search">
                                 <i class="fa fa-times"/>
                             </button>
                         </div>
                         <span t-if="state.conn.connected" class="o_nc_identity text-muted small text-nowrap"
-                              t-att-title="'Compte Nextcloud : ' + state.conn.login">
+                              t-att-title="accountTitle">
                             <i class="fa fa-user-circle-o me-1"/><t t-esc="state.conn.displayName"/>
-                            <button class="btn btn-sm btn-link p-0 ms-1" t-on-click="disconnect" title="Deconnecter Nextcloud">
+                            <button class="btn btn-sm btn-link p-0 ms-1" t-on-click="disconnect" title="Disconnect Nextcloud">
                                 <i class="fa fa-sign-out"/>
                             </button>
                         </span>
@@ -120,12 +120,12 @@
                 <t t-else="">
                     <div t-if="searching" class="o_nc_search_banner d-flex align-items-center flex-wrap gap-2 small mb-2">
                         <i class="fa fa-search text-muted"/>
-                        <span t-if="state.search.loading and !state.search.done">Recherche dans tous les dossiers…</span>
+                        <span t-if="state.search.loading and !state.search.done">Searching all folders…</span>
                         <span t-elif="state.search.done">
-                            <t t-esc="state.search.entries.length"/> résultat(s) pour « <strong t-esc="state.search.term"/> », dans tous les dossiers
-                            <t t-if="state.search.truncated"> (les 100 plus récents; précisez la recherche)</t>
+                            <t t-esc="state.search.entries.length"/> result(s) for « <strong t-esc="state.search.term"/> », in all folders
+                            <t t-if="state.search.truncated"> (the 100 most recent; refine the search)</t>
                         </span>
-                        <button class="btn btn-sm btn-link p-0 ms-auto" t-on-click="clearSearch">Revenir au dossier</button>
+                        <button class="btn btn-sm btn-link p-0 ms-auto" t-on-click="clearSearch">Back to the folder</button>
                     </div>
                     <div class="o_nc_main d-flex">
                         <div class="o_nc_tree">
@@ -144,16 +144,16 @@
                                                    t-on-change="toggleSelectAll" t-att-disabled="!canSelect"/>
                                         </th>
                                         <th class="o_nc_sort" t-on-click="() => this.setSort('name')">
-                                            Nom <i t-att-class="sortIcon('name')"/>
+                                            Name <i t-att-class="sortIcon('name')"/>
                                         </th>
                                         <th class="o_nc_sort" t-on-click="() => this.setSort('type')">
                                             Type <i t-att-class="sortIcon('type')"/>
                                         </th>
                                         <th class="o_nc_sort text-end" t-on-click="() => this.setSort('mtime')">
-                                            Modifie <i t-att-class="sortIcon('mtime')"/>
+                                            Modified <i t-att-class="sortIcon('mtime')"/>
                                         </th>
                                         <th class="o_nc_sort text-end" t-on-click="() => this.setSort('size')">
-                                            Taille <i t-att-class="sortIcon('size')"/>
+                                            Size <i t-att-class="sortIcon('size')"/>
                                         </th>
                                         <th class="text-end">Actions</th>
                                     </tr>
@@ -173,18 +173,18 @@
                                                        t-att-disabled="!canSelect"/>
                                             </td>
                                             <td class="o_nc_name" t-on-click="() => this.onEntryClick(e)"
-                                                t-att-title="e.is_dir ? 'Ouvrir le dossier' : (isOfficeFile(e) ? 'Modifier dans Collabora' : 'Apercu')">
+                                                t-att-title="entryTitle(e)">
                                                 <i t-att-class="this._iconClass(e)" t-att-style="e.is_dir ? ('color:' + state.folderColor) : ''"/>
                                                 <span class="ms-2" t-esc="e.name"/>
                                                 <t t-set="shares" t-value="shareState(e)"/>
                                                 <button t-if="shares and shares.public" class="btn btn-sm btn-link p-0 ms-2 o_nc_share_badge"
                                                         t-on-click.stop="() => this.shareDialog(e)"
-                                                        t-att-title="shares.public + ' lien(s) public(s) : voir les partages'">
+                                                        t-att-title="publicSharesTitle(shares.public)">
                                                     <i class="fa fa-globe"/> <t t-esc="shares.public"/>
                                                 </button>
                                                 <button t-if="shares and shares.other" class="btn btn-sm btn-link p-0 ms-2 o_nc_share_badge"
                                                         t-on-click.stop="() => this.shareDialog(e)"
-                                                        t-att-title="shares.other + ' autre(s) partage(s) : voir les partages'">
+                                                        t-att-title="otherSharesTitle(shares.other)">
                                                     <i class="fa fa-users"/> <t t-esc="shares.other"/>
                                                 </button>
                                                 <div t-if="searching" class="o_nc_parent text-muted small text-truncate">
@@ -196,40 +196,40 @@
                                             <td class="text-end text-muted small text-nowrap" t-esc="e.size_display"/>
                                             <td class="text-end text-nowrap o_nc_actions">
                                                 <button t-if="pickMode" class="btn btn-sm btn-primary py-0 me-2 o_nc_pick"
-                                                        t-on-click="() => this.pickEntry(e)" title="Insérer un lien vers cet élément dans le message">
-                                                    <i class="fa fa-plus me-1"/>Insérer
+                                                        t-on-click="() => this.pickEntry(e)" title="Insert a link to this item in the message">
+                                                    <i class="fa fa-plus me-1"/>Insert
                                                 </button>
                                                 <button t-if="e.link_url" class="btn btn-sm btn-link p-0 me-2 o_nc_copy_link"
                                                         t-on-click="() => this.copyInternalLink(e)"
-                                                        title="Copier le lien interne (s'ouvre pour qui a déjà accès dans Nextcloud)">
+                                                        title="Copy the internal link (opens for people who already have access in Nextcloud)">
                                                     <i class="fa fa-clipboard"/>
                                                 </button>
-                                                <button t-if="e.is_dir" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.shareDialog(e)" title="Partages">
+                                                <button t-if="e.is_dir" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.shareDialog(e)" title="Shares">
                                                     <i class="fa fa-share-alt"/>
                                                 </button>
                                                 <t t-if="!e.is_dir">
                                                     <button t-if="isOfficeFile(e)" class="btn btn-sm btn-link p-0 me-2 o_nc_edit"
                                                             t-on-click="() => this.openOffice(e.internal_url)"
-                                                            title="Modifier dans Collabora (nouvel onglet)">
+                                                            title="Edit in Collabora (new tab)">
                                                         <i class="fa fa-pencil-square-o"/>
                                                     </button>
-                                                    <button t-if="e.internal_url" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.openInNextcloud(e)" title="Voir dans Nextcloud (nouvel onglet)">
+                                                    <button t-if="e.internal_url" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.openInNextcloud(e)" title="View in Nextcloud (new tab)">
                                                         <i class="fa fa-external-link"/>
                                                     </button>
-                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.download(e)" title="Telecharger">
+                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.download(e)" title="Download">
                                                         <i class="fa fa-download"/>
                                                     </button>
-                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.shareDialog(e)" title="Lien de partage">
+                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.shareDialog(e)" title="Share link">
                                                         <i class="fa fa-share-alt"/>
                                                     </button>
-                                                    <button t-if="showLink" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.link(e)" title="Lier a la matrice / Knowledge">
+                                                    <button t-if="showLink" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.link(e)" title="Link to the matrix / Knowledge">
                                                         <i class="fa fa-link"/>
                                                     </button>
                                                 </t>
-                                                <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.rename(e)" title="Renommer">
+                                                <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.rename(e)" title="Rename">
                                                     <i class="fa fa-pencil"/>
                                                 </button>
-                                                <button class="btn btn-sm btn-link text-danger p-0" t-on-click="() => this.remove(e)" title="Supprimer">
+                                                <button class="btn btn-sm btn-link text-danger p-0" t-on-click="() => this.remove(e)" title="Delete">
                                                     <i class="fa fa-trash"/>
                                                 </button>
                                             </td>
@@ -237,12 +237,12 @@
                                     </t>
                                     <t t-if="searching">
                                         <tr t-if="state.search.done and !state.search.entries.length">
-                                            <td colspan="6" class="text-muted text-center p-3">Aucun fichier ni dossier ne porte ce nom.</td>
+                                            <td colspan="6" class="text-muted text-center p-3">No file or folder has this name.</td>
                                         </tr>
                                     </t>
                                     <t t-elif="!state.entries.length">
                                         <tr>
-                                            <td colspan="6" class="text-muted text-center p-3">Dossier vide</td>
+                                            <td colspan="6" class="text-muted text-center p-3">Empty folder</td>
                                         </tr>
                                     </t>
                                 </tbody>
@@ -282,15 +282,15 @@
     </t>
 
     <t t-name="bf_nextcloud_browser.NcLinkDialog">
-        <Dialog title="'Lier le fichier'" size="'md'">
+        <Dialog title="title" size="'md'">
             <div>
-                <p>Lier <strong t-esc="props.filename"/> a :</p>
+                <p>Link file <strong t-esc="props.filename"/> to:</p>
                 <div class="mb-2 d-flex gap-3">
                     <label class="o_nc_radio">
-                        <input type="radio" value="item" t-model="state.target"/> Element de matrice
+                        <input type="radio" value="item" t-model="state.target"/> Matrix item
                     </label>
                     <label class="o_nc_radio" t-if="props.hasArticles">
-                        <input type="radio" value="article" t-model="state.target"/> Article Knowledge
+                        <input type="radio" value="article" t-model="state.target"/> Knowledge article
                     </label>
                 </div>
                 <t t-if="state.target === 'item'">
@@ -300,7 +300,7 @@
                         </t>
                     </select>
                     <div t-if="!props.items.length" class="text-muted small mt-1">
-                        Aucun element de matrice pour ce projet.
+                        No matrix item for this project.
                     </div>
                 </t>
                 <t t-if="state.target === 'article'">
@@ -310,18 +310,18 @@
                         </t>
                     </select>
                 </t>
-                <label class="form-label mt-3 mb-1">Type de lien</label>
+                <label class="form-label mt-3 mb-1">Link type</label>
                 <select class="form-select" t-model="state.linkChoice">
-                    <option value="internal">Lien interne (pour qui a déjà accès dans Nextcloud)</option>
+                    <option value="internal">Internal link (for people who already have access in Nextcloud)</option>
                     <t t-foreach="presets" t-as="p" t-key="p.id">
-                        <option t-att-value="'preset:' + p.id" t-esc="'Partage : ' + p.name"/>
+                        <option t-att-value="'preset:' + p.id" t-esc="presetOption(p)"/>
                     </t>
-                    <option t-if="!presets.length" value="share">Lien public par défaut</option>
+                    <option t-if="!presets.length" value="share">Default public link</option>
                 </select>
             </div>
             <t t-set-slot="footer">
-                <button class="btn btn-primary" t-att-disabled="!canConfirm" t-on-click="confirm">Lier</button>
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+                <button class="btn btn-primary" t-att-disabled="!canConfirm" t-on-click="confirm">Link file</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Cancel</button>
             </t>
         </Dialog>
     </t>
@@ -336,18 +336,18 @@
             <t t-set-slot="footer">
                 <button class="btn btn-primary" t-att-disabled="!canConfirm" t-on-click="confirm"
                         t-esc="props.confirmLabel || 'OK'"/>
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Cancel</button>
             </t>
         </Dialog>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcShareDialog">
-        <Dialog title="'Partager : ' + props.filename" size="'md'">
+        <Dialog title="title" size="'md'">
             <t t-if="props.fetchShares">
-                <h6 class="mb-2">Partages existants</h6>
-                <div t-if="state.loading" class="text-muted small mb-3"><i class="fa fa-spinner fa-spin me-1"/>Lecture des partages…</div>
+                <h6 class="mb-2">Existing shares</h6>
+                <div t-if="state.loading" class="text-muted small mb-3"><i class="fa fa-spinner fa-spin me-1"/>Reading shares…</div>
                 <div t-elif="state.error" class="alert alert-warning py-2 small" t-esc="state.error"/>
-                <div t-elif="!state.shares.length" class="text-muted small mb-3">Aucun partage.</div>
+                <div t-elif="!state.shares.length" class="text-muted small mb-3">No shares.</div>
                 <ul t-else="" class="list-unstyled o_nc_share_list mb-3">
                     <t t-foreach="state.shares" t-as="sh" t-key="sh.id">
                         <li class="d-flex align-items-start gap-2 py-1 border-bottom">
@@ -356,29 +356,29 @@
                                 <div>
                                     <strong t-esc="sh.kind"/>
                                     <t t-if="sh.share_with"> : <t t-esc="sh.share_with"/></t>
-                                    <span class="text-muted" t-esc="sh.writable ? ' (lecture / écriture)' : ' (lecture seule)'"/>
+                                    <span class="text-muted" t-esc="accessLabel(sh)"/>
                                 </div>
                                 <div class="text-muted">
-                                    <t t-if="sh.expiration">Expire le <t t-esc="sh.expiration"/></t>
-                                    <t t-elif="!sh.expiry_checked">Expiration non vérifiée</t>
-                                    <t t-elif="sh.is_public"><span class="badge text-bg-warning">Sans expiration</span></t>
-                                    <t t-if="sh.has_password"> · mot de passe</t>
-                                    <t t-if="sh.owner"> · par <t t-esc="sh.owner"/></t>
+                                    <t t-if="sh.expiration">Expires on <t t-esc="sh.expiration"/></t>
+                                    <t t-elif="!sh.expiry_checked">Expiry not checked</t>
+                                    <t t-elif="sh.is_public"><span class="badge text-bg-warning">No expiry</span></t>
+                                    <t t-if="sh.has_password"> · password</t>
+                                    <t t-if="sh.owner"> · by <t t-esc="sh.owner"/></t>
                                 </div>
                             </div>
-                            <button t-if="sh.url" class="btn btn-sm btn-link p-0" t-on-click="() => this.copy(sh)" title="Copier le lien">
+                            <button t-if="sh.url" class="btn btn-sm btn-link p-0" t-on-click="() => this.copy(sh)" title="Copy link">
                                 <i class="fa fa-clipboard"/>
                             </button>
                             <button t-if="sh.can_revoke and props.revokeShare" class="btn btn-sm btn-link text-danger p-0 ms-2"
-                                    t-on-click="() => this.revoke(sh)" title="Retirer ce partage">
+                                    t-on-click="() => this.revoke(sh)" title="Remove this share">
                                 <i class="fa fa-ban"/>
                             </button>
                         </li>
                     </t>
                 </ul>
-                <h6 class="mb-2">Nouveau partage</h6>
+                <h6 class="mb-2">New share</h6>
             </t>
-            <p class="text-muted small mb-2">Choisissez un type de partage :</p>
+            <p class="text-muted small mb-2">Choose a share type:</p>
             <div class="d-grid gap-2">
                 <t t-foreach="props.presets" t-as="p" t-key="p.id">
                     <button class="btn btn-outline-primary text-start" t-on-click="() => { props.onChoose(p); props.close(); }">
@@ -389,36 +389,36 @@
                 </t>
                 <button t-if="!props.presets.length" class="btn btn-outline-primary"
                         t-on-click="() => { props.onChoose(null); props.close(); }">
-                    Lien par defaut
+                    Default link
                 </button>
             </div>
             <t t-set-slot="footer">
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Cancel</button>
             </t>
         </Dialog>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcInsertDialog">
-        <Dialog title="'Insérer : ' + props.filename" size="'md'">
-            <p class="mb-2">Quel lien mettre dans le message ?</p>
+        <Dialog title="title" size="'md'">
+            <p class="mb-2">Which link to put in the message?</p>
             <div class="d-grid gap-2">
                 <button class="btn btn-outline-secondary text-start o_nc_insert_internal" t-on-click="() => this.choose('internal')">
-                    <i class="fa fa-lock me-1"/> <strong>Lien interne</strong>
-                    <div class="small text-muted">Il s'ouvre seulement pour qui a déjà accès à <t t-esc="props.isDir ? 'ce dossier' : 'ce fichier'"/> dans Nextcloud. Aucun partage n'est créé.</div>
+                    <i class="fa fa-lock me-1"/> <strong>Internal link</strong>
+                    <div class="small text-muted" t-esc="internalHint"/>
                 </button>
                 <t t-foreach="props.presets" t-as="p" t-key="p.id">
                     <button class="btn btn-outline-secondary text-start o_nc_insert_share" t-on-click="() => this.choose('share', p)">
-                        <i class="fa fa-globe me-1"/> <strong>Partage : <t t-esc="p.name"/></strong>
+                        <i class="fa fa-globe me-1"/> <strong>Share: <t t-esc="p.name"/></strong>
                         <span class="small text-muted ms-1" t-esc="presetLabel(p)"/>
-                        <div class="small text-muted">Crée un lien public : il s'ouvre pour quiconque le reçoit.</div>
+                        <div class="small text-muted">Creates a public link: it opens for anyone who receives it.</div>
                     </button>
                 </t>
                 <button t-if="!props.presets.length" class="btn btn-outline-secondary text-start" t-on-click="() => this.choose('share')">
-                    <i class="fa fa-globe me-1"/> <strong>Lien public par défaut</strong>
+                    <i class="fa fa-globe me-1"/> <strong>Default public link</strong>
                 </button>
             </div>
             <t t-set-slot="footer">
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Cancel</button>
             </t>
         </Dialog>
     </t>
@@ -428,9 +428,9 @@
             <iframe t-att-src="props.url" class="o_nc_iframe_modal"/>
             <t t-set-slot="footer">
                 <a t-if="props.internalUrl" class="btn btn-secondary" t-att-href="props.internalUrl" target="_blank" rel="noopener noreferrer">
-                    <i class="fa fa-external-link me-1"/> Ouvrir dans Nextcloud
+                    <i class="fa fa-external-link me-1"/> Open in Nextcloud
                 </a>
-                <button class="btn btn-primary" t-on-click="() => props.close()">Fermer</button>
+                <button class="btn btn-primary" t-on-click="() => props.close()">Close</button>
             </t>
         </Dialog>
     </t>
@@ -455,7 +455,7 @@
                  t-att-class="{ o_nc_systray_open: state.open }">
                 <button class="btn d-flex align-items-center" t-on-click="toggle"
                         t-att-aria-expanded="state.open ? 'true' : 'false'"
-                        aria-label="Fichiers Nextcloud" title="Fichiers Nextcloud">
+                        aria-label="Nextcloud files" title="Nextcloud files">
                     <svg class="o_nc_systray_logo" viewBox="0 0 256 128" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg">
                         <path fill="currentColor" d="m128 7c-25.871 0-47.817 17.485-54.713 41.209-5.9795-12.461-18.642-21.209-33.287-21.209-20.304 0-37 16.696-37 37s16.696 37 37 37c14.645 0 27.308-8.7481 33.287-21.209 6.8957 23.724 28.842 41.209 54.713 41.209s47.817-17.485 54.713-41.209c5.9795 12.461 18.642 21.209 33.287 21.209 20.304 0 37-16.696 37-37s-16.696-37-37-37c-14.645 0-27.308 8.7481-33.287 21.209-6.8957-23.724-28.842-41.209-54.713-41.209zm0 22c19.46 0 35 15.54 35 35s-15.54 35-35 35-35-15.54-35-35 15.54-35 35-35zm-88 20c8.4146 0 15 6.5854 15 15s-6.5854 15-15 15-15-6.5854-15-15 6.5854-15 15-15zm176 0c8.4146 0 15 6.5854 15 15s-6.5854 15-15 15-15-6.5854-15-15 6.5854-15 15-15z"/>
@@ -474,24 +474,24 @@
         <div class="o_nc_panel_root">
             <div class="o_nc_panel_scrim" t-on-click="() => props.close()"/>
             <section class="o_nc_panel" t-att-style="panelStyle"
-                     role="dialog" aria-label="Fichiers Nextcloud">
+                     role="dialog" aria-label="Nextcloud files">
                 <header class="o_nc_panel_header d-flex align-items-center gap-2">
                     <i class="fa fa-folder-open-o"/>
-                    <span class="o_nc_panel_title">Fichiers Nextcloud</span>
+                    <span class="o_nc_panel_title">Nextcloud files</span>
                     <span t-if="props.startLabel" class="o_nc_panel_record text-truncate small"
                           t-att-title="props.startLabel">· <t t-esc="props.startLabel"/></span>
                     <span class="o_nc_panel_size text-muted small" t-esc="sizeLabel"/>
                     <div class="ms-auto d-flex align-items-center">
                         <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
-                                t-on-click="resetSize" title="Revenir à la taille par défaut">
+                                t-on-click="resetSize" title="Back to the default size">
                             <i class="fa fa-compress"/>
                         </button>
                         <button class="btn btn-sm btn-link" t-on-click="openFullPage"
-                                title="Ouvrir en pleine page">
+                                title="Open full page">
                             <i class="fa fa-expand"/>
                         </button>
                         <button class="btn btn-sm btn-link o_nc_panel_close"
-                                t-on-click="() => props.close()" title="Fermer (Échap)">
+                                t-on-click="() => props.close()" title="Close (Esc)">
                             <i class="fa fa-times"/>
                         </button>
                     </div>
@@ -499,7 +499,7 @@
                 <div class="o_nc_panel_body">
                     <NcBrowserApp startRel="props.startRel or ''"/>
                 </div>
-                <div class="o_nc_panel_grip" title="Redimensionner"
+                <div class="o_nc_panel_grip" title="Resize"
                      t-on-pointerdown="startResize"
                      t-on-pointermove="onResizeMove"
                      t-on-pointerup="stopResize"

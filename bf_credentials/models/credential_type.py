@@ -4,30 +4,30 @@ from odoo import fields, models
 class ProjectCredentialType(models.Model):
     """Modèle de données de référence pour les catégories d'identifiants."""
     _name = 'project.credential.type'
-    _description = "Type d'identifiant"
+    _description = "Credential type"
     _order = 'sequence, name'
 
     name = fields.Char(
-        string='Nom',
+        string="Name",
         required=True,
         translate=True,
     )
     code = fields.Char(
         string='Code',
         required=True,
-        help="Identifiant unique pour ce type d'identifiant",
+        help="Unique code for this credential type",
     )
     sequence = fields.Integer(
-        string='Séquence',
+        string="Sequence",
         default=10,
     )
     icon = fields.Char(
-        string='Icône',
+        string="Icon",
         default='fa-key',
-        help='Classe Font Awesome (ex. : fa-envelope, fa-server)',
+        help="Font Awesome class (e.g. fa-envelope, fa-server)",
     )
     color = fields.Integer(
-        string='Couleur',
+        string="Color",
         default=0,
     )
     description = fields.Text(
@@ -35,32 +35,32 @@ class ProjectCredentialType(models.Model):
         translate=True,
     )
     active = fields.Boolean(
-        string='Actif',
+        string="Active",
         default=True,
     )
 
     # Bascules de visibilité des champs
     show_domain = fields.Boolean(
-        string='Afficher le champ domaine',
+        string="Show domain field",
         default=False,
-        help="Afficher le champ domaine pour les identifiants de ce type",
+        help="Show the domain field for credentials of this type",
     )
     show_url = fields.Boolean(
-        string='Afficher le champ URL',
+        string="Show URL field",
         default=True,
-        help="Afficher le champ URL pour les identifiants de ce type",
+        help="Show the URL field for credentials of this type",
     )
     show_api_key = fields.Boolean(
-        string='Afficher le champ clé API',
+        string="Show API key field",
         default=False,
-        help="Afficher le champ clé API pour les identifiants de ce type",
+        help="Show the API key field for credentials of this type",
     )
     show_key_file = fields.Boolean(
-        string='Afficher le champ fichier de clé',
+        string="Show key file field",
         default=False,
-        help="Afficher le champ de téléversement de fichier de clé pour les identifiants de ce type",
+        help="Show the key file upload field for credentials of this type",
     )
 
     _sql_constraints = [
-        ('code_uniq', 'unique(code)', 'Le code doit être unique !'),
+        ('code_uniq', 'unique(code)', "The code must be unique!"),
     ]

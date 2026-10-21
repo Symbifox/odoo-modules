@@ -28,17 +28,17 @@
     </record>
 
     <record id="action_bf_nc_client_folder" model="ir.actions.act_window">
-        <field name="name">Dossiers clients</field>
+        <field name="name">Client folders</field>
         <field name="res_model">bf.nc.client.folder</field>
         <field name="view_mode">list</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun dossier client rattaché.</p>
-            <p>Rattachez un dossier depuis l'onglet « Dossier Nextcloud » d'une entreprise.</p>
+            <p class="o_view_nocontent_smiling_face">No client folder linked.</p>
+            <p>Link a folder from the "Nextcloud folder" tab of a company.</p>
         </field>
     </record>
 
     <menuitem id="menu_bf_nc_client_folder"
-              name="Dossiers clients"
+              name="Client folders"
               parent="menu_nc_browser_root"
               action="action_bf_nc_client_folder"
               groups="bf_nextcloud_browser.group_nc_browser_user"
@@ -48,10 +48,10 @@
         <field name="name">bf.nc.folder.pick.form</field>
         <field name="model">bf.nc.folder.pick</field>
         <field name="arch" type="xml">
-            <form string="Choisir le dossier Nextcloud">
+            <form string="Choose the Nextcloud folder">
                 <p class="text-muted">
-                    Pour <field name="target_name" class="fw-bold" readonly="1"/>.
-                    Les dossiers les plus proches du nom viennent en tête.
+                    For <field name="target_name" class="fw-bold" readonly="1"/>.
+                    The folders closest to the name come first.
                     <field name="note" readonly="1" invisible="not note"/>
                 </p>
                 <field name="line_ids" nolabel="1" readonly="1">
@@ -60,12 +60,12 @@
                         <field name="score" widget="progressbar"/>
                         <field name="taken_by" optional="show"/>
                         <field name="path" optional="hide"/>
-                        <button name="action_choose" type="object" string="Choisir"
+                        <button name="action_choose" type="object" string="Choose"
                                 icon="fa-check" class="btn-link" invisible="taken_by"/>
                     </list>
                 </field>
                 <footer>
-                    <button string="Fermer" special="cancel" class="btn-secondary"/>
+                    <button string="Close" special="cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>
@@ -75,10 +75,10 @@
         <field name="name">bf.nc.client.folder.create.form</field>
         <field name="model">bf.nc.client.folder.create</field>
         <field name="arch" type="xml">
-            <form string="Créer le dossier client">
+            <form string="Create the client folder">
                 <p class="text-muted">
-                    Le gabarit est recopié tel quel, avec ses sous-dossiers, puis le dossier est
-                    rattaché à l'entreprise. Le numéro suit le plus haut déjà présent.
+                    The template is copied as is, with its subfolders, then the folder is
+                    linked to the company. The number follows the highest one already there.
                 </p>
                 <group>
                     <field name="partner_id" readonly="1" options="{'no_open': True}"/>
@@ -87,8 +87,8 @@
                     <field name="template"/>
                 </group>
                 <footer>
-                    <button name="action_create" type="object" string="Créer" class="btn-primary"/>
-                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                    <button name="action_create" type="object" string="Create" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>

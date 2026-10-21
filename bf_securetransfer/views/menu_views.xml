@@ -3,44 +3,44 @@
     <!-- Must be loaded LAST in the manifest: menu items reference actions
          defined across the other view files. -->
 
-    <menuitem id="menu_securetransfer_root" name="Transferts sécurisés"
+    <menuitem id="menu_securetransfer_root" name="Secure transfers"
               sequence="47" web_icon="bf_securetransfer,static/description/icon.png"
               groups="group_securetransfer_user"/>
 
-    <menuitem id="menu_dashboard" name="Tableau de bord"
+    <menuitem id="menu_dashboard" name="Dashboard"
               parent="menu_securetransfer_root" action="action_secure_transfer_dashboard" sequence="5"/>
 
-    <menuitem id="menu_secure_send" name="Nouvel envoi sécurisé"
+    <menuitem id="menu_secure_send" name="New secure send"
               parent="menu_securetransfer_root" action="action_secure_send_wizard" sequence="8"/>
 
     <!-- Le mode audience ouverte se choisissait uniquement en dépliant un
          radio de l'assistant, après avoir deviné qu'il fallait d'abord choisir
          la bonne marque. Une entrée propre le rend trouvable. -->
     <menuitem id="menu_secure_send_open_audience"
-              name="Nouveau lien à audience ouverte"
+              name="New open audience link"
               parent="menu_securetransfer_root"
               action="action_secure_send_open_audience" sequence="9"/>
 
-    <menuitem id="menu_transfers" name="Transferts"
+    <menuitem id="menu_transfers" name="Transfers"
               parent="menu_securetransfer_root" action="action_secure_transfer" sequence="10"/>
 
-    <menuitem id="menu_audience" name="Visiteurs"
+    <menuitem id="menu_audience" name="Visitors"
               parent="menu_securetransfer_root" action="action_secure_transfer_audience" sequence="15"/>
 
-    <menuitem id="menu_access_log" name="Journal d'accès"
+    <menuitem id="menu_access_log" name="Access log"
               parent="menu_securetransfer_root" action="action_access_log" sequence="20"/>
 
     <menuitem id="menu_config" name="Configuration"
               parent="menu_securetransfer_root" sequence="90"
               groups="group_securetransfer_manager"/>
 
-    <menuitem id="menu_config_brands" name="Marques"
+    <menuitem id="menu_config_brands" name="Brands"
               parent="menu_config" action="action_brand" sequence="10"/>
 
-    <menuitem id="menu_config_templates" name="Préréglages de salle de données"
+    <menuitem id="menu_config_templates" name="Data room presets"
               parent="menu_config" action="action_secure_transfer_template" sequence="15"/>
 
-    <menuitem id="menu_config_settings" name="Paramètres"
+    <menuitem id="menu_config_settings" name="Settings"
               parent="menu_config" action="action_securetransfer_settings" sequence="20"/>
 
 </odoo>

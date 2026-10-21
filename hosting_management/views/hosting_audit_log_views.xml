@@ -38,7 +38,7 @@
                         <h1><field name="display_name"/></h1>
                     </div>
                     <group>
-                        <group string="Événement">
+                        <group string="Event">
                             <field name="event_date"/>
                             <field name="user_id" widget="many2one_avatar_user"/>
                             <field name="action_type"/>
@@ -46,7 +46,7 @@
                             <field name="severity"/>
                             <field name="status"/>
                         </group>
-                        <group string="Cible">
+                        <group string="Target">
                             <field name="res_model"/>
                             <field name="res_id"/>
                             <field name="res_name"/>
@@ -55,7 +55,7 @@
                             <field name="partner_id"/>
                         </group>
                     </group>
-                    <group string="Détails du changement">
+                    <group string="Change details">
                         <field name="field_name"/>
                         <field name="old_value"/>
                         <field name="new_value"/>
@@ -80,35 +80,35 @@
                 <field name="service_id"/>
                 <field name="server_id"/>
                 <separator/>
-                <filter name="filter_today" string="Aujourd'hui"
+                <filter name="filter_today" string="Today"
                         domain="[('event_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
-                <filter name="filter_week" string="7 derniers jours"
+                <filter name="filter_week" string="Last 7 days"
                         domain="[('event_date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_month" string="30 derniers jours"
+                <filter name="filter_month" string="Last 30 days"
                         domain="[('event_date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <filter name="filter_critical" string="Critiques"
+                <filter name="filter_critical" string="Critical events"
                         domain="[('severity', '=', 'critical')]"/>
-                <filter name="filter_warning" string="Avertissements"
+                <filter name="filter_warning" string="Warnings"
                         domain="[('severity', '=', 'warning')]"/>
                 <separator/>
-                <filter name="filter_state_change" string="Changements d'état"
+                <filter name="filter_state_change" string="State changes"
                         domain="[('action_type', '=', 'state_change')]"/>
                 <filter name="filter_config" string="Configuration"
                         domain="[('category', '=', 'config')]"/>
-                <filter name="filter_security" string="Sécurité"
+                <filter name="filter_security" string="Security"
                         domain="[('category', '=', 'security')]"/>
-                <filter name="filter_ops" string="Opérations"
+                <filter name="filter_ops" string="Operations"
                         domain="[('category', '=', 'ops')]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_by_user" string="Utilisateur"
+                <group expand="0" string="Group by">
+                    <filter name="group_by_user" string="User"
                             context="{'group_by': 'user_id'}"/>
-                    <filter name="group_by_action" string="Type d'action"
+                    <filter name="group_by_action" string="Action type"
                             context="{'group_by': 'action_type'}"/>
-                    <filter name="group_by_category" string="Catégorie"
+                    <filter name="group_by_category" string="Category"
                             context="{'group_by': 'category'}"/>
-                    <filter name="group_by_severity" string="Sévérité"
+                    <filter name="group_by_severity" string="Severity"
                             context="{'group_by': 'severity'}"/>
                     <filter name="group_by_service" string="Service"
                             context="{'group_by': 'service_id'}"/>
@@ -121,7 +121,7 @@
 
     <!-- Action -->
     <record id="hosting_audit_log_action" model="ir.actions.act_window">
-        <field name="name">Journal d'audit</field>
+        <field name="name">Audit log</field>
         <field name="res_model">hosting.audit.log</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_filter_week': 1}</field>

@@ -2,9 +2,9 @@
 <odoo noupdate="1">
 
     <record id="group_nc_browser_user" model="res.groups">
-        <field name="name">Navigateur Nextcloud</field>
+        <field name="name">Nextcloud browser</field>
         <field name="category_id" ref="base.module_category_services_project"/>
-        <field name="comment">Donne accès au navigateur de fichiers Nextcloud embarqué dans les projets et tâches.</field>
+        <field name="comment">Gives access to the Nextcloud file browser embedded in projects and tasks.</field>
         <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 

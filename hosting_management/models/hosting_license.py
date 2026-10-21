@@ -8,46 +8,50 @@ dans hosting.license.seat.
 import base64
 import json
 import logging
+
+from markupsafe import Markup
 from datetime import date, datetime, timedelta
 
 from markupsafe import escape as _esc
 
 from odoo import _, api, fields, models
 
+from .hosting_lang import reader_env, user_env
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingLicense(models.Model):
     _name = "hosting.license"
-    _description = "Pool de licences logicielles"
+    _description = "Software license pool"
     _order = "name"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
     code = fields.Char(
-        string="Référence",
+        string="Reference",
         readonly=True,
         copy=False,
         default="New",
     )
     software_id = fields.Many2one(
         comodel_name="hosting.software",
-        string="Logiciel (catalogue)",
+        string="Software (catalog)",
         tracking=True,
-        help="Optionnel — référencer un logiciel du catalogue Hébergement.",
+        help="Optional: reference a software from the Hosting catalog.",
     )
     product_name = fields.Char(
-        string="Produit (texte libre)",
-        help="Utilisé si le logiciel n'est pas au catalogue.",
+        string="Product (free text)",
+        help="Used if the software is not in the catalog.",
     )
-    vendor = fields.Char(string="Éditeur")
+    vendor = fields.Char(string="Vendor")
     license_type = fields.Selection(
         selection=[
-            ("per_device", "Une clé par poste"),
-            ("per_user", "Une clé par utilisateur"),
-            ("volume", "Clé volume (N sièges)"),
-            ("jwt_token", "Token signé (JWT)"),
-            ("subscription", "Abonnement"),
+            ("per_device", "One key per device"),
+            ("per_user", "One key per user"),
+            ("volume", "Volume key (N seats)"),
+            ("jwt_token", "Signed token (JWT)"),
+            ("subscription", "Subscription"),
         ],
         string="Type",
         default="per_device",
@@ -57,40 +61,40 @@ class HostingLicense(models.Model):
 
     owner_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Propriétaire",
+        string="Owner",
         required=True,
         tracking=True,
         index=True,
         default=lambda self: self.env.company.partner_id,
-        help="Entité qui a acheté la licence (Les services de consultation Blue Fox, Inc. pour les pools "
-        "mutualisés, ou le partenaire client).",
+        help="Entity that bought the license (your company for shared "
+             "pools, or the client partner).",
     )
-    purchase_date = fields.Date(string="Date d'achat", tracking=True)
+    purchase_date = fields.Date(string="Purchase date", tracking=True)
     purchase_invoice_id = fields.Many2one(
         comodel_name="account.move",
-        string="Facture d'achat",
+        string="Purchase bill",
         domain="[('move_type', 'in', ['in_invoice', 'in_refund'])]",
-        help="Facture fournisseur pour traçabilité financière.",
+        help="Vendor bill, for financial traceability.",
     )
 
-    seats_total = fields.Integer(string="Sièges achetés", default=1, tracking=True)
+    seats_total = fields.Integer(string="Seats purchased", default=1, tracking=True)
     seats_used = fields.Integer(
-        string="Sièges activés",
+        string="Seats activated",
         compute="_compute_seat_stats",
         store=True,
     )
     seats_free = fields.Integer(
-        string="Sièges disponibles",
+        string="Seats available",
         compute="_compute_seat_stats",
         store=True,
     )
     over_allocated = fields.Boolean(
-        string="Sur-allocation",
+        string="Over-allocation",
         compute="_compute_seat_stats",
         store=True,
     )
 
-    expiry_date = fields.Date(string="Date d'expiration", tracking=True)
+    expiry_date = fields.Date(string="Expiry date", tracking=True)
 
     # ── Relevé du fournisseur ────────────────────────────────────────────
     # « Sièges activés » se calcule sur les enregistrements de siège. Pour une
@@ -100,21 +104,21 @@ class HostingLicense(models.Model):
     # pour faire coïncider le chiffre.
     saas_provider = fields.Selection(
         selection=[("cubebackup", "CubeBackup")],
-        string="Produit infonuagique",
-        help="Rattache cette licence aux relevés du produit. Vide = aucun "
-             "relevé ne la touchera.",
+        string="Cloud product",
+        help="Links this license to the product's readings. Empty = no "
+             "reading will touch it.",
     )
     reported_seats_used = fields.Integer(
-        string="Comptes utilisés (relevé)",
+        string="Accounts used (reading)",
         readonly=True,
-        help="Dernier chiffre affirmé par le fournisseur.",
+        help="Last figure stated by the vendor.",
     )
     reported_seats_date = fields.Date(
-        string="Date du relevé",
+        string="Reading date",
         readonly=True,
     )
     reported_saturated = fields.Boolean(
-        string="Saturée au dernier relevé",
+        string="Saturated at last reading",
         compute="_compute_reported_saturated",
         store=True,
     )
@@ -128,10 +132,10 @@ class HostingLicense(models.Model):
 
     # JWT (champs sensibles)
     jwt_token = fields.Char(
-        string="JWT (token signé)",
+        string="JWT (signed token)",
         groups="hosting_management.group_hosting_manager",
-        help="Pour licences de type JWT (ex. Grist Enterprise). Stocké en clair, "
-        "lisible uniquement par les gestionnaires.",
+        help="For JWT-type licenses (e.g. Grist Enterprise). Stored in "
+             "clear text, readable by managers only.",
     )
     jwt_installation_id = fields.Char(
         string="Installation ID (JWT)",
@@ -142,7 +146,7 @@ class HostingLicense(models.Model):
     seat_ids = fields.One2many(
         comodel_name="hosting.license.seat",
         inverse_name="license_id",
-        string="Sièges",
+        string="Seats",
     )
 
     notes = fields.Html(string="Notes")
@@ -208,13 +212,16 @@ class HostingLicense(models.Model):
         AuditLog = self.env.get("hosting.audit.log")
         if AuditLog is None:
             return
+        # Journal d'audit, relu par l'équipe d'hébergement : langue de la société.
+        env = reader_env(self.env)
         for rec in self:
             AuditLog._log_event(
                 action_type="config_change",
                 category="security",
-                description=(
-                    f"Champ sensible modifié sur la licence {rec.name} : "
-                    f"{', '.join(field_names)} ({action}). Valeur non journalisée."
+                description=env._(
+                    "Sensitive field changed on license %(name)s: "
+                    "%(fields)s (%(action)s). Value not logged.",
+                    name=rec.name, fields=", ".join(field_names), action=action,
                 ),
                 res_model="hosting.license",
                 res_id=rec.id,
@@ -293,8 +300,8 @@ class HostingLicense(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Décodage JWT"),
-                "message": _("Champs synchronisés depuis le token."),
+                "title": _("JWT decoding"),
+                "message": _("Fields synced from the token."),
                 "type": "success",
                 "sticky": False,
             },
@@ -339,11 +346,14 @@ class HostingLicense(models.Model):
                 if not recipient_user or not recipient_user.email:
                     continue
 
+                # Courriel à un usager interne (responsable du service ou
+                # administrateur) : sa langue, épinglée sur l'env du texte.
+                renv = user_env(self.env, recipient_user)
                 rows = []
                 for lic in lics:
                     expired = lic.expiry_date < today
                     days_left = (lic.expiry_date - today).days
-                    status = _("Expirée") if expired else f"{days_left} j"
+                    status = renv._("Expired") if expired else renv._("%s d", days_left)
                     rows.append(
                         "<tr>"
                         f"<td>{_esc(lic.code or '')}</td>"
@@ -355,20 +365,38 @@ class HostingLicense(models.Model):
                         f"{_esc(status)}</td>"
                         "</tr>"
                     )
+                headers = "".join(
+                    f"<th>{_esc(label)}</th>"
+                    for label in (
+                        renv._("Ref."), renv._("Name"), renv._("Vendor"),
+                        renv._("Expiration"), renv._("Seats"), renv._("Status"),
+                    )
+                )
+                # f-strings : `"<p>" + Markup` passerait par Markup.__radd__ et
+                # échapperait la balise.
+                hello = _esc(renv._("Hello %s,", recipient_user.name))
+                # Pas de Markup en argument de `_()` : Odoo 18 échapperait alors toute la phrase
+                # traduite (balises <strong> affichées en clair). La valeur s'échappe au `%`.
+                intro = Markup(renv._(
+                    "Licenses owned by <strong>%(owner)s</strong> "
+                    "that expire within the next 90 days:"
+                )) % {"owner": partner.name}
+                footer = _esc(renv._("— Hosting module"))
                 body = (
-                    f"<p>Bonjour {_esc(recipient_user.name)},</p>"
-                    f"<p>Licences appartenant à <strong>{_esc(partner.name)}</strong> "
-                    "qui expirent dans les 90 prochains jours :</p>"
+                    f"<p>{hello}</p>"
+                    f"<p>{intro}</p>"
                     "<table border='1' cellpadding='6' cellspacing='0' "
                     "style='border-collapse:collapse;font-family:sans-serif;font-size:13px;'>"
                     "<thead><tr style='background:#eee;'>"
-                    "<th>Réf.</th><th>Nom</th><th>Éditeur</th><th>Expiration</th>"
-                    "<th>Sièges</th><th>Statut</th></tr></thead>"
+                    f"{headers}</tr></thead>"
                     f"<tbody>{''.join(rows)}</tbody></table>"
-                    "<p>— Module Hébergement</p>"
+                    f"<p>{footer}</p>"
                 )
                 Mail.create({
-                    "subject": f"[Licences] {partner.name} — {len(lics)} expiration(s) ≤ 90 j",
+                    "subject": renv._(
+                        "[Licenses] %(owner)s — %(count)s expiration(s) ≤ 90 d",
+                        owner=partner.name, count=len(lics),
+                    ),
                     "body_html": body,
                     "email_to": recipient_user.email,
                     "author_id": self.env.user.partner_id.id,

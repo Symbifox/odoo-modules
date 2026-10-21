@@ -31,10 +31,10 @@ def clean_folder_path(path):
     """
     path = unicodedata.normalize("NFC", (path or "").strip())
     if not path:
-        raise ValidationError(_("Le chemin du dossier est obligatoire."))
+        raise ValidationError(_("The folder path is required."))
     clean = posixpath.normpath(_sanitize_nc_path(path))
     if clean == "/":
-        raise ValidationError(_("Un dossier client ne peut pas être la racine '/'."))
+        raise ValidationError(_("A client folder cannot be the root '/'."))
     return clean
 
 
@@ -65,7 +65,7 @@ def joined_folder(base, sub):
 
 class BfNcClientFolder(models.Model):
     _name = "bf.nc.client.folder"
-    _description = "Dossier client Nextcloud"
+    _description = "Nextcloud client folder"
     _order = "partner_id, sequence, id"
 
     partner_id = fields.Many2one(
@@ -75,14 +75,15 @@ class BfNcClientFolder(models.Model):
         ondelete="cascade",
         index=True,
         domain="[('parent_id', '=', False)]",
-        help="L'entreprise, ou la personne qui est elle-meme cliente.",
+        help="The company, or the person who is a client themselves.",
     )
-    path = fields.Char(string="Chemin Nextcloud", required=True)
-    name = fields.Char(string="Dossier", compute="_compute_name", store=True)
+    path = fields.Char(string="Nextcloud path", required=True)
+    name = fields.Char(string="Folder", compute="_compute_name", store=True)
     sequence = fields.Integer(default=10)
 
     _sql_constraints = [
-        ("path_uniq", "unique(path)", "Ce dossier Nextcloud est déjà rattaché à un client."),
+        ("path_uniq", "unique(path)", "This Nextcloud folder is already "
+                                      "linked to a client."),
     ]
 
     @api.depends("path")
@@ -116,7 +117,8 @@ class BfNcClientFolder(models.Model):
         root = config._nc_clients_root_path() if config else ""
         for folder in self:
             if root and posixpath.normpath(folder.path) == root:
-                raise ValidationError(_("Un dossier client ne peut pas être la racine des dossiers clients."))
+                raise ValidationError(_("A client folder cannot be the "
+                                        "client folders root."))
         prefix = (config.browser_root_prefix or "").strip() if config else ""
         if prefix in ("", "/"):
             return
@@ -124,7 +126,8 @@ class BfNcClientFolder(models.Model):
         for folder in self:
             _validate_path_under_prefix(folder.path, prefix)
             if posixpath.normpath(folder.path) == posixpath.normpath(prefix):
-                raise ValidationError(_("Un dossier client ne peut pas être la racine du navigateur."))
+                raise ValidationError(_("A client folder cannot be the "
+                                        "browser's root."))
 
     @api.constrains("path")
     def _check_not_nested(self):
@@ -137,8 +140,8 @@ class BfNcClientFolder(models.Model):
                 a, b = folder.path, other.path
                 if a.startswith(b + "/") or b.startswith(a + "/"):
                     raise ValidationError(_(
-                        "« %(a)s » et « %(b)s » sont imbriqués : un dossier client ne peut "
-                        "pas en contenir un autre.", a=a, b=b,
+                        "\"%(a)s\" and \"%(b)s\" are nested: a client "
+                        "folder cannot contain another one.", a=a, b=b,
                     ))
 
     def unlink(self):

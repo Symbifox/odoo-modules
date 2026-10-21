@@ -79,7 +79,7 @@
     }
 
     function humanSize(bytes) {
-        var units = S.units || ["o", "Ko", "Mo", "Go", "To"];
+        var units = S.units || ["B", "KB", "MB", "GB", "TB"];
         var value = Math.max(0, Number(bytes) || 0);
         var i = 0;
         while (value >= 1024 && i < units.length - 1) {
@@ -322,8 +322,8 @@
         remove.type = "button";
         remove.className = "st-file-remove";
         remove.textContent = "×";
-        remove.title = S.remove || "Retirer";
-        remove.setAttribute("aria-label", S.remove || "Retirer");
+        remove.title = S.remove || "Remove";
+        remove.setAttribute("aria-label", S.remove || "Remove");
         remove.addEventListener("click", function () {
             removeEntry(entry);
         });
@@ -810,7 +810,7 @@
             var button = document.createElement("button");
             button.type = "button";
             button.className = "st-btn st-btn-secondary";
-            button.textContent = S.resume || "Reprendre";
+            button.textContent = S.resume || "Resume";
             button.addEventListener("click", function () {
                 pickResumeFile(item, banner, line);
             });
@@ -942,7 +942,7 @@
             var option = document.createElement("option");
             option.value = String(days);
             option.textContent = days === 1
-                ? (S.expiry_one_day || "1 jour")
+                ? (S.expiry_one_day || "1 day")
                 : fmt(S.expiry_days, { n: days });
             if (days === 7 || (choices.indexOf(7) === -1 && days === choices[0])) {
                 option.selected = true;
@@ -974,18 +974,18 @@
             // English page back to French after two tab clicks.
             label.textContent = mode === "message"
                 ? (S.message_label_required || "Message *")
-                : (S.message_label_optional || "Message (optionnel)");
+                : (S.message_label_optional || "Message (optional)");
         }
         var btn = el("st-finalize");
         if (btn && !state.finalized) {
             if (mode === "message") {
-                btn.textContent = S.send_message || "Envoyer le message";
+                btn.textContent = S.send_message || "Send the message";
             } else {
                 // Drop page: the file goes straight to the owner — "send",
                 // not "get the link".
                 btn.textContent = cfg.drop_mode
-                    ? (S.send_drop || S.send || "Envoyer")
-                    : (S.send || "Envoyer");
+                    ? (S.send_drop || S.send || "Send")
+                    : (S.send || "Send");
             }
         }
         clearError();
@@ -1120,7 +1120,7 @@
                 try {
                     await rpc(turl("confirm/resend"), {});
                     resend.textContent = S.otp_resent
-                        || "Un nouveau code vous a été envoyé.";
+                        || "A new code has been sent to you.";
                 } catch (e) {
                     showError(e.message || S.error_generic);
                     resend.textContent = original;

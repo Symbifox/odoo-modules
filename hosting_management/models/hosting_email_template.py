@@ -67,9 +67,9 @@ def _pied_de_marque(company, brand_primary, brand_dark, police):
         contact = '<span style="color:#D1D5DB;"> &#183; </span>'.join(morceaux)
     liens = []
     if company.brand_privacy_url:
-        liens.append(f'<a href="{_esc(company.brand_privacy_url)}" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>')
+        liens.append(f'<a href="{_esc(company.brand_privacy_url)}" style="color:#9CA3AF; text-decoration:underline;">{_esc(company.env._("Privacy"))}</a>')
     if company.brand_terms_url:
-        liens.append(f'<a href="{_esc(company.brand_terms_url)}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>')
+        liens.append(f'<a href="{_esc(company.brand_terms_url)}" style="color:#9CA3AF; text-decoration:underline;">{_esc(company.env._("Terms"))}</a>')
     bloc_liens = (
         f'<tr><td style="padding-top:12px; font-family:{police}; font-size:11px;">'
         + '<span style="color:#D1D5DB;"> | </span>'.join(liens) + "</td></tr>") if liens else ""
@@ -311,13 +311,15 @@ def get_section_title(title, color=None, company=None):
     </h2>'''
 
 
-def get_status_badge(status, size="normal", company=None):
+def get_status_badge(status, size="normal", company=None, label=None):
     """
     Générer un badge de statut.
 
     Args:
         status: Texte du statut ("up", "down", "degraded", "timeout", etc.)
         size: "small" ou "normal"
+        label: libellé affiché (déjà traduit par l'appelant, ex. le libellé de la
+               sélection) ; sans lui, la clé `status` en capitales.
 
     Returns:
         Chaîne HTML du badge
@@ -334,7 +336,7 @@ def get_status_badge(status, size="normal", company=None):
     font_size = "11px" if size == "small" else "12px"
     padding = "4px 8px" if size == "small" else "6px 10px"
 
-    return f'''<span style="display:inline-block; font-family:{police}; font-size:{font_size}; text-transform:uppercase; letter-spacing:0.5px; padding:{padding}; background-color:{bg_color}; color:{text_color}; border-radius:999px; font-weight:600;">{_esc(status.upper())}</span>'''
+    return f'''<span style="display:inline-block; font-family:{police}; font-size:{font_size}; text-transform:uppercase; letter-spacing:0.5px; padding:{padding}; background-color:{bg_color}; color:{text_color}; border-radius:999px; font-weight:600;">{_esc((label or status or "").upper())}</span>'''
 
 
 def get_button(text, url, primary=True, company=None):
@@ -359,9 +361,16 @@ def get_button(text, url, primary=True, company=None):
 
 
 def get_contact_footer(company=None):
-    """Générer la section de pied de page de contact."""
+    """Générer la section de pied de page de contact.
+
+    Le texte suit la langue de l'environnement de `company` : l'appelant passe une
+    société lue dans un env épinglé à la langue du lecteur (`with_context(lang=…)`).
+    """
     police = _brand_font(company)
+    texte = "For any assistance, contact your hosting provider."
+    if company:
+        texte = company.env._("For any assistance, contact your hosting provider.")
     return f'''
     <p style="font-family:{police}; font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
-        Pour toute assistance, contactez votre fournisseur d'hébergement.
+        {_esc(texte)}
     </p>'''

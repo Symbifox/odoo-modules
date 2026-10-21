@@ -661,7 +661,16 @@ Hosting
     └── Settings
 ```
 
+## Languages (18.0.2.63.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it, not of whatever triggers it. What the hosting team reads is written in the company's language, even when a scheduled job, a public route (backup and provisioning reports) or a user set to another language triggers it: health alerts by email and ntfy, the probes' findings, notes left on services, domains and backups, the audit log, stored names and the end-of-support tag of an endpoint. Activities (service, domain and SSL expiry, setup tasks from a template, maintenance) are written in the assignee's language and created in their environment, so Odoo's "assigned to you" notice follows the assignee too. The email digest is written in each recipient's language, subject and status badges included. The fleet warranty alert follows the user in charge of the client's service, and the license expiry email its recipient. Action names, validation errors, VOIP.ms errors and notifications shown to a user follow that user. A language that a contact or the company still holds but that has been deactivated is passed over for an installed one. On upgrade, the shipped scheduled jobs, activity types, backup report template, maintenance colour rule and software notes switch to English only where the database still holds the text that was shipped; an edited value is left alone.
+
 ## Changelog
+
+### Version 18.0.2.63.0
+- Change: labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Each text follows its reader: the company's language for what the hosting team reads, the assignee's for activities, the recipient's for the digest and the expiry emails, the user's for what is shown on screen. See the Languages section.
+- Migration 18.0.2.63.0 switches the shipped records that still hold the French text (scheduled jobs, activity types, backup report template, colour rule, software notes) to English, keeps the French in `fr_CA`, and leaves an edited value alone.
+- New tests `tests/test_langue_lecteur_a.py` and `tests/test_langue_lecteur_b.py`: each puts the reader in one language and the trigger in the other.
 
 ### Version 18.0.2.62.2
 - An internal user without the "Hosting user" group can open contact forms and projects again. The hosting smart buttons, the "Client under SLA" toggle and the "IT assets" tab on the contact form, and the "Licences" button on the project form, now carry the group: the web client reads every field of a form, hidden ones included, and one field over a hosting model was enough to refuse the whole form to anyone without access to that model.

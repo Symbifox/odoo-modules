@@ -9,7 +9,7 @@
              ne change pas de NOM, seulement de module : les utilisateurs qui
              portaient déjà le groupe le gardent. -->
         <record id="module_category_corporate" model="ir.module.category">
-            <field name="name">Gouvernance corporative</field>
+            <field name="name">Corporate governance</field>
             <field name="sequence">33</field>
         </record>
 
@@ -19,8 +19,8 @@
              écrit — et le second implique le premier par le gestionnaire de
              documents. -->
         <record id="group_corporate_manager" model="res.groups">
-            <field name="name">Gestionnaire</field>
-            <field name="comment">Accès complet aux fonctionnalités de gouvernance corporative (résolutions, administrateurs, dirigeants, conformité).</field>
+            <field name="name">Manager</field>
+            <field name="comment">Full access to corporate governance features (resolutions, directors, officers, compliance).</field>
             <field name="category_id" ref="module_category_corporate"/>
             <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_document_manager'))]"/>
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>

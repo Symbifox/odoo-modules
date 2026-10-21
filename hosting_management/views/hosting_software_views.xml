@@ -25,18 +25,18 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_check_version" string="Vérifier les mises à jour" type="object" class="btn-secondary" icon="fa-refresh" invisible="version_check_method == 'none'"/>
+                    <button name="action_check_version" string="Check for updates" type="object" class="btn-secondary" icon="fa-refresh" invisible="version_check_method == 'none'"/>
                 </header>
                 <sheet>
                     <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Nom du logiciel"/>
+                            <field name="name" placeholder="Software name"/>
                         </h1>
                         <label for="code"/>
                         <h3>
-                            <field name="code" placeholder="Code court"/>
+                            <field name="code" placeholder="Short code"/>
                         </h3>
                     </div>
                     <group>
@@ -79,14 +79,14 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Vérification de version" name="version_checking">
+                        <page string="Version check" name="version_checking">
                             <group>
-                                <group string="Méthode de vérification">
+                                <group string="Check method">
                                     <field name="version_check_method"/>
                                     <field name="last_version_check" readonly="1"/>
                                     <field name="version_check_error" readonly="1" invisible="not version_check_error"/>
                                 </group>
-                                <group string="Analyse de version">
+                                <group string="Version parsing">
                                     <field name="version_regex"/>
                                     <field name="version_prefix"/>
                                 </group>
@@ -140,15 +140,15 @@
                                     <field name="software_type"/>
                                 </span>
                                 <span t-if="record.update_available.raw_value" class="badge rounded-pill text-bg-warning">
-                                    Mises à jour disponibles
+                                    Available updates
                                 </span>
                             </div>
                             <div class="mt-2">
-                                <span class="text-muted">Version : </span>
+                                <span class="text-muted">Version: </span>
                                 <field name="latest_version"/>
                             </div>
                             <div>
-                                <span class="text-muted">Services : </span>
+                                <span class="text-muted">Services: </span>
                                 <field name="service_count"/>
                             </div>
                         </main>
@@ -166,15 +166,15 @@
             <search>
                 <field name="name"/>
                 <field name="code"/>
-                <filter name="filter_self_hosted" string="Auto-hébergé" domain="[('software_type', '=', 'self_hosted')]"/>
+                <filter name="filter_self_hosted" string="Self-hosted" domain="[('software_type', '=', 'self_hosted')]"/>
                 <filter name="filter_saas" string="SaaS" domain="[('software_type', '=', 'saas')]"/>
-                <filter name="filter_managed" string="Géré" domain="[('software_type', '=', 'managed')]"/>
+                <filter name="filter_managed" string="Managed" domain="[('software_type', '=', 'managed')]"/>
                 <separator/>
-                <filter name="filter_updates" string="Mises à jour disponibles" domain="[('update_available', '=', True)]"/>
-                <filter name="filter_versionless" string="Sans notion de version" domain="[('versionless', '=', True)]"/>
+                <filter name="filter_updates" string="Available updates" domain="[('update_available', '=', True)]"/>
+                <filter name="filter_versionless" string="Versionless" domain="[('versionless', '=', True)]"/>
                 <separator/>
-                <filter name="filter_inactive" string="Archivé" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <filter name="filter_inactive" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
                     <filter name="group_type" string="Type" context="{'group_by': 'software_type'}"/>
                 </group>
             </search>
@@ -183,16 +183,16 @@
 
     <!-- Hosting Software Action -->
     <record id="hosting_software_action" model="ir.actions.act_window">
-        <field name="name">Catalogue de logiciels</field>
+        <field name="name">Software catalog</field>
         <field name="res_model">hosting.software</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="hosting_software_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez votre premier logiciel au catalogue
+                Add your first software to the catalog
             </p>
             <p>
-                Suivez tous les logiciels que vous hébergez pour vos clients : Nextcloud, Odoo, CryptPad, et plus encore.
+                Track all the software you host for your clients: Nextcloud, Odoo, CryptPad, and more.
             </p>
         </field>
     </record>

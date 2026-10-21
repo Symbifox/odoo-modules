@@ -3,24 +3,24 @@
 
     <!-- Catégorie du module Gestion d'hébergement -->
     <record id="module_category_hosting" model="ir.module.category">
-        <field name="name">Gestion d'hébergement</field>
-        <field name="description">Gérer les services d'hébergement pour les clients</field>
+        <field name="name">Hosting management</field>
+        <field name="description">Manage hosting services for clients</field>
         <field name="sequence">50</field>
     </record>
 
     <!-- Groupe : Utilisateur d'hébergement -->
     <record id="group_hosting_user" model="res.groups">
-        <field name="name">Utilisateur d'hébergement</field>
+        <field name="name">Hosting user</field>
         <field name="category_id" ref="module_category_hosting"/>
-        <field name="comment">Peut consulter et gérer ses propres services d'hébergement</field>
+        <field name="comment">Can view and manage their own hosting services</field>
     </record>
 
     <!-- Groupe : Gestionnaire d'hébergement (hérite de Utilisateur) -->
     <record id="group_hosting_manager" model="res.groups">
-        <field name="name">Gestionnaire d'hébergement</field>
+        <field name="name">Hosting manager</field>
         <field name="category_id" ref="module_category_hosting"/>
         <field name="implied_ids" eval="[(4, ref('group_hosting_user'))]"/>
-        <field name="comment">Accès complet à toutes les fonctionnalités de gestion d'hébergement</field>
+        <field name="comment">Full access to all hosting management features</field>
     </record>
 
     <!-- Règles d'accès -->

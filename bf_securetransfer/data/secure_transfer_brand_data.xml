@@ -7,7 +7,7 @@
              company's report branding, links to the configured public base
              URL. Operators customize it in Configuration → Marques. -->
         <record id="brand_default" model="secure.transfer.brand">
-            <field name="name">Défaut</field>
+            <field name="name">Default</field>
             <field name="sequence">10</field>
             <field name="is_default" eval="True"/>
             <field name="powered_by" eval="True"/>

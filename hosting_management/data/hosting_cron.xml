@@ -4,7 +4,7 @@
 
         <!-- Tâche planifiée : Vérifier les expirations de services -->
         <record id="ir_cron_hosting_check_expirations" model="ir.cron">
-            <field name="name">Hébergement : Vérifier les expirations</field>
+            <field name="name">Hosting: check expirations</field>
             <field name="model_id" ref="model_hosting_service"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_expirations()</field>
@@ -15,7 +15,7 @@
 
         <!-- Tâche planifiée : Expiration automatique des services -->
         <record id="ir_cron_hosting_auto_expire" model="ir.cron">
-            <field name="name">Hébergement : Expiration automatique des services</field>
+            <field name="name">Hosting: auto-expire services</field>
             <field name="model_id" ref="model_hosting_service"/>
             <field name="state">code</field>
             <field name="code">model._cron_auto_expire()</field>
@@ -26,7 +26,7 @@
 
         <!-- Tâche planifiée : Vérifier les versions logicielles -->
         <record id="ir_cron_hosting_check_versions" model="ir.cron">
-            <field name="name">Hébergement : Vérifier les versions logicielles</field>
+            <field name="name">Hosting: check software versions</field>
             <field name="model_id" ref="model_hosting_software"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_versions()</field>
@@ -37,7 +37,7 @@
 
         <!-- Tâche planifiée : Vérification de santé -->
         <record id="ir_cron_hosting_health_check" model="ir.cron">
-            <field name="name">Hébergement : Vérification de santé</field>
+            <field name="name">Hosting: health check</field>
             <field name="model_id" ref="model_hosting_service"/>
             <field name="state">code</field>
             <field name="code">model._cron_health_check()</field>
@@ -48,7 +48,7 @@
 
         <!-- Tâche planifiée : Envoi des courriels récapitulatifs -->
         <record id="ir_cron_hosting_digest" model="ir.cron">
-            <field name="name">Hébergement : Envoi des courriels récapitulatifs</field>
+            <field name="name">Hosting: send digest emails</field>
             <field name="model_id" ref="model_hosting_digest"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_digests()</field>
@@ -59,7 +59,7 @@
 
         <!-- Tâche planifiée : Vérifier les versions des conteneurs Docker -->
         <record id="ir_cron_hosting_check_docker_versions" model="ir.cron">
-            <field name="name">Hébergement : Vérifier les versions Docker</field>
+            <field name="name">Hosting: check Docker container versions</field>
             <field name="model_id" ref="model_hosting_service"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_docker_versions()</field>
@@ -72,7 +72,7 @@
              Tourne à l'heure ; la méthode interne ne fait quelque chose qu'à
              l'heure locale configurée dans Configuration > Paramètres. -->
         <record id="ir_cron_hosting_backup_report" model="ir.cron">
-            <field name="name">Hébergement : Envoi du rapport de sauvegarde</field>
+            <field name="name">Hosting: send backup report</field>
             <field name="model_id" ref="model_hosting_backup_run"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_daily_report()</field>
@@ -83,7 +83,7 @@
 
         <!-- Tâche planifiée : Consolider les vérifications de santé en snapshots quotidiens et purger les données brutes au-delà de la rétention -->
         <record id="ir_cron_hosting_health_check_consolidate_purge" model="ir.cron">
-            <field name="name">Hébergement : Consolider les vérifications de santé (snapshots + purge)</field>
+            <field name="name">Hosting: consolidate health checks (snapshots + purge)</field>
             <field name="model_id" ref="model_hosting_health_check"/>
             <field name="state">code</field>
             <field name="code">model._cron_consolidate_and_purge()</field>
@@ -94,7 +94,7 @@
 
         <!-- Tâche planifiée : Auto-lier les dépôts Restic aux services correspondants -->
         <record id="ir_cron_hosting_backup_auto_link" model="ir.cron">
-            <field name="name">Hébergement : Auto-lier dépôts Restic ↔ services</field>
+            <field name="name">Hosting: auto-link Restic repositories ↔ services</field>
             <field name="model_id" ref="model_hosting_backup_repository"/>
             <field name="state">code</field>
             <field name="code">model._cron_auto_link_services()</field>
@@ -105,7 +105,7 @@
 
         <!-- Tâche planifiée : Vérification DMARC quotidienne (drift + révisions) -->
         <record id="ir_cron_hosting_dmarc_check" model="ir.cron">
-            <field name="name">Hébergement : Vérification DMARC quotidienne</field>
+            <field name="name">Hosting: daily DMARC check</field>
             <field name="model_id" ref="model_hosting_domain"/>
             <field name="state">code</field>
             <field name="code">model._cron_dmarc_check()</field>
@@ -116,7 +116,7 @@
 
         <!-- Tâche planifiée : Ingestion des rapports agrégés DMARC (RUA) -->
         <record id="ir_cron_hosting_dmarc_ingest" model="ir.cron">
-            <field name="name">Hébergement : Ingestion rapports DMARC (RUA)</field>
+            <field name="name">Hosting: ingest DMARC reports (RUA)</field>
             <field name="model_id" ref="model_hosting_dmarc_report"/>
             <field name="state">code</field>
             <field name="code">model._cron_dmarc_ingest_reports()</field>
@@ -127,7 +127,7 @@
 
         <!-- Tâche planifiée : Synchronisation Action1 (RMM) -->
         <record id="ir_cron_hosting_endpoint_action1_sync" model="ir.cron">
-            <field name="name">Hébergement : Synchronisation Action1</field>
+            <field name="name">Hosting: Action1 sync</field>
             <field name="model_id" ref="model_hosting_endpoint"/>
             <field name="state">code</field>
             <field name="code">model._cron_action1_sync()</field>
@@ -138,7 +138,7 @@
 
         <!-- Tâche planifiée : Alertes hebdomadaires expiration de licences -->
         <record id="ir_cron_hosting_license_expiry_alerts" model="ir.cron">
-            <field name="name">Hébergement : Alertes expiration licences</field>
+            <field name="name">Hosting: license expiry alerts</field>
             <field name="model_id" ref="model_hosting_license"/>
             <field name="state">code</field>
             <field name="code">model._cron_expiry_alerts()</field>
@@ -149,7 +149,7 @@
 
         <!-- Tâche planifiée : Alerte hebdomadaire garantie postes du parc -->
         <record id="ir_cron_hosting_endpoint_warranty_alerts" model="ir.cron">
-            <field name="name">Hébergement : Alertes garantie postes du parc</field>
+            <field name="name">Hosting: fleet endpoint warranty alerts</field>
             <field name="model_id" ref="model_hosting_endpoint"/>
             <field name="state">code</field>
             <field name="code">model._cron_warranty_alerts()</field>
@@ -182,7 +182,7 @@
              ⚠️ Ce fichier est noupdate="1" : sur une base déjà installée, le
              record existant n'est PAS réécrit. Voir migrations/18.0.2.51.2. -->
         <record id="ir_cron_hosting_maintenance_refresh_due" model="ir.cron">
-            <field name="name">Hébergement : Rafraîchir les indicateurs d'échéance</field>
+            <field name="name">Hosting: refresh due date indicators</field>
             <field name="model_id" ref="model_hosting_maintenance_schedule"/>
             <field name="state">code</field>
             <field name="code">model._cron_refresh_due_indicators()</field>

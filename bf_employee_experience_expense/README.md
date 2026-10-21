@@ -36,9 +36,13 @@ that day still goes through: the usage line then carries its "no open
 entitlement" flag, like any manual entry. Flagging beats blocking, because it is
 visible.
 
+## Languages (18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The note on the usage line created by an approval is written in the language of the person who spent, who reads their own register (their user's language, else their work contact's, else the company's), not in the approver's. The note left on the expense when its usage line is withdrawn follows the user who acts.
+
 ## Tests
 
-12 tests, played through the real approval path of the expense report.
+17 tests, played through the real approval path of the expense report.
 
 ```
 odoo -d <database> -u bf_employee_experience_expense --test-enable \
@@ -46,6 +50,11 @@ odoo -d <database> -u bf_employee_experience_expense --test-enable \
 ```
 
 ## Changelog
+
+### 18.0.1.1.0
+
+- Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`.
+- The note on a usage line is written in the language of the person who spent, not the approver's. See the Languages section.
 
 ### 18.0.1.0.1
 
@@ -59,4 +68,4 @@ odoo -d <database> -u bf_employee_experience_expense --test-enable \
 Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
 own internal business operations; providing it to third parties as a hosted,
 managed or resold service requires a written agreement. This version converts
-to LGPL-3.0-or-later on 2030-10-19.
+to LGPL-3.0-or-later on 2030-10-21.

@@ -9,25 +9,25 @@ class ProjectTask(models.Model):
     _inherit = "project.task"
 
     nc_task_subfolder = fields.Char(
-        string="Sous-dossier Nextcloud (tache)",
-        help="Sous-chemin optionnel sous le dossier Nextcloud du projet, propre a "
-        "cette tache (ex: 'Pieces jointes').",
+        string="Nextcloud subfolder (task)",
+        help="Optional subpath under the project's Nextcloud folder, "
+             "specific to this task (e.g. 'Attachments').",
     )
     nc_documents_config_id = fields.Many2one(
         "nextcloud.document.config",
-        string="Config Nextcloud",
+        string="Nextcloud config",
         compute="_compute_nc_documents",
         compute_sudo=False,
     )
     nc_documents_folder = fields.Char(
-        string="Dossier Nextcloud",
+        string="Nextcloud folder",
         compute="_compute_nc_documents",
         compute_sudo=False,
     )
     # Same value as nc_documents_folder, under the name every record the
     # browser serves carries since 18.0.4.2.0 (partner, project, task).
     nc_browser_folder = fields.Char(
-        string="Dossier Nextcloud (navigateur)",
+        string="Nextcloud folder (browser)",
         compute="_compute_nc_documents",
         compute_sudo=False,
         groups="base.group_user,bf_nextcloud_browser.group_nc_browser_user",

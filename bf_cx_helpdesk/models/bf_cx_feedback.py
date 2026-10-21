@@ -3,11 +3,13 @@ import logging
 
 from markupsafe import Markup
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 from odoo.tools.mail import plaintext2html
 
 from odoo.addons.bf_cx.models.bf_cx_feedback import param_is_true
+
+from .bf_cx_complaint import langue_du_client
 
 _logger = logging.getLogger(__name__)
 
@@ -17,7 +19,7 @@ class BfCxFeedback(models.Model):
 
     helpdesk_ticket_id = fields.Many2one(
         "helpdesk.ticket",
-        string="Ticket de suivi",
+        string="Follow-up ticket",
         ondelete="set null",
         copy=False,
     )
@@ -43,19 +45,27 @@ class BfCxFeedback(models.Model):
             "bf_cx_helpdesk.helpdesk_team_complaints",
             raise_if_not_found=False,
         )
+        # Nom et description du billet dans la langue du client : ils peuvent
+        # lui parvenir (accusé de l'étape initiale, portail). Appelé hors
+        # requête de l'équipe (enquête publique, consommation d'une note) :
+        # `fb.env._`, pas `_()`, qui lirait la langue du cadre.
+        fb = self.with_context(
+            lang=langue_du_client(self.env, self.partner_id, self.company_id)
+        )
         comment = (self.comment or "").strip()
-        description = Markup("<p>%s</p>") % _(
-            "Note de %(score)s/%(max)s reçue de %(partner)s.",
+        description = Markup("<p>%s</p>") % fb.env._(
+            "Rating of %(score)s/%(max)s received from %(partner)s.",
             score=self.score,
             max=int(self.score_max),
-            partner=self.partner_id.display_name or _("un répondant anonyme"),
+            partner=self.partner_id.display_name
+            or fb.env._("an anonymous respondent"),
         )
         if comment:
             description += Markup("<blockquote>%s</blockquote>") % plaintext2html(
                 comment
             )
         vals = {
-            "name": _("Suivi détracteur - %s")
+            "name": fb.env._("Detractor follow-up - %s")
             % (self.partner_id.display_name or fields.Date.to_string(self.date)),
             "description": description,
             "partner_id": self.partner_id.id,
@@ -81,7 +91,7 @@ class BfCxFeedback(models.Model):
         self.ensure_one()
         if self.helpdesk_ticket_id:
             raise UserError(
-                _("Ce feedback a déjà un ticket de suivi : %s.")
+                self.env._("This feedback already has a follow-up ticket: %s.")
                 % self.helpdesk_ticket_id.number
             )
         ticket = self._create_followup_ticket()

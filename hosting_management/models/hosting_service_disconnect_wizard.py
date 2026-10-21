@@ -5,7 +5,7 @@ from odoo import api, fields, models
 
 class HostingServiceDisconnectWizard(models.TransientModel):
     _name = "hosting.service.disconnect.wizard"
-    _description = "Assistant — Marquer un service comme à déconnecter"
+    _description = "Wizard: mark a service for disconnection"
 
     service_id = fields.Many2one(
         comodel_name="hosting.service",
@@ -14,14 +14,14 @@ class HostingServiceDisconnectWizard(models.TransientModel):
         ondelete="cascade",
     )
     disconnect_acknowledged_date = fields.Date(
-        string="Date d'accusé",
+        string="Acknowledgment date",
         required=True,
         default=fields.Date.context_today,
     )
     disconnect_reason = fields.Char(
-        string="Motif",
+        string="Reason",
         required=True,
-        help="Migration vers X, décision client, fin de contrat, etc.",
+        help="Migration to X, client decision, end of contract, etc.",
     )
 
     @api.model

@@ -6,17 +6,17 @@
         <field name="model">hosting.saas.backup.reading</field>
         <field name="arch" type="xml">
             <list decoration-danger="saturated" decoration-warning="error_count &gt; 0">
-                <field name="period_end" string="Fin de période"/>
-                <field name="period_start" string="Début" optional="hide"/>
-                <field name="seats_used" string="Comptes utilisés"/>
-                <field name="seats_total" string="Achetés"/>
-                <field name="seats_free" string="Libres"/>
+                <field name="period_end" string="End of period"/>
+                <field name="period_start" string="Start" optional="hide"/>
+                <field name="seats_used" string="Used seats"/>
+                <field name="seats_total" string="Purchased"/>
+                <field name="seats_free" string="Free"/>
                 <field name="license_expiry" string="Expiration"/>
-                <field name="error_count" string="Erreurs"/>
-                <field name="index_free_pct" string="Index libre (%)"/>
-                <field name="storage_location" string="Seau" optional="hide"/>
+                <field name="error_count" string="Errors"/>
+                <field name="index_free_pct" string="Free index space (%)"/>
+                <field name="storage_location" string="Bucket" optional="hide"/>
                 <field name="provider" widget="badge" optional="hide"/>
-                <field name="ingest_source" string="Lu par" optional="hide"/>
+                <field name="ingest_source" string="Read via" optional="hide"/>
                 <field name="saturated" column_invisible="1"/>
             </list>
         </field>
@@ -32,16 +32,16 @@
                         <h1><field name="display_name" readonly="1"/></h1>
                     </div>
                     <div class="alert alert-danger" role="alert" invisible="not saturated">
-                        Licence saturée à ce relevé : aucun compte de plus ne rentre.
+                        License full at this reading: no more accounts fit.
                     </div>
                     <group>
-                        <group string="Licence">
+                        <group string="License">
                             <field name="seats_used"/>
                             <field name="seats_total"/>
                             <field name="seats_free"/>
                             <field name="license_expiry"/>
                         </group>
-                        <group string="Stockage">
+                        <group string="Storage">
                             <field name="storage_kind"/>
                             <field name="storage_location"/>
                             <field name="storage_available"/>
@@ -50,18 +50,18 @@
                         </group>
                     </group>
                     <group>
-                        <group string="Période">
+                        <group string="Period">
                             <field name="period_start"/>
                             <field name="period_end"/>
                             <field name="provider"/>
                         </group>
-                        <group string="Provenance">
+                        <group string="Origin">
                             <field name="ingest_source"/>
                             <field name="source_ref"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Par organisation" name="organizations">
+                        <page string="By organization" name="organizations">
                             <field name="line_ids" readonly="1">
                                 <list>
                                     <field name="organization_name"/>
@@ -72,9 +72,7 @@
                                 </list>
                             </field>
                             <p class="text-muted">
-                                Ces chiffres sont ceux du fournisseur. Les exécutions
-                                versées depuis le journal comptent de leur côté : deux
-                                sources qui divergent, ça se remarque.
+                                These figures come from the provider. Runs filed from the log are counted separately: when the two sources diverge, it shows.
                             </p>
                         </page>
                     </notebook>
@@ -91,14 +89,14 @@
             <search>
                 <field name="period_end"/>
                 <field name="storage_location"/>
-                <filter name="filter_saturated" string="Licence saturée"
+                <filter name="filter_saturated" string="License full"
                         domain="[('saturated', '=', True)]"/>
-                <filter name="filter_errors" string="Avec des erreurs"
+                <filter name="filter_errors" string="With errors"
                         domain="[('error_count', '&gt;', 0)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_provider" string="Produit"
+                <group expand="0" string="Group by">
+                    <filter name="group_provider" string="Product"
                             context="{'group_by': 'provider'}"/>
-                    <filter name="group_month" string="Mois"
+                    <filter name="group_month" string="Month"
                             context="{'group_by': 'period_end:month'}"/>
                 </group>
             </search>
@@ -106,16 +104,14 @@
     </record>
 
     <record id="hosting_saas_reading_action" model="ir.actions.act_window">
-        <field name="name">Relevés infonuagiques</field>
+        <field name="name">Cloud readings</field>
         <field name="res_model">hosting.saas.backup.reading</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_saas_reading_view_search"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun relevé versé</p>
+            <p class="o_view_nocontent_smiling_face">No readings filed</p>
             <p>
-                Un relevé porte ce que le fournisseur affirme sur une période :
-                licence, stockage, compteurs par organisation. C'est la seule
-                source pour la licence et le stockage, que le journal ne porte pas.
+                A reading holds what the provider states for a period: license, storage, counters per organization. It is the only source for the license and storage, which the log does not carry.
             </p>
         </field>
     </record>

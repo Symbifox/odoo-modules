@@ -745,7 +745,7 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         self.assertEqual(ours["Filter"]["Prefix"], "transfers-bf/")
         self.assertEqual(ours["Expiration"]["Days"],
                          s3._orphan_expiry_days(self.env))
-        self.assertIn("1 règle(s) étrangère(s)", report["lifecycle"]["detail"])
+        self.assertIn("1 foreign rule(s) preserved", report["lifecycle"]["detail"])
 
     def test_lifecycle_falls_back_when_abort_rule_is_refused(self):
         """IDrive E2 rejects AbortIncompleteMultipartUpload with InvalidRequest.
@@ -770,7 +770,7 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         self.assertNotIn(
             "AbortIncompleteMultipartUpload",
             {k for r in rules for k in r})
-        self.assertIn("REFUSÉ", report["lifecycle"]["detail"])
+        self.assertIn("REFUSED", report["lifecycle"]["detail"])
 
     def test_lifecycle_on_a_bucket_without_configuration(self):
         """A fresh bucket answers NoSuchLifecycleConfiguration; that must be an
@@ -784,7 +784,7 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         rules = (c.put_bucket_lifecycle_configuration.call_args
                  .kwargs["LifecycleConfiguration"]["Rules"])
         self.assertEqual(len(rules), 2)
-        self.assertIn("0 règle(s) étrangère(s)", report["lifecycle"]["detail"])
+        self.assertIn("0 foreign rule(s) preserved", report["lifecycle"]["detail"])
 
     def test_lifecycle_reraises_a_non_invalidrequest_error(self):
         """An AccessDenied must be reported as a failed probe, not swallowed

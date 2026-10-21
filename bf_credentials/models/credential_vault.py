@@ -17,53 +17,54 @@ class ProjectCredentialVault(models.Model):
     """Un endroit où peut vivre un deuxième facteur."""
 
     _name = 'project.credential.vault'
-    _description = "Porteur d'un deuxième facteur"
+    _description = "Holder of a second factor"
     _order = 'sequence, name'
 
-    name = fields.Char(string='Nom', required=True, translate=True)
-    sequence = fields.Integer(string='Séquence', default=10)
-    active = fields.Boolean(string='Actif', default=True)
+    name = fields.Char(string="Name", required=True, translate=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
 
     kind = fields.Selection([
-        ('password_manager', 'Gestionnaire de mots de passe'),
-        ('authenticator', "Application d'authentification"),
-        ('device', "Appareil d'une personne"),
-        ('hardware', 'Jeton matériel'),
-        ('offline', 'Support hors ligne'),
-        ('other', 'Autre'),
-    ], string='Nature', required=True, default='password_manager')
+        ('password_manager', "Password manager"),
+        ('authenticator', "Authenticator app"),
+        ('device', "A person's device"),
+        ('hardware', "Hardware token"),
+        ('offline', "Offline medium"),
+        ('other', "Other"),
+    ], string="Kind", required=True, default='password_manager')
 
     shared = fields.Boolean(
-        string='Accessible à plusieurs',
+        string="Shared access",
         default=True,
-        help="Décoché, le facteur ne peut être produit que par la personne qui "
-             "détient l'appareil ou le jeton. C'est ce qui rend un départ "
-             "bloquant plutôt que gênant.",
+        help="Unchecked, the factor can only be produced by the person "
+             "who holds the device or token. This is what makes a "
+             "departure blocking rather than inconvenient.",
     )
 
     base_url = fields.Char(
-        string='Adresse',
-        help="Adresse d'accueil du porteur, s'il en a une.",
+        string="Address",
+        help="Home page of the holder, if it has one.",
     )
     item_url_pattern = fields.Char(
-        string="Gabarit du lien vers l'élément",
-        help="Gabarit d'adresse menant directement à l'élément chez son porteur. "
-             "Le marqueur {ref} est remplacé par la référence de l'identifiant. "
-             "Exemple : https://coffre.exemple.com/#/vault?itemId={ref}\n"
-             "⚠️ Le lien mène au porteur ; il ne fait jamais entrer un secret ici.",
+        string="Item link template",
+        help="Address template leading straight to the item at its "
+             "holder. The {ref} marker is replaced by the credential's "
+             "reference. Example: "
+             "https://vault.example.com/#/vault?itemId={ref}\n⚠️ The link "
+             "leads to the holder; it never brings a secret in here.",
     )
 
     notes = fields.Text(string='Notes')
 
     credential_ids = fields.One2many(
-        'project.credential', 'mfa_vault_id', string='Identifiants',
+        'project.credential', 'mfa_vault_id', string="Credentials",
     )
     credential_count = fields.Integer(
-        string="Nombre d'identifiants", compute='_compute_credential_count',
+        string="Credential count", compute='_compute_credential_count',
     )
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)', 'Un porteur de ce nom existe déjà.'),
+        ('name_uniq', 'unique(name)', "A holder with this name already exists."),
     ]
 
     @api.depends('credential_ids')

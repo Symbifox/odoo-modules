@@ -38,6 +38,11 @@ export class SecretKeyField extends CharField {
         return "•".repeat(hidden) + v.slice(-5);
     }
 
+    /** Titre du bouton œil : un texte dans une expression OWL ne se traduit pas. */
+    get toggleTitle() {
+        return this.secret.revealed ? _t("Hide") : _t("Show");
+    }
+
     toggleSecret() {
         this.secret.revealed = !this.secret.revealed;
     }
@@ -53,11 +58,11 @@ export class SecretKeyField extends CharField {
         }
         try {
             await navigator.clipboard.writeText(v);
-            this.notification.add(_t("Clé copiée dans le presse-papiers"), {
+            this.notification.add(_t("Key copied to clipboard"), {
                 type: "success",
             });
         } catch {
-            this.notification.add(_t("Échec de la copie"), { type: "danger" });
+            this.notification.add(_t("Copy failed"), { type: "danger" });
         }
     }
 }
@@ -65,7 +70,7 @@ export class SecretKeyField extends CharField {
 export const secretKeyField = {
     ...charField,
     component: SecretKeyField,
-    displayName: _t("Clé secrète (masquée + copier)"),
+    displayName: _t("Secret key (masked + copy)"),
     supportedTypes: ["char"],
 };
 

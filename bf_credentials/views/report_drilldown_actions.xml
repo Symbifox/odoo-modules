@@ -12,7 +12,7 @@
          les deux écritures restent d'accord. -->
 
     <record id="report_action_cred_active" model="ir.actions.act_window">
-        <field name="name">Identifiants actifs</field>
+        <field name="name">Active credentials</field>
         <field name="res_model">project.credential</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="credential_view_search"/>
@@ -20,7 +20,7 @@
     </record>
 
     <record id="report_action_cred_expiring" model="ir.actions.act_window">
-        <field name="name">Identifiants expirant sous 30 jours</field>
+        <field name="name">Credentials expiring within 30 days</field>
         <field name="res_model">project.credential</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="credential_view_search"/>
@@ -28,7 +28,7 @@
     </record>
 
     <record id="report_action_cred_expired" model="ir.actions.act_window">
-        <field name="name">Identifiants expirés</field>
+        <field name="name">Expired credentials</field>
         <field name="res_model">project.credential</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="credential_view_search"/>
@@ -42,33 +42,33 @@
          compare au compteur. -->
 
     <record id="report_action_cred_mfa_unknown" model="ir.actions.act_window">
-        <field name="name">Deuxième facteur à documenter</field>
+        <field name="name">Second factor to document</field>
         <field name="res_model">project.credential</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="credential_view_search"/>
         <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '!=', 'revoked'), ('mfa_state', '=', 'unknown')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Tout est documenté
+                Everything is documented
             </p>
             <p>
-                Aucun identifiant n'attend qu'on dise s'il a un deuxième facteur.
+                No credential is waiting to be told whether it has a second factor.
             </p>
         </field>
     </record>
 
     <record id="report_action_cred_mfa_at_risk" model="ir.actions.act_window">
-        <field name="name">Deuxième facteur sans relève</field>
+        <field name="name">Second factor without fallback</field>
         <field name="res_model">project.credential</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="credential_view_search"/>
         <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '!=', 'revoked'), ('mfa_state', '=', 'at_risk')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Chaque facteur a sa relève
+                Every factor has a fallback
             </p>
             <p>
-                Aucun deuxième facteur ne dépend d'un porteur unique sans reprise écrite.
+                No second factor depends on a single holder without written recovery.
             </p>
         </field>
     </record>

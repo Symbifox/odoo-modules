@@ -1,0 +1,239 @@
+# Translation of Levée de fonds : Web & Portail donateur - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_fundraising_web 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "<i class=\"fa fa-download\"/> Download"
+msgstr "<i class=\"fa fa-download\"/> Télécharger"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "<i class=\"fa fa-download\"/> Receipt"
+msgstr "<i class=\"fa fa-download\"/> Reçu"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "<option value=\"\">(No campaign)</option>"
+msgstr "<option value=\"\">— Aucune —</option>"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "<option value=\"\">(No fund)</option>"
+msgstr "<option value=\"\">— Aucun —</option>"
+
+#. module: bf_fundraising_web
+#. modules: bf_credentials, bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "An official tax receipt will be sent to"
+msgstr "Un reçu officiel aux fins de l'impôt sera transmis à"
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Annual"
+msgstr "Annuel"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "Back to the home page"
+msgstr "Retour à l'accueil"
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, bf_security_awareness
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Campaign"
+msgstr "Campagne"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "City"
+msgstr "Ville"
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Donate"
+msgstr "Donner"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Donation amount (CAD) *"
+msgstr "Montant du don (CAD) *"
+
+#. module: bf_fundraising_web
+#: model:ir.model.fields,help:bf_fundraising_web.field_donation_donation__is_web_donation
+msgid "Donation created through the website's public donation form."
+msgstr "Don créé via le formulaire de don public du site web."
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "Download your tax receipts"
+msgstr "Téléchargez vos reçus aux fins de l'impôt"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Eligible amount"
+msgstr "Montant admissible"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Email *"
+msgstr "Courriel *"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Full name *"
+msgstr "Nom complet *"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Fund"
+msgstr "Fonds"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Make a donation"
+msgstr "Faire un don"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "My donations"
+msgstr "Mes dons"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "My official receipts"
+msgstr "Mes reçus officiels"
+
+#. module: bf_fundraising_web
+#. odoo-python
+#: code:addons/bf_fundraising_web/models/donation_donation.py:0
+msgid ""
+"No donation product is configured. Set the donation product on the company "
+"before enabling the web form."
+msgstr ""
+"Aucun produit de don n'est configuré. Configurez le produit de don sur la "
+"société avant d'activer le formulaire web."
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "No official receipt available yet."
+msgstr "Aucun reçu officiel disponible pour le moment."
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Official receipt"
+msgstr "Reçu officiel"
+
+#. module: bf_fundraising_web
+#: model:ir.model.fields,field_description:bf_fundraising_web.field_donation_donation__is_web_donation
+msgid "Online donation"
+msgstr "Don en ligne"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Postal code"
+msgstr "Code postal"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Receipt no."
+msgstr "Reçu n°"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Single donation"
+msgstr "Don unique"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "Thank you for your generosity!"
+msgstr "Merci de votre générosité&#160;!"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid ""
+"Too many submissions in a short time. Please try again in a few minutes."
+msgstr ""
+"Trop d'envois en peu de temps. Veuillez réessayer dans quelques minutes."
+
+#. module: bf_fundraising_web
+#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
+#. bf_nextcloud_browser, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "View your donation history"
+msgstr "Consultez l'historique de vos dons"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "We have received your donation of"
+msgstr "Nous avons bien reçu votre don de"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "You have no recorded donations yet."
+msgstr "Vous n'avez aucun don enregistré pour le moment."
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid ""
+"Your donation supports our mission. You will receive an official tax "
+"receipt."
+msgstr ""
+"Votre don soutient notre mission. Un reçu officiel aux\n"
+"                            fins de l'impôt vous sera transmis."
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "once the donation is confirmed."
+msgstr ""
+"une fois le\n"
+"                            don confirmé."

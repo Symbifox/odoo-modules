@@ -16,9 +16,9 @@
                      sur la carte. portal_icon.svg est le meme visuel declare en
                      64x64, avec un raster 128 px (2x) pour rester net en retina. -->
                 <t t-set="icon" t-value="'/bf_fundraising_web/static/src/img/portal_icon.svg'" />
-                <t t-set="title">Mes dons</t>
+                <t t-set="title">My donations</t>
                 <t t-set="url" t-value="'/my/donations'" />
-                <t t-set="text">Consultez l'historique de vos dons</t>
+                <t t-set="text">View your donation history</t>
                 <t t-set="placeholder_count" t-value="'donation_count'" />
             </t>
             <t t-call="portal.portal_docs_entry">
@@ -28,22 +28,22 @@
                      sur la carte. portal_icon.svg est le meme visuel declare en
                      64x64, avec un raster 128 px (2x) pour rester net en retina. -->
                 <t t-set="icon" t-value="'/bf_fundraising_web/static/src/img/portal_icon.svg'" />
-                <t t-set="title">Mes reçus officiels</t>
+                <t t-set="title">My official receipts</t>
                 <t t-set="url" t-value="'/my/tax_receipts'" />
-                <t t-set="text">Téléchargez vos reçus aux fins de l'impôt</t>
+                <t t-set="text">Download your tax receipts</t>
                 <t t-set="placeholder_count" t-value="'tax_receipt_count'" />
             </t>
         </xpath>
     </template>
 
     <!-- My donations -->
-    <template id="portal_my_donations" name="Mes dons">
+    <template id="portal_my_donations" name="My donations">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True" />
-            <h3 class="mb-3">Mes dons</h3>
+            <h3 class="mb-3">My donations</h3>
             <t t-if="not donations">
                 <div class="alert alert-info" role="alert">
-                    Vous n'avez aucun don enregistré pour le moment.
+                    You have no recorded donations yet.
                 </div>
             </t>
             <t t-if="donations">
@@ -51,11 +51,11 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Numéro</th>
+                                <th>Number</th>
                                 <th>Date</th>
-                                <th>Campagne</th>
-                                <th class="text-end">Montant</th>
-                                <th>Reçu officiel</th>
+                                <th>Campaign</th>
+                                <th class="text-end">Amount</th>
+                                <th>Official receipt</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,7 +72,7 @@
                                         t-attf-href="/my/tax_receipt/#{donation.tax_receipt_id.id}/download"
                                         class="btn btn-sm btn-secondary"
                                     >
-                                        <i class="fa fa-download" /> Reçu
+                                        <i class="fa fa-download" /> Receipt
                                     </a>
                                     <span t-else="" class="text-muted">—</span>
                                 </td>
@@ -86,13 +86,13 @@
     </template>
 
     <!-- My tax receipts -->
-    <template id="portal_my_tax_receipts" name="Mes reçus officiels">
+    <template id="portal_my_tax_receipts" name="My official receipts">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True" />
-            <h3 class="mb-3">Mes reçus officiels</h3>
+            <h3 class="mb-3">My official receipts</h3>
             <t t-if="not receipts">
                 <div class="alert alert-info" role="alert">
-                    Aucun reçu officiel disponible pour le moment.
+                    No official receipt available yet.
                 </div>
             </t>
             <t t-if="receipts">
@@ -100,10 +100,10 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Reçu n°</th>
+                                <th>Receipt no.</th>
                                 <th>Date</th>
                                 <th>Type</th>
-                                <th class="text-end">Montant admissible</th>
+                                <th class="text-end">Eligible amount</th>
                                 <th />
                             </tr>
                         </thead>
@@ -112,8 +112,8 @@
                                 <td><t t-out="receipt.number" /></td>
                                 <td><span t-field="receipt.date" /></td>
                                 <td>
-                                    <span t-if="receipt.type == 'each'">Don unique</span>
-                                    <span t-if="receipt.type == 'annual'">Annuel</span>
+                                    <span t-if="receipt.type == 'each'">Single donation</span>
+                                    <span t-if="receipt.type == 'annual'">Annual</span>
                                 </td>
                                 <td class="text-end">
                                     <span t-field="receipt.eligible_amount" />
@@ -123,7 +123,7 @@
                                         t-attf-href="/my/tax_receipt/#{receipt.id}/download"
                                         class="btn btn-sm btn-primary"
                                     >
-                                        <i class="fa fa-download" /> Télécharger
+                                        <i class="fa fa-download" /> Download
                                     </a>
                                 </td>
                             </tr>

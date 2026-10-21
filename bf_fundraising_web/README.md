@@ -33,11 +33,19 @@ A signed-in donor sees, under **My account**:
 Access is restricted to the donor (ownership is verified in the controllers,
 rendering runs in `sudo`).
 
+## Languages (18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The message refusing a donation when no donation product is configured, which the visitor of the public form can see, follows the language of the request.
+
 ## Dependencies
 
 `bf_receipt_ca`, `website`, `portal`. AGPL-3 licence.
 
 ## Changelog
+
+### 18.0.1.1.0
+
+- The donation form, the donor portal and the module's labels are written in English in the source; the French ships in `i18n/fr_CA.po`. See the Languages section.
 
 ### 18.0.1.0.4
 

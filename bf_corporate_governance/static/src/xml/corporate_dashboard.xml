@@ -16,25 +16,25 @@
                     <div class="row mb-4" t-if="state.data.corporate_metrics and !state.projectId">
                         <div class="col-12">
                             <h5 class="text-uppercase text-muted mb-3">
-                                <i class="fa fa-institution me-2"/>Gouvernance corporative
+                                <i class="fa fa-institution me-2"/>Corporate governance
                             </h5>
                         </div>
                         <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header" style="background-color: #1a1a2e;">
-                                    <h6 class="mb-0 text-white"><i class="fa fa-users me-2"/>Registres</h6>
+                                    <h6 class="mb-0 text-white"><i class="fa fa-users me-2"/>Registers</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openDirectors">
-                                        <span><i class="fa fa-user-tie me-2"/>Administrateurs actifs</span>
+                                        <span><i class="fa fa-user-tie me-2"/>Active directors</span>
                                         <strong t-esc="state.data.corporate_metrics.active_directors"/>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOfficers">
-                                        <span><i class="fa fa-briefcase me-2"/>Dirigeants actifs</span>
+                                        <span><i class="fa fa-briefcase me-2"/>Active officers</span>
                                         <strong t-esc="state.data.corporate_metrics.active_officers"/>
                                     </div>
                                     <div class="d-flex justify-content-between cursor-pointer" t-on-click="openResolutions">
-                                        <span><i class="fa fa-gavel me-2"/>Résolutions adoptées</span>
+                                        <span><i class="fa fa-gavel me-2"/>Adopted resolutions</span>
                                         <strong t-esc="state.data.corporate_metrics.adopted_resolutions"/>
                                     </div>
                                 </div>
@@ -43,19 +43,19 @@
                         <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0"><i class="fa fa-calendar-check-o me-2"/>Conformité corporative</h6>
+                                    <h6 class="mb-0"><i class="fa fa-calendar-check-o me-2"/>Corporate compliance</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOverdueCompliance">
-                                        <span>En retard</span>
+                                        <span>Overdue</span>
                                         <span t-attf-class="badge {{state.data.corporate_metrics.overdue_compliance > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.corporate_metrics.overdue_compliance"/>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openComplianceCalendar">
-                                        <span>Échéance proche</span>
+                                        <span>Due soon</span>
                                         <span t-attf-class="badge {{state.data.corporate_metrics.due_soon_compliance > 0 ? 'text-bg-warning' : 'text-bg-secondary'}}" t-esc="state.data.corporate_metrics.due_soon_compliance"/>
                                     </div>
                                     <div class="d-flex justify-content-between cursor-pointer" t-on-click="openComplianceCalendar">
-                                        <span>À venir</span>
+                                        <span>Upcoming</span>
                                         <span class="badge text-bg-info" t-esc="state.data.corporate_metrics.upcoming_compliance"/>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                                     <i class="fa fa-exclamation-triangle fa-3x text-danger me-3"/>
                                     <div>
                                         <h3 class="text-danger mb-0" t-esc="state.data.corporate_metrics.overdue_compliance"/>
-                                        <span class="text-muted">obligation(s) corporative(s) en retard</span>
+                                        <span class="text-muted">overdue corporate obligation(s)</span>
                                     </div>
                                 </div>
                             </div>

@@ -32,12 +32,12 @@ def _needed_access(record):
 
 class BfNcFolderPick(models.TransientModel):
     _name = "bf.nc.folder.pick"
-    _description = "Choisir un dossier Nextcloud"
+    _description = "Choose a Nextcloud folder"
 
     res_model = fields.Char(required=True, readonly=True)
     res_id = fields.Integer(required=True, readonly=True)
-    target_name = fields.Char(string="Pour", readonly=True)
-    line_ids = fields.One2many("bf.nc.folder.pick.line", "pick_id", string="Dossiers")
+    target_name = fields.Char(string="For", readonly=True)
+    line_ids = fields.One2many("bf.nc.folder.pick.line", "pick_id", string="Folders")
     note = fields.Char(readonly=True)
 
     # ------------------------------------------------------------------
@@ -46,11 +46,12 @@ class BfNcFolderPick(models.TransientModel):
         browser = self.env["bf.nc.browser"]
         browser._check_access()
         if record._name not in PICK_MODELS:
-            raise UserError(_("Modèle non pris en charge : %s") % record._name)
+            raise UserError(_("Model not supported: %s") % record._name)
         record.check_access(_needed_access(record))
         config = browser._default_config()
         if not config or not config._browser_prefix_ok():
-            raise UserError(_("Aucune configuration Nextcloud utilisable (préfixe racine du navigateur)."))
+            raise UserError(_("No usable Nextcloud configuration (browser "
+                              "root prefix)."))
         person = browser._as_person(config)
         if record._name == "res.partner":
             lines, note = self._client_lines(browser, person, config, record)
@@ -66,7 +67,7 @@ class BfNcFolderPick(models.TransientModel):
         })
         return {
             "type": "ir.actions.act_window",
-            "name": _("Choisir le dossier Nextcloud"),
+            "name": _("Choose the Nextcloud folder"),
             "res_model": self._name,
             "res_id": pick.id,
             "view_mode": "form",
@@ -87,8 +88,8 @@ class BfNcFolderPick(models.TransientModel):
         root = config._nc_clients_root_path()
         if not root:
             raise UserError(_(
-                "Définissez « Racine des dossiers clients » sur la configuration "
-                "Nextcloud (ex: /Entreprise/(Clients)/)."
+                "Set \"Client folders root\" on the Nextcloud "
+                "configuration (e.g. /Company/(Clients)/)."
             ))
         # The client and its contacts may hold the folder's whole name; a
         # project only helps (« 009 - Chantier Sérénité » for 1234-5678 Québec).
@@ -114,7 +115,7 @@ class BfNcFolderPick(models.TransientModel):
                 )),
                 "taken_by": owner.display_name if owner else False,
             })
-        note = _("%d dossiers sous %s.") % (len(lines), root)
+        note = _("%d folders under %s.") % (len(lines), root)
         return lines, note
 
     def _project_lines(self, browser, person, config, project):
@@ -122,7 +123,7 @@ class BfNcFolderPick(models.TransientModel):
         lines = []
         for folder in project.partner_id.commercial_partner_id.nc_client_folder_ids:
             lines.append({
-                "name": _("%s (dossier du client)") % folder.name,
+                "name": _("%s (client folder)") % folder.name,
                 "path": folder.path,
                 "folder_id": folder.id,
                 "subfolder": False,
@@ -146,14 +147,14 @@ class BfNcFolderPick(models.TransientModel):
 
 class BfNcFolderPickLine(models.TransientModel):
     _name = "bf.nc.folder.pick.line"
-    _description = "Dossier Nextcloud proposé"
+    _description = "Suggested Nextcloud folder"
     _order = "score desc, name"
 
     pick_id = fields.Many2one("bf.nc.folder.pick", required=True, ondelete="cascade")
-    name = fields.Char(string="Dossier", readonly=True)
-    path = fields.Char(string="Chemin", readonly=True)
-    score = fields.Integer(string="Ressemblance (%)", readonly=True)
-    taken_by = fields.Char(string="Déjà rattaché à", readonly=True)
+    name = fields.Char(string="Folder", readonly=True)
+    path = fields.Char(string="Path", readonly=True)
+    score = fields.Integer(string="Similarity (%)", readonly=True)
+    taken_by = fields.Char(string="Already linked to", readonly=True)
     folder_id = fields.Many2one("bf.nc.client.folder", readonly=True)
     subfolder = fields.Char(readonly=True)
 
@@ -162,14 +163,14 @@ class BfNcFolderPickLine(models.TransientModel):
         pick = self.pick_id
         self.env["bf.nc.browser"]._check_access()
         if pick.res_model not in PICK_MODELS:
-            raise UserError(_("Modèle non pris en charge : %s") % pick.res_model)
+            raise UserError(_("Model not supported: %s") % pick.res_model)
         record = self.env[pick.res_model].browse(pick.res_id).exists()
         if not record:
-            raise UserError(_("Enregistrement introuvable."))
+            raise UserError(_("Record not found."))
         record.check_access(_needed_access(record))
         if pick.res_model == "res.partner":
             if self.taken_by:
-                raise UserError(_("Ce dossier est déjà rattaché à %s.") % self.taken_by)
+                raise UserError(_("This folder is already linked to %s.") % self.taken_by)
             self.env["bf.nc.client.folder"].create({
                 "partner_id": record.commercial_partner_id.id,
                 "path": clean_folder_path(self.path),
@@ -177,7 +178,8 @@ class BfNcFolderPickLine(models.TransientModel):
             })
         else:
             if self.folder_id not in record.partner_id.commercial_partner_id.nc_client_folder_ids:
-                raise UserError(_("Ce dossier n'appartient pas au client du projet."))
+                raise UserError(_("This folder does not belong to the "
+                                  "project's client."))
             record.write({
                 "nc_client_folder_id": self.folder_id.id,
                 "nc_project_subfolder": self.subfolder or False,

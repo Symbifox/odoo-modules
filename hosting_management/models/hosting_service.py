@@ -7,7 +7,7 @@ import time
 from datetime import timedelta
 from urllib.parse import urlparse
 
-from markupsafe import escape as _esc
+from markupsafe import Markup, escape as _esc
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
@@ -34,17 +34,17 @@ except ImportError:
 
 class HostingService(models.Model):
     _name = "hosting.service"
-    _description = "Service d'hébergement"
+    _description = "Hosting service"
     _order = "code"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Nom du service",
+        string="Service name",
         required=True,
         tracking=True,
     )
     code = fields.Char(
-        string="Référence",
+        string="Reference",
         readonly=True,
         copy=False,
         default="New",
@@ -58,13 +58,13 @@ class HostingService(models.Model):
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Responsable",
+        string="Assignee",
         default=lambda self: self.env.user,
         tracking=True,
     )
     software_id = fields.Many2one(
         comodel_name="hosting.software",
-        string="Logiciel",
+        string="Software",
         required=True,
         tracking=True,
     )
@@ -73,34 +73,34 @@ class HostingService(models.Model):
     )
     installed_version_id = fields.Many2one(
         comodel_name="hosting.software.version",
-        string="Version installée",
+        string="Installed version",
         domain="[('software_id', '=', software_id)]",
         tracking=True,
     )
     target_version_id = fields.Many2one(
         comodel_name="hosting.software.version",
-        string="Version cible",
+        string="Target version",
         domain="[('software_id', '=', software_id)]",
-        help="Version vers laquelle mettre à jour",
+        help="Version to update to",
     )
     version_policy = fields.Selection(
         selection=[
-            ("latest", "Toujours la dernière"),
-            ("lts", "LTS uniquement"),
-            ("manual", "Mises à jour manuelles"),
-            ("frozen", "Gelée (aucune mise à jour)"),
+            ("latest", "Always latest"),
+            ("lts", "LTS only"),
+            ("manual", "Manual updates"),
+            ("frozen", "Frozen (no updates)"),
         ],
-        string="Politique de version",
+        string="Version policy",
         default="manual",
         required=True,
         tracking=True,
     )
     version_notes = fields.Text(
-        string="Notes de version",
-        help="Raison de la version gelée ou instructions spéciales",
+        string="Release notes",
+        help="Reason for the frozen version, or special instructions",
     )
     update_available = fields.Boolean(
-        string="Mise à jour disponible",
+        string="Update available",
         compute="_compute_update_available",
         store=True,
     )
@@ -109,31 +109,31 @@ class HostingService(models.Model):
     environment = fields.Selection(
         selection=[
             ("production", "Production"),
-            ("staging", "Préproduction"),
-            ("development", "Développement"),
+            ("staging", "Staging"),
+            ("development", "Development"),
             ("testing", "Test"),
         ],
-        string="Environnement",
+        string="Environment",
         default="production",
         required=True,
         tracking=True,
     )
     linked_production_id = fields.Many2one(
         comodel_name="hosting.service",
-        string="Production liée",
+        string="Linked production",
         domain="[('environment', '=', 'production'), ('software_id', '=', software_id), ('partner_id', '=', partner_id)]",
-        help="Lier la préproduction/développement au service de production",
+        help="Link staging or development to the production service",
     )
 
     # Connexion
     server_url = fields.Char(
-        string="URL du service",
+        string="Service URL",
         tracking=True,
     )
     accepted_http_code_ids = fields.Many2many(
         comodel_name="hosting.accepted.http.code",
-        string="Codes HTTP acceptés",
-        help="Codes HTTP (ex. 404) considérés comme 'en ligne' pour ce service.",
+        string="Accepted HTTP codes",
+        help="HTTP codes (e.g. 404) treated as 'up' for this service.",
     )
     # 🔴 Toutes les pannes ne se voient pas dans un code HTTP.
     #
@@ -148,149 +148,150 @@ class HostingService(models.Model):
     # natures sans une ligne de plus.
     health_kind = fields.Selection(
         selection=[
-            ("http", "Requête HTTP"),
-            ("softphone_wake", "Réveil push du softphone"),
-            ("calendar_notices", "Avis de modification de rendez-vous"),
+            ("http", "HTTP request"),
+            ("softphone_wake", "Softphone push wake-up"),
+            ("calendar_notices", "Appointment change notice"),
         ],
-        string="Nature du contrôle",
+        string="Check type",
         default="http",
         required=True,
-        help="« Requête HTTP » interroge l'URL et juge sur le code de statut. "
-             "« Réveil push du softphone » éprouve la chaîne de réveil de bout "
-             "en bout — interrupteur, appareils inscrits, jeton et serveur ntfy "
-             "— sans faire sonner de téléphone. « Avis de modification de "
-             "rendez-vous » vérifie chaque jour que tout ce qui devait partir "
-             "aux invités est bien parti, des deux côtés : le registre d'Odoo "
-             "et la copie de l'agenda distant.",
+        help="\"HTTP request\" queries the URL and judges by the status "
+             "code. \"Softphone push wake-up\" tests the wake-up chain "
+             "end to end (switch, registered devices, token and ntfy "
+             "server) without ringing any phone. \"Appointment change "
+             "notice\" checks every day that everything due to go out to "
+             "guests did go out, on both sides: the Odoo register and the "
+             "copy in the remote calendar.",
     )
     domain_id = fields.Many2one(
         comodel_name="hosting.domain",
-        string="Domaine",
+        string="Domain",
         tracking=True,
     )
     domain_name = fields.Char(
-        string="Nom de domaine",
+        string="Domain name",
     )
 
     # Serveur / Docker
     server_id = fields.Many2one(
         comodel_name="hosting.server",
-        string="Serveur",
+        string="Server",
         tracking=True,
-        help="Serveur sur lequel ce service est hébergé",
+        help="Server this service is hosted on",
     )
     docker_host = fields.Char(
-        string="Hôte Docker",
+        string="Docker host",
         compute="_compute_docker_host",
         store=True,
-        help="Nom d'hôte du serveur (calculé depuis le serveur)",
+        help="Server hostname (computed from the server)",
     )
     docker_container = fields.Char(
-        string="Nom du conteneur",
-        help="Nom du conteneur Docker (ex. : vaultwarden-myorg)",
+        string="Container name",
+        help="Docker container name (e.g. vaultwarden-myorg)",
     )
 
     # Stockage
     storage_quota_gb = fields.Float(
-        string="Quota de stockage (Go)",
+        string="Storage quota (GB)",
         digits=(10, 2),
     )
     storage_used_gb = fields.Float(
-        string="Stockage utilisé (Go)",
+        string="Storage used (GB)",
         digits=(10, 2),
     )
     storage_used_percent = fields.Float(
-        string="Stockage utilisé (%)",
+        string="Storage used (%)",
         compute="_compute_storage_percent",
         store=True,
     )
     storage_alert = fields.Boolean(
-        string="Alerte de stockage",
+        string="Storage alert",
         compute="_compute_storage_alert",
         store=True,
-        help="Vrai si l'utilisation du stockage dépasse le seuil",
+        help="True if storage usage exceeds the threshold",
     )
     storage_alert_threshold = fields.Float(
-        string="Seuil d'alerte (%)",
+        string="Alert threshold (%)",
         default=80.0,
     )
 
     # Configuration de mesure de stockage
     storage_check_type = fields.Selection(
         selection=[
-            ("none", "Aucun"),
-            ("nextcloud_db", "Base Nextcloud (filecache)"),
-            ("postgres", "Base PostgreSQL"),
-            ("mariadb", "Base MariaDB"),
-            ("container_directory", "Répertoire conteneur"),
-            ("docker_volume", "Volume Docker"),
-            ("host_directory", "Répertoire hôte"),
+            ("none", "None"),
+            ("nextcloud_db", "Nextcloud database (filecache)"),
+            ("postgres", "PostgreSQL database"),
+            ("mariadb", "MariaDB database"),
+            ("container_directory", "Container directory"),
+            ("docker_volume", "Docker volume"),
+            ("host_directory", "Host directory"),
         ],
-        string="Type de mesure",
+        string="Measurement type",
         default="none",
     )
     storage_check_path = fields.Char(
-        string="Chemin de mesure",
-        help="Chemin du répertoire à mesurer (conteneur, volume ou hôte)",
+        string="Measurement path",
+        help="Path of the directory to measure (container, volume or host)",
     )
     storage_check_db_name = fields.Char(
-        string="Nom de la base",
-        help="Nom de la base de données pour la mesure PostgreSQL/MariaDB/Nextcloud",
+        string="Database name",
+        help="Database name for the PostgreSQL/MariaDB/Nextcloud measurement",
     )
     storage_check_db_user = fields.Char(
-        string="Utilisateur BD",
-        help="Utilisateur de la base de données pour la mesure",
+        string="DB user",
+        help="Database user for the measurement",
     )
     storage_last_check = fields.Datetime(
-        string="Dernière mesure",
+        string="Last measurement",
         readonly=True,
     )
 
     # Dates
     date_start = fields.Date(
-        string="Date de début",
+        string="Start date",
         default=fields.Date.today,
         tracking=True,
     )
     date_expiration = fields.Date(
-        string="Date d'expiration",
+        string="Expiry date",
         tracking=True,
     )
     days_until_expiration = fields.Integer(
-        string="Jours avant expiration",
+        string="Days until expiry",
         compute="_compute_days_until_expiration",
     )
     expiration_activity_created = fields.Boolean(
-        string="Activité d'expiration créée",
+        string="Expiry activity created",
         default=False,
         copy=False,
-        help="Indicateur pour prévenir la création d'activités d'expiration en double",
+        help="Flag that prevents duplicate expiry activities",
     )
     disconnect_acknowledged_date = fields.Date(
-        string="Date d'accusé de non-renouvellement",
+        string="Non-renewal acknowledgment date",
         readonly=True,
         copy=False,
         tracking=True,
-        help="Date à laquelle la non-reconduction du service a été confirmée avec le client.",
+        help="Date the service non-renewal was confirmed with the client.",
     )
     disconnect_reason = fields.Char(
-        string="Motif de non-renouvellement",
+        string="Non-renewal reason",
         copy=False,
         tracking=True,
-        help="Contexte court : migration vers X, décision client, fin de contrat, etc.",
+        help="Short context: migration to X, client decision, end of "
+             "contract, etc.",
     )
 
     # État
     state = fields.Selection(
         selection=[
-            ("draft", "Brouillon"),
-            ("active", "Actif"),
-            ("to_disconnect", "À déconnecter"),
-            ("expired", "Expiré"),
-            ("suspended", "Suspendu"),
-            ("cancelled", "Annulé"),
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("to_disconnect", "To disconnect"),
+            ("expired", "Expired"),
+            ("suspended", "Suspended"),
+            ("cancelled", "Canceled"),
         ],
-        string="État",
+        string="State",
         default="draft",
         required=True,
         tracking=True,
@@ -299,9 +300,9 @@ class HostingService(models.Model):
     # Facturation
     contract_id = fields.Many2one(
         comodel_name="contract.contract",
-        string="Contrat",
+        string="Contract",
         tracking=True,
-        help="Lien vers le contrat pour la facturation",
+        help="Link to the contract for billing",
     )
 
     # Étiquettes
@@ -310,77 +311,77 @@ class HostingService(models.Model):
         relation="hosting_service_tag_rel",
         column1="service_id",
         column2="tag_id",
-        string="Étiquettes",
+        string="Tags",
     )
 
     # Historique de mise à jour
     update_log_ids = fields.One2many(
         comodel_name="hosting.update.log",
         inverse_name="service_id",
-        string="Historique de mise à jour",
+        string="Update log",
     )
 
     # Vérification de santé
     health_check_ids = fields.One2many(
         comodel_name="hosting.health.check",
         inverse_name="service_id",
-        string="Vérifications de santé",
+        string="Health checks",
     )
     health_daily_snapshot_ids = fields.One2many(
         comodel_name="hosting.health.daily.snapshot",
         inverse_name="service_id",
-        string="Snapshots quotidiens (>30j)",
+        string="Daily snapshots (>30d)",
     )
 
     # Planifications de maintenance
     maintenance_schedule_ids = fields.One2many(
         comodel_name="hosting.maintenance.schedule",
         inverse_name="service_id",
-        string="Planifications de maintenance",
+        string="Maintenance schedules",
     )
     maintenance_schedule_count = fields.Integer(
-        string="Tâches de maintenance",
+        string="Maintenance tasks",
         compute="_compute_maintenance_schedule_count",
     )
     maintenance_overdue_count = fields.Integer(
-        string="Maintenance en retard",
+        string="Overdue maintenance",
         compute="_compute_maintenance_schedule_count",
     )
     last_health_status = fields.Selection(
         selection=[
-            ("up", "En ligne"),
-            ("degraded", "Dégradé"),
-            ("down", "Hors ligne"),
-            ("timeout", "Délai dépassé"),
+            ("up", "Online"),
+            ("degraded", "Degraded"),
+            ("down", "Offline"),
+            ("timeout", "Timed out"),
         ],
-        string="État de santé",
+        string="Health status",
         compute="_compute_health_status",
         store=True,
     )
     last_health_check = fields.Datetime(
-        string="Dernière vérification de santé",
+        string="Last health check",
         compute="_compute_health_status",
         store=True,
     )
     is_service_up = fields.Boolean(
-        string="Service en ligne",
+        string="Service online",
         compute="_compute_health_status",
         store=True,
     )
     uptime_30d = fields.Float(
-        string="Disponibilité 30j (%)",
+        string="30d uptime (%)",
         compute="_compute_uptime_30d",
         digits=(5, 2),
     )
     health_check_count = fields.Integer(
-        string="Nombre de vérifications de santé",
+        string="Health check count",
         compute="_compute_health_check_count",
     )
     health_alert_active = fields.Boolean(
-        string="Alerte de santé active",
+        string="Health alert active",
         default=False,
-        help="Indique qu'une alerte de panne a été envoyée et que "
-        "le service n'est pas encore rétabli.",
+        help="Shows that an outage alert was sent and the service is not "
+             "restored yet.",
     )
     # Une pose recrée le conteneur : deux à cinq minutes de 502 attendus, qui
     # franchissaient le seuil de deux échecs et partaient en courriel et en ntfy
@@ -388,15 +389,15 @@ class HostingService(models.Model):
     # continuent d'être enregistrés pendant le silence : s'il expire sur une
     # panne, les échecs déjà comptés font partir l'alerte au cycle suivant.
     health_silence_until = fields.Datetime(
-        string="Alertes suspendues jusqu'à",
+        string="Alerts suspended until",
         copy=False,
-        help="Pendant ce délai, la sonde enregistre ses contrôles sans envoyer "
-        "d'alerte de panne. Posé par l'outil de mise à jour avant l'arrêt du "
-        "conteneur, levé quand le service répond de nouveau.",
+        help="During this period, the probe records its checks without "
+             "sending outage alerts. Set by the update tool before the "
+             "container stops, lifted when the service responds again.",
     )
 
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 
@@ -406,21 +407,21 @@ class HostingService(models.Model):
         relation="hosting_service_backup_repository_rel",
         column1="service_id",
         column2="repository_id",
-        string="Dépôts Restic",
-        help="Dépôts Restic qui contiennent les sauvegardes de ce service",
+        string="Restic repositories",
+        help="Restic repositories that hold this service's backups",
     )
     restic_snapshot_count = fields.Integer(
-        string="Snapshots Restic",
+        string="Restic snapshots",
         compute="_compute_restic_summary",
     )
     restic_last_backup = fields.Datetime(
-        string="Dernière sauvegarde Restic",
+        string="Last Restic backup",
         compute="_compute_restic_summary",
     )
     restic_is_stale = fields.Boolean(
-        string="Sauvegarde Restic périmée",
+        string="Stale Restic backup",
         compute="_compute_restic_summary",
-        help="Vrai si au moins un dépôt lié est périmé (>27 h)",
+        help="True if at least one linked repository is stale (>27 h)",
     )
 
     @api.depends(
@@ -442,36 +443,35 @@ class HostingService(models.Model):
     # rien faire. Ces trois champs portent la seule question qui compte pour un
     # client, « est-ce que ma sauvegarde a tourné cette nuit, et bien ? ».
     saas_backup_ref = fields.Char(
-        string="Identifiant de sauvegarde infonuagique",
+        string="Cloud backup identifier",
         index=True,
         copy=False,
-        help="Identifiant de l'organisation chez le produit de sauvegarde "
-             "(un UUID chez CubeBackup). C'est la clé qui rattache les "
-             "exécutions versées à ce service. Sans lui, les exécutions sont "
-             "gardées mais orphelines.",
+        help="The organization's identifier at the backup product (a UUID "
+             "at CubeBackup). It is the key that ties incoming runs to "
+             "this service. Without it, runs are kept but orphaned.",
     )
     saas_backup_last_date = fields.Datetime(
-        string="Dernière sauvegarde infonuagique",
+        string="Last cloud backup",
         readonly=True,
         copy=False,
-        help="Posé à l'arrivée de chaque exécution. Lit la plus récente par "
-             "date de départ, pas la dernière versée : un rattrapage arrive "
-             "dans le désordre.",
+        help="Set when each run arrives. Reads the most recent one by "
+             "start date, not the last one received: a catch-up arrives "
+             "out of order.",
     )
     saas_backup_last_result = fields.Selection(
         selection=[
-            ("succeeded", "Réussie"),
-            ("with_errors", "Réussie avec erreurs"),
-            ("canceled", "Annulée"),
-            ("failed", "Échouée"),
-            ("unknown", "Indéterminée"),
+            ("succeeded", "Successful"),
+            ("with_errors", "Successful with errors"),
+            ("canceled", "Canceled"),
+            ("failed", "Failed"),
+            ("unknown", "Undetermined"),
         ],
-        string="Résultat de la dernière sauvegarde",
+        string="Last backup result",
         readonly=True,
         copy=False,
     )
     saas_backup_run_count = fields.Integer(
-        string="Exécutions infonuagiques",
+        string="Cloud runs",
         compute="_compute_saas_backup_run_count",
     )
 
@@ -492,7 +492,7 @@ class HostingService(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Sauvegardes infonuagiques",
+            "name": self.env._("Cloud backups"),
             "res_model": "hosting.saas.backup.run",
             "view_mode": "list,form",
             "domain": [("service_id", "=", self.id)],
@@ -500,8 +500,21 @@ class HostingService(models.Model):
         }
 
     _sql_constraints = [
-        ("code_uniq", "UNIQUE(code)", "La référence du service doit être unique !"),
+        ("code_uniq", "UNIQUE(code)", "The service reference must be unique!"),
     ]
+
+    def _hosting_ops_env(self):
+        """Env dans la langue des opérateurs, pour ce qui s'écrit hors de leur requête.
+
+        Journal d'audit, constats des sondes, alertes courriel et ntfy : relus par
+        l'équipe d'exploitation, donc dans la langue de la société (son partenaire),
+        sinon celle du contexte. Une langue inactive retombe sur le contexte
+        (`env.lang` lèverait sur une langue inactive).
+        """
+        lang = self.env.company.partner_id.lang
+        if not lang or lang not in dict(self.env["res.lang"].get_installed()):
+            lang = self.env.context.get("lang")
+        return self.with_context(lang=lang).env
 
     @api.constrains("server_url")
     def _check_server_url(self):
@@ -512,26 +525,29 @@ class HostingService(models.Model):
                 continue
             parsed = urlparse(url)
             if parsed.scheme not in ("http", "https"):
-                raise ValidationError(
-                    f"L'URL du service doit utiliser http:// ou https:// (reçu : {parsed.scheme}://)"
-                )
+                raise ValidationError(record.env._(
+                    "The service URL must use http:// or https:// (received: %(scheme)s://)",
+                    scheme=parsed.scheme,
+                ))
             hostname = parsed.hostname or ""
             if hostname in ("localhost", "127.0.0.1", "::1", "0.0.0.0"):
-                raise ValidationError(
-                    "L'URL du service ne peut pas pointer vers localhost."
-                )
+                raise ValidationError(record.env._(
+                    "The service URL cannot point to localhost."
+                ))
             try:
                 addr = ipaddress.ip_address(hostname)
                 if addr.is_private or addr.is_loopback or addr.is_link_local:
-                    raise ValidationError(
-                        f"L'URL du service ne peut pas pointer vers une adresse privée ({hostname})."
-                    )
+                    raise ValidationError(record.env._(
+                        "The service URL cannot point to a private address (%(host)s).",
+                        host=hostname,
+                    ))
             except ValueError:
                 pass  # hostname is not an IP literal — that's normal (domain name)
             if hostname.endswith(".internal") or hostname.endswith(".local"):
-                raise ValidationError(
-                    f"L'URL du service ne peut pas pointer vers un domaine interne ({hostname})."
-                )
+                raise ValidationError(record.env._(
+                    "The service URL cannot point to an internal domain (%(host)s).",
+                    host=hostname,
+                ))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -542,11 +558,14 @@ class HostingService(models.Model):
                 ) or "New"
         records = super().create(vals_list)
         AuditLog = self.env["hosting.audit.log"]
+        # Journal d'audit : relu par les opérateurs, dans la langue de la société.
+        ops = self._hosting_ops_env()
         for rec in records:
             AuditLog._log_event(
                 action_type="create",
                 category="ops",
-                description=f"Service créé : {rec.name} ({rec.code})",
+                description=ops._("Service created: %(name)s (%(code)s)",
+                                  name=rec.name, code=rec.code),
                 res_model=self._name,
                 res_id=rec.id,
                 res_name=rec.display_name,
@@ -558,7 +577,10 @@ class HostingService(models.Model):
     def write(self, vals):
         # Capture state changes before write
         if "state" in vals:
-            state_labels = dict(self._fields["state"].selection)
+            # Libellés traduits (pas la source) et phrase dans le MÊME env épinglé :
+            # celui des opérateurs, qui relisent le journal d'audit.
+            ops = self._hosting_ops_env()
+            state_labels = dict(self._fields["state"]._description_selection(ops))
             for rec in self:
                 old_state = rec.state
                 new_state = vals["state"]
@@ -571,10 +593,11 @@ class HostingService(models.Model):
                     self.env["hosting.audit.log"]._log_event(
                         action_type="state_change",
                         category="ops",
-                        description=(
-                            f"État du service {rec.name} : "
-                            f"{state_labels.get(old_state, old_state)} → "
-                            f"{state_labels.get(new_state, new_state)}"
+                        description=ops._(
+                            "Service %(name)s state: %(old)s → %(new)s",
+                            name=rec.name,
+                            old=state_labels.get(old_state, old_state),
+                            new=state_labels.get(new_state, new_state),
                         ),
                         res_model=self._name,
                         res_id=rec.id,
@@ -590,11 +613,13 @@ class HostingService(models.Model):
 
     def unlink(self):
         AuditLog = self.env["hosting.audit.log"]
+        ops = self._hosting_ops_env()
         for rec in self:
             AuditLog._log_event(
                 action_type="unlink",
                 category="ops",
-                description=f"Service supprimé : {rec.name} ({rec.code})",
+                description=ops._("Service deleted: %(name)s (%(code)s)",
+                                  name=rec.name, code=rec.code),
                 res_model=self._name,
                 res_id=rec.id,
                 res_name=rec.display_name,
@@ -843,7 +868,7 @@ class HostingService(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Maintenance - {self.name}",
+            "name": self.env._("Maintenance - %(name)s", name=self.name),
             "res_model": "hosting.maintenance.schedule",
             "views": [[False, "list"], [False, "kanban"], [False, "form"]],
             "domain": [("service_id", "=", self.id)],
@@ -861,7 +886,7 @@ class HostingService(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Confirmer la non-reconduction",
+            "name": self.env._("Confirm non-renewal"),
             "res_model": "hosting.service.disconnect.wizard",
             "view_mode": "form",
             "target": "new",
@@ -886,7 +911,7 @@ class HostingService(models.Model):
         if self.contract_id:
             return {
                 "type": "ir.actions.act_window",
-                "name": "Contrat",
+                "name": self.env._("Contract"),
                 "res_model": "contract.contract",
                 "views": [[False, "form"]],
                 "res_id": self.contract_id.id,
@@ -897,7 +922,7 @@ class HostingService(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Historique de mise à jour - {self.name}",
+            "name": self.env._("Update history - %(name)s", name=self.name),
             "res_model": "hosting.update.log",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("service_id", "=", self.id)],
@@ -912,7 +937,7 @@ class HostingService(models.Model):
                 "service_id": self.id,
                 "from_version_id": self.installed_version_id.id,
                 "to_version_id": self.target_version_id.id,
-                "notes": "Mise à jour manuelle marquée comme complétée.",
+                "notes": self.env._("Manual update marked as completed."),
             })
             self.installed_version_id = self.target_version_id
             self.target_version_id = False
@@ -927,8 +952,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Aucune mise à jour disponible",
-                    "message": "Ce service est déjà à la dernière version selon sa politique.",
+                    "title": self.env._("No update available"),
+                    "message": self.env._("This service is already on the latest version according to its policy."),
                     "type": "info",
                 },
             }
@@ -951,18 +976,19 @@ class HostingService(models.Model):
             "service_id": self.id,
             "from_version_id": self.installed_version_id.id,
             "to_version_id": latest_version_record.id,
-            "notes": "Mise à jour manuelle vers la dernière version.",
+            "notes": self.env._("Manual update to the latest version."),
         })
 
-        old_version = self.installed_version_id.version or "inconnue"
+        old_version = self.installed_version_id.version or self.env._("unknown")
         self.installed_version_id = latest_version_record
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Version mise à jour",
-                "message": f"Mise à jour de {old_version} vers {latest_version_record.version}",
+                "title": self.env._("Version updated"),
+                "message": self.env._("Updated from %(old)s to %(new)s",
+                                      old=old_version, new=latest_version_record.version),
                 "type": "success",
             },
         }
@@ -1009,14 +1035,19 @@ class HostingService(models.Model):
                             "mail.mail_activity_data_todo",
                             raise_if_not_found=False,
                         )
-                        self.env["mail.activity"].create({
+                        # Activité dans la langue de l'ASSIGNÉ, et créée dans son
+                        # env : l'objet de l'avis d'Odoo suit la langue du cadre.
+                        assignee = self.user_id or self.env.user
+                        act_env = self.with_context(lang=assignee.lang or self.env.lang).env
+                        act_env["mail.activity"].create({
                             "res_model_id": self.env["ir.model"]._get_id("hosting.service"),
                             "res_id": self.id,
                             "activity_type_id": activity_type.id if activity_type else False,
                             "summary": line.name,
-                            "note": line.instructions or f"Tâche de configuration pour {self.name}",
+                            "note": line.instructions or act_env._(
+                                "Setup task for %(name)s", name=self.name),
                             "date_deadline": due_date,
-                            "user_id": self.user_id.id or self.env.user.id,
+                            "user_id": assignee.id,
                         })
                         created_activities.append(line.name)
 
@@ -1038,21 +1069,20 @@ class HostingService(models.Model):
 
         # Journaliser la création
         if created_schedules or created_activities:
+            # Markup : un corps `str` est échappé par message_post (Odoo 18), le fil
+            # montrait les balises. Les noms sont échappés par le `%` de Markup.
+            gabarit = Markup("<strong>%s</strong><ul>%s</ul>")
             message_parts = []
             if created_schedules:
-                message_parts.append(
-                    f"<strong>Planifications de maintenance créées :</strong><ul>"
-                    + "".join(f"<li>{_esc(name)}</li>" for name in created_schedules)
-                    + "</ul>"
-                )
+                titre = self.env._("Maintenance schedules created:")
+                items = Markup("").join(Markup("<li>%s</li>") % name for name in created_schedules)
+                message_parts.append(gabarit % (titre, items))
             if created_activities:
-                message_parts.append(
-                    f"<strong>Activités de configuration créées :</strong><ul>"
-                    + "".join(f"<li>{_esc(name)}</li>" for name in created_activities)
-                    + "</ul>"
-                )
+                titre = self.env._("Setup activities created:")
+                items = Markup("").join(Markup("<li>%s</li>") % name for name in created_activities)
+                message_parts.append(gabarit % (titre, items))
             self.message_post(
-                body="".join(message_parts),
+                body=Markup("").join(message_parts),
                 message_type="notification",
             )
 
@@ -1064,8 +1094,8 @@ class HostingService(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Modèles appliqués",
-                "message": "Les planifications de maintenance ont été créées depuis les modèles.",
+                "title": self.env._("Templates applied"),
+                "message": self.env._("The maintenance schedules were created from the templates."),
                 "type": "success",
             },
         }
@@ -1094,16 +1124,24 @@ class HostingService(models.Model):
         )
 
         for service in services:
-            self.env["mail.activity"].create({
+            # Travail planifié : la langue est celle de l'ASSIGNÉ, et l'activité naît
+            # dans son env (l'objet de l'avis d'Odoo suit la langue du cadre).
+            assignee = service.user_id or self.env.user
+            act_env = service.with_context(lang=assignee.lang or self.env.lang).env
+            client = service.partner_id.name or ""
+            act_env["mail.activity"].create({
                 "res_model_id": self.env["ir.model"]._get_id("hosting.service"),
                 "res_id": service.id,
                 "activity_type_id": activity_type.id if activity_type else False,
-                "summary": f"Le service expire dans {service.days_until_expiration} jours",
-                "note": f"Le service d'hébergement « {service.name} » pour {service.partner_id.name} "
-                        f"expirera le {service.date_expiration}. Veuillez contacter le client "
-                        f"pour discuter du renouvellement.",
+                "summary": act_env._("Service expires in %(days)s days",
+                                     days=service.days_until_expiration),
+                "note": act_env._(
+                    "Hosting service \"%(name)s\" for %(client)s will expire on "
+                    "%(date)s. Please contact the client to discuss renewal.",
+                    name=service.name, client=client, date=service.date_expiration,
+                ),
                 "date_deadline": service.date_expiration,
-                "user_id": service.user_id.id or self.env.user.id,
+                "user_id": assignee.id,
             })
             service.expiration_activity_created = True
 
@@ -1200,12 +1238,14 @@ class HostingService(models.Model):
         return f"{hours:02d}:{minutes:02d}"
 
     @staticmethod
-    def _do_health_check(requests_mod, url, accepted_codes=None):
+    def _do_health_check(requests_mod, url, accepted_codes=None, env=None):
         """Execute a single HTTP health check.
 
         Returns (status, response_time_ms, http_status_code, error_message).
         ``accepted_codes`` is an optional set of HTTP status codes that should
         be treated as "up" even though they are >= 400.
+        ``env`` : l'env (épinglé à la langue des opérateurs) qui traduit le
+        message d'erreur stocké ; sans lui, la source anglaise.
         """
         try:
             response = requests_mod.get(
@@ -1221,11 +1261,16 @@ class HostingService(models.Model):
                 status = "degraded"
             return status, int(response.elapsed.total_seconds() * 1000), sc, None
         except requests_mod.Timeout:
-            return "timeout", None, None, "La requête a expiré après 10 secondes"
+            msg = (env._("The request timed out after 10 seconds") if env is not None
+                   else "The request timed out after 10 seconds")
+            return "timeout", None, None, msg
         except requests_mod.RequestException as e:
             return "down", None, None, str(e)[:500]
         except Exception as e:
-            return "down", None, None, f"Erreur inattendue : {str(e)[:450]}"
+            detail = str(e)[:450]
+            msg = (env._("Unexpected error: %(error)s", error=detail) if env is not None
+                   else "Unexpected error: %s" % detail)
+            return "down", None, None, msg
 
     def _do_softphone_wake_check(self, force=False):
         """Éprouver la chaîne de réveil du softphone. Même contrat de retour que
@@ -1285,18 +1330,21 @@ class HostingService(models.Model):
                 return (derniere.status, None, None,
                         derniere.error_message or None)
 
+        # Message stocké sur la mesure et repris dans les alertes : langue des opérateurs.
+        ops = self._hosting_ops_env()
         Users = self.env["res.users"]
         if not hasattr(Users, "softphone_wake_selftest"):
             return ("degraded", None, None,
-                    "bf_softphone n'est pas installé sur ce locataire : "
-                    "rien à éprouver.")
+                    ops._("bf_softphone is not installed on this tenant: "
+                          "nothing to test."))
 
         try:
             verdict = Users.softphone_wake_selftest()
         except Exception as e:  # noqa: BLE001 — une sonde ne doit jamais casser le cron
             _logger.exception("Sonde du réveil softphone : levée inattendue")
             return ("down", None, None,
-                    f"La sonde elle-même a levé : {type(e).__name__} — {e}"[:500])
+                    ops._("The probe itself raised: %(type)s — %(error)s",
+                          type=type(e).__name__, error=str(e))[:500])
 
         etat = verdict.get("etat", "down")
         detail = verdict.get("detail", "")
@@ -1315,11 +1363,11 @@ class HostingService(models.Model):
 
     watchdog_project_id = fields.Many2one(
         comodel_name="project.project",
-        string="Projet des constats",
-        help="Où ce service ouvre une tâche quand un contrôle trouve un écart. "
-             "Vide, le contrôle alerte comme d'habitude et n'ouvre rien : une "
-             "tâche qui tombe dans un projet choisi au hasard est une tâche que "
-             "personne ne lit.",
+        string="Findings project",
+        help="Where this service opens a task when a check finds a gap. "
+             "When empty, the check alerts as usual and opens nothing: a "
+             "task that lands in a project picked at random is a task "
+             "nobody reads.",
     )
 
     def _bf_ouvrir_tache_de_veille(self, cle, titre, corps):
@@ -1397,11 +1445,14 @@ class HostingService(models.Model):
                 return (derniere.status, derniere.response_time_ms, None,
                         derniere.error_message or None)
 
+        # Constats stockés sur la mesure, repris dans les alertes et la tâche de
+        # veille : langue des opérateurs (société), pas celle de qui presse le bouton.
+        ops = self._hosting_ops_env()
         Event = self.env["calendar.event"].sudo()
         if "bf_change_notice_due" not in Event._fields:
             return ("degraded", None, None,
-                    "bf_calendar_invite n'est pas installé sur ce locataire : "
-                    "rien à contrôler.")
+                    ops._("bf_calendar_invite is not installed on this tenant: "
+                          "nothing to check."))
 
         griefs = []
         statut = "up"
@@ -1412,20 +1463,19 @@ class HostingService(models.Model):
         except Exception as e:  # noqa: BLE001 - une sonde ne casse pas le cron
             _logger.exception("Contrôle des avis : le registre a levé")
             return ("down", None, None,
-                    "Le registre des avis a levé : "
-                    f"{type(e).__name__} : {e}"[:500])
+                    ops._("The notice register raised: %(type)s: %(error)s",
+                          type=type(e).__name__, error=str(e))[:500])
         if en_retard:
             statut = "degraded"
-            griefs.append(
-                "%d rencontre(s) à venir portent un changement que personne "
-                "n'a annoncé : %s." % (
-                    len(en_retard),
-                    ", ".join(
-                        "%s (%s)" % (e.name or "?", e.start)
-                        for e in en_retard[:5]
-                    ),
-                )
+            # Hors des parenthèses de `_()` : l'extracteur y prendrait « ? » et « , ».
+            liste = ", ".join(
+                "%s (%s)" % (e.name or "?", e.start) for e in en_retard[:5]
             )
+            griefs.append(ops._(
+                "%(count)s upcoming meeting(s) carry a change that nobody "
+                "announced: %(list)s.",
+                count=len(en_retard), list=liste,
+            ))
 
         # --- Moitié 2 : la copie distante, lue du dehors --------------------
         # 🔴 La garde d'abord : sans calendar_nextcloud_sync, `self.env[...]` lève
@@ -1439,51 +1489,55 @@ class HostingService(models.Model):
                 ("sync_direction", "in", ("both", "nc_to_odoo")),
             ])
         if configs is None or not hasattr(Config, "bf_ecarts_non_rapatries"):
-            griefs.append(
-                "⚠️ La moitié indépendante n'a PAS été mesurée : "
-                "calendar_nextcloud_sync est absent ou trop ancien. Un relevé "
-                "vide ne vaut pas un vert."
-            )
+            griefs.append(ops._(
+                "⚠️ The independent half was NOT measured: "
+                "calendar_nextcloud_sync is missing or too old. An empty "
+                "reading is not a green."
+            ))
             statut = "degraded" if statut == "up" else statut
         else:
             for config in configs:
                 releve = config.bf_ecarts_non_rapatries()
                 if not releve.get("mesure"):
                     statut = "down"
-                    griefs.append(
-                        "Agenda « %s » : impossible de relire la copie "
-                        "distante (%s). Tant qu'on ne peut pas regarder, on ne "
-                        "sait pas." % (config.display_name,
-                                       releve.get("erreur") or "raison inconnue")
-                    )
+                    erreur = releve.get("erreur") or ops._("unknown reason")
+                    griefs.append(ops._(
+                        "Calendar \"%(name)s\": unable to re-read the remote "
+                        "copy (%(error)s). As long as we cannot look, we do "
+                        "not know.",
+                        name=config.display_name, error=erreur,
+                    ))
                     continue
                 ecarts = releve.get("ecarts") or []
                 if ecarts:
                     statut = "down"
-                    griefs.append(
-                        "Agenda « %s » : %d rencontre(s) ont bougé chez "
-                        "Nextcloud sans qu'Odoo l'apprenne (sur %d regardées). "
-                        "Le rapatriement ne fait plus son travail, donc aucun "
-                        "avis ne peut partir." % (
-                            config.display_name, len(ecarts),
-                            releve.get("vus", 0),
-                        )
-                    )
+                    vus = releve.get("vus", 0)
+                    griefs.append(ops._(
+                        "Calendar \"%(name)s\": %(count)s meeting(s) moved in "
+                        "Nextcloud without Odoo learning about it (out of "
+                        "%(seen)s checked). The retrieval no longer does its "
+                        "job, so no notice can go out.",
+                        name=config.display_name, count=len(ecarts), seen=vus,
+                    ))
 
         ms = int((_t.monotonic() - debut) * 1000)
         if statut == "up":
             return ("up", ms, None, None)
 
         detail = " ".join(griefs)[:500]
+        # Markup : la tâche et son commentaire (message_post) gardent leurs
+        # balises ; le nom du service et les constats sont échappés par le `%`.
+        items = Markup("").join(Markup("<li>%s</li>") % g for g in griefs)
+        corps = Markup(ops._(
+            "<p>The daily check of service <b>%(name)s</b> found this:</p>"
+            "<ul>%(items)s</ul>"
+            "<p>This task will not be reopened while it is open; later "
+            "passes are added to it as comments.</p>"
+        )) % {"name": self.name, "items": items}
         self._bf_ouvrir_tache_de_veille(
             cle="avis-rdv:%s" % (self.code or self.id),
-            titre="Des avis de modification de rendez-vous ne sont pas partis",
-            corps=(
-                "<p>Le contrôle quotidien du service <b>%s</b> a trouvé ceci :</p>"
-                "<ul>%s</ul>"
-                "<p>Cette tâche ne se rouvrira pas tant qu'elle est ouverte ; "
-                "les passages suivants s'y ajoutent en commentaire.</p>"
-            ) % (self.name, "".join("<li>%s</li>" % g for g in griefs)),
+            titre=ops._("Appointment change notices were not sent"),
+            corps=corps,
         )
         return (statut, ms, None, detail)
 
@@ -1502,6 +1556,8 @@ class HostingService(models.Model):
         if not base:
             return None
         url = f"{base}/bf_softphone/pbx/v1/wake"
+        # Le message devient l'erreur stockée de la mesure : langue des opérateurs.
+        ops = self._hosting_ops_env()
         try:
             rep = requests.post(
                 url,
@@ -1510,17 +1566,20 @@ class HostingService(models.Model):
                 headers={"User-Agent": "Odoo-Hosting-Health-Check/1.0"},
             )
         except requests.RequestException as e:
-            return (f"Route de réveil injoignable ({url}) : "
-                    f"{type(e).__name__}.")
+            return ops._("Wake-up route unreachable (%(url)s): %(error)s.",
+                         url=url, error=type(e).__name__)
         if rep.status_code == 404:
-            return ("La route de réveil rend 404 : elle n'est plus montée. Le "
-                    "processus Odoo n'a probablement pas rechargé bf_softphone.")
+            return ops._("The wake-up route returns 404: it is no longer "
+                         "mounted. The Odoo process has probably not reloaded "
+                         "bf_softphone.")
         if rep.status_code < 400:
-            return (f"⚠️ La route de réveil a ACCEPTÉ un jeton invalide "
-                    f"(HTTP {rep.status_code}). La porte est ouverte.")
+            return ops._("⚠️ The wake-up route ACCEPTED an invalid token "
+                         "(HTTP %(code)s). The door is open.",
+                         code=rep.status_code)
         if rep.status_code != 403:
-            return (f"La route de réveil rend {rep.status_code} sur un jeton "
-                    f"invalide, au lieu du 403 attendu.")
+            return ops._("The wake-up route returns %(code)s on an invalid "
+                         "token, instead of the expected 403.",
+                         code=rep.status_code)
         return None
 
     @api.model
@@ -1568,6 +1627,8 @@ class HostingService(models.Model):
         services_now_down = []
         services_recovered = []
         services_slow = []
+        # Messages d'erreur stockés sur les mesures : langue des opérateurs.
+        ops = self._hosting_ops_env()
 
         def _sonder(service):
             """Aiguiller vers le contrôle qui convient à CE service.
@@ -1583,7 +1644,7 @@ class HostingService(models.Model):
                 return service._do_calendar_notices_check()
             codes = set(service.accepted_http_code_ids.mapped("code"))
             return self._do_health_check(
-                requests, service.server_url, codes or None,
+                requests, service.server_url, codes or None, env=ops,
             )
 
         for service in services:
@@ -1781,29 +1842,35 @@ class HostingService(models.Model):
             services_list: Liste de dicts avec les informations de service
             alert_type: "down" ou "recovered"
         """
+        # Alerte aux opérateurs : langue de la société (titre, corps, libellés d'état
+        # lus dans le même env épinglé).
+        ops = self._hosting_ops_env()
+        etats = dict(self._fields["last_health_status"]._description_selection(ops))
+        sans_client = ops._("N/A")
         count = len(services_list)
         if alert_type == "down":
-            title = f"ALERTE : {count} service(s) hors ligne"
+            title = ops._("ALERT: %(count)s service(s) offline", count=count)
             priority = "urgent"
             tags = "rotating_light"
             lines = []
             for item in services_list:
                 svc = item["service"]
-                status = item.get("status", "down").upper()
+                cle = item.get("status", "down")
+                status = (etats.get(cle) or cle).upper()
                 error = item.get("error") or ""
-                line = f"- {svc.name} ({svc.partner_id.name or 'N/D'}) [{status}]"
+                line = f"- {svc.name} ({svc.partner_id.name or sans_client}) [{status}]"
                 if error:
                     line += f" : {error[:80]}"
                 lines.append(line)
         elif alert_type == "recovered":
-            title = f"RÉTABLI : {count} service(s) de nouveau en ligne"
+            title = ops._("RECOVERED: %(count)s service(s) back online", count=count)
             priority = "default"
             tags = "white_check_mark"
             lines = []
             for item in services_list:
                 svc = item["service"]
                 rt = item.get("response_time_ms", 0)
-                lines.append(f"- {svc.name} ({svc.partner_id.name or 'N/D'}) [{rt}ms]")
+                lines.append(f"- {svc.name} ({svc.partner_id.name or sans_client}) [{rt}ms]")
         else:
             return
 
@@ -1836,25 +1903,41 @@ class HostingService(models.Model):
             )
             return
 
+        # Destinataire = l'adresse des opérateurs (paramètre système) : langue de la
+        # société. Tout le courriel s'écrit dans cet env, aides du gabarit comprises
+        # (elles traduisent leur pied par `company.env`).
+        ops = self._hosting_ops_env()
+        n = len(services_list)
         if alert_type == "down":
-            subject = f"ALERTE : {len(services_list)} service(s) d'hébergement hors ligne"
-            title = "Alerte de service"
-            description = f"Les <strong>{len(services_list)}</strong> service(s) suivant(s) sont actuellement <strong>HORS LIGNE</strong> ou rencontrent des problèmes :"
-            headers = ["Service", "Client", "URL", "État", "Erreur"]
+            subject = ops._("ALERT: %(count)s hosting service(s) offline", count=n)
+            title = ops._("Service alert")
+            description = ops._(
+                "The following <strong>%(count)s</strong> service(s) are currently "
+                "<strong>OFFLINE</strong> or having problems:", count=n)
+            headers = [ops._("Service"), ops._("Client"), ops._("URL"),
+                       ops._("State"), ops._("Error")]
         elif alert_type == "recovered":
-            subject = f"RÉTABLI : {len(services_list)} service(s) d'hébergement de nouveau en ligne"
-            title = "Rétablissement de service"
-            description = f"Les <strong>{len(services_list)}</strong> service(s) suivant(s) ont été <strong>RÉTABLIS</strong> et sont maintenant opérationnels :"
-            headers = ["Service", "Client", "URL", "Temps de réponse"]
+            subject = ops._("RECOVERED: %(count)s hosting service(s) back online", count=n)
+            title = ops._("Service recovery")
+            description = ops._(
+                "The following <strong>%(count)s</strong> service(s) have "
+                "<strong>RECOVERED</strong> and are now operational:", count=n)
+            headers = [ops._("Service"), ops._("Client"), ops._("URL"),
+                       ops._("Response time")]
         elif alert_type == "slow":
-            subject = f"AVERTISSEMENT : {len(services_list)} service(s) d'hébergement lent(s)"
-            title = "Avertissement de performance"
-            description = f"Les <strong>{len(services_list)}</strong> service(s) suivant(s) connaissent des <strong>TEMPS DE RÉPONSE LENTS</strong> :"
-            headers = ["Service", "Client", "URL", "Temps de réponse", "Seuil"]
+            subject = ops._("WARNING: %(count)s slow hosting service(s)", count=n)
+            title = ops._("Performance warning")
+            description = ops._(
+                "The following <strong>%(count)s</strong> service(s) are having "
+                "<strong>SLOW RESPONSE TIMES</strong>:", count=n)
+            headers = [ops._("Service"), ops._("Client"), ops._("URL"),
+                       ops._("Response time"), ops._("Threshold")]
         else:
             return
 
-        societe = self.env.company
+        societe = ops.company
+        etats = dict(self._fields["last_health_status"]._description_selection(ops))
+        sans_erreur = ops._("N/A")
         police = email_tpl._brand_font(societe)
         # Les liens en accent de marque, comme la mise en page de marque ; les états
         # dans leur couleur de TEXTE (le jaune d'accent rendait 1,63:1 sur blanc).
@@ -1869,9 +1952,12 @@ class HostingService(models.Model):
             partner_cell = _esc(service.partner_id.name or "")
 
             if alert_type == "down":
-                status = item.get("status", "DOWN").upper()
-                status_badge = email_tpl.get_status_badge(status, "small", company=societe)
-                error = item.get("error") or "N/D"
+                # La clé décide de la couleur ; le libellé traduit s'affiche.
+                status = item.get("status", "down")
+                libelle = etats.get(status.lower())
+                status_badge = email_tpl.get_status_badge(
+                    status, "small", company=societe, label=libelle)
+                error = item.get("error") or sans_erreur
                 safe_error = _esc(error[:50]) + ("..." if len(error) > 50 else "")
                 row = [
                     svc_cell,
@@ -1908,7 +1994,7 @@ class HostingService(models.Model):
         ]
 
         content = "".join(content_parts)
-        body_html = email_tpl.get_email_wrapper(title, content, alert_type, company=self.env.company)
+        body_html = email_tpl.get_email_wrapper(title, content, alert_type, company=societe)
 
         try:
             mail_values = {
@@ -1930,7 +2016,7 @@ class HostingService(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Historique de santé - {self.name}",
+            "name": self.env._("Health history - %(name)s", name=self.name),
             "res_model": "hosting.health.check",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("service_id", "=", self.id)],
@@ -1940,6 +2026,9 @@ class HostingService(models.Model):
     def action_run_health_check(self):
         """Exécuter manuellement la vérification de santé pour ce service."""
         self.ensure_one()
+        # Notifications : langue de l'usager qui presse le bouton ; l'état s'y lit
+        # par son libellé traduit, pas par sa clé.
+        etats = dict(self._fields["last_health_status"]._description_selection(self.env))
         # ⚠️ AVANT la garde « pas d'URL » : un contrôle non-HTTP n'en a pas, et
         # la garde le renvoyait « aucune URL » sans rien éprouver. Le bouton doit
         # faire la même chose que le cron — c'est justement celui qu'on presse
@@ -1956,10 +2045,11 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Contrôle des avis terminé",
-                    "message": erreur or (
-                        f"État : {statut.upper()}. Tout ce qui devait partir "
-                        f"aux invités est parti."),
+                    "title": self.env._("Notice check finished"),
+                    "message": erreur or self.env._(
+                        "State: %(state)s. Everything that had to go out to "
+                        "the guests went out.",
+                        state=(etats.get(statut) or statut).upper()),
                     "type": "success" if statut == "up" else "warning",
                 },
             }
@@ -1975,10 +2065,10 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Vérification du réveil terminée",
-                    "message": erreur or (
-                        f"État : {statut.upper()} — chaîne de réveil éprouvée, "
-                        f"aucun téléphone n'a sonné."),
+                    "title": self.env._("Wake-up check finished"),
+                    "message": erreur or self.env._(
+                        "State: %(state)s — wake-up chain tested, no phone rang.",
+                        state=(etats.get(statut) or statut).upper()),
                     "type": "success" if statut == "up" else "warning",
                 },
             }
@@ -1987,8 +2077,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Aucune URL",
-                    "message": "Ce service n'a pas d'URL configurée pour les vérifications de santé.",
+                    "title": self.env._("No URL"),
+                    "message": self.env._("This service has no URL configured for health checks."),
                     "type": "warning",
                 },
             }
@@ -2000,8 +2090,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Bibliothèque manquante",
-                    "message": "La bibliothèque requests n'est pas installée.",
+                    "title": self.env._("Missing library"),
+                    "message": self.env._("The requests library is not installed."),
                     "type": "danger",
                 },
             }
@@ -2029,23 +2119,29 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Vérification de santé terminée",
-                    "message": f"État : {status.upper()}, Réponse : {response.status_code}",
+                    "title": self.env._("Health check finished"),
+                    "message": self.env._(
+                        "State: %(state)s, Response: %(code)s",
+                        state=(etats.get(status) or status).upper(),
+                        code=response.status_code),
                     "type": "success" if status == "up" else "warning",
                 },
             }
         except requests.Timeout:
+            # Erreur stockée sur la mesure, relue par l'exploitation : langue des
+            # opérateurs, comme celle du travail planifié.
             self.env["hosting.health.check"].create({
                 "service_id": self.id,
                 "status": "timeout",
-                "error_message": "La requête a expiré après 10 secondes",
+                "error_message": self._hosting_ops_env()._(
+                    "The request timed out after 10 seconds"),
             })
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Vérification de santé terminée",
-                    "message": "Délai du service dépassé",
+                    "title": self.env._("Health check finished"),
+                    "message": self.env._("Service timed out"),
                     "type": "danger",
                 },
             }
@@ -2059,8 +2155,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Vérification de santé terminée",
-                    "message": f"Service hors ligne : {str(e)[:100]}",
+                    "title": self.env._("Health check finished"),
+                    "message": self.env._("Service offline: %(error)s", error=str(e)[:100]),
                     "type": "danger",
                 },
             }
@@ -2088,8 +2184,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Configuration manquante",
-                    "message": "L'hôte Docker et le conteneur doivent être configurés pour vérifier la version.",
+                    "title": self.env._("Missing configuration"),
+                    "message": self.env._("The Docker host and container must be configured to check the version."),
                     "type": "warning",
                 },
             }
@@ -2100,8 +2196,8 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Échec de la vérification de version",
-                    "message": results["errors"][0] if results["errors"] else "Erreur inconnue",
+                    "title": self.env._("Version check failed"),
+                    "message": results["errors"][0] if results["errors"] else self.env._("Unknown error"),
                     "type": "danger",
                 },
             }
@@ -2110,18 +2206,20 @@ class HostingService(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Version mise à jour",
-                    "message": f"Version installée mise à jour vers {self.installed_version_id.version}",
+                    "title": self.env._("Version updated"),
+                    "message": self.env._("Installed version updated to %(version)s",
+                                          version=self.installed_version_id.version),
                     "type": "success",
                 },
             }
         else:
+            version = self.installed_version_id.version or self.env._("Unknown")
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": "Vérification de version terminée",
-                    "message": f"Version actuelle : {self.installed_version_id.version or 'Inconnue'}",
+                    "title": self.env._("Version check finished"),
+                    "message": self.env._("Current version: %(version)s", version=version),
                     "type": "info",
                 },
             }
@@ -2144,6 +2242,10 @@ class HostingService(models.Model):
         }
 
         has_local_docker = os.path.exists("/var/run/docker.sock")
+        # Notes stockées au journal des mises à jour (travail planifié ou bouton) :
+        # langue des opérateurs. Les erreurs rendues suivent l'appelant (notification
+        # du bouton ; le travail planifié ne fait que les journaliser).
+        ops = self._hosting_ops_env()
 
         services = self.search([
             ("docker_host", "!=", False),
@@ -2200,7 +2302,9 @@ class HostingService(models.Model):
 
                 if result.returncode != 0 and result.stderr:
                     method = "Docker" if has_local_docker else "SSH"
-                    results["errors"].append(f"{host} : erreur {method} - {result.stderr[:100]}")
+                    results["errors"].append(self.env._(
+                        "%(host)s: %(method)s error - %(detail)s",
+                        host=host, method=method, detail=result.stderr[:100]))
                     continue
 
                 version_map = {}
@@ -2219,9 +2323,9 @@ class HostingService(models.Model):
                     container_name = service.docker_container
 
                     if container_name not in version_map:
-                        results["errors"].append(
-                            f"{service.name} : conteneur « {container_name} » introuvable sur {host}"
-                        )
+                        results["errors"].append(self.env._(
+                            "%(service)s: container \"%(container)s\" not found on %(host)s",
+                            service=service.name, container=container_name, host=host))
                         continue
 
                     docker_version = version_map[container_name]
@@ -2256,7 +2360,8 @@ class HostingService(models.Model):
                             "service_id": service.id,
                             "from_version_id": old_version_id,
                             "to_version_id": version_record.id,
-                            "notes": f"Détection automatique via inspection Docker sur {host}",
+                            "notes": ops._("Automatic detection via Docker inspection on %(host)s",
+                                           host=host),
                             "success": True,
                         })
 
@@ -2267,7 +2372,8 @@ class HostingService(models.Model):
                         )
 
             except subprocess.TimeoutExpired:
-                results["errors"].append(f"{host} : délai de connexion SSH dépassé")
+                results["errors"].append(self.env._(
+                    "%(host)s: SSH connection timed out", host=host))
             except Exception as e:
                 results["errors"].append(f"{host} : {str(e)[:100]}")
                 _logger.exception("Erreur lors de la vérification des versions Docker sur %s", host)

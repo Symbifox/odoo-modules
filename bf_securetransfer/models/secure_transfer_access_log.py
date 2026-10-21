@@ -20,13 +20,13 @@ _logger = logging.getLogger(__name__)
 
 class SecureTransferAccessLog(models.Model):
     _name = "secure.transfer.access.log"
-    _description = "Transfert sécurisé — Journal d'accès (immuable)"
+    _description = "Secure transfer: access log (immutable)"
     _order = "id asc"
     _rec_name = "action"
 
     transfer_id = fields.Many2one(
         "secure.transfer",
-        string="Transfert",
+        string="Transfer",
         required=True,
         index=True,
         # DB-level cascade only fires at the final GC (transfer unlink is
@@ -35,34 +35,34 @@ class SecureTransferAccessLog(models.Model):
     )
     file_id = fields.Many2one(
         "secure.transfer.file",
-        string="Fichier",
+        string="File",
         ondelete="set null",
-        help="Fichier concerné, si applicable. Le nom au moment de "
-             "l'événement est conservé dans la note (il survit à la purge).",
+        help="File involved, if applicable. The name at the time of the "
+             "event is kept in the note (it survives the purge).",
     )
     action = fields.Selection(
         selection=[
-            ("created", "Transfert créé"),
-            ("finalized", "Transfert finalisé"),
-            ("emailed", "Courriels envoyés"),
-            ("view", "Page consultée"),
-            ("password_ok", "Mot de passe validé"),
-            ("password_fail", "Mot de passe refusé"),
-            ("download", "Téléchargement initié"),
-            ("notified", "Avis de téléchargement envoyé"),
-            ("otp_sent", "Code de confirmation envoyé"),
-            ("otp_ok", "Code de confirmation validé"),
-            ("otp_fail", "Code de confirmation refusé"),
-            ("expired_hit", "Accès à un transfert expiré"),
-            ("integrity_mismatch", "Intégrité compromise (ETag)"),
-            ("abuse_report", "Signalement d'abus"),
-            ("link_revealed", "Lien révélé (gestionnaire)"),
-            ("link_redacted", "Lien masqué dans le suivi"),
-            ("otp_forced", "Code destinataire exigé après coup"),
-            ("audience_requested", "Identité déclarée (audience ouverte)"),
-            ("audience_joined", "Visiteur confirmé (audience ouverte)"),
-            ("audience_blocked", "Visiteur bloqué"),
-            ("audience_unblocked", "Visiteur débloqué"),
+            ("created", "Transfer created"),
+            ("finalized", "Transfer finalized"),
+            ("emailed", "Emails sent"),
+            ("view", "Page viewed"),
+            ("password_ok", "Password accepted"),
+            ("password_fail", "Password rejected"),
+            ("download", "Download started"),
+            ("notified", "Download notice sent"),
+            ("otp_sent", "Confirmation code sent"),
+            ("otp_ok", "Confirmation code validated"),
+            ("otp_fail", "Confirmation code rejected"),
+            ("expired_hit", "Access to an expired transfer"),
+            ("integrity_mismatch", "Integrity compromised (ETag)"),
+            ("abuse_report", "Abuse report"),
+            ("link_revealed", "Link revealed (manager)"),
+            ("link_redacted", "Link masked in the log"),
+            ("otp_forced", "Recipient code required after the fact"),
+            ("audience_requested", "Identity declared (open audience)"),
+            ("audience_joined", "Visitor confirmed (open audience)"),
+            ("audience_blocked", "Visitor blocked"),
+            ("audience_unblocked", "Visitor unblocked"),
             # ⚠ Écrites par le module pont `bf_securetransfer_sign`, jamais
             # par le socle — qui ne connaît pas bf_sign et ne doit pas le
             # connaître. Elles sont déclarées ICI quand même, et c'est
@@ -72,33 +72,33 @@ class SecureTransferAccessLog(models.Model):
             # échouerait alors sur des entrées qu'on a justement promis de ne
             # jamais réécrire. Le vocabulaire du journal est le vocabulaire de
             # la preuve : il vit d'un seul tenant, ici.
-            ("nda_requested", "Entente de confidentialité à signer"),
-            ("nda_signed", "Entente de confidentialité signée"),
-            ("nda_refused", "Entente de confidentialité refusée"),
-            ("extended", "Échéance prolongée"),
-            ("expired", "Expiré"),
-            ("purged", "Objets purgés du stockage"),
-            ("suspended", "Suspendu"),
-            ("reactivated", "Réactivé"),
-            ("deleted", "Supprimé"),
+            ("nda_requested", "NDA to sign"),
+            ("nda_signed", "NDA signed"),
+            ("nda_refused", "NDA declined"),
+            ("extended", "Expiry extended"),
+            ("expired", "Expired"),
+            ("purged", "Objects purged from storage"),
+            ("suspended", "Suspended"),
+            ("reactivated", "Reactivated"),
+            ("deleted", "Deleted"),
         ],
         string="Action",
         required=True,
     )
     # Server-side UTC timestamp — never trust the visitor's local clock.
     timestamp_utc = fields.Char(
-        string="Horodatage (UTC, ISO 8601)",
+        string="Timestamp (UTC, ISO 8601)",
         required=True,
         readonly=True,
     )
-    ip = fields.Char(string="Adresse IP", readonly=True)
-    user_agent = fields.Char(string="Agent utilisateur", readonly=True)
-    actor = fields.Char(string="Acteur", readonly=True)
+    ip = fields.Char(string="IP address", readonly=True)
+    user_agent = fields.Char(string="User agent", readonly=True)
+    actor = fields.Char(string="Actor", readonly=True)
     note = fields.Text(string="Note", readonly=True)
 
     # Hash chain — tamper-evidence within the trail itself.
-    prev_entry_hash = fields.Char(string="Empreinte précédente", readonly=True)
-    entry_hash = fields.Char(string="Empreinte de l'entrée", readonly=True, index=True)
+    prev_entry_hash = fields.Char(string="Previous hash", readonly=True)
+    entry_hash = fields.Char(string="Entry hash", readonly=True, index=True)
 
     @api.model
     def _append(self, transfer, action, file=None, ip=None, user_agent=None,
@@ -180,8 +180,7 @@ class SecureTransferAccessLog(models.Model):
 
     def write(self, vals):
         raise UserError(_(
-            "Les entrées du journal d'accès sont immuables et ne peuvent "
-            "être modifiées."
+            "Access log entries are immutable and cannot be modified."
         ))
 
     def unlink(self):
@@ -189,8 +188,7 @@ class SecureTransferAccessLog(models.Model):
         # after the log retention period. Never for a living trail.
         if not self.env.context.get("st_gc"):
             raise UserError(_(
-                "Le journal d'accès est append-only : les entrées ne "
-                "peuvent être supprimées."
+                "The access log is append-only: entries cannot be deleted."
             ))
         return super().unlink()
 
@@ -220,10 +218,10 @@ class SecureTransferAccessLog(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Vérification du journal"),
-                "message": _("Chaîne d'intégrité intacte pour %s.", self.transfer_id.name)
+                "title": _("Log verification"),
+                "message": _("Integrity chain intact for %s.", self.transfer_id.name)
                 if ok
-                else _("ALERTE : la chaîne d'intégrité de %s est BRISÉE.", self.transfer_id.name),
+                else _("ALERT: the integrity chain of %s is BROKEN.", self.transfer_id.name),
                 "type": "success" if ok else "danger",
                 "sticky": not ok,
             },

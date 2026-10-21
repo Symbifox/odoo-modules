@@ -44,6 +44,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools.translate import LazyTranslate
 
 from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config import (
     _sanitize_nc_path,
@@ -54,6 +55,7 @@ from . import nc_names
 from .nextcloud_document_config import SHARE_TYPE_PUBLIC_LINK, like_literal
 
 _logger = logging.getLogger(__name__)
+_lt = LazyTranslate(__name__)
 
 GROUP = "bf_nextcloud_browser.group_nc_browser_user"
 ALLOWED_MODELS = ("project.project", "project.task", "res.partner")
@@ -136,7 +138,7 @@ def _text(value, label):
     if value is None:
         return ""
     if not isinstance(value, str):
-        raise UserError(_("%s invalide.") % label)
+        raise UserError(_("%s is invalid.") % label)
     return value
 
 
@@ -154,7 +156,8 @@ def _plain(value):
     """
     if isinstance(value, str) and value and url_unquote(value) != value:
         raise UserError(
-            _("« %s » contient une séquence %%XX : le navigateur ne prend pas ce nom en charge.")
+            _("\"%s\" contains a %%XX sequence: the browser does not "
+              "support this name.")
             % value
         )
     return value
@@ -171,35 +174,40 @@ def _xml_text(value):
     )
 
 
+# Shown on screen: read with `env._(...)` in the person's language.
 SHARE_KINDS = {
-    0: "Personne",
-    1: "Groupe",
-    3: "Lien public",
-    4: "Courriel",
-    6: "Fédéré",
-    7: "Cercle",
-    10: "Salon Talk",
-    12: "Équipe",
+    0: _lt("Person"),
+    1: _lt("Group"),
+    3: _lt("Public link"),
+    4: _lt("Email"),
+    6: _lt("Federated"),
+    7: _lt("Circle"),
+    10: _lt("Talk conversation"),
+    12: _lt("Team"),
 }
 
+# Size units, shown on screen (French writes o, Ko, Mo...).
+SIZE_UNITS = (_lt("%s B"), _lt("%s KB"), _lt("%s MB"), _lt("%s GB"), _lt("%s TB"), _lt("%s PB"))
 
-def _human_size(num):
+
+def _human_size(num, env):
+    """A byte count for the screen, its unit in the language of `env`."""
     num = num or 0
     if num < 1024:
-        return "%d o" % num
+        return env._(SIZE_UNITS[0]) % ("%d" % num)
     val = float(num)
-    for unit in ("Ko", "Mo", "Go", "To"):
+    for unit in SIZE_UNITS[1:-1]:
         val /= 1024.0
         if abs(val) < 1024.0:
-            return "%.1f %s" % (val, unit)
-    return "%.1f Po" % val
+            return env._(unit) % ("%.1f" % val)
+    return env._(SIZE_UNITS[-1]) % ("%.1f" % val)
 
 
 class BfNcBrowser(models.TransientModel):
     """Stateless facade — no records are ever stored; methods are @api.model."""
 
     _name = "bf.nc.browser"
-    _description = "Facade RPC navigateur de fichiers Nextcloud"
+    _description = "Nextcloud file browser RPC facade"
 
     # ------------------------------------------------------------------
     # Access & resolution
@@ -210,11 +218,12 @@ class BfNcBrowser(models.TransientModel):
         try:
             return int(value)
         except (TypeError, ValueError):
-            raise UserError(_("Identifiant invalide."))
+            raise UserError(_("Invalid ID."))
 
     def _check_access(self):
         if not self.env.user.has_group(GROUP):
-            raise AccessError(_("Acces au navigateur Nextcloud non autorise."))
+            raise AccessError(_("Access to the Nextcloud browser is not "
+                                "allowed."))
 
     def _default_config(self):
         # sudo: the connection fields are system-only and the model is not
@@ -232,10 +241,10 @@ class BfNcBrowser(models.TransientModel):
 
     def _resolve_record(self, model, res_id):
         if model not in ALLOWED_MODELS:
-            raise ValidationError(_("Modele non supporte: %s") % model)
+            raise ValidationError(_("Unsupported model: %s") % model)
         record = self.env[model].browse(self._as_id(res_id))
         if not record.exists():
-            raise UserError(_("Enregistrement introuvable."))
+            raise UserError(_("Record not found."))
         record.check_access("read")
         return record
 
@@ -253,16 +262,16 @@ class BfNcBrowser(models.TransientModel):
         self._check_access()
         record, config = self._record_config(model, res_id)
         if not config:
-            raise UserError(_("Aucune configuration Nextcloud disponible."))
+            raise UserError(_("No Nextcloud configuration available."))
         root = record.nc_browser_folder
         if not root:
             raise UserError(
-                _("Aucun dossier Nextcloud n'est configure pour cet enregistrement.")
+                _("No Nextcloud folder is set for this record.")
             )
         root = _sanitize_nc_path(_plain(root))
         if posixpath.normpath(root) == "/":
             raise UserError(
-                _("Le dossier Nextcloud de l'enregistrement ne peut pas etre la racine '/'.")
+                _("The record's Nextcloud folder cannot be the root '/'.")
             )
         # The browser prefix is a mandatory backstop (never the bare '/' default):
         # every record root must sit under an explicit, non-root prefix so a
@@ -270,9 +279,9 @@ class BfNcBrowser(models.TransientModel):
         prefix = (config.browser_root_prefix or "").strip()
         if prefix in ("", "/"):
             raise UserError(_(
-                "Le navigateur requiert un prefixe racine. Definissez "
-                "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
-                "configuration Nextcloud."
+                "The browser requires a root prefix. Set \"Root prefix "
+                "(browser)\" (e.g. /Company/) on the Nextcloud "
+                "configuration."
             ))
         _validate_path_under_prefix(root, _sanitize_nc_path(_plain(prefix)))
         return self._as_person(config), root
@@ -280,7 +289,7 @@ class BfNcBrowser(models.TransientModel):
     def _resolve_path(self, model, res_id, rel_path):
         """Resolve a client relative path to a sanitised absolute NC path."""
         config, root = self._resolve_root(model, res_id)
-        rel = _plain(_text(rel_path, _("Chemin")).strip().lstrip("/"))
+        rel = _plain(_text(rel_path, _("Path")).strip().lstrip("/"))
         abs_path = _sanitize_nc_path(posixpath.join(root, rel)) if rel else root
         _validate_path_under_prefix(abs_path, root)
         return config, abs_path, root
@@ -295,19 +304,19 @@ class BfNcBrowser(models.TransientModel):
         self._check_access()
         config = self._default_config()
         if not config:
-            raise UserError(_("Aucune configuration Nextcloud disponible."))
+            raise UserError(_("No Nextcloud configuration available."))
         prefix = (config.browser_root_prefix or "").strip()
         if prefix in ("", "/"):
             raise UserError(_(
-                "Le navigateur autonome requiert un prefixe racine. Definissez "
-                "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
-                "configuration Nextcloud avant d'utiliser cette application."
+                "The standalone browser requires a root prefix. Set "
+                "\"Root prefix (browser)\" (e.g. /Company/) on the "
+                "Nextcloud configuration before using this app."
             ))
         return self._as_person(config), _sanitize_nc_path(_plain(prefix))
 
     def _resolve_path_standalone(self, rel_path):
         config, root = self._resolve_root_standalone()
-        rel = _plain(_text(rel_path, _("Chemin")).strip().lstrip("/"))
+        rel = _plain(_text(rel_path, _("Path")).strip().lstrip("/"))
         abs_path = _sanitize_nc_path(posixpath.join(root, rel)) if rel else root
         _validate_path_under_prefix(abs_path, root)
         return config, abs_path, root
@@ -390,13 +399,13 @@ class BfNcBrowser(models.TransientModel):
     def _panel_folder(self, model, res_id):
         """(record, folder) for any record the person can read, or (record, False)."""
         if not isinstance(model, str) or model not in self.env:
-            raise UserError(_("Modele non supporte: %s") % model)
+            raise UserError(_("Unsupported model: %s") % model)
         Model = self.env[model]
         if Model._abstract or Model._transient:
-            raise UserError(_("Modele non supporte: %s") % model)
+            raise UserError(_("Unsupported model: %s") % model)
         record = Model.browse(self._as_id(res_id)).exists()
         if not record:
-            raise UserError(_("Enregistrement introuvable."))
+            raise UserError(_("Record not found."))
         record.check_access("read")
         if model in ALLOWED_MODELS:
             return record, record.nc_browser_folder
@@ -440,7 +449,7 @@ class BfNcBrowser(models.TransientModel):
         else:
             config = self._default_config()
         if not config:
-            raise UserError(_("Aucune configuration Nextcloud disponible."))
+            raise UserError(_("No Nextcloud configuration available."))
         return config
 
     @api.model
@@ -554,7 +563,7 @@ class BfNcBrowser(models.TransientModel):
                 "is_hidden": name.startswith("."),
                 "is_dir": is_dir,
                 "size": e.get("size", 0),
-                "size_display": "" if is_dir else _human_size(e.get("size", 0)),
+                "size_display": "" if is_dir else _human_size(e.get("size", 0), self.env),
                 "mtime": iso,
                 "content_type": e.get("content_type", ""),
                 "rel": rel,
@@ -578,7 +587,7 @@ class BfNcBrowser(models.TransientModel):
         entries.sort(key=lambda x: (not x["is_dir"], x["name"].lower()))
 
         cur_rel = "" if abs_norm == root_norm else posixpath.relpath(abs_norm, root)
-        crumbs = [{"name": "Racine", "rel": ""}]
+        crumbs = [{"name": self.env._("Root folder"), "rel": ""}]
         if cur_rel and cur_rel != ".":
             acc = ""
             for part in cur_rel.split("/"):
@@ -624,9 +633,9 @@ class BfNcBrowser(models.TransientModel):
     # ------------------------------------------------------------------
     @api.model
     def make_folder(self, model, res_id, rel_path, name):
-        name = _plain(_text(name, _("Nom de dossier")).strip().strip("/"))
+        name = _plain(_text(name, _("Folder name")).strip().strip("/"))
         if not name or "/" in name:
-            raise UserError(_("Nom de dossier invalide."))
+            raise UserError(_("Invalid folder name."))
         config, parent_abs, root = self._resolve_path(model, res_id, rel_path)
         target = _sanitize_nc_path(posixpath.join(parent_abs, name))
         _validate_path_under_prefix(target, root)
@@ -635,12 +644,12 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def rename_entry(self, model, res_id, rel_path, new_name):
-        new_name = _plain(_text(new_name, _("Nom")).strip().strip("/"))
+        new_name = _plain(_text(new_name, _("Name")).strip().strip("/"))
         if not new_name or "/" in new_name:
-            raise UserError(_("Nom invalide."))
+            raise UserError(_("Invalid name."))
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         if posixpath.normpath(abs_path) == posixpath.normpath(root):
-            raise UserError(_("Impossible de renommer le dossier racine."))
+            raise UserError(_("Cannot rename the root folder."))
         dst = _sanitize_nc_path(posixpath.join(posixpath.dirname(abs_path), new_name))
         _validate_path_under_prefix(dst, root)
         config._webdav_move(abs_path, dst)
@@ -661,25 +670,25 @@ class BfNcBrowser(models.TransientModel):
     def delete_entry(self, model, res_id, rel_path):
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         if posixpath.normpath(abs_path) == posixpath.normpath(root):
-            raise UserError(_("Impossible de supprimer le dossier racine."))
+            raise UserError(_("Cannot delete the root folder."))
         config._webdav_delete(abs_path)
         return {"ok": True}
 
     @api.model
     def upload_file(self, model, res_id, rel_path, filename, data_b64):
-        filename = _plain(_text(filename, _("Nom de fichier")).strip().strip("/"))
+        filename = _plain(_text(filename, _("File name")).strip().strip("/"))
         if not filename or "/" in filename:
-            raise UserError(_("Nom de fichier invalide."))
+            raise UserError(_("Invalid file name."))
         config, dir_abs, root = self._resolve_path(model, res_id, rel_path)
         target = _sanitize_nc_path(posixpath.join(dir_abs, filename))
         _validate_path_under_prefix(target, root)
         try:
             content = base64.b64decode(data_b64 or "")
         except (ValueError, TypeError):
-            raise UserError(_("Contenu de fichier invalide."))
+            raise UserError(_("Invalid file content."))
         if len(content) > MAX_UPLOAD_BYTES:
             raise UserError(
-                _("Fichier trop volumineux (maximum %s Mo par televersement).")
+                _("File too large (at most %s MB per upload).")
                 % (MAX_UPLOAD_BYTES // (1024 * 1024))
             )
         ctype = mimetypes.guess_type(filename)[0] or "application/octet-stream"
@@ -776,11 +785,11 @@ class BfNcBrowser(models.TransientModel):
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         item = self.env["project.knowledge.item"].browse(self._as_id(item_id))
         if not item.exists():
-            raise UserError(_("Element de matrice introuvable."))
+            raise UserError(_("Matrix item not found."))
         item.check_access("write")
 
         link = self._make_link(config, abs_path, root, mode, preset_id)
-        name = posixpath.basename(abs_path) or "Fichier Nextcloud"
+        name = posixpath.basename(abs_path) or self.env._("Nextcloud file")
         att = self.env["ir.attachment"].create({
             "name": name,
             "type": "url",
@@ -796,17 +805,17 @@ class BfNcBrowser(models.TransientModel):
         Article = self.env.get("knowledge.article")
         if Article is None:
             raise UserError(
-                _("L'application Odoo Knowledge n'est pas installee sur cette instance.")
+                _("The Odoo Knowledge app is not installed on this instance.")
             )
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         article = Article.browse(self._as_id(article_id))
         if not article.exists():
-            raise UserError(_("Article introuvable."))
+            raise UserError(_("Article not found."))
         article.check_access("write")
 
         link = self._make_link(config, abs_path, root, mode, preset_id)
         url = link["url"]
-        name = posixpath.basename(abs_path) or "Fichier Nextcloud"
+        name = posixpath.basename(abs_path) or self.env._("Nextcloud file")
         # Markup %-substitution HTML-escapes url + name (prevents stored XSS
         # from a crafted filename or share URL).
         snippet = Markup(
@@ -824,7 +833,7 @@ class BfNcBrowser(models.TransientModel):
         Nextcloud compares without case or accents ("ecole" finds "École").
         Names only: the servers measured have no full-text search app.
         """
-        term = _xml_text(_text(term, _("Terme de recherche"))).strip()[:SEARCH_MAX_CHARS]
+        term = _xml_text(_text(term, _("Search term"))).strip()[:SEARCH_MAX_CHARS]
         if len(term) < SEARCH_MIN_CHARS:
             return {"ok": True, "term": term, "too_short": True, "entries": [], "truncated": False}
         where = (
@@ -867,18 +876,19 @@ class BfNcBrowser(models.TransientModel):
             items = config._webdav_propfind(abs_path, depth="0")
             fid = items[0].get("file_id") if items else None
             if not fid:
-                raise UserError(_("Nextcloud n'a pas donné l'identifiant de « %s ».") % name)
+                raise UserError(_("Nextcloud did not return the ID of \"%s\".") % name)
             return {"ok": True, "kind": "internal", "name": name, "url": config._internal_link(fid)}
         if mode != "share":
-            raise UserError(_("Type de lien inconnu."))
+            raise UserError(_("Unknown link type."))
         if posixpath.normpath(abs_path) == posixpath.normpath(root):
             # The root of a record, or of the whole browser: never public.
-            raise UserError(_("Le dossier racine ne se partage pas par lien public."))
+            raise UserError(_("The root folder cannot be shared through a "
+                              "public link."))
         result = config._ocs_create_share(
             abs_path, **self._share_kwargs(config, preset_id, abs_path)
         )
         if not result.get("url"):
-            raise UserError(_("Impossible de creer le lien de partage."))
+            raise UserError(_("Could not create the share link."))
         return {
             "ok": True,
             "kind": "share",
@@ -913,11 +923,15 @@ class BfNcBrowser(models.TransientModel):
     def _share_view(self, share, root, me=None, expiry_checked=True):
         rel = self._rel_under(share["path"], root) if share["path"] else None
         is_public = share["share_type"] == SHARE_TYPE_PUBLIC_LINK
+        # Libellé lu HORS de l'appel : l'extracteur prend toute chaîne écrite entre les parenthèses
+        # de `_()` (piège 44) ; SHARE_KINDS porte des `_lt` déjà extraits.
+        libelle = SHARE_KINDS.get(share["share_type"])
+        kind = self.env._(libelle) if libelle else self.env._("Other")
         return {
             **share,
             # Nextcloud names a public link's recipient "(Shared link)": nobody.
             "share_with": "" if is_public else share["share_with"],
-            "kind": SHARE_KINDS.get(share["share_type"], _("Autre")),
+            "kind": kind,
             "is_public": is_public,
             "writable": bool(share["permissions"] & (2 | 4 | 8)),
             "rel": rel,
@@ -994,9 +1008,10 @@ class BfNcBrowser(models.TransientModel):
             # Alice's share, which was still there).
             return {"ok": True, "gone": True}
         if self._rel_under(share["path"], root) is None:
-            raise UserError(_("Ce partage est hors du dossier du navigateur."))
+            raise UserError(_("This share is outside the browser's folder."))
         if not self._mine(share, self._me(config)):
-            raise UserError(_("Ce partage n'est pas le vôtre : retirez-le dans Nextcloud si vous en avez le droit."))
+            raise UserError(_("This share is not yours: remove it in "
+                              "Nextcloud if you have the right to."))
         config._ocs_delete_share(share["id"])
         return {"ok": True, "gone": False}
 
@@ -1016,13 +1031,13 @@ class BfNcBrowser(models.TransientModel):
     def _chatter_record(self, model, res_id):
         """The record whose chatter is read, checked as the caller."""
         if not isinstance(model, str) or model not in self.env:
-            raise ValidationError(_("Modele non supporte: %s") % model)
+            raise ValidationError(_("Unsupported model: %s") % model)
         Model = self.env[model]
         if Model._abstract or Model._transient or not hasattr(Model, "message_ids"):
-            raise ValidationError(_("Modele non supporte: %s") % model)
+            raise ValidationError(_("Unsupported model: %s") % model)
         record = Model.browse(self._as_id(res_id))
         if not record.exists():
-            raise UserError(_("Enregistrement introuvable."))
+            raise UserError(_("Record not found."))
         record.check_access("read")
         return record
 
@@ -1169,7 +1184,7 @@ class BfNcBrowser(models.TransientModel):
             out.append({
                 "id": att.id,
                 "name": att.name or "",
-                "size_display": _human_size(att.file_size),
+                "size_display": _human_size(att.file_size, self.env),
                 "too_big": (att.file_size or 0) > MAX_UPLOAD_BYTES,
                 "date": date.strftime("%Y-%m-%d %H:%M") if date else "",
             })
@@ -1202,7 +1217,7 @@ class BfNcBrowser(models.TransientModel):
             if config._webdav_put_new(target, raw, content_type=mimetype or "application/octet-stream"):
                 return candidate
             folded.add(candidate.casefold())
-        raise UserError(_("Trop de fichiers portent déjà le nom « %s ».") % name)
+        raise UserError(_("Too many files already have the name \"%s\".") % name)
 
     @api.model
     def root_file_attachments(self, model, res_id, attachment_ids, rel_path=""):
@@ -1216,13 +1231,14 @@ class BfNcBrowser(models.TransientModel):
         config, abs_dir, root = self._resolve_path_standalone(rel_path)
         record = self._chatter_record(model, res_id)
         if not isinstance(attachment_ids, (list, tuple)) or not attachment_ids:
-            raise UserError(_("Choisissez au moins une pièce."))
+            raise UserError(_("Choose at least one attachment."))
         if len(attachment_ids) > FILE_BATCH_MAX:
-            raise UserError(_("Au plus %s pièces à la fois.") % FILE_BATCH_MAX)
+            raise UserError(_("At most %s attachments at a time.") % FILE_BATCH_MAX)
         ids = {self._as_id(i) for i in attachment_ids}
         attachments = self._thread_attachments(record, ids)
         if len(attachments) != len(ids):
-            raise UserError(_("Une des pièces n'appartient pas à ce fil, ou vous ne pouvez pas la lire."))
+            raise UserError(_("One of the attachments does not belong to "
+                              "this thread, or you cannot read it."))
         # One listing says both whether the destination is a folder and which
         # names are taken (a failed connection raises its own message here).
         raw_listing = config._webdav_propfind(abs_dir, depth="1")
@@ -1232,7 +1248,7 @@ class BfNcBrowser(models.TransientModel):
             e.get("is_dir") and self._href_to_nc_path(config, e.get("href", ""), dav_root) == here
             for e in raw_listing
         ):
-            raise UserError(_("La destination n'est pas un dossier."))
+            raise UserError(_("The destination is not a folder."))
         taken = {e["name"] for e in self._entries(config, raw_listing, root, skip=(abs_dir,))}
         done, skipped, failed = [], [], []
         for att in attachments.sorted("id"):
@@ -1245,7 +1261,9 @@ class BfNcBrowser(models.TransientModel):
             raw = piece.raw or b""
             piece.invalidate_recordset(["raw", "datas", "db_datas"])
             if att.file_size and len(raw) != att.file_size:
-                failed.append({"name": att.name, "error": _("fichier absent du stockage d'Odoo")})
+                failed.append({"name": att.name, "error": _("file missing "
+                                                            "from Odoo's "
+                                                            "storage")})
                 continue
             try:
                 name = self._put_free(config, abs_dir, root, self._file_name(att.name), raw, att.mimetype, taken)
@@ -1258,7 +1276,7 @@ class BfNcBrowser(models.TransientModel):
         rel = "" if rel == "." else rel
         if done:
             post_trace(record, Markup("<p>%s</p>") % (
-                _("Pièces copiées dans Nextcloud, %(dossier)s : %(noms)s.",
+                _("Attachments copied to Nextcloud, %(dossier)s: %(noms)s.",
                   dossier=rel or root, noms=", ".join(done))
             ))
         return {"done": done, "skipped": skipped, "failed": failed, "rel_path": rel}
@@ -1290,9 +1308,10 @@ class BfNcBrowser(models.TransientModel):
             return {"ok": True, "gone": True}
         cited = {l["key"] for l in self._links_in_chatter(config, record) if l["kind"] == "share"}
         if share["token"] not in cited:
-            raise UserError(_("Ce partage n'est pas cité dans ce fil."))
+            raise UserError(_("This share is not cited in this thread."))
         if not self._mine(share, self._me(config)):
-            raise UserError(_("Ce partage n'est pas le vôtre : retirez-le dans Nextcloud si vous en avez le droit."))
+            raise UserError(_("This share is not yours: remove it in "
+                              "Nextcloud if you have the right to."))
         config._ocs_delete_share(share["id"])
         return {"ok": True, "gone": False}
 
@@ -1308,9 +1327,9 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def root_make_folder(self, rel_path, name):
-        name = _plain(_text(name, _("Nom de dossier")).strip().strip("/"))
+        name = _plain(_text(name, _("Folder name")).strip().strip("/"))
         if not name or "/" in name:
-            raise UserError(_("Nom de dossier invalide."))
+            raise UserError(_("Invalid folder name."))
         config, parent_abs, root = self._resolve_path_standalone(rel_path)
         target = _sanitize_nc_path(posixpath.join(parent_abs, name))
         _validate_path_under_prefix(target, root)
@@ -1319,12 +1338,12 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def root_rename_entry(self, rel_path, new_name):
-        new_name = _plain(_text(new_name, _("Nom")).strip().strip("/"))
+        new_name = _plain(_text(new_name, _("Name")).strip().strip("/"))
         if not new_name or "/" in new_name:
-            raise UserError(_("Nom invalide."))
+            raise UserError(_("Invalid name."))
         config, abs_path, root = self._resolve_path_standalone(rel_path)
         if posixpath.normpath(abs_path) == posixpath.normpath(root):
-            raise UserError(_("Impossible de renommer le dossier racine."))
+            raise UserError(_("Cannot rename the root folder."))
         dst = _sanitize_nc_path(posixpath.join(posixpath.dirname(abs_path), new_name))
         _validate_path_under_prefix(dst, root)
         config._webdav_move(abs_path, dst)
@@ -1345,25 +1364,25 @@ class BfNcBrowser(models.TransientModel):
     def root_delete_entry(self, rel_path):
         config, abs_path, root = self._resolve_path_standalone(rel_path)
         if posixpath.normpath(abs_path) == posixpath.normpath(root):
-            raise UserError(_("Impossible de supprimer le dossier racine."))
+            raise UserError(_("Cannot delete the root folder."))
         config._webdav_delete(abs_path)
         return {"ok": True}
 
     @api.model
     def root_upload_file(self, rel_path, filename, data_b64):
-        filename = _plain(_text(filename, _("Nom de fichier")).strip().strip("/"))
+        filename = _plain(_text(filename, _("File name")).strip().strip("/"))
         if not filename or "/" in filename:
-            raise UserError(_("Nom de fichier invalide."))
+            raise UserError(_("Invalid file name."))
         config, dir_abs, root = self._resolve_path_standalone(rel_path)
         target = _sanitize_nc_path(posixpath.join(dir_abs, filename))
         _validate_path_under_prefix(target, root)
         try:
             content = base64.b64decode(data_b64 or "")
         except (ValueError, TypeError):
-            raise UserError(_("Contenu de fichier invalide."))
+            raise UserError(_("Invalid file content."))
         if len(content) > MAX_UPLOAD_BYTES:
             raise UserError(
-                _("Fichier trop volumineux (maximum %s Mo par televersement).")
+                _("File too large (at most %s MB per upload).")
                 % (MAX_UPLOAD_BYTES // (1024 * 1024))
             )
         ctype = mimetypes.guess_type(filename)[0] or "application/octet-stream"

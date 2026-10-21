@@ -109,11 +109,11 @@ class BfFloorplanElement(models.Model):
             if ep.assigned_display and self.endpoint_id.has_access("read"):
                 infos.append(ep.assigned_display)
             if ep.os:
-                infos.append(dict(ep._fields["os"].selection).get(ep.os, ep.os))
+                infos.append(dict(ep._fields["os"]._description_selection(self.env)).get(ep.os, ep.os))
             if ep.os_eol_tag:
                 infos.append(_("Système en fin de vie"))
             if ep.lifecycle_state != "deployed":
-                infos.append(dict(ep._fields["lifecycle_state"].selection)
+                infos.append(dict(ep._fields["lifecycle_state"]._description_selection(self.env))
                              .get(ep.lifecycle_state, ep.lifecycle_state))
             if ep.warranty_end and ep.warranty_end < fields.Date.context_today(self):
                 infos.append(_("Garantie échue le %s") % ep.warranty_end.isoformat())
@@ -123,5 +123,5 @@ class BfFloorplanElement(models.Model):
                 infos.append(srv.hostname)
             infos.append(_("%s service(s)") % srv.service_count)
             if srv.state != "active":
-                infos.append(dict(srv._fields["state"].selection).get(srv.state, srv.state))
+                infos.append(dict(srv._fields["state"]._description_selection(self.env)).get(srv.state, srv.state))
         return infos

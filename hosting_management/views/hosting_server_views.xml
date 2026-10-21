@@ -8,17 +8,17 @@
         <field name="arch" type="xml">
             <list decoration-muted="state == 'decommissioned'" decoration-warning="state == 'maintenance'">
                 <field name="code"/>
-                <field name="name" string="Nom"/>
-                <field name="hostname" string="Nom d'hôte"/>
+                <field name="name" string="Name"/>
+                <field name="hostname" string="Hostname"/>
                 <field name="server_type" string="Type" widget="badge"
                        decoration-success="server_type == 'production'"
                        decoration-warning="server_type == 'staging'"
                        decoration-info="server_type == 'development'"/>
-                <field name="provider" string="Fournisseur" optional="show"/>
-                <field name="location" string="Emplacement" optional="show"/>
-                <field name="ip_address" string="Adresse IP" optional="hide"/>
+                <field name="provider" string="Provider" optional="show"/>
+                <field name="location" string="Location" optional="show"/>
+                <field name="ip_address" string="IP address" optional="hide"/>
                 <field name="service_count" string="Services"/>
-                <field name="state" string="État" widget="badge"
+                <field name="state" string="State" widget="badge"
                        decoration-success="state == 'active'"
                        decoration-warning="state == 'maintenance'"
                        decoration-muted="state == 'decommissioned'"/>
@@ -33,12 +33,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_set_active" string="Activer" type="object"
+                    <button name="action_set_active" string="Activate" type="object"
                             class="oe_highlight" invisible="state == 'active'"/>
                     <button name="action_set_maintenance" string="Maintenance" type="object"
                             invisible="state == 'maintenance'"/>
-                    <button name="action_decommission" string="Désactiver" type="object"
-                            invisible="state == 'decommissioned'" confirm="Désactiver ce serveur ?"/>
+                    <button name="action_decommission" string="Deactivate" type="object"
+                            invisible="state == 'decommissioned'" confirm="Deactivate this server?"/>
                     <field name="state" widget="statusbar" statusbar_visible="active,maintenance,decommissioned"/>
                 </header>
                 <sheet>
@@ -51,25 +51,25 @@
                     <div class="oe_title">
                         <label for="code"/>
                         <h3>
-                            <field name="code" placeholder="PT1"/>
+                            <field name="code" placeholder="SRV1"/>
                         </h3>
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Nom du serveur"/>
+                            <field name="name" placeholder="Server name"/>
                         </h1>
                     </div>
 
                     <group>
-                        <group string="Connexion">
-                            <field name="hostname" string="Nom d'hôte" placeholder="server.example.com"/>
-                            <field name="ip_address" string="Adresse IP" placeholder="203.0.113.1"/>
-                            <field name="ssh_user" string="Utilisateur SSH"/>
-                            <field name="ssh_port" string="Port SSH"/>
+                        <group string="Connection">
+                            <field name="hostname" string="Hostname" placeholder="server.example.com"/>
+                            <field name="ip_address" string="IP address" placeholder="203.0.113.1"/>
+                            <field name="ssh_user" string="SSH user"/>
+                            <field name="ssh_port" string="SSH port"/>
                         </group>
                         <group string="Infrastructure">
-                            <field name="server_type" string="Type de serveur"/>
-                            <field name="provider" string="Fournisseur"/>
-                            <field name="location" string="Emplacement"/>
+                            <field name="server_type" string="Server type"/>
+                            <field name="provider" string="Provider"/>
+                            <field name="location" string="Location"/>
                         </group>
                     </group>
 
@@ -78,11 +78,11 @@
                             <field name="service_ids" readonly="1">
                                 <list>
                                     <field name="code"/>
-                                    <field name="name" string="Nom"/>
+                                    <field name="name" string="Name"/>
                                     <field name="partner_id" string="Client"/>
-                                    <field name="software_id" string="Logiciel"/>
-                                    <field name="environment" string="Environnement"/>
-                                    <field name="state" string="État" widget="badge"
+                                    <field name="software_id" string="Software"/>
+                                    <field name="environment" string="Environment"/>
+                                    <field name="state" string="State" widget="badge"
                                            decoration-success="state == 'active'"
                                            decoration-info="state == 'draft'"
                                            decoration-warning="state == 'suspended'"
@@ -92,7 +92,7 @@
                             </field>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Notes additionnelles sur ce serveur..."/>
+                            <field name="notes" placeholder="Additional notes about this server..."/>
                         </page>
                     </notebook>
 
@@ -114,20 +114,20 @@
                 <field name="hostname"/>
                 <field name="ip_address"/>
                 <separator/>
-                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
                 <filter name="filter_maintenance" string="Maintenance" domain="[('state', '=', 'maintenance')]"/>
-                <filter name="filter_decommissioned" string="Désactivés" domain="[('state', '=', 'decommissioned')]"/>
+                <filter name="filter_decommissioned" string="Deactivated" domain="[('state', '=', 'decommissioned')]"/>
                 <separator/>
                 <filter name="filter_production" string="Production" domain="[('server_type', '=', 'production')]"/>
-                <filter name="filter_staging" string="Pré-production" domain="[('server_type', '=', 'staging')]"/>
-                <filter name="filter_development" string="Développement" domain="[('server_type', '=', 'development')]"/>
+                <filter name="filter_staging" string="Staging" domain="[('server_type', '=', 'staging')]"/>
+                <filter name="filter_development" string="Development" domain="[('server_type', '=', 'development')]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
-                    <filter name="group_type" string="Type de serveur" context="{'group_by': 'server_type'}"/>
-                    <filter name="group_provider" string="Fournisseur" context="{'group_by': 'provider'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="group_location" string="Emplacement" context="{'group_by': 'location'}"/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_type" string="Server type" context="{'group_by': 'server_type'}"/>
+                    <filter name="group_provider" string="Provider" context="{'group_by': 'provider'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_location" string="Location" context="{'group_by': 'location'}"/>
                 </group>
             </search>
         </field>
@@ -163,7 +163,7 @@
                                            decoration-info="server_type == 'development'"/>
                                 </div>
                                 <div class="mt-2">
-                                    <span class="text-muted">Services : </span>
+                                    <span class="text-muted">Services: </span>
                                     <strong><field name="service_count"/></strong>
                                 </div>
                             </div>
@@ -176,17 +176,17 @@
 
     <!-- Hosting Server Action -->
     <record id="hosting_server_action" model="ir.actions.act_window">
-        <field name="name">Serveurs</field>
+        <field name="name">Servers</field>
         <field name="res_model">hosting.server</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="hosting_server_view_search"/>
         <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez votre premier serveur
+                Add your first server
             </p>
             <p>
-                Suivez les serveurs et VMs qui hébergent vos services.
+                Track the servers and VMs that host your services.
             </p>
         </field>
     </record>

@@ -11,37 +11,37 @@
          à en retirer un jour six. -->
 
     <menuitem id="menu_corporate_parent"
-              name="Gouvernance corporative"
+              name="Corporate governance"
               parent="project_knowledge_matrix.menu_knowledge_root"
               groups="group_corporate_manager"
               sequence="55"/>
 
     <menuitem id="menu_corporate_resolutions"
-              name="Résolutions"
+              name="Resolutions"
               parent="menu_corporate_parent"
               action="corporate_resolution_action"
               sequence="10"/>
 
     <menuitem id="menu_corporate_directors"
-              name="Registre des administrateurs"
+              name="Register of directors"
               parent="menu_corporate_parent"
               action="corporate_director_action"
               sequence="20"/>
 
     <menuitem id="menu_corporate_officers"
-              name="Registre des dirigeants"
+              name="Register of officers"
               parent="menu_corporate_parent"
               action="corporate_officer_action"
               sequence="30"/>
 
     <menuitem id="menu_corporate_compliance"
-              name="Calendrier de conformité"
+              name="Compliance calendar"
               parent="menu_corporate_parent"
               action="corporate_compliance_action"
               sequence="40"/>
 
     <menuitem id="menu_corporate_minute_book"
-              name="Livre des minutes"
+              name="Minute book"
               parent="menu_corporate_parent"
               action="corporate_minute_book_action"
               sequence="50"/>

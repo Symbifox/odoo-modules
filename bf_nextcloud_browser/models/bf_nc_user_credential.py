@@ -66,12 +66,12 @@ def _server_key(url):
 
 class BfNcUserCredential(models.Model):
     _name = "bf.nc.user.credential"
-    _description = "Connexion Nextcloud d'une personne"
+    _description = "A person's Nextcloud connection"
     _order = "config_id, user_id"
 
     user_id = fields.Many2one(
         "res.users",
-        string="Personne",
+        string="Person",
         required=True,
         ondelete="cascade",
         index=True,
@@ -85,22 +85,22 @@ class BfNcUserCredential(models.Model):
         readonly=True,
     )
     state = fields.Selection(
-        [("pending", "En attente d'approbation"), ("connected", "Connecte")],
-        string="Etat",
+        [("pending", "Awaiting approval"), ("connected", "Connected")],
+        string="Status",
         required=True,
         default="pending",
         readonly=True,
     )
-    nc_login = fields.Char(string="Identifiant Nextcloud", readonly=True)
-    nc_user_id = fields.Char(string="Compte Nextcloud", readonly=True)
-    nc_display_name = fields.Char(string="Nom dans Nextcloud", readonly=True)
+    nc_login = fields.Char(string="Nextcloud login", readonly=True)
+    nc_user_id = fields.Char(string="Nextcloud account", readonly=True)
+    nc_display_name = fields.Char(string="Name in Nextcloud", readonly=True)
     nc_server = fields.Char(
-        string="Serveur",
+        string="Server",
         readonly=True,
-        help="Le serveur Nextcloud qui a delivre le mot de passe d'application. "
-        "Il n'est jamais envoye ailleurs.",
+        help="The Nextcloud server that issued the app password. It is "
+             "never sent anywhere else.",
     )
-    connected_on = fields.Datetime(string="Connecte le", readonly=True)
+    connected_on = fields.Datetime(string="Connected on", readonly=True)
     app_password_encrypted = fields.Char(
         groups="base.group_system", readonly=True, copy=False
     )
@@ -116,14 +116,15 @@ class BfNcUserCredential(models.Model):
         (
             "user_config_uniq",
             "unique(user_id, config_id)",
-            "Une seule connexion Nextcloud par personne et par configuration.",
+            "Only one Nextcloud connection per person and per configuration.",
         ),
     ]
 
     @api.depends("user_id", "nc_display_name", "nc_login")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         for cred in self:
-            who = cred.nc_display_name or cred.nc_login or _("en attente")
+            who = cred.nc_display_name or cred.nc_login or self.env._("pending")
             cred.display_name = "%s -> %s" % (cred.user_id.name or "", who)
 
     # ------------------------------------------------------------------
@@ -161,7 +162,8 @@ class BfNcUserCredential(models.Model):
             "Login Flow v2 on config %s: refused %s %r", config.id, what, str(url)[:200]
         )
         return UserError(
-            _("Nextcloud a repondu avec une adresse qui n'est pas celle du serveur configure.")
+            _("Nextcloud answered with an address that is not the "
+              "configured server's.")
         )
 
     @api.model
@@ -213,10 +215,10 @@ class BfNcUserCredential(models.Model):
                 allow_redirects=False,
             )
         except requests.RequestException as e:
-            raise UserError(_("Impossible de joindre Nextcloud : %s") % e) from e
+            raise UserError(_("Cannot reach Nextcloud: %s") % e) from e
         if resp.status_code != 200:
             raise UserError(
-                _("Nextcloud a refuse d'ouvrir une connexion (HTTP %s).") % resp.status_code
+                _("Nextcloud refused to open a connection (HTTP %s).") % resp.status_code
             )
         try:
             data = resp.json()
@@ -224,11 +226,11 @@ class BfNcUserCredential(models.Model):
             token = data["poll"]["token"]
             endpoint = data["poll"]["endpoint"]
         except (ValueError, KeyError, TypeError) as e:
-            raise UserError(_("Reponse de Nextcloud illisible.")) from e
+            raise UserError(_("Unreadable answer from Nextcloud.")) from e
         login_url = self._check_login_url(config, login_url)
         endpoint = self._check_poll_endpoint(config, endpoint)
         if not isinstance(token, str) or not token:
-            raise UserError(_("Reponse de Nextcloud illisible."))
+            raise UserError(_("Unreadable answer from Nextcloud."))
 
         cred = self._for(config, create=True)
         cred.write({
@@ -279,7 +281,7 @@ class BfNcUserCredential(models.Model):
                 allow_redirects=False,
             )
         except requests.RequestException as e:
-            raise UserError(_("Impossible de joindre Nextcloud : %s") % e) from e
+            raise UserError(_("Cannot reach Nextcloud: %s") % e) from e
         if resp.status_code == 404:
             # Not approved yet: Nextcloud answers 404 until the person grants.
             # The deadline is checked only now, after a last poll: an approval
@@ -293,7 +295,7 @@ class BfNcUserCredential(models.Model):
             return {**cred._status(), "expired": False}
         if resp.status_code != 200:
             raise UserError(
-                _("Nextcloud a refuse la connexion (HTTP %s).") % resp.status_code
+                _("Nextcloud refused the connection (HTTP %s).") % resp.status_code
             )
         try:
             data = resp.json()
@@ -301,9 +303,9 @@ class BfNcUserCredential(models.Model):
             login = data["loginName"]
             app_password = data["appPassword"]
         except (ValueError, KeyError, TypeError) as e:
-            raise UserError(_("Reponse de Nextcloud illisible.")) from e
+            raise UserError(_("Unreadable answer from Nextcloud.")) from e
         if not (isinstance(login, str) and login and isinstance(app_password, str) and app_password):
-            raise UserError(_("Reponse de Nextcloud illisible."))
+            raise UserError(_("Unreadable answer from Nextcloud."))
 
         # From here on Nextcloud has issued a permanent token. Anything that
         # stops Odoo from keeping it must delete it, or it lives on unseen.
@@ -360,7 +362,8 @@ class BfNcUserCredential(models.Model):
                 raise ValueError("no account id")
         except (requests.RequestException, UnicodeError, ValueError, KeyError, TypeError) as e:
             raise UserError(
-                _("Nextcloud a delivre un acces, mais refuse de dire a quel compte il appartient.")
+                _("Nextcloud granted access, but refuses to say which "
+                  "account it belongs to.")
             ) from e
         display = data.get("display-name") or data.get("displayname") or nc_id
         email = data.get("email") if isinstance(data.get("email"), str) else ""
@@ -381,9 +384,10 @@ class BfNcUserCredential(models.Model):
         theirs = {(v or "").strip().lower() for v in (nc_login, nc_email)} - {""}
         if not mine or mine not in theirs:
             raise UserError(_(
-                "Le compte Nextcloud approuve ne correspond pas a votre identifiant Odoo. "
-                "Connectez-vous a Nextcloud avec votre propre compte, puis recommencez. "
-                "Un administrateur peut desactiver cette verification sur la configuration."
+                "The approved Nextcloud account does not match your Odoo "
+                "login. Log in to Nextcloud with your own account, then "
+                "try again. An administrator can turn off this check on "
+                "the configuration."
             ))
 
     # ------------------------------------------------------------------

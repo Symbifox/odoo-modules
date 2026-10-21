@@ -20,3 +20,4 @@ from . import test_relais_proprietaire
 from . import test_mobile_org_tz
 from . import test_isolation_restes
 from . import test_langue
+from . import test_langue_lecteur

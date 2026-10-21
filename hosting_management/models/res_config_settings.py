@@ -8,171 +8,181 @@ class ResConfigSettings(models.TransientModel):
 
     # Paramètres du journal d'audit
     hosting_audit_log_retention_months = fields.Integer(
-        string="Rétention du journal d'audit (mois)",
+        string="Audit log retention (months)",
         config_parameter="hosting.audit_log_retention_months",
         default=24,
-        help="Nombre de mois de conservation des entrées du journal d'audit. Les entrées plus anciennes sont supprimées automatiquement.",
+        help="Number of months to keep audit log entries. Older entries "
+             "are deleted automatically.",
     )
 
     # Paramètres d'alerte de santé
     hosting_health_alert_email = fields.Char(
-        string="Courriel d'alerte de santé",
+        string="Health alert email",
         config_parameter="hosting.health_alert_email",
-        help="Adresse courriel pour recevoir les alertes de vérification de santé",
+        help="Email address that receives health check alerts",
     )
     hosting_response_time_threshold_ms = fields.Integer(
-        string="Seuil de temps de réponse (ms)",
+        string="Response time threshold (ms)",
         config_parameter="hosting.response_time_threshold_ms",
         default=5000,
-        help="Seuil de temps de réponse en millisecondes. Les services répondant plus lentement déclencheront un avertissement.",
+        help="Response time threshold in milliseconds. Services "
+             "responding slower will trigger a warning.",
     )
     hosting_expiration_warning_days = fields.Integer(
-        string="Jours d'avertissement d'expiration",
+        string="Expiration warning days",
         config_parameter="hosting.expiration_warning_days",
         default=90,
-        help="Nombre de jours avant l'expiration pour créer des activités d'avertissement",
+        help="Number of days before expiration to create warning activities",
     )
 
     # Paramètres de domaines et SSL
     hosting_domain_expiration_warning_days = fields.Integer(
-        string="Jours d'avertissement de domaine",
+        string="Domain warning days",
         config_parameter="hosting.domain_expiration_warning_days",
         default=60,
-        help="Nombre de jours avant l'expiration du domaine pour créer des activités d'avertissement",
+        help="Number of days before the domain expires to create warning "
+             "activities",
     )
     hosting_ssl_expiration_warning_days = fields.Integer(
-        string="Jours d'avertissement SSL",
+        string="SSL warning days",
         config_parameter="hosting.ssl_expiration_warning_days",
         default=30,
-        help="Nombre de jours avant l'expiration du certificat SSL pour créer des activités d'avertissement",
+        help="Number of days before the SSL certificate expires to create "
+             "warning activities",
     )
 
     # Intégration Cloudflare Registrar
     hosting_cloudflare_email = fields.Char(
-        string="Courriel Cloudflare",
+        string="Cloudflare email",
         config_parameter="hosting.cloudflare_email",
     )
     hosting_cloudflare_api_key = fields.Char(
-        string="Clé API globale Cloudflare",
+        string="Cloudflare global API key",
         config_parameter="hosting.cloudflare_api_key",
     )
     hosting_cloudflare_account_id = fields.Char(
-        string="ID de compte Cloudflare",
+        string="Cloudflare account ID",
         config_parameter="hosting.cloudflare_account_id",
     )
     hosting_last_cloudflare_sync = fields.Datetime(
-        string="Dernière synchronisation Cloudflare",
+        string="Last Cloudflare sync",
         config_parameter="hosting.last_cloudflare_sync",
         readonly=True,
     )
 
     # Jeton API pour rapports de provisioning de tenants
     hosting_provision_api_token = fields.Char(
-        string="Jeton API provisioning de tenants",
+        string="Tenant provisioning API token",
         config_parameter="hosting.provision_api_token",
-        help="Jeton partagé envoyé par les scripts de création (create_nextcloud_tenant.sh, "
-             "create_odoo_client.sh) dans l'entête X-Provision-Token vers "
-             "/api/hosting/provision/report.",
+        help="Shared token sent by the creation scripts "
+             "(create_nextcloud_tenant.sh, create_odoo_client.sh) in the "
+             "X-Provision-Token header to /api/hosting/provision/report.",
     )
 
     # Notifications push ntfy
     hosting_ntfy_url = fields.Char(
-        string="URL du serveur ntfy",
+        string="ntfy server URL",
         config_parameter="hosting.ntfy_url",
-        help="URL du serveur ntfy (ex. : https://ntfy.example.com)",
+        help="ntfy server URL (e.g. https://ntfy.example.com)",
     )
     hosting_ntfy_token = fields.Char(
-        string="Jeton ntfy",
+        string="ntfy token",
         config_parameter="hosting.ntfy_token",
-        help="Jeton d'authentification pour publier sur le serveur ntfy",
+        help="Authentication token to publish to the ntfy server",
     )
     hosting_ntfy_topic = fields.Char(
-        string="Sujet ntfy",
+        string="ntfy topic",
         config_parameter="hosting.ntfy_topic",
         default="hosting-alerts",
-        help="Nom du sujet ntfy pour les alertes d'hébergement",
+        help="ntfy topic name for hosting alerts",
     )
 
     # Paramètres de fenêtre de maintenance
     hosting_maintenance_window_enabled = fields.Boolean(
-        string="Activer la fenêtre de maintenance",
+        string="Enable the maintenance window",
         config_parameter="hosting.maintenance_window_enabled",
         default=True,
-        help="Lorsqu'activé, les alertes de santé sont supprimées pendant la fenêtre de maintenance",
+        help="When enabled, health alerts are suppressed during the "
+             "maintenance window",
     )
     hosting_maintenance_start_hour = fields.Float(
-        string="Heure de début de maintenance",
+        string="Maintenance start hour",
         default=1.5,
-        help="Heure de début de la fenêtre de maintenance (format 24h, ex. : 1.5 = 1h30)",
+        help="Start hour of the maintenance window (24h format, e.g. 1.5 "
+             "= 1:30)",
     )
     hosting_maintenance_end_hour = fields.Float(
-        string="Heure de fin de maintenance",
+        string="Maintenance end hour",
         default=2.5,
-        help="Heure de fin de la fenêtre de maintenance (format 24h, ex. : 2.5 = 2h30)",
+        help="End hour of the maintenance window (24h format, e.g. 2.5 = 2:30)",
     )
     hosting_maintenance_timezone = fields.Selection(
         selection="_get_timezone_selection",
-        string="Fuseau horaire de maintenance",
+        string="Maintenance time zone",
         default="America/Toronto",
-        help="Fuseau horaire pour la fenêtre de maintenance",
+        help="Time zone for the maintenance window",
     )
 
     # Paramètres du rapport de sauvegarde
     hosting_backup_report_enabled = fields.Boolean(
-        string="Activer le rapport de sauvegarde par courriel",
+        string="Enable the backup report by email",
         config_parameter="hosting.backup_report_enabled",
         default=True,
-        help="Lorsqu'activé, un rapport est envoyé par courriel selon le mode et "
-             "l'horaire configurés ci-dessous.",
+        help="When enabled, a report is sent by email according to the "
+             "mode and schedule configured below.",
     )
     hosting_backup_report_mode = fields.Selection(
         selection=[
-            ("scheduled", "Planifié (cron quotidien à heure fixe)"),
-            ("immediate", "Immédiat (à chaque exécution reçue)"),
+            ("scheduled", "Scheduled (daily cron at a fixed hour)"),
+            ("immediate", "Immediate (on every run received)"),
         ],
-        string="Mode d'envoi",
+        string="Sending mode",
         config_parameter="hosting.backup_report_mode",
         default="scheduled",
-        help="Planifié : un seul courriel par jour à l'heure choisie. "
-             "Immédiat : un courriel à chaque rapport POSTé par les scripts.",
+        help="Scheduled: a single email per day at the chosen hour. "
+             "Immediate: one email for each report POSTed by the scripts.",
     )
     hosting_backup_report_recipients = fields.Char(
-        string="Destinataires du rapport",
+        string="Report recipients",
         config_parameter="hosting.backup_report_recipients",
-        help="Adresses courriel séparées par des virgules. "
-             "Si vide, le courriel de la société du rapport est utilisé.",
+        help="Comma-separated email addresses. If empty, the email of the "
+             "report's company is used.",
     )
     hosting_backup_report_send_hour = fields.Integer(
-        string="Heure d'envoi (0-23)",
+        string="Sending hour (0-23)",
         config_parameter="hosting.backup_report_send_hour",
         default=6,
-        help="Heure locale à laquelle le rapport quotidien est envoyé en mode planifié.",
+        help="Local hour at which the daily report is sent in scheduled mode.",
     )
     hosting_backup_report_timezone = fields.Selection(
         selection="_get_timezone_selection",
-        string="Fuseau horaire d'envoi",
+        string="Sending time zone",
         config_parameter="hosting.backup_report_timezone",
         default="America/Toronto",
     )
     hosting_backup_report_only_on_issues = fields.Boolean(
-        string="Envoyer seulement en cas de problème",
+        string="Send only when there is a problem",
         config_parameter="hosting.backup_report_only_on_issues",
         default=False,
-        help="Si activé, aucun courriel n'est envoyé pour les sauvegardes "
-             "entièrement réussies (ntfy reste actif pour les échecs).",
+        help="If enabled, no email is sent for fully successful backups "
+             "(ntfy stays active for failures).",
     )
 
     @api.model
     def _get_timezone_selection(self):
-        """Retourner la liste des fuseaux horaires courants pour la sélection."""
+        """Retourner la liste des fuseaux horaires courants pour la sélection.
+
+        Sélection construite par une méthode : Odoo ne traduit pas ses
+        libellés, d'où `self.env._` (langue de l'usager qui ouvre le réglage).
+        """
         return [
-            ("America/Toronto", "America/Toronto (Est)"),
-            ("America/Montreal", "America/Montreal (Est)"),
-            ("America/New_York", "America/New_York (Est)"),
-            ("America/Chicago", "America/Chicago (Centre)"),
-            ("America/Denver", "America/Denver (Rocheuses)"),
-            ("America/Los_Angeles", "America/Los_Angeles (Pacifique)"),
-            ("America/Vancouver", "America/Vancouver (Pacifique)"),
+            ("America/Toronto", self.env._("America/Toronto (Eastern)")),
+            ("America/Montreal", self.env._("America/Montreal (Eastern)")),
+            ("America/New_York", self.env._("America/New_York (Eastern)")),
+            ("America/Chicago", self.env._("America/Chicago (Central)")),
+            ("America/Denver", self.env._("America/Denver (Mountain)")),
+            ("America/Los_Angeles", self.env._("America/Los_Angeles (Pacific)")),
+            ("America/Vancouver", self.env._("America/Vancouver (Pacific)")),
             ("UTC", "UTC"),
             ("Europe/London", "Europe/London"),
             ("Europe/Paris", "Europe/Paris"),
@@ -234,8 +244,8 @@ class ResConfigSettings(models.TransientModel):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Rapport de sauvegarde"),
-                    "message": _("Aucune exécution de sauvegarde trouvée."),
+                    "title": _("Backup report"),
+                    "message": _("No backup run found."),
                     "type": "warning",
                     "sticky": False,
                 },
@@ -256,26 +266,26 @@ class ResConfigSettings(models.TransientModel):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Rapport de sauvegarde"),
+                    "title": _("Backup report"),
                     "message": _(
-                        "Échec de l'envoi pour %(name)s — voir le chatter de l'exécution.",
+                        "Sending failed for %(name)s, see the run's chatter.",
                         name=run.name,
                     ),
                     "type": "danger",
                     "sticky": True,
                 },
             }
+        # Hors de l'appel `_()` du message : l'extracteur de babel (2.10) ne relève
+        # pas un `_()` imbriqué dans les arguments d'un autre `_()`, et la chaîne
+        # manquait au catalogue.
+        to = (self.hosting_backup_report_recipients or run.company_id.email
+              or self.env._("(template recipient)"))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Rapport de sauvegarde"),
-                "message": _(
-                    "Rapport %(name)s envoyé à %(to)s.",
-                    name=run.name,
-                    to=self.hosting_backup_report_recipients
-                    or (run.company_id.email or "(destinataire du gabarit)"),
-                ),
+                "title": _("Backup report"),
+                "message": _("Report %(name)s sent to %(to)s.", name=run.name, to=to),
                 "type": "success",
                 "sticky": False,
             },
@@ -285,49 +295,49 @@ class ResConfigSettings(models.TransientModel):
     # Intégration Action1 (RMM)
     # ------------------------------------------------------------------
     hosting_action1_enabled = fields.Boolean(
-        string="Activer la synchronisation Action1",
+        string="Enable Action1 sync",
         config_parameter="hosting.action1_enabled",
         default=False,
-        help="Activer le cron qui synchronise les endpoints et groupes depuis "
-        "la console Action1 toutes les 6 heures.",
+        help="Enable the cron that syncs endpoints and groups from the "
+             "Action1 console every 6 hours.",
     )
     hosting_action1_api_token = fields.Char(
-        string="Jeton API Action1",
+        string="Action1 API token",
         config_parameter="hosting.action1_api_token",
-        help="Bearer token API Action1. Stocké chiffré n'est PAS la valeur par "
-        "défaut — utiliser un secret manager pour l'expurger en backup.",
+        help="Action1 API bearer token. Stored encrypted is NOT the "
+             "default: use a secret manager to strip it from backups.",
     )
     hosting_action1_api_base_url = fields.Char(
-        string="URL de base API Action1",
+        string="Action1 API base URL",
         config_parameter="hosting.action1_api_base_url",
         default="https://app.action1.com/api/3.0",
-        help="URL racine de l'API Action1 (sans slash final).",
+        help="Root URL of the Action1 API (no trailing slash).",
     )
     hosting_action1_console_base = fields.Char(
-        string="URL de base console Action1",
+        string="Action1 console base URL",
         config_parameter="hosting.action1_console_base",
         default="https://app.action1.com",
-        help="URL racine de la console web Action1 ; sert à construire les liens "
-        "cliquables vers chaque endpoint.",
+        help="Root URL of the Action1 web console; used to build "
+             "clickable links to each endpoint.",
     )
     hosting_action1_conflict_strategy = fields.Selection(
         selection=[
             ("action1_wins",
-             "Action1 gagne (Action1 écrase la saisie Odoo — défaut)"),
+             "Action1 wins (Action1 overwrites Odoo entries, default)"),
             ("odoo_wins",
-             "Odoo gagne (la sync ne remplit que les champs vides)"),
+             "Odoo wins (the sync only fills empty fields)"),
             ("manual_only",
-             "Création uniquement (la sync n'écrit jamais sur les postes existants)"),
+             "Create only (the sync never writes to existing endpoints)"),
         ],
-        string="Résolution de conflits Action1",
+        string="Action1 conflict resolution",
         config_parameter="hosting.action1_conflict_strategy",
         default="action1_wins",
-        help="Comportement par défaut quand un poste existe déjà dans Odoo et "
-        "qu'Action1 envoie des valeurs différentes. Peut être surchargé par "
-        "poste via la case « Saisie manuelle prioritaire ».",
+        help="Default behavior when an endpoint already exists in Odoo "
+             "and Action1 sends different values. Can be overridden per "
+             "endpoint with the \"Manual entry takes priority\" checkbox.",
     )
     hosting_action1_last_sync = fields.Datetime(
-        string="Dernière synchro Action1",
+        string="Last Action1 sync",
         config_parameter="hosting.action1_last_sync",
         readonly=True,
     )
@@ -336,49 +346,50 @@ class ResConfigSettings(models.TransientModel):
     # Intégration VOIP.ms (téléphonie — lecture seule)
     # ------------------------------------------------------------------
     hosting_voipms_enabled = fields.Boolean(
-        string="Activer la synchronisation VOIP.ms",
+        string="Enable VOIP.ms sync",
         config_parameter="hosting.voipms_enabled",
         default=False,
-        help="Active les crons qui synchronisent DID, CDR, transactions et solde "
-        "depuis VOIP.ms (lecture seule, aucune écriture).",
+        help="Enables the crons that sync DID, CDR, transactions and "
+             "balance from VOIP.ms (read-only, no writes).",
     )
     hosting_voipms_api_username = fields.Char(
-        string="Utilisateur API VOIP.ms",
+        string="VOIP.ms API user",
         config_parameter="hosting.voipms_api_username",
-        help="Courriel du compte VOIP.ms (ex. info@example.com). "
-        "L'API et l'allowlist IP se configurent sur voip.ms/m/api.php — "
-        "l'IP de sortie du serveur Odoo doit y figurer.",
+        help="VOIP.ms account email (e.g. info@example.com). "
+             "The API and the IP allowlist are configured at "
+             "voip.ms/m/api.php; the Odoo server's outgoing IP must be "
+             "listed there.",
     )
     hosting_voipms_api_password = fields.Char(
-        string="Mot de passe API VOIP.ms",
+        string="VOIP.ms API password",
         config_parameter="hosting.voipms_api_password",
-        help="Mot de passe API (distinct du mot de passe de connexion), "
-        "défini sur voip.ms/m/api.php.",
+        help="API password (separate from the login password), set at "
+             "voip.ms/m/api.php.",
     )
     hosting_voipms_low_balance_threshold = fields.Float(
-        string="Seuil d'alerte de solde bas ($)",
+        string="Low balance alert threshold ($)",
         config_parameter="hosting.voipms_low_balance_threshold",
         default=10.0,
-        help="Sous ce solde, une alerte ntfy quotidienne est émise.",
+        help="Below this balance, a daily ntfy alert is sent.",
     )
     hosting_voipms_cdr_backfill_days = fields.Integer(
-        string="Fenêtre CDR (jours)",
+        string="CDR window (days)",
         config_parameter="hosting.voipms_cdr_backfill_days",
         default=90,
-        help="Profondeur d'historique CDR/transactions récupérée à chaque synchro.",
+        help="CDR/transaction history depth fetched at each sync.",
     )
     hosting_voipms_last_sync = fields.Datetime(
-        string="Dernière synchro VOIP.ms",
+        string="Last VOIP.ms sync",
         config_parameter="hosting.voipms_last_sync",
         readonly=True,
     )
     hosting_voipms_last_balance = fields.Char(
-        string="Dernier solde VOIP.ms",
+        string="Last VOIP.ms balance",
         config_parameter="hosting.voipms_last_balance",
         readonly=True,
     )
     hosting_voipms_last_balance_date = fields.Datetime(
-        string="Date du dernier solde",
+        string="Last balance date",
         config_parameter="hosting.voipms_last_balance_date",
         readonly=True,
     )
@@ -394,7 +405,7 @@ class ResConfigSettings(models.TransientModel):
                 "tag": "display_notification",
                 "params": {
                     "title": _("VOIP.ms"),
-                    "message": _("Échec de connexion : %s", e),
+                    "message": _("Connection failed: %s", e),
                     "type": "danger",
                     "sticky": True,
                 },
@@ -404,7 +415,7 @@ class ResConfigSettings(models.TransientModel):
             "tag": "display_notification",
             "params": {
                 "title": _("VOIP.ms"),
-                "message": _("Connexion réussie. Solde : %.2f $", bal or 0.0),
+                "message": _("Connection successful. Balance: %.2f $", bal or 0.0),
                 "type": "success",
                 "sticky": False,
             },
@@ -418,10 +429,10 @@ class ResConfigSettings(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Synchronisation VOIP.ms"),
+                "title": _("VOIP.ms sync"),
                 "message": _(
-                    "Terminée : %(d)s DID, %(c)s appels, %(t)s transactions, "
-                    "%(e)s erreur(s).",
+                    "Done: %(d)s DID, %(c)s calls, %(t)s transactions, "
+                    "%(e)s error(s).",
                     d=stats["dids"], c=stats["cdr"], t=stats["transactions"],
                     e=stats["errors"],
                 ),
@@ -437,10 +448,10 @@ class ResConfigSettings(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Synchronisation Action1"),
+                "title": _("Action1 sync"),
                 "message": _(
-                    "Terminée : %(c)s créés, %(u)s mis à jour, %(s)s ignorés, "
-                    "%(e)s erreur(s).",
+                    "Done: %(c)s created, %(u)s updated, %(s)s skipped, "
+                    "%(e)s error(s).",
                     c=stats["created"],
                     u=stats["updated"],
                     s=stats["skipped"],
@@ -458,8 +469,8 @@ class ResConfigSettings(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Synchronisation Cloudflare"),
-                "message": _("Synchronisation des domaines Cloudflare terminée."),
+                "title": _("Cloudflare sync"),
+                "message": _("Cloudflare domain sync completed."),
                 "type": "success",
                 "sticky": False,
             },

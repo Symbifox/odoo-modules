@@ -7,13 +7,13 @@
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <!-- Visible des que le projet a un dossier, ou que son client en a un a
-                     choisir (18.0.4.2.0). Sans l'un ni l'autre l'onglet n'affichait qu'un
-                     message d'erreur, et la plupart des projets actifs n'avaient pas de
-                     dossier. Les champs sont reposes
-                     ici : celui de bf_document_nextcloud_sync est reserve aux
-                     administrateurs, et la condition doit tenir pour tout le groupe. -->
-                <page string="Fichiers Nextcloud" name="nc_browser"
+                <!-- Visible as soon as the project has a folder, or its client has one to
+                     choose (18.0.4.2.0). Without either, the tab only showed an error
+                     message, and most active projects had no folder. The fields are
+                     declared again here: the one from bf_document_nextcloud_sync is
+                     restricted to administrators, and the condition must hold for the
+                     whole group. -->
+                <page string="Nextcloud files" name="nc_browser"
                       groups="bf_nextcloud_browser.group_nc_browser_user"
                       invisible="not nc_browser_folder and not nc_client_folder_available">
                     <field name="nc_browser_folder" invisible="1"/>
@@ -22,12 +22,12 @@
                     <group invisible="not nc_client_folder_available">
                         <group>
                             <field name="nc_client_folder_id" options="{'no_create': True, 'no_open': True}"/>
-                            <field name="nc_project_subfolder" placeholder="(PROJETS)/001 - Nom du projet"/>
+                            <field name="nc_project_subfolder" placeholder="(PROJETS)/001 - Project name"/>
                         </group>
                         <group>
                             <div class="o_row" colspan="2">
                                 <button name="action_nc_pick_folder" type="object" icon="fa-folder-open-o"
-                                        string="Choisir le dossier du projet" class="btn-secondary"/>
+                                        string="Choose the project folder" class="btn-secondary"/>
                             </div>
                         </group>
                     </group>

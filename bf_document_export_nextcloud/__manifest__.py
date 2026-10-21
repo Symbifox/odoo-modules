@@ -2,7 +2,10 @@
     "name": "Policies & Procedures Export - Nextcloud",
     "summary": "Deposit the exported registry in a Nextcloud folder, and read the "
                "Nextcloud files behind external documents",
-    "version": "18.0.1.2.1",
+    # 18.0.1.2.2: a Nextcloud network failure is recognised by the chained
+    #   cause of the error, whatever the language of its message (doc_sync
+    #   now writes it in English).
+    "version": "18.0.1.2.2",
     "description": """
 Export du registre : Nextcloud
 ==============================

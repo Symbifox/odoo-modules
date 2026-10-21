@@ -9,65 +9,65 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     has_sla = fields.Boolean(
-        string="Client sous SLA",
+        string="SLA client",
         tracking=True,
-        help="Activer pour les clients ayant une entente de niveau de service. "
-        "Débloque la section Parc informatique et les fonctionnalités associées.",
+        help="Enable for clients with a service level agreement. Unlocks "
+             "the IT fleet section and related features.",
     )
     hosting_service_ids = fields.One2many(
         comodel_name="hosting.service",
         inverse_name="partner_id",
-        string="Services d'hébergement",
+        string="Hosting services",
     )
     hosting_service_count = fields.Integer(
-        string="Nombre de services d'hébergement",
+        string="Hosting service count",
         compute="_compute_hosting_service_count",
     )
     hosting_endpoint_ids = fields.One2many(
         comodel_name="hosting.endpoint",
         inverse_name="partner_id",
-        string="Postes du parc",
+        string="Fleet endpoints",
     )
     hosting_endpoint_count = fields.Integer(
-        string="Nombre de postes",
+        string="Endpoint count",
         compute="_compute_hosting_endpoint_count",
     )
     hosting_license_seat_ids = fields.One2many(
         comodel_name="hosting.license.seat",
         inverse_name="partner_id",
-        string="Sièges de licence affectés",
+        string="Assigned license seats",
     )
     hosting_license_count = fields.Integer(
-        string="Nombre de licences",
+        string="License count",
         compute="_compute_hosting_license_count",
     )
     voip_did_ids = fields.One2many(
         comodel_name="hosting.voip.did",
         inverse_name="partner_id",
-        string="DID téléphoniques",
+        string="Phone DIDs",
     )
     voip_did_count = fields.Integer(
-        string="Nombre de DID",
+        string="DID count",
         compute="_compute_voip_stats",
     )
     voip_monthly_cost = fields.Float(
-        string="Coût mensuel DID",
+        string="Monthly DID cost",
         compute="_compute_voip_stats",
     )
     voip_usage_cost_month = fields.Float(
-        string="Coût usage appels (mois)",
+        string="Call usage cost (month)",
         compute="_compute_voip_stats",
     )
     hosting_services_expiring_count = fields.Integer(
-        string="Services expirant",
+        string="Expiring services",
         compute="_compute_hosting_alerts",
     )
     hosting_services_updates_count = fields.Integer(
-        string="Mises à jour disponibles",
+        string="Available updates",
         compute="_compute_hosting_alerts",
     )
     hosting_services_storage_alert_count = fields.Integer(
-        string="Alertes de stockage",
+        string="Storage alerts",
         compute="_compute_hosting_alerts",
     )
 
@@ -86,7 +86,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Parc informatique - {self.name}",
+            "name": self.env._("IT fleet - %s", self.name),
             "res_model": "hosting.endpoint",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("partner_id", "=", self.id)],
@@ -103,7 +103,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Licences - {self.name}",
+            "name": self.env._("Licenses - %s", self.name),
             "res_model": "hosting.license.seat",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("partner_id", "=", self.id)],
@@ -134,7 +134,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"DID - {self.name}",
+            "name": self.env._("DID - %s", self.name),
             "res_model": "hosting.voip.did",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("partner_id", "=", self.id)],
@@ -173,7 +173,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Services d'hébergement - {self.name}",
+            "name": self.env._("Hosting services - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("partner_id", "=", self.id)],
@@ -187,7 +187,7 @@ class ResPartner(models.Model):
         warning_date = today + timedelta(days=90)
         return {
             "type": "ir.actions.act_window",
-            "name": f"Services expirant - {self.name}",
+            "name": self.env._("Expiring services - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -204,7 +204,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Mises à jour disponibles - {self.name}",
+            "name": self.env._("Available updates - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -220,7 +220,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Alertes de stockage - {self.name}",
+            "name": self.env._("Storage alerts - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [

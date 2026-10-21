@@ -17,14 +17,14 @@ class HostingBackupBucketSnapshot(models.Model):
     """Mesure ponctuelle de la taille du bucket S3 (un point par run watchdog)."""
 
     _name = "hosting.backup.bucket.snapshot"
-    _description = "Mesure du bucket Restic"
+    _description = "Restic bucket measurement"
     _order = "collected_at desc, id desc"
 
-    collected_at = fields.Datetime(string="Date de collecte", required=True, index=True)
-    host = fields.Char(string="Hôte source")
-    total_objects = fields.Integer(string="Objets")
-    total_bytes = fields.Float(string="Taille (octets)")
-    total_human = fields.Char(string="Taille", compute="_compute_total_human")
+    collected_at = fields.Datetime(string="Collection date", required=True, index=True)
+    host = fields.Char(string="Source host")
+    total_objects = fields.Integer(string="Objects")
+    total_bytes = fields.Float(string="Size (bytes)")
+    total_human = fields.Char(string="Size", compute="_compute_total_human")
 
     @api.depends("total_bytes")
     def _compute_total_human(self):

@@ -6,11 +6,11 @@
         <field name="name">corporate.compliance.event.form</field>
         <field name="model">corporate.compliance.event</field>
         <field name="arch" type="xml">
-            <form string="Événement de conformité">
+            <form string="Compliance event">
                 <header>
-                    <button name="action_complete" string="Marquer complété" type="object"
+                    <button name="action_complete" string="Mark as completed" type="object"
                             class="btn-success" invisible="completed_date"/>
-                    <button name="action_reset" string="Réinitialiser" type="object"
+                    <button name="action_reset" string="Reset" type="object"
                             invisible="not completed_date"/>
                     <field name="status" widget="statusbar"
                            statusbar_visible="upcoming,due_soon,completed"/>
@@ -22,13 +22,13 @@
                         </h1>
                     </div>
                     <group>
-                        <group string="Détails">
+                        <group string="Details">
                             <field name="event_type"/>
                             <field name="fiscal_year"/>
                             <field name="due_date"/>
                             <field name="completed_date"/>
                         </group>
-                        <group string="Référence">
+                        <group string="Reference">
                             <field name="resolution_id"/>
                             <field name="filing_reference"/>
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -48,7 +48,7 @@
         <field name="name">corporate.compliance.event.list</field>
         <field name="model">corporate.compliance.event</field>
         <field name="arch" type="xml">
-            <list string="Événements de conformité"
+            <list string="Compliance events"
                   decoration-danger="status == 'overdue'"
                   decoration-warning="status == 'due_soon'"
                   decoration-success="status == 'upcoming'"
@@ -73,7 +73,7 @@
         <field name="name">corporate.compliance.event.calendar</field>
         <field name="model">corporate.compliance.event</field>
         <field name="arch" type="xml">
-            <calendar string="Calendrier de conformité" date_start="due_date"
+            <calendar string="Compliance calendar" date_start="due_date"
                       color="event_type" mode="year">
                 <field name="name"/>
                 <field name="status"/>
@@ -86,28 +86,28 @@
         <field name="name">corporate.compliance.event.search</field>
         <field name="model">corporate.compliance.event</field>
         <field name="arch" type="xml">
-            <search string="Rechercher des événements de conformité">
+            <search string="Search compliance events">
                 <field name="name"/>
                 <field name="fiscal_year"/>
                 <separator/>
-                <filter string="En retard" name="overdue"
+                <filter string="Overdue" name="overdue"
                         domain="[('status', '=', 'overdue')]"/>
-                <filter string="Échéance proche" name="due_soon"
+                <filter string="Due soon" name="due_soon"
                         domain="[('status', '=', 'due_soon')]"/>
-                <filter string="À venir" name="upcoming"
+                <filter string="Upcoming" name="upcoming"
                         domain="[('status', '=', 'upcoming')]"/>
-                <filter string="Complété" name="completed"
+                <filter string="Completed" name="completed"
                         domain="[('status', '=', 'completed')]"/>
                 <separator/>
-                <filter string="En cours" name="pending"
+                <filter string="Pending" name="pending"
                         domain="[('completed_date', '=', False)]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter string="Type" name="group_type"
                             context="{'group_by': 'event_type'}"/>
-                    <filter string="Statut" name="group_status"
+                    <filter string="Status" name="group_status"
                             context="{'group_by': 'status'}"/>
-                    <filter string="Année fiscale" name="group_fiscal_year"
+                    <filter string="Fiscal year" name="group_fiscal_year"
                             context="{'group_by': 'fiscal_year'}"/>
                 </group>
             </search>
@@ -116,28 +116,28 @@
 
     <!-- Action -->
     <record id="corporate_compliance_action" model="ir.actions.act_window">
-        <field name="name">Calendrier de conformité</field>
+        <field name="name">Compliance calendar</field>
         <field name="res_model">corporate.compliance.event</field>
         <field name="view_mode">list,calendar,form</field>
         <field name="search_view_id" ref="corporate_compliance_view_search"/>
         <field name="context">{'search_default_pending': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créer votre premier événement de conformité
+                Create your first compliance event
             </p>
         </field>
     </record>
 
     <!-- Minute Book: filtered document action -->
     <record id="corporate_minute_book_action" model="ir.actions.act_window">
-        <field name="name">Livre des minutes</field>
+        <field name="name">Minute book</field>
         <field name="res_model">project.document</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('minute_book_section', '!=', False)]</field>
         <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajouter un document avec une section du livre des minutes pour le voir ici
+                Add a document with a minute book section to see it here
             </p>
         </field>
     </record>

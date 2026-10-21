@@ -18,6 +18,8 @@ import logging
 from odoo import SUPERUSER_ID, api, fields, models
 from odoo.tools import email_normalize
 
+from .secure_transfer import active_lang
+
 _logger = logging.getLogger(__name__)
 
 # Logins that look like service / robot / API accounts — never auto-paged.
@@ -31,22 +33,22 @@ class ResUsers(models.Model):
     _inherit = "res.users"
 
     st_no_drop_page = fields.Boolean(
-        string="Aucune page de dépôt sécurisée",
-        help="Empêche la création automatique d'une page de dépôt /to/<slug> "
-             "pour cet utilisateur (comptes de service, robots, API, ou toute "
-             "personne qui n'en veut pas).",
+        string="No secure drop page",
+        help="Prevents the automatic creation of a /to/<slug> drop page "
+             "for this user (service accounts, bots, API, or anyone who "
+             "doesn't want one).",
     )
     st_drop_page_brand_id = fields.Many2one(
         "secure.transfer.brand",
-        string="Page de dépôt",
+        string="Drop page",
         compute="_compute_st_drop_page",
-        help="Marque-dépôt personnelle liée à cet employé.",
+        help="Personal drop-page brand linked to this employee.",
     )
     st_drop_page_url = fields.Char(
-        string="URL de la page de dépôt",
+        string="Drop page URL",
         compute="_compute_st_drop_page",
-        help="Adresse publique native /to/<slug> de la page de dépôt de "
-             "l'employé (aucun raccourcisseur).",
+        help="Native public /to/<slug> address of the employee's drop "
+             "page (no shortener).",
     )
 
     def _compute_st_drop_page(self):
@@ -101,7 +103,14 @@ class ResUsers(models.Model):
                         brand.active = False  # archive, keep history/journal
                     continue
                 email = email_normalize(user.email)
-                label = "Envoi de fichiers | %s" % (user.name or email)
+                # Public label of the page, read by its visitors: written in
+                # the company's language. ⚠️ Compared below with the stored
+                # name: the fr_CA catalogue must give back exactly the old
+                # « Envoi de fichiers | %s », or every French page is renamed
+                # at its owner's next change.
+                lenv = user.with_context(lang=active_lang(
+                    self.env, user.company_id.sudo().partner_id.lang)).env
+                label = lenv._("File drop | %s", user.name or email)
                 if brand:
                     wanted = {
                         "active": True,

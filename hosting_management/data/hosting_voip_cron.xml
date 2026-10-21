@@ -6,7 +6,7 @@
              No-op tant que hosting.voipms_enabled n'est pas activé (sûr sur
              tous les tenants, le code court-circuite si désactivé). -->
         <record id="ir_cron_hosting_voipms_sync" model="ir.cron">
-            <field name="name">Hébergement : Synchronisation VOIP.ms</field>
+            <field name="name">Hosting: VOIP.ms sync</field>
             <field name="model_id" ref="model_hosting_voip_did"/>
             <field name="state">code</field>
             <field name="code">model._cron_voipms_sync()</field>
@@ -17,7 +17,7 @@
 
         <!-- Alerte ntfy quotidienne si le solde prépayé passe sous le seuil. -->
         <record id="ir_cron_hosting_voipms_balance_alert" model="ir.cron">
-            <field name="name">Hébergement : Alerte solde VOIP.ms</field>
+            <field name="name">Hosting: VOIP.ms balance alert</field>
             <field name="model_id" ref="model_hosting_voip_did"/>
             <field name="state">code</field>
             <field name="code">model._cron_voipms_balance_alert()</field>

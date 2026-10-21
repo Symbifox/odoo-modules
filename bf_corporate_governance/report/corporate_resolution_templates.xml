@@ -16,7 +16,7 @@
 
     <!-- Report action — auto-binds to Print menu on corporate.resolution form -->
     <record id="action_report_corporate_resolution" model="ir.actions.report">
-        <field name="name">Résolution</field>
+        <field name="name">Resolution</field>
         <field name="model">corporate.resolution</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_corporate_governance.report_corporate_resolution</field>
@@ -258,12 +258,12 @@
                             <div class="res-meta">
                                 <table>
                                     <tr>
-                                        <td class="ml">Date de la résolution</td>
+                                        <td class="ml">Resolution date</td>
                                         <td class="mv"><span t-field="doc.meeting_date" t-options='{"format": "d MMMM yyyy"}'/></td>
                                     </tr>
                                     <t t-if="doc.resolution_type in ('board', 'written_board')">
                                         <tr>
-                                            <td class="ml">Administrateur(s)</td>
+                                            <td class="ml">Director(s)</td>
                                             <td class="mv">
                                                 <t t-foreach="directors" t-as="director">
                                                     <t t-if="not director_first">, </t>
@@ -275,12 +275,12 @@
                                     <t t-if="doc.status == 'adopted' and doc.unanimously_adopted">
                                         <tr>
                                             <td class="ml">Adoption</td>
-                                            <td class="mv">Adoptée à l'unanimité</td>
+                                            <td class="mv">Adopted unanimously</td>
                                         </tr>
                                     </t>
                                     <t t-if="doc.effective_date and doc.effective_date != doc.meeting_date">
                                         <tr>
-                                            <td class="ml">Date d'effet</td>
+                                            <td class="ml">Effective as of</td>
                                             <td class="mv"><span t-field="doc.effective_date" t-options='{"format": "d MMMM yyyy"}'/></td>
                                         </tr>
                                     </t>
@@ -310,13 +310,13 @@
                                         Signatures
                                     </t>
                                     <t t-elif="doc.resolution_type in ('board', 'written_board')">
-                                        Signatures des administrateurs
+                                        Directors' signatures
                                     </t>
                                     <t t-elif="doc.resolution_type == 'members'">
-                                        Signatures de l'assemblée
+                                        Meeting signatures
                                     </t>
                                     <t t-else="">
-                                        Signatures des actionnaires
+                                        Shareholders' signatures
                                     </t>
                                 </div>
                                 <!-- Les signataires viennent de la résolution elle-même, avec
@@ -354,7 +354,7 @@
                                 <t t-out="doc.company_id.name"/>
                             </div>
                             <div class="res-footer-right">
-                                Livre des minutes — Document officiel
+                                Minute book: official document
                             </div>
                         </div>
                     </div>

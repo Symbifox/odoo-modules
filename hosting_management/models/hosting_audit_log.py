@@ -6,12 +6,14 @@ import logging
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingAuditLog(models.Model):
     _name = "hosting.audit.log"
-    _description = "Journal d'audit d'hébergement"
+    _description = "Hosting audit log"
     _order = "event_date desc, id desc"
     _rec_name = "display_name"
 
@@ -25,39 +27,39 @@ class HostingAuditLog(models.Model):
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Utilisateur",
+        string="User",
         required=True,
         readonly=True,
         index=True,
     )
     action_type = fields.Selection(
         selection=[
-            ("create", "Création"),
+            ("create", "Creation"),
             ("write", "Modification"),
-            ("unlink", "Suppression"),
-            ("state_change", "Changement d'état"),
-            ("access", "Accès"),
-            ("credential_view", "Consultation d'identifiant"),
-            ("credential_rotate", "Rotation d'identifiant"),
-            ("config_change", "Changement de configuration"),
+            ("unlink", "Deletion"),
+            ("state_change", "State change"),
+            ("access", "Access"),
+            ("credential_view", "Credential view"),
+            ("credential_rotate", "Credential rotation"),
+            ("config_change", "Configuration change"),
             ("maintenance", "Maintenance"),
-            ("health_check", "Vérification de santé"),
-            ("export", "Exportation"),
-            ("security_event", "Événement de sécurité"),
+            ("health_check", "Health check"),
+            ("export", "Export"),
+            ("security_event", "Security event"),
         ],
-        string="Type d'action",
+        string="Action type",
         required=True,
         readonly=True,
         index=True,
     )
     category = fields.Selection(
         selection=[
-            ("access", "Accès"),
+            ("access", "Access"),
             ("config", "Configuration"),
-            ("ops", "Opérations"),
-            ("security", "Sécurité"),
+            ("ops", "Operations"),
+            ("security", "Security"),
         ],
-        string="Catégorie",
+        string="Category",
         required=True,
         readonly=True,
         index=True,
@@ -65,16 +67,16 @@ class HostingAuditLog(models.Model):
 
     # -- Target fields --
     res_model = fields.Char(
-        string="Modèle",
+        string="Model",
         readonly=True,
         index=True,
     )
     res_id = fields.Integer(
-        string="ID de l'enregistrement",
+        string="Record ID",
         readonly=True,
     )
     res_name = fields.Char(
-        string="Nom de l'enregistrement",
+        string="Record name",
         readonly=True,
     )
     service_id = fields.Many2one(
@@ -86,7 +88,7 @@ class HostingAuditLog(models.Model):
     )
     server_id = fields.Many2one(
         comodel_name="hosting.server",
-        string="Serveur",
+        string="Server",
         readonly=True,
         ondelete="set null",
     )
@@ -97,15 +99,15 @@ class HostingAuditLog(models.Model):
         readonly=True,
     )
     old_value = fields.Text(
-        string="Ancienne valeur",
+        string="Old value",
         readonly=True,
     )
     new_value = fields.Text(
-        string="Nouvelle valeur",
+        string="New value",
         readonly=True,
     )
     field_name = fields.Char(
-        string="Champ modifié",
+        string="Changed field",
         readonly=True,
     )
 
@@ -113,20 +115,20 @@ class HostingAuditLog(models.Model):
     severity = fields.Selection(
         selection=[
             ("info", "Info"),
-            ("warning", "Avertissement"),
-            ("critical", "Critique"),
+            ("warning", "Warning"),
+            ("critical", "Critical"),
         ],
-        string="Sévérité",
+        string="Severity",
         default="info",
         required=True,
         readonly=True,
     )
     status = fields.Selection(
         selection=[
-            ("success", "Succès"),
-            ("failure", "Échec"),
+            ("success", "Success"),
+            ("failure", "Failure"),
         ],
-        string="Statut",
+        string="Status",
         default="success",
         required=True,
         readonly=True,
@@ -140,14 +142,17 @@ class HostingAuditLog(models.Model):
         readonly=True,
     )
     display_name = fields.Char(
-        string="Nom",
+        string="Name",
         compute="_compute_display_name",
         store=True,
     )
 
     @api.depends("action_type", "res_name", "event_date")
     def _compute_display_name(self):
-        action_labels = dict(self._fields["action_type"].selection)
+        # Nom STOCKÉ, lu par l'équipe d'hébergement : libellé traduit dans la
+        # langue de la société (pas la source, ni la langue de qui déclenche).
+        env = reader_env(self.env)
+        action_labels = dict(self._fields["action_type"]._description_selection(env))
         for rec in self:
             label = action_labels.get(rec.action_type, rec.action_type or "")
             name = rec.res_name or ""
@@ -156,14 +161,10 @@ class HostingAuditLog(models.Model):
     # -- Immutability enforcement --
 
     def write(self, vals):
-        raise UserError(
-            "Les entrées du journal d'audit ne peuvent pas être modifiées."
-        )
+        raise UserError(self.env._("Audit log entries cannot be modified."))
 
     def unlink(self):
-        raise UserError(
-            "Les entrées du journal d'audit ne peuvent pas être supprimées."
-        )
+        raise UserError(self.env._("Audit log entries cannot be deleted."))
 
     # -- Centralized logging helper --
 
@@ -212,8 +213,7 @@ class HostingAuditLog(models.Model):
     def create(self, vals_list):
         if not self.env.context.get("audit_log_create"):
             raise UserError(
-                "Les entrées du journal d'audit ne peuvent être créées "
-                "que par le système."
+                self.env._("Audit log entries can only be created by the system.")
             )
         return super().create(vals_list)
 

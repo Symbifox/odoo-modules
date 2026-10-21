@@ -38,14 +38,23 @@ _logger = logging.getLogger(__name__)
 def active_lang(env, code=None):
     """``code`` when it is active in this database, else an active language.
 
-    The fallback order is fr_CA, the company's language, then the first active
-    language. ⚠️ Never a language written in stone: ``Environment.lang`` raises
-    « Invalid language code » for one that is not active, and the old hardcoded
-    fr_CA turned every public page into a 400 on a database without it.
+    The fallback order is another active variant of the same language (en_CA
+    asked, en_US active: en_US), fr_CA, the company's language, then the first
+    active language. ⚠️ Never a language written in stone: ``Environment.lang``
+    raises « Invalid language code » for one that is not active, and the old
+    hardcoded fr_CA turned every public page into a 400 on a database without
+    it. ⚠️ The same-language step comes BEFORE fr_CA: without it an English
+    reader on a database with fr_CA and en_US (but no en_CA) got French.
     """
     # sudo: the public pages call this as the public user.
     actives = [c for c, _name in env["res.lang"].sudo().get_installed()]
-    for candidate in (code, "fr_CA", env.company.sudo().partner_id.lang):
+    same = []
+    if code and code not in actives:
+        prefix = code.split("_")[0] + "_"
+        # en_US first among the English variants: it is the source language.
+        same = sorted((c for c in actives if c.startswith(prefix)),
+                      key=lambda c: c != "en_US")
+    for candidate in (code, *same[:1], "fr_CA", env.company.sudo().partner_id.lang):
         if candidate and candidate in actives:
             return candidate
     return actives[0] if actives else "en_US"
@@ -73,13 +82,13 @@ SHARE_TOKEN_MASK = "jeton-masque"
 
 class SecureTransfer(models.Model):
     _name = "secure.transfer"
-    _description = "Transfert sécurisé"
+    _description = "Secure transfer"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "id desc"
 
     name = fields.Char(
-        string="Référence", required=True, readonly=True, copy=False,
-        default=lambda self: _("Nouveau"),
+        string="Reference", required=True, readonly=True, copy=False,
+        default=lambda self: _("New"),
     )
     # Two distinct capabilities (defense in depth): upload_token drives the
     # draft/upload API and is rotated (killed) at finalize; token drives the
@@ -87,7 +96,7 @@ class SecureTransfer(models.Model):
     # (hash-at-rest would break link resend) but manager-only, with the
     # logged reveal wizard as the only backend exposure path.
     token = fields.Char(
-        string="Jeton de partage",
+        string="Share token",
         required=True,
         index=True,
         copy=False,
@@ -95,7 +104,7 @@ class SecureTransfer(models.Model):
         default=lambda self: uuid.uuid4().hex,
     )
     upload_token = fields.Char(
-        string="Jeton de téléversement",
+        string="Upload token",
         required=True,
         index=True,
         copy=False,
@@ -105,7 +114,7 @@ class SecureTransfer(models.Model):
     # Opaque S3 prefix for this transfer's objects — never the tokens (a
     # capability must not leak into bucket listings or presigned URLs).
     s3_prefix = fields.Char(
-        string="Préfixe S3",
+        string="S3 prefix",
         required=True,
         readonly=True,
         copy=False,
@@ -113,14 +122,14 @@ class SecureTransfer(models.Model):
     )
     state = fields.Selection(
         selection=[
-            ("draft", "Brouillon"),
-            ("active", "Actif"),
-            ("expired", "Expiré"),
-            ("deleted", "Supprimé"),
-            ("cancelled", "Annulé"),
-            ("suspended", "Suspendu"),
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("expired", "Expired"),
+            ("deleted", "Deleted"),
+            ("cancelled", "Canceled"),
+            ("suspended", "Suspended"),
         ],
-        string="État",
+        string="Status",
         default="draft",
         required=True,
         copy=False,
@@ -129,24 +138,23 @@ class SecureTransfer(models.Model):
     )
     brand_id = fields.Many2one(
         "secure.transfer.brand",
-        string="Marque",
+        string="Brand",
         required=True,
         ondelete="restrict",
         index=True,
     )
     company_id = fields.Many2one(
-        related="brand_id.company_id", store=True, string="Société",
+        related="brand_id.company_id", store=True, string="Company",
     )
-    sender_name = fields.Char(string="Nom de l'expéditeur")
+    sender_name = fields.Char(string="Sender name")
     sender_email = fields.Char(
         # Optional at draft creation (a file can be dropped first); required at
         # finalize — enforced in action_finalize, not by a NOT NULL constraint.
-        string="Courriel de l'expéditeur", index=True,
+        string="Sender email", index=True,
     )
     recipient_emails = fields.Char(
-        string="Destinataires",
-        help="Adresses des destinataires, séparées par des virgules "
-             "(maximum %s)." % MAX_RECIPIENTS,
+        string="Recipients",
+        help="Recipient addresses, comma-separated (maximum %s)." % MAX_RECIPIENTS,
     )
     # The one line that tells the recipient WHAT this is before they open
     # anything. Deliberately outside every gate: it travels in clear in the
@@ -154,52 +162,52 @@ class SecureTransfer(models.Model):
     # this). The public form says so under the field, and _clean_line strips
     # CR/LF — a header field must never carry a line break (injection).
     subject = fields.Char(
-        string="Objet",
-        help="Court intitulé qui dit au destinataire de quoi il s'agit "
-             "(p. ex. « Baux 2026 »). Il apparaît dans l'objet du courriel et "
-             "en titre de la page : rien de confidentiel n'y a sa place.",
+        string="Subject",
+        help="A short line telling the recipient what this is (e.g. "
+             "\"2026 leases\"). It appears in the email subject and as "
+             "the page title: nothing confidential belongs in it.",
     )
     message = fields.Text(
         string="Message",
-        help="Message de l'expéditeur (texte brut, rendu échappé — jamais "
-             "interprété comme HTML).",
+        help="Sender's message (plain text, rendered escaped, never "
+             "interpreted as HTML).",
     )
     locale = fields.Selection(
-        selection=[("fr_CA", "Français (Canada)"), ("en_CA", "English (Canada)")],
-        string="Langue",
+        selection=[("fr_CA", "French (Canada)"), ("en_CA", "English (Canada)")],
+        string="Language",
         default="fr_CA",
         required=True,
     )
     retention_days = fields.Integer(
-        string="Rétention (jours)",
+        string="Retention (days)",
         default=lambda self: self._default_retention_days(),
     )
-    expiry_date = fields.Datetime(string="Expire le", copy=False)
+    expiry_date = fields.Datetime(string="Expires on", copy=False)
     password_hash = fields.Char(
-        string="Empreinte du mot de passe",
+        string="Password hash",
         copy=False,
         groups="base.group_system",
     )
     has_password = fields.Boolean(
-        string="Protégé par mot de passe",
+        string="Password protected",
         compute="_compute_has_password",
         store=True,  # stored so the search filter « Protégé » can query it
     )
     max_downloads = fields.Integer(
-        string="Téléchargements max.",
+        string="Max. downloads",
         default=0,
-        help="0 = illimité. Appliqué dès maintenant, non exposé au "
-             "formulaire public au MVP.",
+        help="0 = unlimited. Applied immediately, not exposed on the "
+             "public form in the MVP.",
     )
     download_count = fields.Integer(
-        string="Téléchargements", default=0, copy=False,
+        string="Downloads", default=0, copy=False,
     )
     # Phase 2 placeholders — schema ready, hooks land at the _log choke-point.
     burn_after_download = fields.Boolean(
-        string="Destruction après lecture (Phase 2)", default=False,
+        string="Destroy after reading (Phase 2)", default=False,
     )
     notify_on_download = fields.Boolean(
-        string="Notifier au téléchargement", default=False,
+        string="Notify on download", default=False,
     )
     # Sender OTP (confirmation of send): when the tenant requires it, finalize
     # emails a code to the sender and only activates once it is confirmed —
@@ -213,11 +221,11 @@ class SecureTransfer(models.Model):
     # per-transfer flag FORCES the gate on regardless (set by a secure send
     # from the backend). _recipient_otp_required() ORs the two.
     force_recipient_otp = fields.Boolean(
-        string="Exiger un code du destinataire",
+        string="Require a code from the recipient",
         default=False,
-        help="Le destinataire doit saisir un code à usage unique avant que le "
-             "message et les fichiers s'affichent — le contenu reste retenu "
-             "jusqu'à cette preuve d'identité.",
+        help="The recipient must enter a one-time code before the message "
+             "and files are shown; the content stays withheld until this "
+             "proof of identity.",
     )
     # What the operator actually needs to read off the form: the EFFECTIVE
     # gate. force_recipient_otp alone is misleading — an instance that requires
@@ -225,22 +233,22 @@ class SecureTransfer(models.Model):
     # looks wide open (and its retained link looks like a leak when it is not).
     recipient_otp_status = fields.Selection(
         selection=[
-            ("off", "Aucun — le lien seul ouvre le contenu"),
-            ("transfer", "Exigé pour ce transfert"),
-            ("instance", "Exigé par le réglage d'instance"),
-            ("audience", "Exigé — audience ouverte"),
+            ("off", "None: the link alone opens the content"),
+            ("transfer", "Required for this transfer"),
+            ("instance", "Required by the instance setting"),
+            ("audience", "Required: open audience"),
         ],
-        string="Code du destinataire",
+        string="Recipient code",
         compute="_compute_recipient_otp_status",
     )
     recipient_otp_channel = fields.Selection(
-        selection=[("email", "Courriel"), ("sms", "SMS")],
-        string="Canal du code destinataire",
+        selection=[("email", "Email"), ("sms", "SMS")],
+        string="Recipient code channel",
         default="email",
         required=True,
-        help="Canal de livraison du code au destinataire. « SMS » exige un "
-             "numéro mobile connu pour le destinataire ; à défaut, le courriel "
-             "prend le relais automatiquement.",
+        help="Delivery channel for the recipient's code. \"SMS\" requires "
+             "a known mobile number for the recipient; otherwise, email "
+             "automatically takes over.",
     )
     # email_normalisé -> numéro (10 chiffres NANP), sérialisé JSON. Alimenté
     # seulement par l'envoi sécurisé backend (le formulaire public ne collecte
@@ -253,80 +261,83 @@ class SecureTransfer(models.Model):
     # reçoit un code, et sa confirmation l'inscrit dans `audience_ids`.
     audience_mode = fields.Selection(
         selection=[
-            ("declared", "Destinataires nommés"),
-            ("open", "Audience ouverte (le visiteur se déclare)"),
+            ("declared", "Named recipients"),
+            ("open", "Open audience (the visitor identifies themselves)"),
         ],
-        string="Mode de transmission",
+        string="Delivery mode",
         default="declared",
         required=True,
         tracking=True,
-        help="« Audience ouverte » : le lien ne vise personne en particulier. "
-             "Toute personne qui l'ouvre saisit son adresse, reçoit un code à "
-             "usage unique et n'accède au contenu qu'après l'avoir confirmé.",
+        help="\"Open audience\": the link targets no one in particular. "
+             "Anyone who opens it enters their address, receives a "
+             "one-time code and only reaches the content after confirming "
+             "it.",
     )
     audience_domains = fields.Text(
-        string="Domaines admis",
-        help="Liste blanche des adresses auto-déclarées (adresse complète ou "
-             "domaine « @client.com », une par ligne ou séparées par des "
-             "virgules). Vide = celle de la marque.",
+        string="Allowed domains",
+        help="Allowlist of self-declared addresses (full address or "
+             "domain \"@client.com\", one per line or comma-separated). "
+             "Empty = the brand's list.",
     )
     audience_max = fields.Integer(
-        string="Visiteurs max.",
+        string="Max. visitors",
         default=0,
-        help="Nombre maximal d'adresses distinctes admises. 0 = valeur de la "
-             "marque. C'est ce plafond qui empêche un lien fuité de servir de "
-             "relais de courriel vers des tiers.",
+        help="Maximum number of distinct addresses allowed. 0 = brand "
+             "value. This cap is what keeps a leaked link from becoming "
+             "an email relay to third parties.",
     )
     audience_max_downloads = fields.Integer(
-        string="Téléchargements par visiteur",
+        string="Downloads per visitor",
         default=0,
-        help="0 = illimité. Budget appliqué à CHAQUE visiteur séparément — "
-             "« Téléchargements max. » reste le plafond global du transfert.",
+        help="0 = unlimited. Budget applied to EACH visitor separately; "
+             "\"Max. downloads\" remains the overall cap of the transfer.",
     )
     audience_allow_sms = fields.Boolean(
-        string="Code par SMS offert",
+        string="Code by SMS offered",
         default=False,
-        help="Laisse le visiteur demander son code sur son mobile. Sans effet "
-             "si la marque ne l'offre pas ou si le canal SMS n'est pas câblé.",
+        help="Lets the visitor request their code on their mobile. No "
+             "effect if the brand does not offer it or if the SMS channel "
+             "is not set up.",
     )
     notify_on_join = fields.Boolean(
-        string="Notifier à chaque nouveau visiteur",
+        string="Notify on each new visitor",
         default=True,
-        help="Avertit l'expéditeur dès qu'une nouvelle adresse est confirmée. "
-             "Sur une audience ouverte, c'est la seule façon de savoir qui "
-             "entre : l'avis de téléchargement, lui, ne part qu'une fois.",
+        help="Notifies the sender as soon as a new address is confirmed. "
+             "On an open audience, it is the only way to know who comes "
+             "in: the download notice is sent only once.",
     )
     audience_ids = fields.One2many(
         "secure.transfer.audience", "transfer_id", string="Audience",
     )
     audience_count = fields.Integer(
-        string="Visiteurs confirmés", compute="_compute_audience_count",
+        string="Confirmed visitors", compute="_compute_audience_count",
     )
     # Float on purpose: Integer maps to int4 and overflows at 2.1 GB.
     total_size = fields.Float(
-        string="Taille totale (octets)",
+        string="Total size (bytes)",
         compute="_compute_total_size",
         store=True,
     )
     file_ids = fields.One2many(
-        "secure.transfer.file", "transfer_id", string="Fichiers",
+        "secure.transfer.file", "transfer_id", string="Files",
     )
-    file_count = fields.Integer(compute="_compute_file_count", string="Fichiers (nb)")
+    file_count = fields.Integer(compute="_compute_file_count", string="Files "
+                                                                      "(count)")
     access_log_ids = fields.One2many(
-        "secure.transfer.access.log", "transfer_id", string="Journal d'accès",
+        "secure.transfer.access.log", "transfer_id", string="Access log",
     )
-    ip_created = fields.Char(string="IP de création", readonly=True, index=True)
-    ua_created = fields.Char(string="Agent utilisateur (création)", readonly=True)
-    finalized_at = fields.Datetime(string="Finalisé le", readonly=True, copy=False)
-    purged_at = fields.Datetime(string="Purgé le", readonly=True, copy=False)
+    ip_created = fields.Char(string="Creation IP", readonly=True, index=True)
+    ua_created = fields.Char(string="User agent (creation)", readonly=True)
+    finalized_at = fields.Datetime(string="Finalized on", readonly=True, copy=False)
+    purged_at = fields.Datetime(string="Purged on", readonly=True, copy=False)
     purge_error_count = fields.Integer(
-        string="Échecs de purge", default=0, copy=False,
+        string="Purge failures", default=0, copy=False,
     )
 
     _sql_constraints = [
-        ("token_uniq", "unique(token)", "Ce jeton de partage existe déjà."),
+        ("token_uniq", "unique(token)", "This share token already exists."),
         ("upload_token_uniq", "unique(upload_token)",
-         "Ce jeton de téléversement existe déjà."),
+         "This upload token already exists."),
     ]
 
     # ------------------------------------------------------------------ retention guard
@@ -379,9 +390,9 @@ class SecureTransfer(models.Model):
             choices = rec.brand_id._effective_limits()["expiry_choices"]
             if rec.retention_days not in choices:
                 raise ValidationError(_(
-                    "Durée de rétention non offerte pour « %(brand)s » : "
-                    "%(asked)s jour(s) demandé(s), alors que ce service offre "
-                    "%(choices)s.",
+                    "Retention period not offered for \"%(brand)s\": "
+                    "%(asked)s day(s) requested, while this service "
+                    "offers %(choices)s.",
                     brand=rec.brand_id.display_name,
                     asked=rec.retention_days,
                     choices=", ".join(str(c) for c in choices),
@@ -436,8 +447,8 @@ class SecureTransfer(models.Model):
                 continue
             if not rec.brand_id.allow_open_audience:
                 raise ValidationError(_(
-                    "La marque « %s » n'offre pas l'audience ouverte. "
-                    "Activez-la sur la marque avant de l'utiliser.",
+                    "The \"%s\" brand does not offer the open audience. "
+                    "Turn it on for the brand before using it.",
                     rec.brand_id.display_name,
                 ))
 
@@ -477,10 +488,10 @@ class SecureTransfer(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             self._normalize_header_fields(vals)
-            if not vals.get("name") or vals["name"] == _("Nouveau"):
+            if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("secure.transfer")
-                    or _("Nouveau")
+                    or _("New")
                 )
         return super().create(vals_list)
 
@@ -494,8 +505,8 @@ class SecureTransfer(models.Model):
         # period, which sets the st_gc context.
         if not self.env.context.get("st_gc"):
             raise UserError(_(
-                "Les transferts ne se suppriment pas : le journal d'accès "
-                "doit être conservé. Utilisez « Expirer » ou « Purger »."
+                "Transfers cannot be deleted: the access log must be "
+                "kept. Use \"Expire\" or \"Purge\" instead."
             ))
         return super().unlink()
 
@@ -560,8 +571,8 @@ class SecureTransfer(models.Model):
         count, _b = self._daily_usage(domain)
         if count >= quota:
             raise UserError(_(
-                "Limite quotidienne de transferts atteinte pour cette "
-                "adresse d'expéditeur. Réessayez demain."))
+                "Daily transfer limit reached for this sender address. "
+                "Try again tomorrow."))
 
     # ------------------------------------------------------------------ public API — create
     @api.model
@@ -579,8 +590,8 @@ class SecureTransfer(models.Model):
         sender_email = email_normalize(vals.get("sender_email") or "")
         if sender_email and not brand._sender_allowed(sender_email):
             raise UserError(_(
-                "Cette adresse courriel n'est pas autorisée à envoyer depuis "
-                "ce service. Contactez l'administrateur de cette instance."
+                "This email address is not authorized to send from this "
+                "service. Contact this instance's administrator."
             ))
         sender_name = self._clean_line(vals.get("sender_name"), MAX_NAME_LEN)
 
@@ -596,13 +607,13 @@ class SecureTransfer(models.Model):
             bad = [r for r in recipients if not brand._recipient_allowed(r)]
             if bad:
                 raise UserError(_(
-                    "Ce service n'autorise l'envoi qu'à certaines adresses. "
-                    "Destinataire(s) non autorisé(s) : %s", ", ".join(bad)))
+                    "This service only allows sending to certain "
+                    "addresses. Unauthorized recipient(s): %s", ", ".join(bad)))
 
         message = (vals.get("message") or "").strip()
         if len(message) > MAX_MESSAGE_LEN:
             raise UserError(_(
-                "Le message est limité à %s caractères.", MAX_MESSAGE_LEN,
+                "The message is limited to %s characters.", MAX_MESSAGE_LEN,
             ))
         # _clean_line, not a bare strip: the subject ends up in a mail header,
         # where a CR/LF would let a sender inject headers of their own.
@@ -624,7 +635,7 @@ class SecureTransfer(models.Model):
             # Message d'usage sur le chemin public ; la ceinture est le
             # `@api.constrains` `_check_retention_offered`, qui couvre les
             # chemins internes.
-            raise UserError(_("Durée de rétention non offerte pour ce service."))
+            raise UserError(_("Retention period not offered for this service."))
 
         try:
             max_downloads = max(0, int(vals.get("max_downloads") or 0))
@@ -644,8 +655,8 @@ class SecureTransfer(models.Model):
         count_ip, _bytes_ip = self._daily_usage([("ip_created", "=", ip or "")])
         if count_ip >= quota_ip:
             raise UserError(_(
-                "Limite quotidienne de transferts atteinte pour votre "
-                "connexion. Réessayez demain."
+                "Daily transfer limit reached for your connection. Try "
+                "again tomorrow."
             ))
         # The per-sender quota needs the e-mail; enforced at finalize (see
         # _check_sender_quota) since the e-mail may be blank at draft creation.
@@ -670,7 +681,7 @@ class SecureTransfer(models.Model):
         })
         rec._log(
             "created", ip=ip, ua=ua,
-            note=_("Expéditeur %s, %s destinataire(s), rétention %s jour(s)")
+            note=rec._log_env()._("Sender %s, %s recipient(s), retention %s day(s)")
             % (sender_email, len(recipients), retention),
         )
         return rec
@@ -695,12 +706,12 @@ class SecureTransfer(models.Model):
         for addr in email_split(raw or ""):
             normalized = email_normalize(addr)
             if not normalized:
-                raise UserError(_("Adresse de destinataire invalide."))
+                raise UserError(_("Invalid recipient address."))
             if normalized not in recipients:
                 recipients.append(normalized)
         if len(recipients) > MAX_RECIPIENTS:
             raise UserError(_(
-                "Maximum %s destinataires par transfert.", MAX_RECIPIENTS,
+                "Maximum %s recipients per transfer.", MAX_RECIPIENTS,
             ))
         return recipients
 
@@ -712,7 +723,7 @@ class SecureTransfer(models.Model):
         self.ensure_one()
         self._lock_row()
         if self.state != "draft":
-            raise UserError(_("Ce transfert n'accepte plus de fichiers."))
+            raise UserError(_("This transfer no longer accepts files."))
         limits = self.brand_id._effective_limits()
 
         # -- name sanitation (bf_survey_upload pattern): secure_filename
@@ -731,11 +742,10 @@ class SecureTransfer(models.Model):
         raw_ext = raw_name.rsplit(".", 1)[-1] if "." in raw_name else ""
         ext = "".join(c for c in raw_ext if c.isalnum()).lower()[:32]
         if not ext:
-            raise UserError(_("Le fichier doit avoir une extension."))
+            raise UserError(_("The file must have an extension."))
         if ext in DENY_EXTENSIONS:
             raise UserError(_(
-                "Le format « .%s » n'est pas autorisé pour des raisons de "
-                "sécurité.", ext,
+                "The \".%s\" format is not allowed for security reasons.", ext,
             ))
         display_name = "".join(
             c for c in raw_name if c.isprintable() and c not in "\r\n"
@@ -744,19 +754,19 @@ class SecureTransfer(models.Model):
         try:
             size = float(size)
         except (TypeError, ValueError):
-            raise UserError(_("Taille de fichier invalide."))
+            raise UserError(_("Invalid file size."))
         if size <= 0:
-            raise UserError(_("Taille de fichier invalide."))
+            raise UserError(_("Invalid file size."))
 
         # -- per-transfer limits
         if len(self.file_ids) >= limits["max_files"]:
             raise UserError(_(
-                "Maximum %s fichiers par transfert.", limits["max_files"],
+                "Maximum %s files per transfer.", limits["max_files"],
             ))
         declared = sum(self.file_ids.mapped("size"))
         if declared + size > limits["max_bytes"]:
             raise UserError(_(
-                "La taille totale dépasse la limite de %s Mo de ce service.",
+                "The total size exceeds this service's limit of %s MB.",
                 limits["max_bytes"] // (1024 * 1024),
             ))
 
@@ -768,8 +778,8 @@ class SecureTransfer(models.Model):
         )
         if day_bytes + size > quota_mb * 1024 * 1024:
             raise UserError(_(
-                "Limite quotidienne de volume atteinte pour votre connexion. "
-                "Réessayez demain."
+                "Daily volume limit reached for your connection. Try "
+                "again tomorrow."
             ))
 
         threshold = s3._int_param(self.env, "multipart_threshold_mb", 64) * 1024 * 1024
@@ -826,8 +836,8 @@ class SecureTransfer(models.Model):
         # rest on a weaker check for backend transfers.
         if not rec_file._verify_on_s3():
             raise UserError(_(
-                "Le fichier « %s » n'a pas pu être vérifié sur le stockage "
-                "après téléversement.", rec_file.filename))
+                "The file \"%s\" could not be verified on storage after "
+                "upload.", rec_file.filename))
         return rec_file
 
     # ------------------------------------------------------------------ finalize
@@ -844,15 +854,15 @@ class SecureTransfer(models.Model):
                 "expiry_date": fields.Datetime.to_string(self.expiry_date),
             }
         if self.state != "draft":
-            raise UserError(_("Ce transfert ne peut plus être finalisé."))
+            raise UserError(_("This transfer can no longer be finalized."))
         # E-mail is required to SEND (it may have been blank while dropping
         # files). Validate + allowlist + per-sender quota here.
         if not self.sender_email:
-            raise UserError(_("Une adresse courriel d'expéditeur est requise."))
+            raise UserError(_("A sender email address is required."))
         if not self.brand_id._sender_allowed(self.sender_email):
             raise UserError(_(
-                "Cette adresse courriel n'est pas autorisée à envoyer depuis "
-                "ce service."))
+                "This email address is not authorized to send from this "
+                "service."))
         self._check_sender_quota(self.sender_email, exclude_id=self.id)
         # Drop page guarantor: re-force the fixed recipient at send time too,
         # so a finalize call that carried a different address can never
@@ -864,21 +874,21 @@ class SecureTransfer(models.Model):
         # A transfer must carry SOMETHING: files, or a message (message-only
         # mode — a secure note, e.g. a password).
         if not self.file_ids and not (self.message or "").strip():
-            raise UserError(_("Ajoutez au moins un fichier ou un message."))
+            raise UserError(_("Add at least one file or a message."))
         for f in self.file_ids:
             if f.s3_upload_id:
                 raise UserError(_(
-                    "Le téléversement de « %s » n'est pas terminé.", f.filename,
+                    "The upload of \"%s\" is not finished.", f.filename,
                 ))
             if not f._verify_on_s3():
                 raise UserError(_(
-                    "Le fichier « %s » n'a pas été téléversé correctement. "
-                    "Retirez-le ou téléversez-le de nouveau.", f.filename,
+                    "The file \"%s\" was not uploaded correctly. Remove "
+                    "it or upload it again.", f.filename,
                 ))
         if password:
             if not self.brand_id.allow_password:
                 raise UserError(_(
-                    "Le mot de passe n'est pas offert pour ce service."
+                    "Password protection is not offered for this service."
                 ))
             self._set_password(password)
 
@@ -907,7 +917,7 @@ class SecureTransfer(models.Model):
         })
         self._log(
             "finalized",
-            note=_("%s fichier(s), %.0f octet(s), expiration le %s")
+            note=self._log_env()._("%s file(s), %.0f byte(s), expires on %s")
             % (len(self.file_ids), self.total_size,
                fields.Datetime.to_string(expiry)),
         )
@@ -1018,11 +1028,11 @@ class SecureTransfer(models.Model):
         # sent.
         visuals = self.brand_id._visuals()
         if kind == "sender":
-            intro = _("Bonjour %s, confirmez votre envoi avec ce code :") \
+            intro = _("Hello %s, confirm your transfer with this code:") \
                 % (self.sender_name or "")
         else:
-            intro = _("Un expéditeur vous a partagé des fichiers via %s. "
-                      "Saisissez ce code pour y accéder :") \
+            intro = _("A sender shared files with you via %s. Enter this "
+                      "code to access them:") \
                 % visuals["name"]
         inner = (
             '<p>%s</p>'
@@ -1032,13 +1042,13 @@ class SecureTransfer(models.Model):
             'color:%s;">%s</span></p>'
             '<p style="color:#777;font-size:12px;">%s</p>'
             % (html_escape(intro), html_escape(visuals["dark"]), code,
-               html_escape(_("Ce code expire dans 15 minutes. Si vous n'êtes pas "
-                             "à l'origine de cette demande, ignorez ce courriel."))))
+               html_escape(_("This code expires in 15 minutes. If you did "
+                             "not request it, please ignore this email."))))
         self.env["mail.mail"].sudo().create({
-            "subject": _("Votre code de confirmation — %s") % self.name,
+            "subject": _("Your confirmation code: %s") % self.name,
             "email_from": self._brand_email_from(),
             "email_to": to_email,
-            "body_html": self._brand_email_shell(_("Code de confirmation"), inner),
+            "body_html": self._brand_email_shell(_("Confirmation code"), inner),
             "auto_delete": True,
         }).send()
 
@@ -1047,8 +1057,8 @@ class SecureTransfer(models.Model):
         confirmed send, False on any failure so the caller falls back to
         e-mail. The text is one short segment; no PII reaches the logs."""
         self.ensure_one()
-        text = _("%(brand)s : votre code de vérification est %(code)s "
-                 "(valide 15 minutes).") % {
+        text = _("%(brand)s: your verification code is %(code)s (valid "
+                 "for 15 minutes).") % {
             "brand": self.brand_id._visuals()["name"], "code": code,
         }
         return sms.send(self.env, phone, text)
@@ -1080,34 +1090,49 @@ class SecureTransfer(models.Model):
     def _send_abuse_notice(self, reason=None, ip=None):
         """On an abuse report: alert the abuse desk (full detail) and warn the
         transfer's recipients (neutral). The desk address resolves per tenant
-        — see ``_abuse_desk_email``."""
+        — see ``_abuse_desk_email``.
+
+        Each mail is written in ITS reader's language: the desk in the
+        operator's (its contact's language, else the company's), each recipient
+        in the one their link mail used. The request that triggers this is the
+        anonymous reporter's, whose language concerns neither."""
         self.ensure_one()
         abuse_email = self._abuse_desk_email()
         from_addr = self._brand_email_from()
+        company = self.company_id or self.env.company
         # 1) Abuse desk — full detail for the reviewer.
+        desk = self.with_context(lang=self._lang_for_email(
+            abuse_email, fallback=company.sudo().partner_id.lang))
+        denv = desk.env
+        rows = [
+            (denv._("Reference"), self.name),
+            (denv._("Brand"), self.brand_id.name),
+            (denv._("Sender"), "%s <%s>" % (self.sender_name or "", self.sender_email or "")),
+            (denv._("Recipients"), self.recipient_emails or ""),
+            (denv._("Reason"), reason or ""),
+            (denv._("Reporter's IP"), ip or ""),
+        ]
         detail = (
-            '<p>Un transfert a été <strong>signalé comme abusif</strong> et '
-            '<strong>suspendu automatiquement</strong> en attente de revue.</p>'
+            '<p>%s</p>'
             '<table role="presentation" style="font-size:13px;color:#444;">'
             '<tbody>%s</tbody></table>'
-            '<p style="margin-top:16px;color:#777;font-size:12px;">Réactivez (faux '
-            'signalement) ou purgez (abus confirmé) le transfert dans Odoo → '
-            'Transfert sécurisé.</p>' % "".join(
-                '<tr><td style="padding:2px 12px 2px 0;"><strong>%s</strong></td>'
-                '<td>%s</td></tr>' % (k, html_escape(v or "—"))
-                for k, v in [
-                    ("Référence", self.name),
-                    ("Marque", self.brand_id.name),
-                    ("Expéditeur", "%s <%s>" % (self.sender_name or "", self.sender_email or "")),
-                    ("Destinataires", self.recipient_emails or ""),
-                    ("Motif", reason or ""),
-                    ("IP du signalement", ip or ""),
-                ]))
+            '<p style="margin-top:16px;color:#777;font-size:12px;">%s</p>' % (
+                denv._("A transfer was <strong>reported as abusive</strong> and "
+                       "<strong>automatically suspended</strong> pending "
+                       "review."),
+                "".join(
+                    '<tr><td style="padding:2px 12px 2px 0;"><strong>%s</strong></td>'
+                    '<td>%s</td></tr>' % (html_escape(k), html_escape(v or "—"))
+                    for k, v in rows),
+                html_escape(denv._(
+                    "Reactivate the transfer (false report) or purge it "
+                    "(confirmed abuse) in Odoo, under Secure transfers.")),
+            ))
         self.env["mail.mail"].sudo().create({
-            "subject": _("[Abus] Transfert signalé et suspendu — %s") % self.name,
+            "subject": denv._("[Abuse] Transfer reported and suspended: %s") % self.name,
             "email_from": from_addr,
             "email_to": abuse_email,
-            "body_html": self._brand_email_shell(_("Signalement d'abus"), detail),
+            "body_html": desk._brand_email_shell(denv._("Abuse report"), detail),
             "auto_delete": True,
         }).send()
         # 2) Recipients — neutral notice (no reason/IP leaked).
@@ -1115,19 +1140,24 @@ class SecureTransfer(models.Model):
         # recipient_emails in To: would show every recipient to every other —
         # a disclosure any anonymous link holder could trigger by clicking
         # "report abuse", on a transfer that may span several organisations.
-        notice = (
-            '<p>Bonjour,</p>'
-            '<p>Un transfert de fichiers qui vous a été partagé a été '
-            '<strong>signalé et temporairement suspendu</strong> le temps '
-            'd\'une vérification. Le lien est indisponible pour l\'instant.</p>'
-            '<p style="color:#777;font-size:12px;">Vous n\'avez rien à faire. '
-            'Si le transfert est légitime, il sera rétabli après revue.</p>')
         for recipient in self._recipient_list():
+            renv = self.with_context(lang=self._lang_for_email(recipient)).env
+            notice = (
+                '<p>%s</p><p>%s</p><p style="color:#777;font-size:12px;">%s</p>' % (
+                    html_escape(renv._("Hello,")),
+                    renv._("A file transfer shared with you was <strong>reported "
+                           "and temporarily suspended</strong> while it is "
+                           "checked. The link is unavailable for now."),
+                    html_escape(renv._("You have nothing to do. If the transfer "
+                                       "is legitimate, it will be restored "
+                                       "after review.")),
+                ))
             self.env["mail.mail"].sudo().create({
-                "subject": _("Transfert suspendu pour vérification — %s") % self.name,
+                "subject": renv._("Transfer suspended for verification: %s") % self.name,
                 "email_from": from_addr,
                 "email_to": recipient,
-                "body_html": self._brand_email_shell(_("Transfert suspendu"), notice),
+                "body_html": self._brand_email_shell(
+                    renv._("Transfer suspended"), notice),
                 "auto_delete": True,
             }).send()
 
@@ -1153,7 +1183,7 @@ class SecureTransfer(models.Model):
         self.with_context(lang=self._lang_for_email(self.sender_email))._otp_email(
             self.sender_email, code, "sender")
         self._log("otp_sent", actor=self.sender_email,
-                  note=_("Code de confirmation envoyé à l'expéditeur"))
+                  note=self._log_env()._("Confirmation code sent to the sender"))
 
     def confirm_sender_otp(self, code):
         """Verify the sender code and, on success, activate the transfer.
@@ -1165,24 +1195,24 @@ class SecureTransfer(models.Model):
             return {"share_url": self._share_url(),
                     "expiry_date": fields.Datetime.to_string(self.expiry_date)}
         if self.state != "draft" or not self.sudo().sender_otp_hash:
-            raise UserError(_("Aucune confirmation n'est en attente."))
+            raise UserError(_("No confirmation is pending."))
         if self.sender_otp_fails >= 8:
-            raise UserError(_("Trop de tentatives. Demandez un nouveau code."))
+            raise UserError(_("Too many attempts. Request a new code."))
         expiry = self.sudo().sender_otp_expiry
         if not expiry or expiry < fields.Datetime.now():
-            raise UserError(_("Le code a expiré. Demandez-en un nouveau."))
+            raise UserError(_("The code has expired. Request a new one."))
         if not hmac.compare_digest(
                 self.sudo().sender_otp_hash, self._otp_hash((code or "").strip())):
             self.sender_otp_fails += 1
             self._log("otp_fail", actor=self.sender_email)
-            raise UserError(_("Code invalide."))
+            raise UserError(_("Invalid code."))
         self.write({
             "sender_confirmed": True,
             "sender_otp_hash": False,
             "sender_otp_expiry": False,
         })
         self._log("otp_ok", actor=self.sender_email,
-                  note=_("Expéditeur confirmé par code"))
+                  note=self._log_env()._("Sender confirmed by code"))
         return self._activate()
 
     # -- recipient OTP (download gate). The challenge is held in the visitor's
@@ -1326,11 +1356,12 @@ class SecureTransfer(models.Model):
             "ip": ip or "",
             "user_agent": (ua or "")[:512],
         })
+        log_env = self._log_env()
         self._log("audience_requested", actor=rec.display_identity, ip=ip, ua=ua,
-                  note=(_("Identité auto-déclarée sur une audience ouverte (%s)")
-                        % (_("SMS") if kind == "sms" else _("courriel")))
+                  note=(log_env._("Self-declared identity on an open audience (%s)")
+                        % (log_env._("SMS") if kind == "sms" else log_env._("email")))
                   if self.audience_mode == "open"
-                  else _("Code demandé par un destinataire nommé"))
+                  else log_env._("Code requested by a named recipient"))
         return rec
 
     def _audience_confirm(self, member, ip=None, ua=None):
@@ -1350,10 +1381,11 @@ class SecureTransfer(models.Model):
         was_confirmed = member.state == "confirmed"
         member._confirm()
         if not was_confirmed:
+            log_env = self._log_env()
             self._log("audience_joined", actor=member.display_identity, ip=ip, ua=ua,
-                      note=_("Visiteur confirmé (%s)")
-                      % (_("audience ouverte") if self.audience_mode == "open"
-                         else _("destinataire nommé")))
+                      note=log_env._("Visitor confirmed (%s)")
+                      % (log_env._("open audience") if self.audience_mode == "open"
+                         else log_env._("named recipient")))
             # L'avis ne vaut que pour l'audience ouverte : sur un envoi à des
             # destinataires nommés, l'expéditeur SAIT déjà à qui il a écrit —
             # lui poster un courriel par destinataire serait du bruit.
@@ -1371,28 +1403,31 @@ class SecureTransfer(models.Model):
         jamais qui d'autre est entré."""
         self.ensure_one()
         lang = self._lang_for_email(self.sender_email)
+        # The SENDER reads this, in their language; ``_()`` would read the
+        # caller's frame, i.e. the confirming visitor's request.
         this = self.with_context(lang=lang)
+        tenv = this.env
         inner = (
             '<p>%s</p>'
             '<p style="text-align:center;margin:20px 0;font-size:18px;'
             'font-weight:700;">%s</p>'
             '<p style="color:#777;font-size:12px;">%s</p>'
-            % (html_escape(_("Une nouvelle personne a confirmé son identité "
-                             "pour accéder à « %s » :")
+            % (html_escape(tenv._("A new person confirmed their identity to "
+                                  "access \"%s\":")
                            % (self.subject or self.name)),
                html_escape(member.display_identity),
-               html_escape(_("Vous recevez cet avis parce que ce transfert est "
-                             "en audience ouverte. Vous pouvez bloquer un "
-                             "visiteur depuis la fiche du transfert."))))
+               html_escape(tenv._("You are receiving this notice because this "
+                                  "transfer has an open audience. You can "
+                                  "block a visitor from the transfer record."))))
         self.env["mail.mail"].sudo().create({
-            "subject": _("Nouveau visiteur — %s") % self.name,
+            "subject": tenv._("New visitor: %s") % self.name,
             "email_from": self._brand_email_from(),
             "email_to": self.sender_email,
-            "body_html": this._brand_email_shell(_("Nouveau visiteur"), inner),
+            "body_html": this._brand_email_shell(tenv._("New visitor"), inner),
             "auto_delete": True,
         }).send()
         self._log("notified", actor=member.display_identity,
-                  note=_("Avis de nouveau visiteur envoyé à %s")
+                  note=self._log_env()._("New visitor notice sent to %s")
                   % self.sender_email)
 
     def _extra_access_gate(self, member, token):
@@ -1431,7 +1466,7 @@ class SecureTransfer(models.Model):
         allowed, reason = member._may_receive_otp()
         if not allowed:
             self._log("otp_fail", actor=member.display_identity, ip=ip, ua=ua,
-                      note=_("Demande de code refusée (%s)") % reason)
+                      note=self._log_env()._("Code request refused (%s)") % reason)
             return None, None, member
         code = "%06d" % secrets.randbelow(1_000_000)
         expiry = fields.Datetime.now() + timedelta(minutes=15)
@@ -1441,15 +1476,21 @@ class SecureTransfer(models.Model):
                 # audience ouverte, l'identité EST le numéro — livrer ailleurs
                 # donnerait l'accès à quelqu'un d'autre. Le visiteur réessaie.
                 self._log("otp_fail", actor=member.display_identity, ip=ip, ua=ua,
-                          note=_("Échec de livraison du code par SMS"))
+                          note=self._log_env()._("SMS code delivery failed"))
                 return None, None, member
         else:
-            self.with_context(lang=self._lang_for_email(member.email))._otp_email(
+            # The visitor asked for this code from the page, in the page's
+            # language (the request's): that is the fallback, not the
+            # sender's locale.
+            self.with_context(lang=self._lang_for_email(
+                member.email, fallback=self.env.lang))._otp_email(
                 member.email, code, "recipient")
         member._record_otp_sent()
+        log_env = self._log_env()
         self._log("otp_sent", actor=member.display_identity, ip=ip, ua=ua,
-                  note=_("Code envoyé à un visiteur d'audience ouverte (%s)")
-                  % (_("SMS") if member.identity_kind == "sms" else _("courriel")))
+                  note=log_env._("Code sent to an open audience visitor (%s)")
+                  % (log_env._("SMS") if member.identity_kind == "sms"
+                     else log_env._("email")))
         return self._otp_hash(code), expiry, member
 
     def _phone_for_recipient(self, email):
@@ -1505,12 +1546,14 @@ class SecureTransfer(models.Model):
             allowed, reason = member._may_receive_otp()
             if not allowed:
                 self._log("otp_fail", actor=email, ip=ip, ua=ua,
-                          note=_("Demande de code refusée (%s)") % reason)
+                          note=self._log_env()._("Code request refused (%s)") % reason)
                 return None, None
         code = "%06d" % secrets.randbelow(1_000_000)
         expiry = fields.Datetime.now() + timedelta(minutes=15)
         channel = self._otp_channel_for(email)
-        lang = self._lang_for_email(email)
+        # Requested from the page: its language is the fallback for an
+        # address that matches no contact.
+        lang = self._lang_for_email(email, fallback=self.env.lang)
         if channel == "sms":
             sent = self.with_context(lang=lang)._otp_sms(
                 self._phone_for_recipient(email), code)
@@ -1522,9 +1565,10 @@ class SecureTransfer(models.Model):
             self.with_context(lang=lang)._otp_email(email, code, "recipient")
         if member:
             member._record_otp_sent()
+        log_env = self._log_env()
         self._log("otp_sent", actor=email, ip=ip, ua=ua,
-                  note=_("Code de confirmation envoyé au destinataire (%s)")
-                  % (_("SMS") if channel == "sms" else _("courriel")))
+                  note=log_env._("Confirmation code sent to the recipient (%s)")
+                  % (log_env._("SMS") if channel == "sms" else log_env._("email")))
         return self._otp_hash(code), expiry
 
     # ------------------------------------------------------------------ password
@@ -1593,15 +1637,15 @@ class SecureTransfer(models.Model):
         self._lock_row()
         available, _reason = self._is_available()
         if not available:
-            raise UserError(_("Ce transfert n'est plus disponible."))
+            raise UserError(_("This transfer is no longer available."))
         if member:
             if member.state == "blocked":
-                raise UserError(_("Ce transfert n'est plus disponible."))
+                raise UserError(_("This transfer is no longer available."))
             left = member._download_budget_left()
             if left is not None and left <= 0:
                 raise UserError(_(
-                    "Vous avez atteint le nombre de téléchargements prévu "
-                    "pour ce lien."))
+                    "You have reached the number of downloads allowed for "
+                    "this link."))
             member._register_download()
         self.download_count += 1
         file.download_count += 1
@@ -1629,10 +1673,11 @@ class SecureTransfer(models.Model):
                 lambda f: not f.download_count)
             if not pending:
                 self.state = "expired"
-                self._log("expired", note=_("Détruit après lecture (burn)"))
+                self._log("expired",
+                          note=self._log_env()._("Destroyed after reading (burn)"))
         elif self.max_downloads and self.download_count >= self.max_downloads:
             self.state = "expired"
-            self._log("expired", note=_("Budget de téléchargements épuisé"))
+            self._log("expired", note=self._log_env()._("Download budget exhausted"))
 
     # ── Watermarked delivery ──────────────────────────────────────────────────
     # Above this size Odoo declines to stamp and hands out the plain presigned
@@ -1659,11 +1704,11 @@ class SecureTransfer(models.Model):
         self.ensure_one()
         recipients = self._recipient_list()
         who = actor or (recipients[0] if len(recipients) == 1 else (
-            ("IP " + ip) if ip else _("destinataire")))
+            ("IP " + ip) if ip else _("recipient")))
         return [
-            _("Téléchargé par %s") % who,
+            _("Downloaded by %s") % who,
             datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-            _("%s — confidentiel") % (self.brand_id.name or ""),
+            _("%s (confidential)") % (self.brand_id.name or ""),
         ]
 
     def _stamped_download_bytes(self, file, ip=None, actor=None):
@@ -1706,7 +1751,7 @@ class SecureTransfer(models.Model):
         )
         self._wake_mail_queue()
         self._log("notified", actor="system",
-                  note=_("Avis de téléchargement envoyé à l'expéditeur"))
+                  note=self._log_env()._("Download notice sent to the sender"))
 
     def _share_url(self):
         self.ensure_one()
@@ -1769,8 +1814,9 @@ class SecureTransfer(models.Model):
             if hit:
                 rec._log(
                     "link_redacted", actor="system",
-                    note=_("Lien de partage masqué dans le suivi du transfert "
-                           "(aucun code destinataire n'en garde l'accès)."),
+                    note=rec._log_env()._(
+                        "Share link masked in the transfer log (no "
+                        "recipient code guards access to it)."),
                 )
         return rewritten
 
@@ -1793,10 +1839,12 @@ class SecureTransfer(models.Model):
         return rewritten
 
     # ------------------------------------------------------------------ emails
-    def _lang_for_email(self, email):
+    def _lang_for_email(self, email, fallback=None):
         """The matching Odoo contact's language when the email is a known
-        res.partner, else the transfer's own locale. Lets each message go out
-        in the recipient's language rather than a single transfer-wide one."""
+        res.partner, else ``fallback``, else the transfer's own locale. Lets
+        each message go out in the recipient's language rather than a single
+        transfer-wide one. ``fallback`` serves a reader who is not a party to
+        the transfer (the abuse desk: the company's language)."""
         self.ensure_one()
         email = email_normalize(email or "") or ""
         if email:
@@ -1804,12 +1852,25 @@ class SecureTransfer(models.Model):
                 [("email", "=ilike", email)], limit=1)
             if partner and partner.lang:
                 return active_lang(self.env, partner.lang)
-        return active_lang(self.env, self.locale)
+        return active_lang(self.env, fallback or self.locale)
 
     def _render_lang(self):
         """The transfer's locale as a language this database can render in."""
         self.ensure_one()
         return active_lang(self.env, self.locale)
+
+    def _log_env(self):
+        """The environment the access-log notes are written in.
+
+        A note is frozen text in an append-only, hash-chained log, and the
+        access certificate prints it as is, rendered in ``_render_lang()``.
+        Writing it in the language of whoever triggered the event (an anonymous
+        visitor, a cron, an operator) would mix languages in the one document
+        the sender keeps. Write ``note=self._log_env()._("…")``: ``_()`` alone
+        reads the caller's language, not this one.
+        """
+        self.ensure_one()
+        return self.with_context(lang=self._render_lang()).env
 
     def _email_subject_line(self, kind):
         """The subject line to force on an outgoing mail, or None.
@@ -1831,16 +1892,17 @@ class SecureTransfer(models.Model):
         who = self.sender_name or self.sender_email or ""
         ref = self.name
         if kind == "link":
-            return _("%(subject)s — %(sender)s vous a transmis des fichiers (%(ref)s)",
+            return _("%(subject)s: %(sender)s sent you files (%(ref)s)",
                      subject=subject, sender=who, ref=ref)
         if kind == "secure":
-            return _("%(subject)s — %(sender)s vous a envoyé un message sécurisé (%(ref)s)",
+            return _("%(subject)s: %(sender)s sent you a secure message "
+                     "(%(ref)s)",
                      subject=subject, sender=who, ref=ref)
         if kind == "receipt":
-            return _("Votre transfert est en ligne — %(subject)s (%(ref)s)",
+            return _("Your transfer is online: %(subject)s (%(ref)s)",
                      subject=subject, ref=ref)
         if kind == "notice":
-            return _("Vos fichiers ont été téléchargés — %(subject)s (%(ref)s)",
+            return _("Your files were downloaded: %(subject)s (%(ref)s)",
                      subject=subject, ref=ref)
         return None
 
@@ -1947,13 +2009,14 @@ class SecureTransfer(models.Model):
                     rec.id, force_send=False,
                     email_values={"subject": subject} if subject else None)
             actor = rec.env.context.get("st_resend_actor")
+            log_env = rec._log_env()
             rec._log(
                 "emailed",
                 actor=actor,
-                note=(_("Renvoi manuel du lien à : %s")
+                note=(log_env._("Link manually re-sent to: %s")
                       % (rec.recipient_emails or "")) if actor else
-                (_("Lien envoyé à : %s ; accusé à : %s")
-                 % (rec.recipient_emails or _("(aucun — mode lien seul)"),
+                (log_env._("Link sent to: %s; receipt to: %s")
+                 % (rec.recipient_emails or log_env._("(none, link-only mode)"),
                     rec.sender_email)),
             )
         self._wake_mail_queue()
@@ -1986,11 +2049,11 @@ class SecureTransfer(models.Model):
         """Kill the link immediately; the purge cron reclaims the objects."""
         for rec in self:
             if rec.state != "active":
-                raise UserError(_("Seul un transfert actif peut être expiré."))
+                raise UserError(_("Only an active transfer can be expired."))
             rec.state = "expired"
             rec._log(
                 "expired", actor=self.env.user.login,
-                note=_("Expiration manuelle"),
+                note=rec._log_env()._("Manual expiry"),
             )
         return True
 
@@ -2000,12 +2063,12 @@ class SecureTransfer(models.Model):
         for rec in self:
             if rec.state not in ("active", "expired"):
                 raise UserError(_(
-                    "Seul un transfert actif ou expiré peut être suspendu."
+                    "Only an active or expired transfer can be suspended."
                 ))
             rec.state = "suspended"
             rec._log(
                 "suspended", actor=self.env.user.login,
-                note=_("Suspension manuelle (abus)"),
+                note=rec._log_env()._("Manual suspension (abuse)"),
             )
         return True
 
@@ -2018,9 +2081,10 @@ class SecureTransfer(models.Model):
         if self.state in ("active", "expired"):
             self.sudo().state = "suspended"
             self._log(
-                "suspended", ip=ip, ua=ua, actor="signalement",
-                note=_("Suspendu automatiquement suite à un signalement d'abus "
-                       "— en attente d'une revue par l'administrateur"),
+                "suspended", ip=ip, ua=ua, actor="abuse_report",
+                note=self._log_env()._(
+                    "Automatically suspended following an abuse "
+                    "report, awaiting review by the administrator"),
             )
 
     def action_reactivate(self):
@@ -2028,19 +2092,20 @@ class SecureTransfer(models.Model):
         provided it is still within its expiry and its files are intact."""
         for rec in self:
             if rec.state != "suspended":
-                raise UserError(_("Seul un transfert suspendu peut être réactivé."))
+                raise UserError(_("Only a suspended transfer can be "
+                                  "reactivated."))
             if rec.purged_at or not rec.file_ids.filtered(
                     lambda f: f.state == "verified"):
                 raise UserError(_(
-                    "Ce transfert ne peut plus être réactivé : ses fichiers ont "
-                    "été purgés."))
+                    "This transfer can no longer be reactivated: its "
+                    "files have been purged."))
             if rec.expiry_date and rec.expiry_date < fields.Datetime.now():
                 raise UserError(_(
-                    "Ce transfert est expiré ; réactivation impossible."))
+                    "This transfer has expired; it cannot be reactivated."))
             rec.state = "active"
             rec._log(
                 "reactivated", actor=self.env.user.login,
-                note=_("Réactivé après revue (signalement écarté)"),
+                note=rec._log_env()._("Reactivated after review (report dismissed)"),
             )
         return True
 
@@ -2051,14 +2116,14 @@ class SecureTransfer(models.Model):
             "bf_securetransfer.group_securetransfer_manager"
         ):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         for rec in self:
             if rec.state == "active":
                 rec.state = "expired"
                 rec._log(
                     "expired", actor=self.env.user.login,
-                    note=_("Expiration manuelle (purge immédiate)"),
+                    note=rec._log_env()._("Manual expiry (immediate purge)"),
                 )
             if rec.state not in ("draft", "expired", "suspended"):
                 continue  # already deleted/cancelled — nothing to purge
@@ -2071,7 +2136,7 @@ class SecureTransfer(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Révéler le lien de partage"),
+            "name": _("Reveal the share link"),
             "res_model": "secure.transfer.reveal.wizard",
             "view_mode": "form",
             "target": "new",
@@ -2097,32 +2162,33 @@ class SecureTransfer(models.Model):
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_manager"):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         for rec in self:
             if rec.state not in ("active", "expired", "suspended"):
                 raise UserError(_(
-                    "Seul un transfert actif, expiré ou suspendu peut se voir "
-                    "exiger un code."
+                    "Only an active, expired or suspended transfer can be "
+                    "made to require a code."
                 ))
             if rec.force_recipient_otp:
                 continue
             if not rec._recipient_list():
                 raise UserError(_(
-                    "Ce transfert n'a aucun destinataire enregistré (mode "
-                    "« lien seul ») : personne ne pourrait recevoir le code. "
-                    "Expirez-le plutôt."
+                    "This transfer has no recorded recipient (link-only "
+                    "mode): nobody could receive the code. Expire it "
+                    "instead."
                 ))
             rec.force_recipient_otp = True
             rec._log(
                 "otp_forced", actor=self.env.user.login,
-                note=_("Code destinataire exigé après coup ; les courriels "
-                       "déjà partis ne sont pas rappelés."),
+                note=rec._log_env()._(
+                    "Recipient code required after the fact; emails "
+                    "already sent are not recalled."),
             )
             rec.message_post(body=_(
-                "Code destinataire exigé après coup : le lien ne s'ouvre plus "
-                "sans un code envoyé à l'une des adresses destinataires. Les "
-                "courriels déjà partis ne sont pas rappelés."
+                "Recipient code required after the fact: the link no "
+                "longer opens without a code sent to one of the recipient "
+                "addresses. Emails already sent are not recalled."
             ))
         return True
 
@@ -2143,20 +2209,18 @@ class SecureTransfer(models.Model):
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_manager"):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         for rec in self:
             if rec.state != "active":
                 raise UserError(_(
-                    "Les courriels ne peuvent être renvoyés que pour un "
-                    "transfert actif."
+                    "Emails can only be resent for an active transfer."
                 ))
             if not rec._recipient_list():
                 raise UserError(_(
-                    "Ce transfert n'a aucun destinataire enregistré (mode "
-                    "« lien seul ») : il n'y a personne à qui renvoyer le "
-                    "lien. Utilisez « Révéler le lien » et transmettez-le "
-                    "vous-même."
+                    "This transfer has no recorded recipient (\"link "
+                    "only\" mode): there is nobody to re-send the link "
+                    "to. Use \"Reveal the link\" and forward it yourself."
                 ))
             rec.with_context(
                 st_resend_actor=self.env.user.login,
@@ -2191,45 +2255,46 @@ class SecureTransfer(models.Model):
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_manager"):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         try:
             days = int(days)
         except (TypeError, ValueError):
-            raise UserError(_("Durée de prolongation invalide."))
+            raise UserError(_("Invalid extension duration."))
         for rec in self:
             if rec.state not in ("active", "expired"):
                 raise UserError(_(
-                    "Seul un transfert actif ou expiré peut être prolongé."
+                    "Only an active or expired transfer can be extended."
                 ))
             if rec.purged_at:
                 raise UserError(_(
-                    "Les fichiers de ce transfert ont déjà été purgés du "
-                    "stockage : prolonger l'échéance ne les ramènerait pas."
+                    "This transfer's files have already been purged from "
+                    "storage: extending the expiry would not bring them "
+                    "back."
                 ))
             if days not in rec._extension_choices():
                 raise UserError(_(
-                    "Durée non offerte pour « %(brand)s », ou plus courte que "
-                    "la durée actuelle (%(current)s jour(s)). Choix "
-                    "possibles : %(choices)s.",
+                    "Duration not offered by \"%(brand)s\", or shorter "
+                    "than the current one (%(current)s day(s)). Available "
+                    "choices: %(choices)s.",
                     brand=rec.brand_id.display_name,
                     current=rec.retention_days,
                     choices=", ".join(str(d) for d in rec._extension_choices())
-                    or _("aucun — le transfert est déjà à la durée maximale "
-                         "offerte par ce service"),
+                    or _("none: the transfer is already at the longest "
+                         "duration this service offers"),
                 ))
             if rec.burn_after_download and rec.state == "expired":
                 raise UserError(_(
-                    "Ce transfert était en « destruction après lecture » et a "
-                    "été lu : le prolonger rouvrirait un contenu que "
-                    "l'expéditeur a demandé de détruire. Créez plutôt un "
-                    "nouvel envoi."
+                    "This transfer was set to \"destroy after reading\" "
+                    "and it was read: extending it would reopen content "
+                    "the sender asked to destroy. Create a new send "
+                    "instead."
                 ))
             if rec.max_downloads and rec.download_count >= rec.max_downloads:
                 raise UserError(_(
-                    "Le budget de téléchargements de ce transfert est épuisé "
-                    "(%(done)s / %(budget)s) : une date plus lointaine ne le "
-                    "rouvrirait pas. Relevez d'abord « Téléchargements max. ».",
+                    "This transfer's download budget is spent (%(done)s / "
+                    "%(budget)s): a later date would not reopen it. Raise "
+                    "\"Max. downloads\" first.",
                     done=rec.download_count, budget=rec.max_downloads,
                 ))
             # Anchored on the finalize date, not on today: the retention a
@@ -2239,8 +2304,9 @@ class SecureTransfer(models.Model):
             new_expiry = base + timedelta(days=days)
             if new_expiry <= fields.Datetime.now():
                 raise UserError(_(
-                    "Même prolongé à %(days)s jour(s), ce transfert reste "
-                    "échu (envoyé le %(sent)s). Créez plutôt un nouvel envoi.",
+                    "Even extended to %(days)s day(s), this transfer "
+                    "stays past due (sent on %(sent)s). Create a new send "
+                    "instead.",
                     days=days,
                     sent=fields.Datetime.to_string(base),
                 ))
@@ -2249,14 +2315,15 @@ class SecureTransfer(models.Model):
             if was_expired:
                 vals["state"] = "active"
             rec.write(vals)
+            log_env = rec._log_env()
             rec._log(
                 "extended", actor=self.env.user.login,
-                note=_(
-                    "Échéance portée à %(days)s jour(s) — nouvelle expiration "
-                    "le %(date)s%(reopened)s",
+                note=log_env._(
+                    "Expiry moved to %(days)s day(s): new expiry on "
+                    "%(date)s%(reopened)s",
                     days=days,
                     date=fields.Datetime.to_string(new_expiry),
-                    reopened=_(" (transfert rouvert)") if was_expired else "",
+                    reopened=log_env._(" (transfer reopened)") if was_expired else "",
                 ),
             )
         return True
@@ -2273,11 +2340,11 @@ class SecureTransfer(models.Model):
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_manager"):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Prolonger l'échéance"),
+            "name": _("Extend the expiry"),
             "res_model": "secure.transfer.extend.wizard",
             "view_mode": "form",
             "target": "new",
@@ -2296,9 +2363,13 @@ class SecureTransfer(models.Model):
         chain_ok = self.access_log_ids[:1].verify_chain() if self.access_log_ids else True
         buf = io.StringIO()
         writer = csv.writer(buf)
+        # The first line is for the operator who exports (their language);
+        # the column names below are the file's schema and do not vary with
+        # the reader's language.
         writer.writerow([
-            "# Journal d'accès — %s" % self.name,
-            "Chaîne d'intégrité: %s" % ("INTACTE" if chain_ok else "BRISÉE"),
+            self.env._("# Access log: %s", self.name),
+            self.env._("Integrity chain: %s",
+                       self.env._("INTACT") if chain_ok else self.env._("BROKEN")),
         ])
         writer.writerow([
             "horodatage_utc", "action", "acteur", "ip",
@@ -2313,7 +2384,7 @@ class SecureTransfer(models.Model):
             ])
         data = buf.getvalue().encode("utf-8-sig")  # BOM → Excel opens UTF-8
         att = self.env["ir.attachment"].create({
-            "name": "journal-acces-%s.csv" % (self.name or self.id),
+            "name": self.env._("access-log-%s.csv", self.name or self.id),
             "type": "binary",
             "datas": base64.b64encode(data),
             "mimetype": "text/csv",
@@ -2335,10 +2406,10 @@ class SecureTransfer(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Vérification du journal"),
-                "message": _("Chaîne d'intégrité intacte pour %s.", self.name)
+                "title": _("Log verification"),
+                "message": _("Integrity chain intact for %s.", self.name)
                 if ok else
-                _("ALERTE : la chaîne d'intégrité de %s est BRISÉE.", self.name),
+                _("ALERT: the integrity chain of %s is BROKEN.", self.name),
                 "type": "success" if ok else "danger",
                 "sticky": not ok,
             },
@@ -2430,13 +2501,18 @@ class SecureTransfer(models.Model):
                 self.name, self.purge_error_count, failed,
             )
             if self.purge_error_count == 5:
-                self.activity_schedule(
+                # Written in the ADMIN's language and created in an env that
+                # carries it: the caller is the purge cron (OdooBot).
+                admin = self.env.ref("base.user_admin")
+                this = self.with_context(lang=active_lang(
+                    self.env, admin.lang or self.company_id.partner_id.lang))
+                this.activity_schedule(
                     "mail.mail_activity_data_todo",
-                    user_id=self.env.ref("base.user_admin").id,
-                    summary=_("Purge S3 en échec répété — %s", self.name),
-                    note=_(
-                        "5 tentatives de purge ont échoué pour ce transfert. "
-                        "Vérifier le bucket et les clés restantes : %s", failed,
+                    user_id=admin.id,
+                    summary=this.env._("S3 purge repeatedly failing: %s", self.name),
+                    note=this.env._(
+                        "5 purge attempts have failed for this transfer. "
+                        "Check the bucket and the remaining keys: %s", failed,
                     ),
                 )
             return False
@@ -2446,12 +2522,13 @@ class SecureTransfer(models.Model):
             "state": "cancelled" if was_draft else "deleted",
             "purged_at": fields.Datetime.now(),
         })
+        log_env = self._log_env()
         self._log(
             "purged", actor=actor,
-            note=_("Brouillon abandonné — %s objet(s) supprimé(s) du stockage")
+            note=log_env._("Abandoned draft: %s object(s) deleted from storage")
             % len(keys) if was_draft
-            else _("%s objet(s) supprimé(s) du stockage — métadonnées et "
-                   "journal conservés") % len(keys),
+            else log_env._("%s object(s) deleted from storage; metadata and log kept")
+            % len(keys),
         )
         return True
 
@@ -2469,7 +2546,7 @@ class SecureTransfer(models.Model):
             ("expiry_date", "<=", now),
         ]):
             rec.state = "expired"
-            rec._log("expired", note=_("Date d'expiration atteinte"))
+            rec._log("expired", note=rec._log_env()._("Expiry date reached"))
 
         for rec in self.search([("state", "=", "expired")]):
             try:

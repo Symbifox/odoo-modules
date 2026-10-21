@@ -73,6 +73,10 @@ class TestNcLinks(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only, so fr_CA
+        # and its terms are loaded here.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(['bf_nextcloud_browser'], ["fr_CA"], overwrite=True)
         Config = cls.env["nextcloud.document.config"]
         cls._key_patch = patch.object(type(Config), "_get_encryption_key", return_value=KEY)
         cls._key_patch.start()
@@ -220,6 +224,8 @@ class TestNcLinks(TransactionCase):
         self.assertEqual(res, {"ok": True, "kind": "internal", "name": "Devis.pdf", "url": BASE + "/f/42"})
 
     def test_a_share_link_uses_the_preset_and_never_the_root(self):
+        # Presets are named in the language of the configuration's company.
+        self.config.company_id.partner_id.lang = "fr_CA"
         self.config._ensure_share_presets()
         externe = self.config.share_preset_ids.filtered(lambda p: p.name == "Externe")
         ocs = _response(200, text="<ocs><data><id>9</id><url>%s/s/AbCdEf123456789</url>"
@@ -242,6 +248,8 @@ class TestNcLinks(TransactionCase):
     def test_presets_describe_the_rules_a_share_really_gets(self):
         """« Interne » says 0 day and no password, and gets 30 days and a password."""
         self.config.write({"default_share_expiry_days": 30, "share_password_enabled": True})
+        # Presets are named in the language of the configuration's company.
+        self.config.company_id.partner_id.lang = "fr_CA"
         self.config._ensure_share_presets()
         presets = {p["name"]: p for p in self.browser._preset_payload(self.config.sudo())}
         self.assertEqual((presets["Interne"]["expiry_days"], presets["Interne"]["password_protected"]), (30, True))
@@ -275,7 +283,8 @@ class TestNcLinks(TransactionCase):
         listed = [_share(5, "/Équipe & Cie/a.pdf", token="tok5555555555", expiration=None)]
         alone = [_share(5, "/Équipe & Cie/a.pdf", token="tok5555555555", expiration="2026-10-01 00:00:00")]
         with patch("requests.request", side_effect=[_ocs(listed), _ocs(alone)]) as req:
-            res = self.browser.root_entry_shares("a.pdf")
+            # The kind is read in the screen's language: a French screen.
+            res = self.browser.with_context(lang="fr_CA").root_entry_shares("a.pdf")
         self.assertTrue(req.call_args_list[1].args[1].endswith("/shares/5"))
         share = res["shares"][0]
         self.assertEqual(share["expiration"], "2026-10-01")
@@ -316,7 +325,7 @@ class TestNcLinks(TransactionCase):
         self._post(self.task, '<p>Plan : <a href="%s/f/42">%s/f/42</a></p>' % (BASE, BASE))
         self._post(self.task, "<p>Devis https://%s/index.php/s/ShareTok12345 et https://ancien.example.test/nextcloud/f/77</p>" % ALIAS)
         self._post(self.task, "<p>Ailleurs : https://evil.example.test/f/99 et %s/f/notanid</p>" % BASE)
-        # Sans schema (forme reelle dans les chatters), et un sondage qui n'est pas un partage.
+        # Without a scheme (a real form in chatters), and a poll that is not a share.
         self._post(self.task, "<p>Note : nc.example.test/f/78 et %s/apps/polls/s/PollTok12345</p>" % BASE)
         self._post(self.task, "<p>Faux hote : xnc.example.test/f/79 et mail@nc.example.test/f/80</p>")
         other = self.env["project.task"].create({"name": "Autre", "project_id": self.project.id})

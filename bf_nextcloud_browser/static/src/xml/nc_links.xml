@@ -11,7 +11,7 @@
             <button t-if="bfNcVisible" type="button"
                     class="o-bf-nc-insert btn border-0 rounded-circle p-0"
                     t-att-disabled="!state.active"
-                    title="Insérer un lien Nextcloud" aria-label="Insérer un lien Nextcloud"
+                    title="Insert a Nextcloud link" aria-label="Insert a Nextcloud link"
                     t-on-click="onClickBfNcInsert">
                 <i class="fa fa-fw fa-lg fa-cloud"/>
             </button>
@@ -23,27 +23,27 @@
         <xpath expr="//span[hasclass('o-mail-Chatter-topbarGrow')]" position="after">
             <button t-if="bfNcLinksVisible" class="btn btn-link text-action o-bf-nc-linked"
                     type="button" t-on-click="onClickBfNcLinkedFiles"
-                    aria-label="Fichiers Nextcloud liés" title="Fichiers Nextcloud liés dans ce fil">
+                    aria-label="Linked Nextcloud files" title="Nextcloud files linked in this thread">
                 <i class="fa fa-cloud" role="img"/>
             </button>
             <button t-if="bfNcLinksVisible" class="btn btn-link text-action o-bf-nc-file"
                     type="button" t-on-click="onClickBfNcFile"
-                    aria-label="Classer des pièces au dossier client" title="Classer des pièces au dossier client">
+                    aria-label="File attachments in the client folder" title="File attachments in the client folder">
                 <i class="fa fa-folder-open-o" role="img"/>
             </button>
         </xpath>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcFileDialog">
-        <Dialog title="'Classer des pièces au dossier client'" size="'xl'" contentClass="'o_nc_file_dialog'">
-            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Lecture du fil…</div>
+        <Dialog title="title" size="'xl'" contentClass="'o_nc_file_dialog'">
+            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Reading the thread…</div>
             <div t-elif="state.error" class="alert alert-warning mb-0" t-esc="state.error"/>
             <div t-else="" class="row g-3">
                 <div class="col-lg-4 o_nc_file_list">
-                    <div class="fw-bold mb-2">Pièces du fil</div>
-                    <div t-if="!state.attachments.length" class="text-muted">Aucune pièce jointe dans ce fil.</div>
+                    <div class="fw-bold mb-2">Thread attachments</div>
+                    <div t-if="!state.attachments.length" class="text-muted">No attachments in this thread.</div>
                     <div t-if="state.selected.length >= state.batchMax" class="small text-warning mb-1">
-                        Au plus <t t-esc="state.batchMax"/> pièces à la fois.
+                        At most <t t-esc="state.batchMax"/> attachments at a time.
                     </div>
                     <label t-foreach="state.attachments" t-as="att" t-key="att.id"
                            class="d-flex align-items-start gap-2 py-1 border-bottom o_nc_file_item"
@@ -54,54 +54,54 @@
                             <span t-esc="att.name"/>
                             <small class="d-block text-muted">
                                 <t t-esc="att.date"/> · <t t-esc="att.size_display"/>
-                                <t t-if="att.too_big"> · trop volumineuse</t>
+                                <t t-if="att.too_big"> · too large</t>
                             </small>
                         </span>
                     </label>
                 </div>
                 <div class="col-lg-8">
                     <div t-if="!state.startRel" class="alert alert-info py-1 small">
-                        Cette fiche n'a pas de dossier client : choisissez où copier.
+                        This record has no client folder: choose where to copy.
                     </div>
                     <NcBrowserApp startRel="state.startRel" noMemory="true" onNavigate.bind="onNavigate"/>
                 </div>
             </div>
             <t t-set-slot="footer">
-                <span class="text-muted small me-auto">La pièce est copiée, elle reste aussi dans Odoo.</span>
+                <span class="text-muted small me-auto">The attachment is copied, it also stays in Odoo.</span>
                 <button class="btn btn-primary o_nc_file_go" t-att-disabled="!canFile" t-on-click="file">
                     <i t-if="state.busy" class="fa fa-spinner fa-spin me-1"/>
-                    Copier <t t-esc="state.selected.length"/> pièce(s) dans « <t t-esc="where"/> »
+                    Copy <t t-esc="state.selected.length"/> attachment(s) to « <t t-esc="where"/> »
                 </button>
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Fermer</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Close</button>
             </t>
         </Dialog>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcPickerDialog">
-        <Dialog title="'Insérer un lien Nextcloud'" size="'xl'" contentClass="'o_nc_picker_dialog'">
+        <Dialog title="title" size="'xl'" contentClass="'o_nc_picker_dialog'">
             <NcBrowserApp onPick.bind="onPick"/>
             <t t-set-slot="footer">
-                <span class="text-muted small me-auto">Cliquez sur un fichier, ou sur « Insérer » pour un dossier.</span>
-                <button class="btn btn-secondary" t-on-click="() => props.close()">Fermer</button>
+                <span class="text-muted small me-auto">Click a file, or "Insert" for a folder.</span>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Close</button>
             </t>
         </Dialog>
     </t>
 
     <t t-name="bf_nextcloud_browser.NcLinkedFilesDialog">
-        <Dialog title="'Fichiers Nextcloud liés dans ce fil'" size="'lg'">
-            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Lecture des messages et de Nextcloud…</div>
+        <Dialog title="title" size="'lg'">
+            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Reading messages and Nextcloud…</div>
             <div t-elif="state.error" class="alert alert-info mb-0" t-esc="state.error"/>
             <div t-elif="!state.links.length" class="text-muted p-2">
-                Aucun lien Nextcloud dans les messages de cette fiche. Pour en ajouter un, utilisez le nuage du composeur.
+                No Nextcloud link in this record's messages. To add one, use the cloud in the composer.
             </div>
             <t t-else="">
-                <p t-if="state.truncated" class="text-muted small">Seuls les 200 liens les plus récents sont montrés.</p>
+                <p t-if="state.truncated" class="text-muted small">Only the 200 most recent links are shown.</p>
                 <table class="table table-sm align-middle o_nc_linked_table mb-0">
                     <thead>
                         <tr>
-                            <th>Fichier</th>
-                            <th>État</th>
-                            <th class="text-end">Cité</th>
+                            <th>File</th>
+                            <th>Status</th>
+                            <th class="text-end">Cited</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -114,18 +114,18 @@
                                     <div t-if="where(l)" class="small text-muted text-truncate"><i class="fa fa-folder-o me-1"/><t t-esc="where(l)"/></div>
                                 </td>
                                 <td class="small">
-                                    <span t-if="l.found and l.share and l.share.is_public and !l.share.expiration and l.share.expiry_checked" class="badge text-bg-warning me-1">Sans expiration</span>
+                                    <span t-if="l.found and l.share and l.share.is_public and !l.share.expiration and l.share.expiry_checked" class="badge text-bg-warning me-1">No expiry</span>
                                     <t t-esc="stateLabel(l)"/>
                                 </td>
                                 <td class="text-end small text-nowrap">
-                                    <t t-esc="l.mentions"/> fois
+                                    <t t-esc="l.mentions"/> times
                                     <div class="text-muted" t-esc="l.last_date.slice(0, 10)"/>
                                 </td>
                                 <td class="text-end text-nowrap">
-                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.open(l)" title="Ouvrir"><i class="fa fa-external-link"/></button>
-                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.copy(l)" title="Copier le lien"><i class="fa fa-clipboard"/></button>
+                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.open(l)" title="Open link"><i class="fa fa-external-link"/></button>
+                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.copy(l)" title="Copy link"><i class="fa fa-clipboard"/></button>
                                     <button t-if="l.share and l.share.can_revoke" class="btn btn-sm btn-link text-danger p-0"
-                                            t-on-click="() => this.revoke(l)" title="Retirer ce partage"><i class="fa fa-ban"/></button>
+                                            t-on-click="() => this.revoke(l)" title="Remove this share"><i class="fa fa-ban"/></button>
                                 </td>
                             </tr>
                         </t>
@@ -133,8 +133,8 @@
                 </table>
             </t>
             <t t-set-slot="footer">
-                <button class="btn btn-secondary" t-on-click="() => this.load()" t-att-disabled="state.loading"><i class="fa fa-refresh me-1"/>Relire</button>
-                <button class="btn btn-primary" t-on-click="() => props.close()">Fermer</button>
+                <button class="btn btn-secondary" t-on-click="() => this.load()" t-att-disabled="state.loading"><i class="fa fa-refresh me-1"/>Reload</button>
+                <button class="btn btn-primary" t-on-click="() => props.close()">Close</button>
             </t>
         </Dialog>
     </t>

@@ -15,6 +15,9 @@ class TestPont(CasPlan):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(["hosting_management"], ["fr_CA"], overwrite=True)
         # ⚠️ le groupe « utilisateur » ne voit que les clients dont on gère un
         # service (règle hosting_endpoint_rule_user) : c'est le gestionnaire qu'il faut
         cls.gestion.groups_id = [(4, cls.env.ref("hosting_management.group_hosting_manager").id)]
@@ -108,7 +111,8 @@ class TestPont(CasPlan):
         poste = self.poste.with_user(self.lecteur)
         self.assertFalse(poste.endpoint_id.has_access("read"))
         self.assertEqual(poste._teinte(), "alerte")
-        self.assertIn("En réparation", " ".join(poste._infos()))
+        # Libellé de hosting_management, source anglaise : lu en fr_CA.
+        self.assertIn("En réparation", " ".join(poste.with_context(lang="fr_CA")._infos()))
         self.assertFalse(poste._cible())
         d = self.plan.with_user(self.lecteur).rendu()
         e = next(e for e in d["elements"] if e["id"] == self.poste.id)

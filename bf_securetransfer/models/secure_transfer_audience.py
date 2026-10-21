@@ -46,20 +46,20 @@ _logger = logging.getLogger(__name__)
 
 class SecureTransferAudience(models.Model):
     _name = "secure.transfer.audience"
-    _description = "Transfert sécurisé — Visiteur d'une audience ouverte"
+    _description = "Secure transfer: open audience visitor"
     _order = "id asc"
     _rec_name = "display_identity"
 
     transfer_id = fields.Many2one(
         "secure.transfer",
-        string="Transfert",
+        string="Transfer",
         required=True,
         index=True,
         ondelete="cascade",
     )
     identity_kind = fields.Selection(
-        selection=[("email", "Courriel"), ("sms", "Mobile")],
-        string="Type d'identité",
+        selection=[("email", "Email"), ("sms", "Mobile")],
+        string="Identity type",
         default="email",
         required=True,
     )
@@ -67,51 +67,51 @@ class SecureTransferAudience(models.Model):
     # d'unicité : PostgreSQL considère deux NULL comme distincts, donc
     # « unique(transfer_id, email) » n'empêche pas plusieurs visiteurs
     # identifiés par leur seul numéro, et réciproquement.
-    email = fields.Char(string="Courriel", index=True)
-    phone = fields.Char(string="Mobile (10 chiffres)", index=True)
+    email = fields.Char(string="Email", index=True)
+    phone = fields.Char(string="Mobile (10 digits)", index=True)
     display_identity = fields.Char(
-        string="Identité", compute="_compute_display_identity", store=True,
+        string="Identity", compute="_compute_display_identity", store=True,
     )
     state = fields.Selection(
         selection=[
-            ("pending", "Code envoyé"),
-            ("confirmed", "Confirmé"),
-            ("blocked", "Bloqué"),
+            ("pending", "Code sent"),
+            ("confirmed", "Confirmed"),
+            ("blocked", "Blocked"),
         ],
-        string="État",
+        string="Status",
         default="pending",
         required=True,
         index=True,
     )
     first_seen = fields.Datetime(
-        string="Première demande", readonly=True, default=fields.Datetime.now,
+        string="First request", readonly=True, default=fields.Datetime.now,
     )
-    confirmed_at = fields.Datetime(string="Confirmé le", readonly=True)
-    last_otp_at = fields.Datetime(string="Dernier code envoyé", readonly=True)
-    otp_send_count = fields.Integer(string="Codes envoyés", default=0, readonly=True)
+    confirmed_at = fields.Datetime(string="Confirmed on", readonly=True)
+    last_otp_at = fields.Datetime(string="Last code sent", readonly=True)
+    otp_send_count = fields.Integer(string="Codes sent", default=0, readonly=True)
     # Essais ratés sur le code EN COURS, en base. Le défi vit dans la
     # session et le seul compteur était par (IP, transfert) en mémoire : un
     # même cookie promené sur vingt IP s'offrait vingt fois huit essais.
     otp_verify_fails = fields.Integer(
-        string="Essais ratés sur le code en cours", default=0, readonly=True)
-    sms_send_count = fields.Integer(string="SMS envoyés", default=0, readonly=True)
+        string="Failed attempts on the current code", default=0, readonly=True)
+    sms_send_count = fields.Integer(string="SMS sent", default=0, readonly=True)
     download_count = fields.Integer(
-        string="Téléchargements", default=0, readonly=True,
+        string="Downloads", default=0, readonly=True,
     )
     # Fenêtre glissante d'une heure pour les destinataires nommés : leur
     # budget n'est pas un plafond à vie (ils reviennent pendant toute la vie du
     # transfert), mais il doit exister — sinon un lien fuité, avec des IP qui
     # tournent, sert à inonder la boîte ou le mobile d'un destinataire.
-    otp_window_start = fields.Datetime(string="Début de la fenêtre de codes", readonly=True)
-    otp_window_count = fields.Integer(string="Codes dans la fenêtre", default=0, readonly=True)
-    ip = fields.Char(string="IP (première demande)", readonly=True)
-    user_agent = fields.Char(string="Agent utilisateur", readonly=True)
+    otp_window_start = fields.Datetime(string="Code window start", readonly=True)
+    otp_window_count = fields.Integer(string="Codes in the window", default=0, readonly=True)
+    ip = fields.Char(string="IP (first request)", readonly=True)
+    user_agent = fields.Char(string="User agent", readonly=True)
 
     _sql_constraints = [
         ("transfer_email_uniq", "unique(transfer_id, email)",
-         "Ce courriel est déjà inscrit à l'audience de ce transfert."),
+         "This email is already registered in this transfer's audience."),
         ("transfer_phone_uniq", "unique(transfer_id, phone)",
-         "Ce numéro est déjà inscrit à l'audience de ce transfert."),
+         "This number is already registered in this transfer's audience."),
     ]
 
     # Plafonds par identité. Ils s'ajoutent aux limiteurs par (IP, transfert)
@@ -142,7 +142,11 @@ class SecureTransferAudience(models.Model):
         for rec in self:
             if rec.identity_kind == "sms":
                 digits = (rec.phone or "")[-4:]
-                rec.display_identity = ("•••-••••-%s" % digits) if digits else _("(mobile)")
+                # Stored and printed in the log and certificate: the
+                # transfer's language, not the visitor's who triggered it.
+                tenv = rec.transfer_id._log_env() if rec.transfer_id else rec.env
+                rec.display_identity = ("•••-••••-%s" % digits) if digits \
+                    else tenv._("(mobile)")
             else:
                 rec.display_identity = rec.email or ""
 
@@ -277,7 +281,8 @@ class SecureTransferAudience(models.Model):
             rec.state = "blocked"
             rec.transfer_id._log(
                 "audience_blocked", actor=self.env.user.login,
-                note=_("Visiteur bloqué : %s") % rec.display_identity,
+                note=rec.transfer_id._log_env()._("Visitor blocked: %s")
+                % rec.display_identity,
             )
         return True
 
@@ -289,7 +294,8 @@ class SecureTransferAudience(models.Model):
             rec.state = "confirmed" if rec.confirmed_at else "pending"
             rec.transfer_id._log(
                 "audience_unblocked", actor=self.env.user.login,
-                note=_("Visiteur débloqué : %s") % rec.display_identity,
+                note=rec.transfer_id._log_env()._("Visitor unblocked: %s")
+                % rec.display_identity,
             )
         return True
 
@@ -298,7 +304,7 @@ class SecureTransferAudience(models.Model):
         ne disparaît qu'avec le transfert, au ramassage final."""
         if not self.env.context.get("st_gc"):
             raise UserError(_(
-                "Les visiteurs d'une audience ne se suppriment pas : ils font "
-                "partie de la preuve d'accès. Utilisez « Bloquer »."
+                "Audience visitors cannot be deleted: they are part of "
+                "the access evidence. Use \"Block\"."
             ))
         return super().unlink()

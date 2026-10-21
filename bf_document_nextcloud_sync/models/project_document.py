@@ -1,7 +1,7 @@
 import logging
 import posixpath
 from email.utils import parsedate_to_datetime
-from markupsafe import escape as html_escape
+from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -19,58 +19,59 @@ class ProjectDocument(models.Model):
     # Nextcloud integration fields
     nc_config_id = fields.Many2one(
         "nextcloud.document.config",
-        string="Config Nextcloud",
-        help="Configuration Nextcloud utilisee pour ce document",
+        string="Nextcloud config",
+        help="Nextcloud configuration used for this document",
     )
     nc_file_path = fields.Char(
-        string="Chemin Nextcloud",
+        string="Nextcloud path",
         tracking=True,
-        help="Chemin du fichier sur Nextcloud (ex: /Blue Fox/Documents/POL-SEC-FR.pdf)",
+        help="Path of the file on Nextcloud (e.g. /Blue "
+             "Fox/Documents/POL-SEC-FR.pdf)",
     )
     nc_file_id = fields.Integer(
-        string="File ID Nextcloud",
+        string="Nextcloud file ID",
         readonly=True,
-        help="Identifiant interne du fichier sur Nextcloud",
+        help="Internal ID of the file on Nextcloud",
     )
     nc_share_url = fields.Char(
-        string="Lien de partage",
+        string="Share link",
         readonly=True,
-        help="URL de partage public generee via OCS",
+        help="Public share URL generated through OCS",
     )
     nc_share_password = fields.Char(
-        string="Mot de passe du partage",
+        string="Share password",
         readonly=True,
         groups="base.group_system",
-        help="Mot de passe du lien de partage (communiquer separement)",
+        help="Share link password (send it separately)",
     )
     nc_share_expiry = fields.Date(
-        string="Expiration du partage",
+        string="Share expiry",
         readonly=True,
     )
     nc_last_modified = fields.Datetime(
-        string="Derniere modification NC",
+        string="NC last modified",
         readonly=True,
-        help="Date de derniere modification du fichier sur Nextcloud",
+        help="Last modification date of the file on Nextcloud",
     )
     nc_file_size = fields.Integer(
-        string="Taille du fichier (octets)",
+        string="File size (bytes)",
         readonly=True,
     )
     nc_file_size_display = fields.Char(
-        string="Taille",
+        string="Size",
         compute="_compute_nc_file_size_display",
     )
     nc_etag = fields.Char(
-        string="ETag Nextcloud",
+        string="Nextcloud ETag",
         readonly=True,
         copy=False,
     )
     nc_content_type = fields.Char(
-        string="Type MIME",
+        string="MIME type",
         readonly=True,
     )
     nc_synced = fields.Boolean(
-        string="Synchronise avec NC",
+        string="Synced with NC",
         compute="_compute_nc_synced",
         store=True,
     )
@@ -97,8 +98,7 @@ class ProjectDocument(models.Model):
             if found:
                 raise ValidationError(
                     _(
-                        "Le nom de fichier contient des caracteres interdits "
-                        "(%s): %s"
+                        "The file name contains forbidden characters (%s): %s"
                     )
                     % ("".join(found), filename)
                 )
@@ -111,25 +111,28 @@ class ProjectDocument(models.Model):
             url = record.nc_share_url.lower()
             if not url.startswith("https://"):
                 raise ValidationError(
-                    _("L'URL de partage doit utiliser HTTPS.")
+                    _("The share URL must use HTTPS.")
                 )
 
     # === Computed Fields ===
 
     @api.depends("nc_file_size")
+    @api.depends_context("lang")
     def _compute_nc_file_size_display(self):
+        # Non stocké : les unités suivent la langue de qui lit (« Ko » en français, « KB » en anglais).
         for record in self:
             size = record.nc_file_size
+            env = record.env
             if not size:
                 record.nc_file_size_display = ""
             elif size < 1024:
-                record.nc_file_size_display = f"{size} o"
+                record.nc_file_size_display = env._("%s B", size)
             elif size < 1024 * 1024:
-                record.nc_file_size_display = f"{size / 1024:.1f} Ko"
+                record.nc_file_size_display = env._("%s KB", f"{size / 1024:.1f}")
             elif size < 1024 * 1024 * 1024:
-                record.nc_file_size_display = f"{size / (1024*1024):.1f} Mo"
+                record.nc_file_size_display = env._("%s MB", f"{size / (1024 * 1024):.1f}")
             else:
-                record.nc_file_size_display = f"{size / (1024*1024*1024):.1f} Go"
+                record.nc_file_size_display = env._("%s GB", f"{size / (1024 * 1024 * 1024):.1f}")
 
     @api.depends("nc_file_path", "nc_config_id")
     def _compute_nc_synced(self):
@@ -162,13 +165,13 @@ class ProjectDocument(models.Model):
             url = self.external_url
         else:
             raise UserError(
-                _("Aucun chemin Nextcloud ni URL externe configure pour ce document.")
+                _("No Nextcloud path or external URL is set for this document.")
             )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Lien interne Nextcloud"),
+                "title": _("Nextcloud internal link"),
                 "message": url,
                 "type": "info",
                 "sticky": True,
@@ -181,8 +184,8 @@ class ProjectDocument(models.Model):
         if not self.nc_config_id or not self.nc_file_path:
             raise UserError(
                 _(
-                    "Configuration Nextcloud et chemin de fichier requis "
-                    "pour rafraichir les metadonnees."
+                    "A Nextcloud configuration and a file path are "
+                    "required to refresh the metadata."
                 )
             )
 
@@ -196,12 +199,12 @@ class ProjectDocument(models.Model):
         except Exception as e:
             _logger.error("PROPFIND failed for %s: %s", path, e)
             raise UserError(
-                _("Erreur lors de la consultation Nextcloud: %s") % str(e)
+                _("Error while querying Nextcloud: %s") % str(e)
             )
 
         if not results:
             raise UserError(
-                _("Fichier introuvable sur Nextcloud: %s") % path
+                _("File not found on Nextcloud: %s") % path
             )
 
         entry = results[0]
@@ -233,8 +236,8 @@ class ProjectDocument(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Rafraichissement"),
-                "message": _("Metadonnees mises a jour depuis Nextcloud."),
+                "title": _("Refresh"),
+                "message": _("Metadata updated from Nextcloud."),
                 "type": "success",
                 "sticky": False,
             },
@@ -252,8 +255,8 @@ class ProjectDocument(models.Model):
         if not self.nc_config_id or not self.nc_file_path:
             raise UserError(
                 _(
-                    "Configuration Nextcloud et chemin de fichier requis "
-                    "pour creer un lien de partage."
+                    "A Nextcloud configuration and a file path are "
+                    "required to create a share link."
                 )
             )
 
@@ -273,36 +276,38 @@ class ProjectDocument(models.Model):
         if vals:
             self.write(vals)
 
-        # Post share URL to chatter (NO password)
-        share_url_escaped = html_escape(share_info.get("url", ""))
-        expire_escaped = html_escape(share_info.get("expire_date", "N/A"))
+        # Post share URL to chatter (NO password), in the language of the
+        # person who made the share; the values are escaped by Markup's `%`.
+        share_url = share_info.get("url", "")
         self.message_post(
-            body=(
-                "<p><strong>Lien de partage Nextcloud cree</strong></p>"
-                '<p>URL: <a href="%s">%s</a></p>'
-                "<p>Expiration: %s</p>"
-            ) % (share_url_escaped, share_url_escaped, expire_escaped),
-            body_is_html=True,
+            body=Markup(self.env._(
+                "<p><strong>Nextcloud share link created</strong></p>"
+                "<p>URL: <a href=\"%(url)s\">%(url)s</a></p>"
+                "<p>Expiry: %(expiry)s</p>"
+            )) % {
+                "url": share_url,
+                "expiry": share_info.get("expire_date") or self.env._("N/A"),
+            },
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
 
         # Build notification with password for current user only
-        notif_parts = [_("Lien de partage cree avec succes.")]
+        notif_parts = [_("Share link created.")]
         if share_info.get("expire_date"):
             notif_parts.append(
-                _("Expiration: %s") % share_info["expire_date"]
+                _("Expiry: %s") % share_info["expire_date"]
             )
         if share_info.get("password"):
             notif_parts.append(
-                _("Mot de passe: %s") % share_info["password"]
+                _("Password: %s") % share_info["password"]
             )
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Partage cree"),
+                "title": _("Share created"),
                 "message": "\n".join(notif_parts),
                 "type": "success",
                 "sticky": True,
@@ -314,11 +319,11 @@ class ProjectDocument(models.Model):
         self.ensure_one()
         if not self.nc_config_id:
             raise UserError(
-                _("Configuration Nextcloud requise pour televerse une version.")
+                _("A Nextcloud configuration is required to upload a version.")
             )
         return {
             "type": "ir.actions.act_window",
-            "name": _("Televerser une nouvelle version"),
+            "name": _("Upload a new version"),
             "res_model": "document.nc.upload.wizard",
             "views": [[False, "form"]],
             "target": "new",
@@ -342,7 +347,8 @@ class ProjectDocument(models.Model):
             url = f"{base}/apps/files/?dir={folder}"
         else:
             raise UserError(
-                _("Dossier Nextcloud et configuration requis pour naviguer.")
+                _("A Nextcloud folder and a configuration are required to "
+                  "browse.")
             )
         return {
             "type": "ir.actions.act_url",
@@ -352,11 +358,38 @@ class ProjectDocument(models.Model):
 
     # === Version tracking for NC changes ===
 
+    @api.model
+    def _nc_installed_lang(self, *candidates):
+        """The first of `candidates` that is installed, else an installed one.
+
+        A partner may keep the code of a language deactivated since: pinned
+        in the context, it would fail the job after the ETag is written (the
+        version and the activity lost)."""
+        installed = [code for code, _name in self.env["res.lang"].get_installed()]
+        for lang in candidates:
+            if lang and lang in installed:
+                return lang
+        return "en_US" if "en_US" in installed or not installed else installed[0]
+
+    @api.model
+    def _nc_reader_lang(self, doc):
+        """Who reads what the change check writes: the document's owner (or
+        author), else its company. The check runs as a scheduled job, with no
+        person's language in its context."""
+        owner = doc.owner_id or doc.author_id
+        company = doc.company_id or self.env.company
+        return self._nc_installed_lang(owner.lang, company.partner_id.lang, self.env.lang)
+
     def _create_nc_change_version(
         self, doc, old_etag, new_etag,
         old_size, new_size, old_modified, new_modified,
     ):
-        """Create a project.document.version to flag a detected NC change."""
+        """Create a project.document.version to flag a detected NC change.
+
+        Its summary and changelog are stored text: written in the language of
+        the document's owner (see _nc_reader_lang), not in the job's.
+        """
+        env = doc.with_context(lang=self._nc_reader_lang(doc)).env
         # Determine next version number
         existing = self.env["project.document.version"].search(
             [("document_id", "=", doc.id)],
@@ -377,7 +410,7 @@ class ProjectDocument(models.Model):
 
         # Build changelog with change details
         changelog_lines = [
-            "Modification detectee automatiquement sur Nextcloud.",
+            env._("Change detected automatically on Nextcloud."),
             "",
             f"- ETag: `{old_etag}` -> `{new_etag}`",
         ]
@@ -385,20 +418,19 @@ class ProjectDocument(models.Model):
             delta = new_size - old_size
             sign = "+" if delta > 0 else ""
             changelog_lines.append(
-                f"- Taille: {old_size} -> {new_size} octets ({sign}{delta})"
+                env._("- Size: %(old)s -> %(new)s bytes (%(delta)s)",
+                      old=old_size, new=new_size, delta=f"{sign}{delta}")
             )
         if new_modified:
             changelog_lines.append(
-                f"- Modifie le: {new_modified.strftime('%Y-%m-%d %H:%M:%S')}"
+                env._("- Modified on: %s", new_modified.strftime('%Y-%m-%d %H:%M:%S'))
             )
 
         version_vals = {
             "document_id": doc.id,
             "version_number": next_num,
             "change_type": "editorial",
-            "change_summary": _(
-                "Modification detectee sur Nextcloud"
-            ),
+            "change_summary": env._("Change detected on Nextcloud"),
             "changelog": "\n".join(changelog_lines),
             "state": "draft",
             "effective_date": fields.Date.today(),
@@ -482,17 +514,20 @@ class ProjectDocument(models.Model):
                         )
 
                         # Create activity for document owner
+                        # Created in the assignee's language: summary, note
+                        # and the subject of Odoo's notice alike.
                         owner = doc.owner_id or doc.author_id
                         if owner:
-                            doc.activity_schedule(
+                            doc_owner = doc.with_context(lang=self._nc_reader_lang(doc))
+                            doc_owner.activity_schedule(
                                 "mail.mail_activity_data_todo",
                                 user_id=owner.id,
-                                summary=_(
-                                    "Fichier modifie sur Nextcloud: %s"
+                                summary=doc_owner.env._(
+                                    "File changed on Nextcloud: %s"
                                 ) % doc.name,
-                                note=_(
-                                    "Le fichier '%s' a ete modifie sur Nextcloud "
-                                    "depuis la derniere verification."
+                                note=doc_owner.env._(
+                                    "The file '%s' was changed on "
+                                    "Nextcloud since the last check."
                                 ) % posixpath.basename(doc.nc_file_path),
                             )
                         updated_count += 1
@@ -519,16 +554,20 @@ class ProjectDocument(models.Model):
                         doc.id, e,
                     )
 
-            # Update config status
+            # Update config status: read by the operators, in the language
+            # of the configuration's company (the job has none of its own).
+            env = config.with_context(
+                lang=self._nc_installed_lang(config.company_id.partner_id.lang, self.env.lang)
+            ).env
             if error_count:
                 status = "partial" if updated_count else "error"
-                msg = _(
-                    "Verification: %d modifie(s), %d erreur(s) sur %d documents"
+                msg = env._(
+                    "Check: %d changed, %d error(s) out of %d documents"
                 ) % (updated_count, error_count, len(docs))
             else:
                 status = "success"
-                msg = _(
-                    "Verification: %d modifie(s) sur %d documents"
+                msg = env._(
+                    "Check: %d changed out of %d documents"
                 ) % (updated_count, len(docs))
 
             config.write({

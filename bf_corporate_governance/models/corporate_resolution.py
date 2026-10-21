@@ -4,152 +4,152 @@ from odoo.exceptions import ValidationError
 
 class CorporateResolution(models.Model):
     _name = 'corporate.resolution'
-    _description = 'Résolution corporative'
+    _description = "Corporate resolution"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'meeting_date desc, sequence desc'
 
     name = fields.Char(
-        string='Titre',
+        string="Title",
         required=True,
         tracking=True,
     )
     sequence = fields.Char(
-        string='Référence',
+        string="Reference",
         readonly=True,
         copy=False,
         default='New',
     )
     resolution_type = fields.Selection(
         selection=[
-            ('board', 'Résolution du conseil'),
-            ('shareholder', 'Résolution des actionnaires'),
-            ('written_board', 'Résolution écrite du conseil'),
-            ('written_shareholder', 'Résolution écrite des actionnaires'),
+            ('board', "Board resolution"),
+            ('shareholder', "Shareholder resolution"),
+            ('written_board', "Written board resolution"),
+            ('written_shareholder', "Written shareholder resolution"),
             # Une association, un OBNL, une coopérative : la résolution est
             # adoptée en assemblée des membres. Sans ce type, elle s'inscrivait
             # comme une résolution d'actionnaires, et son PDF le disait.
-            ('members', 'Résolution des membres'),
+            ('members', "Members' resolution"),
         ],
-        string='Type de résolution',
+        string="Resolution type",
         required=True,
         default='board',
         tracking=True,
     )
     meeting_type = fields.Selection(
         selection=[
-            ('regular', 'Ordinaire'),
-            ('special', 'Extraordinaire'),
-            ('agm', 'AGA'),
-            ('written', 'Écrite'),
+            ('regular', "Regular"),
+            ('special', "Special"),
+            ('agm', "AGM"),
+            ('written', "Written"),
         ],
-        string='Type de séance',
+        string="Meeting type",
         default='regular',
         tracking=True,
     )
     subject_category = fields.Selection(
         selection=[
-            ('officer_appointment', 'Nomination de dirigeant'),
-            ('director_election', "Élection d'administrateur"),
-            ('dividend_declaration', 'Déclaration de dividende'),
-            ('share_issuance', "Émission d'actions"),
-            ('bylaw_amendment', 'Modification de règlements'),
-            ('contract_approval', 'Approbation de contrat'),
-            ('bank_authorization', 'Autorisation bancaire'),
-            ('auditor_appointment', 'Nomination du vérificateur'),
-            ('fiscal_year', 'Année fiscale'),
-            ('financial_approval', 'Approbation financière'),
+            ('officer_appointment', "Officer appointment"),
+            ('director_election', "Director election"),
+            ('dividend_declaration', "Dividend declaration"),
+            ('share_issuance', "Share issuance"),
+            ('bylaw_amendment', "By-law amendment"),
+            ('contract_approval', "Contract approval"),
+            ('bank_authorization', "Banking authorization"),
+            ('auditor_appointment', "Auditor appointment"),
+            ('fiscal_year', "Fiscal year"),
+            ('financial_approval', "Financial approval"),
             ('dissolution', 'Dissolution'),
-            ('other', 'Autre'),
+            ('other', "Other"),
         ],
-        string='Catégorie de sujet',
+        string="Subject category",
         tracking=True,
     )
     status = fields.Selection(
         selection=[
-            ('draft', 'Brouillon'),
-            ('proposed', 'Proposé'),
-            ('adopted', 'Adopté'),
-            ('rejected', 'Rejeté'),
-            ('superseded', 'Remplacé'),
+            ('draft', "Draft"),
+            ('proposed', "Proposed"),
+            ('adopted', "Adopted"),
+            ('rejected', "Rejected"),
+            ('superseded', "Superseded"),
         ],
-        string='Statut',
+        string="Status",
         default='draft',
         required=True,
         tracking=True,
         index=True,
     )
     meeting_date = fields.Date(
-        string='Date de la séance',
+        string="Meeting date",
         required=True,
         tracking=True,
     )
     whereas_text = fields.Html(
-        string='ATTENDU QUE...',
-        help='Préambule / clauses « attendu que »',
+        string="WHEREAS...",
+        help="Preamble / \"whereas\" clauses",
     )
     resolved_text = fields.Html(
-        string='IL EST RÉSOLU QUE...',
-        help='Corps de la résolution',
+        string="BE IT RESOLVED THAT...",
+        help="Body of the resolution",
     )
     mover_id = fields.Many2one(
         'res.partner',
-        string='Proposeur',
+        string="Mover",
         tracking=True,
     )
     seconder_id = fields.Many2one(
         'res.partner',
-        string='Secondeur',
+        string="Seconder",
         tracking=True,
     )
-    vote_for = fields.Integer(string='Votes pour')
-    vote_against = fields.Integer(string='Votes contre')
+    vote_for = fields.Integer(string="Votes for")
+    vote_against = fields.Integer(string="Votes against")
     vote_abstain = fields.Integer(string='Abstentions')
     unanimously_adopted = fields.Boolean(
-        string='Adopté à l\'unanimité',
+        string="Unanimously adopted",
         tracking=True,
     )
     effective_date = fields.Date(
-        string="Date d'entrée en vigueur",
+        string="Effective date",
         tracking=True,
     )
     superseded_by_id = fields.Many2one(
         'corporate.resolution',
-        string='Remplacé par',
+        string="Superseded by",
     )
     attachment_ids = fields.Many2many(
         'ir.attachment',
         'corporate_resolution_attachment_rel',
         'resolution_id',
         'attachment_id',
-        string='Pièces jointes',
+        string="Attachments",
     )
     document_ids = fields.Many2many(
         'project.document',
         'corporate_resolution_document_rel',
         'resolution_id',
         'document_id',
-        string='Documents du livre des minutes',
+        string="Minute book documents",
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Société',
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     signatory_ids = fields.One2many(
         'corporate.resolution.signatory',
         'resolution_id',
-        string='Signataires',
+        string="Signatories",
         # Un One2many ne se copie PAS par défaut, mais le texte de la
         # résolution et son proposeur, eux, se copient. Une résolution
         # dupliquée repartirait donc avec son dispositif intact et un bloc de
         # signature vide, qui se rabattrait en silence sur le seul proposeur :
         # exactement le document faux que cette fiche corrige.
         copy=True,
-        help="Les personnes qui signent la résolution, avec la qualité en "
-             "laquelle elles la signent. Laissé vide, seule une résolution du "
-             "conseil se déduit — de ses administrateurs en poste à la date "
-             "de la séance.",
+        help="The people who sign the resolution, with the capacity in "
+             "which they sign it. Left empty, only a board resolution can "
+             "be inferred, from its directors in office on the meeting "
+             "date.",
     )
     notes = fields.Text(string='Notes')
 
@@ -235,7 +235,7 @@ class CorporateResolution(models.Model):
         if self.resolution_type in ('board', 'written_board'):
             return [{
                 'name': administrateur.partner_id.name,
-                'capacity': _('Administrateur'),
+                'capacity': self.env._("Director"),
                 'purpose': False,
             } for administrateur in self._get_directors_at_date()]
         if self.resolution_type == 'members':
@@ -262,15 +262,19 @@ class CorporateResolution(models.Model):
             actionnaires = rec.signatory_ids.filtered(
                 lambda l: l.capacity in ('shareholder', 'sole_shareholder'))
             if actionnaires:
-                raise ValidationError(_(
-                    "Une résolution des membres ne se signe pas en qualité "
-                    "d'actionnaire : choisissez une autre qualité pour %s.",
+                raise ValidationError(self.env._(
+                    "A members' resolution is not signed in the capacity "
+                    "of shareholder: choose another capacity for %s.",
                     ', '.join(actionnaires.partner_id.mapped('name'))))
 
     def _get_resolution_type_label(self):
-        """Retourner le titre d'en-tête français selon le type de résolution."""
+        """Le titre d'en-tête du PDF selon le type de résolution.
+
+        Lu par les administrateurs dans le PDF, rendu dans la langue de qui
+        l'imprime (le gabarit ne fixe pas `t-lang`) : `self.env._`.
+        """
         if self.resolution_type in ('board', 'written_board'):
-            return "Résolution écrite des administrateurs"
+            return self.env._("Written directors' resolution")
         if self.resolution_type == 'members':
-            return "Résolution de l'assemblée des membres"
-        return "Résolution écrite des actionnaires"
+            return self.env._("Members' meeting resolution")
+        return self.env._("Written shareholder resolution")

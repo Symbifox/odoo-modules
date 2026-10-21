@@ -1,0 +1,230 @@
+# Translation template for Levée de fonds : Web & Portail donateur.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_fundraising_web 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "<i class=\"fa fa-download\"/> Download"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "<i class=\"fa fa-download\"/> Receipt"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "<option value=\"\">(No campaign)</option>"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "<option value=\"\">(No fund)</option>"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_credentials, bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Address"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Amount"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "An official tax receipt will be sent to"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Annual"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "Back to the home page"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, bf_security_awareness
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Campaign"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "City"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Date"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Donate"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Donation amount (CAD) *"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model:ir.model.fields,help:bf_fundraising_web.field_donation_donation__is_web_donation
+msgid "Donation created through the website's public donation form."
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "Download your tax receipts"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Eligible amount"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Email *"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Full name *"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Fund"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Make a donation"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "My donations"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "My official receipts"
+msgstr ""
+
+#. module: bf_fundraising_web
+#. odoo-python
+#: code:addons/bf_fundraising_web/models/donation_donation.py:0
+msgid ""
+"No donation product is configured. Set the donation product on the company "
+"before enabling the web form."
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "No official receipt available yet."
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_fundraising_web, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Number"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "Official receipt"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model:ir.model.fields,field_description:bf_fundraising_web.field_donation_donation__is_web_donation
+msgid "Online donation"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid "Postal code"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Receipt no."
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Single donation"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "Thank you for your generosity!"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid ""
+"Too many submissions in a short time. Please try again in a few minutes."
+msgstr ""
+
+#. module: bf_fundraising_web
+#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
+#. bf_nextcloud_browser, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_tax_receipts
+msgid "Type"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_home_fundraising
+msgid "View your donation history"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "We have received your donation of"
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.portal_my_donations
+msgid "You have no recorded donations yet."
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_form
+msgid ""
+"Your donation supports our mission. You will receive an official tax "
+"receipt."
+msgstr ""
+
+#. module: bf_fundraising_web
+#: model_terms:ir.ui.view,arch_db:bf_fundraising_web.donation_thanks
+msgid "once the donation is confirmed."
+msgstr ""

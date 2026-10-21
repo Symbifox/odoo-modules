@@ -9,10 +9,10 @@ class ProjectProject(models.Model):
     license_seat_ids = fields.One2many(
         comodel_name="hosting.license.seat",
         inverse_name="project_id",
-        string="Sièges de licence",
+        string="License seats",
     )
     license_seat_count = fields.Integer(
-        string="Nombre de licences",
+        string="License count",
         compute="_compute_license_seat_count",
     )
 
@@ -25,7 +25,7 @@ class ProjectProject(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Licences — {self.name}",
+            "name": self.env._("Licenses — %s", self.name),
             "res_model": "hosting.license.seat",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("project_id", "=", self.id)],

@@ -6,6 +6,8 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env, user_env
+
 FREQUENCY_DELTAS = {
     "weekly": relativedelta(weeks=1),
     "biweekly": relativedelta(weeks=2),
@@ -18,12 +20,12 @@ FREQUENCY_DELTAS = {
 
 class HostingMaintenanceSchedule(models.Model):
     _name = "hosting.maintenance.schedule"
-    _description = "Planification de maintenance d'hébergement"
+    _description = "Hosting maintenance schedule"
     _order = "next_due, service_id"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Nom de la tâche",
+        string="Task name",
         required=True,
         tracking=True,
     )
@@ -41,82 +43,82 @@ class HostingMaintenanceSchedule(models.Model):
     )
     maintenance_type = fields.Selection(
         selection=[
-            ("security_patch", "Correctifs de sécurité"),
-            ("db_optimize", "Optimisation de base de données"),
-            ("backup_verify", "Vérification de sauvegarde"),
-            ("backup_setup", "Configuration de sauvegarde"),
-            ("log_cleanup", "Nettoyage/Rotation des journaux"),
-            ("container_update", "Mise à jour d'image de conteneur"),
-            ("ssl_renewal", "Renouvellement de certificat SSL"),
-            ("storage_cleanup", "Nettoyage de stockage"),
-            ("performance_review", "Revue de performance"),
-            ("app_update", "Mises à jour d'application"),
-            ("admin_check", "Vérification du panneau d'administration"),
-            ("security_audit", "Audit de sécurité"),
-            ("other", "Autre (personnalisé)"),
+            ("security_patch", "Security patches"),
+            ("db_optimize", "Database optimization"),
+            ("backup_verify", "Backup verification"),
+            ("backup_setup", "Backup setup"),
+            ("log_cleanup", "Log cleanup/rotation"),
+            ("container_update", "Container image update"),
+            ("ssl_renewal", "SSL certificate renewal"),
+            ("storage_cleanup", "Storage cleanup"),
+            ("performance_review", "Performance review"),
+            ("app_update", "Application updates"),
+            ("admin_check", "Admin panel check"),
+            ("security_audit", "Security audit"),
+            ("other", "Other (custom)"),
         ],
-        string="Type de maintenance",
+        string="Maintenance type",
         required=True,
         default="other",
         tracking=True,
     )
     frequency = fields.Selection(
         selection=[
-            ("weekly", "Hebdomadaire"),
-            ("biweekly", "Aux 2 semaines"),
-            ("monthly", "Mensuel"),
-            ("quarterly", "Trimestriel"),
-            ("biannually", "Semestriel"),
-            ("yearly", "Annuel"),
+            ("weekly", "Weekly"),
+            ("biweekly", "Every 2 weeks"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("biannually", "Semiannual"),
+            ("yearly", "Annual"),
         ],
-        string="Fréquence",
+        string="Frequency",
         required=True,
         default="quarterly",
         tracking=True,
     )
     template_line_id = fields.Many2one(
         comodel_name="hosting.maintenance.template.line",
-        string="Depuis le modèle",
+        string="From template",
         readonly=True,
-        help="La ligne de modèle à partir de laquelle cette planification a été créée",
+        help="The template line this schedule was created from",
     )
     last_performed = fields.Date(
-        string="Dernière exécution",
+        string="Last run",
         tracking=True,
-        help="Date de la dernière exécution de cette tâche de maintenance",
+        help="Date this maintenance task was last performed",
     )
     next_due = fields.Date(
-        string="Prochaine échéance",
+        string="Next due date",
         compute="_compute_next_due",
         store=True,
-        help="Date calculée pour la prochaine maintenance planifiée",
+        help="Computed date of the next scheduled maintenance",
     )
     days_until_due = fields.Integer(
-        string="Jours avant l'échéance",
+        string="Days until due",
         compute="_compute_days_until_due",
         store=True,
     )
     is_overdue = fields.Boolean(
-        string="En retard",
+        string="Overdue",
         compute="_compute_is_overdue",
         store=True,
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Assigné à",
+        string="Assigned to",
         default=lambda self: self.env.user,
         tracking=True,
     )
     instructions = fields.Text(
         string="Instructions",
-        help="Instructions étape par étape pour effectuer cette tâche de maintenance",
+        help="Step-by-step instructions to perform this maintenance task",
     )
     notes = fields.Text(
         string="Notes",
-        help="Notes ou commentaires supplémentaires sur cette planification de maintenance",
+        help="Additional notes or comments about this maintenance schedule",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
         tracking=True,
     )
@@ -144,24 +146,34 @@ class HostingMaintenanceSchedule(models.Model):
             record.activity_ids.filtered(
                 lambda a: a.activity_type_id == activity_type
             ).unlink()
-            # Construire la note d'activité avec les détails
+            # Note dans la langue de l'assigné, activité créée dans son env
+            # (objet de l'avis d'activité, piège 63) ; libellés de sélection
+            # traduits sur le même env.
+            assignee = record.user_id or self.env.user
+            aenv = user_env(self.env, assignee)
+            arecord = record.with_env(aenv)
             note_parts = [
                 f"<strong>{record.name}</strong>",
-                f"Service : {record.service_id.name}",
-                f"Client : {record.service_id.partner_id.name or 'N/D'}",
-                f"Type : {record._get_type_display()}",
-                f"Fréquence : {record._get_frequency_display()}",
+                aenv._("Service: %s", record.service_id.name),
+                aenv._("Client: %s", record.service_id.partner_id.name or aenv._("N/A")),
+                aenv._("Type: %s", arecord._get_type_display()),
+                aenv._("Frequency: %s", arecord._get_frequency_display()),
             ]
             if record.instructions:
-                note_parts.append(f"<br/><strong>Instructions :</strong><br/>{record.instructions.replace(chr(10), '<br/>')}")
+                note_parts.append(
+                    "<br/><strong>%s</strong><br/>%s" % (
+                        aenv._("Instructions:"),
+                        record.instructions.replace(chr(10), '<br/>'),
+                    )
+                )
             note = "<br/>".join(note_parts)
             # Créer une nouvelle activité
-            record.activity_schedule(
+            arecord.activity_schedule(
                 "hosting_management.mail_activity_type_hosting_maintenance",
                 date_deadline=record.next_due,
                 summary=record.name,
                 note=note,
-                user_id=record.user_id.id or self.env.user.id,
+                user_id=assignee.id,
             )
 
     # ------------------------------------------------------------ crochets
@@ -261,13 +273,16 @@ class HostingMaintenanceSchedule(models.Model):
         )
 
         AuditLog = self.env["hosting.audit.log"]
+        # Journal d'audit, retour d'activité et note au fil : relus par l'équipe
+        # d'hébergement, langue de la société (bouton, MCP ou XML-RPC).
+        env = reader_env(self.env)
         for record in self:
             AuditLog._log_event(
                 action_type="maintenance",
                 category="ops",
-                description=(
-                    f"Maintenance complétée : {record.name} "
-                    f"(service : {record.service_id.name})"
+                description=env._(
+                    "Maintenance completed: %(name)s (service: %(service)s)",
+                    name=record.name, service=record.service_id.name,
                 ),
                 res_model=self._name,
                 res_id=record.id,
@@ -284,10 +299,10 @@ class HostingMaintenanceSchedule(models.Model):
                 activities = record.activity_ids.filtered(
                     lambda a: a.activity_type_id == activity_type
                 )
-                activities.action_feedback(feedback=f"Complété le {today}")
+                activities.action_feedback(feedback=env._("Completed on %s", today))
             # Publier un message dans le chatter
             record.message_post(
-                body=f"Tâche de maintenance complétée le {today}",
+                body=env._("Maintenance task completed on %s", today),
                 message_type="notification",
             )
         # Créer de nouvelles activités pour la prochaine échéance (après recalcul de next_due)
@@ -331,13 +346,14 @@ class HostingMaintenanceSchedule(models.Model):
     def _get_type_display(self):
         """Obtenir la valeur d'affichage du type de maintenance."""
         self.ensure_one()
-        return dict(self._fields["maintenance_type"].selection).get(
-            self.maintenance_type, self.maintenance_type
-        )
+        # Libellé traduit dans la langue de self.env (l'appelant l'épingle).
+        return dict(
+            self._fields["maintenance_type"]._description_selection(self.env)
+        ).get(self.maintenance_type, self.maintenance_type)
 
     def _get_frequency_display(self):
         """Obtenir la valeur d'affichage de la fréquence."""
         self.ensure_one()
-        return dict(self._fields["frequency"].selection).get(
-            self.frequency, self.frequency
-        )
+        return dict(
+            self._fields["frequency"]._description_selection(self.env)
+        ).get(self.frequency, self.frequency)

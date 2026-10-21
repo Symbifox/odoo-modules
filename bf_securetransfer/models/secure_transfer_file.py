@@ -47,102 +47,128 @@ DENY_EXTENSIONS = frozenset(
     }
 )
 
+_GB, _MB, _KB = 1073741824, 1048576, 1024
+
+
+def size_label(env, nbytes, limit=False):
+    """A byte count for a reader, with its unit in ``env``'s language.
+
+    The units are text, not symbols: French writes « Go », « Mo », « Ko », « o »
+    where English writes GB, MB, KB, B. Pin the reader's language on ``env``
+    (the visitor's page, the recipient's email). ``limit`` formats an upload
+    cap (``%g``, GB or MB only), the default a file size (two decimals in GB,
+    one in MB, none in KB, whole bytes below).
+    """
+    nbytes = nbytes or 0
+    if limit:
+        if nbytes >= _GB:
+            return env._("%s GB", "%g" % (nbytes / float(_GB)))
+        return env._("%s MB", "%g" % (nbytes / float(_MB)))
+    if nbytes >= _GB:
+        return env._("%s GB", "%.2f" % (nbytes / float(_GB)))
+    if nbytes >= _MB:
+        return env._("%s MB", "%.1f" % (nbytes / float(_MB)))
+    if nbytes >= _KB:
+        return env._("%s KB", "%.0f" % (nbytes / float(_KB)))
+    return env._("%s B", "%d" % nbytes)
+
 
 class SecureTransferFile(models.Model):
     _name = "secure.transfer.file"
-    _description = "Transfert sécurisé — Fichier"
+    _description = "Secure transfer: file"
     _order = "id asc"
     _rec_name = "filename"
 
     transfer_id = fields.Many2one(
         "secure.transfer",
-        string="Transfert",
+        string="Transfer",
         required=True,
         index=True,
         ondelete="cascade",
     )
-    filename = fields.Char(string="Nom de fichier", required=True)
+    filename = fields.Char(string="File name", required=True)
     extension = fields.Char(string="Extension", readonly=True)
     # Float on purpose: Integer maps to int4 and overflows at 2.1 GB.
-    size = fields.Float(string="Taille déclarée (octets)", required=True)
-    size_confirmed = fields.Float(string="Taille confirmée (octets)", readonly=True)
+    size = fields.Float(string="Declared size (bytes)", required=True)
+    size_confirmed = fields.Float(string="Confirmed size (bytes)", readonly=True)
     mimetype = fields.Char(
-        string="Type MIME",
+        string="MIME type",
         readonly=True,
-        help="Déterminé côté serveur à partir du nom — jamais fourni par le "
-             "client. Informatif seulement : le téléchargement force "
+        help="Determined server-side from the name, never supplied by the "
+             "client. Informational only: the download forces "
              "application/octet-stream.",
     )
     s3_key = fields.Char(
-        string="Clé S3",
+        string="S3 key",
         required=True,
         readonly=True,
         index=True,
         copy=False,
     )
     etag = fields.Char(
-        string="ETag épinglé",
+        string="Pinned ETag",
         readonly=True,
         copy=False,
-        help="ETag S3 capturé à la finalisation et revérifié avant chaque "
-             "téléchargement — bloque le remplacement de l'objet après coup.",
+        help="S3 ETag captured at finalization and rechecked before every "
+             "download; blocks replacement of the object afterward.",
     )
     checksum = fields.Char(
-        string="Somme de contrôle",
+        string="Checksum",
         readonly=True,
-        help="Réservé (Phase 2) : SHA-256 calculé côté client en flux. Vide "
-             "au MVP — l'intégrité repose sur la taille exacte + l'ETag épinglé.",
+        help="Reserved (Phase 2): SHA-256 computed client-side in a "
+             "stream. Empty in the MVP: integrity relies on the exact "
+             "size + the pinned ETag.",
     )
     state = fields.Selection(
         selection=[
-            ("pending", "En attente"),
-            ("uploading", "Téléversement en cours"),
-            ("uploaded", "Téléversé"),
-            ("verified", "Vérifié"),
-            ("error", "Erreur"),
-            ("purged", "Purgé"),
+            ("pending", "Pending"),
+            ("uploading", "Uploading"),
+            ("uploaded", "Uploaded"),
+            ("verified", "Verified"),
+            ("error", "Error"),
+            ("purged", "Purged"),
         ],
-        string="État",
+        string="Status",
         default="pending",
         required=True,
         copy=False,
     )
     scanned = fields.Selection(
         selection=[
-            ("none", "Non analysé"),
-            ("pending", "Analyse en cours"),
-            ("clean", "Sain"),
-            ("infected", "Infecté"),
+            ("none", "Not scanned"),
+            ("pending", "Scan in progress"),
+            ("clean", "Clean"),
+            ("infected", "Infected"),
         ],
-        string="Analyse antivirus",
+        string="Antivirus scan",
         default="none",
         required=True,
-        help="Crochet ClamAV (Phase 2). La route de téléchargement n'autorise "
-             "que « Non analysé » ou « Sain » dès maintenant.",
+        help="ClamAV hook (Phase 2). The download route only allows \"Not "
+             "scanned\" or \"Clean\" for now.",
     )
-    download_count = fields.Integer(string="Téléchargements", default=0, copy=False)
+    download_count = fields.Integer(string="Downloads", default=0, copy=False)
 
     # -- multipart plan
     upload_mode = fields.Selection(
-        selection=[("simple", "PUT simple"), ("multipart", "Multipart")],
-        string="Mode de téléversement",
+        selection=[("simple", "Simple PUT"), ("multipart", "Multipart")],
+        string="Upload mode",
         required=True,
         default="simple",
         readonly=True,
     )
-    s3_upload_id = fields.Char(string="UploadId S3", readonly=True, copy=False)
-    part_size = fields.Integer(string="Taille de partie (octets)", readonly=True)
-    parts_total = fields.Integer(string="Nombre de parties", readonly=True)
+    s3_upload_id = fields.Char(string="S3 UploadId", readonly=True, copy=False)
+    part_size = fields.Integer(string="Part size (bytes)", readonly=True)
+    parts_total = fields.Integer(string="Number of parts", readonly=True)
     parts_manifest = fields.Json(
-        string="Manifeste des parties",
+        string="Parts manifest",
         readonly=True,
         copy=False,
-        help="Cache du dernier ListParts (pour la reprise). La vérité reste "
-             "toujours ListParts côté S3.",
+        help="Cache of the last ListParts (for resuming). The source of "
+             "truth remains ListParts on the S3 side.",
     )
 
     _sql_constraints = [
-        ("s3_key_uniq", "unique(s3_key)", "Cette clé S3 est déjà utilisée."),
+        ("s3_key_uniq", "unique(s3_key)", "This S3 key is already in use."),
     ]
 
     # ------------------------------------------------------------------ guards
@@ -151,7 +177,7 @@ class SecureTransferFile(models.Model):
         still a draft — the upload capability dies at finalize."""
         self.ensure_one()
         if self.transfer_id.state != "draft":
-            raise UserError(_("Ce transfert n'accepte plus de téléversements."))
+            raise UserError(_("This transfer no longer accepts uploads."))
 
     @staticmethod
     def _key_for(transfer):
@@ -176,13 +202,20 @@ class SecureTransferFile(models.Model):
             return True
         return (self.filename or "").lower().endswith(".pdf")
 
+    def _size_label(self):
+        """The declared size with its unit, in the language of ``self.env``.
+        The email templates call it: their rendering already pins the
+        recipient's language on the records it reads."""
+        self.ensure_one()
+        return size_label(self.env, self.size)
+
     # ------------------------------------------------------------------ simple PUT
     def presign_simple(self):
         """Presigned simple PUT for this file → ``{"url", "headers"}``.
         The signed Content-Length caps the body to the declared size."""
         self._check_uploadable()
         if self.upload_mode != "simple":
-            raise UserError(_("Ce fichier requiert un téléversement multipart."))
+            raise UserError(_("This file requires a multipart upload."))
         plan = s3.presign_put(self.env, self.s3_key, int(self.size))
         self.write({"state": "uploading"})
         return plan
@@ -197,7 +230,7 @@ class SecureTransferFile(models.Model):
         existing plan so an in-session resume never orphans an MPU."""
         self._check_uploadable()
         if self.upload_mode != "multipart":
-            raise UserError(_("Ce fichier se téléverse en un seul PUT."))
+            raise UserError(_("This file uploads in a single PUT."))
         if not self.s3_upload_id:
             part_size = self._part_size()
             self.write({
@@ -218,21 +251,21 @@ class SecureTransferFile(models.Model):
         is capped (anti presign-farming)."""
         self._check_uploadable()
         if not self.s3_upload_id:
-            raise UserError(_("Le téléversement multipart n'est pas initialisé."))
+            raise UserError(_("The multipart upload is not initialized."))
         # Require a real sequence. A bare string iterates CHARACTER BY
         # CHARACTER, so mpu_sign("123") used to quietly sign parts 1, 2 and 3.
         # The web controller already rejects non-lists, but this method has no
         # leading underscore — it is RPC surface for anyone holding model
         # access, and the guard belongs where the parsing happens.
         if part_numbers is not None and not isinstance(part_numbers, (list, tuple, set)):
-            raise UserError(_("Numéros de partie invalides."))
+            raise UserError(_("Invalid part numbers."))
         try:
             nums = sorted({int(n) for n in (part_numbers or [])})
         except (TypeError, ValueError):
-            raise UserError(_("Numéros de partie invalides."))
+            raise UserError(_("Invalid part numbers."))
         nums = [n for n in nums if 1 <= n <= self.parts_total]
         if not nums:
-            raise UserError(_("Aucun numéro de partie valide."))
+            raise UserError(_("No valid part number."))
         batch_max = s3._int_param(self.env, "mpu_sign_batch_max", 20)
         nums = nums[:batch_max]
         return s3.mpu_sign_parts(self.env, self.s3_key, self.s3_upload_id, nums)
@@ -256,7 +289,7 @@ class SecureTransferFile(models.Model):
         ETag. Returns True."""
         self._check_uploadable()
         if not self.s3_upload_id:
-            raise UserError(_("Le téléversement multipart n'est pas initialisé."))
+            raise UserError(_("The multipart upload is not initialized."))
         parts = s3.mpu_list_parts(self.env, self.s3_key, self.s3_upload_id)
         stored = sum(p["size"] for p in parts)
         if not parts or stored != int(self.size):
@@ -267,15 +300,15 @@ class SecureTransferFile(models.Model):
                 "parts_manifest": False,
             })
             raise UserError(_(
-                "Le téléversement de « %s » est incomplet ou incohérent — "
-                "il a été annulé, veuillez recommencer.", self.filename,
+                "The upload of \"%s\" is incomplete or inconsistent: it "
+                "was aborted, please start again.", self.filename,
             ))
         s3.mpu_complete(self.env, self.s3_key, self.s3_upload_id)
         head = s3.head_object(self.env, self.s3_key)
         if not head or head["size"] != int(self.size):
             self.write({"state": "error", "s3_upload_id": False})
             raise UserError(_(
-                "La vérification de « %s » après assemblage a échoué.",
+                "The verification of \"%s\" after assembly failed.",
                 self.filename,
             ))
         self.write({

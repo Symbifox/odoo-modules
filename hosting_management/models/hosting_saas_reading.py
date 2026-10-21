@@ -27,72 +27,74 @@ import logging
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingSaasBackupReading(models.Model):
     _name = "hosting.saas.backup.reading"
-    _description = "Relevé de sauvegarde infonuagique"
+    _description = "Cloud backup reading"
     _order = "period_end desc, id desc"
     _rec_name = "display_name"
 
     provider = fields.Selection(
         selection=[("cubebackup", "CubeBackup")],
-        string="Produit",
+        string="Product",
         required=True,
         default="cubebackup",
         index=True,
     )
-    period_start = fields.Date(string="Début de la période")
-    period_end = fields.Date(string="Fin de la période", required=True, index=True)
+    period_start = fields.Date(string="Period start")
+    period_end = fields.Date(string="Period end", required=True, index=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)
 
     # ── Licence ──────────────────────────────────────────────────────────
-    seats_total = fields.Integer(string="Comptes achetés")
-    seats_used = fields.Integer(string="Comptes utilisés")
+    seats_total = fields.Integer(string="Purchased seats")
+    seats_used = fields.Integer(string="Used seats")
     seats_free = fields.Integer(
-        string="Comptes libres",
+        string="Free seats",
         compute="_compute_seats_free",
         store=True,
     )
     saturated = fields.Boolean(
-        string="Licence saturée",
+        string="License full",
         compute="_compute_seats_free",
         store=True,
     )
-    license_expiry = fields.Date(string="Expiration de la licence")
+    license_expiry = fields.Date(string="License expiration")
 
     # ── Stockage ─────────────────────────────────────────────────────────
-    storage_kind = fields.Char(string="Stockage")
-    storage_location = fields.Char(string="Emplacement")
-    storage_available = fields.Char(string="Espace disponible")
+    storage_kind = fields.Char(string="Storage")
+    storage_location = fields.Char(string="Location")
+    storage_available = fields.Char(string="Available space")
     index_path = fields.Char(string="Index")
-    index_free_display = fields.Char(string="Espace de l'index")
-    index_free_pct = fields.Float(string="Index libre (%)", digits=(5, 1))
+    index_free_display = fields.Char(string="Index space")
+    index_free_pct = fields.Float(string="Free index space (%)", digits=(5, 1))
 
     # ── Provenance ───────────────────────────────────────────────────────
     ingest_source = fields.Selection(
         selection=[
-            ("email", "Rapport par courriel"),
-            ("api", "API de la console"),
-            ("manual", "Saisie manuelle"),
+            ("email", "Email report"),
+            ("api", "Console API"),
+            ("manual", "Manual entry"),
         ],
-        string="Lu par",
+        string="Read via",
         default="email",
     )
     source_ref = fields.Char(
-        string="Référence de la source",
-        help="De quoi le relevé a été tiré, du point de vue du lecteur "
-             "(par exemple l'identifiant du courriel). Le module ne sait pas "
-             "ce que cette référence désigne et ne la suit jamais.",
+        string="Source reference",
+        help="What the reading was taken from, from the reader's point of "
+             "view (e.g. the email identifier in your mailbox). The module does "
+             "not know what this reference points to and never follows it.",
     )
     line_ids = fields.One2many(
         comodel_name="hosting.saas.backup.reading.line",
         inverse_name="reading_id",
-        string="Par organisation",
+        string="By organization",
     )
     error_count = fields.Integer(
-        string="Erreurs de la période",
+        string="Errors in the period",
         compute="_compute_error_count",
         store=True,
     )
@@ -101,16 +103,23 @@ class HostingSaasBackupReading(models.Model):
         (
             "saas_reading_unique",
             "unique(provider, period_end)",
-            "Un relevé existe déjà pour ce produit et cette période.",
+            "A reading already exists for this product and this period.",
         ),
     ]
 
     @api.depends("period_start", "period_end", "provider")
     def _compute_display_name(self):
+        # Nom STOCKÉ (calculé au dépôt du relevé, souvent par l'API) : libellé
+        # de sélection traduit et texte dans la langue de la société.
+        env = reader_env(self.env)
+        labels = dict(self._fields["provider"]._description_selection(env))
         for rec in self:
-            label = dict(self._fields["provider"].selection).get(rec.provider, "")
+            label = labels.get(rec.provider, "")
             if rec.period_start and rec.period_end:
-                rec.display_name = f"{label} {rec.period_start} au {rec.period_end}"
+                rec.display_name = env._(
+                    "%(provider)s %(start)s to %(end)s",
+                    provider=label, start=rec.period_start, end=rec.period_end,
+                )
             else:
                 rec.display_name = f"{label} {rec.period_end or ''}".strip()
 
@@ -128,34 +137,34 @@ class HostingSaasBackupReading(models.Model):
 
 class HostingSaasBackupReadingLine(models.Model):
     _name = "hosting.saas.backup.reading.line"
-    _description = "Relevé de sauvegarde infonuagique (organisation)"
+    _description = "Cloud backup reading (organization)"
     _order = "reading_id desc, organization_name"
 
     reading_id = fields.Many2one(
         comodel_name="hosting.saas.backup.reading",
-        string="Relevé",
+        string="Reading",
         required=True,
         ondelete="cascade",
         index=True,
     )
-    organization_name = fields.Char(string="Organisation", required=True)
+    organization_name = fields.Char(string="Organization", required=True)
     service_id = fields.Many2one(
         comodel_name="hosting.service",
         string="Service",
         index=True,
         ondelete="set null",
-        help="⚠️ Résolu par le NOM de l'organisation, faute de mieux : le "
-             "rapport du fournisseur ne porte pas son identifiant. La "
-             "correspondance passe par les exécutions déjà versées, qui, elles, "
-             "portent les deux. Un nom changé chez le fournisseur laisse donc "
-             "une ligne non rattachée plutôt qu'une ligne fausse.",
+        help="⚠️ Resolved by the organization NAME, for lack of anything "
+             "better: the provider's report does not carry its "
+             "identifier. The match goes through the runs already "
+             "received, which carry both. A name changed at the provider "
+             "therefore leaves an unlinked line rather than a wrong one.",
     )
-    errors = fields.Integer(string="Erreurs")
-    items = fields.Integer(string="Éléments nouveaux ou modifiés")
+    errors = fields.Integer(string="Errors")
+    items = fields.Integer(string="New or changed items")
     size_display = fields.Char(
         string="Volume",
-        help="Tel que le fournisseur l'écrit. Le courriel n'a qu'un chiffre "
-             "significatif (« 5 GB ») : on garde le mot, pas une fausse "
-             "précision en octets.",
+        help="As the provider writes it. The email has only one "
+             "significant digit (\"5 GB\"): we keep the word, not a false "
+             "precision in bytes.",
     )
     period_end = fields.Date(related="reading_id.period_end", store=True, index=True)

@@ -4,7 +4,7 @@ import os
 from datetime import timedelta
 from urllib.parse import quote
 
-from odoo import api, fields, models, _
+from odoo import SUPERUSER_ID, api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import config
 
@@ -23,27 +23,27 @@ except ImportError:
 class ProjectCredential(models.Model):
     """Stockage sécurisé d'identifiants liés aux projets."""
     _name = 'project.credential'
-    _description = 'Identifiant de projet'
+    _description = "Project credential"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'project_id, type_id, name'
 
     # Identification
     name = fields.Char(
-        string='Nom',
+        string="Name",
         required=True,
         tracking=True,
-        help='Nom descriptif pour cet identifiant',
+        help="Descriptive name for this credential",
     )
     reference = fields.Char(
-        string='Référence',
+        string="Reference",
         tracking=True,
-        help='Référence externe optionnelle ou numéro de billet',
+        help="Optional external reference or ticket number",
     )
 
     # Relations
     project_id = fields.Many2one(
         'project.project',
-        string='Projet',
+        string="Project",
         required=True,
         ondelete='cascade',
         tracking=True,
@@ -58,7 +58,7 @@ class ProjectCredential(models.Model):
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Société',
+        string="Company",
         related='project_id.company_id',
         store=True,
         readonly=True,
@@ -67,7 +67,7 @@ class ProjectCredential(models.Model):
         'res.partner',
         string='Contact',
         tracking=True,
-        help='Personne-ressource pour cet identifiant',
+        help="Contact person for this credential",
     )
 
     # Données d'identifiant - Texte en clair
@@ -76,18 +76,18 @@ class ProjectCredential(models.Model):
         tracking=True,
     )
     username = fields.Char(
-        string="Nom d'utilisateur",
+        string="Username",
         tracking=True,
     )
     domain = fields.Char(
-        string='Domaine',
+        string="Domain",
         tracking=True,
-        help="Domaine ou locataire pour l'authentification (ex. : domaine AD)",
+        help="Domain or tenant for authentication (e.g. AD domain)",
     )
 
     # Données d'identifiant - Chiffré
     password = fields.Char(
-        string='Mot de passe',
+        string="Password",
         compute='_compute_password',
         inverse='_inverse_password',
         store=False,
@@ -98,68 +98,68 @@ class ProjectCredential(models.Model):
         depends_context=('uid',),
     )
     password_encrypted = fields.Char(
-        string='Mot de passe (chiffré)',
+        string="Password (encrypted)",
         groups='base.group_system',
     )
     api_key = fields.Char(
-        string='Clé API',
+        string="API key",
         compute='_compute_api_key',
         inverse='_inverse_api_key',
         store=False,
         depends_context=('uid',),
     )
     api_key_encrypted = fields.Char(
-        string='Clé API (chiffrée)',
+        string="API key (encrypted)",
         groups='base.group_system',
     )
 
     # Support de fichier de clé
     key_file = fields.Binary(
-        string='Fichier de clé',
+        string="Key file",
         attachment=True,
-        help='Clé SSH, certificat ou autre fichier de clé (.pem, .key, .p12, .ppk)',
+        help="SSH key, certificate or other key file (.pem, .key, .p12, .ppk)",
     )
     key_filename = fields.Char(
-        string='Nom du fichier de clé',
+        string="Key file name",
     )
 
     # Environnement
     environment = fields.Selection([
         ('production', 'Production'),
-        ('staging', 'Pré-production'),
-        ('development', 'Développement'),
-        ('testing', 'Tests'),
-    ], string='Environnement', default='production', tracking=True)
+        ('staging', "Staging"),
+        ('development', "Development"),
+        ('testing', "Testing"),
+    ], string="Environment", default='production', tracking=True)
 
     # Cycle de vie
     state = fields.Selection([
-        ('active', 'Actif'),
-        ('expiring', 'Expire bientôt'),
-        ('expired', 'Expiré'),
-        ('revoked', 'Révoqué'),
-    ], string='Statut', default='active', tracking=True, index=True)
+        ('active', "Active"),
+        ('expiring', "Expiring soon"),
+        ('expired', "Expired"),
+        ('revoked', "Revoked"),
+    ], string="Status", default='active', tracking=True, index=True)
 
     expiration_date = fields.Date(
-        string="Date d'expiration",
+        string="Expiration date",
         tracking=True,
     )
     last_verified = fields.Datetime(
-        string='Dernière vérification',
+        string="Last verified",
         tracking=True,
-        help='Date de la dernière vérification du bon fonctionnement de cet identifiant',
+        help="Date this credential was last verified as working",
     )
     last_rotated = fields.Datetime(
-        string='Dernière rotation',
+        string="Last rotated",
         tracking=True,
-        help='Date du dernier changement de mot de passe',
+        help="Date of the last password change",
     )
 
     # Contrôle d'accès
     restricted = fields.Boolean(
-        string='Restreint',
+        string="Restricted",
         default=False,
         tracking=True,
-        help="Si coché, le mot de passe n'est visible que par les gestionnaires d'identifiants",
+        help="If checked, the password is only visible to credential managers",
     )
 
     # -------------------------------------------------------------------------
@@ -173,17 +173,17 @@ class ProjectCredential(models.Model):
     # -------------------------------------------------------------------------
 
     mfa_type = fields.Selection([
-        ('unknown', 'À documenter'),
-        ('none', 'Aucun'),
-        ('totp', 'Code à durée limitée (TOTP)'),
-        ('hardware', 'Clé matérielle (FIDO2, YubiKey)'),
-        ('app', "Notification d'une application"),
+        ('unknown', "To document"),
+        ('none', "None"),
+        ('totp', "Time-based code (TOTP)"),
+        ('hardware', "Hardware key (FIDO2, YubiKey)"),
+        ('app', "App notification"),
         ('sms', 'SMS'),
-        ('email', 'Courriel'),
-        ('backup_codes', 'Codes de secours seulement'),
-        ('other', 'Autre'),
+        ('email', "Email"),
+        ('backup_codes', "Backup codes only"),
+        ('other', "Other"),
     ],
-        string='Deuxième facteur',
+        string="Second factor",
         # « À documenter » et non « Aucun » : les identifiants qui existaient
         # avant ce lot n'ont jamais été interrogés là-dessus. Les déclarer sans
         # deuxième facteur inventerait une réponse, et une réponse fausse dans
@@ -196,78 +196,78 @@ class ProjectCredential(models.Model):
     )
     mfa_vault_id = fields.Many2one(
         'project.credential.vault',
-        string='Porteur du facteur',
+        string="Factor holder",
         tracking=True,
-        help="Où vit le deuxième facteur. Jamais son contenu.",
+        help="Where the second factor lives. Never its content.",
     )
     mfa_reference = fields.Char(
-        string='Référence chez le porteur',
+        string="Reference at the holder",
         tracking=True,
-        help="L'étiquette du facteur chez son porteur, de quoi le retrouver sans "
-             "le lire.\n"
-             "⚠️ Jamais la graine elle-même : ce champ la refuse.",
+        help="The factor's label at its holder, enough to find it without "
+             "reading it.\n⚠️ Never the seed itself: this field refuses "
+             "it.",
     )
     mfa_holder_ids = fields.Many2many(
         'res.users',
         'project_credential_mfa_holder_rel', 'credential_id', 'user_id',
-        string='Peuvent produire un code',
+        string="Can produce a code",
         tracking=True,
     )
     mfa_holder_note = fields.Char(
-        string='Autre porteur',
+        string="Other holder",
         tracking=True,
-        help="Quand la personne qui détient le facteur n'a pas de compte ici : "
-             "un jeton dans un tiroir, quelqu'un chez le client.",
+        help="When the person who holds the factor has no account here: a "
+             "token in a drawer, someone at the client.",
     )
     mfa_recovery = fields.Selection([
-        ('unknown', 'À documenter'),
-        ('none', 'Aucune'),
-        ('backup_codes', 'Codes de secours'),
-        ('second_holder', 'Une deuxième personne peut produire un code'),
-        ('vault', 'Le facteur est dans un porteur partagé'),
-        ('provider', 'Réémission par le fournisseur'),
+        ('unknown', "To document"),
+        ('none', "No recovery"),
+        ('backup_codes', "Backup codes"),
+        ('second_holder', "A second person can produce a code"),
+        ('vault', "The factor is in a shared holder"),
+        ('provider', "Reissued by the provider"),
     ],
-        string='Reprise',
+        string="Recovery",
         default='unknown',
         required=True,
         tracking=True,
-        help="Ce qui se passe si le porteur disparaît. C'est la question que "
-             "personne ne se pose avant un départ.",
+        help="What happens if the holder disappears. It is the question "
+             "nobody asks before someone leaves.",
     )
     mfa_last_reviewed = fields.Date(
-        string='Dernière revue du facteur',
+        string="Last factor review",
         tracking=True,
     )
     mfa_state = fields.Selection([
-        ('unknown', 'À documenter'),
-        ('absent', 'Aucun deuxième facteur'),
-        ('at_risk', 'Deuxième facteur sans relève'),
-        ('covered', 'Couvert'),
+        ('unknown', "To document"),
+        ('absent', "No second factor"),
+        ('at_risk', "Second factor without fallback"),
+        ('covered', "Covered"),
     ],
-        string='État du deuxième facteur',
+        string="Second factor status",
         compute='_compute_mfa_state',
         store=True,
         index=True,
     )
     mfa_item_url = fields.Char(
-        string="Lien vers l'élément",
+        string="Item link",
         compute='_compute_mfa_item_url',
     )
 
     # Notes
     notes = fields.Html(
         string='Notes',
-        help='Informations ou instructions supplémentaires',
+        help="Additional information or instructions",
     )
 
     # Champs calculés
     is_expiring_soon = fields.Boolean(
-        string='Expire bientôt',
+        string="Expiring soon",
         compute='_compute_expiration_status',
         store=True,
     )
     is_expired = fields.Boolean(
-        string='Est expiré',
+        string="Is expired",
         compute='_compute_expiration_status',
         store=True,
     )
@@ -365,9 +365,9 @@ class ProjectCredential(models.Model):
         """
         if not Fernet:
             raise UserError(_(
-                "Le paquet Python « cryptography » n'est pas installé : ce "
-                "module ne peut ni chiffrer ni déchiffrer. Aucun secret ne "
-                "sera écrit en clair."
+                "The \"cryptography\" Python package is not installed: "
+                "this module can neither encrypt nor decrypt. No secret "
+                "will be written in clear text."
             ))
         cle = self._cle_hors_base()
         if cle:
@@ -382,11 +382,10 @@ class ProjectCredential(models.Model):
                 )
                 return cle
         raise UserError(_(
-            "Aucune clé de chiffrement n'est configurée. Rangez-la dans la "
-            "variable d'environnement %(env)s ou dans %(conf)s de odoo.conf, "
-            "puis redémarrez Odoo.\n\n"
-            "Elle ne doit PAS vivre dans la base : un dump emporterait la clé "
-            "avec ce qu'elle protège.",
+            "No encryption key is configured. Store it in the %(env)s "
+            "environment variable or in %(conf)s in odoo.conf, then "
+            "restart Odoo.\n\nIt must NOT live in the database: a dump "
+            "would carry the key along with what it protects.",
             env=self._CLE_ENV, conf=self._CLE_CONF,
         ))
 
@@ -420,8 +419,8 @@ class ProjectCredential(models.Model):
         except Exception as e:
             _logger.error('Échec du chiffrement : %s', type(e).__name__)
             raise UserError(_(
-                "Le chiffrement a échoué, rien n'a été enregistré. Vérifiez la "
-                "clé de chiffrement."
+                "Encryption failed, nothing was saved. Check the "
+                "encryption key."
             )) from e
 
     def _decrypt_value(self, encrypted_value):
@@ -438,15 +437,16 @@ class ProjectCredential(models.Model):
             return Fernet(cle).decrypt(encrypted_value.encode()).decode()
         except InvalidToken as e:
             raise UserError(_(
-                "Cette valeur ne se déchiffre pas avec la clé configurée. Soit "
-                "la clé n'est pas celle qui a servi à l'écrire, soit la valeur "
-                "n'a jamais été chiffrée. Dans les deux cas, ne réenregistrez "
-                "pas la fiche : cela chiffrerait le contenu une deuxième fois."
+                "This value cannot be decrypted with the configured key. "
+                "Either the key is not the one used to write it, or the "
+                "value was never encrypted. In both cases, do not save "
+                "the record again: that would encrypt the content a "
+                "second time."
             )) from e
         except Exception as e:
             _logger.error('Échec du déchiffrement : %s', type(e).__name__)
             raise UserError(_(
-                "Le déchiffrement a échoué. Vérifiez la clé de chiffrement."
+                "Decryption failed. Check the encryption key."
             )) from e
 
     def _dechiffre_pour_affichage(self, valeur_chiffree):
@@ -485,8 +485,8 @@ class ProjectCredential(models.Model):
         """
         if not self._is_credential_manager():
             raise AccessError(_(
-                "Seul un gestionnaire d'identifiants peut contrôler l'état du "
-                "chiffrement du coffre."
+                "Only a credential manager can check the encryption "
+                "status of the vault."
             ))
         bilan = {'total': 0, 'chiffres': 0, 'en_clair': [], 'illisibles': []}
         for cred in self.sudo().search(domaine or []):
@@ -581,8 +581,8 @@ class ProjectCredential(models.Model):
             new_value = bool(vals['restricted'])
             if any(bool(rec.restricted) != new_value for rec in self):
                 raise AccessError(_(
-                    "Seul un gestionnaire d'identifiants peut modifier l'état "
-                    "« Restreint » d'un identifiant."
+                    "Only a credential manager can change the "
+                    "\"Restricted\" status of a credential."
                 ))
 
         # Toucher au deuxième facteur, c'est l'avoir revu : la date se pose
@@ -705,21 +705,24 @@ class ProjectCredential(models.Model):
         et le premier collage d'une adresse otpauth:// la briserait en silence.
         """
         etiquettes = {
-            'mfa_reference': _('Référence chez le porteur'),
-            'mfa_holder_note': _('Autre porteur'),
-            'notes': _('Notes'),
+            'mfa_reference': self.env._("Reference at the holder"),
+            'mfa_holder_note': self.env._("Other holder"),
+            'notes': self.env._('Notes'),
         }
         for record in self:
             for champ, strict in self._CHAMPS_SANS_GRAINE.items():
                 etiquette = etiquettes[champ]
                 raison = otp_secret_reason(record[champ], strict=strict)
                 if raison:
-                    raise ValidationError(_(
-                        "Le champ « %(champ)s » a reçu %(raison)s.\n\n"
-                        "Ce registre ne garde aucune graine : il dit seulement "
-                        "où vit le deuxième facteur et qui peut produire un "
-                        "code. Range la graine chez son porteur, et mets ici "
-                        "l'étiquette qui permet de la retrouver.",
+                    # La raison est paresseuse (`_lt` du garde) : la traduire
+                    # dans la langue de qui saisit avant de l'insérer.
+                    raison = self.env._(raison)
+                    raise ValidationError(self.env._(
+                        "The \"%(champ)s\" field received "
+                        "%(raison)s.\n\nThis register keeps no seed: it "
+                        "only says where the second factor lives and who "
+                        "can produce a code. Keep the seed at its holder, "
+                        "and put here the label that lets you find it.",
                         champ=etiquette, raison=raison,
                     ))
 
@@ -756,24 +759,24 @@ class ProjectCredential(models.Model):
             'last_verified': fields.Datetime.now(),
             'state': 'active',
         })
-        self.message_post(body=_('Identifiant vérifié comme fonctionnel.'))
+        self.message_post(body=_("Credential verified as working."))
 
     def action_revoke(self):
         """Marquer l'identifiant comme révoqué."""
         self.write({'state': 'revoked'})
-        self.message_post(body=_('Identifiant révoqué.'))
+        self.message_post(body=_("Credential revoked."))
 
     def action_reactivate(self):
         """Réactiver un identifiant révoqué."""
         self.write({'state': 'active'})
-        self.message_post(body=_('Identifiant réactivé.'))
+        self.message_post(body=_("Credential reactivated."))
 
     def action_rotate_password(self):
         """Ouvrir l'assistant de rotation de mot de passe."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Rotation de mot de passe'),
+            'name': _("Password rotation"),
             'res_model': 'project.credential.rotate.wizard',
             'views': [[False, 'form']],
             'target': 'new',
@@ -785,6 +788,29 @@ class ProjectCredential(models.Model):
     # -------------------------------------------------------------------------
     # Méthodes de tâche planifiée
     # -------------------------------------------------------------------------
+
+    def _langue_du_responsable(self):
+        """La langue de qui lit les notes du travail planifié sur cet identifiant.
+
+        L'identifiant n'a pas de responsable propre : on prend le chef du
+        projet, puis la personne qui l'a créé (ni le superusager ni un compte
+        portail : OdooBot ou un compte public ne lisent pas le fil), puis la
+        langue de la société. Rend une langue ACTIVE ; à défaut, celle du
+        travail planifié (`env.lang` lève sur une langue inactive).
+        """
+        self.ensure_one()
+        candidats = [self.project_id.user_id, self.create_uid]
+        langue = False
+        for usager in candidats:
+            if usager and usager.id != SUPERUSER_ID and not usager.share \
+                    and usager.lang:
+                langue = usager.lang
+                break
+        if not langue:
+            societe = self.company_id or self.env.company
+            langue = societe.partner_id.lang
+        actives = {code for code, _nom in self.env['res.lang'].get_installed()}
+        return langue if langue in actives else self.env.lang
 
     @api.model
     def _cron_check_expiring_credentials(self):
@@ -800,8 +826,12 @@ class ProjectCredential(models.Model):
         if expired:
             expired.write({'state': 'expired'})
             for cred in expired:
+                # Hors requête : la note suit la langue de qui suit
+                # l'identifiant, épinglée sur l'enregistrement (`cred.env._`,
+                # pas `_()`, qui lirait la langue du travail planifié).
+                cred = cred.with_context(lang=cred._langue_du_responsable())
                 cred.message_post(
-                    body=_('Identifiant expiré.'),
+                    body=cred.env._("Credential expired."),
                     message_type='notification',
                 )
 
@@ -814,8 +844,10 @@ class ProjectCredential(models.Model):
         if expiring:
             expiring.write({'state': 'expiring'})
             for cred in expiring:
+                cred = cred.with_context(lang=cred._langue_du_responsable())
                 cred.message_post(
-                    body=_("L'identifiant expirera le %s.") % cred.expiration_date,
+                    body=cred.env._("The credential will expire on %s.",
+                                    cred.expiration_date),
                     message_type='notification',
                 )
 

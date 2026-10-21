@@ -8,8 +8,10 @@ recipients whose Odoo contact is English would still receive French.
 
 This hook fixes that deterministically: it clears the templates' forced ``lang``
 (so send-time context language — the recipient's contact language — wins) and
-writes each template's en_CA body_html/subject by applying the .po term map to
-the source. Called on install (post_init_hook) and on each version bump
+writes each template's en_CA body_html/subject from its en_US source (the body
+through the .po term map, which is empty now that the source is English). It no
+longer writes subjects of its own: they drifted from the source (« — » where the
+source says « : »). Called on install (post_init_hook) and on each version bump
 (migrations/.../post-migrate.py), so it is self-healing without touching
 noupdate.
 """
@@ -25,20 +27,6 @@ _TEMPLATE_XIDS = (
     "mail_template_transfer_receipt",
     "mail_template_download_notice",
 )
-
-# Full-string English subjects (subject is a whole-value translated field).
-_EN_SUBJECTS = {
-    "mail_template_transfer_link":
-        "{{ object.sender_name or object.sender_email }} sent you files "
-        "— {{ object.name }}",
-    "mail_template_secure_message":
-        "{{ object.sender_name or object.sender_email }} sent you a secure "
-        "message — {{ object.name }}",
-    "mail_template_transfer_receipt":
-        "Your transfer is online — {{ object.name }}",
-    "mail_template_download_notice":
-        "Your files were downloaded — {{ object.name }}",
-}
 
 
 def _po_template_terms():
@@ -86,12 +74,15 @@ def apply_email_translations(env):
         en_body = str(src)
         for fr, en in terms_sorted:
             en_body = en_body.replace(fr, en)
+        # The subject is a whole value: en_CA reads the en_US source as is.
+        en_subject = (tmpl.sudo().with_context(lang="en_US").subject
+                      or tmpl.sudo().subject or "")
         env.cr.execute(
             "UPDATE mail_template SET "
             "body_html = jsonb_set(COALESCE(body_html, '{}'::jsonb), '{en_CA}', to_jsonb(%s::text)), "
             "subject = jsonb_set(COALESCE(subject, '{}'::jsonb), '{en_CA}', to_jsonb(%s::text)) "
             "WHERE id = %s",
-            (en_body, _EN_SUBJECTS.get(xid, ""), tmpl.id),
+            (en_body, en_subject, tmpl.id),
         )
     env.registry.clear_cache()
     _logger.info("bf_securetransfer: en_CA email templates applied (%d terms).",

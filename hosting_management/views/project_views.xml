@@ -10,7 +10,7 @@
                 <button name="action_view_licenses" type="object"
                         class="oe_stat_button" groups="hosting_management.group_hosting_user" icon="fa-key"
                         invisible="license_seat_count == 0">
-                    <field name="license_seat_count" widget="statinfo" string="Licences"/>
+                    <field name="license_seat_count" widget="statinfo" string="Licenses"/>
                 </button>
             </xpath>
         </field>

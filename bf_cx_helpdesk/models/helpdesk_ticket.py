@@ -8,7 +8,7 @@ method simply has no super and no caller.
 """
 import logging
 
-from odoo import _, models
+from odoo import models
 
 from odoo.addons.bf_cx.models.bf_cx_feedback import param_is_true
 
@@ -35,14 +35,27 @@ class HelpdeskTicket(models.Model):
             if partner:
                 allowed, blocked = partner._bf_cx_split_solicitable()
                 if blocked:
-                    self.message_post(
-                        body=_(
-                            "Sondage CSAT non envoyé à %s : garde-fou de "
-                            "sollicitation (cooldown, liste à ne pas "
-                            "contacter ou dossier en recouvrement)."
+                    # Note interne, lue par l'équipe : la langue de l'assigné
+                    # du billet (l'envoi peut partir hors requête, à la
+                    # fermeture automatique), sinon celle de l'env.
+                    equipe = self.with_context(lang=self._bf_cx_team_lang())
+                    equipe.message_post(
+                        body=equipe.env._(
+                            "CSAT survey not sent to %s: "
+                            "over-solicitation guard (cooldown, "
+                            "do-not-contact list or account in "
+                            "collections)."
                         )
                         % partner.display_name
                     )
                     return None
                 partner._bf_cx_mark_solicited()
         return deliver()
+
+    def _bf_cx_team_lang(self):
+        """La langue de l'équipe pour une note interne au fil du billet."""
+        actives = {code for code, _nom in self.env["res.lang"].get_installed()}
+        user = self.user_id
+        if user and not user.share and user.lang in actives:
+            return user.lang
+        return self.env.lang

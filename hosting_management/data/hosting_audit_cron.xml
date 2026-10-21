@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="hosting_audit_log_archive_cron" model="ir.cron">
-            <field name="name">Hébergement : archiver les anciens journaux d'audit</field>
+            <field name="name">Hosting: archive old audit logs</field>
             <field name="model_id" ref="model_hosting_audit_log"/>
             <field name="state">code</field>
             <field name="code">model._cron_archive_old_logs()</field>

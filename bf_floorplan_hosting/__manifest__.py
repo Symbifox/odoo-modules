@@ -3,7 +3,9 @@
     "name": "Plans d'étage : hébergement",
     "summary": "Les appareils et les serveurs de la gestion d'hébergement, "
                "posés sur le plan d'étage",
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: les libellés d'hébergement (système, cycle de vie, état du serveur)
+    #   sont lus dans la langue de qui consulte le plan.
+    "version": "18.0.1.1.1",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

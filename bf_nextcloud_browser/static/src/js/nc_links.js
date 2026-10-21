@@ -71,7 +71,7 @@ function isRecordThread(thread) {
 }
 
 function errorMessage(e) {
-    return (e && e.data && e.data.message) || (e && e.message) || _t("Erreur.");
+    return (e && e.data && e.data.message) || (e && e.message) || _t("Error.");
 }
 
 /**
@@ -82,6 +82,11 @@ export class NcPickerDialog extends Component {
     static template = "bf_nextcloud_browser.NcPickerDialog";
     static components = { Dialog, NcBrowserApp };
     static props = { close: Function, onInsert: Function };
+
+    // A Dialog title written in the template would never be translated.
+    get title() {
+        return _t("Insert a Nextcloud link");
+    }
 
     onPick(link) {
         this.props.onInsert(link);
@@ -98,6 +103,10 @@ export class NcLinkedFilesDialog extends Component {
     static template = "bf_nextcloud_browser.NcLinkedFilesDialog";
     static components = { Dialog };
     static props = { close: Function, model: String, resId: Number };
+
+    get title() {
+        return _t("Nextcloud files linked in this thread");
+    }
 
     setup() {
         this.orm = useService("orm");
@@ -121,8 +130,7 @@ export class NcLinkedFilesDialog extends Component {
             const name = (e && e.data && e.data.name) || "";
             this.state.error =
                 name.endsWith(".NcNotConnected") || name.endsWith(".NcTokenRejected")
-                    ? _t(
-                          "Connectez votre Nextcloud (bouton Nextcloud de la barre du haut) pour voir l'état de ces fichiers."
+                    ? _t("Connect your Nextcloud (Nextcloud button in the top bar) to see the status of these files."
                       )
                     : errorMessage(e);
         } finally {
@@ -137,17 +145,17 @@ export class NcLinkedFilesDialog extends Component {
         if (link.share && link.share.path) {
             return link.share.path.split("/").filter(Boolean).pop() || link.share.path;
         }
-        return link.kind === "internal" ? _t("Fichier n° %s", link.key) : _t("Partage %s", link.key);
+        return link.kind === "internal" ? _t("File no. %s", link.key) : _t("Share %s", link.key);
     }
 
     where(link) {
         if (link.entry) {
-            return link.entry.parent_rel || _t("Racine");
+            return link.entry.parent_rel || _t("Root folder");
         }
         if (link.share && link.share.rel) {
             const parts = link.share.rel.split("/");
             parts.pop();
-            return parts.join("/") || _t("Racine");
+            return parts.join("/") || _t("Root folder");
         }
         return "";
     }
@@ -155,26 +163,26 @@ export class NcLinkedFilesDialog extends Component {
     stateLabel(link) {
         if (!link.found) {
             return link.kind === "internal"
-                ? _t("Introuvable : supprimé, ou pas partagé avec vous")
-                : _t("Pas dans vos partages : retiré, ou créé par quelqu'un d'autre");
+                ? _t("Not found: deleted, or not shared with you")
+                : _t("Not in your shares: removed, or created by someone else");
         }
         if (link.kind === "internal") {
-            return _t("Lien interne");
+            return _t("Internal link");
         }
         const sh = link.share;
         const parts = [sh.kind];
         parts.push(
             sh.expiration
-                ? _t("expire le %s", sh.expiration)
+                ? _t("expires on %s", sh.expiration)
                 : sh.expiry_checked
-                  ? _t("sans expiration")
-                  : _t("expiration non vérifiée")
+                  ? _t("no expiry")
+                  : _t("expiry not checked")
         );
         if (sh.has_password) {
-            parts.push(_t("mot de passe"));
+            parts.push(_t("password"));
         }
         if (sh.writable) {
-            parts.push(_t("écriture permise"));
+            parts.push(_t("write allowed"));
         }
         return parts.join(" · ");
     }
@@ -186,20 +194,19 @@ export class NcLinkedFilesDialog extends Component {
     async copy(link) {
         try {
             await navigator.clipboard.writeText(link.url);
-            this.notification.add(_t("Lien copié."), { type: "success" });
+            this.notification.add(_t("Link copied."), { type: "success" });
         } catch {
-            this.notification.add(link.url, { title: _t("Lien"), sticky: true });
+            this.notification.add(link.url, { title: _t("Link address"), sticky: true });
         }
     }
 
     revoke(link) {
         this.dialog.add(ConfirmationDialog, {
-            title: _t("Retirer le partage"),
-            body: _t(
-                "Le lien public vers « %s » cessera de fonctionner pour tous ceux qui l'ont reçu, y compris dans les messages déjà envoyés.",
+            title: _t("Remove share"),
+            body: _t("The public link to \"%s\" will stop working for everyone who received it, including in messages already sent.",
                 this.label(link)
             ),
-            confirmLabel: _t("Retirer"),
+            confirmLabel: _t("Remove"),
             confirm: async () => {
                 try {
                     const res = await this.orm.call("bf.nc.browser", "linked_revoke_share", [
@@ -209,11 +216,11 @@ export class NcLinkedFilesDialog extends Component {
                     ]);
                     if (res && res.gone) {
                         this.notification.add(
-                            _t("Ce partage n'existe plus, ou Nextcloud ne vous le montre pas : rien n'a été retiré."),
+                            _t("This share no longer exists, or Nextcloud does not show it to you: nothing was removed."),
                             { type: "warning" }
                         );
                     } else {
-                        this.notification.add(_t("Partage retiré."), { type: "success" });
+                        this.notification.add(_t("Share removed."), { type: "success" });
                     }
                 } catch (e) {
                     this.notification.add(errorMessage(e), { type: "danger" });
@@ -226,14 +233,18 @@ export class NcLinkedFilesDialog extends Component {
 }
 
 /**
- * Classer des pieces du fil dans Nextcloud (18.0.4.3.0) : les pieces a cocher a
- * gauche, l'explorateur a droite, ouvert sur le dossier client de la fiche. La
- * piece est COPIEE et reste dans Odoo.
+ * File chatter attachments in Nextcloud (18.0.4.3.0): the attachments to tick
+ * on the left, the browser on the right, opened on the record's client folder.
+ * The attachment is COPIED and stays in Odoo.
  */
 export class NcFileDialog extends Component {
     static template = "bf_nextcloud_browser.NcFileDialog";
     static components = { Dialog, NcBrowserApp };
     static props = { close: Function, model: String, resId: Number, onDone: { type: Function, optional: true } };
+
+    get title() {
+        return _t("File attachments in the client folder");
+    }
 
     setup() {
         this.orm = useService("orm");
@@ -295,7 +306,7 @@ export class NcFileDialog extends Component {
     }
 
     get where() {
-        return this.state.crumbs.slice(1).join(" / ") || _t("Racine");
+        return this.state.crumbs.slice(1).join(" / ") || _t("Root folder");
     }
 
     get canFile() {
@@ -318,14 +329,14 @@ export class NcFileDialog extends Component {
             const failed = res.failed || [];
             if ((res.skipped || []).length) {
                 this.notification.add(
-                    _t("Trop volumineuses, laissées dans Odoo : %s", res.skipped.join(", ")),
+                    _t("Too large, left in Odoo: %s", res.skipped.join(", ")),
                     { type: "warning", sticky: true }
                 );
             }
             if (failed.length) {
                 this.notification.add(
-                    failed.map((f) => `${f.name} : ${f.error}`).join(" ; "),
-                    { title: _t("Non copiées"), type: "danger", sticky: true }
+                    failed.map((f) => _t("%(name)s: %(error)s", { name: f.name, error: f.error })).join("; "),
+                    { title: _t("Not copied"), type: "danger", sticky: true }
                 );
             }
             if (!n) {
@@ -333,7 +344,7 @@ export class NcFileDialog extends Component {
                 return;
             }
             this.notification.add(
-                _t("%(n)s pièce(s) copiée(s) dans %(where)s.", { n, where: this.where }),
+                _t("%(n)s attachment(s) copied to %(where)s.", { n, where: this.where }),
                 { type: "success" }
             );
             this.props.onDone?.();
@@ -377,9 +388,11 @@ patch(Composer.prototype, {
     /** The link on a line of its own, where the cursor was. */
     bfNcInsertLink(link) {
         const composer = toRaw(this.props.composer);
-        let line = `${link.name} : ${link.url}`;
+        // Written into the message being composed: in the language of its
+        // author, who writes it (the recipients' language is not known here).
+        let line = _t("%(name)s: %(url)s", { name: link.name, url: link.url });
         if (link.kind === "share" && link.expire_date) {
-            line += " " + _t("(expire le %s)", link.expire_date);
+            line += " " + _t("(expires on %s)", link.expire_date);
         }
         const text = composer.text || "";
         const start = composer.selection?.start ?? text.length;
@@ -394,7 +407,7 @@ patch(Composer.prototype, {
         if (link.password) {
             // Jamais dans le message : le mot de passe se transmet a part.
             this.bfNcNotification.add(
-                _t("Mot de passe du partage, à transmettre séparément : %s", link.password),
+                _t("Share password, to send separately: %s", link.password),
                 { type: "warning", sticky: true }
             );
         }

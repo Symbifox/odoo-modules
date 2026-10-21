@@ -12,6 +12,8 @@ from markupsafe import Markup, escape
 from odoo import fields as odoo_fields, http
 from odoo.http import request
 
+from ..models.hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 MAX_PAYLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -125,12 +127,18 @@ class ProvisioningAPIController(http.Controller):
                     [("is_company", "=", True), ("name", "=ilike", client_name)],
                     limit=1,
                 )
+            # Textes écrits par une route publique (script d'hôte), lus par
+            # l'équipe d'hébergement : langue de la société, pas la source.
+            renv = reader_env(env)
             if not partner:
                 partner = env["res.partner"].create({
                     "name": client_name or slug,
                     "is_company": True,
                     "ref": slug,
-                    "comment": f"Auto-créé via provisioning script ({software.code}) le {odoo_fields.Datetime.now()}",
+                    "comment": renv._(
+                        "Auto-created by the provisioning script (%(code)s) on %(date)s",
+                        code=software.code, date=odoo_fields.Datetime.now(),
+                    ),
                 })
 
             # Service upsert
@@ -190,19 +198,30 @@ class ProvisioningAPIController(http.Controller):
                 "mimetype": "text/plain",
             })
 
+            # `status` et `action` restent les mots du protocole (valeurs).
             summary_lines = [
-                f"<strong>Provisioning {escape(status or 'unknown')}</strong> "
-                f"({escape(action)})",
-                f"Software: {escape(software.name)} ({escape(software.code or '')})",
-                f"Server: {escape(server.name) if server else '(non lié)'}",
-                f"URL: {escape(server_url or domain_name or '-')}",
-                f"Container: {escape(data.get('docker_container') or '-')}",
-                f"DB: {escape(data.get('db_name') or '-')}",
-                f"NPM port: {escape(str(data.get('npm_port') or '-'))}",
-                f"Started: {escape(data.get('started_at') or '-')}",
-                f"Ended: {escape(data.get('ended_at') or '-')}",
+                Markup(renv._(
+                    "<strong>Provisioning %(status)s</strong> (%(action)s)"
+                )) % {"status": status or "unknown", "action": action},
+                renv._(
+                    "Software: %(name)s (%(code)s)",
+                    name=software.name, code=software.code or "",
+                ),
+                renv._(
+                    "Server: %s", server.name if server else renv._("(not linked)"),
+                ),
+                renv._("URL: %s", server_url or domain_name or "-"),
+                renv._("Container: %s", data.get("docker_container") or "-"),
+                renv._("DB: %s", data.get("db_name") or "-"),
+                renv._("NPM port: %s", str(data.get("npm_port") or "-")),
+                renv._("Started: %s", data.get("started_at") or "-"),
+                renv._("Ended: %s", data.get("ended_at") or "-"),
             ]
-            body = Markup("<p>" + "<br/>".join(summary_lines) + "</p>")
+            # Chaque ligne échappée (sauf la première, déjà Markup) puis jointe.
+            body = Markup("<p>%s</p>") % Markup("<br/>").join(
+                line if isinstance(line, Markup) else escape(line)
+                for line in summary_lines
+            )
             service.message_post(
                 body=body,
                 attachment_ids=[attachment.id],
@@ -213,9 +232,9 @@ class ProvisioningAPIController(http.Controller):
             env["hosting.audit.log"]._log_event(
                 action_type="create" if action == "created" else "config_change",
                 category="config",
-                description=(
-                    f"Tenant {slug} {action} via provisioning script "
-                    f"({software.code or software.name})"
+                description=renv._(
+                    "Tenant %(slug)s %(action)s via provisioning script (%(software)s)",
+                    slug=slug, action=action, software=software.code or software.name,
                 ),
                 res_model="hosting.service",
                 res_id=service.id,

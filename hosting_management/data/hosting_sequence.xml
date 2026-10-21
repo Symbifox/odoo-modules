@@ -4,7 +4,7 @@
 
         <!-- Séquence des services d'hébergement -->
         <record id="seq_hosting_service" model="ir.sequence">
-            <field name="name">Service d'hébergement</field>
+            <field name="name">Hosting service</field>
             <field name="code">hosting.service</field>
             <field name="prefix">HST-</field>
             <field name="padding">4</field>
@@ -19,7 +19,7 @@
 
         <!-- Séquence des exécutions de sauvegarde -->
         <record id="seq_hosting_backup_run" model="ir.sequence">
-            <field name="name">Exécution de sauvegarde</field>
+            <field name="name">Backup run</field>
             <field name="code">hosting.backup.run</field>
             <field name="prefix">BKP-</field>
             <field name="padding">5</field>
@@ -28,7 +28,7 @@
 
         <!-- Séquence des sauvegardes infonuagiques (produit tiers) -->
         <record id="seq_hosting_saas_backup_run" model="ir.sequence">
-            <field name="name">Exécution de sauvegarde infonuagique</field>
+            <field name="name">Cloud backup run</field>
             <field name="code">hosting.saas.backup.run</field>
             <field name="prefix">SBK-</field>
             <field name="padding">5</field>

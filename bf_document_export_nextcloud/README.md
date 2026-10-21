@@ -61,6 +61,10 @@ name, with its original extension.
   the readme with the list of documents it kept out. A missing file is reported per
   document.
 
+## Languages (18.0.1.2.2)
+
+A Nextcloud that cannot be reached is recognised by the network error behind the message rather than by its wording, so it is tried once per export and reported once, whatever the language of the message. The check used to look for a French word, which `bf_document_nextcloud_sync` 18.0.1.6.0 no longer writes for a user set to English: each document would then have waited for its own request to fail. A missing file is still reported per document.
+
 ## Requirements
 
 * Odoo 18

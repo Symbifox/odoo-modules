@@ -10,19 +10,18 @@
                         <div class="card-body text-center">
                             <h2 class="mb-0 text-muted" t-esc="state.data.employee_experience.uptake_display"/>
                             <small class="text-muted">
-                                <i class="fa fa-gift me-1"/>Adhésion aux avantages
-                                (<t t-esc="state.data.employee_experience.benefit_count"/>)
+                                <i class="fa fa-gift me-1"/>Benefit uptake (<t t-esc="state.data.employee_experience.benefit_count"/>)
                             </small>
                             <t t-if="state.data.employee_experience.unused_count > 0">
                                 <br/>
                                 <small class="text-warning fw-bold">
-                                    <t t-esc="state.data.employee_experience.unused_count"/> que personne ne prend
+                                    <t t-esc="state.data.employee_experience.unused_count"/> that nobody uses
                                 </small>
                             </t>
                             <t t-if="state.data.employee_experience.annual_cost">
                                 <br/>
                                 <small class="text-muted">
-                                    <t t-esc="state.data.employee_experience.annual_cost"/><t t-esc="state.data.employee_experience.currency"/> par année
+                                    <t t-esc="state.data.employee_experience.annual_cost"/><t t-esc="state.data.employee_experience.currency"/> per year
                                 </small>
                             </t>
                         </div>

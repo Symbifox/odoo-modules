@@ -28,6 +28,13 @@ class TestDataroomTemplates(BaseNeuve, TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_securetransfer"], ["fr_CA"], overwrite=True)
+        # French expectations: a fresh base (the public CI) has en_US only
+        # _() with no lang in context reads the caller's (OdooBot), fr_CA at BF.
+        cls.env.user.lang = "fr_CA"
         Brand = cls.env["secure.transfer.brand"]
         cls.brand_open = Brand.create({
             "name": "QA — salle de données",

@@ -5,12 +5,12 @@
         <field name="name">secure.transfer.send.wizard.form</field>
         <field name="model">secure.transfer.send.wizard</field>
         <field name="arch" type="xml">
-            <form string="Transfert sécurisé">
+            <form string="Secure transfer">
                 <div class="alert alert-info" role="alert">
-                    Le contenu est <strong>retenu</strong> : le destinataire reçoit un
-                    lien, et le message comme les fichiers ne s'affichent qu'après
-                    avoir saisi un <strong>code de vérification à usage unique</strong>
-                    (courriel ou SMS). Chaque accès est journalisé (Loi 25).
+                    The content is <strong>held back</strong>: the recipient gets a
+                    link, and neither the message nor the files appear until
+                    they enter a <strong>one-time verification code</strong>
+                    (email or SMS). Every access is journaled (Law 25).
                 </div>
                 <div class="alert alert-warning" role="alert"
                      invisible="not brand_warning">
@@ -25,7 +25,7 @@
                         <field name="partner_ids" widget="many2many_tags"
                                options="{'no_create_edit': True}"
                                invisible="audience_mode == 'open'"/>
-                        <field name="extra_emails" placeholder="autre@exemple.com, ..."
+                        <field name="extra_emails" placeholder="other@example.com, ..."
                                invisible="audience_mode == 'open'"/>
                         <field name="otp_channel" widget="radio"
                                invisible="audience_mode == 'open'"/>
@@ -38,7 +38,7 @@
                     <group>
                         <field name="template_id"
                                options="{'no_create': True}"
-                               placeholder="Repartir d'une configuration déjà réglée"/>
+                               placeholder="Start from a configuration already set up"/>
                         <field name="template_note" readonly="1" nolabel="1"
                                colspan="2" invisible="not template_id"/>
                         <field name="brand_id"/>
@@ -46,37 +46,32 @@
                         <field name="password" password="True"/>
                     </group>
                 </group>
-                <group string="Audience ouverte" invisible="audience_mode != 'open'">
+                <group string="Open audience" invisible="audience_mode != 'open'">
                     <div class="alert alert-warning" role="alert" colspan="2">
-                        Le lien ne sera envoyé <strong>à personne</strong> : vous le
-                        recevez dans votre accusé et c'est vous qui le diffusez.
-                        Chaque personne qui l'ouvre saisit son courriel (ou son
-                        mobile), reçoit un code, et n'accède au contenu qu'après
-                        l'avoir confirmé. Son identité est inscrite au journal et
-                        estampée sur les PDF téléchargés.
+                        The link will be sent <strong>to no one</strong>: you receive it in your receipt and you share it yourself. Each person who opens it enters their email (or mobile), receives a code, and only reaches the content after confirming it. Their identity is recorded in the log and stamped on the downloaded PDFs.
                     </div>
                     <field name="audience_max"
-                           placeholder="0 = valeur de la marque"/>
+                           placeholder="0 = brand value"/>
                     <field name="audience_max_downloads"/>
                     <field name="notify_on_join"/>
                     <field name="audience_allow_sms"
                            invisible="not brand_allows_audience_sms"/>
                     <field name="audience_domains" colspan="2"
-                           placeholder="Vide = liste de la marque.&#10;Ex. : @client.com&#10;⚠ Une liste posée ici interdit l'identification par mobile."/>
+                           placeholder="Empty = the brand's list.&#10;E.g.: @client.com&#10;⚠ A list set here rules out identification by mobile."/>
                 </group>
                 <group>
-                    <field name="subject" placeholder="P. ex. Accès au portail — identifiants"/>
+                    <field name="subject" placeholder="E.g. Portal access: credentials"/>
                 </group>
-                <field name="message" placeholder="Votre message sécurisé…"
+                <field name="message" placeholder="Your secure message…"
                        nolabel="1"/>
-                <group string="Fichiers">
+                <group string="Files">
                     <field name="attachment_ids" widget="many2many_binary"
                            nolabel="1" colspan="2"/>
                     <div colspan="2" class="text-muted">
                         <field name="upload_hint" nolabel="1" readonly="1"/>
                     </div>
                 </group>
-                <group string="Expéditeur" col="2">
+                <group string="Sender" col="2">
                     <!-- readonly for anyone but a securetransfer manager: a
                          plain user sends as themselves. The form only mirrors
                          the rule — action_send re-forces the values, since a
@@ -86,16 +81,16 @@
                     <field name="sender_email" readonly="sender_locked"/>
                 </group>
                 <footer>
-                    <button string="Envoyer" name="action_send" type="object"
+                    <button string="Send" name="action_send" type="object"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_secure_send_wizard" model="ir.actions.act_window">
-        <field name="name">Nouvel envoi sécurisé</field>
+        <field name="name">New secure send</field>
         <field name="res_model">secure.transfer.send.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="secure_send_wizard_view_form"/>
@@ -111,7 +106,7 @@
          brand that actually offers the mode — that is what makes the default
          survive the onchange. -->
     <record id="action_secure_send_open_audience" model="ir.actions.act_window">
-        <field name="name">Nouveau lien à audience ouverte</field>
+        <field name="name">New open audience link</field>
         <field name="res_model">secure.transfer.send.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="secure_send_wizard_view_form"/>
@@ -122,7 +117,7 @@
     <!-- Also reachable from a contact's Action menu (« partout où on transmet
          des courriels »): pre-fills the picked contact as recipient. -->
     <record id="action_secure_send_from_partner" model="ir.actions.act_window">
-        <field name="name">Envoyer un transfert sécurisé</field>
+        <field name="name">Send a secure transfer</field>
         <field name="res_model">secure.transfer.send.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="secure_send_wizard_view_form"/>

@@ -23,55 +23,55 @@ class HostingBackupRepository(models.Model):
     """Dépôt Restic — un record par destination configurée dans le pipeline."""
 
     _name = "hosting.backup.repository"
-    _description = "Dépôt Restic"
+    _description = "Restic repository"
     _inherit = ["mail.thread"]
     _order = "category, name"
 
     name = fields.Char(
-        string="Nom du dépôt",
+        string="Repository name",
         required=True,
-        help="Clé exacte de la destination Restic (ex. 'Internal/Database')",
+        help="Exact key of the Restic destination (e.g. 'Internal/Database')",
         tracking=True,
     )
     category = fields.Selection(
         selection=[
-            ("internal", "Interne"),
+            ("internal", "Internal"),
             ("tenant", "Tenant"),
             ("clients", "Clients"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
-        string="Catégorie",
+        string="Category",
         compute="_compute_category",
         store=True,
     )
     s3_url = fields.Char(
-        string="URL S3",
+        string="S3 URL",
         groups="hosting_management.group_hosting_manager",
     )
     password_file_path = fields.Char(
-        string="Fichier mot de passe (info)",
+        string="Password file (info)",
         groups="hosting_management.group_hosting_manager",
     )
 
-    retention_daily = fields.Integer(string="Rétention quotidienne", default=14)
-    retention_weekly = fields.Integer(string="Rétention hebdomadaire", default=8)
-    retention_monthly = fields.Integer(string="Rétention mensuelle", default=12)
+    retention_daily = fields.Integer(string="Daily retention", default=14)
+    retention_weekly = fields.Integer(string="Weekly retention", default=8)
+    retention_monthly = fields.Integer(string="Monthly retention", default=12)
 
-    snapshot_count = fields.Integer(string="Nombre de snapshots", default=0)
-    latest_snapshot_date = fields.Datetime(string="Dernier snapshot")
-    size_bytes = fields.Float(string="Taille (octets)", default=0.0)
-    size_human = fields.Char(string="Taille", compute="_compute_size_human")
+    snapshot_count = fields.Integer(string="Snapshot count", default=0)
+    latest_snapshot_date = fields.Datetime(string="Last snapshot")
+    size_bytes = fields.Float(string="Size (bytes)", default=0.0)
+    size_human = fields.Char(string="Size", compute="_compute_size_human")
 
-    last_watchdog_sync = fields.Datetime(string="Dernière sync watchdog")
+    last_watchdog_sync = fields.Datetime(string="Last watchdog sync")
     is_stale = fields.Boolean(
-        string="Périmé",
+        string="Stale",
         compute="_compute_is_stale",
         store=True,
-        help="Vrai si dernier snapshot > 27 h",
+        help="True if the last snapshot is older than 27 h",
     )
 
     bucket_size_share = fields.Float(
-        string="Part du bucket (%)",
+        string="Bucket share (%)",
         compute="_compute_bucket_size_share",
         digits=(5, 2),
     )
@@ -81,7 +81,7 @@ class HostingBackupRepository(models.Model):
         relation="hosting_service_backup_repository_rel",
         column1="repository_id",
         column2="service_id",
-        string="Services liés",
+        string="Linked services",
     )
     snapshot_ids = fields.One2many(
         comodel_name="hosting.backup.snapshot",
@@ -93,7 +93,7 @@ class HostingBackupRepository(models.Model):
     notes = fields.Text(string="Notes")
 
     _sql_constraints = [
-        ("name_unique", "unique(name)", "Le nom du dépôt doit être unique."),
+        ("name_unique", "unique(name)", "The repository name must be unique."),
     ]
 
     @api.depends("name")
@@ -209,11 +209,11 @@ class HostingBackupRepository(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Liaison automatique"),
+                "title": _("Automatic linking"),
                 "message": (
-                    _("%d nouveau(x) service(s) lié(s) à ce dépôt.") % added
+                    _("%d new service(s) linked to this repository.") % added
                     if added
-                    else _("Aucun nouveau service à lier — déjà à jour.")
+                    else _("No new service to link, already up to date.")
                 ),
                 "type": "success" if added else "info",
                 "sticky": False,

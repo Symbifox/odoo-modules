@@ -32,6 +32,14 @@ class TestWizards(BaseNeuve, TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        for code in ("fr_CA", "en_CA"):
+            cls.env["res.lang"]._activate_lang(code)
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_securetransfer"], ["fr_CA"], overwrite=True)
+        # French expectations: a fresh base (the public CI) has en_US only
+        # _() with no lang in context reads the caller's (OdooBot), fr_CA at BF.
+        cls.env.user.lang = "fr_CA"
         cls.brand = cls.env.ref("bf_securetransfer.brand_default")
         icp = cls.env["ir.config_parameter"].sudo()
         icp.set_param("bf_securetransfer.quota_daily_transfers_per_ip", "500")
@@ -267,7 +275,10 @@ class TestWizards(BaseNeuve, TransactionCase):
         this guard, the whole staff can originate branded secure messages in
         the company's name."""
         wiz = self._wizard(extra_emails=self._addr())
-        exc = self._refused(wiz.with_user(self.outsider).action_send)
+        # The message is read in the caller's language: pinned to French, since
+        # an en_US caller reads the English source wherever en_US is active.
+        exc = self._refused(
+            wiz.with_user(self.outsider).with_context(lang="fr_CA").action_send)
         self.assertIn("réservée", str(exc))
 
     def test_send_refuses_an_empty_message(self):
@@ -313,15 +324,17 @@ class TestWizards(BaseNeuve, TransactionCase):
         self.assertEqual(
             self.env["secure.transfer"].browse(res["res_id"]).locale, "en_CA")
 
-    def test_send_locale_falls_back_to_french(self):
+    def test_send_locale_maps_en_us_to_en_ca(self):
         """Odoo's default en_US is not a locale the module ships: stored as-is
-        it would break the template lookup, so it must degrade to fr_CA."""
+        it would break the template lookup. Since the source went English it maps
+        to en_CA, not fr_CA: an English operator's recipients without a contact
+        got the transfer in French."""
         self.assertEqual(self.sender.lang, "en_US")
         wiz = self._wizard(user=self.sender, extra_emails=self._addr())
         with self._offline():
             res = wiz.action_send()
         self.assertEqual(
-            self.env["secure.transfer"].browse(res["res_id"]).locale, "fr_CA")
+            self.env["secure.transfer"].browse(res["res_id"]).locale, "en_CA")
 
     # ============================================================ reveal wizard
     def test_reveal_default_get_resolves_the_transfer_both_ways(self):
@@ -355,7 +368,8 @@ class TestWizards(BaseNeuve, TransactionCase):
         transfer = self._transfer()
         exc = self._refused(
             Wizard.with_user(self.plain_user).with_context(
-                default_transfer_id=transfer.id).default_get, ["transfer_id"])
+                default_transfer_id=transfer.id, lang="fr_CA").default_get,
+            ["transfer_id"])
         self.assertIn("gestionnaires", str(exc))
 
     def test_opening_the_reveal_wizard_reveals_nothing(self):
@@ -408,7 +422,8 @@ class TestWizards(BaseNeuve, TransactionCase):
         self.manager.write({"groups_id": [(3, self.g_manager.id)]})
         self.assertFalse(self.manager.has_group(
             "bf_securetransfer.group_securetransfer_manager"))
-        exc = self._refused(wiz.with_user(self.manager).action_confirm_reveal)
+        exc = self._refused(wiz.with_user(self.manager).with_context(
+            lang="fr_CA").action_confirm_reveal)
         self.assertIn("gestionnaires", str(exc))
         # Read back in sudo: the demoted account has also lost ACL access to
         # the wizard model itself (defence in depth), so the check must not be

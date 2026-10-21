@@ -43,28 +43,28 @@ def _parse_date(value):
 
 class HostingLicenseImportWizard(models.TransientModel):
     _name = "hosting.license.import.wizard"
-    _description = "Import d'un pool de licences (xlsx/ods)"
+    _description = "License pool import (xlsx/ods)"
 
-    attachment = fields.Binary(string="Fichier xlsx/ods", required=True)
-    filename = fields.Char(string="Nom du fichier")
+    attachment = fields.Binary(string="xlsx/ods file", required=True)
+    filename = fields.Char(string="Filename")
 
     name = fields.Char(
-        string="Nom du pool",
+        string="Pool name",
         required=True,
-        help="Ex. : « Windows 11 Pro – batch 2025-09 »",
+        help="E.g. \"Windows 11 Pro, batch 2025-09\"",
     )
     software_id = fields.Many2one(
         comodel_name="hosting.software",
-        string="Logiciel (catalogue)",
+        string="Software (catalog)",
     )
-    product_name = fields.Char(string="Produit (texte libre)")
-    vendor = fields.Char(string="Éditeur", default="Microsoft")
+    product_name = fields.Char(string="Product (free text)")
+    vendor = fields.Char(string="Vendor", default="Microsoft")
     license_type = fields.Selection(
         selection=[
-            ("per_device", "Une clé par poste"),
-            ("per_user", "Une clé par utilisateur"),
-            ("volume", "Clé volume"),
-            ("subscription", "Abonnement"),
+            ("per_device", "One key per device"),
+            ("per_user", "One key per user"),
+            ("volume", "Volume key"),
+            ("subscription", "Subscription"),
         ],
         string="Type",
         default="per_device",
@@ -72,20 +72,20 @@ class HostingLicenseImportWizard(models.TransientModel):
     )
     owner_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Propriétaire",
+        string="Owner",
         required=True,
         default=lambda self: self.env.company.partner_id,
     )
     purchase_date = fields.Date(
-        string="Date d'achat (défaut)",
-        help="Utilisée si la colonne « Date d'achat » est vide dans le fichier.",
+        string="Purchase date (default)",
+        help="Used if the \"Purchase date\" column is empty in the file.",
     )
 
     def _read_rows(self):
         """Lit le binary et retourne une liste de listes (chaque ligne = liste
         de cellules). Détecte xlsx vs ods par signature."""
         if not self.attachment:
-            raise UserError(_("Aucun fichier fourni."))
+            raise UserError(_("No file provided."))
         data = base64.b64decode(self.attachment)
         # xlsx & ods sont tous deux des ZIPs (signature PK\x03\x04)
         # On différencie par le contenu : xlsx contient xl/, ods contient content.xml.
@@ -94,20 +94,21 @@ class HostingLicenseImportWizard(models.TransientModel):
         try:
             zf = zipfile.ZipFile(io.BytesIO(data))
         except zipfile.BadZipFile as exc:
-            raise UserError(_("Fichier illisible (ni xlsx ni ods).")) from exc
+            raise UserError(_("Unreadable file (neither xlsx nor ods).")) from exc
         names = set(zf.namelist())
         if "xl/workbook.xml" in names:
             return self._read_xlsx(data)
         if "content.xml" in names:
             return self._read_ods(zf)
-        raise UserError(_("Format non reconnu (xlsx ou ods attendu)."))
+        raise UserError(_("Unrecognized format (xlsx or ods expected)."))
 
     def _read_xlsx(self, data):
         try:
             from openpyxl import load_workbook
         except ImportError as exc:
             raise UserError(
-                _("openpyxl est requis (devrait être disponible par défaut dans Odoo).")
+                _("openpyxl is required (it should be available in Odoo "
+                  "by default).")
             ) from exc
         wb = load_workbook(io.BytesIO(data), read_only=True, data_only=True)
         ws = wb.active
@@ -156,7 +157,7 @@ class HostingLicenseImportWizard(models.TransientModel):
         self.ensure_one()
         rows = self._read_rows()
         if not rows:
-            raise UserError(_("Le fichier est vide."))
+            raise UserError(_("The file is empty."))
 
         # Détecter la ligne d'en-tête (les fichiers réels ont des lignes vides
         # ou un titre avant). Les données commencent juste après.
@@ -219,8 +220,8 @@ class HostingLicenseImportWizard(models.TransientModel):
 
         if not created_seats:
             raise UserError(
-                _("Aucune clé trouvée. Vérifiez que le fichier a une colonne "
-                  "« Clé de produit » et des lignes de données.")
+                _("No key found. Check that the file has a \"Product "
+                  "key\" column and data rows.")
             )
 
         # Date d'achat globale : prendre la 1re non vide si pas saisie au wizard
@@ -233,7 +234,7 @@ class HostingLicenseImportWizard(models.TransientModel):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Pool importé"),
+            "name": _("Imported pool"),
             "res_model": "hosting.license",
             "res_id": license_rec.id,
             "view_mode": "form",

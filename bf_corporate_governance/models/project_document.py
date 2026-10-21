@@ -22,15 +22,15 @@ class ProjectDocument(models.Model):
     # réattribue son identifiant externe : la colonne n'est pas recréée.
     minute_book_section = fields.Selection(
         selection=[
-            ('charter', 'Statuts constitutifs'),
-            ('bylaws', 'Reglements'),
-            ('agreements', "Conventions d'actionnaires"),
-            ('director_minutes', 'Proces-verbaux des administrateurs'),
-            ('shareholder_minutes', 'Proces-verbaux des actionnaires'),
-            ('forms_filed', 'Formulaires deposes'),
-            ('financial_statements', 'Etats financiers'),
+            ('charter', "Articles of incorporation"),
+            ('bylaws', "By-laws"),
+            ('agreements', "Shareholder agreements"),
+            ('director_minutes', "Directors' minutes"),
+            ('shareholder_minutes', "Shareholders' minutes"),
+            ('forms_filed', "Filed forms"),
+            ('financial_statements', "Financial statements"),
         ],
-        string='Section du livre des minutes',
+        string="Minute book section",
     )
 
     @api.model

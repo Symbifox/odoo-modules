@@ -1,4 +1,4 @@
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.tools import format_amount
 
 #: Les états d'une dépense dont le coût est engagé : approuvée, puis payée.
@@ -23,9 +23,8 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     ex_benefit_id = fields.Many2one(
-        "bf.ex.benefit", string="Avantage",
-        help="Les dépenses portant ce produit alimentent le registre d'usage "
-             "de cet avantage.",
+        "bf.ex.benefit", string="Benefit",
+        help="Expenses using this product feed this benefit's usage register.",
     )
 
 
@@ -33,13 +32,13 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     ex_benefit_id = fields.Many2one(
-        "bf.ex.benefit", string="Avantage",
+        "bf.ex.benefit", string="Benefit",
         compute="_compute_ex_benefit_id", store=True, readonly=False,
-        help="Repris du produit, modifiable. À l'approbation, une ligne d'usage "
-             "confirmée est créée au montant réellement engagé.",
+        help="Taken from the product, editable. On approval, a confirmed "
+             "usage line is created for the amount actually spent.",
     )
     ex_usage_id = fields.Many2one(
-        "bf.ex.usage", string="Usage produit", readonly=True, copy=False,
+        "bf.ex.usage", string="Generated usage line", readonly=True, copy=False,
     )
 
     @api.depends("product_id")
@@ -118,11 +117,36 @@ class HrExpense(models.Model):
                 # registre ; `total_amount_currency` est dans celle de la dépense.
                 "amount": expense.total_amount or expense.total_amount_currency,
                 "source": "expense",
-                "note": _("Note de frais : %s", expense.name or expense.display_name),
+                # Texte STOCKÉ au registre de la personne : sa langue (voir
+                # `_ex_reader_lang`), pas celle de qui approuve.
+                "note": expense.with_context(
+                    lang=expense._ex_reader_lang()
+                ).env._("Expense: %s", expense.name or expense.display_name),
             })
             usage.action_confirm()
             expense.sudo().ex_usage_id = usage.id
         return True
+
+    def _ex_reader_lang(self):
+        """La langue de qui lit le registre d'usage : la personne elle-même.
+
+        Son usager, sinon son contact de travail, sinon la société.
+        Rend une langue ACTIVE, sinon celle de l'env (`env.lang` lève sur une
+        langue inactive).
+        """
+        self.ensure_one()
+        actives = {code for code, _nom in self.env["res.lang"].get_installed()}
+        # En `sudo` : qui approuve n'a pas forcément le droit de lire la fiche
+        # de l'employé ; on n'en lit que la langue.
+        employee = self.sudo().employee_id
+        for lang in (
+            employee.user_id.lang,
+            employee.work_contact_id.lang,
+            (self.company_id or self.env.company).partner_id.lang,
+        ):
+            if lang and lang in actives:
+                return lang
+        return self.env.lang
 
     def _ex_remove_usage(self):
         """Retirer la ligne qu'une dépense avait produite, avec une trace."""
@@ -137,10 +161,11 @@ class HrExpense(models.Model):
             amount = usage.amount
             currency = usage.currency_id
             usage.unlink()
-            expense._message_log(body=_(
-                "Ligne d'usage retirée du registre (« %(benefit)s », %(amount)s) : "
-                "la dépense n'est plus approuvée. Une nouvelle approbation en "
-                "créera une nouvelle, au montant d'alors.",
+            expense._message_log(body=self.env._(
+                "Usage line removed from the register (\"%(benefit)s\", "
+                "%(amount)s): the expense is no longer approved. A new "
+                "approval will create a new one, for the amount at that "
+                "time.",
                 benefit=benefit,
                 amount=format_amount(self.env, amount, currency) if currency else amount,
             ))

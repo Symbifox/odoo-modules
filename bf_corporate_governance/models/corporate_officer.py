@@ -3,54 +3,54 @@ from odoo import api, fields, models
 
 class CorporateOfficer(models.Model):
     _name = 'corporate.officer'
-    _description = 'Dirigeant corporatif'
+    _description = "Corporate officer"
     _inherit = ['mail.thread']
     _order = 'is_active desc, appointment_date desc'
 
     partner_id = fields.Many2one(
         'res.partner',
-        string='Dirigeant',
+        string="Officer",
         required=True,
         tracking=True,
     )
     title = fields.Selection(
         selection=[
-            ('president', 'Président'),
-            ('vice_president', 'Vice-président'),
-            ('secretary', 'Secrétaire'),
-            ('treasurer', 'Trésorier'),
-            ('director_general', 'Directeur général'),
-            ('other', 'Autre'),
+            ('president', "President"),
+            ('vice_president', "Vice-president"),
+            ('secretary', "Secretary"),
+            ('treasurer', "Treasurer"),
+            ('director_general', "General manager"),
+            ('other', "Other"),
         ],
-        string='Titre',
+        string="Title",
         required=True,
         tracking=True,
     )
     title_custom = fields.Char(
-        string='Titre personnalisé',
+        string="Custom title",
     )
     appointment_date = fields.Date(
-        string='Date de nomination',
+        string="Appointment date",
         required=True,
         tracking=True,
     )
     end_date = fields.Date(
-        string='Date de fin',
+        string="End date",
         tracking=True,
     )
     appointment_resolution_id = fields.Many2one(
         'corporate.resolution',
-        string='Résolution de nomination',
+        string="Appointment resolution",
     )
     is_active = fields.Boolean(
-        string='Actif',
+        string="Active",
         compute='_compute_is_active',
         store=True,
         index=True,
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Société',
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )

@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_corporate_compliance_check" model="ir.cron">
-            <field name="name">Corporatif : Vérifier les échéances de conformité</field>
+            <field name="name">Corporate: check compliance due dates</field>
             <field name="model_id" ref="model_corporate_compliance_event"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_compliance_deadlines()</field>

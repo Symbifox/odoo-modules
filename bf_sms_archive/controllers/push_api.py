@@ -62,17 +62,20 @@ class BfSmsPushController(http.Controller):
             start_url = "/odoo/action-%d" % action_id
         except Exception:
             start_url = "/odoo"
+        # Dans la langue de la requête (usager connecté, sinon le site ou le navigateur) : le
+        # téléphone affiche ce nom sous l'icône installée.
+        env = request.env
         manifest = {
-            "name": "%s — Messagerie SMS" % (company.name or "SMS"),
+            "name": env._("%(company)s SMS messaging", company=company.name or "SMS"),
             "short_name": "SMS",
-            "description": "Messagerie SMS/MMS via VOIP.ms",
+            "description": env._("SMS/MMS messaging via VOIP.ms"),
             "start_url": start_url,
             "scope": "/",
             "display": "standalone",
             "orientation": "portrait",
             "background_color": "#ffffff",
             "theme_color": "#29ABE2",
-            "lang": "fr-CA",
+            "lang": (env.lang or "en_US").replace("_", "-"),
             "icons": [
                 {
                     "src": "/web/static/img/odoo-icon-192x192.png",

@@ -13,12 +13,12 @@ class SecureTransferRevealWizard(models.TransientModel):
     """
 
     _name = "secure.transfer.reveal.wizard"
-    _description = "Révéler le lien de partage (journalisé)"
+    _description = "Reveal the share link (logged)"
 
     transfer_id = fields.Many2one(
-        "secure.transfer", string="Transfert", readonly=True,
+        "secure.transfer", string="Transfer", readonly=True,
     )
-    url = fields.Char(string="Lien de partage", readonly=True)
+    url = fields.Char(string="Share link", readonly=True)
     revealed = fields.Boolean(default=False)
 
     @api.model
@@ -30,12 +30,12 @@ class SecureTransferRevealWizard(models.TransientModel):
         )
         transfer = self.env["secure.transfer"].browse(transfer_id or []).exists()
         if not transfer:
-            raise UserError(_("Aucun transfert sélectionné."))
+            raise UserError(_("No transfer selected."))
         if not self.env.user.has_group(
             "bf_securetransfer.group_securetransfer_manager"
         ):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         res["transfer_id"] = transfer.id
         return res
@@ -47,18 +47,18 @@ class SecureTransferRevealWizard(models.TransientModel):
             "bf_securetransfer.group_securetransfer_manager"
         ):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         transfer = self.transfer_id.sudo()
         transfer._log(
             "link_revealed",
             actor=self.env.user.login,
-            note=_("Lien de partage révélé depuis le backend."),
+            note=transfer._log_env()._("Share link revealed from the backend."),
         )
         self.write({"url": transfer._share_url(), "revealed": True})
         return {
             "type": "ir.actions.act_window",
-            "name": _("Lien de partage"),
+            "name": _("Share link"),
             "res_model": "secure.transfer.reveal.wizard",
             "view_mode": "form",
             "res_id": self.id,

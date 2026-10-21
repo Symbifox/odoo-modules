@@ -42,14 +42,14 @@
             <form>
                 <sheet>
                     <group>
-                        <group string="Pool &amp; clé">
+                        <group string="Pool &amp; key">
                             <field name="license_id"/>
                             <field name="product_key" widget="bf_secret_key"
                                    groups="hosting_management.group_hosting_manager"/>
                             <field name="state"/>
                             <field name="activated_on"/>
                         </group>
-                        <group string="Affectation">
+                        <group string="Assignment">
                             <field name="assignee_type" widget="radio"/>
                             <field name="partner_id"
                                    invisible="assignee_type not in ('partner', 'endpoint')"/>
@@ -63,7 +63,7 @@
                             <field name="display_assignee" readonly="1"/>
                         </group>
                     </group>
-                    <field name="notes" placeholder="Notes (ex. 'DOESN'T WORK', 'phone activation', ...)"/>
+                    <field name="notes" placeholder="Notes (e.g. 'DOESN'T WORK', 'phone activation', ...)"/>
                 </sheet>
                 <chatter/>
             </form>
@@ -82,18 +82,18 @@
                 <field name="project_id"/>
                 <field name="assignee_label"/>
                 <separator/>
-                <filter name="filter_free" string="Libres"
+                <filter name="filter_free" string="Free"
                         domain="[('state', '=', 'free')]"/>
-                <filter name="filter_activated" string="Activées"
+                <filter name="filter_activated" string="Activated seats"
                         domain="[('state', '=', 'activated')]"/>
-                <filter name="filter_failed" string="Échouées"
+                <filter name="filter_failed" string="Failed activations"
                         domain="[('state', '=', 'failed')]"/>
-                <filter name="filter_revoked" string="Révoquées"
+                <filter name="filter_revoked" string="Revoked seats"
                         domain="[('state', '=', 'revoked')]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_license" string="Pool"
                             context="{'group_by': 'license_id'}"/>
-                    <filter name="group_state" string="État"
+                    <filter name="group_state" string="State"
                             context="{'group_by': 'state'}"/>
                     <filter name="group_partner" string="Client"
                             context="{'group_by': 'partner_id'}"/>
@@ -103,7 +103,7 @@
     </record>
 
     <record id="hosting_license_seat_action_free" model="ir.actions.act_window">
-        <field name="name">Sièges libres</field>
+        <field name="name">Free seats</field>
         <field name="res_model">hosting.license.seat</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_filter_free': 1}</field>
@@ -144,27 +144,27 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <widget name="web_ribbon" title="Sur-allocation"
+                    <widget name="web_ribbon" title="Over-allocation"
                             bg_color="text-bg-danger"
                             invisible="not over_allocated"/>
-                    <widget name="web_ribbon" title="Expirée"
+                    <widget name="web_ribbon" title="Expired"
                             bg_color="text-bg-warning"
                             invisible="not expiry_date or expiry_date &gt;= context_today()"/>
                     <div class="oe_title">
                         <label for="code"/>
                         <h3><field name="code" placeholder="LIC-2026-0001"/></h3>
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Ex. Windows 11 Pro – batch 2025-09"/></h1>
+                        <h1><field name="name" placeholder="E.g. Windows 11 Pro, batch 2025-09"/></h1>
                     </div>
 
                     <group>
-                        <group string="Identité">
+                        <group string="Identity">
                             <field name="software_id"/>
-                            <field name="product_name" placeholder="Si hors catalogue"/>
+                            <field name="product_name" placeholder="If not in the catalog"/>
                             <field name="vendor" placeholder="Microsoft, Adobe..."/>
                             <field name="license_type"/>
                         </group>
-                        <group string="Sièges">
+                        <group string="Seats">
                             <field name="seats_total"/>
                             <field name="seats_used" readonly="1"/>
                             <field name="seats_free" readonly="1"/>
@@ -173,19 +173,19 @@
                     </group>
 
                     <group>
-                        <group string="Achat">
+                        <group string="Purchase">
                             <field name="owner_partner_id" options="{'no_create': True}"/>
                             <field name="purchase_date"/>
                             <field name="purchase_invoice_id"/>
                             <field name="expiry_date"/>
                         </group>
-                        <group string="JWT (si applicable)"
+                        <group string="JWT (if applicable)"
                                groups="hosting_management.group_hosting_manager"
                                invisible="license_type != 'jwt_token'">
                             <field name="jwt_token" widget="bf_secret_key"/>
                             <field name="jwt_installation_id" readonly="1"/>
                             <button name="action_decode_jwt" type="object"
-                                    string="Décoder maintenant"
+                                    string="Decode now"
                                     class="btn-secondary"
                                     icon="fa-key"
                                     invisible="not jwt_token"/>
@@ -193,7 +193,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Sièges" name="seats">
+                        <page string="Seats" name="seats">
                             <field name="seat_ids">
                                 <list editable="bottom"
                                       decoration-success="state == 'activated'"
@@ -239,26 +239,26 @@
                 <field name="vendor"/>
                 <field name="owner_partner_id"/>
                 <separator/>
-                <filter name="filter_expiring" string="Expirent ≤ 90 j"
+                <filter name="filter_expiring" string="Expiring within 90 days"
                         domain="[('expiry_date', '!=', False),
                                  ('expiry_date', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_expired" string="Expirées"
+                <filter name="filter_expired" string="Expired licenses"
                         domain="[('expiry_date', '!=', False),
                                  ('expiry_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_over_allocated" string="Sur-allocation"
+                <filter name="filter_over_allocated" string="Over-allocation"
                         domain="[('over_allocated', '=', True)]"/>
-                <filter name="filter_mutualized_bf" string="Mutualisées (propriétaire = company)"
+                <filter name="filter_mutualized_bf" string="Shared (owner = company)"
                         domain="[('owner_partner_id.is_company', '=', True),
                                  ('owner_partner_id', '=', uid)]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivées"
+                <filter name="filter_archived" string="Archived licenses"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
-                    <filter name="group_owner" string="Propriétaire"
+                <group expand="0" string="Group by">
+                    <filter name="group_owner" string="Owner"
                             context="{'group_by': 'owner_partner_id'}"/>
                     <filter name="group_type" string="Type"
                             context="{'group_by': 'license_type'}"/>
-                    <filter name="group_software" string="Logiciel"
+                    <filter name="group_software" string="Software"
                             context="{'group_by': 'software_id'}"/>
                 </group>
             </search>
@@ -288,12 +288,12 @@
                                 <field name="code"/> · <field name="vendor"/>
                             </div>
                             <div class="mt-2">
-                                Sièges : <strong t-att-class="record.over_allocated.raw_value ? 'text-danger' : ''">
+                                Seats: <strong t-att-class="record.over_allocated.raw_value ? 'text-danger' : ''">
                                     <field name="seats_used"/> / <field name="seats_total"/>
                                 </strong>
                             </div>
                             <div class="mt-1" t-if="record.expiry_date.raw_value">
-                                Expire : <field name="expiry_date"/>
+                                Expires: <field name="expiry_date"/>
                             </div>
                         </div>
                     </t>
@@ -304,23 +304,22 @@
 
     <!-- Actions -->
     <record id="hosting_license_action_all" model="ir.actions.act_window">
-        <field name="name">Pools de licences</field>
+        <field name="name">License pools</field>
         <field name="res_model">hosting.license</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="hosting_license_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez un pool de licences
+                Add a license pool
             </p>
             <p>
-                Centralise les clés et tokens logiciels (Windows, Office, Grist,
-                etc.) avec affectations par poste, client ou projet.
+                Centralizes software keys and tokens (Windows, Office, Grist, etc.) with assignments per device, client or project.
             </p>
         </field>
     </record>
 
     <record id="hosting_license_action_expiring" model="ir.actions.act_window">
-        <field name="name">Licences expirant (≤ 90 j)</field>
+        <field name="name">Licenses expiring (≤ 90 days)</field>
         <field name="res_model">hosting.license</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_license_view_search"/>
@@ -328,7 +327,7 @@
     </record>
 
     <record id="hosting_license_action_over_allocated" model="ir.actions.act_window">
-        <field name="name">Sur-allocations</field>
+        <field name="name">Over-allocations</field>
         <field name="res_model">hosting.license</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_license_view_search"/>

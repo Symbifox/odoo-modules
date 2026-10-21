@@ -19,11 +19,11 @@ class ProjectProject(models.Model):
     credential_ids = fields.One2many(
         'project.credential',
         'project_id',
-        string='Identifiants',
-        help='Identifiants stockés pour ce projet',
+        string="Credentials",
+        help="Credentials stored for this project",
     )
     credential_count = fields.Integer(
-        string="Nombre d'identifiants",
+        string="Credential count",
         compute='_compute_credential_count',
     )
 
@@ -37,7 +37,7 @@ class ProjectProject(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': f'Identifiants - {self.name}',
+            'name': self.env._("Credentials - %s", self.name),
             'res_model': 'project.credential',
             'views': [[False, 'list'], [False, 'kanban'], [False, 'form']],
             'domain': [('project_id', '=', self.id)],

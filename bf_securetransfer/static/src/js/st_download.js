@@ -22,7 +22,7 @@
         if (reportForm) {
             reportForm.addEventListener("submit", function (event) {
                 var message = reportForm.getAttribute("data-confirm")
-                    || "Signaler ce transfert comme abusif ?";
+                    || "Report this transfer as abusive?";
                 if (!window.confirm(message)) {
                     event.preventDefault();
                 }

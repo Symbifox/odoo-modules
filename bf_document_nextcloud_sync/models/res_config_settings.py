@@ -6,6 +6,6 @@ class ResConfigSettings(models.TransientModel):
 
     nc_doc_default_config_id = fields.Many2one(
         "nextcloud.document.config",
-        string="Configuration Nextcloud par defaut",
+        string="Default Nextcloud configuration",
         config_parameter="bf_document_nextcloud_sync.default_config_id",
     )

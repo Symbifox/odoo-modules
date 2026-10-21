@@ -8,8 +8,8 @@ artefact), **automatic purging**, **multi-brand** resolution by hostname,
 **personal drop pages** (`/to/<slug>`), **anti-piggyback allowlists** and
 **automatic suspension on abuse reports**.
 
-- **Version**: `18.0.1.21.9`.
-- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-10-16**. See [`LICENSE`](LICENSE).
+- **Version**: `18.0.1.22.0`.
+- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-10-21**. See [`LICENSE`](LICENSE).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
 - **Multiple tiers**: the multi-brand system supports a limited free tier
   (default brand, optional "Powered by" mention) and a paid white-label tier on
@@ -230,6 +230,10 @@ bf_securetransfer/
 
 ---
 
+## Languages (18.0.1.22.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it, not of whoever triggers it (an anonymous visitor, a scheduled job, an operator). The public pages follow the family of the visitor's browser language, English or French, even on a database where English is active only as en_US; their title, durations, file sizes and report confirmation follow too, and so do the upload API's JSON errors, whatever language the session already held. The access log notes are written in the transfer's language, and the access certificate is rendered in it, whoever prints it. The abuse desk reads its alert in its contact's language, else the company's; each recipient reads the suspension notice in their own; each manager receives the abuse activity, and Odoo's "assigned to you" notice, in their language. The new visitor notice follows the sender; a code requested from the page by someone without a contact record follows the page. The CSV export of the log follows the operator, the failing purge activity the administrator, and the S3 bucket check verdicts the user who runs it. File sizes carry the reader's unit (KB or Ko) on the pages and in the emails. An automatically created personal drop page is named in the company's language, and its French name stays exactly `Envoi de fichiers | <name>`, so existing pages are not renamed. On upgrade, the shipped email templates and scheduled jobs switch to English only where the database still holds the text that was shipped (including forms shipped by earlier versions); an edited template is left alone.
+
 ## Dependencies
 
 - **Odoo modules**: `web`, `mail`, `portal` (not `website`: the public pages are
@@ -439,6 +443,7 @@ defensible; "beyond the reach of any foreign access" is not, until Phase 3
 
 | Version | Highlights |
 |---|---|
+| `18.0.1.22.0` | **Each text in its reader's language.** Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. The public pages follow the visitor's language, the access log and the certificate the transfer's, and each email, activity and alert its reader's. File sizes carry the reader's unit. The migration switches the shipped email templates and scheduled jobs to English only where they were not edited. See the Languages section. |
 | `18.0.1.21.9` | **Public pages on a database without fr_CA.** The pages pushed the product's default locale, fr_CA, into the request context as is, and Odoo refuses a language that is not active: on any database without fr_CA every public page answered 400 « Invalid language code ». The context, the e-mails and the access certificate now fall back to an active language (fr_CA when active, else the company's language, else the first active one). The stored locale and the page's strings do not change. |
 | `18.0.1.21.8` | **Extensible draft clean-up.** The hourly draft harvest now takes its domain from `_gc_drafts_domain(cutoff)`, so a module that deliberately keeps a draft open past the TTL (a document request waiting for its files until its own deadline) can leave its drafts out by extending the method. Nothing changes for the base module alone. |
 | `18.0.1.21.6` | **Per-code attempt counter.** The six-digit code challenge lives in the session, and the only brake was an in-memory limiter per (IP, transfer): one cookie replayed from rotating IPs got the full allowance again on every address and every worker. Failed attempts on the code in flight are now counted in the database (`otp_verify_fails` on the audience line), read and written under a row lock, five per code sent; past that the code is burnt and a new one must be requested. Sends stay capped per identity (five codes an hour for a named recipient), so attempts stay bounded per hour. The brand is also chosen from the host Odoo keeps behind a proxy (`proxy_mode`), not from the first raw `X-Forwarded-Host` element a client can set. Regression tests for both. |
@@ -473,5 +478,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.

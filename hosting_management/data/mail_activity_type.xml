@@ -4,8 +4,8 @@
 
         <!-- Type d'activité pour l'expiration d'hébergement -->
         <record id="mail_activity_type_hosting_expiration" model="mail.activity.type">
-            <field name="name">Expiration d'hébergement</field>
-            <field name="summary">Service expirant bientôt</field>
+            <field name="name">Hosting expiration</field>
+            <field name="summary">Service expiring soon</field>
             <field name="res_model">hosting.service</field>
             <field name="icon">fa-clock-o</field>
             <field name="delay_count">0</field>
@@ -15,8 +15,8 @@
 
         <!-- Type d'activité pour les mises à jour logicielles -->
         <record id="mail_activity_type_hosting_update" model="mail.activity.type">
-            <field name="name">Mise à jour logicielle</field>
-            <field name="summary">Mise à jour disponible</field>
+            <field name="name">Software update</field>
+            <field name="summary">Update available</field>
             <field name="res_model">hosting.service</field>
             <field name="icon">fa-refresh</field>
             <field name="delay_count">0</field>
@@ -26,8 +26,8 @@
 
         <!-- Type d'activité pour les tâches de maintenance -->
         <record id="mail_activity_type_hosting_maintenance" model="mail.activity.type">
-            <field name="name">Maintenance d'hébergement</field>
-            <field name="summary">Tâche de maintenance à effectuer</field>
+            <field name="name">Hosting maintenance</field>
+            <field name="summary">Maintenance task due</field>
             <field name="res_model">hosting.maintenance.schedule</field>
             <field name="icon">fa-wrench</field>
             <field name="delay_count">0</field>
@@ -37,8 +37,8 @@
 
         <!-- Type d'activité : drift DMARC détecté -->
         <record id="mail_activity_type_dmarc_drift" model="mail.activity.type">
-            <field name="name">DMARC : drift détecté</field>
-            <field name="summary">TXT _dmarc divergent</field>
+            <field name="name">DMARC: drift detected</field>
+            <field name="summary">_dmarc TXT record differs</field>
             <field name="res_model">hosting.domain</field>
             <field name="icon">fa-shield</field>
             <field name="delay_count">0</field>
@@ -48,8 +48,8 @@
 
         <!-- Type d'activité : révision de policy DMARC -->
         <record id="mail_activity_type_dmarc_review" model="mail.activity.type">
-            <field name="name">DMARC : révision de policy</field>
-            <field name="summary">Réviser la policy DMARC (durcissement)</field>
+            <field name="name">DMARC: policy review</field>
+            <field name="summary">Review the DMARC policy (hardening)</field>
             <field name="res_model">hosting.domain</field>
             <field name="icon">fa-envelope</field>
             <field name="delay_count">0</field>

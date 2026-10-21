@@ -10,6 +10,7 @@ from odoo import fields, http
 from odoo.http import request
 
 from ..models.hosting_backup_log import _icp_truthy
+from ..models.hosting_lang import reader_env
 
 _logger = logging.getLogger(__name__)
 
@@ -137,7 +138,9 @@ class BackupAPIController(http.Controller):
             "hostname": data.get("hostname"),
             "backup_root": data.get("backup_root"),
             "report_type": "legacy",
-            "notes": f"Received via API at {data.get('timestamp')}",
+            # Note stockée, lue par l'équipe d'hébergement : langue de la société.
+            "notes": reader_env(request.env)._(
+                "Received via API at %s", data.get("timestamp")),
         }
 
         timestamp = data.get("timestamp")
@@ -238,7 +241,7 @@ class BackupAPIController(http.Controller):
         run_vals = {
             "hostname": hostname,
             "report_type": "restic",
-            "notes": f"Received via API at {timestamp}",
+            "notes": reader_env(request.env)._("Received via API at %s", timestamp),
         }
         if run_date:
             run_vals["run_date"] = run_date

@@ -5,47 +5,48 @@ from odoo import api, fields, models
 
 class HostingMaintenanceTemplate(models.Model):
     _name = "hosting.maintenance.template"
-    _description = "Modèle de maintenance d'hébergement"
+    _description = "Hosting maintenance template"
     _order = "sequence, name"
 
     name = fields.Char(
-        string="Nom du modèle",
+        string="Template name",
         required=True,
     )
     sequence = fields.Integer(
-        string="Séquence",
+        string="Sequence",
         default=10,
     )
     software_id = fields.Many2one(
         comodel_name="hosting.software",
-        string="Logiciel",
+        string="Software",
         ondelete="cascade",
-        help="Si défini, ce modèle s'applique uniquement à ce logiciel. "
-             "Laisser vide pour un modèle par défaut applicable à tous les services.",
+        help="If set, this template applies only to this software. Leave "
+             "empty for a default template that applies to all services.",
     )
     is_default = fields.Boolean(
-        string="Modèle par défaut",
+        string="Default template",
         compute="_compute_is_default",
         store=True,
-        help="Vrai si ce modèle s'applique à tous les logiciels (aucun logiciel spécifié)",
+        help="True if this template applies to all software (no software "
+             "specified)",
     )
     line_ids = fields.One2many(
         comodel_name="hosting.maintenance.template.line",
         inverse_name="template_id",
-        string="Tâches de maintenance",
+        string="Maintenance tasks",
         copy=True,
     )
     task_count = fields.Integer(
-        string="Tâches",
+        string="Tasks",
         compute="_compute_task_count",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
     notes = fields.Text(
         string="Notes",
-        help="Notes supplémentaires sur ce modèle de maintenance",
+        help="Additional notes about this maintenance template",
     )
 
     @api.depends("software_id")
@@ -62,7 +63,7 @@ class HostingMaintenanceTemplate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Tâches - {self.name}",
+            "name": self.env._("Tasks - %s", self.name),
             "res_model": "hosting.maintenance.template.line",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("template_id", "=", self.id)],
@@ -72,75 +73,76 @@ class HostingMaintenanceTemplate(models.Model):
 
 class HostingMaintenanceTemplateLine(models.Model):
     _name = "hosting.maintenance.template.line"
-    _description = "Ligne de modèle de maintenance d'hébergement"
+    _description = "Hosting maintenance template line"
     _order = "sequence, id"
 
     template_id = fields.Many2one(
         comodel_name="hosting.maintenance.template",
-        string="Modèle",
+        string="Template",
         required=True,
         ondelete="cascade",
     )
     sequence = fields.Integer(
-        string="Séquence",
+        string="Sequence",
         default=10,
     )
     name = fields.Char(
-        string="Nom de la tâche",
+        string="Task name",
         required=True,
     )
     maintenance_type = fields.Selection(
         selection=[
-            ("security_patch", "Correctifs de sécurité"),
-            ("db_optimize", "Optimisation de base de données"),
-            ("backup_verify", "Vérification de sauvegarde"),
-            ("backup_setup", "Configuration de sauvegarde"),
-            ("log_cleanup", "Nettoyage/Rotation des journaux"),
-            ("container_update", "Mise à jour d'image de conteneur"),
-            ("ssl_renewal", "Renouvellement de certificat SSL"),
-            ("storage_cleanup", "Nettoyage de stockage"),
-            ("performance_review", "Revue de performance"),
-            ("app_update", "Mises à jour d'application"),
-            ("admin_check", "Vérification du panneau d'administration"),
-            ("security_audit", "Audit de sécurité"),
-            ("other", "Autre (personnalisé)"),
+            ("security_patch", "Security patches"),
+            ("db_optimize", "Database optimization"),
+            ("backup_verify", "Backup verification"),
+            ("backup_setup", "Backup setup"),
+            ("log_cleanup", "Log cleanup/rotation"),
+            ("container_update", "Container image update"),
+            ("ssl_renewal", "SSL certificate renewal"),
+            ("storage_cleanup", "Storage cleanup"),
+            ("performance_review", "Performance review"),
+            ("app_update", "Application updates"),
+            ("admin_check", "Admin panel check"),
+            ("security_audit", "Security audit"),
+            ("other", "Other (custom)"),
         ],
-        string="Type de maintenance",
+        string="Maintenance type",
         required=True,
         default="other",
     )
     frequency = fields.Selection(
         selection=[
-            ("once", "Une fois (à l'activation)"),
-            ("weekly", "Hebdomadaire"),
-            ("biweekly", "Aux 2 semaines"),
-            ("monthly", "Mensuel"),
-            ("quarterly", "Trimestriel"),
-            ("biannually", "Semestriel"),
-            ("yearly", "Annuel"),
+            ("once", "Once (on activation)"),
+            ("weekly", "Weekly"),
+            ("biweekly", "Every 2 weeks"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("biannually", "Semiannual"),
+            ("yearly", "Annual"),
         ],
-        string="Fréquence",
+        string="Frequency",
         required=True,
         default="monthly",
     )
     days_after_activation = fields.Integer(
-        string="Jours après l'activation",
+        string="Days after activation",
         default=0,
-        help="Pour la fréquence « Une fois » : nombre de jours après l'activation du service "
-             "où cette tâche doit être due. Mettre à 0 pour immédiat.",
+        help="For the \"Once\" frequency: number of days after the "
+             "service is activated when this task becomes due. Set to 0 "
+             "for immediately.",
     )
     create_activity = fields.Boolean(
-        string="Créer une activité",
+        string="Create an activity",
         default=False,
-        help="Si coché, une activité Odoo sera créée en plus de "
-             "la planification de maintenance (utile pour les tâches de configuration ponctuelles).",
+        help="If checked, an Odoo activity is created in addition to the "
+             "maintenance schedule (useful for one-time setup tasks).",
     )
     instructions = fields.Text(
         string="Instructions",
-        help="Instructions étape par étape pour effectuer cette tâche de maintenance",
+        help="Step-by-step instructions to perform this maintenance task",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 

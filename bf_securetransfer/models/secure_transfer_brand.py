@@ -37,39 +37,38 @@ _HOSTNAME_RE = re.compile(r"^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$")
 
 class SecureTransferBrand(models.Model):
     _name = "secure.transfer.brand"
-    _description = "Transfert sécurisé — Marque"
+    _description = "Secure transfer: brand"
     _order = "sequence, id"
 
-    name = fields.Char(string="Nom", required=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     is_default = fields.Boolean(
-        string="Marque par défaut",
-        help="Marque servie quand le domaine d'arrivée ne correspond à "
-             "aucune marque. Une seule marque active peut être par défaut.",
+        string="Default brand",
+        help="Brand served when the incoming domain matches no brand. "
+             "Only one active brand can be the default.",
     )
     domain = fields.Char(
-        string="Domaine",
+        string="Domain",
         index=True,
-        help="Hôte nu (sans schéma ni port) sur lequel cette marque est "
-             "servie, p. ex. « secret.example.com ». Vide pour la "
-             "marque par défaut.",
+        help="Bare host (no scheme or port) on which this brand is "
+             "served, e.g. \"secret.example.com\". Empty for the "
+             "default brand.",
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     partner_id = fields.Many2one(
         "res.partner",
-        string="Client",
-        help="Client facturé pour cette marque (ancrage de la facturation "
-             "récurrente).",
+        string="Customer",
+        help="Client billed for this brand (anchor for recurring billing).",
     )
     tier = fields.Selection(
-        selection=[("free", "Gratuit"), ("paid", "Payant")],
-        string="Palier",
+        selection=[("free", "Free"), ("paid", "Paid")],
+        string="Tier",
         default="free",
         required=True,
     )
@@ -78,40 +77,40 @@ class SecureTransferBrand(models.Model):
     #    (bf_subscription lives on the BF tenant); these fields track the
     #    arrangement on the brand record that serves the product.
     billing_active = fields.Boolean(
-        string="Abonnement actif",
-        help="La marque payante est couverte par un abonnement récurrent.",
+        string="Active subscription",
+        help="The paid brand is covered by a recurring subscription.",
     )
     billing_ref = fields.Char(
-        string="Réf. abonnement (BF)",
-        help="Référence de l'abonnement bf_subscription émis par Blue Fox "
-             "pour ce client.",
+        string="Subscription ref.",
+        help="Reference of the bf_subscription subscription that bills "
+             "this client.",
     )
     price_year = fields.Float(
-        string="Prix annuel ($)",
-        help="Prix récurrent annuel du palier payant (repère : 350-500 $).",
+        string="Annual price ($)",
+        help="Annual recurring price of the paid tier (benchmark: $350-500).",
     )
 
     # -- visuals (all optional → fallback to company report_brand_*)
     logo = fields.Binary(string="Logo", attachment=True)
     favicon = fields.Binary(string="Favicon", attachment=True)
     color_primary = fields.Char(
-        string="Couleur principale",
-        help="Hex, p. ex. #1689c3. Vide = couleur de marque de la société.",
+        string="Primary color",
+        help="Hex, e.g. #1689c3. Empty = company's brand color.",
     )
     color_dark = fields.Char(
-        string="Couleur foncée",
-        help="Hex, p. ex. #0f4960. Vide = couleur foncée de la société.",
+        string="Dark color",
+        help="Hex, e.g. #0f4960. Empty = company's dark color.",
     )
     powered_by = fields.Boolean(
-        string="Afficher « Propulsé par »",
+        string="Show \"Powered by\"",
         default=True,
-        help="Pied de page « Propulsé par » sur la page publique et les "
-             "courriels. Décoché pour les marques payantes en marque blanche.",
+        help="\"Powered by\" footer on the public page and emails. "
+             "Unchecked for paid white-label brands.",
     )
     email_from = fields.Char(
-        string="Expéditeur des courriels",
-        help="Adresse d'expédition des courriels de cette marque. Vide = "
-             "expéditeur par défaut du serveur.",
+        string="Email sender",
+        help="Sending address for this brand's emails. Empty = server's "
+             "default sender.",
     )
 
     # -- sender allowlist (anti-piggyback): who is allowed to SEND from this
@@ -119,24 +118,23 @@ class SecureTransferBrand(models.Model):
     #    branded instance (secrets.client.com) sets this so only the client's
     #    own people can use it, never a stranger piggybacking on their skin.
     sender_allowlist = fields.Text(
-        string="Expéditeurs autorisés",
-        help="Une entrée par ligne (ou séparées par des virgules). Adresse "
-             "complète (jean@client.com) ou domaine entier (@client.com ou "
-             "client.com). VIDE = ouvert à tous (palier gratuit public). "
-             "Renseigné = seuls ces expéditeurs peuvent envoyer depuis cette "
-             "marque — empêche qu'un tiers utilise une instance qui n'est pas "
-             "la sienne.",
+        string="Authorized senders",
+        help="One entry per line (or comma-separated). Full address "
+             "(jean@client.com) or whole domain (@client.com or "
+             "client.com). EMPTY = open to everyone (public free tier). "
+             "Filled = only these senders can send from this brand; this "
+             "prevents a third party from using an instance that isn't "
+             "theirs.",
     )
     # -- recipient allowlist (anti-piggyback, destination side): restrict WHO
     #    can be a recipient. A client instance set to « @client.com » can only
     #    send to the client's own people — it can't be abused to relay files to
     #    arbitrary external addresses.
     recipient_allowlist = fields.Text(
-        string="Destinataires autorisés",
-        help="Même format que les expéditeurs (adresse complète ou domaine). "
-             "VIDE = aucune restriction. Renseigné = les fichiers ne peuvent "
-             "être envoyés QU'À ces adresses/domaines — verrouille l'instance "
-             "à son propre usage.",
+        string="Authorized recipients",
+        help="Same format as senders (full address or domain). EMPTY = no "
+             "restriction. Filled = files can ONLY be sent to these "
+             "addresses/domains; this locks the instance to its own use.",
     )
 
     # -- slug-addressed public page, served at /to/<slug>. The slug ALONE
@@ -147,73 +145,73 @@ class SecureTransferBrand(models.Model):
     #         redirect a drop to another address.
     #    Empty slug = a normal Host-served brand, reachable at /secrets only.
     slug = fields.Char(
-        string="Identifiant de page (slug)",
+        string="Page identifier (slug)",
         index=True,
-        help="Publie cette marque à /to/<slug> (p. ex. « depot » → "
-             "/to/depot). Minuscules, chiffres et tirets. Vide = marque "
-             "servie par domaine seulement.",
+        help="Publishes this brand at /to/<slug> (e.g. \"jane\" → "
+             "/to/jane). Lowercase letters, digits and hyphens. Empty "
+             "= brand served by domain only.",
     )
     fixed_recipient = fields.Char(
-        string="Destinataire unique (page de dépôt)",
-        help="Optionnel. Quand renseigné, la page devient une page de dépôt : "
-             "tous les envois vont UNIQUEMENT à cette adresse, quel que soit "
-             "ce que saisit l'expéditeur, et le champ destinataire est masqué. "
-             "Vide = page ouverte, l'expéditeur choisit ses destinataires.",
+        string="Single recipient (drop page)",
+        help="Optional. When filled, the page becomes a drop page: all "
+             "sends go ONLY to this address, regardless of what the "
+             "sender enters, and the recipient field is hidden. Empty = "
+             "open page, the sender chooses their recipients.",
     )
     fixed_recipient_name = fields.Char(
-        string="Nom affiché du destinataire",
-        help="Nom montré sur la page de dépôt (« Envoi sécurisé à … »). "
-             "Vide = l'adresse est affichée.",
+        string="Recipient's display name",
+        help="Name shown on the drop page (\"Secure send to …\"). Empty = "
+             "the address is displayed.",
     )
     # Employee behind an auto-provisioned personal drop page (see res.users).
     # Anchors lifecycle sync (rename / e-mail change / archive) and prevents
     # duplicate pages. Empty on manually-created or company-general brands.
     owner_user_id = fields.Many2one(
         "res.users",
-        string="Employé (page auto)",
+        string="Employee (auto page)",
         ondelete="set null",
         index=True,
         copy=False,
-        help="Renseigné quand cette page de dépôt a été créée automatiquement "
-             "pour un employé. Sert à la resynchronisation et à l'archivage ; "
-             "empêche les doublons.",
+        help="Filled when this drop page was created automatically for an "
+             "employee. Used for resynchronization and archiving; "
+             "prevents duplicates.",
     )
     # Native, Shlink-free public URL of the slug-addressed page. Computed,
     # never stored: it tracks the slug and the resolved share base (brand
     # domain → public base URL → web.base.url) so the admin always sees the
     # live link.
     page_url = fields.Char(
-        string="URL de la page publique",
+        string="Public page URL",
         compute="_compute_page_url",
-        help="Adresse publique native /to/<slug> de cette marque (aucun "
-             "raccourcisseur externe). Vide tant qu'aucun slug n'est défini.",
+        help="Native public /to/<slug> address for this brand (no "
+             "external shortener). Empty until a slug is set.",
     )
 
     # -- limits (0 = default from settings for the tier)
     max_transfer_mb = fields.Integer(
-        string="Taille max. d'un transfert (Mo)",
+        string="Max. transfer size (MB)",
         default=0,
-        help="0 = valeur par défaut du palier (paramètres).",
+        help="0 = tier default value (settings).",
     )
     max_files = fields.Integer(
-        string="Nombre max. de fichiers",
+        string="Max. number of files",
         default=0,
-        help="0 = valeur par défaut (paramètres).",
+        help="0 = default value (settings).",
     )
     max_retention_days = fields.Integer(
-        string="Rétention max. (jours)",
+        string="Max. retention (days)",
         default=0,
-        help="0 = valeur par défaut du palier (paramètres).",
+        help="0 = tier default value (settings).",
     )
     allow_password = fields.Boolean(
-        string="Mot de passe autorisé", default=True,
+        string="Password allowed", default=True,
     )
     allow_recipient_otp = fields.Boolean(
-        string="Code destinataire offert", default=True,
-        help="Laisse l'expéditeur exiger, depuis la page publique, un code à "
-             "usage unique du destinataire avant l'affichage du contenu. Sans "
-             "effet quand le réglage d'instance l'exige déjà pour tous les "
-             "envois : la case est alors montrée cochée et verrouillée.",
+        string="Recipient code offered", default=True,
+        help="Lets the sender require, from the public page, a one-time "
+             "code from the recipient before the content is shown. No "
+             "effect when the instance setting already requires it for "
+             "every send: the box is then shown ticked and locked.",
     )
 
     # -- Audience ouverte (salle de données) ---------------------------------
@@ -222,55 +220,55 @@ class SecureTransferBrand(models.Model):
     # adresse que personne n'a validée en amont — c'est un pouvoir qu'on
     # accorde, pas un défaut qu'on subit.
     allow_open_audience = fields.Boolean(
-        string="Audience ouverte offerte", default=False,
-        help="Autorise les envois dont le lien ne nomme aucun destinataire : "
-             "le visiteur déclare son adresse et confirme par code à usage "
-             "unique. Utile pour une salle de données ou une diffusion à un "
-             "groupe dont on ne connaît pas toutes les adresses.",
+        string="Open audience offered", default=False,
+        help="Allows sends whose link names no recipient: the visitor "
+             "enters their address and confirms it with a one-time code. "
+             "Useful for a data room or for sharing with a group whose "
+             "addresses are not all known.",
     )
     audience_domains = fields.Text(
-        string="Domaines admis (audience ouverte)",
-        help="Liste blanche appliquée aux adresses auto-déclarées : adresse "
-             "complète, ou domaine (« @client.com »), une par ligne ou "
-             "séparées par des virgules. Vide = toute adresse est admise, "
-             "dans la limite du nombre de visiteurs.",
+        string="Allowed domains (open audience)",
+        help="Allowlist applied to self-declared addresses: full address, "
+             "or domain (\"@client.com\"), one per line or "
+             "comma-separated. Empty = any address is allowed, within the "
+             "visitor limit.",
     )
     audience_max_default = fields.Integer(
-        string="Visiteurs max. (défaut)", default=50,
-        help="Nombre maximal d'adresses distinctes admises sur un transfert "
-             "en audience ouverte, quand l'envoi n'en fixe pas d'autre. "
-             "0 = illimité (déconseillé : c'est le plafond qui empêche un "
-             "lien fuité de servir de relais de courriel).",
+        string="Max. visitors (default)", default=50,
+        help="Maximum number of distinct addresses allowed on an open "
+             "audience transfer, when the send does not set another. 0 = "
+             "unlimited (not recommended: the cap is what keeps a leaked "
+             "link from becoming an email relay).",
     )
     allow_audience_sms = fields.Boolean(
-        string="Code par SMS en audience ouverte", default=False,
-        help="Laisse un visiteur d'audience ouverte demander son code sur son "
-             "mobile. Éteint par défaut : chaque SMS a un coût réel et le "
-             "numéro est fourni par le visiteur lui-même.",
+        string="Code by SMS for open audiences", default=False,
+        help="Lets an open audience visitor request their code on their "
+             "mobile. Off by default: each SMS has a real cost and the "
+             "number is supplied by the visitor themselves.",
     )
 
     watermark_downloads = fields.Boolean(
-        string="Filigrane au téléchargement",
+        string="Watermark on download",
         default=False,
-        help="Estampe un filigrane d'identification (destinataire, horodatage, "
-             "marque) sur chaque PDF téléchargé via cette marque. Odoo sert "
-             "alors les octets lui-même au lieu de rediriger vers le stockage. "
-             "Sans effet sur les fichiers non-PDF.",
+        help="Stamps an identifying watermark (recipient, timestamp, "
+             "brand) on every PDF downloaded through this brand. Odoo "
+             "then serves the bytes itself instead of redirecting to "
+             "storage. No effect on non-PDF files.",
     )
 
     # -- Phase 2 placeholders (schema ready, no breaking migration later)
     notify_on_download = fields.Boolean(
-        string="Notifier au téléchargement (Phase 2)", default=False,
+        string="Notify on download (Phase 2)", default=False,
     )
     allow_burn = fields.Boolean(
-        string="Destruction après lecture (Phase 2)", default=False,
+        string="Destroy after reading (Phase 2)", default=False,
     )
 
     _sql_constraints = [
         ("domain_uniq", "unique(domain)",
-         "Ce domaine est déjà associé à une autre marque."),
+         "This domain is already associated with another brand."),
         ("slug_uniq", "unique(slug)",
-         "Cet identifiant de page (slug) est déjà utilisé par une autre marque."),
+         "This page identifier (slug) is already used by another brand."),
     ]
 
     _SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -280,8 +278,9 @@ class SecureTransferBrand(models.Model):
         for rec in self.filtered("slug"):
             if not self._SLUG_RE.match(rec.slug):
                 raise ValidationError(_(
-                    "L'identifiant de page (slug) « %s » est invalide : "
-                    "minuscules, chiffres et tirets seulement, sans espace.",
+                    "The page identifier (slug) \"%s\" is invalid: "
+                    "lowercase letters, digits and hyphens only, no "
+                    "spaces.",
                     rec.slug))
 
     @api.constrains("fixed_recipient")
@@ -289,8 +288,7 @@ class SecureTransferBrand(models.Model):
         for rec in self.filtered("fixed_recipient"):
             if not email_normalize(rec.fixed_recipient):
                 raise ValidationError(_(
-                    "Le destinataire unique « %s » n'est pas une adresse "
-                    "courriel valide.", rec.fixed_recipient))
+                    "The single recipient \"%s\" is not a valid email address.", rec.fixed_recipient))
 
     @api.constrains("is_default", "active")
     def _check_single_default(self):
@@ -302,7 +300,7 @@ class SecureTransferBrand(models.Model):
             ])
             if other:
                 raise ValidationError(_(
-                    "Une seule marque active peut être la marque par défaut."
+                    "Only one active brand can be the default brand."
                 ))
 
     # ------------------------------------------------------------------ slug + url
@@ -567,8 +565,8 @@ class SecureTransferBrand(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("CORS appliqué"),
-                "message": _("Origines autorisées : %s") % ", ".join(merged),
+                "title": _("CORS applied"),
+                "message": _("Allowed origins: %s") % ", ".join(merged),
                 "type": "success",
                 "sticky": False,
             },

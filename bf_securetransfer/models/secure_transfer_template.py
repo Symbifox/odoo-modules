@@ -24,74 +24,74 @@ from odoo.exceptions import ValidationError
 
 class SecureTransferTemplate(models.Model):
     _name = "secure.transfer.template"
-    _description = "Transfert sécurisé — Préréglage de salle de données"
+    _description = "Secure transfer: data room preset"
     _order = "sequence, name"
 
-    name = fields.Char(string="Nom", required=True)
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     # Facultative, contrairement à la marque : un préréglage sans société sert
     # tout le monde, ce que la règle multi-société sait déjà lire
     # (company_id = False OR company_id in company_ids).
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
-        help="Vide = disponible pour toutes les sociétés.",
+        string="Company",
+        help="Empty = available to all companies.",
     )
     note = fields.Text(
-        string="À quoi sert ce préréglage",
-        help="Affiché à l'expéditeur au moment du choix. Décrivez le type de "
-             "dossier visé plutôt que les valeurs — elles sont juste à côté.",
+        string="What this preset is for",
+        help="Shown to the sender when choosing. Describe the kind of "
+             "file it is meant for rather than the values: they are right "
+             "next to it.",
     )
 
     brand_id = fields.Many2one(
         "secure.transfer.brand",
-        string="Marque",
+        string="Brand",
         domain="[('active', '=', True), ('fixed_recipient', '=', False)]",
-        help="Vide = garder la marque déjà choisie dans l'assistant. Une "
-             "marque posée ici doit offrir le mode retenu ci-dessous.",
+        help="Empty = keep the brand already chosen in the wizard. A "
+             "brand set here must offer the mode chosen below.",
     )
     audience_mode = fields.Selection(
         selection=[
-            ("declared", "Destinataires nommés"),
-            ("open", "Audience ouverte (le visiteur se déclare)"),
+            ("declared", "Named recipients"),
+            ("open", "Open audience (the visitor identifies themselves)"),
         ],
-        string="Mode de transmission", default="open", required=True,
+        string="Delivery mode", default="open", required=True,
     )
     retention_days = fields.Integer(
-        string="Disponible (jours)", default=30,
-        help="Durée de vie du lien. Le plafond de la marque s'applique "
-             "toujours par-dessus.",
+        string="Available (days)", default=30,
+        help="Lifetime of the link. The brand's cap always applies on top.",
     )
     audience_domains = fields.Text(
-        string="Domaines admis",
-        help="Vide = la liste de la marque. Une entrée par ligne : "
-             "@client.com, ou une adresse complète.",
+        string="Allowed domains",
+        help="Empty = the brand's list. One entry per line: @client.com, "
+             "or a full address.",
     )
     audience_max = fields.Integer(
-        string="Visiteurs max.", default=0,
-        help="0 = valeur de la marque.",
+        string="Max. visitors", default=0,
+        help="0 = brand value.",
     )
     audience_max_downloads = fields.Integer(
-        string="Téléchargements par visiteur", default=0,
-        help="0 = illimité. Compté séparément pour chaque personne.",
+        string="Downloads per visitor", default=0,
+        help="0 = unlimited. Counted separately for each person.",
     )
     audience_allow_sms = fields.Boolean(
-        string="Offrir le code par SMS",
-        help="Laisse un visiteur s'identifier par son mobile. Incompatible "
-             "avec une liste de domaines : un numéro n'a pas de domaine.",
+        string="Offer the code by SMS",
+        help="Lets a visitor identify themselves by mobile. Incompatible "
+             "with a domain list: a number has no domain.",
     )
     notify_on_join = fields.Boolean(
-        string="Aviser à chaque nouveau visiteur", default=True,
+        string="Notify on each new visitor", default=True,
     )
 
     _sql_constraints = [
         ("retention_days_positive", "CHECK (retention_days > 0)",
-         "La durée de disponibilité doit être d'au moins une journée."),
+         "The availability period must be at least one day."),
         ("audience_max_positive", "CHECK (audience_max >= 0)",
-         "Le nombre maximal de visiteurs ne peut pas être négatif."),
+         "The maximum number of visitors cannot be negative."),
         ("audience_max_downloads_positive", "CHECK (audience_max_downloads >= 0)",
-         "Le budget de téléchargements ne peut pas être négatif."),
+         "The download budget cannot be negative."),
     ]
 
     @api.constrains("audience_mode", "brand_id")
@@ -106,10 +106,10 @@ class SecureTransferTemplate(models.Model):
                 continue
             if not rec.brand_id.allow_open_audience:
                 raise ValidationError(_(
-                    "La marque « %s » n'offre pas l'audience ouverte. "
-                    "Activez-la sur la marque — Configuration › Marques › "
-                    "« Audience ouverte offerte » — ou laissez la marque vide "
-                    "dans ce préréglage.",
+                    "The \"%s\" brand does not offer the open audience. "
+                    "Turn it on for the brand (Configuration › Brands › "
+                    "\"Open audience offered\"), or leave the brand empty "
+                    "in this preset.",
                     rec.brand_id.display_name,
                 ))
 
@@ -125,10 +125,10 @@ class SecureTransferTemplate(models.Model):
         for rec in self:
             if rec.audience_allow_sms and (rec.audience_domains or "").strip():
                 raise ValidationError(_(
-                    "« %s » : le code par SMS et une liste de domaines ne "
-                    "peuvent pas coexister. Un numéro de mobile n'a pas de "
-                    "domaine, donc la liste le refuserait. Retirez la liste, "
-                    "ou n'offrez pas le SMS.",
+                    "\"%s\": the code by SMS and a domain list cannot "
+                    "coexist. A mobile number has no domain, so the list "
+                    "would reject it. Remove the list, or do not offer "
+                    "SMS.",
                     rec.display_name,
                 ))
 

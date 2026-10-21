@@ -8,18 +8,18 @@
         <field name="arch" type="xml">
             <list create="false" edit="false">
                 <field name="call_date" string="Date"/>
-                <field name="direction" string="Sens"/>
-                <field name="caller" string="Appelant"/>
+                <field name="direction" string="Direction"/>
+                <field name="caller" string="Caller"/>
                 <field name="destination" string="Destination"/>
                 <field name="did_id" string="DID"/>
                 <field name="partner_id" string="Client" optional="show"/>
-                <field name="disposition" string="Issue" widget="badge"
+                <field name="disposition" string="Outcome" widget="badge"
                        decoration-success="disposition == 'answered'"
                        decoration-warning="disposition in ('noanswer', 'busy')"
                        decoration-danger="disposition == 'failed'"/>
                 <field name="minutes" string="Minutes" sum="Total"/>
-                <field name="cost" string="Coût" sum="Total"/>
-                <field name="voipms_account" string="Sous-compte" optional="hide"/>
+                <field name="cost" string="Cost" sum="Total"/>
+                <field name="voipms_account" string="Sub-account" optional="hide"/>
             </list>
         </field>
     </record>
@@ -65,25 +65,25 @@
                 <field name="did_id"/>
                 <field name="partner_id"/>
                 <separator/>
-                <filter name="filter_incoming" string="Entrants"
+                <filter name="filter_incoming" string="Incoming calls"
                         domain="[('direction', '=', 'incoming')]"/>
-                <filter name="filter_outgoing" string="Sortants"
+                <filter name="filter_outgoing" string="Outgoing calls"
                         domain="[('direction', '=', 'outgoing')]"/>
-                <filter name="filter_answered" string="Répondus"
+                <filter name="filter_answered" string="Answered calls"
                         domain="[('disposition', '=', 'answered')]"/>
                 <separator/>
-                <filter name="filter_this_month" string="Ce mois-ci"
+                <filter name="filter_this_month" string="This month"
                         domain="[('call_date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_did" string="DID"
                             context="{'group_by': 'did_id'}"/>
                     <filter name="group_partner" string="Client"
                             context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_direction" string="Sens"
+                    <filter name="group_direction" string="Direction"
                             context="{'group_by': 'direction'}"/>
-                    <filter name="group_disposition" string="Issue"
+                    <filter name="group_disposition" string="Outcome"
                             context="{'group_by': 'disposition'}"/>
-                    <filter name="group_month" string="Mois"
+                    <filter name="group_month" string="Month"
                             context="{'group_by': 'call_date:month'}"/>
                 </group>
             </search>
@@ -95,7 +95,7 @@
         <field name="name">hosting.voip.cdr.pivot</field>
         <field name="model">hosting.voip.cdr</field>
         <field name="arch" type="xml">
-            <pivot string="Statistiques d'appels">
+            <pivot string="Call statistics">
                 <field name="did_id" type="row"/>
                 <field name="call_date" interval="month" type="col"/>
                 <field name="minutes" type="measure"/>
@@ -109,7 +109,7 @@
         <field name="name">hosting.voip.cdr.graph</field>
         <field name="model">hosting.voip.cdr</field>
         <field name="arch" type="xml">
-            <graph string="Statistiques d'appels" type="bar">
+            <graph string="Call statistics" type="bar">
                 <field name="did_id"/>
                 <field name="minutes" type="measure"/>
             </graph>
@@ -118,7 +118,7 @@
 
     <!-- Action -->
     <record id="hosting_voip_cdr_action" model="ir.actions.act_window">
-        <field name="name">Statistiques d'appels</field>
+        <field name="name">Call statistics</field>
         <field name="res_model">hosting.voip.cdr</field>
         <field name="view_mode">pivot,graph,list,form</field>
         <field name="search_view_id" ref="hosting_voip_cdr_view_search"/>

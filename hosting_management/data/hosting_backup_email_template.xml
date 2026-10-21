@@ -4,23 +4,23 @@
 
         <!-- Backup Report Email Template -->
         <record id="email_template_backup_report" model="mail.template">
-            <field name="name">Hébergement : Rapport de sauvegarde</field>
+            <field name="name">Hosting: Backup Report</field>
             <field name="model_id" ref="model_hosting_backup_run"/>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ (object.company_id.email or '') }}</field>
-            <field name="subject">{{ '[ERREUR]' if object.state == 'failed' else '[PARTIEL]' if object.state == 'partial' else '[AVERTISSEMENT]' if object.state == 'warning' else '[OK]' }} Rapport de sauvegarde - {{ object.name }} - {{ object.run_date.strftime('%Y-%m-%d') }}</field>
+            <field name="subject">{{ '[ERROR]' if object.state == 'failed' else '[PARTIAL]' if object.state == 'partial' else '[WARNING]' if object.state == 'warning' else '[OK]' }} Backup report - {{ object.name }} - {{ object.run_date.strftime('%Y-%m-%d') }}</field>
             <field name="body_html" type="html">
 
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Rapport de sauvegarde</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Backup report</p>
 <h1 t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;line-height:32px;color:{{ brand_dark }};font-weight:500;">
-                          Rapport quotidien des sauvegardes
+                          Daily backup report
                         </h1>
                         <p style="margin:0 0 16px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:17px;line-height:26px;color:#374151;font-weight:300;">
-                          Exécuté le <t t-out="object.run_date.strftime('%Y-%m-%d %H:%M:%S')"/> sur <t t-out="object.hostname or 'serveur inconnu'"/>
+                          Run at <t t-out="object.run_date.strftime('%Y-%m-%d %H:%M:%S')"/> on <t t-out="object.hostname or 'unknown server'"/>
                         </p>
 
                         <!-- Status summary -->
@@ -32,18 +32,18 @@
                                   <tbody>
                                     <tr>
                                       <td t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;font-weight:600;color:{{ '#DC2626' if object.state == 'failed' else '#D97706' if object.state == 'partial' else '#1D4ED8' if object.state == 'warning' else '#059669' }};">
-                                        <t t-if="object.state == 'failed'">ERREURS DÉTECTÉES</t>
-                                        <t t-elif="object.state == 'partial'">SUCCÈS PARTIEL — DONNÉES MANQUANTES</t>
-                                        <t t-elif="object.state == 'warning'">TOUS LES BACKUPS RÉUSSIS (avec avertissements)</t>
-                                        <t t-else="">TOUS LES BACKUPS RÉUSSIS</t>
+                                        <t t-if="object.state == 'failed'">ERRORS DETECTED</t>
+                                        <t t-elif="object.state == 'partial'">PARTIAL SUCCESS: MISSING DATA</t>
+                                        <t t-elif="object.state == 'warning'">ALL BACKUPS SUCCEEDED (with warnings)</t>
+                                        <t t-else="">ALL BACKUPS SUCCEEDED</t>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td style="padding-top:8px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;">
-                                        <strong style="color:#059669;"><t t-out="object.success_count"/></strong> réussis |
-                                        <strong style="color:#1D4ED8;"><t t-out="object.warning_count"/></strong> avert. |
-                                        <strong style="color:#DC2626;"><t t-out="object.failed_count"/></strong> échoués |
-                                        <strong style="color:#D97706;"><t t-out="object.skipped_count"/></strong> ignorés |
+                                        <strong style="color:#059669;"><t t-out="object.success_count"/></strong> succeeded |
+                                        <strong style="color:#1D4ED8;"><t t-out="object.warning_count"/></strong> warnings |
+                                        <strong style="color:#DC2626;"><t t-out="object.failed_count"/></strong> failed |
+                                        <strong style="color:#D97706;"><t t-out="object.skipped_count"/></strong> skipped |
                                         <strong><t t-out="object.total_count"/></strong> total
                                       </td>
                                     </tr>
@@ -56,16 +56,16 @@
 
                         <!-- Backup details table -->
                         <h2 t-attf-style="margin:24px 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;color:{{ brand_dark }};font-weight:500;">
-                          Détails des sauvegardes
+                          Backup details
                         </h2>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #E5E7EB;border-radius:8px;border-collapse:separate;">
                           <thead>
                             <tr style="background-color:#F9FAFB;">
                               <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Service</th>
-                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Statut</th>
+                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Status</th>
                               <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Archives</th>
-                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Fichiers</th>
-                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Durée</th>
+                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Files</th>
+                              <th style="padding:12px 8px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;border-bottom:1px solid #E5E7EB;">Duration</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -77,8 +77,8 @@
                                 <td style="padding:12px 8px;vertical-align:top;">
                                   <span t-attf-style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:{{ '#D1FAE5' if line.status == 'success' else '#FEE2E2' if line.status == 'failed' else '#FEF3C7' }};color:{{ '#059669' if line.status == 'success' else '#DC2626' if line.status == 'failed' else '#D97706' }};">
                                     <t t-if="line.status == 'success'">OK</t>
-                                    <t t-elif="line.status == 'failed'">ÉCHEC</t>
-                                    <t t-else="">IGNORÉ</t>
+                                    <t t-elif="line.status == 'failed'">FAILED</t>
+                                    <t t-else="">SKIPPED</t>
                                   </span>
                                 </td>
                                 <td style="padding:12px 8px;vertical-align:top;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;">
@@ -97,11 +97,11 @@
                                     <span t-attf-style="font-weight:600;color:{{ '#059669' if line.verified_file_count >= line.container_count else '#DC2626' }};">
                                       <t t-out="line.verified_file_count"/>/<t t-out="line.container_count"/>
                                     </span>
-                                    <span style="color:#6B7280;font-size:11px;"> vérifiées</span>
+                                    <span style="color:#6B7280;font-size:11px;"> verified</span>
                                   </t>
                                   <t t-elif="line.verified_file_count > 0">
                                     <span style="font-weight:600;color:#059669;"><t t-out="line.verified_file_count"/></span>
-                                    <span style="color:#6B7280;font-size:11px;"> vérifiées</span>
+                                    <span style="color:#6B7280;font-size:11px;"> verified</span>
                                   </t>
                                   <t t-else="">
                                     <span style="color:#9CA3AF;">-</span>
@@ -114,12 +114,12 @@
                                         <span style="color:#059669;font-weight:bold;">✓</span>
                                         <t t-out="snap.container or snap.destination or '?'"/><br/>
                                         <span style="color:#9CA3AF;font-size:11px;">
-                                          <t t-out="snap.files_new"/> fichiers ajoutés · <t t-out="snap.data_added_human"/>
+                                          <t t-out="snap.files_new"/> files added · <t t-out="snap.data_added_human"/>
                                         </span>
                                       </div>
                                     </t>
                                     <t t-if="not line.snapshot_ids">
-                                      <span style="color:#9CA3AF;font-size:12px;">Aucun snapshot</span>
+                                      <span style="color:#9CA3AF;font-size:12px;">No snapshots</span>
                                     </t>
                                   </t>
                                   <t t-else="">
@@ -131,12 +131,12 @@
                                         </span>
                                         <t t-out="file.name"/><br/>
                                         <span style="color:#9CA3AF;font-size:11px;">
-                                          SHA256: <t t-out="(file.checksum or '')[:16]"/>... | Taille: <t t-out="file.size"/>
+                                          SHA256: <t t-out="(file.checksum or '')[:16]"/>... | Size: <t t-out="file.size"/>
                                         </span>
                                       </div>
                                     </t>
                                     <t t-if="not line.file_ids">
-                                      <span style="color:#9CA3AF;font-size:12px;">Aucun fichier</span>
+                                      <span style="color:#9CA3AF;font-size:12px;">No files</span>
                                     </t>
                                   </t>
                                   <t t-if="line.error_message">
@@ -154,10 +154,10 @@
                         </table>
 
                         <p style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;line-height:20px;color:#6B7280;">
-                          En cas de problème, contactez
+                          If there is a problem, contact
                           <a t-attf-href="mailto:{{ company.email or '' }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;"><t t-out="company.email or ''"/></a>
                         </p>
-<p style="font-size:12px; line-height:18px; color:#6B7280; margin:24px 0 0 0;">Rapport généré automatiquement par votre module d'hébergement.</p>
+<p style="font-size:12px; line-height:18px; color:#6B7280; margin:24px 0 0 0;">Report generated automatically by your hosting module.</p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         </record>

@@ -39,6 +39,7 @@ from odoo.tools.misc import format_date
 
 from ..models import s3
 from ..models.secure_transfer import active_lang
+from ..models.secure_transfer_file import size_label
 
 _logger = logging.getLogger(__name__)
 
@@ -289,40 +290,54 @@ def _s3_connect_origins(env):
 
 # ── Locale ────────────────────────────────────────────────────────────────────
 
-# The product ships fr_CA (source) and en_CA. Anything en* maps to en_CA when
-# installed, everything else falls back to fr_CA (bf_appointment pattern).
+# The page strings (``_UI_STRINGS``) come in fr_CA and en_CA. The visitor asks
+# for en* or anything else (fr_CA by default, bf_appointment pattern); the
+# database then decides what it can render (``active_lang``), and the strings
+# follow THAT language, so the JS strings and the QWeb text never disagree.
 _DEFAULT_LANG = "fr_CA"
 
 
 def _resolve_locale(env=None):
-    """Accept-Language → installed lang code (fr_CA default)."""
+    """Accept-Language → the page locale, ``fr_CA`` or ``en_CA``.
+
+    ⚠️ The locale is the family of the language the page is rendered in, not
+    the language asked for. It used to fall back to fr_CA whenever en_CA was
+    not installed: an English visitor on a database with en_US only (French
+    absent) got an English page with French script strings, and on a database
+    with fr_CA and en_US a French page. Any English language now gives en_CA.
+    """
     env = env if env is not None else request.env
+    return _locale_of(_visitor_lang(env))
+
+
+def _visitor_lang(env):
+    """Accept-Language → the ACTIVE language the page is rendered in."""
     try:
         header = request.httprequest.headers.get("Accept-Language", "")
     except Exception:
-        return _DEFAULT_LANG
+        header = ""
     first = (header.split(",")[0].split(";")[0] or "").strip().lower()
-    lang = "en_CA" if first.startswith("en") else _DEFAULT_LANG
-    if lang != _DEFAULT_LANG:
-        installed = env["res.lang"].sudo().search(
-            [("code", "=", lang), ("active", "=", True)], limit=1)
-        if not installed:
-            lang = _DEFAULT_LANG
-    return lang
+    asked = "en_CA" if first.startswith("en") else _DEFAULT_LANG
+    return active_lang(env, asked)
+
+
+def _locale_of(lang):
+    """The ``_UI_STRINGS`` key of a language: fr_CA for French, else en_CA."""
+    return "fr_CA" if (lang or "").startswith("fr") else "en_CA"
 
 
 def _apply_locale():
     """Resolve the visitor locale and push it into the request context.
 
     The locale picks the page's strings (``_UI_STRINGS``); the context gets an
-    active language. ⚠️ fr_CA pushed as is on a database without it made
-    every public page answer 400 « Invalid language code: fr_CA ».
+    active language, the same one the locale was derived from. ⚠️ fr_CA
+    pushed as is on a database without it made every public page answer 400
+    « Invalid language code: fr_CA ».
     """
-    lang = _resolve_locale()
-    context_lang = active_lang(request.env, lang)
+    context_lang = _visitor_lang(request.env)
     if request.env.context.get("lang") != context_lang:
         request.update_context(lang=context_lang)
-    return lang
+    return _locale_of(context_lang)
 
 
 # ── Page rendering ────────────────────────────────────────────────────────────
@@ -337,13 +352,46 @@ def _apply_locale():
 DOCTYPE = Markup("<!DOCTYPE html>")
 
 
+def _page_texts(env):
+    """Texts the page templates cannot translate themselves.
+
+    ``<title>`` is never translated by Odoo, nor is a literal inside a QWeb
+    expression (``t-esc="a and 'x' or 'y'"``) or a ``data-*`` attribute read
+    by the scripts. They are composed here, in the visitor's language (the
+    context ``_apply_locale`` pinned), and the templates print them.
+    """
+    return {
+        "send_files": env._("Send files"),
+        "shared_files": env._("Shared files"),
+        "secure_message": env._("Secure message"),
+        "one_day": env._("1 day"),
+        # %s is the number of days.
+        "days": env._("%s days"),
+        # {date} is replaced by the script with the expiry date.
+        "expires_on": env._("Expires on {date} (UTC)."),
+        "report_confirm": env._("Report this transfer as abusive?"),
+    }
+
+
 def _render_page(template, values):
     """Render a standalone public page (adds the doctype the arch cannot hold).
 
     Every public page goes through here; a direct ``request.render`` would ship
     a doctype-less document and put the browser in quirks mode.
     """
-    return request.render(template, dict(values, doctype=DOCTYPE))
+    values = dict(values, doctype=DOCTYPE)
+    values.setdefault("st_txt", _page_texts(request.env))
+    values.setdefault("st_size", _page_size_label(request.env))
+    return request.render(template, values)
+
+
+def _page_size_label(env):
+    """``st_size(nbytes, limit=False)`` for the page templates: a size with
+    its unit (GB, MB…) in the visitor's language. A unit written inside a QWeb
+    expression is never translated: an English visitor read « 2 Go »."""
+    def st_size(nbytes, limit=False):
+        return size_label(env, nbytes, limit=limit)
+    return st_size
 
 
 # ── Client-side extension mirror ──────────────────────────────────────────────
@@ -519,9 +567,15 @@ def _st_config(env, limits, locale):
     }
 
 
-def _notify_abuse_managers(transfer, reason, ip):
+def _notify_abuse_managers(transfer, reason, ip, verified=True):
     """Open a To-Do activity on the transfer for every manager: suspending a
-    reported transfer is a human decision, made from the backend."""
+    reported transfer is a human decision, made from the backend.
+
+    Each activity is written in ITS manager's language, and created in an
+    environment carrying that language (the activity notice takes its subject
+    from the caller's language): the request runs in the anonymous visitor's.
+    ``verified=False`` flags a report made by a visitor still at the gate.
+    """
     env = request.env
     group = env.ref("bf_securetransfer.group_securetransfer_manager",
                     raise_if_not_found=False)
@@ -533,20 +587,25 @@ def _notify_abuse_managers(transfer, reason, ip):
         return
     model_id = env["ir.model"].sudo()._get_id("secure.transfer")
     activity_type = env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
-    # html_escape returns Markup, so the later concatenations escape the
-    # user-supplied reason exactly once.
-    body = html_escape(_(
-        "Signalement d'abus reçu pour le transfert %(name)s (IP : %(ip)s).",
-        name=transfer.name, ip=ip))
-    if reason:
-        body += Markup("<br/>") + _("Motif :") + " " + reason
+    company_lang = transfer.company_id.sudo().partner_id.lang
     for user in users:
-        env["mail.activity"].sudo().create({
+        uenv = env(context=dict(
+            env.context, lang=active_lang(env, user.lang or company_lang)))
+        # html_escape returns Markup, so the later concatenations escape the
+        # user-supplied reason exactly once.
+        body = html_escape(uenv._(
+            "Abuse report received for transfer %(name)s (IP: %(ip)s).",
+            name=transfer.name, ip=ip))
+        if not verified:
+            body += Markup("<br/>") + "[%s]" % uenv._("unverified, to review")
+        if reason:
+            body += Markup("<br/>") + uenv._("Reason:") + " " + reason
+        uenv["mail.activity"].sudo().create({
             "res_model_id": model_id,
             "res_id": transfer.id,
             "activity_type_id": activity_type.id if activity_type else False,
             "user_id": user.id,
-            "summary": _("Signalement d'abus — %s", transfer.name),
+            "summary": uenv._("Abuse report: %s", transfer.name),
             "note": Markup("<p>%s</p>") % body,
             "date_deadline": fields.Date.context_today(transfer),
         })
@@ -564,7 +623,7 @@ class SecureTransferController(Controller):
         if not _upload_enabled(env):
             response = _render_page("bf_securetransfer.page_unavailable", {
                 "brand": brand, "visuals": visuals, "locale": locale,
-                "message": _("Le service de transfert est temporairement indisponible."),
+                "message": _("The transfer service is temporarily unavailable."),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         limits = brand._effective_limits()
@@ -603,7 +662,7 @@ class SecureTransferController(Controller):
         if not _upload_enabled(env):
             response = _render_page("bf_securetransfer.page_unavailable", {
                 "brand": brand, "visuals": visuals, "locale": locale,
-                "message": _("Le service de transfert est temporairement indisponible."),
+                "message": _("The transfer service is temporarily unavailable."),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         limits = brand._effective_limits()
@@ -648,8 +707,10 @@ class SecureTransferController(Controller):
                 "message": False,
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
+        # The VISITOR reads this date: the page language, not the sender's
+        # (transfer.locale), which may not even be active here.
         expiry_display = format_date(
-            request.env, transfer.expiry_date, lang_code=transfer.locale,
+            request.env, transfer.expiry_date, lang_code=request.env.lang,
         ) if transfer.expiry_date else ""
         if transfer.has_password \
                 and not request.session.get("st_unlock_%d" % transfer.id):
@@ -845,12 +906,13 @@ class SecureTransferController(Controller):
                     "value": member._identity_value(),
                     "label": member.display_identity,
                 }
+            log_env = transfer._log_env()
             transfer._log(
                 "otp_ok", actor=member.display_identity if member else value,
                 ip=ip, ua=ua,
-                note=_("Visiteur confirmé par code (audience ouverte)")
+                note=log_env._("Visitor confirmed by code (open audience)")
                 if transfer.audience_mode == "open"
-                else _("Destinataire confirmé par code"))
+                else log_env._("Recipient confirmed by code"))
             return request.redirect("/s/%s" % token, code=303)
         _otp_fail_limiter.hit(key)
         if chal_member:
@@ -964,8 +1026,8 @@ class SecureTransferController(Controller):
             visuals = _v()
             response = _render_page("bf_securetransfer.page_unavailable", {
                 "brand": brand, "visuals": visuals, "locale": locale,
-                "message": _("Le téléchargement est temporairement indisponible. "
-                             "Réessayez plus tard."),
+                "message": _("The download is temporarily unavailable. "
+                             "Try again later."),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         if not head or not rec_file.etag or head.get("etag") != rec_file.etag:
@@ -978,8 +1040,8 @@ class SecureTransferController(Controller):
             visuals = _v()
             response = _render_page("bf_securetransfer.page_unavailable", {
                 "brand": brand, "visuals": visuals, "locale": locale,
-                "message": _("Ce fichier n'est plus disponible : son intégrité "
-                             "n'a pas pu être vérifiée."),
+                "message": _("This file is no longer available: its "
+                             "integrity could not be verified."),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         try:
@@ -990,8 +1052,8 @@ class SecureTransferController(Controller):
             visuals = _v()
             response = _render_page("bf_securetransfer.page_unavailable", {
                 "brand": brand, "visuals": visuals, "locale": locale,
-                "message": _("Le téléchargement est temporairement indisponible. "
-                             "Réessayez plus tard."),
+                "message": _("The download is temporarily unavailable. "
+                             "Try again later."),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         # _register_download logs the download event itself (choke-point).
@@ -1053,14 +1115,16 @@ class SecureTransferController(Controller):
                     and not request.session.get("st_otp_ok_%d" % transfer.id)))
             note = reason or None
             if not verified:
-                note = "[%s] %s" % (_("non vérifié, à revoir"), reason or "")
+                # The log is read in the transfer's language (certificate).
+                note = "[%s] %s" % (
+                    transfer._log_env()._("unverified, to review"), reason or "")
             transfer._log("abuse_report", ip=ip, ua=ua, note=note)
             if verified:
                 # Auto-suspend immediately: the link goes dark and stays dark
                 # until an admin reactivates (false report) or purges.
                 transfer._suspend_for_abuse(ip=ip, ua=ua)
             try:
-                _notify_abuse_managers(transfer, note or "", ip)
+                _notify_abuse_managers(transfer, reason, ip, verified=verified)
             except Exception:
                 _logger.exception(
                     "bf_securetransfer: abuse activity creation failed for %s",

@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class HostingHealthCheck(models.Model):
     _name = "hosting.health.check"
-    _description = "Vérification de santé du service"
+    _description = "Service health check"
     _order = "check_date desc"
 
     service_id = fields.Many2one(
@@ -21,44 +21,44 @@ class HostingHealthCheck(models.Model):
         index=True,
     )
     check_date = fields.Datetime(
-        string="Date de vérification",
+        string="Check date",
         default=fields.Datetime.now,
         required=True,
         index=True,
     )
     status = fields.Selection(
         selection=[
-            ("up", "En ligne"),
-            ("degraded", "Dégradé"),
-            ("down", "Hors ligne"),
-            ("timeout", "Délai dépassé"),
+            ("up", "Online"),
+            ("degraded", "Degraded"),
+            ("down", "Offline"),
+            ("timeout", "Timed out"),
         ],
-        string="État",
+        string="State",
         required=True,
     )
     response_time_ms = fields.Integer(
-        string="Temps de réponse (ms)",
-        help="Temps de réponse en millisecondes",
+        string="Response time (ms)",
+        help="Response time in milliseconds",
     )
     http_status_code = fields.Integer(
-        string="Code de statut HTTP",
+        string="HTTP status code",
     )
     error_message = fields.Text(
-        string="Message d'erreur",
+        string="Error message",
     )
     excluded_from_stats = fields.Boolean(
-        string="Exclu des statistiques",
+        string="Excluded from statistics",
         default=False,
         index=True,
-        help="Exclure cette vérification du calcul de disponibilité et du tableau "
-        "de bord (p. ex. panne due à un enjeu externe : fournisseur réseau, DNS "
-        "client, maintenance planifiée par un tiers). L'enregistrement reste "
-        "visible dans l'historique.",
+        help="Exclude this check from the uptime calculation and the "
+             "dashboard (e.g. an outage caused by an external issue: "
+             "network provider, client DNS, maintenance scheduled by a "
+             "third party). The record stays visible in the history.",
     )
     exclusion_reason = fields.Text(
-        string="Raison de l'exclusion",
-        help="Brève note expliquant pourquoi cette vérification est exclue "
-        "(cause externe, nom du fournisseur, numéro d'incident, etc.).",
+        string="Reason for exclusion",
+        help="Short note explaining why this check is excluded (external "
+             "cause, provider name, incident number, etc.).",
     )
 
     # Champs liés pour les rapports

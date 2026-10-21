@@ -5,7 +5,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.5.0",
+    # 18.0.1.5.1: les activités de relance sont créées dans la langue de
+    #   l'assigné, bornée aux langues installées.
+    "version": "18.0.1.5.1",
     "category": "Sales/CRM",
     "summary": "Suivi des campagnes de démarchage par appels et courriels, avec cadence de relance",
     "description": """

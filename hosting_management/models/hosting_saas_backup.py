@@ -30,11 +30,11 @@ _logger = logging.getLogger(__name__)
 
 
 RESULT_SELECTION = [
-    ("succeeded", "Réussie"),
-    ("with_errors", "Réussie avec erreurs"),
-    ("canceled", "Annulée"),
-    ("failed", "Échouée"),
-    ("unknown", "Indéterminée"),
+    ("succeeded", "Successful"),
+    ("with_errors", "Successful with errors"),
+    ("canceled", "Canceled"),
+    ("failed", "Failed"),
+    ("unknown", "Undetermined"),
 ]
 
 
@@ -42,34 +42,34 @@ class HostingSaasBackupRun(models.Model):
     """Une exécution de sauvegarde infonuagique, pour une organisation, une nuit."""
 
     _name = "hosting.saas.backup.run"
-    _description = "Exécution de sauvegarde infonuagique"
+    _description = "Cloud backup run"
     _order = "run_date desc, id desc"
     _inherit = ["mail.thread"]
 
     name = fields.Char(
-        string="Référence",
+        string="Reference",
         readonly=True,
         copy=False,
         default="New",
     )
     provider = fields.Selection(
         selection=[("cubebackup", "CubeBackup")],
-        string="Produit",
+        string="Product",
         required=True,
         default="cubebackup",
         index=True,
-        help="Produit de sauvegarde tiers d'où vient l'état.",
+        help="Third-party backup product the state comes from.",
     )
     organization_ref = fields.Char(
-        string="Identifiant de l'organisation",
+        string="Organization identifier",
         required=True,
         index=True,
-        help="Identifiant de l'organisation CHEZ LE PRODUIT (un UUID chez "
-             "CubeBackup). C'est lui qui fait foi, pas le nom : les noms "
-             "changent, les identifiants non.",
+        help="Organization identifier IN THE PRODUCT (a UUID in "
+             "CubeBackup). It is the reference, not the name: names "
+             "change, identifiers do not.",
     )
     organization_name = fields.Char(
-        string="Organisation",
+        string="Organization",
         index=True,
     )
     service_id = fields.Many2one(
@@ -77,9 +77,9 @@ class HostingSaasBackupRun(models.Model):
         string="Service",
         index=True,
         ondelete="set null",
-        help="Résolu à l'arrivée par « Identifiant de sauvegarde infonuagique » "
-             "sur la fiche de service. Vide = l'organisation n'est fichée nulle "
-             "part ; l'exécution est gardée quand même.",
+        help="Resolved on arrival through \"Cloud backup identifier\" on "
+             "the service record. Empty = the organization is not "
+             "recorded anywhere; the run is kept anyway.",
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
@@ -89,65 +89,65 @@ class HostingSaasBackupRun(models.Model):
         index=True,
     )
     external_id = fields.Char(
-        string="Identifiant de la tâche",
+        string="Task identifier",
         required=True,
-        help="Numéro de tâche chez le produit. Avec le produit et "
-             "l'organisation, il rend le versement rejouable sans doublon.",
+        help="Task number in the product. With the product and the "
+             "organization, it makes filing replayable without duplicates.",
     )
     run_date = fields.Datetime(
-        string="Départ",
+        string="Started",
         required=True,
         index=True,
     )
-    end_date = fields.Datetime(string="Fin")
+    end_date = fields.Datetime(string="End")
     duration_sec = fields.Float(
-        string="Durée (s)",
+        string="Duration (s)",
         digits=(16, 1),
     )
     duration_display = fields.Char(
-        string="Durée",
+        string="Duration",
         compute="_compute_duration_display",
     )
     result = fields.Selection(
         selection=RESULT_SELECTION,
-        string="Résultat",
+        string="Result",
         required=True,
         default="unknown",
         index=True,
         tracking=True,
     )
     result_raw = fields.Char(
-        string="Résultat (mot d'origine)",
-        help="Le verdict tel que le produit l'écrit. Gardé pour qu'un mot "
-             "inconnu ne se perde pas derrière « Indéterminée ».",
+        string="Result (original word)",
+        help="The verdict as the product writes it. Kept so that an "
+             "unknown word is not lost behind \"Undetermined\".",
     )
     apps_total = fields.Integer(string="Applications")
-    apps_failed = fields.Integer(string="Applications en échec")
+    apps_failed = fields.Integer(string="Failed applications")
     failure_ids = fields.One2many(
         comodel_name="hosting.saas.backup.failure",
         inverse_name="run_id",
-        string="Échecs",
+        string="Failures",
     )
     ingest_source = fields.Selection(
         selection=[
-            ("log", "Journal du conteneur"),
-            ("api", "API de la console"),
-            ("email", "Rapport par courriel"),
-            ("manual", "Saisie manuelle"),
+            ("log", "Container log"),
+            ("api", "Console API"),
+            ("email", "Email report"),
+            ("manual", "Manual entry"),
         ],
-        string="Lu par",
+        string="Read via",
         default="log",
-        help="Par où l'état a été lu. Note de provenance : rien dans le module "
-             "ne doit en dépendre.",
+        help="Where the state was read from. Provenance note: nothing in "
+             "the module should depend on it.",
     )
-    hostname = fields.Char(string="Hôte du lecteur")
+    hostname = fields.Char(string="Reader host")
     notes = fields.Text(string="Notes")
 
     _sql_constraints = [
         (
             "saas_run_unique",
             "unique(provider, organization_ref, external_id)",
-            "Cette exécution est déjà versée pour cette organisation.",
+            "This run is already filed for this organization.",
         ),
     ]
 
@@ -203,12 +203,12 @@ class HostingSaasBackupFailure(models.Model):
     """
 
     _name = "hosting.saas.backup.failure"
-    _description = "Échec de sauvegarde infonuagique"
+    _description = "Cloud backup failure"
     _order = "run_id desc, id"
 
     run_id = fields.Many2one(
         comodel_name="hosting.saas.backup.run",
-        string="Exécution",
+        string="Run",
         required=True,
         ondelete="cascade",
         index=True,
@@ -218,34 +218,34 @@ class HostingSaasBackupFailure(models.Model):
         help="mail, drive, site, team, contacts, calendar.",
     )
     subject_name = fields.Char(
-        string="Personne ou site",
-        help="Le nom d'affichage tel que le produit le connaît.",
+        string="Person or site",
+        help="The display name as the product knows it.",
     )
     subject_login = fields.Char(
-        string="Compte",
-        help="L'adresse du compte, quand le produit la nomme. C'est elle qu'on "
-             "tape dans la console d'administration du fournisseur.",
+        string="Account",
+        help="The account address, when the product names it. This is "
+             "what you type in the provider's admin console.",
     )
-    subject_ref = fields.Char(string="Identifiant")
+    subject_ref = fields.Char(string="Identifier")
     error_code = fields.Char(
         string="Code",
-        help="Code d'erreur du fournisseur infonuagique (p. ex. "
+        help="Error code from the cloud provider (e.g. "
              "ErrorQuotaExceeded, resourceLocked, throttledRequest).",
     )
-    http_code = fields.Char(string="Code HTTP")
+    http_code = fields.Char(string="HTTP code")
     error_message = fields.Char(
         string="Cause",
-        help="Le message court du fournisseur. Jamais le contenu de l'objet "
-             "sauvegardé.",
+        help="The provider's short message. Never the content of the "
+             "backed-up item.",
     )
     organization_name = fields.Char(
         related="run_id.organization_name",
-        string="Organisation",
+        string="Organization",
         store=True,
     )
     run_date = fields.Datetime(
         related="run_id.run_date",
-        string="Départ",
+        string="Started",
         store=True,
         index=True,
     )

@@ -35,10 +35,10 @@
                         </td>
                         <td style="text-align:right; vertical-align:middle;">
                             <div t-attf-style="font-size:15pt; font-weight:bold; color:#{primary};">
-                                Certificat d'accès
+                                Access certificate
                             </div>
                             <div style="font-size:9pt; color:#6b7280;">
-                                Journal d'accès chaîné — preuve d'intégrité
+                                Chained access log: integrity evidence
                             </div>
                         </td>
                     </tr>
@@ -50,13 +50,13 @@
                     <tr>
                         <td t-attf-style="padding:10px 12px; border-left:4px solid #{'#15803d' if c['intact'] else '#b91c1c'}; background:#{'#f0fdf4' if c['intact'] else '#fef2f2'};">
                             <strong t-if="c['intact']" style="color:#15803d;">
-                                Chaîne d'intégrité INTACTE
+                                Integrity chain INTACT
                             </strong>
                             <strong t-else="" style="color:#b91c1c;">
-                                ALERTE — chaîne d'intégrité BRISÉE
+                                ALERT: integrity chain BROKEN
                             </strong>
                             <span style="color:#374151;">
-                                — <t t-out="len(c['rows'])"/> entrée(s), recalculées une à une à l'instant de l'impression.
+                                — <t t-out="len(c['rows'])"/> entry/entries, each recomputed at print time.
                             </span>
                         </td>
                     </tr>
@@ -65,44 +65,44 @@
                 <!-- Identité du transfert -->
                 <table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9.5pt;">
                     <tr>
-                        <td style="width:25%; padding:3px 0; color:#6b7280;">Transfert</td>
+                        <td style="width:25%; padding:3px 0; color:#6b7280;">Transfer</td>
                         <td style="width:25%; padding:3px 0;"><strong t-out="doc.name"/></td>
-                        <td style="width:25%; padding:3px 0; color:#6b7280;">État</td>
+                        <td style="width:25%; padding:3px 0; color:#6b7280;">Status</td>
                         <td style="width:25%; padding:3px 0;"><span t-field="doc.state"/></td>
                     </tr>
                     <tr>
-                        <td style="padding:3px 0; color:#6b7280;">Expéditeur</td>
+                        <td style="padding:3px 0; color:#6b7280;">Sender</td>
                         <td style="padding:3px 0;">
                             <t t-out="doc.sender_name or ''"/>
                             <t t-if="doc.sender_email"> &lt;<t t-out="doc.sender_email"/>&gt;</t>
                         </td>
-                        <td style="padding:3px 0; color:#6b7280;">Destinataire(s)</td>
+                        <td style="padding:3px 0; color:#6b7280;">Recipient(s)</td>
                         <td style="padding:3px 0;" t-out="doc.recipient_emails or ''"/>
                     </tr>
                     <tr>
-                        <td style="padding:3px 0; color:#6b7280;">Créé le</td>
+                        <td style="padding:3px 0; color:#6b7280;">Created on</td>
                         <td style="padding:3px 0;" t-out="c['created_at']"/>
-                        <td style="padding:3px 0; color:#6b7280;">Échéance</td>
+                        <td style="padding:3px 0; color:#6b7280;">Expiry</td>
                         <td style="padding:3px 0;" t-out="c['expiry_at']"/>
                     </tr>
                     <tr>
-                        <td style="padding:3px 0; color:#6b7280;">Rétention</td>
-                        <td style="padding:3px 0;"><t t-out="doc.retention_days"/> jour(s)</td>
-                        <td style="padding:3px 0; color:#6b7280;">Téléchargements</td>
+                        <td style="padding:3px 0; color:#6b7280;">Retention</td>
+                        <td style="padding:3px 0;"><t t-out="doc.retention_days"/> day(s)</td>
+                        <td style="padding:3px 0; color:#6b7280;">Downloads</td>
                         <td style="padding:3px 0;"><t t-out="doc.download_count"/></td>
                     </tr>
                 </table>
 
                 <!-- Pièces -->
                 <div t-if="doc.file_ids" style="margin-bottom:6px; font-weight:bold;" t-attf-style="color:#{dark};">
-                    Pièces (<t t-out="len(doc.file_ids)"/>)
+                    Files (<t t-out="len(doc.file_ids)"/>)
                 </div>
                 <table t-if="doc.file_ids" style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9pt;">
                     <thead>
                         <tr t-attf-style="background:#{dark}; color:#ffffff;">
-                            <th style="padding:5px 6px; text-align:left;">Nom</th>
-                            <th style="padding:5px 6px; text-align:right;">Taille confirmée</th>
-                            <th style="padding:5px 6px; text-align:left;">Empreinte du stockage (ETag)</th>
+                            <th style="padding:5px 6px; text-align:left;">Name</th>
+                            <th style="padding:5px 6px; text-align:right;">Confirmed size</th>
+                            <th style="padding:5px 6px; text-align:left;">Storage hash (ETag)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,7 +112,7 @@
                                  que le déposant a déclarée : un certificat n'oppose
                                  que ce que le serveur a vérifié lui-même. -->
                             <td style="padding:4px 6px; text-align:right;">
-                                <t t-out="'%.1f' % ((f.size_confirmed or f.size or 0) / 1024.0)"/> ko
+                                <t t-out="'%.1f' % ((f.size_confirmed or f.size or 0) / 1024.0)"/> kB
                             </td>
                             <td style="padding:4px 6px; font-family:monospace; font-size:8pt;"
                                 t-out="(f.etag or '—')"/>
@@ -122,17 +122,17 @@
 
                 <!-- Le journal -->
                 <div style="margin-bottom:6px; font-weight:bold;" t-attf-style="color:#{dark};">
-                    Journal d'accès
+                    Access log
                 </div>
                 <table style="width:100%; border-collapse:collapse; font-size:8pt;">
                     <thead>
                         <tr t-attf-style="background:#{dark}; color:#ffffff;">
                             <th style="padding:5px 4px; text-align:left;">#</th>
-                            <th style="padding:5px 4px; text-align:left;">Horodatage (UTC)</th>
+                            <th style="padding:5px 4px; text-align:left;">Timestamp (UTC)</th>
                             <th style="padding:5px 4px; text-align:left;">Action</th>
-                            <th style="padding:5px 4px; text-align:left;">Acteur</th>
+                            <th style="padding:5px 4px; text-align:left;">Actor</th>
                             <th style="padding:5px 4px; text-align:left;">IP</th>
-                            <th style="padding:5px 4px; text-align:left;">Empreinte</th>
+                            <th style="padding:5px 4px; text-align:left;">Hash</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,7 +150,7 @@
                         </tr>
                         <tr t-if="not c['rows']">
                             <td colspan="6" style="padding:8px 4px; color:#6b7280;">
-                                Aucune entrée.
+                                No entries.
                             </td>
                         </tr>
                     </tbody>
@@ -158,32 +158,32 @@
 
                 <!-- La recette : sans elle, le client doit nous croire sur parole -->
                 <div style="margin-top:18px; padding:10px 12px; background:#f9fafb; border:1px solid #e5e7eb; font-size:8pt; color:#374151;">
-                    <strong>Comment vérifier ce certificat sans nous faire confiance.</strong>
-                    Chaque entrée porte une empreinte
-                    <span style="font-family:monospace;">SHA-256(empreinte précédente + charge utile canonique)</span>,
-                    où la charge utile est le JSON trié des champs de l'entrée
-                    (identifiant et nom du transfert, action, horodatage UTC, IP,
-                    agent utilisateur, acteur, note) et où la première entrée part
-                    d'une empreinte vide. Modifier, retirer ou intercaler une seule
-                    entrée casse toutes les empreintes suivantes.
+                    <strong>How to verify this certificate without trusting us.</strong>
+                    Every entry carries a
+                    <span style="font-family:monospace;">SHA-256(previous hash + canonical payload)</span>
+                    hash, where the payload is the sorted JSON of the entry's fields
+                    (transfer id and name, action, UTC timestamp, IP, user agent,
+                    actor, note) and where the first entry starts from an empty
+                    hash. Altering, removing or inserting a single entry breaks
+                    every hash that follows.
                     <div style="margin-top:5px;">
-                        Première empreinte :
+                        First hash:
                         <span style="font-family:monospace;" t-out="c['first_hash'] or '—'"/>
                     </div>
                     <div>
-                        Dernière empreinte :
+                        Last hash:
                         <span style="font-family:monospace;" t-out="c['last_hash'] or '—'"/>
                     </div>
                 </div>
 
                 <div style="margin-top:14px; font-size:8pt; color:#9ca3af;">
-                    Certificat produit le <t t-out="c['generated_at']"/> par
+                    Certificate issued on <t t-out="c['generated_at']"/> by
                     <t t-out="c['generated_by']"/>.
                     <!-- « Propulsé par » crédite l'OPÉRATEUR de l'instance, jamais
                          la marque servie — et il se lit sur la société, sinon un
                          déploiement en marque blanche imprime « Blue Fox » sur le
                          certificat que son client oppose au sien. -->
-                    <t t-if="brand.powered_by"> — Propulsé par <t t-out="brand.company_id.name"/>.</t>
+                    <t t-if="brand.powered_by"> Powered by <t t-out="brand.company_id.name"/>.</t>
                 </div>
             </div>
         </t>
@@ -192,18 +192,22 @@
     <template id="report_access_certificate">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="bf_securetransfer.report_access_certificate_document"/>
+                <!-- t-lang: the template's own text in the transfer's
+                     language too, like its data and its log notes; without it
+                     the labels followed whoever printed. -->
+                <t t-call="bf_securetransfer.report_access_certificate_document"
+                   t-lang="doc._render_lang()"/>
             </t>
         </t>
     </template>
 
     <record id="action_report_access_certificate" model="ir.actions.report">
-        <field name="name">Certificat d'accès</field>
+        <field name="name">Access certificate</field>
         <field name="model">secure.transfer</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_securetransfer.report_access_certificate</field>
         <field name="report_file">bf_securetransfer.report_access_certificate</field>
-        <field name="print_report_name">'Certificat d\'acces - %s' % (object.name or '')</field>
+        <field name="print_report_name">'Access certificate - %s' % (object.name or '')</field>
         <field name="binding_model_id" ref="model_secure_transfer"/>
         <field name="binding_type">report</field>
     </record>

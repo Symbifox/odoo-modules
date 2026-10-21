@@ -94,6 +94,11 @@ class TestSondeAvisRdv(TransactionCase):
                           return_value=releve):
             return self.service._do_calendar_notices_check(force=True)
 
+    def _operateurs_francophones(self):
+        """Les constats suivent la langue du partenaire de la société."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env.company.partner_id.lang = "fr_CA"
+
     # -- Le registre ---------------------------------------------------------
 
     def test_rien_a_signaler_rend_vert(self):
@@ -126,6 +131,9 @@ class TestSondeAvisRdv(TransactionCase):
         C'est le cas que la première moitié ne peut pas voir : rien n'est dû
         dans Odoo précisément parce qu'Odoo n'a rien appris.
         """
+        # Le constat s'écrit dans la langue des opérateurs : la
+        # société est épinglée en français pour que la phrase attendue en dépende.
+        self._operateurs_francophones()
         statut, _ms, _code, erreur = self._sonder(
             ecarts=[{"href": "/dav/x.ics", "raison": "etag",
                      "modifie_le": "hier"}]
@@ -135,6 +143,7 @@ class TestSondeAvisRdv(TransactionCase):
 
     def test_un_releve_impossible_n_est_pas_un_vert(self):
         """« Rien trouvé » et « rien regardé » ne se ressemblent pas."""
+        self._operateurs_francophones()
         statut, _ms, _code, erreur = self._sonder(
             mesure=False, erreur="ConnectionError : injoignable"
         )

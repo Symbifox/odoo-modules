@@ -7,20 +7,20 @@
         <field name="model">hosting.voip.did</field>
         <field name="arch" type="xml">
             <list decoration-muted="state != 'active'">
-                <field name="name" string="Numéro"/>
+                <field name="name" string="Number"/>
                 <field name="description" string="Description"/>
                 <field name="partner_id" string="Client"/>
-                <field name="is_reseller" string="Revendeur" optional="show"/>
-                <field name="voipms_subaccount" string="Sous-compte" optional="hide"/>
-                <field name="call_count_month" string="Appels (mois)" optional="show"/>
-                <field name="minutes_month" string="Minutes (mois)" optional="show"/>
-                <field name="monthly_cost" string="Coût mensuel" optional="show" sum="Total"/>
-                <field name="state" string="État" widget="badge"
+                <field name="is_reseller" string="Reseller" optional="show"/>
+                <field name="voipms_subaccount" string="Sub-account" optional="hide"/>
+                <field name="call_count_month" string="Calls (month)" optional="show"/>
+                <field name="minutes_month" string="Minutes (month)" optional="show"/>
+                <field name="monthly_cost" string="Monthly cost" optional="show" sum="Total"/>
+                <field name="state" string="State" widget="badge"
                        decoration-success="state == 'active'"
                        decoration-warning="state == 'inactive'"
                        decoration-danger="state == 'cancelled'"/>
-                <field name="last_call_date" string="Dernier appel" optional="hide"/>
-                <field name="voipms_last_sync" string="Synchro" optional="hide"/>
+                <field name="last_call_date" string="Last call" optional="hide"/>
+                <field name="voipms_last_sync" string="Sync" optional="hide"/>
             </list>
         </field>
     </record>
@@ -40,23 +40,23 @@
                         <button name="action_view_cdr" type="object"
                                 class="oe_stat_button" icon="fa-phone">
                             <field name="call_count_month" widget="statinfo"
-                                   string="Appels (mois)"/>
+                                   string="Calls (month)"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Revendeur — ne pas toucher"
+                    <widget name="web_ribbon" title="Reseller, do not touch"
                             bg_color="text-bg-warning" invisible="not is_reseller"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="+1 514 555 0123"/></h1>
                     </div>
                     <group>
-                        <group string="Affectation">
+                        <group string="Assignment">
                             <field name="description"/>
                             <field name="partner_id"/>
                             <field name="service_id"/>
                             <field name="is_reseller"/>
                         </group>
-                        <group string="Facturation">
+                        <group string="Billing">
                             <field name="monthly_cost"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="cost_month" readonly="1"/>
@@ -65,7 +65,7 @@
                         </group>
                     </group>
                     <group>
-                        <group string="VOIP.ms (lecture seule)">
+                        <group string="VOIP.ms (read-only)">
                             <field name="voipms_subaccount" readonly="1"/>
                             <field name="routing" readonly="1"/>
                             <field name="pop" readonly="1"/>
@@ -77,13 +77,13 @@
                             <field name="sms_enabled" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Synchronisation">
+                    <group string="Synchronization">
                         <field name="voipms_last_sync" readonly="1"/>
                         <field name="voipms_sync_error" readonly="1"
                                invisible="not voipms_sync_error"/>
                     </group>
                     <notebook>
-                        <page string="Appels (CDR)" name="cdr">
+                        <page string="Calls (CDR)" name="cdr">
                             <field name="cdr_ids" nolabel="1" readonly="1">
                                 <list>
                                     <field name="call_date"/>
@@ -96,7 +96,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Données VOIP.ms (brut)" name="raw">
+                        <page string="VOIP.ms data (raw)" name="raw">
                             <field name="voipms_did_raw" nolabel="1" readonly="1"/>
                         </page>
                     </notebook>
@@ -117,20 +117,20 @@
                 <field name="partner_id"/>
                 <field name="voipms_subaccount"/>
                 <separator/>
-                <filter name="filter_active" string="Actifs"
+                <filter name="filter_active" string="Active"
                         domain="[('state', '=', 'active')]"/>
-                <filter name="filter_inactive" string="Inactifs"
+                <filter name="filter_inactive" string="Inactive DIDs"
                         domain="[('state', '=', 'inactive')]"/>
-                <filter name="filter_reseller" string="Revendeur"
+                <filter name="filter_reseller" string="Reseller"
                         domain="[('is_reseller', '=', True)]"/>
-                <filter name="filter_unassigned" string="Sans client"
+                <filter name="filter_unassigned" string="No client"
                         domain="[('partner_id', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client"
                             context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_state" string="État"
+                    <filter name="group_state" string="State"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_subaccount" string="Sous-compte"
+                    <filter name="group_subaccount" string="Sub-account"
                             context="{'group_by': 'voipms_subaccount'}"/>
                 </group>
             </search>
@@ -146,11 +146,10 @@
         <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun DID synchronisé pour l'instant
+                No DID synced yet
             </p>
             <p>
-                Activez l'intégration VOIP.ms dans Configuration &gt; Paramètres,
-                puis lancez « Synchroniser VOIP.ms maintenant ».
+                Enable the VOIP.ms integration in Configuration &gt; Settings, then run "Sync VOIP.ms now".
             </p>
         </field>
     </record>

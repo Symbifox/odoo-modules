@@ -5,17 +5,17 @@
         <field name="name">secure.transfer.reveal.wizard.form</field>
         <field name="model">secure.transfer.reveal.wizard</field>
         <field name="arch" type="xml">
-            <form string="Lien de partage">
+            <form string="Share link">
                 <field name="revealed" invisible="1"/>
 
                 <!-- Step 1 — warning + confirmation (nothing logged yet) -->
                 <div invisible="revealed">
                     <div class="alert alert-warning" role="alert">
-                        Vous êtes sur le point de révéler le <strong>lien de partage</strong>
-                        de ce transfert. Cette révélation sera <strong>inscrite au journal
-                        d'accès</strong> (pièce Loi 25). Ne transmettez le lien qu'aux
-                        destinataires légitimes — quiconque le détient peut télécharger
-                        les fichiers (sous réserve du mot de passe, le cas échéant).
+                        You are about to reveal the <strong>share link</strong>
+                        for this transfer. This reveal will be <strong>recorded in the access
+                        log</strong> (Law 25 record). Only share the link with
+                        legitimate recipients: anyone who holds it can download
+                        the files (subject to the password, if any).
                     </div>
                     <group>
                         <field name="transfer_id" readonly="1"/>
@@ -25,7 +25,7 @@
                 <!-- Step 2 — revealed (after confirmation) -->
                 <div invisible="not revealed">
                     <div class="alert alert-info" role="alert">
-                        Lien révélé et journalisé. Copiez-le puis transmettez-le au destinataire.
+                        Link revealed and logged. Copy it, then share it with the recipient.
                     </div>
                     <group>
                         <field name="transfer_id" readonly="1"/>
@@ -34,17 +34,17 @@
                 </div>
 
                 <footer>
-                    <button string="Révéler le lien" name="action_confirm_reveal" type="object"
+                    <button string="Reveal link" name="action_confirm_reveal" type="object"
                             class="btn-primary" invisible="revealed"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel" invisible="revealed"/>
-                    <button string="Fermer" class="btn-primary" special="cancel" invisible="not revealed"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" invisible="revealed"/>
+                    <button string="Close" class="btn-primary" special="cancel" invisible="not revealed"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_reveal_link_wizard" model="ir.actions.act_window">
-        <field name="name">Révéler le lien de partage</field>
+        <field name="name">Reveal the share link</field>
         <field name="res_model">secure.transfer.reveal.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="reveal_link_wizard_view_form"/>

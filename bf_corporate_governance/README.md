@@ -141,6 +141,10 @@ Modules that extend `corporate.resolution` — at Blue Fox, `bf_sign_corporate`
 and `bf_gamification` — must depend on **this** module, not on the base one,
 and be upgraded in the same run.
 
+## Languages (18.0.1.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A resolution's PDF prints its header title, the "Director" capacity under each name when it falls back on the board, and each signatory's capacity in the language it is rendered in. The daily compliance check writes each corporate manager's activity in that manager's language, not the job's, and creates it in their environment, so Odoo's "assigned to you" notice follows them too. The dashboard's window title is extracted and receives its French. On upgrade, the scheduled job's name switches to English only where the database still holds the name that was shipped.
+
 ## Data Model
 
 ### corporate.resolution
@@ -240,7 +244,7 @@ removes another, so a single carrier is one thing to change instead of six.
 
 | Action | Frequency | What it does |
 |--------|-----------|--------------|
-| Corporatif : Vérifier les échéances de conformité | Daily | Creates an activity per corporate manager for events due within 30 days, then flags the event as reminded |
+| Corporate: check compliance due dates | Daily | Creates an activity per corporate manager for events due within 30 days, then flags the event as reminded |
 
 ## Testing
 
@@ -256,6 +260,7 @@ declares, and that the resolution sequence kept counting.
 
 ## Changelog
 
+- **18.0.1.2.0**: labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. The resolution PDF prints its titles and capacities in the language it is rendered in, and each corporate manager receives the compliance reminder in their own language. See the Languages section.
 - **18.0.1.1.1**: the resolution PDF takes its palette from the resolution's
   company, like its logo and name, rather than from the first company of the
   user's session.

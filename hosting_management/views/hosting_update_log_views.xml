@@ -64,12 +64,12 @@
                 <field name="service_id"/>
                 <field name="partner_id"/>
                 <field name="software_id"/>
-                <filter name="filter_success" string="Réussi" domain="[('success', '=', True)]"/>
-                <filter name="filter_failed" string="Échoué" domain="[('success', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <filter name="filter_success" string="Successful" domain="[('success', '=', True)]"/>
+                <filter name="filter_failed" string="Failed" domain="[('success', '=', False)]"/>
+                <group expand="0" string="Group by">
                     <filter name="group_service" string="Service" context="{'group_by': 'service_id'}"/>
                     <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
+                    <filter name="group_software" string="Software" context="{'group_by': 'software_id'}"/>
                     <filter name="group_date" string="Date" context="{'group_by': 'update_date:month'}"/>
                 </group>
             </search>
@@ -78,16 +78,16 @@
 
     <!-- Update Log Action -->
     <record id="hosting_update_log_action" model="ir.actions.act_window">
-        <field name="name">Historique des mises à jour</field>
+        <field name="name">Update history</field>
         <field name="res_model">hosting.update.log</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_update_log_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun historique de mise à jour
+                No update history
             </p>
             <p>
-                Les journaux de mise à jour sont créés automatiquement lorsque les services sont mis à jour.
+                Update logs are created automatically when services are updated.
             </p>
         </field>
     </record>

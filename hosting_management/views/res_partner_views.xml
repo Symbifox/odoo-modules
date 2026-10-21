@@ -34,12 +34,12 @@
                 <button name="action_view_hosting_endpoints" type="object"
                         class="oe_stat_button" groups="hosting_management.group_hosting_user" icon="fa-laptop"
                         invisible="not has_sla and hosting_endpoint_count == 0">
-                    <field name="hosting_endpoint_count" widget="statinfo" string="Postes"/>
+                    <field name="hosting_endpoint_count" widget="statinfo" string="Endpoints"/>
                 </button>
                 <button name="action_view_hosting_licenses" type="object"
                         class="oe_stat_button" groups="hosting_management.group_hosting_user" icon="fa-key"
                         invisible="hosting_license_count == 0">
-                    <field name="hosting_license_count" widget="statinfo" string="Licences"/>
+                    <field name="hosting_license_count" widget="statinfo" string="Licenses"/>
                 </button>
                 <button name="action_view_voip_dids" type="object"
                         class="oe_stat_button" groups="hosting_management.group_hosting_user" icon="fa-phone"
@@ -59,7 +59,7 @@
                  strippe le champ pour les non-managers de toute façon).
                  Visible uniquement pour les clients SLA. -->
             <xpath expr="//notebook" position="inside">
-                <page string="Parc informatique" name="hosting_park"
+                <page string="IT fleet" name="hosting_park"
                       groups="hosting_management.group_hosting_user"
                       invisible="not has_sla and hosting_endpoint_count == 0">
                     <field name="hosting_endpoint_ids" readonly="1">
@@ -71,7 +71,7 @@
                                    decoration-success="lifecycle_state == 'deployed'"
                                    decoration-warning="lifecycle_state == 'in_repair'"
                                    decoration-muted="lifecycle_state == 'retired'"/>
-                            <field name="assigned_display" string="Usager"/>
+                            <field name="assigned_display" string="User"/>
                             <field name="os"/>
                             <field name="os_eol_tag"/>
                             <field name="warranty_end"/>

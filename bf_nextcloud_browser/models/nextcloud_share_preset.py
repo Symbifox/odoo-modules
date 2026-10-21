@@ -11,7 +11,7 @@ from odoo import fields, models
 
 class NextcloudSharePreset(models.Model):
     _name = "nextcloud.share.preset"
-    _description = "Prereglage de partage Nextcloud"
+    _description = "Nextcloud share preset"
     _order = "sequence, id"
 
     config_id = fields.Many2one(
@@ -23,19 +23,19 @@ class NextcloudSharePreset(models.Model):
     sequence = fields.Integer(default=10)
     name = fields.Char(required=True)
     access = fields.Selection(
-        [("read", "Lecture seule"), ("read_write", "Lecture / ecriture")],
-        string="Acces",
+        [("read", "Read only"), ("read_write", "Read / write")],
+        string="Access",
         default="read",
         required=True,
     )
     expiry_days = fields.Integer(
-        string="Expiration (jours)",
+        string="Expiry (days)",
         default=0,
-        help="0 = aucune expiration.",
+        help="0 = no expiry.",
     )
     password_protected = fields.Boolean(
-        string="Protege par mot de passe",
-        help="Genere un mot de passe aleatoire pour le lien.",
+        string="Password protected",
+        help="Generates a random password for the link.",
     )
 
     def file_permissions(self, is_dir=False):

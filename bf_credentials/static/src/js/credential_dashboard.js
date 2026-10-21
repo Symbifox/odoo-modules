@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { _t } from "@web/core/l10n/translation";
 import { patch } from "@web/core/utils/patch";
 import { KnowledgeDashboard } from "@project_knowledge_matrix/js/knowledge_dashboard";
 
@@ -26,7 +27,7 @@ patch(KnowledgeDashboard.prototype, {
     openCredentials() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Identifiants",
+            name: _t("Credentials"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "kanban"], [false, "form"]],
             domain: this._getProjectDomain("project.credential"),
@@ -41,7 +42,7 @@ patch(KnowledgeDashboard.prototype, {
         // « expiring ». Compteur et liste annonçaient zéro de concert.
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Identifiants expirant sous 30 jours",
+            name: _t("Credentials expiring within 30 days"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
             domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expiring"]],
@@ -52,7 +53,7 @@ patch(KnowledgeDashboard.prototype, {
     openExpiredCredentials() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Identifiants expirés",
+            name: _t("Expired credentials"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
             domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expired"]],
@@ -67,7 +68,7 @@ patch(KnowledgeDashboard.prototype, {
     openMfaToDocument() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Deuxième facteur à documenter",
+            name: _t("Second factor to document"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
             domain: [
@@ -82,7 +83,7 @@ patch(KnowledgeDashboard.prototype, {
     openMfaAtRisk() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Deuxième facteur sans relève",
+            name: _t("Second factor without fallback"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
             domain: [
@@ -97,7 +98,7 @@ patch(KnowledgeDashboard.prototype, {
     openRevokedCredentials() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Identifiants révoqués",
+            name: _t("Revoked credentials"),
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
             domain: [...this._getProjectDomain("project.credential"), ["state", "=", "revoked"]],

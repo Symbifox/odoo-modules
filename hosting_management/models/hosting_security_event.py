@@ -2,35 +2,37 @@
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env
+
 
 class HostingSecurityEvent(models.Model):
     _name = "hosting.security.event"
-    _description = "Événement de sécurité d'hébergement"
+    _description = "Hosting security event"
     _order = "event_date desc, id desc"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Titre",
+        string="Title",
         required=True,
         tracking=True,
     )
     event_date = fields.Datetime(
-        string="Date de l'événement",
+        string="Event date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
     )
     event_type = fields.Selection(
         selection=[
-            ("unauthorized_access", "Accès non autorisé"),
-            ("certificate_issue", "Problème de certificat"),
-            ("vulnerability", "Vulnérabilité"),
-            ("data_breach", "Fuite de données"),
-            ("service_compromise", "Compromission de service"),
-            ("credential_leak", "Fuite d'identifiants"),
-            ("dns_issue", "Problème DNS"),
-            ("backup_failure", "Échec de sauvegarde"),
-            ("other", "Autre"),
+            ("unauthorized_access", "Unauthorized access"),
+            ("certificate_issue", "Certificate issue"),
+            ("vulnerability", "Vulnerability"),
+            ("data_breach", "Data breach"),
+            ("service_compromise", "Service compromise"),
+            ("credential_leak", "Credential leak"),
+            ("dns_issue", "DNS issue"),
+            ("backup_failure", "Backup failure"),
+            ("other", "Other"),
         ],
         string="Type",
         required=True,
@@ -39,25 +41,25 @@ class HostingSecurityEvent(models.Model):
     )
     severity = fields.Selection(
         selection=[
-            ("low", "Faible"),
-            ("medium", "Moyen"),
-            ("high", "Élevé"),
-            ("critical", "Critique"),
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+            ("critical", "Critical"),
         ],
-        string="Sévérité",
+        string="Severity",
         required=True,
         default="medium",
         tracking=True,
     )
     state = fields.Selection(
         selection=[
-            ("open", "Ouvert"),
-            ("investigating", "En investigation"),
-            ("mitigated", "Atténué"),
-            ("resolved", "Résolu"),
-            ("false_positive", "Faux positif"),
+            ("open", "Open"),
+            ("investigating", "Investigating"),
+            ("mitigated", "Mitigated"),
+            ("resolved", "Resolved"),
+            ("false_positive", "False positive"),
         ],
-        string="État",
+        string="State",
         required=True,
         default="open",
         tracking=True,
@@ -66,37 +68,37 @@ class HostingSecurityEvent(models.Model):
     # -- Relations --
     service_ids = fields.Many2many(
         comodel_name="hosting.service",
-        string="Services affectés",
+        string="Affected services",
     )
     server_id = fields.Many2one(
         comodel_name="hosting.server",
-        string="Serveur affecté",
+        string="Affected server",
     )
 
     # -- Details --
     description = fields.Html(
-        string="Détails de l'incident",
+        string="Incident details",
     )
     impact = fields.Html(
-        string="Évaluation de l'impact",
+        string="Impact assessment",
     )
     resolution = fields.Html(
-        string="Notes de résolution",
+        string="Resolution notes",
     )
     resolved_date = fields.Datetime(
-        string="Date de résolution",
+        string="Resolution date",
         tracking=True,
     )
 
     # -- Assignment --
     assigned_user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Assigné à",
+        string="Assigned to",
         tracking=True,
     )
     reported_by_id = fields.Many2one(
         comodel_name="res.users",
-        string="Signalé par",
+        string="Reported by",
         default=lambda self: self.env.user,
     )
 
@@ -126,13 +128,17 @@ class HostingSecurityEvent(models.Model):
         records = super().create(vals_list)
         AuditLog = self.env["hosting.audit.log"]
         Ntfy = self.env["hosting.ntfy"]
-        type_labels = dict(self._fields["event_type"].selection)
-        severity_labels = dict(self._fields["severity"].selection)
+        # Journal d'audit et alerte lus par l'équipe d'hébergement : langue de la
+        # société (création par une API ou un travail planifié aussi). Libellés de
+        # sélection traduits, dans la même langue (piège 3, 60).
+        env = reader_env(self.env)
+        type_labels = dict(self._fields["event_type"]._description_selection(env))
+        severity_labels = dict(self._fields["severity"]._description_selection(env))
         for rec in records:
             AuditLog._log_event(
                 action_type="security_event",
                 category="security",
-                description=f"Événement de sécurité créé : {rec.name}",
+                description=env._("Security event created: %s", rec.name),
                 res_model=self._name,
                 res_id=rec.id,
                 res_name=rec.name,
@@ -147,13 +153,17 @@ class HostingSecurityEvent(models.Model):
                         else rec.server_id.name
                     )
                 body_lines = [
-                    f"Type : {type_labels.get(rec.event_type, rec.event_type)}",
-                    f"Sévérité : {severity_labels.get(rec.severity, rec.severity)}",
+                    env._("Type: %s", type_labels.get(rec.event_type, rec.event_type)),
+                    env._("Severity: %s", severity_labels.get(rec.severity, rec.severity)),
                 ]
                 if target_list:
-                    body_lines.append(f"Cible : {target_list}")
+                    body_lines.append(env._("Target: %s", target_list))
                 Ntfy.send(
-                    title=f"SÉCURITÉ [{severity_labels.get(rec.severity, rec.severity).upper()}] : {rec.name}",
+                    title=env._(
+                        "SECURITY [%(severity)s]: %(name)s",
+                        severity=severity_labels.get(rec.severity, rec.severity).upper(),
+                        name=rec.name,
+                    ),
                     body="\n".join(body_lines),
                     priority="urgent" if rec.severity == "critical" else "high",
                     tags="lock,rotating_light",

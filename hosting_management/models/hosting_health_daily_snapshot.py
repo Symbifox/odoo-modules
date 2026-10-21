@@ -5,13 +5,13 @@ from odoo import api, fields, models
 
 class HostingHealthDailySnapshot(models.Model):
     _name = "hosting.health.daily.snapshot"
-    _description = "Snapshot quotidien de disponibilité"
+    _description = "Daily uptime snapshot"
     _order = "snapshot_date desc, service_id"
     _sql_constraints = [
         (
             "service_date_unique",
             "unique(service_id, snapshot_date)",
-            "Un seul snapshot par service et par jour.",
+            "Only one snapshot per service and per day.",
         ),
     ]
 
@@ -28,30 +28,30 @@ class HostingHealthDailySnapshot(models.Model):
         index=True,
     )
     check_count = fields.Integer(
-        string="Vérifications agrégées",
+        string="Aggregated checks",
         required=True,
     )
     up_count = fields.Integer(
-        string="Vérifications « up »",
+        string="\"Up\" checks",
         required=True,
     )
     uptime_pct = fields.Float(
-        string="Disponibilité (%)",
+        string="Uptime (%)",
         digits=(5, 2),
         required=True,
     )
     avg_response_ms = fields.Integer(
-        string="Temps de réponse moyen (ms)",
+        string="Average response time (ms)",
     )
     excluded_count = fields.Integer(
-        string="Vérifications exclues",
-        help="Vérifications marquées excluded_from_stats au moment de la "
-        "consolidation (ne sont pas comptées dans le pourcentage).",
+        string="Excluded checks",
+        help="Checks flagged excluded_from_stats at consolidation time "
+             "(not counted in the percentage).",
     )
     archive_filename = fields.Char(
-        string="Archive 7z",
-        help="Nom du fichier 7z sur Nextcloud contenant les données brutes "
-        "consolidées par ce snapshot.",
+        string="7z archive",
+        help="Name of the 7z file on Nextcloud that holds the raw data "
+             "consolidated by this snapshot.",
     )
 
     partner_id = fields.Many2one(

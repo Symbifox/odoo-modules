@@ -3,55 +3,56 @@ from odoo import api, fields, models
 
 class CorporateDirector(models.Model):
     _name = 'corporate.director'
-    _description = 'Administrateur corporatif'
+    _description = "Corporate director"
     _inherit = ['mail.thread']
     _order = 'is_active desc, appointment_date desc'
 
     partner_id = fields.Many2one(
         'res.partner',
-        string='Administrateur',
+        string="Director",
         required=True,
         tracking=True,
     )
     appointment_date = fields.Date(
-        string='Date de nomination',
+        string="Appointment date",
         required=True,
         tracking=True,
     )
     end_date = fields.Date(
-        string='Date de fin',
+        string="End date",
         tracking=True,
     )
     end_reason = fields.Selection(
         selection=[
-            ('resignation', 'Démission'),
-            ('removal', 'Destitution'),
-            ('term_expired', 'Mandat expiré'),
-            ('other', 'Autre'),
+            ('resignation', "Resignation"),
+            ('removal', "Removal"),
+            ('term_expired', "Term expired"),
+            ('other', "Other"),
         ],
-        string='Raison de fin',
+        string="End reason",
     )
     appointment_resolution_id = fields.Many2one(
         'corporate.resolution',
-        string='Résolution de nomination',
+        string="Appointment resolution",
     )
     end_resolution_id = fields.Many2one(
         'corporate.resolution',
-        string='Résolution de fin',
+        string="Termination resolution",
     )
     domicile = fields.Char(
-        string='Domicile',
-        help='Requis pour les exigences de résidence canadienne de la LSAQ',
+        string="Residence",
+        help="Required for the Canadian residency requirements of the "
+             "Québec Business Corporations Act (LSAQ)",
     )
     is_active = fields.Boolean(
-        string='Actif',
+        string="Active",
         compute='_compute_is_active',
         store=True,
         index=True,
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Société',
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )

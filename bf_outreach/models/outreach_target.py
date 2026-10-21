@@ -850,5 +850,6 @@ class BfOutreachTarget(models.Model):
             }
             if activity_type:
                 values["activity_type_id"] = activity_type.id
-            activities |= self.env["mail.activity"].create(values)
+            # Dans la langue de l'assigné : l'objet de l'avis d'Odoo suit l'appelant (action_notify).
+            activities |= reader_env["mail.activity"].create(values)
         return activities

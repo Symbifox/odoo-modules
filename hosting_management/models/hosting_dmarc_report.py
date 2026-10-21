@@ -8,6 +8,8 @@ from datetime import datetime
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 # ICP keys (resolved by the poller, in priority order)
@@ -24,41 +26,41 @@ REPORT_SUBJECT_MARKERS = ("report domain:", "report-id")
 
 class HostingDmarcReport(models.Model):
     _name = "hosting.dmarc.report"
-    _description = "Rapport agrégé DMARC (RUA)"
+    _description = "DMARC aggregate report (RUA)"
     _order = "date_end desc, org_name"
     _inherit = ["mail.thread"]
 
-    name = fields.Char(string="Rapport", compute="_compute_name", store=True)
+    name = fields.Char(string="Report", compute="_compute_name", store=True)
     domain_id = fields.Many2one(
         comodel_name="hosting.domain",
-        string="Domaine",
+        string="Domain",
         ondelete="set null",
         index=True,
     )
-    domain_name = fields.Char(string="Domaine rapporté", index=True)
+    domain_name = fields.Char(string="Reported domain", index=True)
 
     # report_metadata
-    org_name = fields.Char(string="Organisme déclarant", required=True, index=True)
-    org_email = fields.Char(string="Courriel déclarant")
+    org_name = fields.Char(string="Reporting organization", required=True, index=True)
+    org_email = fields.Char(string="Reporter email")
     report_id = fields.Char(string="Report-ID", required=True, index=True)
-    date_begin = fields.Datetime(string="Début de la fenêtre")
-    date_end = fields.Datetime(string="Fin de la fenêtre")
+    date_begin = fields.Datetime(string="Window start")
+    date_end = fields.Datetime(string="Window end")
 
     # policy_published
     policy_p = fields.Char(string="Policy (p)")
-    policy_sp = fields.Char(string="Policy sous-domaine (sp)")
-    policy_pct = fields.Integer(string="Pourcentage (pct)")
+    policy_sp = fields.Char(string="Subdomain policy (sp)")
+    policy_pct = fields.Integer(string="Percentage (pct)")
     policy_adkim = fields.Selection(
-        [("r", "relaxed"), ("s", "strict")], string="Alignement DKIM (adkim)"
+        [("r", "relaxed"), ("s", "strict")], string="DKIM alignment (adkim)"
     )
     policy_aspf = fields.Selection(
-        [("r", "relaxed"), ("s", "strict")], string="Alignement SPF (aspf)"
+        [("r", "relaxed"), ("s", "strict")], string="SPF alignment (aspf)"
     )
 
     line_ids = fields.One2many(
         comodel_name="hosting.dmarc.report.line",
         inverse_name="report_id",
-        string="Lignes",
+        string="Lines",
     )
 
     # Aggregates
@@ -66,33 +68,37 @@ class HostingDmarcReport(models.Model):
         string="Messages", compute="_compute_counts", store=True
     )
     pass_count = fields.Integer(
-        string="Conformes DMARC", compute="_compute_counts", store=True
+        string="DMARC passes", compute="_compute_counts", store=True
     )
     fail_count = fields.Integer(
-        string="Échecs DMARC", compute="_compute_counts", store=True
+        string="DMARC failures", compute="_compute_counts", store=True
     )
     fail_rate = fields.Float(
-        string="Taux d'échec (%)", compute="_compute_counts", store=True
+        string="Failure rate (%)", compute="_compute_counts", store=True
     )
 
     # Provenance / dedup
-    source_message_id = fields.Char(string="Message-ID courriel", copy=False)
+    source_message_id = fields.Char(string="Email Message-ID", copy=False)
 
     _sql_constraints = [
         (
             "uniq_org_report",
             "unique(org_name, report_id)",
-            "Ce rapport DMARC (organisme + Report-ID) a déjà été ingéré.",
+            "This DMARC report (organization + Report-ID) has already "
+            "been ingested.",
         ),
     ]
 
     @api.depends("org_name", "date_begin", "date_end")
     def _compute_name(self):
+        # Nom STOCKÉ, calculé à l'ingestion (travail planifié) : le repli suit la
+        # langue de la société, pas celle d'OdooBot.
+        env = reader_env(self.env)
         for rec in self:
             if rec.date_end:
                 rec.name = f"{rec.org_name or '?'} — {rec.date_end.date()}"
             else:
-                rec.name = rec.org_name or rec.report_id or "Rapport DMARC"
+                rec.name = rec.org_name or rec.report_id or env._("DMARC report")
 
     @api.depends("line_ids.count", "line_ids.aligned")
     def _compute_counts(self):
@@ -322,17 +328,20 @@ class HostingDmarcReport(models.Model):
     def _dmarc_ingest_notify(self, created):
         """ntfy summary + flag domains showing DMARC failures in fresh reports."""
         Ntfy = self.env["hosting.ntfy"]
+        # Alerte lue par l'équipe d'hébergement : langue de la société.
+        env = reader_env(self.env)
         recent = self.search([], order="create_date desc", limit=created)
         worst = recent.filtered(lambda r: r.fail_rate >= 5.0)
-        lines = [f"Nouveaux rapports DMARC : {created}"]
+        lines = [env._("New DMARC reports: %s", created)]
         for r in recent[:5]:
             flag = " ⚠️" if r.fail_rate >= 5.0 else ""
-            lines.append(
-                f"- {r.domain_name or r.org_name} : "
-                f"{r.fail_count}/{r.total_count} échecs ({r.fail_rate:.0f}%){flag}"
-            )
+            lines.append(env._(
+                "- %(domain)s: %(failed)s/%(total)s failures (%(rate)s%%)%(flag)s",
+                domain=r.domain_name or r.org_name, failed=r.fail_count,
+                total=r.total_count, rate=f"{r.fail_rate:.0f}", flag=flag,
+            ))
         Ntfy.send(
-            title="DMARC : rapports ingérés",
+            title=env._("DMARC: reports ingested"),
             body="\n".join(lines),
             priority="high" if worst else "default",
             tags="envelope,bar_chart",
@@ -349,40 +358,40 @@ class HostingDmarcReport(models.Model):
 
 class HostingDmarcReportLine(models.Model):
     _name = "hosting.dmarc.report.line"
-    _description = "Ligne de rapport DMARC (par source)"
+    _description = "DMARC report line (per source)"
     _order = "count desc"
 
     report_id = fields.Many2one(
         comodel_name="hosting.dmarc.report",
-        string="Rapport",
+        string="Report",
         required=True,
         ondelete="cascade",
         index=True,
     )
     domain_id = fields.Many2one(
-        related="report_id.domain_id", store=True, string="Domaine"
+        related="report_id.domain_id", store=True, string="Domain"
     )
-    source_ip = fields.Char(string="IP source", index=True)
+    source_ip = fields.Char(string="Source IP", index=True)
     count = fields.Integer(string="Messages")
     disposition = fields.Selection(
         [("none", "none"), ("quarantine", "quarantine"), ("reject", "reject")],
-        string="Disposition appliquée",
+        string="Applied disposition",
     )
     dkim_eval = fields.Selection(
-        [("pass", "pass"), ("fail", "fail")], string="DKIM (aligné)"
+        [("pass", "pass"), ("fail", "fail")], string="DKIM (aligned)"
     )
     spf_eval = fields.Selection(
-        [("pass", "pass"), ("fail", "fail")], string="SPF (aligné)"
+        [("pass", "pass"), ("fail", "fail")], string="SPF (aligned)"
     )
     aligned = fields.Boolean(
-        string="Conforme DMARC", compute="_compute_aligned", store=True,
-        help="Vrai si DKIM OU SPF passe ET est aligné (= DMARC pass).",
+        string="DMARC compliant", compute="_compute_aligned", store=True,
+        help="True if DKIM OR SPF passes AND is aligned (= DMARC pass).",
     )
-    header_from = fields.Char(string="From (en-tête)")
-    dkim_auth_domain = fields.Char(string="DKIM domaine")
-    dkim_auth_result = fields.Char(string="DKIM résultat")
-    spf_auth_domain = fields.Char(string="SPF domaine")
-    spf_auth_result = fields.Char(string="SPF résultat")
+    header_from = fields.Char(string="From (header)")
+    dkim_auth_domain = fields.Char(string="DKIM domain")
+    dkim_auth_result = fields.Char(string="DKIM result")
+    spf_auth_domain = fields.Char(string="SPF domain")
+    spf_auth_result = fields.Char(string="SPF result")
 
     @api.depends("dkim_eval", "spf_eval")
     def _compute_aligned(self):

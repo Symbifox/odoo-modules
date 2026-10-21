@@ -7,24 +7,24 @@
         <field name="model">hosting.domain</field>
         <field name="arch" type="xml">
             <list decoration-danger="state == 'expired'" decoration-warning="state == 'expiring_soon'">
-                <field name="name" string="Domaine"/>
+                <field name="name" string="Domain"/>
                 <field name="partner_id" string="Client"/>
-                <field name="registrar" string="Registraire"/>
+                <field name="registrar" string="Registrar"/>
                 <field name="dns_provider" string="DNS"/>
                 <field name="date_expiration" string="Expiration"/>
-                <field name="days_until_expiration" string="Jours restants"/>
+                <field name="days_until_expiration" string="Days left"/>
                 <field name="ssl_type" string="SSL"/>
-                <field name="ssl_expiry_date" string="Expiration SSL"/>
-                <field name="auto_renew" string="Renouvellement auto"/>
-                <field name="state" string="Etat" widget="badge"
+                <field name="ssl_expiry_date" string="SSL expiration"/>
+                <field name="auto_renew" string="Auto-renew"/>
+                <field name="state" string="State" widget="badge"
                        decoration-success="state == 'active'"
                        decoration-warning="state == 'expiring_soon'"
                        decoration-danger="state == 'expired'"
                        decoration-muted="state == 'transferred'"/>
-                <field name="annual_cost" string="Cout annuel" optional="show"/>
-                <field name="dmarc_managed" string="DMARC suivi" optional="hide"/>
-                <field name="dmarc_policy" string="Policy DMARC" optional="hide"/>
-                <field name="dmarc_drift" string="Drift DMARC" widget="boolean_toggle" optional="show"
+                <field name="annual_cost" string="Annual cost" optional="show"/>
+                <field name="dmarc_managed" string="DMARC monitored" optional="hide"/>
+                <field name="dmarc_policy" string="DMARC policy" optional="hide"/>
+                <field name="dmarc_drift" string="DMARC drift" widget="boolean_toggle" optional="show"
                        readonly="1" invisible="not dmarc_managed"/>
             </list>
         </field>
@@ -37,11 +37,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_set_active" string="Activer" type="object"
+                    <button name="action_set_active" string="Activate" type="object"
                             class="oe_highlight" invisible="state == 'active'"/>
-                    <button name="action_set_transferred" string="Transferer" type="object"
+                    <button name="action_set_transferred" string="Transfer" type="object"
                             invisible="state == 'transferred'"/>
-                    <button name="action_dmarc_check_now" string="Vérifier DMARC maintenant"
+                    <button name="action_dmarc_check_now" string="Check DMARC now"
                             type="object" invisible="not dmarc_managed"/>
                     <field name="state" widget="statusbar" statusbar_visible="active,expiring_soon,expired"/>
                 </header>
@@ -56,31 +56,31 @@
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="exemple.com"/>
+                            <field name="name" placeholder="example.com"/>
                         </h1>
                     </div>
 
                     <group>
-                        <group string="Registraire et DNS">
+                        <group string="Registrar and DNS">
                             <field name="partner_id" string="Client"/>
-                            <field name="user_id" string="Responsable"/>
-                            <field name="registrar" string="Registraire"/>
-                            <field name="dns_provider" string="Fournisseur DNS"/>
-                            <field name="date_registration" string="Date d'enregistrement"/>
-                            <field name="date_expiration" string="Date d'expiration"/>
-                            <field name="days_until_expiration" string="Jours restants" readonly="1"/>
-                            <field name="auto_renew" string="Renouvellement automatique"/>
+                            <field name="user_id" string="Assignee"/>
+                            <field name="registrar" string="Registrar"/>
+                            <field name="dns_provider" string="DNS provider"/>
+                            <field name="date_registration" string="Registration date"/>
+                            <field name="date_expiration" string="Expiry date"/>
+                            <field name="days_until_expiration" string="Days left" readonly="1"/>
+                            <field name="auto_renew" string="Automatic renewal"/>
                         </group>
-                        <group string="SSL et couts">
-                            <field name="ssl_type" string="Type SSL"/>
-                            <field name="ssl_issuer" string="Emetteur SSL"
+                        <group string="SSL and costs">
+                            <field name="ssl_type" string="SSL type"/>
+                            <field name="ssl_issuer" string="SSL issuer"
                                    invisible="ssl_type == 'none'"/>
-                            <field name="ssl_expiry_date" string="Expiration SSL"
+                            <field name="ssl_expiry_date" string="SSL expiration"
                                    invisible="ssl_type == 'none'"/>
-                            <field name="days_until_ssl_expiry" string="Jours avant expiration SSL"
+                            <field name="days_until_ssl_expiry" string="Days until SSL expiration"
                                    readonly="1" invisible="ssl_type == 'none'"/>
-                            <field name="annual_cost" string="Cout annuel"/>
-                            <field name="currency_id" string="Devise" groups="base.group_multi_currency"/>
+                            <field name="annual_cost" string="Annual cost"/>
+                            <field name="currency_id" string="Currency" groups="base.group_multi_currency"/>
                         </group>
                     </group>
 
@@ -89,10 +89,10 @@
                             <field name="service_ids" nolabel="1" readonly="1">
                                 <list>
                                     <field name="code" string="Reference"/>
-                                    <field name="name" string="Nom"/>
+                                    <field name="name" string="Name"/>
                                     <field name="partner_id" string="Client"/>
-                                    <field name="software_id" string="Logiciel"/>
-                                    <field name="state" string="Etat" widget="badge"
+                                    <field name="software_id" string="Software"/>
+                                    <field name="state" string="State" widget="badge"
                                            decoration-success="state == 'active'"
                                            decoration-danger="state == 'expired'"/>
                                 </list>
@@ -106,12 +106,12 @@
                                            invisible="not dmarc_managed"/>
                                     <field name="dmarc_rua" required="dmarc_managed"
                                            invisible="not dmarc_managed"
-                                           placeholder="dmarc@exemple.com"/>
+                                           placeholder="dmarc@example.com"/>
                                     <field name="dmarc_pct" invisible="not dmarc_managed"/>
                                     <field name="dmarc_next_review_date"
                                            invisible="not dmarc_managed"/>
                                 </group>
-                                <group string="État DNS">
+                                <group string="DNS state">
                                     <field name="dmarc_dns_value_expected" readonly="1"
                                            invisible="not dmarc_managed"/>
                                     <field name="dmarc_dns_value_observed" readonly="1"
@@ -125,10 +125,7 @@
                             </group>
                             <div class="alert alert-warning" role="alert"
                                  invisible="not dmarc_drift">
-                                <strong>Drift DMARC détecté.</strong>
-                                Le TXT <code>_dmarc</code> observé via Cloudflare DoH ne
-                                correspond pas à la valeur attendue. Vérifiez la zone DNS
-                                ou ajustez la configuration attendue.
+                                <strong>DMARC drift detected.</strong> The <code>_dmarc</code> TXT record seen via Cloudflare DoH does not match the expected value. Check the DNS zone or adjust the expected configuration.
                             </div>
                         </page>
                         <page string="Notes" name="notes">
@@ -158,28 +155,28 @@
                 <field name="registrar"/>
                 <field name="dns_provider"/>
                 <separator/>
-                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
-                <filter name="filter_expiring_soon" string="Expire bientot" domain="[('state', '=', 'expiring_soon')]"/>
-                <filter name="filter_expired" string="Expires" domain="[('state', '=', 'expired')]"/>
-                <filter name="filter_transferred" string="Transferes" domain="[('state', '=', 'transferred')]"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_expiring_soon" string="Expiring soon" domain="[('state', '=', 'expiring_soon')]"/>
+                <filter name="filter_expired" string="Expired domains" domain="[('state', '=', 'expired')]"/>
+                <filter name="filter_transferred" string="Transferred domains" domain="[('state', '=', 'transferred')]"/>
                 <separator/>
-                <filter name="filter_ssl_active" string="SSL actif" domain="[('ssl_type', '!=', 'none')]"/>
-                <filter name="filter_ssl_expiring" string="SSL expirant"
+                <filter name="filter_ssl_active" string="Active SSL" domain="[('ssl_type', '!=', 'none')]"/>
+                <filter name="filter_ssl_expiring" string="Expiring SSL"
                         domain="[('ssl_type', '!=', 'none'), ('ssl_expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('ssl_expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_no_auto_renew" string="Sans renouvellement auto" domain="[('auto_renew', '=', False)]"/>
+                <filter name="filter_no_auto_renew" string="No auto-renewal" domain="[('auto_renew', '=', False)]"/>
                 <separator/>
-                <filter name="filter_dmarc_managed" string="DMARC suivi" domain="[('dmarc_managed', '=', True)]"/>
-                <filter name="filter_dmarc_drift" string="Drift DMARC" domain="[('dmarc_drift', '=', True)]"/>
-                <filter name="filter_dmarc_review_due" string="Révision DMARC due"
+                <filter name="filter_dmarc_managed" string="DMARC monitored" domain="[('dmarc_managed', '=', True)]"/>
+                <filter name="filter_dmarc_drift" string="DMARC drift" domain="[('dmarc_drift', '=', True)]"/>
+                <filter name="filter_dmarc_review_due" string="DMARC review due"
                         domain="[('dmarc_managed', '=', True), ('dmarc_next_review_date', '!=', False), ('dmarc_next_review_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 <separator/>
                 <filter name="filter_archived" string="Archives" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_registrar" string="Registraire" context="{'group_by': 'registrar'}"/>
-                    <filter name="group_dns" string="Fournisseur DNS" context="{'group_by': 'dns_provider'}"/>
-                    <filter name="group_ssl" string="Type SSL" context="{'group_by': 'ssl_type'}"/>
-                    <filter name="group_state" string="Etat" context="{'group_by': 'state'}"/>
+                    <filter name="group_registrar" string="Registrar" context="{'group_by': 'registrar'}"/>
+                    <filter name="group_dns" string="DNS provider" context="{'group_by': 'dns_provider'}"/>
+                    <filter name="group_ssl" string="SSL type" context="{'group_by': 'ssl_type'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
@@ -187,30 +184,30 @@
 
     <!-- Actions -->
     <record id="hosting_domain_action" model="ir.actions.act_window">
-        <field name="name">Domaines</field>
+        <field name="name">Domains</field>
         <field name="res_model">hosting.domain</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_domain_view_search"/>
         <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez votre premier domaine
+                Add your first domain
             </p>
             <p>
-                Suivez vos noms de domaine, dates d'expiration, certificats SSL et registraires.
+                Track your domain names, expiration dates, SSL certificates and registrars.
             </p>
         </field>
     </record>
 
     <record id="hosting_domain_action_all" model="ir.actions.act_window">
-        <field name="name">Tous les domaines</field>
+        <field name="name">All domains</field>
         <field name="res_model">hosting.domain</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_domain_view_search"/>
     </record>
 
     <record id="hosting_domain_action_expiring" model="ir.actions.act_window">
-        <field name="name">Domaines expirant</field>
+        <field name="name">Expiring domains</field>
         <field name="res_model">hosting.domain</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_domain_view_search"/>
@@ -218,7 +215,7 @@
     </record>
 
     <record id="hosting_domain_action_ssl_expiring" model="ir.actions.act_window">
-        <field name="name">SSL expirant</field>
+        <field name="name">Expiring SSL</field>
         <field name="res_model">hosting.domain</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_domain_view_search"/>

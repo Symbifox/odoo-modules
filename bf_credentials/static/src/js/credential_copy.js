@@ -21,6 +21,12 @@ export class CopyablePasswordField extends CharField {
         return "••••••••";
     }
 
+    // Le littéral d'une expression OWL ne se traduit jamais : le texte de repli
+    // passe par `_t` ici.
+    get placeholderText() {
+        return this.props.placeholder || _t("Enter password...");
+    }
+
     get hasValue() {
         const value = this.props.record.data[this.props.name];
         return value && value !== "********";

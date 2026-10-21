@@ -7,7 +7,11 @@
     # 18.0.4.3.1: le bouton du systray ne retient plus l'affichage du client web : ses appels
     #   partent sans être attendus dans onWillStart. Loin du serveur,
     #   chaque aller-retour en chaîne retardait l'écran demandé.
-    "version": "18.0.4.3.2",
+    # 18.0.4.4.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.4.4.0",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

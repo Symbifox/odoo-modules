@@ -1,0 +1,124 @@
+# Translation of Expérience client - pont Helpdesk - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_helpdesk 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_helpdesk
+#: model:ir.model.fields,field_description:bf_cx_helpdesk.field_res_config_settings__bf_cx_auto_ticket
+#: model_terms:ir.ui.view,arch_db:bf_cx_helpdesk.res_config_settings_view_form
+msgid "Automatic ticket for detractors"
+msgstr "Ticket automatique pour les détracteurs"
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/helpdesk_ticket.py:0
+msgid ""
+"CSAT survey not sent to %s: over-solicitation guard (cooldown, do-not-"
+"contact list or account in collections)."
+msgstr ""
+"Sondage CSAT non envoyé à %s : garde-fou de sollicitation (cooldown, liste à"
+" ne pas contacter ou dossier en recouvrement)."
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_complaint.py:0
+msgid "Complaint %s - %s"
+msgstr "Plainte %s - %s"
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_complaint.py:0
+msgid "Complaint %s already has a ticket: %s."
+msgstr "La plainte %s a déjà un ticket : %s."
+
+#. module: bf_cx_helpdesk
+#: model_terms:ir.ui.view,arch_db:bf_cx_helpdesk.view_cx_feedback_form_helpdesk
+msgid "Create a follow-up ticket"
+msgstr "Créer un ticket de suivi"
+
+#. module: bf_cx_helpdesk
+#: model_terms:ir.ui.view,arch_db:bf_cx_helpdesk.view_cx_complaint_form_helpdesk
+msgid "Create a ticket"
+msgstr "Créer un ticket"
+
+#. module: bf_cx_helpdesk
+#: model:helpdesk.ticket.channel,name:bf_cx_helpdesk.helpdesk_channel_cx
+msgid "Customer experience"
+msgstr "Expérience client"
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_feedback.py:0
+msgid "Detractor follow-up - %s"
+msgstr "Suivi détracteur - %s"
+
+#. module: bf_cx_helpdesk
+#: model:ir.model.fields,field_description:bf_cx_helpdesk.field_bf_cx_feedback__helpdesk_ticket_id
+msgid "Follow-up ticket"
+msgstr "Ticket de suivi"
+
+#. module: bf_cx_helpdesk
+#. modules: bf_cx_helpdesk, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_cx_helpdesk.field_bf_cx_complaint__helpdesk_ticket_id
+msgid "Helpdesk ticket"
+msgstr "Ticket helpdesk"
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_complaint.py:0
+msgid "Helpdesk ticket %s created for this complaint."
+msgstr "Ticket helpdesk %s créé pour cette plainte."
+
+#. module: bf_cx_helpdesk
+#: model_terms:ir.ui.view,arch_db:bf_cx_helpdesk.res_config_settings_view_form
+msgid ""
+"In addition to the activity, create a helpdesk ticket (Complaints team) for "
+"each detractor or dissatisfied rating."
+msgstr ""
+"En plus de l'activité, créer un ticket helpdesk (équipe Plaintes) pour "
+"chaque détracteur ou note insatisfaite."
+
+#. module: bf_cx_helpdesk
+#: model:ir.model.fields,help:bf_cx_helpdesk.field_res_config_settings__bf_cx_auto_ticket
+msgid ""
+"In addition to the follow-up activity, automatically create a helpdesk "
+"ticket (Complaints team) for each detractor or dissatisfied rating."
+msgstr ""
+"En plus de l'activité de suivi, créer automatiquement un ticket helpdesk "
+"(équipe Plaintes) pour chaque détracteur ou note insatisfaite."
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_complaint.py:0
+msgid "No ticket linked to this complaint."
+msgstr "Aucun ticket lié à cette plainte."
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_feedback.py:0
+msgid "Rating of %(score)s/%(max)s received from %(partner)s."
+msgstr "Note de %(score)s/%(max)s reçue de %(partner)s."
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_feedback.py:0
+msgid "This feedback already has a follow-up ticket: %s."
+msgstr "Ce feedback a déjà un ticket de suivi : %s."
+
+#. module: bf_cx_helpdesk
+#. odoo-python
+#: code:addons/bf_cx_helpdesk/models/bf_cx_feedback.py:0
+msgid "an anonymous respondent"
+msgstr "un répondant anonyme"

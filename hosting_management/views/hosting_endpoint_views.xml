@@ -21,15 +21,15 @@
                        decoration-muted="lifecycle_state == 'retired'"/>
                 <field name="os" optional="show"/>
                 <field name="os_eol_tag" string="EOL" optional="show"/>
-                <field name="assigned_display" string="Usager" optional="show"/>
+                <field name="assigned_display" string="User" optional="show"/>
                 <field name="serial" optional="hide"/>
                 <field name="group_ids" widget="many2many_tags" optional="hide" options="{'color_field': 'color', 'bf_color': True}"/>
                 <field name="warranty_end" optional="show"
                        decoration-warning="warranty_end &lt;= (context_today() + relativedelta(days=90))"
                        decoration-danger="warranty_end &lt; context_today()"/>
                 <field name="action1_endpoint_id" string="A1" optional="hide"/>
-                <field name="action1_last_sync" string="Sync A1" optional="hide"/>
-                <field name="manual_override" string="Manuel" widget="boolean_toggle" optional="hide"/>
+                <field name="action1_last_sync" string="A1 sync" optional="hide"/>
+                <field name="manual_override" string="Manual" widget="boolean_toggle" optional="hide"/>
                 <field name="action1_url" widget="url" optional="hide"/>
             </list>
         </field>
@@ -50,10 +50,10 @@
                         <button name="action_view_licenses" type="object"
                                 class="oe_stat_button" icon="fa-key"
                                 invisible="license_seat_count == 0">
-                            <field name="license_seat_count" widget="statinfo" string="Licences"/>
+                            <field name="license_seat_count" widget="statinfo" string="Licenses"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Retiré"
+                    <widget name="web_ribbon" title="Retired"
                             bg_color="text-bg-danger"
                             invisible="lifecycle_state != 'retired'"/>
                     <widget name="web_ribbon" title="EOL"
@@ -63,11 +63,11 @@
                         <label for="code"/>
                         <h3><field name="code" placeholder="EP-2026-0001"/></h3>
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Hostname ou nom convivial"/></h1>
+                        <h1><field name="name" placeholder="Hostname or friendly name"/></h1>
                     </div>
 
                     <group>
-                        <group string="Affectation">
+                        <group string="Assignment">
                             <field name="partner_id" options="{'no_create': True}"/>
                             <field name="endpoint_type"/>
                             <field name="assigned_type" widget="radio"
@@ -85,7 +85,7 @@
                             <field name="group_ids" widget="many2many_tags"
                                    options="{'no_create_edit': True, 'color_field': 'color', 'bf_color': True}"/>
                         </group>
-                        <group string="Identité matériel">
+                        <group string="Hardware identity">
                             <field name="manufacturer"/>
                             <field name="model_name"/>
                             <field name="serial"/>
@@ -95,34 +95,31 @@
                     </group>
 
                     <notebook>
-                        <page string="OS &amp; Réseau" name="os_network">
+                        <page string="OS &amp; network" name="os_network">
                             <group>
-                                <group string="Système">
+                                <group string="System">
                                     <field name="os"/>
                                     <field name="os_build"/>
                                     <field name="os_eol_tag" readonly="1"/>
                                 </group>
-                                <group string="Réseau">
+                                <group string="Network">
                                     <field name="hostname"/>
                                     <field name="mac_address"/>
                                     <field name="ip_address"/>
                                 </group>
                             </group>
                         </page>
-                        <page string="Sécurité (BitLocker)" name="security"
+                        <page string="Security (BitLocker)" name="security"
                               groups="hosting_management.group_hosting_manager">
                             <div class="alert alert-warning" role="alert">
-                                <strong>Champ sensible.</strong> Visible uniquement
-                                pour les gestionnaires d'hébergement. Stocké en clair
-                                en base — ne pas exporter ni copier dans un canal
-                                non sécurisé.
+                                <strong>Sensitive field.</strong> Visible only to hosting managers. Stored in plain text in the database: do not export it or copy it into an unsecured channel.
                             </div>
                             <group>
                                 <field name="bitlocker_recovery_key"
                                        widget="bf_secret_key"
                                        placeholder="123456-123456-123456-123456-123456-123456-123456-123456"/>
                                 <field name="bitlocker_volume_id"
-                                       placeholder="GUID du volume"/>
+                                       placeholder="Volume GUID"/>
                             </group>
                         </page>
                         <page string="RMM &amp; MDM" name="rmm">
@@ -136,21 +133,18 @@
                                 </group>
                                 <group string="Microsoft">
                                     <field name="intune_device_id"
-                                           placeholder="ID Intune managedDevice"/>
+                                           placeholder="Intune managedDevice ID"/>
                                     <field name="entra_object_id"
-                                           placeholder="GUID Entra ID"/>
+                                           placeholder="Entra ID GUID"/>
                                 </group>
                             </group>
                             <div class="alert alert-info" role="alert"
                                  invisible="not action1_endpoint_id">
-                                Ce poste est lié à Action1. Si la case « Saisie manuelle
-                                prioritaire » est activée, la synchronisation ne touchera
-                                aucun champ ; sinon, la stratégie globale s'applique
-                                (Configuration → Paramètres → Action1).
+                                This endpoint is linked to Action1. If "Manual override" is checked, the sync will not touch any field; otherwise the global strategy applies (Configuration → Settings → Action1).
                             </div>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Historique, particularités, configurations..."/>
+                            <field name="notes" placeholder="History, quirks, configurations..."/>
                         </page>
                     </notebook>
 
@@ -172,39 +166,39 @@
                 <field name="partner_id"/>
                 <field name="serial"/>
                 <field name="hostname"/>
-                <field name="assigned_display" string="Usager"/>
+                <field name="assigned_display" string="User"/>
                 <field name="assigned_partner_id"/>
                 <field name="assigned_matrix_item_id"/>
                 <separator/>
-                <filter name="filter_deployed" string="Déployés"
+                <filter name="filter_deployed" string="Deployed"
                         domain="[('lifecycle_state', '=', 'deployed')]"/>
-                <filter name="filter_in_stock" string="En stock"
+                <filter name="filter_in_stock" string="In stock"
                         domain="[('lifecycle_state', '=', 'in_stock')]"/>
-                <filter name="filter_in_repair" string="En réparation"
+                <filter name="filter_in_repair" string="In repair"
                         domain="[('lifecycle_state', '=', 'in_repair')]"/>
-                <filter name="filter_retired" string="Retirés"
+                <filter name="filter_retired" string="Retired"
                         domain="[('lifecycle_state', '=', 'retired')]"/>
                 <separator/>
-                <filter name="filter_warranty_warning" string="Garantie ≤ 90 j"
+                <filter name="filter_warranty_warning" string="Warranty ≤ 90 d"
                         domain="[('warranty_end', '!=', False),
                                  ('warranty_end', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_warranty_expired" string="Garantie expirée"
+                <filter name="filter_warranty_expired" string="Warranty expired"
                         domain="[('warranty_end', '!=', False),
                                  ('warranty_end', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_no_warranty" string="Pas de garantie saisie"
+                <filter name="filter_no_warranty" string="No warranty entered"
                         domain="[('warranty_end', '=', False)]"/>
                 <separator/>
-                <filter name="filter_os_eol" string="OS EOL"
+                <filter name="filter_os_eol" string="EOL OS"
                         domain="[('os_eol_tag', '!=', False)]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivés"
+                <filter name="filter_archived" string="Archived"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client"
                             context="{'group_by': 'partner_id'}"/>
                     <filter name="group_type" string="Type"
                             context="{'group_by': 'endpoint_type'}"/>
-                    <filter name="group_lifecycle" string="Cycle de vie"
+                    <filter name="group_lifecycle" string="Lifecycle"
                             context="{'group_by': 'lifecycle_state'}"/>
                     <filter name="group_os" string="OS"
                             context="{'group_by': 'os'}"/>
@@ -245,7 +239,7 @@
                                 </span>
                             </div>
                             <div class="mt-1" t-if="record.warranty_end.raw_value">
-                                <span class="text-muted">Garantie : </span>
+                                <span class="text-muted">Warranty: </span>
                                 <field name="warranty_end"/>
                             </div>
                         </div>
@@ -257,24 +251,23 @@
 
     <!-- Actions -->
     <record id="hosting_endpoint_action_all" model="ir.actions.act_window">
-        <field name="name">Parc informatique</field>
+        <field name="name">IT fleet</field>
         <field name="res_model">hosting.endpoint</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="hosting_endpoint_view_search"/>
         <field name="context">{'search_default_filter_deployed': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez votre premier poste au parc
+                Add your first endpoint to the fleet
             </p>
             <p>
-                Suivez les postes, portables et serveurs des clients sous SLA :
-                inventaire matériel, OS, garantie, BitLocker, Action1, Intune.
+                Track the workstations, laptops and servers of SLA clients: hardware inventory, OS, warranty, BitLocker, Action1, Intune.
             </p>
         </field>
     </record>
 
     <record id="hosting_endpoint_action_warranty_warning" model="ir.actions.act_window">
-        <field name="name">Garantie expirante (≤ 90 j)</field>
+        <field name="name">Expiring warranty (≤ 90 d)</field>
         <field name="res_model">hosting.endpoint</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_endpoint_view_search"/>
@@ -282,7 +275,7 @@
     </record>
 
     <record id="hosting_endpoint_action_os_eol" model="ir.actions.act_window">
-        <field name="name">OS en fin de support</field>
+        <field name="name">End-of-support OS</field>
         <field name="res_model">hosting.endpoint</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_endpoint_view_search"/>
@@ -290,7 +283,7 @@
     </record>
 
     <record id="hosting_endpoint_action_retired" model="ir.actions.act_window">
-        <field name="name">Postes retirés</field>
+        <field name="name">Retired endpoints</field>
         <field name="res_model">hosting.endpoint</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_endpoint_view_search"/>

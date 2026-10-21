@@ -11,10 +11,10 @@ class DonationDonation(models.Model):
     _inherit = "donation.donation"
 
     is_web_donation = fields.Boolean(
-        string="Don en ligne",
+        string="Online donation",
         readonly=True,
         copy=False,
-        help="Don créé via le formulaire de don public du site web.",
+        help="Donation created through the website's public donation form.",
     )
 
     @api.model
@@ -36,10 +36,12 @@ class DonationDonation(models.Model):
         later (which posts the entry and issues + emails the receipt)."""
         product = self._get_web_donation_product()
         if not product:
+            # Vu par le visiteur du formulaire public : `self.env._` suit la
+            # langue de la requête (le contrôleur garde le contexte du site).
             raise UserError(
-                _(
-                    "Aucun produit de don n'est configuré. Configurez le produit "
-                    "de don sur la société avant d'activer le formulaire web."
+                self.env._(
+                    "No donation product is configured. Set the donation "
+                    "product on the company before enabling the web form."
                 )
             )
         vals = {

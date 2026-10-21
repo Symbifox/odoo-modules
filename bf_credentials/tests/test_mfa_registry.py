@@ -28,6 +28,10 @@ class MfaCase(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only, so fr_CA
+        # and its terms are loaded here.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(['bf_credentials'], ["fr_CA"], overwrite=True)
         cls.Credential = cls.env['project.credential']
         cls.Vault = cls.env['project.credential.vault']
         cls.projet = cls.env['project.project'].create(
@@ -90,9 +94,13 @@ class TestTheGuardRefusesSeeds(MfaCase):
 
     def test_the_refusal_names_what_it_recognised(self):
         """Un refus muet se contourne ; un refus qui explique se corrige."""
+        # Message lu en fr_CA : la source est anglaise (l'anglais
+        # est éprouvé par tests/test_langue_lecteur.py).
         with self.assertRaises(ValidationError) as capture:
-            self._identifiant(mfa_type='totp',
-                              mfa_reference='otpauth://totp/x?secret=JBSWY3DPEHPK3PXP')
+            self.Credential.with_context(lang='fr_CA').create({
+                'name': 'Identifiant', 'project_id': self.projet.id,
+                'type_id': self.type_id.id, 'mfa_type': 'totp',
+                'mfa_reference': 'otpauth://totp/x?secret=JBSWY3DPEHPK3PXP'})
         message = str(capture.exception)
         self.assertIn('otpauth', message)
         self.assertIn('Référence chez le porteur', message)

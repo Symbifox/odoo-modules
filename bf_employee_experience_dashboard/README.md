@@ -17,9 +17,13 @@ eligibility rules, and without that error the figures would have been computed
 on that employee's own lines only. The section is computed inside a savepoint,
 so a failure there never takes the other home-screen sections down with it.
 
+## Languages (18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The tile's three texts (the take-up heading, the benefits nobody uses, the cost per year) are extracted from its template, and the web client receives them in French for a user set to French.
+
 ## Tests
 
-7 tests, the role tests played as an ordinary employee and as the benefits
+9 tests, the role tests played as an ordinary employee and as the benefits
 administration.
 
 ```
@@ -28,6 +32,10 @@ odoo -d <database> -u bf_employee_experience_dashboard --test-enable \
 ```
 
 ## Changelog
+
+### 18.0.1.1.0
+
+- The tile's texts are written in English in the source; the French ships in `i18n/fr_CA.po`. See the Languages section.
 
 ### 18.0.1.0.2
 
@@ -41,4 +49,4 @@ odoo -d <database> -u bf_employee_experience_dashboard --test-enable \
 Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
 own internal business operations; providing it to third parties as a hosted,
 managed or resold service requires a written agreement. This version converts
-to LGPL-3.0-or-later on 2030-10-19.
+to LGPL-3.0-or-later on 2030-10-21.

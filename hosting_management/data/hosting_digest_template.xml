@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="mail_template_hosting_digest" model="mail.template">
-        <field name="name">Hébergement : Résumé récapitulatif</field>
+        <field name="name">Hosting: digest summary</field>
         <field name="model_id" ref="model_hosting_digest"/>
-        <field name="subject">Résumé des services d'hébergement - {{ object.name }}</field>
+        <field name="subject">Hosting services summary - {{ object.name }}</field>
         <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
         <field name="email_to">{{ ctx.get('recipient').email }}</field>
         <field name="body_html" type="html">
@@ -12,20 +12,20 @@
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Résumé des services</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Services summary</p>
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
-                                                    Bonjour,
+                                                    Hello,
                                                 </p>
                                                 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-                                                    Voici le résumé de vos services d'hébergement. Ce récapitulatif inclut les informations sur les services expirant, les mises à jour disponibles, les alertes de stockage et les problèmes de santé.
+                                                    Here is the summary of your hosting services. It covers expiring services, available updates, storage alerts and health issues.
                                                 </p>
                                                 <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
-                                                    Pour toute assistance, contactez-nous à
+                                                    For any help, contact us at
                                                     <a t-attf-href="mailto:{{ company.email or '' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.email or ''"/></a>
-                                                    ou appelez le
+                                                    or call
                                                     <a t-attf-href="tel:{{ company.phone or '' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.phone or ''"/></a>.
                                                 </p>
-<p style="font-size:12px; line-height:18px; color:#6B7280; margin:24px 0 0 0;">Rapport généré automatiquement par votre module d'hébergement.</p>
+<p style="font-size:12px; line-height:18px; color:#6B7280; margin:24px 0 0 0;">Report generated automatically by your hosting module.</p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
     </record>

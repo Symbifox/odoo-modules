@@ -1,6 +1,10 @@
 {
     'name': 'Symbifox Corporate Governance',
-    'version': '18.0.1.1.1',
+    # 18.0.1.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    'version': '18.0.1.2.0',
     'category': 'Services/Project',
     'summary': 'Résolutions, registres corporatifs et calendrier de conformité',
     'description': """

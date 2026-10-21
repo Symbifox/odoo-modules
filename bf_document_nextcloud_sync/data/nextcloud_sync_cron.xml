@@ -4,7 +4,7 @@
 
         <!-- Cron: Check NC file modifications (daily at 6 AM) -->
         <record id="ir_cron_check_nc_modifications" model="ir.cron">
-            <field name="name">Documents: Verifier modifications Nextcloud</field>
+            <field name="name">Documents: check Nextcloud changes</field>
             <field name="model_id" ref="project_knowledge_matrix.model_project_document"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_nc_modifications()</field>

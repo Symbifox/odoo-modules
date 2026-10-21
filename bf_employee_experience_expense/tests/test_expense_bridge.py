@@ -157,7 +157,11 @@ class TestExpenseBridge(TestExpenseCommon):
         au montant corrigé, et une trace au fil de la dépense."""
         expense, sheet = self._approved(amount=850.0)
         first = expense.ex_usage_id
-        sheet.with_user(self.expense_user_manager).action_reset_expense_sheets()
+        # Remise en brouillon faite en fr_CA : la trace suit la langue de qui retire, et la
+        # source est anglaise (l'anglais : tests/test_langue_lecteur.py).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        sheet.with_user(self.expense_user_manager).with_context(
+            lang="fr_CA").action_reset_expense_sheets()
 
         self.assertEqual(expense.state, "reported")
         self.assertFalse(expense.ex_usage_id)

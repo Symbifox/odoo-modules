@@ -1,0 +1,1617 @@
+# Translation of Symbifox Corporate Governance - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_corporate_governance 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_securetransfer
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
+msgid "%s days"
+msgstr "%s jours"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.report,print_report_name:bf_corporate_governance.action_report_corporate_resolution
+msgid "'%s_%s' % (object.sequence, object.name)"
+msgstr "'%s_%s' % (object.sequence, object.name)"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
+msgid ""
+"<p><strong>Corporate compliance (%(label)s)</strong></p><p>%(name)s - Due "
+"date: %(date)s</p>"
+msgstr ""
+"<p><strong>Conformité corporative (%(label)s)</strong></p><p>%(name)s - "
+"Échéance : %(date)s</p>"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
+msgid ""
+"A members' resolution is not signed in the capacity of shareholder: choose "
+"another capacity for %s."
+msgstr ""
+"Une résolution des membres ne se signe pas en qualité d'actionnaire : "
+"choisissez une autre qualité pour %s."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__agm
+msgid "AGM"
+msgstr "AGA"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__vote_abstain
+msgid "Abstentions"
+msgstr "Abstentions"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_needaction
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_needaction
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_needaction
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__is_active
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__is_active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_corporate_governance.report_action_corp_directors
+msgid "Active directors"
+msgstr "Administrateurs actifs"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_corporate_governance.report_action_corp_officers
+msgid "Active officers"
+msgstr "Dirigeants actifs"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_state
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_type_icon
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_minute_book_action
+msgid "Add a document with a minute book section to see it here"
+msgstr ""
+"Ajouter un document avec une section du livre des minutes pour le voir ici"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_director_action
+msgid "Add your first director"
+msgstr "Ajouter votre premier administrateur"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_officer_action
+msgid "Add your first officer"
+msgstr "Ajouter votre premier dirigeant"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Adopt"
+msgstr "Adopter"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__adopted
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Adopted"
+msgstr "Adopté"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_corporate_governance.report_action_corp_resolutions_adopted
+msgid "Adopted resolutions"
+msgstr "Résolutions adoptées"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Adopted unanimously"
+msgstr "Adoptée à l'unanimité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Adoption"
+msgstr "Adoption"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__annual_declaration
+msgid "Annual declaration"
+msgstr "Déclaration annuelle"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__agm
+msgid "Annual general meeting"
+msgstr "Assemblée générale annuelle"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
+msgid "Appointment"
+msgstr "Nomination"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__appointment_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__appointment_date
+msgid "Appointment date"
+msgstr "Date de nomination"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__appointment_resolution_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__appointment_resolution_id
+msgid "Appointment resolution"
+msgstr "Résolution de nomination"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__charter
+msgid "Articles of incorporation"
+msgstr "Statuts constitutifs"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_attachment_count
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_attachment_count
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_attachment_count
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__attachment_ids
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__auditor_appointment
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__auditor_appointment
+msgid "Auditor appointment"
+msgstr "Nomination du vérificateur"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__resolved_text
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "BE IT RESOLVED THAT..."
+msgstr "IL EST RÉSOLU QUE..."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__bank_authorization
+msgid "Banking authorization"
+msgstr "Autorisation bancaire"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Board"
+msgstr "Conseil"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__resolution_type__board
+msgid "Board resolution"
+msgstr "Résolution du conseil"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__resolved_text
+msgid "Body of the resolution"
+msgstr "Corps de la résolution"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__bylaw_amendment
+msgid "By-law amendment"
+msgstr "Modification de règlements"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__bylaw_review
+msgid "By-law review"
+msgstr "Révision des règlements"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__bylaws
+msgid "By-laws"
+msgstr "Reglements"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__capacity
+msgid "Capacity"
+msgstr "Qualité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__capacity_custom
+msgid "Capacity (text)"
+msgstr "Qualité (texte)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__capacity
+msgid ""
+"Capacity in which the person signs. It is what is printed under the name. "
+"\"Shareholder\" by default, except on a members' resolution, where it must "
+"be chosen (meeting chair or meeting secretary, most often)."
+msgstr ""
+"Qualité en laquelle la personne signe. C'est elle qui est imprimée sous le "
+"nom. « Actionnaire » d'office, sauf sur une résolution des membres, où elle "
+"se choisit (présidence ou secrétariat d'assemblée, le plus souvent)."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
+msgid "City, Province, Country"
+msgstr "Ville, Province, Pays"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Classification"
+msgstr "Classification"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__company_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__company_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__company_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_security_awareness
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__completed
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Completed"
+msgstr "Complété"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__completed_date
+msgid "Completion date"
+msgstr "Date de complétion"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_compliance_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_compliance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_calendar
+msgid "Compliance calendar"
+msgstr "Calendrier de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+msgid "Compliance event"
+msgstr "Événement de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_list
+msgid "Compliance events"
+msgstr "Événements de conformité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__contract_approval
+msgid "Contract approval"
+msgstr "Approbation de contrat"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+msgid "Corporate compliance"
+msgstr "Conformité corporative"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.report_action_corp_compliance_due_soon
+msgid "Corporate compliance due soon"
+msgstr "Conformité corporative à échéance proche"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_compliance_event
+msgid "Corporate compliance event"
+msgstr "Événement de conformité corporative"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_director
+msgid "Corporate director"
+msgstr "Administrateur corporatif"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.module.category,name:bf_corporate_governance.module_category_corporate
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_parent
+msgid "Corporate governance"
+msgstr "Gouvernance corporative"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_officer
+msgid "Corporate officer"
+msgstr "Dirigeant corporatif"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_resolution
+msgid "Corporate resolution"
+msgstr "Résolution corporative"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_resolution_signatory
+msgid "Corporate resolution signatory"
+msgstr "Signataire de résolution corporative"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.server,name:bf_corporate_governance.cron_corporate_compliance_check_ir_actions_server
+msgid "Corporate: check compliance due dates"
+msgstr "Corporatif : Vérifier les échéances de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_compliance_action
+msgid "Create your first compliance event"
+msgstr "Créer votre premier événement de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_resolution_action
+msgid "Create your first corporate resolution"
+msgstr "Créer votre première résolution corporative"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__title_custom
+msgid "Custom title"
+msgstr "Titre personnalisé"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
+msgid "Custom title..."
+msgstr "Titre personnalisé..."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__due_date
+msgid "Deadline"
+msgstr "Date limite"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+msgid "Details"
+msgstr "Détails"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__partner_id
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__director
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
+msgid "Director"
+msgstr "Administrateur"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__director_election
+msgid "Director election"
+msgstr "Élection d'administrateur"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Director(s)"
+msgstr "Administrateur(s)"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_list
+msgid "Directors"
+msgstr "Administrateurs"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__director_minutes
+msgid "Directors' minutes"
+msgstr "Proces-verbaux des administrateurs"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Directors' signatures"
+msgstr "Signatures des administrateurs"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__dissolution
+msgid "Dissolution"
+msgstr "Dissolution"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__dividend_declaration
+msgid "Dividend declaration"
+msgstr "Déclaration de dividende"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Documents"
+msgstr "Documents"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__draft
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__due_soon
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Due soon"
+msgstr "Échéance proche"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Effective as of"
+msgstr "Date d'effet"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__effective_date
+msgid "Effective date"
+msgstr "Date d'entrée en vigueur"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__director_election
+msgid "Election of directors"
+msgstr "Élection des administrateurs"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__end_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__end_date
+msgid "End date"
+msgstr "Date de fin"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__end_reason
+msgid "End reason"
+msgstr "Raison de fin"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__event_type
+msgid "Event type"
+msgstr "Type d'événement"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__forms_filed
+msgid "Filed forms"
+msgstr "Formulaires deposes"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__filing_reference
+msgid "Filing reference"
+msgstr "Référence de dépôt"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__financial_approval
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__financial_approval
+msgid "Financial approval"
+msgstr "Approbation financière"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__financial_statements
+msgid "Financial statements"
+msgstr "Etats financiers"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__fiscal_year
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__fiscal_year
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Fiscal year"
+msgstr "Année fiscale"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_follower_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_follower_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_follower_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_partner_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_partner_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_partner_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_type_icon
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
+msgid "Former"
+msgstr "Anciens"
+
+#. module: bf_corporate_governance
+#: model:res.groups,comment:bf_corporate_governance.group_corporate_manager
+msgid ""
+"Full access to corporate governance features (resolutions, directors, "
+"officers, compliance)."
+msgstr ""
+"Accès complet aux fonctionnalités de gouvernance corporative (résolutions, "
+"administrateurs, dirigeants, conformité)."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__director_general
+msgid "General manager"
+msgstr "Directeur général"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__has_message
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__has_message
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__has_message
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_exception_icon
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_needaction
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_needaction
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_needaction
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_sms_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_has_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_has_sms_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_has_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_has_sms_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_has_error
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
+msgid "In office"
+msgstr "Actifs"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_is_follower
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_is_follower
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_is_follower
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid ""
+"Left empty, the PDF of a board resolution lists the directors in office on "
+"the meeting date, and the PDF of a members' resolution prints two lines to "
+"fill in for the meeting chair and the meeting secretary. A shareholder "
+"resolution has nothing to infer: with no signatory entered, it prints with "
+"one line to fill in."
+msgstr ""
+"Laissé vide, le PDF d'une résolution du conseil reprend les\n"
+"                                administrateurs en poste à la date de la séance, et celui d'une\n"
+"                                résolution des membres, deux lignes à remplir pour la présidence\n"
+"                                et le secrétariat d'assemblée. Une résolution des actionnaires,\n"
+"                                elle, n'a rien à déduire : sans signataire saisi, elle s'imprime\n"
+"                                avec une ligne à remplir."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__capacity_custom
+msgid ""
+"Literal capacity, when the list is not enough, for example \"Vice-president,"
+" secretary and treasurer\". Required when the capacity is \"Other\"."
+msgstr ""
+"Qualité littérale, quand la liste ne suffit pas — par exemple « Vice-"
+"président, secrétaire et trésorier ». Obligatoire quand la qualité est « "
+"Autre »."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_securetransfer, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Logo"
+msgstr "Logo"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness
+#: model:res.groups,name:bf_corporate_governance.group_corporate_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+msgid "Mark as completed"
+msgstr "Marquer complété"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__assembly_chair
+msgid "Meeting chair"
+msgstr "Présidence d'assemblée"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__meeting_date
+msgid "Meeting date"
+msgstr "Date de la séance"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Meeting day"
+msgstr "Date de séance"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__assembly_secretary
+msgid "Meeting secretary"
+msgstr "Secrétariat d'assemblée"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Meeting signatures"
+msgstr "Signatures de l'assemblée"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__meeting_type
+msgid "Meeting type"
+msgstr "Type de séance"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Members"
+msgstr "Membres"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
+msgid "Members' meeting resolution"
+msgstr "Résolution de l'assemblée des membres"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__resolution_type__members
+msgid "Members' resolution"
+msgstr "Résolution des membres"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_minute_book_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_minute_book
+msgid "Minute book"
+msgstr "Livre des minutes"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__document_ids
+msgid "Minute book documents"
+msgstr "Documents du livre des minutes"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_project_document__minute_book_section
+msgid "Minute book section"
+msgstr "Section du livre des minutes"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Minute book: official document"
+msgstr "Livre des minutes — Document officiel"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__mover_id
+msgid "Mover"
+msgstr "Proposeur"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_summary
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_type_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__purpose
+msgid ""
+"Note printed under the capacity when the signature is given for a limited "
+"purpose, for example \"for the sole purpose of attesting the disclosure of "
+"interest\"."
+msgstr ""
+"Mention imprimée sous la qualité quand la signature est donnée à une fin "
+"limitée — par exemple « aux seules fins d'attester la dénonciation d'intérêt"
+" »."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__notes
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__notes
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_needaction_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_needaction_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_needaction_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_error_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_has_error_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_has_error_counter
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, hosting_management
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
+msgid "OVERDUE"
+msgstr "EN RETARD"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__partner_id
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__officer
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
+msgid "Officer"
+msgstr "Dirigeant"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__officer_appointment
+msgid "Officer appointment"
+msgstr "Nomination de dirigeant"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_list
+msgid "Officers"
+msgstr "Dirigeants"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__sequence
+msgid "Order"
+msgstr "Ordre"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. hosting_management
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__other
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__other
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__other
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__other
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__overdue
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Overdue"
+msgstr "En retard"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/js/corporate_dashboard.js:0
+msgid "Overdue compliance"
+msgstr "Conformité en retard"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.report_action_corp_compliance_overdue
+msgid "Overdue corporate compliance"
+msgstr "Conformité corporative en retard"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Pending"
+msgstr "En cours"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
+msgid "Position"
+msgstr "Poste"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__whereas_text
+msgid "Preamble / \"whereas\" clauses"
+msgstr "Préambule / clauses « attendu que »"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__president
+msgid "President"
+msgstr "Président"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Print PDF"
+msgstr "Imprimer PDF"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__sequence
+msgid "Print order of the signature blocks."
+msgstr "Ordre d'impression des blocs de signature."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__capacity_label
+msgid "Printed capacity"
+msgstr "Qualité imprimée"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Propose"
+msgstr "Proposer"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__proposed
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Proposed"
+msgstr "Proposé"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__proxy
+msgid "Proxy holder"
+msgstr "Fondé de pouvoir"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__filing_reference
+msgid "REQ confirmation number or other filing reference"
+msgstr "Numéro de confirmation REQ ou autre référence de dépôt"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__rating_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__rating_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__rating_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__sequence
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_director_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_directors
+msgid "Register of directors"
+msgstr "Registre des administrateurs"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_officer_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_officers
+msgid "Register of officers"
+msgstr "Registre des dirigeants"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+msgid "Registers"
+msgstr "Registres"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__regular
+msgid "Regular"
+msgstr "Ordinaire"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Reject"
+msgstr "Rejeter"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__rejected
+msgid "Rejected"
+msgstr "Rejeté"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__reminder_sent
+msgid "Reminder sent"
+msgstr "Rappel envoyé"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__removal
+msgid "Removal"
+msgstr "Destitution"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__domicile
+msgid ""
+"Required for the Canadian residency requirements of the Québec Business "
+"Corporations Act (LSAQ)"
+msgstr "Requis pour les exigences de résidence canadienne de la LSAQ"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__domicile
+msgid "Residence"
+msgstr "Domicile"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__resignation
+msgid "Resignation"
+msgstr "Démission"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, hosting_management
+#: model:ir.actions.report,name:bf_corporate_governance.action_report_corporate_resolution
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__resolution_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__resolution_id
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Resolution"
+msgstr "Résolution"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Resolution date"
+msgstr "Date de la résolution"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Resolution title..."
+msgstr "Titre de la résolution..."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__resolution_type
+msgid "Resolution type"
+msgstr "Type de résolution"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_resolution_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_resolutions
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_list
+msgid "Resolutions"
+msgstr "Résolutions"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_user_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Search compliance events"
+msgstr "Rechercher des événements de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_search
+msgid "Search directors"
+msgstr "Rechercher des administrateurs"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
+msgid "Search officers"
+msgstr "Rechercher des dirigeants"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Search resolutions"
+msgstr "Rechercher des résolutions"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__seconder_id
+msgid "Seconder"
+msgstr "Secondeur"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__secretary
+msgid "Secretary"
+msgstr "Secrétaire"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
+msgid "Select a director..."
+msgstr "Sélectionner un administrateur..."
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
+msgid "Select an officer..."
+msgstr "Sélectionner un dirigeant..."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__share_issuance
+msgid "Share issuance"
+msgstr "Émission d'actions"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__shareholder
+msgid "Shareholder"
+msgstr "Actionnaire"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__agreements
+msgid "Shareholder agreements"
+msgstr "Conventions d'actionnaires"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__resolution_type__shareholder
+msgid "Shareholder resolution"
+msgstr "Résolution des actionnaires"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Shareholders"
+msgstr "Actionnaires"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__shareholder_minutes
+msgid "Shareholders' minutes"
+msgstr "Proces-verbaux des actionnaires"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Shareholders' signatures"
+msgstr "Signatures des actionnaires"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__signatory_ids
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Signatories"
+msgstr "Signataires"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__partner_id
+msgid "Signatory"
+msgstr "Signataire"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__purpose
+msgid "Signature purpose"
+msgstr "Fins de la signature"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
+msgid "Signatures"
+msgstr "Signatures"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__sole_director
+msgid "Sole director"
+msgstr "Administrateur unique"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__sole_shareholder
+msgid "Sole shareholder"
+msgstr "Actionnaire unique"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__special
+msgid "Special"
+msgstr "Extraordinaire"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution_signatory.py:0
+msgid ""
+"Specify the capacity of %s: \"Other\" without text would print a name with "
+"no capacity."
+msgstr ""
+"Précisez la qualité de %s : « Autre » sans texte imprimerait un nom sans "
+"qualité."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__status
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__status
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_state
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__subject_category
+msgid "Subject category"
+msgstr "Catégorie de sujet"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__superseded
+msgid "Superseded"
+msgstr "Remplacé"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__superseded_by_id
+msgid "Superseded by"
+msgstr "Remplacé par"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__term_expired
+msgid "Term expired"
+msgstr "Mandat expiré"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__end_resolution_id
+msgid "Termination resolution"
+msgstr "Résolution de fin"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__signatory_ids
+msgid ""
+"The people who sign the resolution, with the capacity in which they sign it."
+" Left empty, only a board resolution can be inferred, from its directors in "
+"office on the meeting date."
+msgstr ""
+"Les personnes qui signent la résolution, avec la qualité en laquelle elles "
+"la signent. Laissé vide, seule une résolution du conseil se déduit — de ses "
+"administrateurs en poste à la date de la séance."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__title
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__name
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__treasurer
+msgid "Treasurer"
+msgstr "Trésorier"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
+#. bf_nextcloud_browser, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_exception_decoration
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__unanimously_adopted
+msgid "Unanimously adopted"
+msgstr "Adopté à l'unanimité"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__upcoming
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__vice_president
+msgid "Vice-president"
+msgstr "Vice-président"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Vice-president, secretary and treasurer"
+msgstr "Vice-président, secrétaire et trésorier"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "Vote"
+msgstr "Vote"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__vote_against
+msgid "Votes against"
+msgstr "Votes contre"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__vote_for
+msgid "Votes for"
+msgstr "Votes pour"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__whereas_text
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "WHEREAS..."
+msgstr "ATTENDU QUE..."
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__website_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__website_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__website_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__website_message_ids
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__website_message_ids
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__website_message_ids
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__written
+msgid "Written"
+msgstr "Écrite"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__resolution_type__written_board
+msgid "Written board resolution"
+msgstr "Résolution écrite du conseil"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
+msgid "Written directors' resolution"
+msgstr "Résolution écrite des administrateurs"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__resolution_type__written_shareholder
+msgid "Written shareholder resolution"
+msgstr "Résolution écrite des actionnaires"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
+msgid "for the sole purpose of attesting the disclosure of interest"
+msgstr "aux seules fins d'attester la dénonciation d'intérêt"
+
+#. module: bf_corporate_governance
+#. odoo-javascript
+#: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
+msgid "overdue corporate obligation(s)"
+msgstr "obligation(s) corporative(s) en retard"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_resolution_signatory.py:0
+msgid "this signatory"
+msgstr "ce signataire"

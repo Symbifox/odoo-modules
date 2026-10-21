@@ -2,6 +2,8 @@ import logging
 import os
 import re
 
+import requests
+
 from odoo import models
 from odoo.exceptions import UserError
 
@@ -127,7 +129,14 @@ class ProjectDocument(models.Model):
             content = config._webdav_get(path)
         except UserError as error:
             text = str(error)
-            if "HTTP 401" in text or "HTTP 403" in text or "telechargement" in text:
+            # A network failure is recognised by its chained cause
+            # (doc_sync raises ``... from`` the requests exception), whatever
+            # the language of the message; the text test stays as a fallback
+            # for an older doc_sync that does not chain.
+            network = isinstance(error.__cause__, requests.RequestException) or (
+                "telechargement" in text or "téléchargement" in text
+                or "downloading" in text)
+            if "HTTP 401" in text or "HTTP 403" in text or network:
                 unusable[config.id] = self.env._(
                     "Nextcloud « %(name)s » unreadable (%(error)s)", name=config.name, error=text)
                 cache["reason"] = (unusable[config.id], True)

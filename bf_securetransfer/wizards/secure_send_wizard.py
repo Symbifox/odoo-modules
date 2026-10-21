@@ -41,64 +41,66 @@ MAX_RECIPIENTS = 10
 
 class SecureSendWizard(models.TransientModel):
     _name = "secure.transfer.send.wizard"
-    _description = "Envoyer un message ou des fichiers sécurisés (code destinataire)"
+    _description = "Send a secure message or files (recipient code)"
 
     brand_id = fields.Many2one(
         "secure.transfer.brand",
-        string="Marque / domaine",
+        string="Brand / domain",
         required=True,
         domain="[('active', '=', True), ('fixed_recipient', '=', False)]",
-        help="Habillage et domaine du lien envoyé au destinataire.",
+        help="Styling and domain of the link sent to the recipient.",
     )
     partner_ids = fields.Many2many(
         "res.partner",
-        string="Destinataires",
-        help="Contacts Odoo. Pour le canal SMS, leur mobile (ou téléphone) sert "
-             "à l'envoi du code ; sans numéro, le courriel prend le relais.",
+        string="Recipients",
+        help="Odoo contacts. For the SMS channel, their mobile (or phone) "
+             "is used to send the code; without a number, email takes "
+             "over.",
     )
     extra_emails = fields.Char(
-        string="Autres courriels",
-        help="Adresses hors carnet, séparées par des virgules. Elles reçoivent "
-             "toujours leur code par courriel (aucun numéro connu).",
+        string="Other emails",
+        help="Addresses outside the address book, comma-separated. They "
+             "always receive their code by email (no known number).",
     )
     subject = fields.Char(
-        string="Objet",
-        help="Court intitulé visible dans l'objet du courriel : c'est tout ce "
-             "que le destinataire saura avant de saisir son code. Il voyage en "
-             "clair — rien de confidentiel n'y a sa place.",
+        string="Subject",
+        help="A short line shown in the email subject: it is all the "
+             "recipient will know before entering their code. It travels "
+             "in the clear, so nothing confidential belongs in it.",
     )
     # No longer required: a transfer may now carry files with no covering note.
     # « au moins l'un des deux » is enforced in action_send.
     message = fields.Text(
-        string="Message sécurisé",
-        help="Contenu retenu jusqu'à la validation du code. Texte brut, rendu "
-             "échappé — jamais interprété comme HTML.",
+        string="Secure message",
+        help="Content withheld until the code is validated. Plain text, "
+             "rendered escaped, never interpreted as HTML.",
     )
     attachment_ids = fields.Many2many(
         "ir.attachment",
         "st_send_wizard_attachment_rel",
         "wizard_id",
         "attachment_id",
-        string="Fichiers",
-        help="Fichiers joints au transfert. Ils sont déposés sur le stockage "
-             "chiffré puis RETIRÉS d'Odoo : seul le lien sécurisé y donne "
-             "accès, et le destinataire doit saisir son code.",
+        string="Files",
+        help="Files attached to the transfer. They are uploaded to "
+             "encrypted storage and then REMOVED from Odoo: only the "
+             "secure link gives access, and the recipient must enter "
+             "their code.",
     )
     otp_channel = fields.Selection(
-        selection=[("email", "Courriel"), ("sms", "SMS")],
-        string="Canal du code", default="email", required=True,
+        selection=[("email", "Email"), ("sms", "SMS")],
+        string="Code channel", default="email", required=True,
     )
     # -- Préréglage ------------------------------------------------------------
     # Posé AVANT le bloc d'audience : dans le formulaire comme ici, on choisit
     # le préréglage d'abord, et il remplit ce qui suit.
     template_id = fields.Many2one(
         "secure.transfer.template",
-        string="Préréglage",
-        help="Rejoue une configuration de salle de données déjà réglée. "
-             "Les valeurs restent modifiables après application.",
+        string="Preset",
+        help="Replays a data room configuration that is already set up. "
+             "The values can still be changed after it is applied.",
     )
     template_note = fields.Text(
-        related="template_id.note", string="À quoi sert ce préréglage",
+        related="template_id.note", string="What this preset is for",
         readonly=True)
 
     # -- Audience ouverte ------------------------------------------------------
@@ -110,55 +112,56 @@ class SecureSendWizard(models.TransientModel):
     # quota quotidien de son adresse.
     audience_mode = fields.Selection(
         selection=[
-            ("declared", "Destinataires nommés"),
-            ("open", "Audience ouverte (le visiteur se déclare)"),
+            ("declared", "Named recipients"),
+            ("open", "Open audience (the visitor identifies themselves)"),
         ],
-        string="Mode de transmission", default="declared", required=True,
-        help="« Audience ouverte » : le lien ne vise personne. Il vous est "
-             "renvoyé à vous, vous le diffusez, et chaque personne qui l'ouvre "
-             "s'identifie puis confirme par un code à usage unique.",
+        string="Delivery mode", default="declared", required=True,
+        help="\"Open audience\": the link targets no one. It is sent back "
+             "to you, you share it, and each person who opens it "
+             "identifies themselves, then confirms with a one-time code.",
     )
     brand_allows_audience = fields.Boolean(
-        compute="_compute_brand_audience", string="Audience offerte")
+        compute="_compute_brand_audience", string="Audience offered by "
+                                                  "the brand")
     brand_allows_audience_sms = fields.Boolean(
-        compute="_compute_brand_audience", string="SMS d'audience offert")
+        compute="_compute_brand_audience", string="Audience SMS offered")
     audience_domains = fields.Text(
-        string="Domaines admis",
-        help="Vide = la liste de la marque. Une entrée par ligne : "
-             "@client.com, ou une adresse complète.",
+        string="Allowed domains",
+        help="Empty = the brand's list. One entry per line: @client.com, "
+             "or a full address.",
     )
     audience_max = fields.Integer(
-        string="Visiteurs max.", default=0,
-        help="0 = valeur de la marque. Ce plafond est ce qui empêche un lien "
-             "diffusé trop largement de servir de relais de courriel.",
+        string="Max. visitors", default=0,
+        help="0 = brand value. This cap is what keeps a widely shared "
+             "link from becoming an email relay.",
     )
     audience_max_downloads = fields.Integer(
-        string="Téléchargements par visiteur", default=0,
-        help="0 = illimité. Compté séparément pour chaque personne.",
+        string="Downloads per visitor", default=0,
+        help="0 = unlimited. Counted separately for each person.",
     )
     audience_allow_sms = fields.Boolean(
-        string="Offrir le code par SMS",
-        help="Laisse un visiteur s'identifier par son mobile plutôt que par "
-             "courriel. Chaque SMS a un coût réel.",
+        string="Offer the code by SMS",
+        help="Lets a visitor identify themselves by mobile rather than by "
+             "email. Each SMS has a real cost.",
     )
     notify_on_join = fields.Boolean(
-        string="M'aviser à chaque nouveau visiteur", default=True,
+        string="Notify me of each new visitor", default=True,
     )
-    retention_days = fields.Integer(string="Disponible (jours)", default=7)
+    retention_days = fields.Integer(string="Available (days)", default=7)
     password = fields.Char(
-        string="Mot de passe (optionnel)",
-        help="Couche supplémentaire, en plus du code. À communiquer par un "
-             "autre canal — il ne figure dans aucun courriel.",
+        string="Password (optional)",
+        help="Extra layer, on top of the code. Share it through another "
+             "channel: it never appears in an email.",
     )
     sender_name = fields.Char(
-        string="Nom de l'expéditeur",
+        string="Sender name",
         default=lambda self: self.env.user.name,
     )
     sender_email = fields.Char(
-        string="Courriel de l'expéditeur", required=True,
+        string="Sender email", required=True,
         default=lambda self: self.env.user.email,
-        help="Reçoit l'accusé d'envoi. Seul un gestionnaire du transfert "
-             "sécurisé peut envoyer sous une autre identité que la sienne.",
+        help="Receives the send receipt. Only a secure transfer manager "
+             "may send under an identity other than their own.",
     )
     sms_configured = fields.Boolean(compute="_compute_sms_configured")
     sms_hint = fields.Char(compute="_compute_sms_configured")
@@ -166,22 +169,22 @@ class SecureSendWizard(models.TransientModel):
     # is made readonly in the form for them, and action_send re-forces the
     # value server-side — the view is a courtesy, the model is the guard.
     sender_locked = fields.Boolean(
-        string="Identité verrouillée", compute="_compute_sender_locked")
+        string="Identity locked", compute="_compute_sender_locked")
     upload_hint = fields.Char(
-        string="Limite de téléversement", compute="_compute_upload_hint")
+        string="Upload limit", compute="_compute_upload_hint")
     # Told BEFORE the send rather than as a refusal after it: the brand may
     # forbid this sender, and finding out only once the files are picked is a
     # bad way to learn it.
     brand_warning = fields.Char(
-        string="Avertissement de marque", compute="_compute_brand_warning")
+        string="Brand warning", compute="_compute_brand_warning")
 
     @api.depends_context("uid")
     def _compute_sms_configured(self):
         ok = sms.configured(self.env)
         hint = (
-            _("Canal SMS prêt (VoIP.ms configuré).") if ok else
-            _("Le canal SMS n'est pas configuré sur cette instance — voir "
-              "Configuration › Paramètres. Le courriel reste disponible.")
+            _("SMS channel ready (VoIP.ms configured).") if ok else
+            _("The SMS channel is not configured on this instance: see "
+              "Configuration › Settings. Email remains available.")
         )
         for rec in self:
             rec.sms_configured = ok
@@ -239,27 +242,27 @@ class SecureSendWizard(models.TransientModel):
                 rec.audience_mode = "declared"
                 rec.audience_allow_sms = False
                 warning = {
-                    "title": _("Préréglage appliqué en partie"),
+                    "title": _("Preset partly applied"),
                     "message": _(
-                        "« %(tmpl)s » demande une audience ouverte, mais la "
-                        "marque « %(brand)s » ne l'offre pas. Le mode est "
-                        "revenu à « destinataires nommés ».\n\n"
-                        "Ouvrez l'audience sur cette marque (Configuration › "
-                        "Marques), ou choisissez une marque qui l'offre.",
+                        "\"%(tmpl)s\" asks for an open audience, but the "
+                        "\"%(brand)s\" brand does not offer it. The mode "
+                        "went back to \"named recipients\".\n\nOpen the "
+                        "audience on this brand (Configuration › Brands), "
+                        "or choose a brand that offers it.",
                         tmpl=tmpl.display_name,
-                        brand=brand.display_name or _("(aucune)")),
+                        brand=brand.display_name or _("(none)")),
                 }
             elif rec.audience_allow_sms and not rec.brand_allows_audience_sms:
                 rec.audience_allow_sms = False
                 warning = {
-                    "title": _("Préréglage appliqué en partie"),
+                    "title": _("Preset partly applied"),
                     "message": _(
-                        "« %(tmpl)s » offre le code par SMS, mais la marque "
-                        "« %(brand)s » ne l'ouvre pas (ou le canal n'est pas "
-                        "configuré sur cette instance). Les visiteurs "
-                        "s'identifieront par courriel.",
+                        "\"%(tmpl)s\" offers the code by SMS, but the "
+                        "\"%(brand)s\" brand does not allow it (or the "
+                        "channel is not configured on this instance). "
+                        "Visitors will identify themselves by email.",
                         tmpl=tmpl.display_name,
-                        brand=brand.display_name or _("(aucune)")),
+                        brand=brand.display_name or _("(none)")),
                 }
         return {"warning": warning} if warning else None
 
@@ -274,9 +277,9 @@ class SecureSendWizard(models.TransientModel):
     def _compute_upload_hint(self):
         mb = self.env["secure.transfer"]._backend_max_upload_bytes() // (1024 * 1024)
         hint = _(
-            "Jusqu'à %s Mo au total depuis cet écran. Au-delà, passez par la "
-            "page publique d'envoi : elle téléverse directement vers le "
-            "stockage, sans limite pratique.", mb)
+            "Up to %s MB in total from this screen. Beyond that, use the "
+            "public send page: it uploads straight to storage, with no "
+            "practical limit.", mb)
         for rec in self:
             rec.upload_hint = hint
 
@@ -287,9 +290,8 @@ class SecureSendWizard(models.TransientModel):
             email = email_normalize(rec.sender_email or "") or ""
             if rec.brand_id and email and not rec.brand_id._sender_allowed(email):
                 warning = _(
-                    "« %(brand)s » n'accepte pas d'envoi depuis %(email)s "
-                    "(liste d'expéditeurs autorisés). Choisissez une autre "
-                    "marque.",
+                    "\"%(brand)s\" does not accept sends from %(email)s "
+                    "(allowed-sender list). Choose another brand.",
                     brand=rec.brand_id.display_name, email=email)
             rec.brand_warning = warning
 
@@ -329,10 +331,11 @@ class SecureSendWizard(models.TransientModel):
                 # Un formulaire muet en « destinataires nommés » ferait croire
                 # que le mode n'existe pas. Dire où l'ouvrir vaut mieux.
                 raise UserError(_(
-                    "Aucune marque n'offre l'audience ouverte pour le moment.\n\n"
-                    "Ouvrez-la sur la marque visée — Configuration › Marques › "
-                    "« Audience ouverte offerte » — et fixez-y un nombre maximal "
-                    "de visiteurs. Le lien se créera ensuite depuis ce menu."))
+                    "No brand offers the open audience at the "
+                    "moment.\n\nTurn it on for the brand concerned "
+                    "(Configuration › Brands › \"Open audience offered\") "
+                    "and set a maximum number of visitors there. The link "
+                    "can then be created from this menu."))
             res["brand_id"] = offering.id
             res["audience_mode"] = "open"
         # Prefill recipients when launched from a res.partner list/form.
@@ -353,7 +356,7 @@ class SecureSendWizard(models.TransientModel):
             norm = email_normalize(partner.email or "")
             if not norm:
                 raise UserError(_(
-                    "Le contact « %s » n'a pas d'adresse courriel valide.",
+                    "The contact \"%s\" has no valid email address.",
                     partner.display_name))
             if norm not in emails:
                 emails.append(norm)
@@ -366,13 +369,13 @@ class SecureSendWizard(models.TransientModel):
                 continue
             norm = email_normalize(raw)
             if not norm:
-                raise UserError(_("Adresse courriel invalide : %s", raw))
+                raise UserError(_("Invalid email address: %s", raw))
             if norm not in emails:
                 emails.append(norm)
         if not emails:
-            raise UserError(_("Ajoutez au moins un destinataire."))
+            raise UserError(_("Add at least one recipient."))
         if len(emails) > MAX_RECIPIENTS:
-            raise UserError(_("Maximum %s destinataires.", MAX_RECIPIENTS))
+            raise UserError(_("Maximum %s recipients.", MAX_RECIPIENTS))
         return emails, sms_map
 
     def _effective_sender(self):
@@ -389,14 +392,14 @@ class SecureSendWizard(models.TransientModel):
             own = email_normalize(user.email or "") or ""
             if not own:
                 raise UserError(_(
-                    "Votre compte n'a pas d'adresse courriel : impossible "
-                    "d'envoyer un transfert sécurisé en votre nom. Demandez à "
-                    "un administrateur de renseigner votre adresse."))
+                    "Your account has no email address, so a secure "
+                    "transfer cannot be sent in your name. Ask an "
+                    "administrator to fill in your address."))
             return (user.name or "").strip(), own
         email = email_normalize(self.sender_email or "") \
             or (self.sender_email or "").strip()
         if not email:
-            raise UserError(_("Une adresse courriel d'expéditeur est requise."))
+            raise UserError(_("A sender email address is required."))
         return (self.sender_name or "").strip(), email
 
     def _collect_attachments(self):
@@ -412,17 +415,16 @@ class SecureSendWizard(models.TransientModel):
         total = sum(att.file_size or 0 for att in self.attachment_ids)
         if total > ceiling:
             raise UserError(_(
-                "Les fichiers joints totalisent %(total).1f Mo ; cet écran en "
-                "accepte %(max)s au maximum. Pour un envoi plus gros, utilisez "
-                "la page publique d'envoi (téléversement direct vers le "
-                "stockage).",
+                "The attached files total %(total).1f MB; this screen "
+                "accepts %(max)s at most. For a larger send, use the "
+                "public send page (direct upload to storage).",
                 total=total / (1024 * 1024), max=ceiling // (1024 * 1024)))
         out = []
         for att in self.attachment_ids:
             data = att.raw or b""
             if not data:
                 raise UserError(_(
-                    "Le fichier « %s » est vide ou illisible.",
+                    "The file \"%s\" is empty or unreadable.",
                     att.name or "?"))
             # The stored file_size is metadata; the bytes are the truth. A
             # mismatch means the attachment was tampered with between upload
@@ -430,7 +432,7 @@ class SecureSendWizard(models.TransientModel):
             out.append((att.name or "fichier", data))
         if sum(len(d) for _n, d in out) > ceiling:
             raise UserError(_(
-                "Les fichiers joints dépassent la limite de %s Mo de cet écran.",
+                "The attached files exceed this screen's %s MB limit.",
                 ceiling // (1024 * 1024)))
         return out
 
@@ -449,17 +451,18 @@ class SecureSendWizard(models.TransientModel):
         self.ensure_one()
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_user"):
-            raise UserError(_("Action réservée aux utilisateurs du transfert sécurisé."))
+            raise UserError(_("Action restricted to secure transfer users."))
         open_audience = self.audience_mode == "open"
         if self.otp_channel == "sms" and not open_audience \
                 and not sms.configured(self.env):
             raise UserError(_(
-                "Le canal SMS n'est pas configuré (VoIP.ms). Configurez-le dans "
-                "Configuration › Paramètres, ou choisissez le canal Courriel."))
+                "The SMS channel is not configured (VoIP.ms). Configure "
+                "it in Configuration › Settings, or choose the Email "
+                "channel."))
         if open_audience and self.audience_allow_sms and not sms.configured(self.env):
             raise UserError(_(
-                "Le canal SMS n'est pas configuré (VoIP.ms) : les visiteurs ne "
-                "pourraient pas recevoir de code sur leur mobile."))
+                "The SMS channel is not configured (VoIP.ms): visitors "
+                "could not receive a code on their mobile."))
 
         brand = self.brand_id
         # A drop page forces every send to its own owner. It is excluded from
@@ -467,14 +470,13 @@ class SecureSendWizard(models.TransientModel):
         # RPC caller redirects the transfer to that person instead.
         if brand.fixed_recipient:
             raise UserError(_(
-                "« %s » est une page de dépôt : elle ne peut servir qu'à "
-                "recevoir, jamais à envoyer.", brand.display_name))
+                "\"%s\" is a drop page: it can only receive, never send.", brand.display_name))
 
         sender_name, sender_email = self._effective_sender()
         # -- anti-piggyback, sender side (public flow: api_create + finalize)
         if not brand._sender_allowed(sender_email):
             raise UserError(_(
-                "« %(brand)s » n'autorise pas les envois depuis %(email)s.",
+                "\"%(brand)s\" does not allow sends from %(email)s.",
                 brand=brand.display_name, email=sender_email))
 
         if open_audience:
@@ -483,12 +485,12 @@ class SecureSendWizard(models.TransientModel):
             # d'assistant vaut mieux qu'une erreur de validation.
             if not brand.allow_open_audience:
                 raise UserError(_(
-                    "« %s » n'offre pas l'audience ouverte. Activez-la sur la "
-                    "marque, ou choisissez « Destinataires nommés ».",
+                    "\"%s\" does not offer the open audience. Turn it on "
+                    "for the brand, or choose \"Named recipients\".",
                     brand.display_name))
             if self.audience_allow_sms and not brand.allow_audience_sms:
                 raise UserError(_(
-                    "« %s » n'offre pas le code par SMS en audience ouverte.",
+                    "\"%s\" does not offer the code by SMS for open audiences.",
                     brand.display_name))
             # ⚠ Un plafond à 0 (illimité) sur un lien que personne ne nomme,
             # c'est un relais de courriel ouvert. On refuse plutôt que de
@@ -496,9 +498,9 @@ class SecureSendWizard(models.TransientModel):
             # une plainte anti-pourriel.
             if not (self.audience_max or brand.audience_max_default):
                 raise UserError(_(
-                    "Fixez un nombre maximal de visiteurs (ou renseignez-le "
-                    "sur la marque) : sans plafond, ce lien peut faire partir "
-                    "un code vers autant d'adresses que quelqu'un le souhaite."))
+                    "Set a maximum number of visitors (or set it on the "
+                    "brand): without a cap, this link can send a code to "
+                    "as many addresses as anyone wants."))
             # Pas de destinataires nommés : le lien revient à l'expéditeur, qui
             # le diffuse. C'est le mode « lien seul » déjà connu du modèle.
             emails, sms_map = [], {}
@@ -508,27 +510,26 @@ class SecureSendWizard(models.TransientModel):
             bad = [r for r in emails if not brand._recipient_allowed(r)]
             if bad:
                 raise UserError(_(
-                    "« %(brand)s » n'autorise l'envoi qu'à certaines adresses. "
-                    "Destinataire(s) non autorisé(s) : %(bad)s",
+                    "\"%(brand)s\" only allows sending to certain "
+                    "addresses. Unauthorized recipient(s): %(bad)s",
                     brand=brand.display_name, bad=", ".join(bad)))
 
         files = self._collect_attachments()
         if not files and not (self.message or "").strip():
-            raise UserError(_("Ajoutez au moins un fichier ou un message."))
+            raise UserError(_("Add at least one file or a message."))
 
         limits = brand._effective_limits()
         retention = self.retention_days or 7
         if retention not in limits["expiry_choices"]:
             raise UserError(_(
-                "Durée de mise à disposition non offerte par « %(brand)s » : "
-                "%(asked)s jour(s) demandé(s), alors que cette marque offre "
+                "Availability period not offered by \"%(brand)s\": "
+                "%(asked)s day(s) requested, while this brand offers "
                 "%(choices)s.",
                 brand=brand.display_name, asked=retention,
                 choices=", ".join(str(c) for c in limits["expiry_choices"])))
         if self.password and not brand.allow_password:
             raise UserError(_(
-                "Le mot de passe supplémentaire n'est pas offert pour "
-                "« %s ».", brand.display_name))
+                "The additional password is not offered for \"%s\".", brand.display_name))
 
         Transfer = self.env["secure.transfer"].sudo()
         # -- daily per-sender quota (public flow: finalize). The backend is not
@@ -558,8 +559,11 @@ class SecureSendWizard(models.TransientModel):
             # does. Left out, a backend send silently opted out of the notice
             # the same brand gives every public sender.
             "notify_on_download": brand.notify_on_download,
-            "locale": self.env.user.lang if self.env.user.lang in (
-                "fr_CA", "en_CA") else "fr_CA",
+            # Any English (en_US included: the only language of some
+            # databases) is en_CA; it used to fall back to fr_CA, and the
+            # recipients without a contact got the transfer in French.
+            "locale": "en_CA" if (self.env.user.lang or "").startswith("en")
+            else "fr_CA",
             "ip_created": "backend",
             "ua_created": "backend:%s" % self.env.user.login,
             "state": "draft",
@@ -586,27 +590,31 @@ class SecureSendWizard(models.TransientModel):
 
         if self.password:
             transfer._set_password(self.password)
+        # The log is read in the transfer's language (access certificate).
+        log_env = transfer._log_env()
         if open_audience:
             transfer._log(
                 "created", actor=self.env.user.login,
-                note=_("Transfert en audience ouverte créé depuis le backend "
-                       "par %(login)s (%(files)s fichier(s), %(max)s visiteur(s) "
-                       "au maximum, SMS %(sms)s)")
+                note=log_env._("Open audience transfer created from the backend "
+                               "by %(login)s (%(files)s file(s), %(max)s "
+                               "visitor(s) at most, SMS %(sms)s)")
                 % {
                     "login": self.env.user.login,
                     "files": len(files),
                     "max": self.audience_max or brand.audience_max_default,
-                    "sms": _("offert") if self.audience_allow_sms else _("non offert"),
+                    "sms": log_env._("offered") if self.audience_allow_sms
+                    else log_env._("not offered"),
                 })
         else:
             transfer._log(
                 "created", actor=self.env.user.login,
-                note=_("Transfert sécurisé créé depuis le backend par %(login)s "
-                       "(canal %(channel)s, %(recipients)s destinataire(s), "
-                       "%(files)s fichier(s))")
+                note=log_env._("Secure transfer created from the backend by "
+                               "%(login)s (%(channel)s channel, %(recipients)s "
+                               "recipient(s), %(files)s file(s))")
                 % {
                     "login": self.env.user.login,
-                    "channel": _("SMS") if self.otp_channel == "sms" else _("courriel"),
+                    "channel": log_env._("SMS") if self.otp_channel == "sms"
+                    else log_env._("email"),
                     "recipients": len(emails),
                     "files": len(files),
                 })
@@ -621,7 +629,7 @@ class SecureSendWizard(models.TransientModel):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Transfert sécurisé"),
+            "name": _("Secure transfer"),
             "res_model": "secure.transfer",
             "res_id": transfer.id,
             "view_mode": "form",

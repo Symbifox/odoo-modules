@@ -5,3 +5,4 @@ from . import test_extraction
 from . import test_mfa_registry
 from . import test_cle_hors_base
 from . import test_couleur_libre
+from . import test_langue_lecteur

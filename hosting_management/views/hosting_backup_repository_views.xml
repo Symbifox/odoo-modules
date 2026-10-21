@@ -11,9 +11,9 @@
                 <field name="category" widget="badge"/>
                 <field name="snapshot_count"/>
                 <field name="latest_snapshot_date"/>
-                <field name="is_stale" widget="boolean" string="Périmé"/>
-                <field name="size_human" string="Taille"/>
-                <field name="bucket_size_share" string="% bucket" widget="float" digits="[5,2]"/>
+                <field name="is_stale" widget="boolean" string="Stale"/>
+                <field name="size_human" string="Size"/>
+                <field name="bucket_size_share" string="% of bucket" widget="float" digits="[5,2]"/>
                 <field name="last_watchdog_sync" optional="hide"/>
                 <field name="active" optional="hide" widget="boolean"/>
             </list>
@@ -28,26 +28,26 @@
             <form>
                 <header>
                     <button name="action_auto_link_services"
-                            string="Auto-lier les services correspondants"
+                            string="Auto-link matching services"
                             type="object"
                             class="oe_highlight"/>
                     <field name="is_stale" widget="boolean_toggle" readonly="1"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Périmé" bg_color="bg-warning" invisible="not is_stale"/>
-                    <widget name="web_ribbon" title="Archivé" bg_color="bg-secondary" invisible="active"/>
+                    <widget name="web_ribbon" title="Stale" bg_color="bg-warning" invisible="not is_stale"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-secondary" invisible="active"/>
                     <div class="oe_title">
-                        <label for="name" string="Dépôt"/>
+                        <label for="name" string="Repository"/>
                         <h1><field name="name" placeholder="Internal Backups/Database"/></h1>
                         <field name="category" widget="badge" readonly="1"/>
                     </div>
                     <group>
-                        <group string="Stockage S3">
+                        <group string="S3 storage">
                             <field name="s3_url"/>
                             <field name="password_file_path"/>
                             <field name="active"/>
                         </group>
-                        <group string="État (sync watchdog)">
+                        <group string="State (watchdog sync)">
                             <field name="snapshot_count"/>
                             <field name="latest_snapshot_date"/>
                             <field name="size_human"/>
@@ -56,7 +56,7 @@
                             <field name="last_watchdog_sync"/>
                         </group>
                     </group>
-                    <group string="Rétention Restic">
+                    <group string="Restic retention">
                         <group>
                             <field name="retention_daily"/>
                             <field name="retention_weekly"/>
@@ -71,17 +71,17 @@
                                     <field name="snapshot_id"/>
                                     <field name="container"/>
                                     <field name="files_new"/>
-                                    <field name="data_added_human" string="Ajouté"/>
-                                    <field name="duration_sec" string="Durée (s)"/>
+                                    <field name="data_added_human" string="Added"/>
+                                    <field name="duration_sec" string="Duration (s)"/>
                                     <field name="run_id" optional="hide"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Services liés" name="services">
+                        <page string="Linked services" name="services">
                             <field name="service_ids" widget="many2many_tags"/>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Notes additionnelles..."/>
+                            <field name="notes" placeholder="Additional notes..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -97,14 +97,14 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <filter string="Périmé (>27h)" name="filter_stale" domain="[('is_stale', '=', True)]"/>
-                <filter string="Archivé" name="filter_archived" domain="[('active', '=', False)]"/>
+                <filter string="Stale (>27h)" name="filter_stale" domain="[('is_stale', '=', True)]"/>
+                <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
                 <separator/>
-                <filter string="Interne" name="filter_internal" domain="[('category', '=', 'internal')]"/>
+                <filter string="Internal" name="filter_internal" domain="[('category', '=', 'internal')]"/>
                 <filter string="Tenant" name="filter_tenant" domain="[('category', '=', 'tenant')]"/>
                 <filter string="Clients" name="filter_clients" domain="[('category', '=', 'clients')]"/>
-                <group expand="0" string="Grouper par">
-                    <filter string="Catégorie" name="group_category" context="{'group_by': 'category'}"/>
+                <group expand="0" string="Group by">
+                    <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
                 </group>
             </search>
         </field>
@@ -112,17 +112,16 @@
 
     <!-- Action -->
     <record id="hosting_backup_repository_action" model="ir.actions.act_window">
-        <field name="name">Dépôts Restic</field>
+        <field name="name">Restic repositories</field>
         <field name="res_model">hosting.backup.repository</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_group_category': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun dépôt Restic configuré
+                No Restic repository configured
             </p>
             <p>
-                Les dépôts Restic sont créés automatiquement à l'installation
-                depuis <code>~/.config/restic/repos.json</code>.
+                Restic repositories are created automatically at install from <code>~/.config/restic/repos.json</code>.
             </p>
         </field>
     </record>

@@ -1,8 +1,8 @@
 """JSON API driving the public upload page (st_upload.js).
 
 All routes are type="json" auth="public" POST. Success responses return the
-data directly; failures return {"error": "<code>", "message": "<safe FR/EN
-text>"} — internal details never leave the server (UserError messages are
+data directly; failures return {"error": "<code>", "message": "<safe text, in the
+visitor's language>"} — internal details never leave the server (UserError messages are
 considered safe by construction, anything else is logged and replaced by a
 generic message).
 
@@ -25,6 +25,7 @@ from ..models import s3
 from .main import (
     HONEYPOT_FIELD,
     _UPLOAD_OPS_MAX,
+    _apply_locale,
     _client_ip,
     _create_limiter,
     _finalize_limiter,
@@ -65,6 +66,15 @@ def _api_guard(func):
         # max_files slot and daily-bytes quota, and each one blocking
         # action_finalize (which verifies every row on S3) with no hint why.
         # Rolling back to the savepoint means "error" leaves nothing behind.
+        #
+        # The visitor reads every message below: pin THEIR language first, as
+        # the pages do. Without it the JSON errors (and the model's UserError
+        # messages) came out in whatever language the bare public request
+        # carried, not the page's.
+        try:
+            _apply_locale()
+        except Exception:
+            _logger.exception("bf_securetransfer: locale resolution failed")
         try:
             with request.env.cr.savepoint():
                 return func(self, *args, **kwargs)
@@ -74,7 +84,7 @@ def _api_guard(func):
             _logger.exception(
                 "bf_securetransfer: API failure in %s", func.__name__)
             return _err("server_error",
-                        _("Une erreur est survenue. Veuillez réessayer plus tard."))
+                        _("An error occurred. Please try again later."))
     return wrapper
 
 
@@ -94,17 +104,17 @@ def _clean_recipients(value):
         parts = [str(p).strip() for p in value if str(p).strip()]
     else:
         return None, _err("invalid_recipients",
-                          _("Liste de destinataires invalide."))
+                          _("Invalid recipient list."))
     if len(parts) > MAX_RECIPIENTS:
         return None, _err("too_many_recipients",
-                          _("Maximum %s destinataires.", MAX_RECIPIENTS))
+                          _("Maximum %s recipients.", MAX_RECIPIENTS))
     cleaned = []
     for part in parts:
         normalized = email_normalize(part)
         if not normalized:
             return None, _err(
                 "invalid_recipients",
-                _("Adresse de destinataire invalide : %s", part[:64]))
+                _("Invalid recipient address: %s", part[:64]))
         if normalized not in cleaned:
             cleaned.append(normalized)
     return ", ".join(cleaned), None
@@ -120,7 +130,7 @@ def _clean_subject(value):
     subject = (value or "").strip() if isinstance(value, str) else ""
     if len(subject) > MAX_SUBJECT_CHARS:
         return None, _err("subject_too_long",
-                          _("L'objet dépasse %s caractères.", MAX_SUBJECT_CHARS))
+                          _("The subject exceeds %s characters.", MAX_SUBJECT_CHARS))
     return subject, None
 
 
@@ -129,7 +139,7 @@ def _clean_message(value):
     message = (value or "").strip() if isinstance(value, str) else ""
     if len(message) > MAX_MESSAGE_CHARS:
         return None, _err("message_too_long",
-                          _("Le message dépasse %s caractères.", MAX_MESSAGE_CHARS))
+                          _("The message exceeds %s characters.", MAX_MESSAGE_CHARS))
     return message, None
 
 
@@ -160,7 +170,7 @@ def _ops_rate_error():
     dict when over budget, None otherwise."""
     if not _upload_ops_limiter.consume(_client_ip(), _UPLOAD_OPS_MAX):
         return _err("rate_limited",
-                    _("Trop de requêtes. Réessayez dans une minute."))
+                    _("Too many requests. Try again in a minute."))
     return None
 
 
@@ -169,10 +179,10 @@ def _draft_or_error(ut):
     transfer = _resolve_transfer_by_upload_token(ut)
     if transfer is None:
         return None, _err("not_found",
-                          _("Lien de téléversement invalide ou expiré."))
+                          _("Invalid or expired upload link."))
     if transfer.state != "draft":
         return None, _err("not_draft",
-                          _("Ce transfert n'est plus modifiable."))
+                          _("This transfer can no longer be modified."))
     return transfer, None
 
 
@@ -181,10 +191,10 @@ def _file_or_error(transfer, file_id):
     try:
         file_id = int(file_id)
     except (TypeError, ValueError):
-        return None, _err("invalid_file", _("Fichier introuvable."))
+        return None, _err("invalid_file", _("File not found."))
     rec_file = transfer.file_ids.filtered(lambda f: f.id == file_id)[:1]
     if not rec_file:
-        return None, _err("invalid_file", _("Fichier introuvable."))
+        return None, _err("invalid_file", _("File not found."))
     return rec_file, None
 
 
@@ -198,7 +208,7 @@ class SecureTransferUploadApi(Controller):
         # Kill-switch also guards the API: hiding the page is not enough.
         if not _upload_enabled(env):
             return _err("disabled",
-                        _("Le service de transfert est temporairement indisponible."))
+                        _("The transfer service is temporarily unavailable."))
         # Honeypot: bots that fill the hidden field get a fake success with a
         # throwaway token — every later call on it 404s, nothing is stored. The
         # payload mirrors the real success shape (token + limits) so a bot
@@ -212,7 +222,8 @@ class SecureTransferUploadApi(Controller):
         ip = _client_ip()
         if not _create_limiter.consume(ip, _rate_create_max(env)):
             return _err("rate_limited",
-                        _("Trop de transferts créés récemment. Réessayez plus tard."))
+                        _("Too many transfers created recently. Try again "
+                          "later."))
         # Slug-addressed page (/to/<slug>): the page tells us its slug so the
         # draft is bound to that brand, not the Host-resolved one. A slug names
         # a page the admin chose to publish, so binding to it is public by
@@ -225,7 +236,7 @@ class SecureTransferUploadApi(Controller):
         if drop_slug:
             brand = env["secure.transfer.brand"].sudo()._resolve_for_slug(drop_slug)
             if not brand:
-                return _err("not_found", _("Page introuvable."))
+                return _err("not_found", _("Page not found."))
         if not brand:
             brand = env["secure.transfer.brand"].sudo()._from_request()
         limits = brand._effective_limits()
@@ -282,7 +293,7 @@ class SecureTransferUploadApi(Controller):
         except (TypeError, ValueError):
             size = 0
         if size <= 0:
-            return _err("invalid_size", _("Taille de fichier invalide."))
+            return _err("invalid_size", _("Invalid file size."))
         # _register_file locks the row, applies the deny-list and the
         # aggregate quotas, derives s3_key/mimetype server-side and decides
         # the upload mode from the multipart threshold.
@@ -340,7 +351,7 @@ class SecureTransferUploadApi(Controller):
             return error
         raw = params.get("part_numbers")
         if not isinstance(raw, (list, tuple)) or not raw:
-            return _err("invalid_parts", _("Numéros de parties invalides."))
+            return _err("invalid_parts", _("Invalid part numbers."))
         try:
             batch_max = max(1, int(s3.param(request.env, "mpu_sign_batch_max", "20")))
         except (TypeError, ValueError):
@@ -350,22 +361,22 @@ class SecureTransferUploadApi(Controller):
         # is ~O(digits^2)) — a cheap-body DoS. Reject an oversized batch and any
         # element that is not a small int / short digit string up front.
         if len(raw) > batch_max:
-            return _err("invalid_parts", _("Numéros de parties invalides."))
+            return _err("invalid_parts", _("Invalid part numbers."))
         numbers = []
         for n in raw:
             if isinstance(n, bool):  # bool is an int subclass — reject
-                return _err("invalid_parts", _("Numéros de parties invalides."))
+                return _err("invalid_parts", _("Invalid part numbers."))
             if isinstance(n, int):
                 numbers.append(n)
             elif isinstance(n, str) and n.isdigit() and len(n) <= 7:
                 numbers.append(int(n))
             else:
-                return _err("invalid_parts", _("Numéros de parties invalides."))
+                return _err("invalid_parts", _("Invalid part numbers."))
         numbers = sorted(set(numbers))
         parts_total = int(rec_file.parts_total or 0)
         if len(numbers) > batch_max \
                 or any(n < 1 or n > parts_total for n in numbers):
-            return _err("invalid_parts", _("Numéros de parties invalides."))
+            return _err("invalid_parts", _("Invalid part numbers."))
         urls = rec_file.mpu_sign(numbers)
         # JSON object keys are strings: normalize here, the JS expects it.
         return {"urls": {str(n): url for n, url in urls.items()}}
@@ -458,7 +469,7 @@ class SecureTransferUploadApi(Controller):
         ip = _client_ip()
         if not _finalize_limiter.consume(ip, _rate_create_max(env)):
             return _err("rate_limited",
-                        _("Trop de requêtes. Réessayez plus tard."))
+                        _("Too many requests. Try again later."))
         limits = transfer.brand_id._effective_limits()
         # The options panel is filled after the draft was created (create
         # fires on the first file drop), so finalize carries the final values
@@ -468,7 +479,7 @@ class SecureTransferUploadApi(Controller):
             sender_email = email_normalize(params.get("sender_email") or "")
             if not sender_email:
                 return _err("invalid_email",
-                            _("Adresse courriel de l'expéditeur invalide."))
+                            _("Invalid sender email address."))
             updates["sender_email"] = sender_email
         if "sender_name" in params:
             updates["sender_name"] = _clean_sender_name(params.get("sender_name"))
@@ -485,7 +496,7 @@ class SecureTransferUploadApi(Controller):
                    if r.strip() and not transfer.brand_id._recipient_allowed(r.strip())]
             if bad:
                 return _err("recipient_not_allowed", _(
-                    "Ce service n'autorise l'envoi qu'à certaines adresses : %s")
+                    "This service only allows sending to certain addresses: %s")
                     % ", ".join(bad))
             updates["recipient_emails"] = recipients
         if "subject" in params:
@@ -538,7 +549,7 @@ class SecureTransferUploadApi(Controller):
         password = password.strip() if isinstance(password, str) else None
         if password and not limits.get("allow_password"):
             return _err("password_not_allowed",
-                        _("La protection par mot de passe n'est pas offerte ici."))
+                        _("Password protection is not offered here."))
         # action_finalize HEAD-verifies every file, pins the ETags, rotates
         # the upload token, sets the expiry and sends the emails. Idempotent
         # under row lock.
@@ -557,11 +568,11 @@ class SecureTransferUploadApi(Controller):
         ip = _client_ip()
         if not _finalize_limiter.consume(ip, _rate_create_max(request.env)):
             return _err("rate_limited",
-                        _("Trop de requêtes. Réessayez plus tard."))
+                        _("Too many requests. Try again later."))
         try:
             return transfer.confirm_sender_otp(params.get("code") or "")
         except UserError as e:
-            return _err("otp_error", e.args[0] if e.args else _("Code invalide."))
+            return _err("otp_error", e.args[0] if e.args else _("Invalid code."))
 
     @route("/secrets/api/<string:ut>/confirm/resend", type="json",
            auth="public", methods=["POST"])
@@ -574,7 +585,7 @@ class SecureTransferUploadApi(Controller):
         if not _finalize_limiter.consume(_client_ip(),
                                          _rate_create_max(request.env)):
             return _err("rate_limited",
-                        _("Trop de requêtes. Réessayez plus tard."))
+                        _("Too many requests. Try again later."))
         if transfer.sudo().sender_otp_hash:
             transfer._send_sender_otp(reset_fails=False)
         return {"resent": True}

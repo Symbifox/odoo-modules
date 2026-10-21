@@ -18,9 +18,9 @@
                 <!-- Sizes are bytes (Float — int4 overflows at 2.1 GB). No
                      core list widget renders human sizes; the sum is still
                      useful for sorting/aggregating. -->
-                <field name="total_size" string="Taille (octets)" sum="Total"/>
-                <field name="has_password" string="Protégé" optional="show"/>
-                <field name="download_count" string="Téléchargements" optional="show"/>
+                <field name="total_size" string="Size (bytes)" sum="Total"/>
+                <field name="has_password" string="Protected" optional="show"/>
+                <field name="download_count" string="Downloads" optional="show"/>
                 <field name="expiry_date"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'active'"
@@ -40,43 +40,43 @@
         <field name="arch" type="xml">
             <form create="false">
                 <header>
-                    <button name="action_reveal_link" type="object" string="Révéler le lien"
+                    <button name="action_reveal_link" type="object" string="Reveal link"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'active'"/>
                     <button name="action_require_recipient_otp" type="object"
-                            string="Exiger un code du destinataire"
+                            string="Require a code from the recipient"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="force_recipient_otp or state not in ('active', 'expired', 'suspended')"
-                            confirm="Le lien ne s'ouvrira plus sans un code envoyé à l'une des adresses destinataires. Les courriels déjà partis ne sont pas rappelés. Continuer ?"/>
+                            confirm="The link will no longer open without a code sent to one of the recipient addresses. Emails already sent are not recalled. Continue?"/>
                     <button name="action_resend_emails" type="object"
-                            string="Renvoyer le lien aux destinataires"
+                            string="Re-send the link to the recipients"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'active'"
-                            confirm="Le courriel de lien repart à chaque destinataire, dans sa langue. L'accusé n'est pas renvoyé à l'expéditeur. Continuer ?"/>
-                    <button name="action_extend_expiry" type="object" string="Prolonger l'échéance"
+                            confirm="The link email goes back out to each recipient, in their language. The receipt is not re-sent to the sender. Continue?"/>
+                    <button name="action_extend_expiry" type="object" string="Extend the expiry"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state not in ('active', 'expired')"/>
-                    <button name="action_expire_now" type="object" string="Expirer maintenant"
+                    <button name="action_expire_now" type="object" string="Expire now"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'active'"
-                            confirm="Le lien cessera de fonctionner immédiatement. Continuer ?"/>
-                    <button name="action_suspend" type="object" string="Suspendre (abus)"
+                            confirm="The link will stop working immediately. Continue?"/>
+                    <button name="action_suspend" type="object" string="Suspend (abuse)"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state not in ('active', 'expired')"
-                            confirm="Le lien cessera de répondre, mais rien n'est purgé (préservation de la preuve). Continuer ?"/>
-                    <button name="action_reactivate" type="object" string="Réactiver"
+                            confirm="The link will stop responding, but nothing is purged (evidence preservation). Continue?"/>
+                    <button name="action_reactivate" type="object" string="Reactivate"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'suspended'"
-                            confirm="Réactiver ce transfert suspendu (signalement écarté après revue) ?"/>
-                    <button name="action_purge_now" type="object" string="Purger les fichiers"
+                            confirm="Reactivate this suspended transfer (report dismissed after review)?"/>
+                    <button name="action_purge_now" type="object" string="Purge files"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state not in ('expired', 'suspended')"
-                            confirm="Les objets seront supprimés définitivement du stockage S3. Les métadonnées et le journal d'accès sont conservés. Continuer ?"/>
-                    <button name="action_print_certificate" type="object" string="Certificat d'accès (PDF)"
+                            confirm="The objects will be permanently deleted from S3 storage. The metadata and the access log are kept. Continue?"/>
+                    <button name="action_print_certificate" type="object" string="Access certificate (PDF)"
                             groups="bf_securetransfer.group_securetransfer_user"/>
-                    <button name="action_export_log" type="object" string="Exporter le journal (CSV)"
+                    <button name="action_export_log" type="object" string="Export the log (CSV)"
                             groups="bf_securetransfer.group_securetransfer_manager"/>
-                    <button name="action_verify_log_chain" type="object" string="Vérifier l'intégrité"
+                    <button name="action_verify_log_chain" type="object" string="Verify integrity"
                             groups="bf_securetransfer.group_securetransfer_manager"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,active,expired,deleted"/>
@@ -86,12 +86,12 @@
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
                     <group>
-                        <group string="Expéditeur">
+                        <group string="Sender">
                             <field name="sender_name" readonly="1"/>
                             <field name="sender_email" readonly="1"/>
                             <field name="recipient_emails" readonly="1"/>
                         </group>
-                        <group string="Transfert">
+                        <group string="Transfer">
                             <field name="brand_id" readonly="1"/>
                             <field name="locale" readonly="1"/>
                             <field name="has_password" readonly="1"/>
@@ -143,23 +143,23 @@
                             <field name="max_downloads"
                                    readonly="state not in ('draft', 'active', 'expired')"/>
                             <field name="download_count" readonly="1"/>
-                            <field name="total_size" string="Taille totale (octets)" readonly="1"/>
+                            <field name="total_size" string="Total size (bytes)" readonly="1"/>
                             <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Objet et message"
+                    <group string="Subject and message"
                            invisible="not subject and not message">
                         <field name="subject" readonly="1" invisible="not subject"/>
                         <field name="message" nolabel="1" readonly="1"
                                invisible="not message"/>
                     </group>
                     <notebook>
-                        <page string="Fichiers" name="page_files">
+                        <page string="Files" name="page_files">
                             <field name="file_ids" readonly="1">
                                 <list>
                                     <field name="filename"/>
                                     <field name="extension" optional="hide"/>
-                                    <field name="size" string="Taille (octets)"/>
+                                    <field name="size" string="Size (bytes)"/>
                                     <field name="mimetype" optional="hide"/>
                                     <field name="upload_mode" optional="show"/>
                                     <field name="state" widget="badge"
@@ -167,19 +167,15 @@
                                            decoration-info="state in ('pending', 'uploading', 'uploaded')"
                                            decoration-danger="state == 'error'"/>
                                     <field name="scanned" optional="hide"/>
-                                    <field name="download_count" string="Téléchargements"/>
+                                    <field name="download_count" string="Downloads"/>
                                     <field name="etag" optional="hide"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Visiteurs" name="page_audience"
+                        <page string="Visitors" name="page_audience"
                               invisible="audience_mode != 'open' and audience_count == 0">
                             <div class="alert alert-info" role="alert">
-                                Chaque ligne est une personne qui a confirmé son
-                                identité par code. En audience ouverte, elle s'est
-                                déclarée elle-même ; en destinataires nommés, elle
-                                figurait déjà sur la liste. « Bloquer » coupe son
-                                accès sans toucher au lien ni aux autres.
+                                Each line is a person who confirmed their identity with a code. In an open audience, they declared themselves; with named recipients, they were already on the list. "Block" cuts off their access without touching the link or the others.
                             </div>
                             <field name="audience_ids" readonly="1">
                                 <list create="false" delete="false"
@@ -198,17 +194,17 @@
                                     <field name="sms_send_count" optional="hide"/>
                                     <field name="ip" optional="hide"/>
                                     <button name="action_block" type="object"
-                                            string="Bloquer" icon="fa-ban"
+                                            string="Block" icon="fa-ban"
                                             invisible="state == 'blocked'"
                                             groups="bf_securetransfer.group_securetransfer_manager"/>
                                     <button name="action_unblock" type="object"
-                                            string="Débloquer" icon="fa-undo"
+                                            string="Unblock" icon="fa-undo"
                                             invisible="state != 'blocked'"
                                             groups="bf_securetransfer.group_securetransfer_manager"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Journal" name="page_log">
+                        <page string="Log" name="page_log">
                             <field name="access_log_ids" readonly="1">
                                 <list create="false" edit="false" delete="false">
                                     <field name="timestamp_utc"/>
@@ -220,23 +216,23 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Technique" name="page_technical"
+                        <page string="Technical" name="page_technical"
                               groups="bf_securetransfer.group_securetransfer_manager">
                             <group>
-                                <group string="Cycle de vie">
+                                <group string="Lifecycle">
                                     <field name="finalized_at" readonly="1"/>
                                     <field name="purged_at" readonly="1"/>
                                     <field name="purge_error_count" readonly="1"/>
                                     <field name="retention_days" readonly="1"/>
                                 </group>
-                                <group string="Origine">
+                                <group string="Origin">
                                     <field name="ip_created" readonly="1"/>
                                     <field name="ua_created" readonly="1"/>
                                 </group>
                             </group>
                             <div class="alert alert-info" role="alert">
-                                Les jetons de partage ne sont pas affichés ici :
-                                utilisez « Révéler le lien » (révélation journalisée).
+                                The share tokens are not displayed here:
+                                use "Reveal the link" (the reveal is logged).
                             </div>
                         </page>
                     </notebook>
@@ -252,28 +248,28 @@
         <field name="model">secure.transfer</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Transfert"
+                <field name="name" string="Transfer"
                        filter_domain="['|', '|', '|', ('name', 'ilike', self), ('subject', 'ilike', self), ('sender_email', 'ilike', self), ('recipient_emails', 'ilike', self)]"/>
                 <field name="sender_email"/>
                 <field name="brand_id"/>
-                <filter name="f_draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
-                <filter name="f_active" string="Actifs" domain="[('state', '=', 'active')]"/>
-                <filter name="f_expired" string="Expirés" domain="[('state', '=', 'expired')]"/>
-                <filter name="f_deleted" string="Purgés" domain="[('state', '=', 'deleted')]"/>
-                <filter name="f_suspended" string="Suspendus" domain="[('state', '=', 'suspended')]"/>
+                <filter name="f_draft" string="Drafts" domain="[('state', '=', 'draft')]"/>
+                <filter name="f_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="f_expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="f_deleted" string="Purged" domain="[('state', '=', 'deleted')]"/>
+                <filter name="f_suspended" string="Suspended" domain="[('state', '=', 'suspended')]"/>
                 <separator/>
-                <filter name="f_expiring" string="Expire bientôt"
+                <filter name="f_expiring" string="Expiring soon"
                         domain="[('state', '=', 'active'), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=2)).strftime('%Y-%m-%d 23:59:59'))]"/>
-                <filter name="f_protected" string="Protégé par mot de passe"
+                <filter name="f_protected" string="Password protected"
                         domain="[('has_password', '=', True)]"/>
-                <filter name="f_open_audience" string="Audience ouverte"
+                <filter name="f_open_audience" string="Open audience"
                         domain="[('audience_mode', '=', 'open')]"/>
                 <separator/>
-                <filter name="g_state" string="État" context="{'group_by': 'state'}"/>
-                <filter name="g_brand" string="Marque" context="{'group_by': 'brand_id'}"/>
-                <filter name="g_audience" string="Mode de transmission"
+                <filter name="g_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="g_brand" string="Brand" context="{'group_by': 'brand_id'}"/>
+                <filter name="g_audience" string="Delivery mode"
                         context="{'group_by': 'audience_mode'}"/>
-                <filter name="g_created" string="Date de création" context="{'group_by': 'create_date:day'}"/>
+                <filter name="g_created" string="Creation date" context="{'group_by': 'create_date:day'}"/>
             </search>
         </field>
     </record>
@@ -283,10 +279,10 @@
         <field name="name">secure.transfer.graph</field>
         <field name="model">secure.transfer</field>
         <field name="arch" type="xml">
-            <graph string="Transferts" type="bar" sample="1">
+            <graph string="Transfers" type="bar" sample="1">
                 <field name="brand_id"/>
                 <field name="state"/>
-                <field name="total_size" type="measure" string="Volume (octets)"/>
+                <field name="total_size" type="measure" string="Volume (bytes)"/>
             </graph>
         </field>
     </record>
@@ -295,41 +291,41 @@
         <field name="name">secure.transfer.pivot</field>
         <field name="model">secure.transfer</field>
         <field name="arch" type="xml">
-            <pivot string="Transferts" sample="1">
+            <pivot string="Transfers" sample="1">
                 <field name="brand_id" type="row"/>
                 <field name="state" type="col"/>
-                <field name="total_size" type="measure" string="Volume (octets)"/>
-                <field name="download_count" type="measure" string="Téléchargements"/>
-                <field name="file_count" type="measure" string="Fichiers"/>
+                <field name="total_size" type="measure" string="Volume (bytes)"/>
+                <field name="download_count" type="measure" string="Downloads"/>
+                <field name="file_count" type="measure" string="Files"/>
             </pivot>
         </field>
     </record>
 
     <!-- Dashboard action (graph + pivot over ALL states) -->
     <record id="action_secure_transfer_dashboard" model="ir.actions.act_window">
-        <field name="name">Tableau de bord</field>
+        <field name="name">Dashboard</field>
         <field name="res_model">secure.transfer</field>
         <field name="view_mode">graph,pivot,list</field>
         <field name="search_view_id" ref="secure_transfer_view_search"/>
         <field name="context">{'search_default_g_brand': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Pas encore de données</p>
-            <p>Volume stocké et téléchargements par marque et par état, à mesure
-                que les transferts arrivent.</p>
+            <p class="o_view_nocontent_smiling_face">No data yet</p>
+            <p>Stored volume and downloads by brand and by state, as
+                transfers arrive.</p>
         </field>
     </record>
 
     <!-- Action -->
     <record id="action_secure_transfer" model="ir.actions.act_window">
-        <field name="name">Transferts</field>
+        <field name="name">Transfers</field>
         <field name="res_model">secure.transfer</field>
         <field name="view_mode">list,form,graph,pivot</field>
         <field name="search_view_id" ref="secure_transfer_view_search"/>
         <field name="context">{'search_default_f_active': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun transfert pour l'instant</p>
-            <p>Les transferts sont créés par les visiteurs sur la page publique d'envoi.
-                Ils apparaîtront ici avec leur journal d'accès.</p>
+            <p class="o_view_nocontent_smiling_face">No transfers yet</p>
+            <p>Transfers are created by visitors on the public send page.
+                They will appear here with their access log.</p>
         </field>
     </record>
 

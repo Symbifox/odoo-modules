@@ -20,7 +20,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.5.27.0",
+    # 18.0.5.27.1: le manifeste PWA et les erreurs VOIP.ms suivent la langue
+    #   du lecteur.
+    "version": "18.0.5.27.1",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

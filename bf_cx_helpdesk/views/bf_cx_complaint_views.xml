@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_create_helpdesk_ticket" type="object"
-                        string="Créer un ticket"
+                        string="Create a ticket"
                         groups="helpdesk_mgmt.group_helpdesk_user_own"
                         invisible="helpdesk_ticket_id or state in ('resolved', 'closed')"/>
             </xpath>

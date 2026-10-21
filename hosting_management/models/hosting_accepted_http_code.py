@@ -5,14 +5,14 @@ from odoo import api, fields, models
 
 class HostingAcceptedHttpCode(models.Model):
     _name = "hosting.accepted.http.code"
-    _description = "Code HTTP accepté"
+    _description = "Accepted HTTP code"
     _order = "code"
 
-    code = fields.Integer(string="Code HTTP", required=True)
+    code = fields.Integer(string="HTTP code", required=True)
     name = fields.Char(string="Description", required=True)
 
     _sql_constraints = [
-        ("code_unique", "unique(code)", "Ce code HTTP existe déjà."),
+        ("code_unique", "unique(code)", "This HTTP code already exists."),
     ]
 
     @api.depends("code", "name")

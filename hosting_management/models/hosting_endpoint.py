@@ -8,9 +8,11 @@ Entra) et alertes de fin de garantie / OS EOL.
 import logging
 from datetime import date, timedelta
 
-from markupsafe import escape as _esc
+from markupsafe import Markup, escape as _esc
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
+
+from .hosting_lang import reader_lang, user_env
 
 _logger = logging.getLogger(__name__)
 
@@ -24,19 +26,19 @@ OS_EOL_DATES = {
 
 class HostingEndpoint(models.Model):
     _name = "hosting.endpoint"
-    _description = "Poste / Serveur du parc client"
+    _description = "Client fleet endpoint / server"
     _order = "partner_id, name"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     # --- Identification ---
     name = fields.Char(
-        string="Nom",
+        string="Name",
         required=True,
         tracking=True,
-        help="Hostname, nom convivial ou tag d'inventaire",
+        help="Hostname, friendly name or inventory tag",
     )
     code = fields.Char(
-        string="Référence",
+        string="Reference",
         readonly=True,
         copy=False,
         default="New",
@@ -51,12 +53,12 @@ class HostingEndpoint(models.Model):
     )
     endpoint_type = fields.Selection(
         selection=[
-            ("workstation", "Poste de travail"),
-            ("laptop", "Portable"),
-            ("server", "Serveur"),
+            ("workstation", "Workstation"),
+            ("laptop", "Laptop"),
+            ("server", "Server"),
             ("vm", "VM"),
             ("mobile", "Mobile"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
         string="Type",
         default="workstation",
@@ -65,12 +67,12 @@ class HostingEndpoint(models.Model):
     )
     lifecycle_state = fields.Selection(
         selection=[
-            ("in_stock", "En stock"),
-            ("deployed", "Déployé"),
-            ("in_repair", "En réparation"),
-            ("retired", "Retiré"),
+            ("in_stock", "In stock"),
+            ("deployed", "Deployed"),
+            ("in_repair", "In repair"),
+            ("retired", "Retired"),
         ],
-        string="Cycle de vie",
+        string="Lifecycle",
         default="deployed",
         required=True,
         tracking=True,
@@ -80,39 +82,39 @@ class HostingEndpoint(models.Model):
     assigned_type = fields.Selection(
         selection=[
             ("contact", "Contact"),
-            ("matrix_item", "Élément de matrice"),
-            ("free_text", "Texte libre"),
+            ("matrix_item", "Matrix item"),
+            ("free_text", "Free text"),
         ],
-        string="Type d'usager",
+        string="User type",
         default="contact",
         required=True,
         tracking=True,
     )
     assigned_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Contact usager",
+        string="User contact",
         domain="[('is_company', '=', False)]",
         tracking=True,
-        help="Personne (contact) qui utilise ce poste.",
+        help="Person (contact) who uses this endpoint.",
     )
     assigned_matrix_item_id = fields.Many2one(
         comodel_name="project.knowledge.item",
-        string="Élément de matrice",
+        string="Matrix item",
         tracking=True,
-        help="Élément de matrice de connaissances correspondant à l'usager / rôle.",
+        help="Knowledge matrix item matching the user or role.",
     )
-    assigned_user_name = fields.Char(string="Usager (texte libre)", tracking=True)
-    assigned_email = fields.Char(string="Courriel usager")
+    assigned_user_name = fields.Char(string="User (free text)", tracking=True)
+    assigned_email = fields.Char(string="User email")
     assigned_display = fields.Char(
-        string="Usager",
+        string="User",
         compute="_compute_assigned_display",
         store=True,
     )
 
     # --- Matériel ---
-    serial = fields.Char(string="Numéro de série", tracking=True)
-    manufacturer = fields.Char(string="Fabricant")
-    model_name = fields.Char(string="Modèle")
+    serial = fields.Char(string="Serial number", tracking=True)
+    manufacturer = fields.Char(string="Manufacturer")
+    model_name = fields.Char(string="Model")
 
     # --- Système & réseau ---
     os = fields.Selection(
@@ -123,90 +125,92 @@ class HostingEndpoint(models.Model):
             ("macos", "macOS"),
             ("linux_ubuntu", "Ubuntu"),
             ("linux_debian", "Debian"),
-            ("linux_other", "Linux (autre)"),
+            ("linux_other", "Linux (other)"),
             ("ios", "iOS / iPadOS"),
             ("android", "Android"),
-            ("other", "Autre"),
+            ("other", "Other"),
         ],
         string="OS",
     )
-    os_build = fields.Char(string="Build OS")
+    os_build = fields.Char(string="OS build")
     hostname = fields.Char(string="Hostname")
-    mac_address = fields.Char(string="Adresse MAC")
-    ip_address = fields.Char(string="Adresse IP")
+    mac_address = fields.Char(string="MAC address")
+    ip_address = fields.Char(string="IP address")
 
     # --- Lifecycle financier ---
-    purchase_date = fields.Date(string="Date d'achat")
-    warranty_end = fields.Date(string="Fin de garantie", tracking=True)
+    purchase_date = fields.Date(string="Purchase date")
+    warranty_end = fields.Date(string="Warranty end", tracking=True)
 
     # --- Tag EOL (computed stored) ---
     os_eol_tag = fields.Char(
-        string="Étiquette EOL",
+        string="EOL tag",
         compute="_compute_os_eol_tag",
         store=True,
-        help="Renseigné automatiquement si l'OS est en fin de support.",
+        help="Filled in automatically when the OS is end of support.",
     )
 
     # --- RMM / MDM links ---
     action1_url = fields.Char(
-        string="URL console Action1",
-        help="Lien direct vers la fiche endpoint dans la console Action1.",
+        string="Action1 console URL",
+        help="Direct link to the endpoint record in the Action1 console.",
     )
     action1_endpoint_id = fields.Char(
-        string="ID endpoint Action1",
+        string="Action1 endpoint ID",
         index=True,
         copy=False,
-        help="ID unique de l'endpoint dans Action1. Renseigné automatiquement par "
-        "la synchronisation. Sert de clé idempotente.",
+        help="Unique ID of the endpoint in Action1. Filled in "
+             "automatically by the sync. Serves as the idempotent key.",
     )
     action1_last_sync = fields.Datetime(
-        string="Dernière synchro Action1",
+        string="Last Action1 sync",
         readonly=True,
         copy=False,
     )
     manual_override = fields.Boolean(
-        string="Saisie manuelle prioritaire",
+        string="Manual override",
         default=False,
         tracking=True,
-        help="Si activé, la synchronisation Action1 N'ÉCRIT PAS sur ce poste — "
-        "seule la saisie manuelle fait foi. Utile quand un poste a des données "
-        "manuelles plus fiables que celles d'Action1.",
+        help="When checked, the Action1 sync does NOT write to this "
+             "endpoint: only manual entry counts. Useful when an endpoint "
+             "has manual data more reliable than Action1's.",
     )
     group_ids = fields.Many2many(
         comodel_name="hosting.endpoint.group",
         relation="hosting_endpoint_group_rel",
         column1="endpoint_id",
         column2="group_id",
-        string="Groupes",
+        string="Groups",
     )
     license_seat_ids = fields.One2many(
         comodel_name="hosting.license.seat",
         inverse_name="endpoint_id",
-        string="Licences activées",
+        string="Activated licenses",
     )
     license_seat_count = fields.Integer(
-        string="Nombre de licences",
+        string="License count",
         compute="_compute_license_seat_count",
     )
     intune_device_id = fields.Char(
         string="Intune Device ID",
-        help="ID Microsoft Intune (managedDevices), base pour synchro Graph future.",
+        help="Microsoft Intune ID (managedDevices), basis for a future "
+             "Graph sync.",
     )
     entra_object_id = fields.Char(
         string="Entra Object ID",
-        help="ID d'objet Entra ID / Azure AD pour cet appareil.",
+        help="Entra ID / Azure AD object ID for this device.",
     )
 
     # --- BitLocker (champs sensibles, restreints au manager) ---
     bitlocker_recovery_key = fields.Char(
-        string="Clé de récupération BitLocker",
+        string="BitLocker recovery key",
         groups="hosting_management.group_hosting_manager",
-        help="Clé numérique de récupération BitLocker. Visible uniquement par les gestionnaires.",
+        help="BitLocker numeric recovery key. Visible to managers only.",
     )
     bitlocker_volume_id = fields.Char(
-        string="ID volume BitLocker",
+        string="BitLocker volume ID",
         groups="hosting_management.group_hosting_manager",
-        help="GUID du volume protégé — utile pour matcher avec Microsoft Graph.",
+        help="GUID of the protected volume, useful to match with "
+             "Microsoft Graph.",
     )
 
     notes = fields.Html(string="Notes")
@@ -216,7 +220,7 @@ class HostingEndpoint(models.Model):
         (
             "unique_serial_per_partner",
             "EXCLUDE (partner_id WITH =, serial WITH =) WHERE (serial IS NOT NULL AND serial != '' AND active = true)",
-            "Un numéro de série doit être unique par client.",
+            "A serial number must be unique per client.",
         ),
     ]
 
@@ -252,7 +256,7 @@ class HostingEndpoint(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Licences — {self.display_name}",
+            "name": self.env._("Licenses — %s", self.display_name),
             "res_model": "hosting.license.seat",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("endpoint_id", "=", self.id)],
@@ -265,16 +269,31 @@ class HostingEndpoint(models.Model):
 
     @api.depends("os")
     def _compute_os_eol_tag(self):
+        """Libellé STOCKÉ (filtré par `os_eol_tag != False`), donc une seule valeur
+        pour tous les lecteurs : il s'écrit dans la langue de la société, pas dans
+        celle de qui déclenche le calcul (usager qui saisit, ou OdooBot au travail
+        planifié hebdomadaire), sinon la valeur changeait de langue d'un poste à
+        l'autre au hasard des calculs."""
         today = fields.Date.today()
+        env = self.with_context(lang=self._company_lang()).env
         labels = {
-            "windows_10": _("EOL Windows 10 (oct. 2025)"),
+            "windows_10": env._("Windows 10 EOL (Oct. 2025)"),
         }
         for ep in self:
             eol = OS_EOL_DATES.get(ep.os)
             if eol and today >= eol:
-                ep.os_eol_tag = labels.get(ep.os) or _("OS en fin de support")
+                ep.os_eol_tag = labels.get(ep.os) or env._("End-of-support OS")
             else:
                 ep.os_eol_tag = False
+
+    @api.model
+    def _company_lang(self):
+        """Langue INSTALLÉE de la société (lecteurs opérateurs), sinon en_US.
+
+        Une langue désactivée au partenaire de la société ferait lever `env.lang`
+        (« Invalid language code ») à la création d'un poste et à la synchro Action1.
+        """
+        return reader_lang(self.env)
 
     # Champs sensibles dont les mutations sont auditées (présence uniquement,
     # JAMAIS la valeur). Voir _audit_sensitive_writes ci-dessous.
@@ -315,13 +334,15 @@ class HostingEndpoint(models.Model):
         AuditLog = self.env.get("hosting.audit.log")
         if AuditLog is None:
             return
+        # Journal d'audit : relu par les opérateurs, dans la langue de la société.
+        env = self.with_context(lang=self._company_lang()).env
         for rec in self:
             AuditLog._log_event(
                 action_type="config_change",
                 category="security",
-                description=(
-                    f"Champ sensible modifié sur le poste {rec.display_name} : "
-                    f"{', '.join(field_names)} ({action}). Valeur non journalisée."
+                description=env._(
+                    "Sensitive field changed on endpoint %(endpoint)s: %(fields)s (%(action)s). Value not logged.",
+                    endpoint=rec.display_name, fields=", ".join(field_names), action=action,
                 ),
                 res_model="hosting.endpoint",
                 res_id=rec.id,
@@ -375,7 +396,6 @@ class HostingEndpoint(models.Model):
             by_partner[ep.partner_id] |= ep
 
         Mail = self.env["mail.mail"].sudo()
-        type_labels = dict(self._fields["endpoint_type"].selection)
         for partner, eps in by_partner.items():
             try:
                 service = self.env["hosting.service"].sudo().search(
@@ -385,11 +405,15 @@ class HostingEndpoint(models.Model):
                 if not recipient_user or not recipient_user.email:
                     continue
 
+                # Courriel au responsable hébergement (usager) : dans SA langue,
+                # le cadre du travail planifié n'a pas la sienne (pièges 35/60).
+                env = user_env(self.env, recipient_user)
+                type_labels = dict(self._fields["endpoint_type"]._description_selection(env))
                 rows = []
                 for ep in eps:
                     expired = ep.warranty_end < today
                     days_left = (ep.warranty_end - today).days
-                    status_label = _("Expirée") if expired else f"{days_left} j"
+                    status_label = env._("Expired") if expired else env._("%s d", days_left)
                     rows.append(
                         "<tr>"
                         f"<td>{_esc(ep.code or '')}</td>"
@@ -401,21 +425,34 @@ class HostingEndpoint(models.Model):
                         "</td>"
                         "</tr>"
                     )
+                bonjour = _esc(env._("Hello %s,", recipient_user.name))
+                # Pas de Markup en argument de `_()` : Odoo 18 échapperait alors toute la
+                # phrase traduite (balises <strong> en clair). La valeur s'échappe au `%`.
+                intro = Markup(env._(
+                    "Here are the endpoints of the <strong>%s</strong> fleet whose warranty "
+                    "has expired or expires within the next 90 days:")) % partner.name
+                entetes = "".join(
+                    f"<th>{_esc(h)}</th>"
+                    for h in (env._("Ref."), env._("Name"), env._("Type"),
+                              env._("Warranty end"), env._("Status"))
+                )
+                signature = env._("— Hosting module")
                 body = (
-                    f"<p>Bonjour {_esc(recipient_user.name)},</p>"
-                    f"<p>Voici les postes du parc <strong>{_esc(partner.name)}</strong> "
-                    "dont la garantie est expirée ou expire dans les 90 prochains jours :</p>"
+                    f"<p>{bonjour}</p>"
+                    f"<p>{intro}</p>"
                     "<table border='1' cellpadding='6' cellspacing='0' "
                     "style='border-collapse:collapse;font-family:sans-serif;font-size:13px;'>"
                     "<thead><tr style='background:#eee;'>"
-                    "<th>Réf.</th><th>Nom</th><th>Type</th><th>Fin garantie</th><th>Statut</th>"
+                    f"{entetes}"
                     "</tr></thead>"
                     f"<tbody>{''.join(rows)}</tbody></table>"
-                    "<p>— Module Hébergement</p>"
+                    f"<p>{_esc(signature)}</p>"
                 )
                 Mail.create(
                     {
-                        "subject": f"[Parc] {partner.name} — {len(eps)} poste(s) garantie ≤ 90 j",
+                        "subject": env._(
+                            "[Fleet] %(partner)s — %(n)s endpoint(s) with warranty ≤ 90 d",
+                            partner=partner.name, n=len(eps)),
                         "body_html": body,
                         "email_to": recipient_user.email,
                         "author_id": self.env.user.partner_id.id,

@@ -499,7 +499,15 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it. A chatter note left by a user's action (SMS, calls, a number written back to a contact) follows that user; a note relayed without a session (webhook, poller) follows the owner of the line, not the process that relays it. Push notifications (UnifiedPush, FCM, Web Push) follow the user who receives them, and a paired device is named in its owner's language. Errors, action names, the CSV export and the import summary follow the user who acts. The token-authenticated mobile API answers in the language of the device's owner, whatever language the phone announces.
 
+### Interface language (18.0.5.27.1)
+
+The web app manifest (`/bf_sms_archive/manifest.webmanifest`) gives its name, description and `lang` in the language of the request, so a user set to English installs the app as "*company name* SMS messaging" rather than under the French name. Errors raised by the VOIP.ms transport (method not allowed, missing API credentials, failed call, unexpected status) follow the user who calls. `i18n/fr.po`, which users set to another French, such as French (France), read instead of `fr_CA.po`, held only a handful of terms; it is now regenerated from `fr_CA.po`.
+
 ## Changelog
+
+### Version 18.0.5.27.1
+
+- The web app manifest and the VOIP.ms transport errors follow the reader's language, and `i18n/fr.po` is regenerated from `fr_CA.po`. See the Languages section.
 
 ### Version 18.0.5.27.0
 
@@ -896,7 +904,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-20, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---

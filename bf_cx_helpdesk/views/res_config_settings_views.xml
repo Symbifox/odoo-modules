@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
-                <setting string="Ticket automatique pour les détracteurs"
-                         help="En plus de l'activité, créer un ticket helpdesk (équipe Plaintes) pour chaque détracteur ou note insatisfaite.">
+                <setting string="Automatic ticket for detractors"
+                         help="In addition to the activity, create a helpdesk ticket (Complaints team) for each detractor or dissatisfied rating.">
                     <field name="bf_cx_auto_ticket"/>
                 </setting>
             </xpath>

@@ -26,28 +26,28 @@
                         <button name="action_view_endpoints" type="object"
                                 class="oe_stat_button" icon="fa-laptop"
                                 invisible="endpoint_count == 0">
-                            <field name="endpoint_count" widget="statinfo" string="Postes"/>
+                            <field name="endpoint_count" widget="statinfo" string="Endpoints"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Nom du groupe"/></h1>
+                        <h1><field name="name" placeholder="Group name"/></h1>
                     </div>
                     <group>
-                        <group string="Affectation">
+                        <group string="Assignment">
                             <field name="partner_id" options="{'no_create': True}"/>
-                            <field name="color_hex" widget="bf_color" string="Couleur"/>
+                            <field name="color_hex" widget="bf_color" string="Color"/>
                         </group>
-                        <group string="Lien Action1">
-                            <field name="action1_group_id" placeholder="ID dans la console Action1"/>
+                        <group string="Action1 link">
+                            <field name="action1_group_id" placeholder="ID in the Action1 console"/>
                             <field name="action1_last_sync" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Description" name="description">
-                            <field name="description" placeholder="À quoi sert ce groupe..."/>
+                            <field name="description" placeholder="What this group is for..."/>
                         </page>
-                        <page string="Postes membres" name="endpoints">
+                        <page string="Member endpoints" name="endpoints">
                             <field name="endpoint_ids" readonly="1">
                                 <list>
                                     <field name="code"/>
@@ -75,14 +75,14 @@
                 <field name="partner_id"/>
                 <field name="action1_group_id"/>
                 <separator/>
-                <filter name="filter_action1_linked" string="Liés à Action1"
+                <filter name="filter_action1_linked" string="Linked to Action1"
                         domain="[('action1_group_id', '!=', False)]"/>
-                <filter name="filter_action1_unlinked" string="Non liés à Action1"
+                <filter name="filter_action1_unlinked" string="Not linked to Action1"
                         domain="[('action1_group_id', '=', False)]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivés"
+                <filter name="filter_archived" string="Archived"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client"
                             context="{'group_by': 'partner_id'}"/>
                 </group>
@@ -91,17 +91,16 @@
     </record>
 
     <record id="hosting_endpoint_group_action" model="ir.actions.act_window">
-        <field name="name">Groupes de postes</field>
+        <field name="name">Endpoint groups</field>
         <field name="res_model">hosting.endpoint.group</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_endpoint_group_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ajoutez un groupe de postes
+                Add an endpoint group
             </p>
             <p>
-                Les groupes servent à organiser les postes par usage et à mapper
-                des groupes Action1 vers des clients pour la synchro automatique.
+                Groups organize endpoints by use and map Action1 groups to clients for automatic sync.
             </p>
         </field>
     </record>

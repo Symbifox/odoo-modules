@@ -71,26 +71,26 @@ export class HostingDashboard extends Component {
                 []
             );
             const parts = [];
-            parts.push(_t("Santé : %s vérifiés", result.health_check_count));
-            parts.push(_t("Versions : %s vérifiées", result.version_check_count));
+            parts.push(_t("Health: %s checked", result.health_check_count));
+            parts.push(_t("Versions: %s checked", result.version_check_count));
             if (result.docker_check_count > 0) {
-                parts.push(_t("Docker : %s vérifiés", result.docker_check_count));
+                parts.push(_t("Docker: %s checked", result.docker_check_count));
             }
             const msgType = result.errors.length > 0 ? "warning" : "success";
             if (result.errors.length > 0) {
-                parts.push(_t("Erreurs : %s", result.errors.length));
+                parts.push(_t("Errors: %s", result.errors.length));
             }
             this.notification.add(parts.join(" | "), {
                 type: msgType,
-                title: _t("Actualisation terminée"),
+                title: _t("Refresh complete"),
                 sticky: true,
             });
             await this.loadDashboardData();
         } catch (error) {
             console.error("Error refreshing:", error);
             this.notification.add(
-                _t("Erreur lors de l'actualisation. Vérifiez les journaux du serveur."),
-                { type: "danger", title: _t("Erreur") }
+                _t("Refresh failed. Check the server logs."),
+                { type: "danger", title: _t("Error") }
             );
         }
         this.state.refreshing = false;
@@ -107,21 +107,21 @@ export class HostingDashboard extends Component {
             if (result.error) {
                 this.notification.add(result.error, {
                     type: "danger",
-                    title: _t("Erreur"),
+                    title: _t("Error"),
                 });
             } else {
                 const msgType = result.down > 0 ? "warning" : "success";
                 this.notification.add(
-                    _t("%s services vérifiés : %s en ligne, %s en panne", result.checked, result.up, result.down),
-                    { type: msgType, title: _t("Vérifications de santé terminées"), sticky: true }
+                    _t("%s services checked: %s up, %s down", result.checked, result.up, result.down),
+                    { type: msgType, title: _t("Health checks complete"), sticky: true }
                 );
             }
             await this.loadDashboardData();
         } catch (error) {
             console.error("Error running health checks:", error);
             this.notification.add(
-                _t("Erreur lors des vérifications de santé."),
-                { type: "danger", title: _t("Erreur") }
+                _t("Health checks failed."),
+                { type: "danger", title: _t("Error") }
             );
         }
         this.state.refreshing = false;
@@ -137,19 +137,19 @@ export class HostingDashboard extends Component {
             );
             const msgType = result.errors.length > 0 ? "warning" : "success";
             const msg = result.errors.length > 0
-                ? _t("%s logiciels vérifiés. Erreurs : %s", result.checked, result.errors.length)
-                : _t("%s logiciels vérifiés. Tout est à jour.", result.checked);
+                ? _t("%s software checked. Errors: %s", result.checked, result.errors.length)
+                : _t("%s software checked. Everything is up to date.", result.checked);
             this.notification.add(msg, {
                 type: msgType,
-                title: _t("Vérification des versions terminée"),
+                title: _t("Version check complete"),
                 sticky: true,
             });
             await this.loadDashboardData();
         } catch (error) {
             console.error("Error checking versions:", error);
             this.notification.add(
-                _t("Erreur lors de la vérification des versions."),
-                { type: "danger", title: _t("Erreur") }
+                _t("Version check failed."),
+                { type: "danger", title: _t("Error") }
             );
         }
         this.state.refreshing = false;
@@ -231,11 +231,11 @@ export class HostingDashboard extends Component {
 
     getStatusLabel(status) {
         const map = {
-            up: _t("En ligne"),
-            degraded: _t("Dégradé"),
-            down: _t("En panne"),
-            timeout: _t("Délai dépassé"),
-            unknown: _t("Inconnu"),
+            up: _t("Online"),
+            degraded: _t("Degraded"),
+            down: _t("Down"),
+            timeout: _t("Timed out"),
+            unknown: _t("Unknown"),
         };
         return map[status] || status;
     }
@@ -254,9 +254,14 @@ export class HostingDashboard extends Component {
 
     formatStorage(gb) {
         if (!gb || gb <= 0) return "-";
-        if (gb >= 1000) return (gb / 1000).toFixed(1) + " To";
-        if (gb >= 1) return gb.toFixed(1) + " Go";
-        return (gb * 1000).toFixed(0) + " Mo";
+        if (gb >= 1000) return _t("%s TB", (gb / 1000).toFixed(1));
+        if (gb >= 1) return _t("%s GB", gb.toFixed(1));
+        return _t("%s MB", (gb * 1000).toFixed(0));
+    }
+
+    /** Nombre de services d'un groupe : un littéral dans une expression OWL ne se traduit pas. */
+    formatServiceCount(n) {
+        return _t("%s svc", n);
     }
 }
 

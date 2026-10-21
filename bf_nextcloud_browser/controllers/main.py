@@ -56,7 +56,7 @@ class BfNcBrowserController(http.Controller):
 
     def _stream(self, config, abs_path, as_attachment):
         content = config._webdav_get(abs_path)
-        filename = posixpath.basename(abs_path) or "fichier"
+        filename = posixpath.basename(abs_path) or "file"
         ctype, disposition, sandboxed = preview_response(filename, as_attachment)
         headers = [
             ("Content-Type", ctype),

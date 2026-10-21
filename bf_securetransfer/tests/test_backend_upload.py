@@ -37,6 +37,10 @@ class TestBackendUpload(BaseNeuve, TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_securetransfer"], ["fr_CA"], overwrite=True)
         cls.brand = cls.env.ref("bf_securetransfer.brand_default")
         icp = cls.env["ir.config_parameter"].sudo()
         icp.set_param("bf_securetransfer.quota_daily_transfers_per_ip", "500")
@@ -53,6 +57,9 @@ class TestBackendUpload(BaseNeuve, TransactionCase):
             return cls.env["res.users"].create({
                 "name": login.replace("-", " ").title(), "login": login,
                 "email": "%s@example.test" % login,
+                # French expectations: a fresh base (the public CI) has en_US only
+                # The wizard's _() reads the operator's language.
+                "lang": "fr_CA",
                 "groups_id": [(6, 0, [g.id for g in groups])],
             })
 

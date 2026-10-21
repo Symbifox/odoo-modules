@@ -13,20 +13,20 @@ from odoo import api, fields, models
 
 class HostingVoipTransaction(models.Model):
     _name = "hosting.voip.transaction"
-    _description = "Transaction VOIP.ms"
+    _description = "VOIP.ms transaction"
     _order = "tx_date desc"
     _rec_name = "description"
 
     tx_date = fields.Datetime(string="Date", index=True)
     description = fields.Char(string="Description")
-    amount = fields.Float(string="Montant")  # mappé depuis 'ammount' (typo VOIP.ms)
-    balance_after = fields.Float(string="Solde après")
-    voipms_ref = fields.Char(string="Référence VOIP.ms")
-    dedup_hash = fields.Char(string="Hash dédup", index=True)
+    amount = fields.Float(string="Amount")  # mappé depuis 'ammount' (typo VOIP.ms)
+    balance_after = fields.Float(string="Balance after")
+    voipms_ref = fields.Char(string="VOIP.ms reference")
+    dedup_hash = fields.Char(string="Dedup hash", index=True)
 
     _sql_constraints = [
         ("dedup_hash_uniq", "unique(dedup_hash)",
-         "Cette transaction VOIP.ms existe déjà (déduplication)."),
+         "This VOIP.ms transaction already exists (deduplication)."),
     ]
 
     @api.model

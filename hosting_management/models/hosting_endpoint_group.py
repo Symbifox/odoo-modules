@@ -10,11 +10,11 @@ from odoo import api, fields, models
 
 class HostingEndpointGroup(models.Model):
     _name = "hosting.endpoint.group"
-    _description = "Groupe de postes du parc"
+    _description = "Fleet endpoint group"
     _order = "partner_id, name"
     _inherit = ["mail.thread"]
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
     partner_id = fields.Many2one(
         comodel_name="res.partner",
         string="Client",
@@ -22,22 +22,22 @@ class HostingEndpointGroup(models.Model):
         tracking=True,
         domain="[('is_company', '=', True)]",
         index=True,
-        help="Tous les endpoints du groupe seront rattachés à ce client lors de la "
-        "synchronisation Action1.",
+        help="All endpoints in the group will be attached to this client "
+             "during the Action1 sync.",
     )
     description = fields.Text(string="Description")
-    color = fields.Integer(string="Couleur", default=0)
+    color = fields.Integer(string="Color", default=0)
 
     # --- Action1 link ---
     action1_group_id = fields.Char(
-        string="ID groupe Action1",
+        string="Action1 group ID",
         index=True,
         copy=False,
-        help="ID du groupe dans la console Action1. Renseigner pour activer la "
-        "synchronisation automatique des endpoints membres.",
+        help="Group ID in the Action1 console. Fill it in to turn on "
+             "automatic sync of member endpoints.",
     )
     action1_last_sync = fields.Datetime(
-        string="Dernière synchro Action1",
+        string="Last Action1 sync",
         readonly=True,
         copy=False,
     )
@@ -48,10 +48,10 @@ class HostingEndpointGroup(models.Model):
         relation="hosting_endpoint_group_rel",
         column1="group_id",
         column2="endpoint_id",
-        string="Postes",
+        string="Endpoints",
     )
     endpoint_count = fields.Integer(
-        string="Nombre de postes",
+        string="Endpoint count",
         compute="_compute_endpoint_count",
     )
 
@@ -61,12 +61,12 @@ class HostingEndpointGroup(models.Model):
         (
             "unique_action1_group_id",
             "UNIQUE (action1_group_id)",
-            "Un ID de groupe Action1 ne peut être lié qu'à un seul groupe.",
+            "An Action1 group ID can be linked to only one group.",
         ),
         (
             "unique_name_per_partner",
             "EXCLUDE (partner_id WITH =, name WITH =) WHERE (active = true)",
-            "Le nom du groupe doit être unique par client.",
+            "The group name must be unique per client.",
         ),
     ]
 
@@ -79,7 +79,7 @@ class HostingEndpointGroup(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Postes — {self.name}",
+            "name": self.env._("Endpoints — %s", self.name),
             "res_model": "hosting.endpoint",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("group_ids", "in", self.id)],

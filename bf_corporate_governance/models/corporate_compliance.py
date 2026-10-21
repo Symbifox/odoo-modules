@@ -1,74 +1,76 @@
 from datetime import timedelta
 
+from markupsafe import Markup
+
 from odoo import api, fields, models
 
 
 class CorporateComplianceEvent(models.Model):
     _name = 'corporate.compliance.event'
-    _description = 'Événement de conformité corporative'
+    _description = "Corporate compliance event"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'due_date asc'
 
     name = fields.Char(
-        string='Nom',
+        string="Name",
         required=True,
         tracking=True,
     )
     event_type = fields.Selection(
         selection=[
-            ('annual_declaration', 'Déclaration annuelle'),
-            ('agm', 'Assemblée générale annuelle'),
-            ('director_election', 'Élection des administrateurs'),
-            ('auditor_appointment', 'Nomination du vérificateur'),
-            ('financial_approval', 'Approbation financière'),
-            ('bylaw_review', 'Révision des règlements'),
-            ('other', 'Autre'),
+            ('annual_declaration', "Annual declaration"),
+            ('agm', "Annual general meeting"),
+            ('director_election', "Election of directors"),
+            ('auditor_appointment', "Auditor appointment"),
+            ('financial_approval', "Financial approval"),
+            ('bylaw_review', "By-law review"),
+            ('other', "Other"),
         ],
-        string="Type d'événement",
+        string="Event type",
         required=True,
         tracking=True,
     )
     fiscal_year = fields.Char(
-        string='Année fiscale',
+        string="Fiscal year",
         tracking=True,
     )
     due_date = fields.Date(
-        string='Date limite',
+        string="Deadline",
         required=True,
         tracking=True,
     )
     completed_date = fields.Date(
-        string='Date de complétion',
+        string="Completion date",
         tracking=True,
     )
     status = fields.Selection(
         selection=[
-            ('upcoming', 'À venir'),
-            ('due_soon', 'Échéance proche'),
-            ('overdue', 'En retard'),
-            ('completed', 'Complété'),
+            ('upcoming', "Upcoming"),
+            ('due_soon', "Due soon"),
+            ('overdue', "Overdue"),
+            ('completed', "Completed"),
         ],
-        string='Statut',
+        string="Status",
         compute='_compute_status',
         store=True,
         index=True,
     )
     resolution_id = fields.Many2one(
         'corporate.resolution',
-        string='Résolution',
+        string="Resolution",
     )
     filing_reference = fields.Char(
-        string='Référence de dépôt',
-        help='Numéro de confirmation REQ ou autre référence de dépôt',
+        string="Filing reference",
+        help="REQ confirmation number or other filing reference",
     )
     notes = fields.Text(string='Notes')
     reminder_sent = fields.Boolean(
-        string='Rappel envoyé',
+        string="Reminder sent",
         default=False,
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Société',
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
@@ -110,27 +112,40 @@ class CorporateComplianceEvent(models.Model):
         if not manager_group:
             return
 
+        # Hors requête : la note et l'objet de l'avis d'activité suivent la
+        # langue de CHAQUE gestionnaire assigné, épinglée sur l'env de
+        # l'activité (`ev.env._`, pas `_()`, qui lirait la langue du travail
+        # planifié).
+        actives = {code for code, _nom in self.env['res.lang'].get_installed()}
         for event in events:
             days_until = (event.due_date - today).days
             if days_until <= 0:
                 priority = '3'
-                label = 'EN RETARD'
             elif days_until <= 7:
                 priority = '2'
-                label = f'{days_until} jours'
             elif days_until <= 14:
                 priority = '1'
-                label = f'{days_until} jours'
             else:
                 priority = '0'
-                label = f'{days_until} jours'
 
             for user in manager_group.users:
-                event.activity_schedule(
+                langue = user.lang if user.lang in actives else self.env.lang
+                ev = event.with_context(lang=langue)
+                if days_until <= 0:
+                    label = ev.env._("OVERDUE")
+                else:
+                    label = ev.env._("%s days", days_until)
+                ev.activity_schedule(
                     'mail.mail_activity_data_todo',
                     date_deadline=event.due_date,
                     user_id=user.id,
-                    note=f"<p><strong>Conformité corporative ({label})</strong></p>"
-                         f"<p>{event.name} - Échéance : {event.due_date}</p>",
+                    note=Markup(ev.env._(
+                        "<p><strong>Corporate compliance (%(label)s)</strong></p>"
+                        "<p>%(name)s - Due date: %(date)s</p>"
+                    )) % {
+                        'label': label,
+                        'name': event.name,
+                        'date': event.due_date,
+                    },
                 )
             event.write({'reminder_sent': True})

@@ -12,8 +12,8 @@
                 <field name="container"/>
                 <field name="snapshot_id"/>
                 <field name="files_new"/>
-                <field name="data_added_human" string="Ajouté"/>
-                <field name="duration_sec" string="Durée (s)"/>
+                <field name="data_added_human" string="Added"/>
+                <field name="duration_sec" string="Duration (s)"/>
                 <field name="run_id" optional="hide"/>
             </list>
         </field>
@@ -28,13 +28,13 @@
                 <field name="snapshot_id"/>
                 <field name="container"/>
                 <field name="repository_id"/>
-                <filter string="Aujourd'hui" name="filter_today" domain="[('snapshot_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
-                <filter string="7 jours" name="filter_7d" domain="[('snapshot_date', '>=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="filter_today" domain="[('snapshot_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="7 days" name="filter_7d" domain="[('snapshot_date', '>=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <filter string="Sans dépôt lié" name="filter_orphan" domain="[('repository_id', '=', False)]"/>
-                <group expand="0" string="Grouper par">
-                    <filter string="Dépôt" name="group_repo" context="{'group_by': 'repository_id'}"/>
-                    <filter string="Conteneur" name="group_container" context="{'group_by': 'container'}"/>
+                <filter string="No linked repository" name="filter_orphan" domain="[('repository_id', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter string="Repository" name="group_repo" context="{'group_by': 'repository_id'}"/>
+                    <filter string="Container" name="group_container" context="{'group_by': 'container'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'snapshot_date:day'}"/>
                 </group>
             </search>
@@ -43,7 +43,7 @@
 
     <!-- Action -->
     <record id="hosting_backup_snapshot_action" model="ir.actions.act_window">
-        <field name="name">Snapshots Restic</field>
+        <field name="name">Restic snapshots</field>
         <field name="res_model">hosting.backup.snapshot</field>
         <field name="view_mode">list</field>
         <field name="context">{'search_default_filter_7d': 1}</field>

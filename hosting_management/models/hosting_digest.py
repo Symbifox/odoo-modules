@@ -7,77 +7,79 @@ from markupsafe import escape as _esc
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_lang
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingDigest(models.Model):
     _name = "hosting.digest"
-    _description = "Configuration du récapitulatif d'hébergement"
+    _description = "Hosting digest configuration"
     _order = "name"
 
     name = fields.Char(
-        string="Nom",
+        string="Name",
         required=True,
-        default="Récapitulatif hebdomadaire",
+        default=lambda self: self.env._("Weekly digest"),
     )
     user_ids = fields.Many2many(
         comodel_name="res.users",
         relation="hosting_digest_user_rel",
         column1="digest_id",
         column2="user_id",
-        string="Destinataires",
+        string="Recipients",
         required=True,
     )
     frequency = fields.Selection(
         selection=[
-            ("daily", "Quotidien"),
-            ("weekly", "Hebdomadaire"),
-            ("monthly", "Mensuel"),
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
         ],
-        string="Fréquence",
+        string="Frequency",
         default="weekly",
         required=True,
     )
 
     # Contenu à inclure
     include_expiring = fields.Boolean(
-        string="Inclure les services expirant",
+        string="Include expiring services",
         default=True,
     )
     expiring_days = fields.Integer(
-        string="Expire dans (jours)",
+        string="Expires in (days)",
         default=90,
-        help="Inclure les services expirant dans ce nombre de jours",
+        help="Include services expiring within this number of days",
     )
     include_updates = fields.Boolean(
-        string="Inclure les mises à jour disponibles",
+        string="Include available updates",
         default=True,
     )
     include_storage_alerts = fields.Boolean(
-        string="Inclure les alertes de stockage",
+        string="Include storage alerts",
         default=True,
     )
     include_health_issues = fields.Boolean(
-        string="Inclure les problèmes de santé",
+        string="Include health issues",
         default=True,
     )
     include_maintenance_due = fields.Boolean(
-        string="Inclure la maintenance prévue",
+        string="Include scheduled maintenance",
         default=True,
-        help="Inclure les tâches de maintenance à venir et en retard dans le récapitulatif",
+        help="Include upcoming and overdue maintenance tasks in the digest",
     )
     maintenance_warning_days = fields.Integer(
-        string="Jours d'avertissement de maintenance",
+        string="Maintenance warning days",
         default=14,
-        help="Inclure les tâches de maintenance dues dans ce nombre de jours",
+        help="Include maintenance tasks due within this number of days",
     )
 
     last_sent = fields.Datetime(
-        string="Dernier envoi",
+        string="Last sent",
         readonly=True,
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 
@@ -174,64 +176,81 @@ class HostingDigest(models.Model):
 
         return data
 
+    def _digest_lang(self, recipient):
+        """Langue du lecteur du récapitulatif : celle de l'usager destinataire,
+        sinon celle de la société, sinon en_US ; seulement une langue INSTALLÉE
+        (une langue désactivée ferait lever `env.lang` au rendu)."""
+        installed = dict(self.env["res.lang"].get_installed())
+        if recipient and recipient.lang in installed:
+            return recipient.lang
+        return reader_lang(self.env)
+
     def _generate_digest_html(self, data, recipient):
-        """Générer le corps HTML pour le courriel récapitulatif."""
+        """Générer le corps HTML pour le courriel récapitulatif.
+
+        Écrit dans la langue du destinataire (usager opérateur) : `self` est
+        épinglé à sa langue, et chaque texte passe par `digest.env._` (le cadre
+        du travail planifié n'a pas la langue du lecteur, pièges 35/60).
+        """
         from . import hosting_email_template as email_tpl
 
+        digest = self.with_context(lang=self._digest_lang(recipient))
         content_parts = []
-        societe = self.env.company
+        societe = digest.env.company
         police = email_tpl._brand_font(societe)
         danger, avert, succes = (email_tpl.ETATS[k] for k in ("danger", "avertissement", "succes"))
 
         # Salutation
-        frequency_text = {
-            "daily": "quotidien",
-            "weekly": "hebdomadaire",
-            "monthly": "mensuel",
-        }.get(self.frequency, "")
+        intro = {
+            "daily": digest.env._("Here is your <strong>daily</strong> summary of hosting services."),
+            "weekly": digest.env._("Here is your <strong>weekly</strong> summary of hosting services."),
+            "monthly": digest.env._("Here is your <strong>monthly</strong> summary of hosting services."),
+        }.get(self.frequency) or digest.env._("Here is your summary of hosting services.")
+        bonjour = digest.env._("Hello %(name)s,", name=_esc(recipient.name or ""))
 
         content_parts.append(
             f'<p style="font-family:{police}; font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">'
-            f"Bonjour {recipient.name},</p>"
+            f"{bonjour}</p>"
         )
         content_parts.append(
             f'<p style="font-family:{police}; font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">'
-            f"Voici votre résumé <strong>{frequency_text}</strong> des services d'hébergement.</p>"
+            f"{intro}</p>"
         )
 
         # Cartes de résumé
         summary_items = []
         if data["expiring_services"]:
-            summary_items.append(("Expirant bientôt", str(len(data["expiring_services"]))))
+            summary_items.append((digest.env._("Expiring soon"), str(len(data["expiring_services"]))))
         if data["updates_services"]:
-            summary_items.append(("Mises à jour disponibles", str(len(data["updates_services"]))))
+            summary_items.append((digest.env._("Available updates"), str(len(data["updates_services"]))))
         if data["storage_alert_services"]:
-            summary_items.append(("Alertes de stockage", str(len(data["storage_alert_services"]))))
+            summary_items.append((digest.env._("Storage alerts"), str(len(data["storage_alert_services"]))))
         if data["health_issue_services"]:
-            summary_items.append(("Problèmes de santé", str(len(data["health_issue_services"]))))
+            summary_items.append((digest.env._("Health issues"), str(len(data["health_issue_services"]))))
         if data["maintenance_overdue"]:
-            summary_items.append(("Maintenance en retard", str(len(data["maintenance_overdue"]))))
+            summary_items.append((digest.env._("Overdue maintenance"), str(len(data["maintenance_overdue"]))))
         if data["maintenance_due_soon"]:
-            summary_items.append(("Maintenance à venir", str(len(data["maintenance_due_soon"]))))
+            summary_items.append((digest.env._("Upcoming maintenance"), str(len(data["maintenance_due_soon"]))))
 
         if summary_items:
-            content_parts.append(email_tpl.get_info_card(summary_items, "Résumé", company=self.env.company))
+            content_parts.append(email_tpl.get_info_card(summary_items, digest.env._("Summary"), company=societe))
 
         # Section Services expirant
         if data["expiring_services"]:
-            content_parts.append(email_tpl.get_section_title("Services expirant bientôt", danger["texte"], company=societe))
+            content_parts.append(email_tpl.get_section_title(digest.env._("Services expiring soon"), danger["texte"], company=societe))
             rows = []
             for service in data["expiring_services"]:
                 days = service.days_until_expiration
                 days_style = f"color:{danger['texte']}; font-weight:600;" if days <= 30 else f"color:{avert['texte']}; font-weight:600;"
+                jours = _esc(digest.env._("%(n)s days", n=days))
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
                     str(service.date_expiration),
-                    f"<span style='{days_style}'>{days} jours</span>",
+                    f"<span style='{days_style}'>{jours}</span>",
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Client", "Expiration", "Jours restants"],
+                [digest.env._("Service"), digest.env._("Client"), digest.env._("Expiration"), digest.env._("Days left")],
                 rows,
                 header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
@@ -239,12 +258,13 @@ class HostingDigest(models.Model):
         # Section Mises à jour disponibles
         if data["updates_services"]:
             content_parts.append(email_tpl.get_section_title(
-                "Mises à jour disponibles", company=societe))
+                digest.env._("Available updates"), company=societe))
             rows = []
+            nd = _esc(digest.env._("N/A"))
             for service in data["updates_services"]:
-                software_name = _esc(service.software_id.name) if service.software_id else "N/D"
-                current_ver = _esc(service.installed_version_id.version) if service.installed_version_id else "N/D"
-                latest_ver = _esc(service.software_id.latest_version) if service.software_id else "N/D"
+                software_name = _esc(service.software_id.name) if service.software_id else nd
+                current_ver = _esc(service.installed_version_id.version) if service.installed_version_id else nd
+                latest_ver = _esc(service.software_id.latest_version) if service.software_id else nd
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
@@ -252,14 +272,14 @@ class HostingDigest(models.Model):
                     f"{current_ver} → <span style='color:{succes['texte']}; font-weight:600;'>{latest_ver}</span>",
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Client", "Logiciel", "Version"],
+                [digest.env._("Service"), digest.env._("Client"), digest.env._("Software"), digest.env._("Version")],
                 rows,
                 header_bg=email_tpl._brand_primary(societe), company=societe,
             ))
 
         # Section Alertes de stockage
         if data["storage_alert_services"]:
-            content_parts.append(email_tpl.get_section_title("Alertes de stockage", avert["texte"], company=societe))
+            content_parts.append(email_tpl.get_section_title(digest.env._("Storage alerts"), avert["texte"], company=societe))
             rows = []
             for service in data["storage_alert_services"]:
                 usage = service.storage_used_percent
@@ -270,56 +290,60 @@ class HostingDigest(models.Model):
                     f"<span style='{usage_style}'>{usage:.1f}%</span>",
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Client", "Utilisation"],
+                [digest.env._("Service"), digest.env._("Client"), digest.env._("Usage")],
                 rows,
                 header_bg=avert["entete"], header_color=avert["entete_texte"], company=societe,
             ))
 
         # Section Problèmes de santé
         if data["health_issue_services"]:
-            content_parts.append(email_tpl.get_section_title("Problèmes de santé", danger["texte"], company=societe))
+            content_parts.append(email_tpl.get_section_title(digest.env._("Health issues"), danger["texte"], company=societe))
             rows = []
+            # Libellés de la sélection dans la langue du lecteur (pièges 3 et 60).
+            etats_sante = dict(digest.env["hosting.service"]._fields["last_health_status"]._description_selection(digest.env))
             for service in data["health_issue_services"]:
-                status = service.last_health_status or "Inconnu"
-                status_badge = email_tpl.get_status_badge(status, "small", company=societe)
+                status = service.last_health_status or "unknown"
+                libelle = etats_sante.get(service.last_health_status) or digest.env._("Unknown")
+                status_badge = email_tpl.get_status_badge(status, "small", company=societe, label=libelle)
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
                     status_badge,
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Client", "État"],
+                [digest.env._("Service"), digest.env._("Client"), digest.env._("State")],
                 rows,
                 header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
 
         # Section Maintenance en retard
         if data["maintenance_overdue"]:
-            content_parts.append(email_tpl.get_section_title("Maintenance en retard", danger["texte"], company=societe))
+            content_parts.append(email_tpl.get_section_title(digest.env._("Overdue maintenance"), danger["texte"], company=societe))
             rows = []
             for schedule in data["maintenance_overdue"]:
                 # days_until_due est négatif pour une tâche échue
                 days = abs(schedule.days_until_due)
                 days_style = f"color:{danger['texte']}; font-weight:600;"
-                maint_type = schedule._get_type_display()
-                assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
+                maint_type = schedule.with_env(digest.env)._get_type_display()
+                assigned = _esc(schedule.user_id.name) if schedule.user_id else _esc(digest.env._("Unassigned"))
                 cible, code = schedule._target_display()
+                retard = _esc(digest.env._("%(n)s d overdue", n=days))
                 rows.append([
                     f"{_esc(cible)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(code)}</span>",
                     f"<span style='font-weight:600;'>{_esc(schedule.name)}</span><br/><span style='color:#6B7280; font-size:12px;'>{_esc(maint_type)}</span>",
                     str(schedule.next_due),
-                    f"<span style='{days_style}'>{days} j de retard</span>",
+                    f"<span style='{days_style}'>{retard}</span>",
                     assigned,
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Tâche de maintenance", "Date d'échéance", "Jours", "Assigné à"],
+                [digest.env._("Service"), digest.env._("Maintenance task"), digest.env._("Due date"), digest.env._("Days"), digest.env._("Assigned to")],
                 rows,
                 header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
 
         # Section Maintenance à venir
         if data["maintenance_due_soon"]:
-            content_parts.append(email_tpl.get_section_title("Maintenance à venir", avert["texte"], company=societe))
+            content_parts.append(email_tpl.get_section_title(digest.env._("Upcoming maintenance"), avert["texte"], company=societe))
             rows = []
             for schedule in data["maintenance_due_soon"]:
                 days = schedule.days_until_due
@@ -327,18 +351,19 @@ class HostingDigest(models.Model):
                     days_style = f"color:{avert['texte']}; font-weight:600;"
                 else:
                     days_style = "color:#6B7280;"
-                maint_type = schedule._get_type_display()
-                assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
+                maint_type = schedule.with_env(digest.env)._get_type_display()
+                assigned = _esc(schedule.user_id.name) if schedule.user_id else _esc(digest.env._("Unassigned"))
                 cible, code = schedule._target_display()
+                jours = _esc(digest.env._("%(n)s days", n=days))
                 rows.append([
                     f"{_esc(cible)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(code)}</span>",
                     f"<span style='font-weight:600;'>{_esc(schedule.name)}</span><br/><span style='color:#6B7280; font-size:12px;'>{_esc(maint_type)}</span>",
                     str(schedule.next_due),
-                    f"<span style='{days_style}'>{days} jours</span>",
+                    f"<span style='{days_style}'>{jours}</span>",
                     assigned,
                 ])
             content_parts.append(email_tpl.get_data_table(
-                ["Service", "Tâche de maintenance", "Date d'échéance", "Jours", "Assigné à"],
+                [digest.env._("Service"), digest.env._("Maintenance task"), digest.env._("Due date"), digest.env._("Days"), digest.env._("Assigned to")],
                 rows,
                 header_bg=avert["entete"], header_color=avert["entete_texte"], company=societe,
             ))
@@ -347,7 +372,7 @@ class HostingDigest(models.Model):
         content_parts.append(email_tpl.get_contact_footer(company=societe))
 
         content = "".join(content_parts)
-        return email_tpl.get_email_wrapper("Résumé des services", content, company=self.env.company)
+        return email_tpl.get_email_wrapper(digest.env._("Services summary"), content, company=societe)
 
     def _send_digest(self):
         """Envoyer le courriel récapitulatif à tous les destinataires."""
@@ -376,9 +401,10 @@ class HostingDigest(models.Model):
             # Générer le corps HTML personnalisé
             body_html = self._generate_digest_html(data, user)
 
-            # Envoyer le courriel directement
+            # Envoyer le courriel directement, objet dans la langue du destinataire
+            digest = self.with_context(lang=self._digest_lang(user))
             mail_values = {
-                "subject": f"Résumé des services d'hébergement - {self.name}",
+                "subject": digest.env._("Hosting services summary - %(name)s", name=self.name),
                 "email_from": self.create_uid.email_formatted or self.env.user.email_formatted,
                 "email_to": user.email,
                 "body_html": body_html,
@@ -396,8 +422,8 @@ class HostingDigest(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Récapitulatif envoyé",
-                "message": f"Récapitulatif envoyé à {len(self.user_ids)} destinataire(s).",
+                "title": self.env._("Digest sent"),
+                "message": self.env._("Digest sent to %(n)s recipient(s).", n=len(self.user_ids)),
                 "type": "success",
             },
         }
@@ -409,32 +435,26 @@ class HostingDigest(models.Model):
 
         message_parts = []
         if data["expiring_services"]:
-            message_parts.append(
-                f"Expirant : {len(data['expiring_services'])} services"
-            )
+            message_parts.append(self.env._(
+                "Expiring: %(n)s services", n=len(data["expiring_services"])))
         if data["updates_services"]:
-            message_parts.append(
-                f"Mises à jour : {len(data['updates_services'])} services"
-            )
+            message_parts.append(self.env._(
+                "Updates: %(n)s services", n=len(data["updates_services"])))
         if data["storage_alert_services"]:
-            message_parts.append(
-                f"Alertes de stockage : {len(data['storage_alert_services'])} services"
-            )
+            message_parts.append(self.env._(
+                "Storage alerts: %(n)s services", n=len(data["storage_alert_services"])))
         if data["health_issue_services"]:
-            message_parts.append(
-                f"Problèmes de santé : {len(data['health_issue_services'])} services"
-            )
+            message_parts.append(self.env._(
+                "Health issues: %(n)s services", n=len(data["health_issue_services"])))
         if data["maintenance_overdue"]:
-            message_parts.append(
-                f"Maintenance en retard : {len(data['maintenance_overdue'])} tâches"
-            )
+            message_parts.append(self.env._(
+                "Overdue maintenance: %(n)s tasks", n=len(data["maintenance_overdue"])))
         if data["maintenance_due_soon"]:
-            message_parts.append(
-                f"Maintenance à venir : {len(data['maintenance_due_soon'])} tâches"
-            )
+            message_parts.append(self.env._(
+                "Upcoming maintenance: %(n)s tasks", n=len(data["maintenance_due_soon"])))
 
         if not message_parts:
-            message = "Aucun élément à signaler dans ce récapitulatif."
+            message = self.env._("Nothing to report in this digest.")
         else:
             message = "\n".join(message_parts)
 
@@ -442,7 +462,7 @@ class HostingDigest(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Aperçu du récapitulatif",
+                "title": self.env._("Digest preview"),
                 "message": message,
                 "type": "info",
                 "sticky": True,

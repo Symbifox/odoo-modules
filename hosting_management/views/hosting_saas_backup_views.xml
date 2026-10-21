@@ -11,21 +11,21 @@
                   decoration-warning="result == 'with_errors'"
                   decoration-danger="result in ('failed', 'canceled')"
                   decoration-muted="result == 'unknown'">
-                <field name="run_date" string="Départ"/>
-                <field name="organization_name" string="Organisation"/>
+                <field name="run_date" string="Started"/>
+                <field name="organization_name" string="Organization"/>
                 <field name="service_id" string="Service" optional="show"/>
                 <field name="partner_id" string="Client" optional="hide"/>
                 <field name="result" widget="badge"
                        decoration-success="result == 'succeeded'"
                        decoration-warning="result == 'with_errors'"
                        decoration-danger="result in ('failed', 'canceled')"/>
-                <field name="apps_failed" string="En échec"/>
+                <field name="apps_failed" string="Failing"/>
                 <field name="apps_total" string="Applications" optional="show"/>
-                <field name="duration_display" string="Durée"/>
+                <field name="duration_display" string="Duration"/>
                 <field name="provider" widget="badge" optional="hide"/>
-                <field name="ingest_source" string="Lu par" optional="hide"/>
-                <field name="external_id" string="Tâche" optional="hide"/>
-                <field name="name" string="Référence" optional="hide"/>
+                <field name="ingest_source" string="Read via" optional="hide"/>
+                <field name="external_id" string="Task" optional="hide"/>
+                <field name="name" string="Reference" optional="hide"/>
             </list>
         </field>
     </record>
@@ -41,7 +41,7 @@
                         <h2><field name="organization_name" readonly="1"/></h2>
                     </div>
                     <group>
-                        <group string="Exécution">
+                        <group string="Run">
                             <field name="run_date"/>
                             <field name="end_date"/>
                             <field name="duration_display"/>
@@ -49,7 +49,7 @@
                             <field name="result_raw"
                                    invisible="result != 'unknown'"/>
                         </group>
-                        <group string="Rattachement">
+                        <group string="Link">
                             <field name="provider"/>
                             <field name="service_id"/>
                             <field name="partner_id"/>
@@ -59,23 +59,20 @@
                     </group>
                     <div class="alert alert-warning" role="alert"
                          invisible="service_id">
-                        Cette organisation n'est rattachée à aucun service.
-                        L'exécution est gardée quand même. Pour la rattacher :
-                        poser son identifiant dans « Identifiant de sauvegarde
-                        infonuagique » sur la fiche du service.
+                        This organization is not linked to any service. The run is kept anyway. To link it, enter its identifier in "Cloud backup identifier" on the service form.
                     </div>
                     <group>
                         <group string="Applications">
                             <field name="apps_total"/>
                             <field name="apps_failed"/>
                         </group>
-                        <group string="Provenance">
+                        <group string="Origin">
                             <field name="ingest_source"/>
                             <field name="hostname"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Échecs" name="failures">
+                        <page string="Failures" name="failures">
                             <field name="failure_ids" readonly="1">
                                 <list>
                                     <field name="app_type"/>
@@ -88,7 +85,7 @@
                             </field>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Notes internes"/>
+                            <field name="notes" placeholder="Internal notes"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -106,25 +103,25 @@
                 <field name="service_id"/>
                 <field name="partner_id"/>
                 <field name="external_id"/>
-                <filter name="filter_not_clean" string="Pas propre"
+                <filter name="filter_not_clean" string="Not clean"
                         domain="[('result', '!=', 'succeeded')]"/>
-                <filter name="filter_with_failures" string="Avec des échecs"
+                <filter name="filter_with_failures" string="Has failures"
                         domain="[('apps_failed', '&gt;', 0)]"/>
-                <filter name="filter_unmatched" string="Sans service"
+                <filter name="filter_unmatched" string="No service"
                         domain="[('service_id', '=', False)]"/>
                 <separator/>
-                <filter name="filter_last_7" string="7 derniers jours"
+                <filter name="filter_last_7" string="Last 7 days"
                         domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_last_30" string="30 derniers jours"
+                <filter name="filter_last_30" string="Last 30 days"
                         domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_organization" string="Organisation"
+                <group expand="0" string="Group by">
+                    <filter name="group_organization" string="Organization"
                             context="{'group_by': 'organization_name'}"/>
                     <filter name="group_service" string="Service"
                             context="{'group_by': 'service_id'}"/>
-                    <filter name="group_result" string="Résultat"
+                    <filter name="group_result" string="Result"
                             context="{'group_by': 'result'}"/>
-                    <filter name="group_date" string="Départ"
+                    <filter name="group_date" string="Started"
                             context="{'group_by': 'run_date:day'}"/>
                 </group>
             </search>
@@ -132,18 +129,14 @@
     </record>
 
     <record id="hosting_saas_backup_run_action" model="ir.actions.act_window">
-        <field name="name">Sauvegardes infonuagiques</field>
+        <field name="name">Cloud backups</field>
         <field name="res_model">hosting.saas.backup.run</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hosting_saas_backup_run_view_search"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune exécution versée</p>
+            <p class="o_view_nocontent_smiling_face">No runs filed</p>
             <p>
-                Les exécutions arrivent par
-                <code>/api/hosting/backup/report/public</code> avec
-                <code>report_type: "saas"</code>. Le module ne sait pas comment
-                l'état a été lu : journal du conteneur, API de la console ou
-                rapport par courriel, la charge est la même.
+                Runs arrive through <code>/api/hosting/backup/report/public</code> with <code>report_type: "saas"</code>. The module does not know how the state was read: container log, console API or email report, the payload is the same.
             </p>
         </field>
     </record>
@@ -155,15 +148,15 @@
         <field name="model">hosting.saas.backup.failure</field>
         <field name="arch" type="xml">
             <list>
-                <field name="run_date" string="Départ"/>
-                <field name="organization_name" string="Organisation"/>
+                <field name="run_date" string="Started"/>
+                <field name="organization_name" string="Organization"/>
                 <field name="app_type" string="Application"/>
-                <field name="subject_name" string="Personne ou site"/>
-                <field name="subject_login" string="Compte" optional="show"/>
+                <field name="subject_name" string="Person or site"/>
+                <field name="subject_login" string="Account" optional="show"/>
                 <field name="http_code" string="HTTP"/>
                 <field name="error_code" string="Code"/>
                 <field name="error_message" string="Cause"/>
-                <field name="run_id" string="Exécution" optional="hide"/>
+                <field name="run_id" string="Run" optional="hide"/>
             </list>
         </field>
     </record>
@@ -177,14 +170,14 @@
                 <field name="subject_login"/>
                 <field name="error_code"/>
                 <field name="organization_name"/>
-                <filter name="filter_last_30" string="30 derniers jours"
+                <filter name="filter_last_30" string="Last 30 days"
                         domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_code" string="Code"
                             context="{'group_by': 'error_code'}"/>
-                    <filter name="group_subject" string="Personne ou site"
+                    <filter name="group_subject" string="Person or site"
                             context="{'group_by': 'subject_name'}"/>
-                    <filter name="group_organization" string="Organisation"
+                    <filter name="group_organization" string="Organization"
                             context="{'group_by': 'organization_name'}"/>
                     <filter name="group_app" string="Application"
                             context="{'group_by': 'app_type'}"/>
@@ -194,14 +187,14 @@
     </record>
 
     <record id="hosting_saas_backup_failure_action" model="ir.actions.act_window">
-        <field name="name">Échecs de sauvegarde infonuagique</field>
+        <field name="name">Cloud backup failures</field>
         <field name="res_model">hosting.saas.backup.failure</field>
         <field name="view_mode">list</field>
         <field name="search_view_id" ref="hosting_saas_backup_failure_view_search"/>
         <field name="context">{'search_default_filter_last_30': 1, 'search_default_group_subject': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun échec</p>
-            <p>Une ligne par application en échec : une boîte, un site, une équipe.</p>
+            <p class="o_view_nocontent_smiling_face">No failures</p>
+            <p>One line per failed application: a mailbox, a site, a team.</p>
         </field>
     </record>
 

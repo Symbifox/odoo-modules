@@ -17,38 +17,38 @@ class HostingBackupSnapshot(models.Model):
     """Snapshot Restic individuel (1 par container, 1+ par hosting.backup.line)."""
 
     _name = "hosting.backup.snapshot"
-    _description = "Snapshot Restic"
+    _description = "Restic snapshot"
     _order = "snapshot_date desc, id desc"
 
     repository_id = fields.Many2one(
         comodel_name="hosting.backup.repository",
-        string="Dépôt",
+        string="Repository",
         ondelete="cascade",
         index=True,
     )
-    snapshot_id = fields.Char(string="ID Restic", required=True, index=True)
-    snapshot_date = fields.Datetime(string="Date snapshot", required=True)
-    container = fields.Char(string="Conteneur Docker")
+    snapshot_id = fields.Char(string="Restic ID", required=True, index=True)
+    snapshot_date = fields.Datetime(string="Snapshot date", required=True)
+    container = fields.Char(string="Docker container")
     destination = fields.Char(
         string="Destination",
-        help="Chemin de destination dans le payload Restic (= name du repo si liaison ok)",
+        help="Destination path in the Restic payload (= repo name when linked)",
     )
-    files_new = fields.Integer(string="Fichiers ajoutés", default=0)
-    data_added_bytes = fields.Float(string="Données ajoutées (octets)", default=0.0)
+    files_new = fields.Integer(string="Files added", default=0)
+    data_added_bytes = fields.Float(string="Data added (bytes)", default=0.0)
     data_added_human = fields.Char(
-        string="Données ajoutées",
+        string="Data added",
         compute="_compute_data_added_human",
     )
-    duration_sec = fields.Float(string="Durée (s)", default=0.0)
+    duration_sec = fields.Float(string="Duration (s)", default=0.0)
     run_line_id = fields.Many2one(
         comodel_name="hosting.backup.line",
-        string="Ligne d'exécution",
+        string="Run line",
         ondelete="set null",
         index=True,
     )
     run_id = fields.Many2one(
         related="run_line_id.run_id",
-        string="Exécution",
+        string="Run",
         store=True,
     )
 

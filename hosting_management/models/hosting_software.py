@@ -7,31 +7,33 @@ import requests
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingSoftware(models.Model):
     _name = "hosting.software"
-    _description = "Catalogue de logiciels d'hébergement"
+    _description = "Hosting software catalog"
     _order = "name"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Nom du logiciel",
+        string="Software name",
         required=True,
         translate=True,
         tracking=True,
     )
     code = fields.Char(
-        string="Code court",
+        string="Short code",
         required=True,
-        help="Identifiant court (ex. : NC pour Nextcloud, OD pour Odoo)",
+        help="Short identifier (e.g. NC for Nextcloud, OD for Odoo)",
     )
     software_type = fields.Selection(
         selection=[
-            ("self_hosted", "Auto-hébergé"),
+            ("self_hosted", "Self-hosted"),
             ("saas", "SaaS"),
-            ("managed", "Géré"),
+            ("managed", "Managed"),
         ],
         string="Type",
         default="self_hosted",
@@ -39,73 +41,78 @@ class HostingSoftware(models.Model):
         tracking=True,
     )
     versionless = fields.Boolean(
-        string="Sans notion de version",
+        string="Versionless",
         tracking=True,
-        help="Le logiciel ne publie pas de numéro de version (SaaS, sonde, outil interne). "
-        "Ses services ne figurent pas parmi les versions à renseigner.",
+        help="The software does not publish a version number (SaaS, "
+             "probe, internal tool). Its services are not listed among "
+             "the versions to fill in.",
     )
     latest_version = fields.Char(
-        string="Dernière version",
+        string="Latest version",
         tracking=True,
     )
     latest_version_date = fields.Date(
-        string="Date de la dernière version",
-        help="Date de publication de la dernière version",
+        string="Latest version date",
+        help="Release date of the latest version",
     )
     update_available = fields.Boolean(
-        string="Mises à jour disponibles",
+        string="Available updates",
         compute="_compute_update_available",
         store=True,
-        help="Vrai si des services nécessitent des mises à jour",
+        help="True if services need updates",
     )
     github_url = fields.Char(
-        string="URL GitHub",
-        help="URL du dépôt pour la vérification automatique de version",
+        string="GitHub URL",
+        help="Repository URL for automatic version checks",
     )
     docker_image = fields.Char(
-        string="Image Docker",
-        help="Référence de l'image Docker (ex. : nextcloud:latest)",
+        string="Docker image",
+        help="Docker image reference (e.g. nextcloud:latest)",
     )
 
     # Configuration de vérification de version
     version_check_method = fields.Selection(
         selection=[
-            ("none", "Manuel"),
-            ("github", "Versions GitHub"),
+            ("none", "Manual"),
+            ("github", "GitHub releases"),
             ("docker_hub", "Docker Hub"),
-            ("gitlab", "Versions GitLab"),
+            ("gitlab", "GitLab releases"),
         ],
-        string="Méthode de vérification de version",
+        string="Version check method",
         default="none",
-        help="Comment vérifier automatiquement les nouvelles versions",
+        help="How to check for new versions automatically",
     )
     github_repo = fields.Char(
-        string="Dépôt GitHub",
-        help="Dépôt au format « propriétaire/dépôt » (ex. : « nextcloud/server »)",
+        string="GitHub repository",
+        help="Repository in \"owner/repo\" format (e.g. \"nextcloud/server\")",
     )
     docker_hub_repo = fields.Char(
-        string="Dépôt Docker Hub",
-        help="Dépôt au format « propriétaire/image » ou « library/image » pour les images officielles (ex. : « nextcloud » ou « library/postgres »)",
+        string="Docker Hub repository",
+        help="Repository in \"owner/image\" format, or \"library/image\" "
+             "for official images (e.g. \"nextcloud\" or "
+             "\"library/postgres\")",
     )
     gitlab_repo = fields.Char(
-        string="Dépôt GitLab",
-        help="URL complète du projet GitLab (ex. : « https://gitlab.com/cryptpad/cryptpad »)",
+        string="GitLab repository",
+        help="Full URL of the GitLab project (e.g. "
+             "\"https://gitlab.com/cryptpad/cryptpad\")",
     )
     version_regex = fields.Char(
-        string="Expression régulière de version",
+        string="Version regular expression",
         default=r"v?(\d+\.\d+\.?\d*)",
-        help="Patron regex pour extraire le numéro de version des étiquettes. Utiliser un groupe de capture pour la version.",
+        help="Regex pattern to extract the version number from tags. Use "
+             "a capture group for the version.",
     )
     version_prefix = fields.Char(
-        string="Préfixe de version",
-        help="Préfixe à retirer des étiquettes de version (ex. : « v », « release- »)",
+        string="Version prefix",
+        help="Prefix to strip from version tags (e.g. \"v\", \"release-\")",
     )
     last_version_check = fields.Datetime(
-        string="Dernière vérification de version",
+        string="Last version check",
         readonly=True,
     )
     version_check_error = fields.Char(
-        string="Dernière erreur de vérification",
+        string="Last check error",
         readonly=True,
     )
 
@@ -125,16 +132,16 @@ class HostingSoftware(models.Model):
         string="Services",
     )
     service_count = fields.Integer(
-        string="Nombre de services",
+        string="Service count",
         compute="_compute_service_count",
     )
     maintenance_template_ids = fields.One2many(
         comodel_name="hosting.maintenance.template",
         inverse_name="software_id",
-        string="Modèles de maintenance",
+        string="Maintenance templates",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
     notes = fields.Html(
@@ -143,7 +150,7 @@ class HostingSoftware(models.Model):
     )
 
     _sql_constraints = [
-        ("code_uniq", "UNIQUE(code)", "Le code du logiciel doit être unique !"),
+        ("code_uniq", "UNIQUE(code)", "The software code must be unique!"),
     ]
 
     @api.depends("service_ids")
@@ -163,7 +170,7 @@ class HostingSoftware(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Services - {self.name}",
+            "name": self.env._("Services - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("software_id", "=", self.id)],
@@ -175,7 +182,7 @@ class HostingSoftware(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Versions - {self.name}",
+            "name": self.env._("Versions - %s", self.name),
             "res_model": "hosting.software.version",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("software_id", "=", self.id)],
@@ -190,14 +197,21 @@ class HostingSoftware(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Vérification de version terminée",
-                "message": f"Dernière version : {self.latest_version or 'Non trouvée'}"
+                "title": self.env._("Version check completed"),
+                "message": self.env._(
+                    "Latest version: %s", self.latest_version or self.env._("Not found")
+                )
                 if not self.version_check_error
-                else f"Erreur : {self.version_check_error}",
+                else self.env._("Error: %s", self.version_check_error),
                 "type": "success" if not self.version_check_error else "warning",
                 "sticky": False,
             },
         }
+
+    def _version_error_env(self):
+        """Env des messages d'échec écrits dans `version_check_error` (stocké,
+        relu par l'équipe d'hébergement) : langue de la société."""
+        return reader_env(self.env)
 
     def _check_version(self):
         """Vérifier les nouvelles versions selon la méthode configurée."""
@@ -214,6 +228,9 @@ class HostingSoftware(models.Model):
 
             self.last_version_check = fields.Datetime.now()
         except Exception as e:
+            # Texte STOCKÉ, lu au formulaire et au tableau de bord : les messages
+            # de ce module y arrivent dans la langue de la société (voir
+            # `_version_error_env`), ceux des bibliothèques restent techniques.
             self.version_check_error = str(e)[:255]
             _logger.warning(
                 "Version check failed for %s: %s", self.name, str(e)
@@ -222,7 +239,7 @@ class HostingSoftware(models.Model):
     def _check_github_version(self):
         """Vérifier l'API des versions GitHub pour la dernière version."""
         if not self.github_repo:
-            raise ValueError("GitHub repository not configured")
+            raise ValueError(self._version_error_env()._("GitHub repository not configured"))
 
         headers = {"Accept": "application/vnd.github.v3+json"}
 
@@ -282,7 +299,8 @@ class HostingSoftware(models.Model):
                 if best:
                     self._update_latest_version(best)
                     return
-            raise ValueError(f"No releases or tags found for {self.github_repo}")
+            raise ValueError(self._version_error_env()._(
+                "No releases or tags found for %s", self.github_repo))
 
         response.raise_for_status()
         data = response.json()
@@ -291,15 +309,15 @@ class HostingSoftware(models.Model):
         # `/releases/latest` endpoint already filters them, but some repos
         # publish pre-releases to that slot when they have no stable release).
         if data.get("prerelease"):
-            raise ValueError(
-                f"Latest GitHub release for {self.github_repo} is a pre-release"
-            )
+            raise ValueError(self._version_error_env()._(
+                "Latest GitHub release for %s is a pre-release", self.github_repo
+            ))
 
         tag_name = data.get("tag_name", "")
         if self._is_floating_or_prerelease(tag_name):
-            raise ValueError(
-                f"GitHub latest tag {tag_name!r} is floating or pre-release"
-            )
+            raise ValueError(self._version_error_env()._(
+                "GitHub latest tag %s is floating or pre-release", repr(tag_name)
+            ))
         version = self._extract_version(tag_name)
         if version:
             published_at = data.get("published_at", "")
@@ -333,7 +351,7 @@ class HostingSoftware(models.Model):
         « dernière version » (ex. CubeBackup 1.2.15 hotfix vs 1.2.30 stable).
         """
         if not self.docker_hub_repo:
-            raise ValueError("Docker Hub repository not configured")
+            raise ValueError(self._version_error_env()._("Docker Hub repository not configured"))
 
         repo = self.docker_hub_repo
         # Handle official images (no slash)
@@ -349,7 +367,8 @@ class HostingSoftware(models.Model):
 
         tags = data.get("results", [])
         if not tags:
-            raise ValueError(f"No tags found for {self.docker_hub_repo}")
+            raise ValueError(self._version_error_env()._(
+                "No tags found for %s", self.docker_hub_repo))
 
         # Collect (parsed_version, version_string, release_date) candidates.
         # Skip floating tags and pre-release suffixes.
@@ -371,7 +390,8 @@ class HostingSoftware(models.Model):
             candidates.append((parsed, version, release_date))
 
         if not candidates:
-            raise ValueError(f"No version tags found for {self.docker_hub_repo}")
+            raise ValueError(self._version_error_env()._(
+                "No version tags found for %s", self.docker_hub_repo))
 
         # Highest parsed semver wins
         candidates.sort(reverse=True)
@@ -421,7 +441,7 @@ class HostingSoftware(models.Model):
     def _check_gitlab_version(self):
         """Vérifier l'API des versions GitLab pour la dernière version."""
         if not self.gitlab_repo:
-            raise ValueError("GitLab repository not configured")
+            raise ValueError(self._version_error_env()._("GitLab repository not configured"))
 
         # Parse GitLab URL to extract project path
         import urllib.parse
@@ -444,13 +464,15 @@ class HostingSoftware(models.Model):
                 if best:
                     self._update_latest_version(best)
                     return
-            raise ValueError(f"No releases or tags found for {self.gitlab_repo}")
+            raise ValueError(self._version_error_env()._(
+                "No releases or tags found for %s", self.gitlab_repo))
 
         response.raise_for_status()
         data = response.json()
 
         if not data:
-            raise ValueError(f"No releases found for {self.gitlab_repo}")
+            raise ValueError(self._version_error_env()._(
+                "No releases found for %s", self.gitlab_repo))
 
         # Skip pre-release slots; pick highest stable semver among returned releases
         candidates = []
@@ -471,9 +493,9 @@ class HostingSoftware(models.Model):
             candidates.append((parsed, version, release_date))
 
         if not candidates:
-            raise ValueError(
-                f"No stable releases found for {self.gitlab_repo}"
-            )
+            raise ValueError(self._version_error_env()._(
+                "No stable releases found for %s", self.gitlab_repo
+            ))
         candidates.sort(reverse=True)
         _parsed, version, release_date = candidates[0]
         self._update_latest_version(version, release_date)
@@ -567,11 +589,13 @@ class HostingSoftware(models.Model):
                 updates.append((software.name, previous or "?", software.latest_version))
 
         if updates:
-            body_lines = [f"- {name} : {old} → {new}" for name, old, new in updates[:15]]
+            # Alerte lue par l'équipe d'hébergement : langue de la société.
+            env = reader_env(self.env)
+            body_lines = [f"- {name}: {old} → {new}" for name, old, new in updates[:15]]
             if len(updates) > 15:
-                body_lines.append(f"… et {len(updates) - 15} de plus")
+                body_lines.append(env._("… and %s more", len(updates) - 15))
             self.env["hosting.ntfy"].send(
-                title=f"VERSIONS : {len(updates)} nouvelle(s) version(s) détectée(s)",
+                title=env._("VERSIONS: %s new version(s) detected", len(updates)),
                 body="\n".join(body_lines),
                 priority="default",
                 tags="package,arrow_up",

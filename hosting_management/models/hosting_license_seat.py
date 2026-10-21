@@ -4,12 +4,14 @@ import logging
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 
 
 class HostingLicenseSeat(models.Model):
     _name = "hosting.license.seat"
-    _description = "Siège de licence (allocation individuelle)"
+    _description = "License seat (individual allocation)"
     _order = "license_id, sequence, id"
     _inherit = ["mail.thread"]
 
@@ -24,61 +26,61 @@ class HostingLicenseSeat(models.Model):
     sequence = fields.Integer(default=10)
 
     product_key = fields.Char(
-        string="Clé produit",
+        string="Product key",
         groups="hosting_management.group_hosting_manager",
-        help="Clé de produit. Visible uniquement par les gestionnaires. Pas de "
-        "tracking pour éviter le leak en mail.tracking.value.",
+        help="Product key. Visible to managers only. Not tracked, to "
+             "avoid leaking it in mail.tracking.value.",
     )
 
     state = fields.Selection(
         selection=[
-            ("free", "Libre"),
-            ("activated", "Activée"),
-            ("failed", "Activation échouée"),
-            ("revoked", "Révoquée"),
+            ("free", "Unassigned"),
+            ("activated", "Activated"),
+            ("failed", "Activation failed"),
+            ("revoked", "Revoked"),
         ],
-        string="État",
+        string="State",
         default="free",
         required=True,
         tracking=True,
     )
-    activated_on = fields.Date(string="Activée le", tracking=True)
+    activated_on = fields.Date(string="Activated on", tracking=True)
 
     assignee_type = fields.Selection(
         selection=[
-            ("free_text", "Texte libre"),
+            ("free_text", "Free text"),
             ("partner", "Client"),
-            ("endpoint", "Poste"),
-            ("project", "Projet"),
+            ("endpoint", "Endpoint"),
+            ("project", "Project"),
         ],
-        string="Type d'affectation",
+        string="Assignment type",
         default="free_text",
         required=True,
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Client affecté",
+        string="Assigned client",
         tracking=True,
         domain="[('is_company', '=', True)]",
     )
     endpoint_id = fields.Many2one(
         comodel_name="hosting.endpoint",
-        string="Poste affecté",
+        string="Assigned endpoint",
         tracking=True,
     )
     project_id = fields.Many2one(
         comodel_name="project.project",
-        string="Projet affecté",
+        string="Assigned project",
         tracking=True,
     )
     assignee_label = fields.Char(
-        string="Libellé d'affectation",
-        help="Texte libre quand le siège est affecté hors Odoo (ex. « VM1 », "
-        "« Portable comptabilité »).",
+        string="Assignment label",
+        help="Free text when the seat is assigned outside Odoo (e.g. "
+             "\"VM1\", \"Accounting laptop\").",
     )
 
     display_assignee = fields.Char(
-        string="Affecté à",
+        string="Assignee",
         compute="_compute_display_assignee",
         store=True,
     )
@@ -142,18 +144,21 @@ class HostingLicenseSeat(models.Model):
         AuditLog = self.env.get("hosting.audit.log")
         if AuditLog is None:
             return
+        # Journal d'audit, relu par l'équipe d'hébergement : langue de la société.
+        env = reader_env(self.env)
         for rec in self:
             AuditLog._log_event(
                 action_type="config_change",
                 category="security",
-                description=(
-                    f"Champ sensible modifié sur le siège #{rec.id} "
-                    f"({rec.license_id.name}) : {', '.join(field_names)} ({action}). "
-                    "Valeur non journalisée."
+                description=env._(
+                    "Sensitive field changed on seat #%(id)s (%(pool)s): "
+                    "%(fields)s (%(action)s). Value not logged.",
+                    id=rec.id, pool=rec.license_id.name,
+                    fields=", ".join(field_names), action=action,
                 ),
                 res_model="hosting.license.seat",
                 res_id=rec.id,
-                res_name=rec.display_assignee or f"Seat #{rec.id}",
+                res_name=rec.display_assignee or env._("Seat #%s", rec.id),
                 field_name=",".join(field_names),
                 severity="warning",
                 status="success",

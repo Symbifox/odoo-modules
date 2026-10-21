@@ -141,6 +141,10 @@ Belt and braces, outside Odoo: hash each decrypted value before and after the mo
 diff the two lists. On the Blue Fox production copy, 76 credentials produced identical
 SHA-256 fingerprints on both sides, with zero decryption failures.
 
+## Languages (18.0.3.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The seed guard's refusal names what it found (an otpauth:// address, a secret= parameter, a base32 seed) in the language of the user who saves. The notes the daily expiry check leaves on a credential follow the project's manager, else the user who created the credential, else the company, not the job. The rotation note gives the reason's translated label and shows the typed notes as text, and the "Credentials" window of a project is titled in the user's language. In the web client, the dashboard's window titles and the password field's placeholder are extracted and receive their French. On upgrade, the shipped scheduled job, credential types and vaults switch to English only where the database still holds the text that was shipped.
+
 ## Data Model
 
 ### project.credential
@@ -185,7 +189,7 @@ SHA-256 fingerprints on both sides, with zero decryption failures.
 
 | Action | Frequency | What it does |
 |--------|-----------|--------------|
-| Vérifier les identifiants expirant | Daily | Moves credentials out of `active` into `expiring` then `expired` |
+| Credentials: check expirations | Daily | Moves credentials out of `active` into `expiring` then `expired` |
 
 ## Testing
 

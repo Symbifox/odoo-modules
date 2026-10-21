@@ -5,7 +5,7 @@
         <field name="name">secure.transfer.template.list</field>
         <field name="model">secure.transfer.template</field>
         <field name="arch" type="xml">
-            <list string="Préréglages de salle de données">
+            <list string="Data room presets">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="audience_mode"/>
@@ -22,26 +22,26 @@
         <field name="name">secure.transfer.template.form</field>
         <field name="model">secure.transfer.template</field>
         <field name="arch" type="xml">
-            <form string="Préréglage de salle de données">
+            <form string="Data room preset">
                 <sheet>
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Salle de données — standard"/></h1>
+                        <h1><field name="name" placeholder="Data room: standard"/></h1>
                     </div>
                     <field name="active" invisible="1"/>
                     <group>
-                        <group string="Portée">
+                        <group string="Scope">
                             <field name="brand_id"
                                    options="{'no_create': True}"
-                                   placeholder="Garder la marque choisie à l'envoi"/>
+                                   placeholder="Keep the brand chosen when sending"/>
                             <field name="audience_mode"/>
                             <field name="company_id" groups="base.group_multi_company"
                                    options="{'no_create': True}"/>
                             <field name="sequence"/>
                         </group>
-                        <group string="Ce que le lien accorde">
+                        <group string="What the link grants">
                             <field name="retention_days"/>
                             <field name="audience_max"
                                    invisible="audience_mode != 'open'"/>
@@ -51,14 +51,14 @@
                                    invisible="audience_mode != 'open'"/>
                         </group>
                     </group>
-                    <group string="Qui peut entrer" invisible="audience_mode != 'open'">
+                    <group string="Who can enter" invisible="audience_mode != 'open'">
                         <field name="audience_domains" nolabel="1" colspan="2"
-                               placeholder="@client.com&#10;acheteur@exemple.com"/>
+                               placeholder="@client.com&#10;buyer@example.com"/>
                         <field name="audience_allow_sms"/>
                     </group>
                     <group string="Note">
                         <field name="note" nolabel="1" colspan="2"
-                               placeholder="Le type de dossier visé, pas les valeurs — elles sont juste au-dessus."/>
+                               placeholder="The kind of file it is meant for, not the values: they are just above."/>
                     </group>
                 </sheet>
             </form>
@@ -66,15 +66,13 @@
     </record>
 
     <record id="action_secure_transfer_template" model="ir.actions.act_window">
-        <field name="name">Préréglages de salle de données</field>
+        <field name="name">Data room presets</field>
         <field name="res_model">secure.transfer.template</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez un préréglage</p>
-            <p>Un préréglage rejoue la configuration d'une salle de données : durée,
-                plafond de visiteurs, budget de téléchargement par personne, domaines
-                admis. L'expéditeur le choisit dans l'assistant, et tout se remplit.</p>
-            <p>Laissez la marque vide pour qu'il s'applique à celle déjà choisie.</p>
+            <p class="o_view_nocontent_smiling_face">Create a preset</p>
+            <p>A preset replays the configuration of a data room: duration, visitor cap, per-person download budget, allowed domains. The sender picks it in the wizard, and everything fills in.</p>
+            <p>Leave the brand empty so that it applies to the one already chosen.</p>
         </field>
     </record>
 

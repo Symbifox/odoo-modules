@@ -275,6 +275,10 @@ The systray button no longer holds the web client back: its group check and
 its configuration call run without being awaited in `onWillStart`. The button
 stays hidden until the answer arrives, then appears.
 
+## Languages (18.0.4.4.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. What the browser shows follows its reader: share types, file sizes (KB or Ko), the root of the breadcrumb, and the name of a connection still pending. A link without a file name attached to a knowledge item is named "Nextcloud file" in the language of the user who attaches it. The note left when a client folder is created follows the language of the screen, else the author's when the call carries none (a script over RPC). The Internal and External share presets are stored once for everyone, so they are named in the company's language; if that language has been deactivated since, the caller's is used. A download whose path has no file name is saved as `file`. On upgrade, the access group's name and description switch to English only where the database still holds the text that was shipped.
+
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).

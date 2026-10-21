@@ -43,7 +43,7 @@ _SECRET_RE = re.compile(
 
 class VoipmsConnectorMixin(models.AbstractModel):
     _name = "voipms.connector.mixin"
-    _description = "Connecteur API VOIP.ms (lecture seule)"
+    _description = "VOIP.ms API connector (read-only)"
 
     # ------------------------------------------------------------------
     # Config + helpers bas niveau
@@ -72,15 +72,15 @@ class VoipmsConnectorMixin(models.AbstractModel):
     def _voipms_api_call(self, method, **params):
         """Appel REST VOIP.ms — LECTURE SEULE. 3 essais, secrets redactés."""
         if method not in VOIPMS_ALLOWED_METHODS:
-            raise ValueError(
-                "Méthode VOIP.ms refusée (intégration en lecture seule) : %s" % method
-            )
+            raise ValueError(self.env._(
+                "VOIP.ms method not allowed (read-only integration): %s", method
+            ))
         cfg = self._voipms_get_config()
         if not cfg["username"] or not cfg["password"]:
-            raise ValueError(
-                "Identifiants API VOIP.ms absents "
+            raise ValueError(self.env._(
+                "VOIP.ms API credentials missing "
                 "(hosting.voipms_api_username / hosting.voipms_api_password)."
-            )
+            ))
         all_params = {
             "api_username": cfg["username"],
             "api_password": cfg["password"],
@@ -96,10 +96,11 @@ class VoipmsConnectorMixin(models.AbstractModel):
                 if attempt == 2:
                     # str(e) peut contenir l'URL complète (donc api_password) →
                     # assainir + couper le chaînage pour ne rien re-fuiter.
-                    raise RuntimeError(
-                        "VOIP.ms %s échec : %s : %s"
-                        % (method, type(e).__name__, self._voipms_redact(str(e)))
-                    ) from None
+                    raise RuntimeError(self.env._(
+                        "VOIP.ms %(method)s failed: %(error)s: %(detail)s",
+                        method=method, error=type(e).__name__,
+                        detail=self._voipms_redact(str(e)),
+                    )) from None
                 time.sleep(2)
 
     # ------------------------------------------------------------------
@@ -114,14 +115,14 @@ class VoipmsConnectorMixin(models.AbstractModel):
             return data.get("dids", []) or []
         if status in ("no_did", "no_dids"):
             return []
-        raise RuntimeError("getDIDsInfo : statut %s" % status)
+        raise RuntimeError(self.env._("getDIDsInfo: status %s", status))
 
     @api.model
     def _voipms_fetch_balance(self):
         """Retourne le solde courant (float) ou None."""
         data = self._voipms_api_call("getBalance")
         if data.get("status") != "success":
-            raise RuntimeError("getBalance : statut %s" % data.get("status"))
+            raise RuntimeError(self.env._("getBalance: status %s", data.get("status")))
         bal = data.get("balance")
         if isinstance(bal, dict):
             bal = bal.get("current_balance", bal.get("balance"))

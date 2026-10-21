@@ -22,11 +22,11 @@
                 <field name="sms_send_count" optional="hide"/>
                 <field name="ip" optional="hide"/>
                 <button name="action_block" type="object"
-                        string="Bloquer" icon="fa-ban"
+                        string="Block" icon="fa-ban"
                         invisible="state == 'blocked'"
                         groups="bf_securetransfer.group_securetransfer_manager"/>
                 <button name="action_unblock" type="object"
-                        string="Débloquer" icon="fa-undo"
+                        string="Unblock" icon="fa-undo"
                         invisible="state != 'blocked'"
                         groups="bf_securetransfer.group_securetransfer_manager"/>
             </list>
@@ -42,19 +42,19 @@
                 <field name="email"/>
                 <field name="phone"/>
                 <field name="transfer_id"/>
-                <filter name="filter_confirmed" string="Confirmés"
+                <filter name="filter_confirmed" string="Confirmed"
                         domain="[('state', '=', 'confirmed')]"/>
-                <filter name="filter_pending" string="Jamais confirmés"
+                <filter name="filter_pending" string="Never confirmed"
                         domain="[('state', '=', 'pending')]"/>
-                <filter name="filter_blocked" string="Bloqués"
+                <filter name="filter_blocked" string="Blocked"
                         domain="[('state', '=', 'blocked')]"/>
                 <separator/>
-                <filter name="filter_sms" string="Identité mobile"
+                <filter name="filter_sms" string="Mobile identity"
                         domain="[('identity_kind', '=', 'sms')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_transfer" string="Transfert"
+                <group expand="0" string="Group by">
+                    <filter name="group_transfer" string="Transfer"
                             context="{'group_by': 'transfer_id'}"/>
-                    <filter name="group_state" string="État"
+                    <filter name="group_state" string="Status"
                             context="{'group_by': 'state'}"/>
                 </group>
             </search>
@@ -62,17 +62,14 @@
     </record>
 
     <record id="action_secure_transfer_audience" model="ir.actions.act_window">
-        <field name="name">Visiteurs (audiences ouvertes)</field>
+        <field name="name">Visitors (open audiences)</field>
         <field name="res_model">secure.transfer.audience</field>
         <field name="view_mode">list</field>
         <field name="context">{'search_default_filter_confirmed': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun visiteur pour l'instant</p>
+            <p class="o_view_nocontent_smiling_face">No visitors yet</p>
             <p>
-                Chaque ligne est une personne qui a déclaré son identité sur un
-                lien en audience ouverte, puis l'a confirmée par un code à usage
-                unique. Bloquer une ligne coupe son accès sans toucher au lien
-                ni aux autres visiteurs.
+                Each line is a person who declared their identity on an open audience link, then confirmed it with a one-time code. Blocking a line cuts off their access without touching the link or the other visitors.
             </p>
         </field>
     </record>

@@ -12,6 +12,8 @@ import re
 
 from odoo import _, api, fields, models
 
+from .hosting_lang import reader_env
+
 _logger = logging.getLogger(__name__)
 _NON_DIGIT = re.compile(r"\D")
 
@@ -22,61 +24,62 @@ def _truthy(val):
 
 class HostingVoipDid(models.Model):
     _name = "hosting.voip.did"
-    _description = "DID (numéro VOIP.ms)"
+    _description = "DID (VOIP.ms number)"
     _inherit = ["voipms.connector.mixin", "mail.thread", "mail.activity.mixin"]
     _order = "name"
     _rec_name = "name"
 
-    name = fields.Char(string="Numéro", required=True, tracking=True, index=True)
-    description = fields.Char(string="Description / Étiquette", tracking=True)
+    name = fields.Char(string="Number", required=True, tracking=True, index=True)
+    description = fields.Char(string="Description / Label", tracking=True)
     partner_id = fields.Many2one(
         "res.partner", string="Client", tracking=True, ondelete="set null")
     service_id = fields.Many2one(
-        "hosting.service", string="Service lié", tracking=True, ondelete="set null")
+        "hosting.service", string="Linked service", tracking=True, ondelete="set null")
     is_reseller = fields.Boolean(
-        string="DID revendeur (ne pas toucher)", tracking=True,
-        help="Coché pour les DID revendus à un client tiers (ex. un partenaire revendeur). "
-             "Exclus de toute future action de gestion.")
+        string="Reseller DID (do not touch)", tracking=True,
+        help="Checked for DIDs resold to a third-party client (e.g. Acme "
+             "Inc.). Excluded from any future management action.")
 
     # Champs VOIP.ms — lecture seule (getDIDsInfo)
-    voipms_subaccount = fields.Char(string="Sous-compte", readonly=True)
-    routing = fields.Char(string="Routage", readonly=True)
+    voipms_subaccount = fields.Char(string="Sub-account", readonly=True)
+    routing = fields.Char(string="Routing", readonly=True)
     pop = fields.Char(string="POP", readonly=True)
-    cnam = fields.Boolean(string="CNAM (afficheur)", readonly=True)
+    cnam = fields.Boolean(string="CNAM (caller ID)", readonly=True)
     e911_enabled = fields.Boolean(string="E911", readonly=True)
-    sms_enabled = fields.Boolean(string="SMS activé", readonly=True)
-    billing_type = fields.Char(string="Type de facturation", readonly=True)
-    voipms_did_raw = fields.Text(string="Données VOIP.ms (brut)", readonly=True)
+    sms_enabled = fields.Boolean(string="SMS enabled", readonly=True)
+    billing_type = fields.Char(string="Billing type", readonly=True)
+    voipms_did_raw = fields.Text(string="VOIP.ms data (raw)", readonly=True)
 
     # Coût / refacturation
     monthly_cost = fields.Float(
-        string="Coût mensuel", default=0.0,
-        help="Frais mensuels fixes du DID. Sert à la refacturation par client.")
+        string="Monthly cost", default=0.0,
+        help="Fixed monthly fees for the DID. Used for per-client rebilling.")
     currency_id = fields.Many2one(
-        "res.currency", string="Devise",
+        "res.currency", string="Currency",
         default=lambda self: self.env.company.currency_id)
 
     # CDR / stats (mois courant)
-    cdr_ids = fields.One2many("hosting.voip.cdr", "did_id", string="Appels (CDR)")
+    cdr_ids = fields.One2many("hosting.voip.cdr", "did_id", string="Calls "
+                                                                   "(CDR)")
     call_count_month = fields.Integer(
-        string="Appels (mois)", compute="_compute_call_stats")
+        string="Calls (month)", compute="_compute_call_stats")
     minutes_month = fields.Float(
-        string="Minutes (mois)", compute="_compute_call_stats")
+        string="Minutes (month)", compute="_compute_call_stats")
     cost_month = fields.Float(
-        string="Coût usage (mois)", compute="_compute_call_stats")
+        string="Usage cost (month)", compute="_compute_call_stats")
     last_call_date = fields.Datetime(
-        string="Dernier appel", compute="_compute_call_stats")
+        string="Last call", compute="_compute_call_stats")
 
     # État + synchro
     state = fields.Selection(
-        [("active", "Actif"), ("inactive", "Inactif"), ("cancelled", "Résilié")],
-        string="État", default="active", required=True, tracking=True)
+        [("active", "Active"), ("inactive", "Inactive"), ("cancelled", "Canceled")],
+        string="State", default="active", required=True, tracking=True)
     active = fields.Boolean(default=True)
-    voipms_last_sync = fields.Datetime(string="Dernière synchro", readonly=True)
-    voipms_sync_error = fields.Char(string="Erreur de synchro", readonly=True)
+    voipms_last_sync = fields.Datetime(string="Last sync", readonly=True)
+    voipms_sync_error = fields.Char(string="Sync error", readonly=True)
 
     _sql_constraints = [
-        ("name_uniq", "unique(name)", "Ce numéro DID existe déjà."),
+        ("name_uniq", "unique(name)", "This DID number already exists."),
     ]
 
     # ------------------------------------------------------------------
@@ -246,10 +249,15 @@ class HostingVoipDid(models.Model):
             "hosting.voipms_last_balance_date",
             fields.Datetime.to_string(fields.Datetime.now()))
         if threshold and bal < threshold:
+            # Lu par l'équipe d'hébergement : langue de la société (travail planifié).
+            env = reader_env(self.env)
             self.env["hosting.ntfy"].send(
-                title="VOIP.ms — solde bas",
-                body="Solde VOIP.ms : %.2f $ (seuil %.2f $). Recharger le compte."
-                % (bal, threshold),
+                title=env._("VOIP.ms — low balance"),
+                body=env._(
+                    "VOIP.ms balance: $%(balance).2f (threshold $%(threshold).2f). "
+                    "Top up the account.",
+                    balance=bal, threshold=threshold,
+                ),
                 priority="high",
                 tags=["money_with_wings", "warning"],
             )
@@ -262,7 +270,7 @@ class HostingVoipDid(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Appels — %s", self.name),
+            "name": _("Calls: %s", self.name),
             "res_model": "hosting.voip.cdr",
             "view_mode": "list,form,pivot,graph",
             "domain": [("did_id", "=", self.id)],

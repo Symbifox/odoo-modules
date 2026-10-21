@@ -5,12 +5,12 @@ from odoo import fields, models
 
 class BfNcClientFolderCreate(models.TransientModel):
     _name = "bf.nc.client.folder.create"
-    _description = "Créer le dossier Nextcloud d'un client"
+    _description = "Create a client's Nextcloud folder"
 
     partner_id = fields.Many2one("res.partner", string="Client", required=True, readonly=True)
-    name = fields.Char(string="Nom du dossier", required=True)
-    root = fields.Char(string="Dans", readonly=True)
-    template = fields.Char(string="Copie de", readonly=True)
+    name = fields.Char(string="Folder name", required=True)
+    root = fields.Char(string="Inside", readonly=True)
+    template = fields.Char(string="Copy of", readonly=True)
 
     def action_create(self):
         self.ensure_one()

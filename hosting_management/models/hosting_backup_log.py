@@ -5,7 +5,11 @@ from datetime import datetime, timedelta
 
 import pytz
 
+from markupsafe import Markup
+
 from odoo import api, fields, models
+
+from .hosting_lang import reader_env, reader_lang
 
 _logger = logging.getLogger(__name__)
 
@@ -45,35 +49,35 @@ class HostingBackupRun(models.Model):
     """Représente une exécution de sauvegarde (exécution quotidienne de tous les scripts de sauvegarde)."""
 
     _name = "hosting.backup.run"
-    _description = "Exécution de sauvegarde"
+    _description = "Backup run"
     _order = "run_date desc, id desc"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Référence",
+        string="Reference",
         readonly=True,
         copy=False,
         default="New",
     )
     run_date = fields.Datetime(
-        string="Date d'exécution",
+        string="Run date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
     )
     hostname = fields.Char(
-        string="Nom d'hôte du serveur",
+        string="Server hostname",
         tracking=True,
     )
     backup_root = fields.Char(
-        string="Emplacement de sauvegarde",
+        string="Backup location",
     )
     report_type = fields.Selection(
         selection=[
             ("legacy", "Legacy ZIP"),
             ("restic", "Restic"),
         ],
-        string="Type de rapport",
+        string="Report type",
         default="legacy",
         required=True,
         index=True,
@@ -82,70 +86,70 @@ class HostingBackupRun(models.Model):
     repository_ids = fields.Many2many(
         comodel_name="hosting.backup.repository",
         compute="_compute_repository_ids",
-        string="Dépôts touchés",
+        string="Repositories touched",
     )
     state = fields.Selection(
         selection=[
-            ("success", "Tous réussis"),
-            ("warning", "Réussi avec avertissements"),
-            ("partial", "Succès partiel"),
-            ("failed", "Échoué"),
+            ("success", "All succeeded"),
+            ("warning", "Succeeded with warnings"),
+            ("partial", "Partial success"),
+            ("failed", "Failed"),
         ],
-        string="État",
+        string="State",
         compute="_compute_state",
         store=True,
         tracking=True,
     )
     total_count = fields.Integer(
-        string="Total des services",
+        string="Total services",
         compute="_compute_counts",
         store=True,
     )
     success_count = fields.Integer(
-        string="Réussis",
+        string="Succeeded",
         compute="_compute_counts",
         store=True,
     )
     warning_count = fields.Integer(
-        string="Avertissements",
+        string="Warnings",
         compute="_compute_counts",
         store=True,
-        help="Services dont la cible principale a produit un snapshot mais "
-             "où une sous-cible secondaire a été ignorée (data captée).",
+        help="Services whose main target produced a snapshot but where a "
+             "secondary sub-target was skipped (data captured).",
     )
     failed_count = fields.Integer(
-        string="Échoués",
+        string="Failed",
         compute="_compute_counts",
         store=True,
     )
     skipped_count = fields.Integer(
-        string="Ignorés",
+        string="Skipped services",
         compute="_compute_counts",
         store=True,
     )
     line_ids = fields.One2many(
         comodel_name="hosting.backup.line",
         inverse_name="run_id",
-        string="Détails de sauvegarde",
+        string="Backup details",
     )
     notes = fields.Text(
         string="Notes",
     )
     report_sent = fields.Boolean(
-        string="Rapport envoyé",
+        string="Report sent",
         default=False,
     )
     report_sent_date = fields.Datetime(
-        string="Date d'envoi du rapport",
+        string="Report sent date",
     )
     ntfy_alert_sent = fields.Boolean(
-        string="Alerte push envoyée",
+        string="Push alert sent",
         default=False,
         copy=False,
     )
     company_id = fields.Many2one(
         comodel_name="res.company",
-        string="Société",
+        string="Company",
         default=lambda self: self.env.company,
     )
 
@@ -227,38 +231,44 @@ class HostingBackupRun(models.Model):
         """Push ntfy lorsqu'une exécution se termine en échec ou en succès partiel."""
         self.ensure_one()
         Ntfy = self.env["hosting.ntfy"]
+        # Lu par l'équipe d'hébergement : langue de la société de l'exécution
+        # (appelé par l'API de dépôt ou le travail planifié, sans usager).
+        env = reader_env(self.env, company=self.company_id)
         failed_lines = self.line_ids.filtered(lambda l: l.status == "failed")
         unverified_lines = self.line_ids.filtered(
             lambda l: l.status == "success" and l.file_ids and not l.all_verified
         )
+        run_label = self.name or self.hostname or env._("run")
         if self.state == "failed":
-            title = f"SAUVEGARDE ÉCHEC : {self.name or self.hostname or 'exécution'}"
+            title = env._("BACKUP FAILED: %s", run_label)
             priority = "urgent"
             tags = "floppy_disk,rotating_light"
         else:
-            title = f"SAUVEGARDE PARTIELLE : {self.name or self.hostname or 'exécution'}"
+            title = env._("BACKUP PARTIAL: %s", run_label)
             priority = "high"
             tags = "floppy_disk,warning"
         body_lines = [
-            f"Hôte : {self.hostname or 'N/D'}",
-            (
-                f"Succès : {self.success_count} / Avert. : {self.warning_count} / "
-                f"Échecs : {self.failed_count} / Ignorés : {self.skipped_count}"
+            env._("Host: %s", self.hostname or env._("N/A")),
+            env._(
+                "Success: %(success)s / Warn.: %(warning)s / "
+                "Failed: %(failed)s / Skipped: %(skipped)s",
+                success=self.success_count, warning=self.warning_count,
+                failed=self.failed_count, skipped=self.skipped_count,
             ),
         ]
         if failed_lines:
             body_lines.append("")
-            body_lines.append("Services en échec :")
+            body_lines.append(env._("Failed services:"))
             for line in failed_lines[:10]:
                 err = (line.error_message or "").strip().splitlines()[0] if line.error_message else ""
                 body_lines.append(
-                    f"- {line.service_name}" + (f" : {err[:80]}" if err else "")
+                    f"- {line.service_name}" + (f": {err[:80]}" if err else "")
                 )
             if len(failed_lines) > 10:
-                body_lines.append(f"… et {len(failed_lines) - 10} de plus")
+                body_lines.append(env._("… and %s more", len(failed_lines) - 10))
         if unverified_lines and not failed_lines:
             body_lines.append("")
-            body_lines.append("Archives non vérifiées :")
+            body_lines.append(env._("Unverified archives:"))
             for line in unverified_lines[:10]:
                 body_lines.append(f"- {line.service_name} ({line.backup_ratio})")
         Ntfy.send(
@@ -292,8 +302,10 @@ class HostingBackupRun(models.Model):
             self.write(
                 {"report_sent": True, "report_sent_date": fields.Datetime.now()}
             )
+            # Note au fil, lue par l'équipe d'hébergement (bouton ou travail planifié).
+            env = reader_env(self.env, company=self.company_id)
             self.message_post(
-                body="Courriel non envoyé (configuration : seulement en cas de problème).",
+                body=env._("Email not sent (setting: only when there is a problem)."),
                 subtype_xmlid="mail.mt_note",
             )
             self._maybe_send_ntfy_alert()
@@ -304,15 +316,20 @@ class HostingBackupRun(models.Model):
         if template:
             recipients = (ICP.get_param("hosting.backup_report_recipients") or "").strip()
             email_values = {"email_to": recipients} if recipients else None
-            template.send_mail(self.id, force_send=True, email_values=email_values)
+            # Gabarit sans champ `lang` : il se rendrait dans la langue du contexte
+            # (OdooBot au travail planifié). Lu par l'équipe d'hébergement :
+            # langue de la société de l'exécution.
+            template.with_context(
+                lang=reader_lang(self.env, company=self.company_id)
+            ).send_mail(self.id, force_send=True, email_values=email_values)
             self.write(
                 {"report_sent": True, "report_sent_date": fields.Datetime.now()}
             )
+            env = reader_env(self.env, company=self.company_id)
             self.message_post(
-                body=(
-                    f"Rapport de sauvegarde envoyé à "
-                    f"<strong>{recipients or template.email_to or '?'}</strong>."
-                ),
+                # Markup : le corps str était échappé (balises visibles au fil).
+                body=Markup(env._("Backup report sent to <strong>%s</strong>."))
+                % (recipients or template.email_to or "?"),
                 subtype_xmlid="mail.mt_note",
             )
         self._maybe_send_ntfy_alert()
@@ -363,7 +380,9 @@ class HostingBackupRun(models.Model):
                 continue
             seen.add(key)
             run_label = run.name or run.hostname or str(run.id)
-            run_host = run.hostname or "N/D"
+            # Alerte lue par l'équipe d'hébergement : langue de la société du run.
+            env = reader_env(self.env, company=run.company_id)
+            run_host = run.hostname or env._("N/A")
             try:
                 if run.action_send_report():
                     sent += 1
@@ -376,12 +395,12 @@ class HostingBackupRun(models.Model):
                 # pour qu'un échec persistant ne reste pas silencieux.
                 try:
                     self.env["hosting.ntfy"].send(
-                        title=f"RAPPORT SAUVEGARDE : échec d'envoi ({run_label})",
-                        body=(
-                            f"Hôte : {run_host}\n"
-                            f"L'envoi du courriel de rapport a échoué : "
-                            f"{str(exc)[:200]}\n"
-                            f"Nouvel essai au prochain passage horaire."
+                        title=env._("BACKUP REPORT: sending failed (%s)", run_label),
+                        body=env._(
+                            "Host: %(host)s\n"
+                            "Sending the report email failed: %(error)s\n"
+                            "Retrying on the next hourly pass.",
+                            host=run_host, error=str(exc)[:200],
                         ),
                         priority="high",
                         tags="floppy_disk,email,warning",
@@ -401,12 +420,12 @@ class HostingBackupLine(models.Model):
     """Représente une sauvegarde individuelle de service dans une exécution de sauvegarde."""
 
     _name = "hosting.backup.line"
-    _description = "Ligne de sauvegarde"
+    _description = "Backup line"
     _order = "run_id desc, service_name"
 
     run_id = fields.Many2one(
         comodel_name="hosting.backup.run",
-        string="Exécution de sauvegarde",
+        string="Backup run",
         required=True,
         ondelete="cascade",
     )
@@ -416,39 +435,39 @@ class HostingBackupLine(models.Model):
     )
     status = fields.Selection(
         selection=[
-            ("success", "Réussi"),
-            ("partial", "Partiel"),
-            ("failed", "Échoué"),
-            ("skipped", "Ignoré"),
+            ("success", "Successful"),
+            ("partial", "Partial"),
+            ("failed", "Failed"),
+            ("skipped", "Skipped"),
         ],
-        string="État",
+        string="State",
         required=True,
     )
     duration = fields.Char(
-        string="Durée",
+        string="Duration",
     )
     error_message = fields.Text(
-        string="Message d'erreur",
+        string="Error message",
     )
     container_count = fields.Integer(
-        string="Conteneurs attendus",
-        help="Nombre de conteneurs Docker attendus pour la sauvegarde",
+        string="Expected containers",
+        help="Number of Docker containers expected for the backup",
         default=0,
     )
     verified_file_count = fields.Integer(
-        string="Archives vérifiées",
-        help="Nombre d'archives de sauvegarde vérifiées créées",
+        string="Verified archives",
+        help="Number of verified backup archives created",
         default=0,
     )
     file_ids = fields.One2many(
         comodel_name="hosting.backup.file",
         inverse_name="line_id",
-        string="Fichiers de sauvegarde",
+        string="Backup files",
     )
     snapshot_ids = fields.One2many(
         comodel_name="hosting.backup.snapshot",
         inverse_name="run_line_id",
-        string="Snapshots Restic",
+        string="Restic snapshots",
     )
     snapshot_count = fields.Integer(
         string="Snapshots",
@@ -460,27 +479,28 @@ class HostingBackupLine(models.Model):
         index=True,
     )
     exit_code = fields.Integer(
-        string="Code de sortie",
+        string="Exit code",
         default=0,
-        help="Code de sortie du script enfant (Restic). 0 = OK, autre = partial/failed",
+        help="Exit code of the child script (Restic). 0 = OK, other = "
+             "partial/failed",
     )
 
     # Champs calculés
     file_count = fields.Integer(
-        string="Fichiers",
+        string="Files",
         compute="_compute_file_count",
     )
     backup_ratio = fields.Char(
-        string="État de sauvegarde",
+        string="Backup state",
         compute="_compute_backup_ratio",
-        help="Ratio d'archives vérifiées par rapport aux conteneurs attendus",
+        help="Ratio of verified archives to expected containers",
     )
     total_size = fields.Char(
-        string="Taille totale",
+        string="Total size",
         compute="_compute_total_size",
     )
     all_verified = fields.Boolean(
-        string="Tous vérifiés",
+        string="All verified",
         compute="_compute_all_verified",
     )
 
@@ -539,26 +559,26 @@ class HostingBackupFile(models.Model):
     """Représente un fichier de sauvegarde individuel."""
 
     _name = "hosting.backup.file"
-    _description = "Fichier de sauvegarde"
+    _description = "Backup file"
     _order = "line_id, name"
 
     line_id = fields.Many2one(
         comodel_name="hosting.backup.line",
-        string="Ligne de sauvegarde",
+        string="Backup line",
         required=True,
         ondelete="cascade",
     )
     name = fields.Char(
-        string="Nom de fichier",
+        string="File name",
         required=True,
     )
     size = fields.Char(
-        string="Taille",
+        string="Size",
     )
     checksum = fields.Char(
-        string="Somme de contrôle SHA256",
+        string="SHA256 checksum",
     )
     verified = fields.Boolean(
-        string="Vérifié",
+        string="Verified",
         default=False,
     )

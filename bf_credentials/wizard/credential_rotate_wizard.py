@@ -1,4 +1,4 @@
-from markupsafe import escape
+from markupsafe import Markup
 
 from odoo import api, fields, models, _
 
@@ -6,46 +6,46 @@ from odoo import api, fields, models, _
 class ProjectCredentialRotateWizard(models.TransientModel):
     """Assistant pour la rotation de mots de passe d'identifiants avec piste d'audit."""
     _name = 'project.credential.rotate.wizard'
-    _description = 'Rotation de mot de passe'
+    _description = "Password rotation"
 
     credential_id = fields.Many2one(
         'project.credential',
-        string='Identifiant',
+        string="Credential",
         required=True,
         readonly=True,
     )
     credential_name = fields.Char(
         related='credential_id.name',
-        string="Nom de l'identifiant",
+        string="Credential name",
         readonly=True,
     )
     project_id = fields.Many2one(
         related='credential_id.project_id',
-        string='Projet',
+        string="Project",
         readonly=True,
     )
     current_password = fields.Char(
-        string='Mot de passe actuel',
+        string="Current password",
         compute='_compute_current_password',
     )
     new_password = fields.Char(
-        string='Nouveau mot de passe',
+        string="New password",
         required=True,
     )
     confirm_password = fields.Char(
-        string='Confirmer le mot de passe',
+        string="Confirm password",
         required=True,
     )
     rotation_reason = fields.Selection([
-        ('scheduled', 'Rotation planifiée'),
-        ('security', 'Incident de sécurité'),
-        ('compromise', 'Compromission potentielle'),
-        ('policy', 'Exigence de politique'),
-        ('other', 'Autre'),
-    ], string='Raison', required=True, default='scheduled')
+        ('scheduled', "Scheduled rotation"),
+        ('security', "Security incident"),
+        ('compromise', "Potential compromise"),
+        ('policy', "Policy requirement"),
+        ('other', "Other"),
+    ], string="Reason", required=True, default='scheduled')
     notes = fields.Text(
         string='Notes',
-        help='Notes supplémentaires sur cette rotation de mot de passe',
+        help="Additional notes on this password rotation",
     )
 
     @api.depends('credential_id')
@@ -62,10 +62,10 @@ class ProjectCredentialRotateWizard(models.TransientModel):
         self.ensure_one()
 
         if self.new_password != self.confirm_password:
-            raise models.ValidationError(_('Les mots de passe ne correspondent pas.'))
+            raise models.ValidationError(self.env._("The passwords do not match."))
 
         if not self.new_password:
-            raise models.ValidationError(_('Le nouveau mot de passe ne peut pas être vide.'))
+            raise models.ValidationError(self.env._("The new password cannot be empty."))
 
         credential = self.credential_id
 
@@ -77,12 +77,15 @@ class ProjectCredentialRotateWizard(models.TransientModel):
         })
 
         # Journaliser la rotation dans le chatter
-        reason_label = dict(self._fields['rotation_reason'].selection).get(
-            self.rotation_reason, self.rotation_reason
-        )
-        body = _('Mot de passe changé.<br/><b>Raison :</b> %s') % reason_label
+        # Libellé dans la langue de l'usager (`_description_selection`, pas la
+        # source de `selection`), et corps en Markup : un `str` serait échappé
+        # au fil et montrerait les balises. Le `%` échappe les valeurs.
+        reason_label = dict(
+            self._fields['rotation_reason']._description_selection(self.env)
+        ).get(self.rotation_reason, self.rotation_reason)
+        body = Markup(self.env._("Password changed.<br/><b>Reason:</b> %s")) % reason_label
         if self.notes:
-            body += _('<br/><b>Notes :</b> %s') % escape(self.notes)
+            body += Markup(self.env._("<br/><b>Notes:</b> %s")) % self.notes
 
         credential.message_post(
             body=body,

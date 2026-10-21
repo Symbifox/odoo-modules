@@ -101,116 +101,121 @@ class NextcloudDocumentConfig(models.Model):
     _inherit = "nextcloud.document.config"
 
     browser_root_prefix = fields.Char(
-        string="Prefixe racine (navigateur)",
+        string="Root prefix (browser)",
         default="/",
-        help="Tout chemin atteignable depuis le navigateur de fichiers embarque "
-        "doit etre sous ce prefixe (ex: /Entreprise/). Defense en profondeur en plus "
-        "du dossier propre a chaque enregistrement.",
+        help="Every path reachable from the embedded file browser must be "
+             "under this prefix (e.g. /Company/). Defense in depth on top "
+             "of each record's own folder.",
     )
 
-    # Dossiers clients (18.0.4.2.0). Par exemple, un dossier par client sous
-    # /Entreprise/(Clients)/, un sous-dossier de (PROJETS) par projet.
+    # Client folders (18.0.4.2.0). For example, one folder per client under
+    # /Company/(Clients)/, one subfolder of (PROJETS) per project.
     nc_clients_root = fields.Char(
-        string="Racine des dossiers clients",
-        help="Dossier Nextcloud qui contient un dossier par client "
-        "(ex. /Entreprise/(Clients)/). On y choisit le dossier d'une entreprise. "
-        "Doit être sous le préfixe racine du navigateur.",
+        string="Client folders root",
+        help="Nextcloud folder holding one folder per client (e.g. "
+             "/Company/(Clients)/). A company's folder is chosen there. "
+             "Must be under the browser's root prefix.",
     )
     nc_projects_subfolder = fields.Char(
-        string="Sous-dossier des projets",
+        string="Projects subfolder",
         default="(PROJETS)",
-        help="Nom du sous-dossier, dans chaque dossier client, qui contient un "
-        "dossier par projet. On y choisit le dossier d'un projet. Vide : les "
-        "projets se choisissent directement dans le dossier du client.",
+        help="Name of the subfolder, in each client folder, holding one "
+             "folder per project. A project's folder is chosen there. "
+             "Empty: projects are chosen directly in the client's folder.",
     )
 
-    # Création d'un dossier client depuis la fiche (18.0.4.3.0).
+    # Creating a client folder from the record (18.0.4.3.0).
     nc_client_template = fields.Char(
-        string="Gabarit de dossier client",
-        help="Dossier Nextcloud recopié pour créer le dossier d'un nouveau client "
-        "(ex. /Entreprise/(Clients)/(DOSSIER TYPE)). Vide : pas de création depuis Odoo.",
+        string="Client folder template",
+        help="Nextcloud folder copied to create a new client's folder "
+             "(e.g. /Company/(Clients)/(TEMPLATE FOLDER)). Empty: no "
+             "creation from Odoo.",
     )
     nc_client_name_pattern = fields.Char(
-        string="Nom d'un nouveau dossier client",
+        string="New client folder name",
         default="{NNN} - {client}",
-        help="{NNN} : numéro suivant, sur autant de chiffres que de N (au moins). "
-        "{client} : nom de l'entreprise, nettoyé des caractères que Windows refuse.",
+        help="{NNN}: next number, on at least as many digits as there are "
+             "Ns. {client}: the company name, cleaned of the characters "
+             "Windows refuses.",
     )
 
     nc_open_extensions = fields.Char(
-        string="Extensions ouvrant Nextcloud",
+        string="Extensions opening Nextcloud",
         default="xlsx,ods,csv,docx,odt,pptx,odp,xls,doc,ppt",
-        help="Extensions (separees par des virgules) dont le clic ouvre le fichier "
-        "directement dans Nextcloud (ex. Collabora) plutot que dans l'apercu integre.",
+        help="Extensions (comma-separated) whose click opens the file "
+             "directly in Nextcloud (e.g. Collabora) rather than in the "
+             "built-in preview.",
     )
 
     nc_folder_color = fields.Char(
-        string="Couleur des dossiers",
+        string="Folder color",
         default="#2E3132",
-        help="Couleur (hex) des icones de dossier dans le navigateur. "
-        "Defaut: anthracite. Mettre la couleur d'accent (#29ABE2) pour du contraste.",
+        help="Color (hex) of the folder icons in the browser. Default: "
+             "charcoal. Set the accent color (#29ABE2) for contrast.",
     )
 
     nc_panel_width_pct = fields.Integer(
-        string="Largeur du panneau (%)",
+        string="Panel width (%)",
         default=80,
-        help="Largeur, en pourcentage de la fenetre, du panneau embarque ouvert "
-        "depuis la barre systeme. Valeur de depart seulement: chaque personne "
-        "peut ensuite redimensionner le panneau, et sa preference a priorite.",
+        help="Width, as a percentage of the window, of the embedded panel "
+             "opened from the systray. Starting value only: each person "
+             "can then resize the panel, and their preference wins.",
     )
 
     nc_panel_height_pct = fields.Integer(
-        string="Hauteur du panneau (%)",
+        string="Panel height (%)",
         default=80,
-        help="Hauteur, en pourcentage de la fenetre, du panneau embarque ouvert "
-        "depuis la barre systeme. Meme regle que la largeur: c'est une valeur de "
-        "depart, que la preference de chacun remplace.",
+        help="Height, as a percentage of the window, of the embedded "
+             "panel opened from the systray. Same rule as the width: it "
+             "is a starting value, replaced by each person's preference.",
     )
 
     # Named after the 4.0.2 check, which compared email addresses. The name stays
     # so that configurations keep the choice already made on them.
     nc_require_email_match = fields.Boolean(
-        string="Exiger l'identifiant de la personne",
+        string="Require the person's login",
         default=True,
-        help="Quand une personne connecte son compte Nextcloud, le compte approuve "
-        "(son identifiant ou son adresse courriel Nextcloud) doit correspondre a "
-        "l'identifiant de son utilisateur Odoo, que seul un administrateur peut "
-        "changer. Sans cette verification, une page de connexion transmise a "
-        "quelqu'un d'autre connecterait l'expediteur aux fichiers du destinataire.",
+        help="When a person connects their Nextcloud account, the "
+             "approved account (their Nextcloud login or email address) "
+             "must match the login of their Odoo user, which only an "
+             "administrator can change. Without this check, a login page "
+             "forwarded to someone else would connect the sender to the "
+             "recipient's files.",
     )
 
     nc_link_hosts = fields.Char(
-        string="Autres adresses de ce Nextcloud",
-        help="Noms d'hôte supplémentaires, séparés par des virgules, sous lesquels ce "
-        "même Nextcloud est joint (par exemple un second domaine). Les liens des "
-        "chatters qui les utilisent sont reconnus dans « Fichiers liés ». L'adresse "
-        "de la configuration est toujours reconnue.",
+        string="Other addresses of this Nextcloud",
+        help="Additional hostnames, comma-separated, under which this "
+             "same Nextcloud is reached (for example a second domain). "
+             "Chatter links that use them are recognized in \"Linked "
+             "Nextcloud files\". The configuration's address is always "
+             "recognized.",
     )
 
     nc_user_credential_ids = fields.One2many(
         "bf.nc.user.credential",
         "config_id",
-        string="Connexions des personnes",
+        string="People's connections",
         groups="base.group_system",
     )
 
     share_preset_ids = fields.One2many(
         "nextcloud.share.preset",
         "config_id",
-        string="Prereglages de partage",
+        string="Share presets",
     )
 
     @api.constrains("nc_panel_width_pct", "nc_panel_height_pct")
     def _check_nc_panel_size(self):
         for cfg in self:
             for value, dim in (
-                (cfg.nc_panel_width_pct, _("largeur")),
-                (cfg.nc_panel_height_pct, _("hauteur")),
+                (cfg.nc_panel_width_pct, _("width")),
+                (cfg.nc_panel_height_pct, _("height")),
             ):
                 if value and not 40 <= value <= 100:
                     raise ValidationError(
                         _(
-                            "La %(dim)s du panneau doit etre comprise entre 40 et 100.",
+                            "The panel %(dim)s must be between 40 and 100.",
                             dim=dim,
                         )
                     )
@@ -222,7 +227,8 @@ class NextcloudDocumentConfig(models.Model):
             if root:
                 clean = posixpath.normpath(_sanitize_nc_path(root))
                 if clean == "/":
-                    raise ValidationError(_("La racine des dossiers clients ne peut pas être '/'."))
+                    raise ValidationError(_("The client folders root "
+                                            "cannot be '/'."))
                 prefix = (cfg.browser_root_prefix or "").strip()
                 if prefix not in ("", "/"):
                     _validate_path_under_prefix(clean, _sanitize_nc_path(prefix))
@@ -231,7 +237,7 @@ class NextcloudDocumentConfig(models.Model):
                 _sanitize_nc_path("/" + sub)  # %XX and control characters
             if sub and ("/" in sub or "\\" in sub or sub in (".", "..")):
                 raise ValidationError(
-                    _("Le sous-dossier des projets est un nom de dossier, pas un chemin : %s") % sub
+                    _("The projects subfolder is a folder name, not a path: %s") % sub
                 )
 
     @api.constrains("nc_client_template", "nc_client_name_pattern", "nc_clients_root", "browser_root_prefix")
@@ -242,19 +248,23 @@ class NextcloudDocumentConfig(models.Model):
                 clean = posixpath.normpath(_sanitize_nc_path(tpl))
                 root = cfg._nc_clients_root_path()
                 if not root:
-                    raise ValidationError(_("Le gabarit demande une racine des dossiers clients."))
+                    raise ValidationError(_("The template requires a "
+                                            "client folders root."))
                 prefix = (cfg.browser_root_prefix or "").strip()
                 if prefix not in ("", "/"):
                     _validate_path_under_prefix(clean, _sanitize_nc_path(prefix))
             pattern = cfg.nc_client_name_pattern or ""
             if pattern and "{client}" not in pattern:
-                raise ValidationError(_("Le nom d'un nouveau dossier client doit contenir {client}."))
+                raise ValidationError(_("A new client folder name must "
+                                        "contain {client}."))
             if "/" in pattern or "\\" in pattern:
-                raise ValidationError(_("Le nom d'un nouveau dossier client ne peut pas contenir de « / »."))
+                raise ValidationError(_("A new client folder name cannot "
+                                        "contain \"/\"."))
             if pattern and not nc_names.readable(pattern):
                 raise ValidationError(_(
-                    "Ce nom ne pourrait pas être relu (un caractère que Windows refuse ?) : "
-                    "la numérotation repartirait toujours à 1."
+                    "This name could not be read back (a character "
+                    "Windows refuses?): numbering would always restart at "
+                    "1."
                 ))
 
     def _nc_client_template_path(self):
@@ -286,7 +296,7 @@ class NextcloudDocumentConfig(models.Model):
         # The key arrives in the context, and an RPC client chooses its own
         # context: it may only ever name the caller.
         if uid != self.env.uid:
-            raise AccessError(_("Identite Nextcloud refusee."))
+            raise AccessError(_("Nextcloud identity refused."))
         self.ensure_one()
         cred = self.env["bf.nc.user.credential"].sudo().search(
             [
@@ -300,7 +310,7 @@ class NextcloudDocumentConfig(models.Model):
             # No connection, or one issued by another server: its app password
             # is never sent to this one.
             raise NcNotConnected(
-                _("Connectez votre compte Nextcloud pour parcourir ces fichiers.")
+                _("Connect your Nextcloud account to browse these files.")
             )
         return cred
 
@@ -317,8 +327,8 @@ class NextcloudDocumentConfig(models.Model):
             # A path naming one account would send the person's requests to
             # that account's files.
             raise UserError(_(
-                "Le chemin WebDAV de la configuration doit se terminer par /files "
-                "pour que chaque personne utilise son propre compte."
+                "The configuration's WebDAV path must end with /files so "
+                "that each person uses their own account."
             ))
         # An account id may carry '@' or a space: quote it as one segment.
         path = path.rstrip("/") + "/" + url_quote(cred.nc_user_id, safe="") + "/"
@@ -331,20 +341,20 @@ class NextcloudDocumentConfig(models.Model):
         password = self._decrypt_value(cred.app_password_encrypted)
         if not password:
             raise NcTokenRejected(
-                _("Votre connexion Nextcloud est illisible. Reconnectez-vous.")
+                _("Your Nextcloud connection is unreadable. Reconnect.")
             )
         return NcPersonAuth(cred.nc_login, password, {
             "rejected": _(
-                "Nextcloud a refuse votre connexion : elle a ete revoquee. "
-                "Reconnectez votre compte."
+                "Nextcloud refused your connection: it was revoked. "
+                "Reconnect your account."
             ),
             "unavailable": _(
-                "Nextcloud refuse l'acces a votre compte pour le moment "
-                "(compte desactive, ou serveur en maintenance)."
+                "Nextcloud refuses access to your account for now "
+                "(account disabled, or server under maintenance)."
             ),
             "not_found": _(
-                "Ce dossier est introuvable dans votre Nextcloud, "
-                "ou il ne vous est pas partage."
+                "This folder cannot be found in your Nextcloud, or it is "
+                "not shared with you."
             ),
         })
 
@@ -406,16 +416,30 @@ class NextcloudDocumentConfig(models.Model):
         ]
 
     def _ensure_share_presets(self):
-        """Seed the two default presets (Interne / Externe) once per config."""
+        """Seed the two default presets (Internal / External) once per config.
+
+        Their names are stored and shared by everyone who browses with this
+        configuration: written in the language of its company, not in the
+        language of whoever happens to open the browser first.
+        """
         Preset = self.env["nextcloud.share.preset"].sudo()
         for cfg in self:
             if cfg.share_preset_ids:
                 continue
+            # Only an installed language: a company may keep the code of one
+            # deactivated since.
+            installed = [code for code, _name in self.env["res.lang"].get_installed()]
+            lang = next(
+                (code for code in (cfg.company_id.partner_id.lang, self.env.lang, self.env.user.lang)
+                 if code and code in installed),
+                "en_US" if "en_US" in installed or not installed else installed[0],
+            )
+            env_lang = cfg.with_context(lang=lang).env
             Preset.create([
                 {
                     "config_id": cfg.id,
                     "sequence": 10,
-                    "name": "Interne",
+                    "name": env_lang._("Internal"),
                     "access": "read_write",
                     "expiry_days": 0,
                     "password_protected": False,
@@ -423,7 +447,7 @@ class NextcloudDocumentConfig(models.Model):
                 {
                     "config_id": cfg.id,
                     "sequence": 20,
-                    "name": "Externe",
+                    "name": env_lang._("External"),
                     "access": "read",
                     "expiry_days": cfg.default_share_expiry_days or 30,
                     "password_protected": False,
@@ -445,11 +469,11 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
-            raise UserError(_("Erreur lors de la suppression: %s") % str(e))
+            raise UserError(_("Error while deleting: %s") % str(e))
 
         # 404 = already gone, treat as success (idempotent).
         if resp.status_code not in (200, 204, 404):
-            raise UserError(_("Erreur WebDAV DELETE: HTTP %s") % resp.status_code)
+            raise UserError(_("WebDAV DELETE error: HTTP %s") % resp.status_code)
         return resp
 
     def _webdav_put_new(self, path, content, content_type="application/octet-stream"):
@@ -473,11 +497,11 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
-            raise UserError(_("Erreur lors du dépôt : %s") % str(e))
+            raise UserError(_("Error while storing the file: %s") % str(e))
         if resp.status_code == 412:
             return False
         if resp.status_code not in (200, 201, 204):
-            raise UserError(_("Nextcloud a refusé le dépôt : HTTP %s") % resp.status_code)
+            raise UserError(_("Nextcloud refused the file: HTTP %s") % resp.status_code)
         return True
 
     def _webdav_copy(self, src_path, dst_path):
@@ -499,13 +523,15 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
-            raise UserError(_("Erreur lors de la copie : %s") % str(e))
+            raise UserError(_("Error while copying: %s") % str(e))
         if resp.status_code == 412:
-            raise UserError(_("Un dossier portant ce nom existe déjà à destination."))
+            raise UserError(_("A folder with this name already exists at "
+                              "the destination."))
         if resp.status_code == 404:
-            raise UserError(_("Le gabarit est introuvable dans votre Nextcloud : %s") % src_path)
+            raise UserError(_("The template cannot be found in your "
+                              "Nextcloud: %s") % src_path)
         if resp.status_code not in (201, 204):
-            raise UserError(_("Erreur WebDAV COPY : HTTP %s") % resp.status_code)
+            raise UserError(_("WebDAV COPY error: HTTP %s") % resp.status_code)
         return resp
 
     def _webdav_move(self, src_path, dst_path):
@@ -530,14 +556,15 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
-            raise UserError(_("Erreur lors du deplacement: %s") % str(e))
+            raise UserError(_("Error while moving: %s") % str(e))
 
         if resp.status_code == 412:
             raise UserError(
-                _("Un fichier ou dossier portant ce nom existe deja a destination.")
+                _("A file or folder with this name already exists at the "
+                  "destination.")
             )
         if resp.status_code not in (201, 204):
-            raise UserError(_("Erreur WebDAV MOVE: HTTP %s") % resp.status_code)
+            raise UserError(_("WebDAV MOVE error: HTTP %s") % resp.status_code)
         return resp
 
     # ------------------------------------------------------------------
@@ -578,8 +605,8 @@ class NextcloudDocumentConfig(models.Model):
         cut = url.rfind("/files/")
         if cut < 0:
             raise UserError(_(
-                "Le chemin WebDAV de la configuration doit se terminer par /files "
-                "pour que la recherche sache dans quels fichiers chercher."
+                "The configuration's WebDAV path must end with /files so "
+                "that the search knows which files to search."
             ))
         account = url_unquote(url[cut + len("/files/"):])
         return url[: cut + 1], "/files/" + account
@@ -624,15 +651,15 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.Timeout:
-            raise UserError(_("La recherche Nextcloud a pris trop de temps (30 s)."))
+            raise UserError(_("The Nextcloud search took too long (30 s)."))
         except requests.RequestException as e:
-            raise UserError(_("Erreur lors de la recherche Nextcloud : %s") % str(e))
+            raise UserError(_("Error during the Nextcloud search: %s") % str(e))
         if resp.status_code == 404:
             # The scope itself does not exist in this account.
             return []
         if resp.status_code != 207:
             _logger.warning("SEARCH %s returned %s", scope_path, resp.status_code)
-            raise UserError(_("Erreur de recherche Nextcloud : HTTP %s") % resp.status_code)
+            raise UserError(_("Nextcloud search error: HTTP %s") % resp.status_code)
         return self._parse_propfind_response(resp.text, scope_path)
 
     # ------------------------------------------------------------------
@@ -652,14 +679,14 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
-            raise UserError(_("Erreur OCS Nextcloud : %s") % str(e))
+            raise UserError(_("Nextcloud OCS error: %s") % str(e))
 
     @staticmethod
     def _ocs_data(resp):
         try:
             return resp.json()["ocs"]["data"]
         except (ValueError, KeyError, TypeError):
-            raise UserError(_("Réponse illisible de Nextcloud (partages)."))
+            raise UserError(_("Unreadable answer from Nextcloud (shares)."))
 
     def _ocs_shares(self, path=None, subfiles=False):
         """Shares on the caller's files: every one, or those of `path`.
@@ -678,7 +705,7 @@ class NextcloudDocumentConfig(models.Model):
         if resp.status_code == 404:
             return []  # the path is not in this account
         if resp.status_code != 200:
-            raise UserError(_("Erreur OCS (liste des partages) : HTTP %s") % resp.status_code)
+            raise UserError(_("OCS error (share list): HTTP %s") % resp.status_code)
         data = self._ocs_data(resp)
         return [_share_payload(d) for d in data if isinstance(d, dict) and d.get("id")]
 
@@ -689,7 +716,7 @@ class NextcloudDocumentConfig(models.Model):
         if resp.status_code in (403, 404):
             return None
         if resp.status_code != 200:
-            raise UserError(_("Erreur OCS (partage) : HTTP %s") % resp.status_code)
+            raise UserError(_("OCS error (share): HTTP %s") % resp.status_code)
         data = self._ocs_data(resp)
         if isinstance(data, list):
             data = data[0] if data else None
@@ -700,7 +727,7 @@ class NextcloudDocumentConfig(models.Model):
         if resp.status_code == 404:
             return False  # already gone
         if resp.status_code == 403:
-            raise UserError(_("Nextcloud refuse que vous retiriez ce partage."))
+            raise UserError(_("Nextcloud does not let you remove this share."))
         if resp.status_code != 200:
-            raise UserError(_("Erreur OCS (retrait du partage) : HTTP %s") % resp.status_code)
+            raise UserError(_("OCS error (share removal): HTTP %s") % resp.status_code)
         return True

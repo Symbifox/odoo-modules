@@ -3,7 +3,11 @@
 import logging
 from datetime import date as date_type, timedelta
 
+from markupsafe import Markup
+
 from odoo import api, fields, models
+
+from .hosting_lang import reader_env, user_env
 
 DMARC_DOH_ENDPOINT = "https://cloudflare-dns.com/dns-query"
 DMARC_PROVIDER_LABEL = "Cloudflare DoH"
@@ -13,16 +17,16 @@ _logger = logging.getLogger(__name__)
 
 class HostingDomain(models.Model):
     _name = "hosting.domain"
-    _description = "Domaine"
+    _description = "Domain"
     _order = "date_expiration asc, name"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     # Identity
     name = fields.Char(
-        string="Nom de domaine",
+        string="Domain name",
         required=True,
         tracking=True,
-        help="FQDN du domaine (ex. : exemple.com)",
+        help="Domain FQDN (e.g. example.com)",
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
@@ -33,40 +37,40 @@ class HostingDomain(models.Model):
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Responsable",
+        string="Assignee",
         default=lambda self: self.env.user,
         tracking=True,
     )
 
     # Registrar / DNS
     registrar = fields.Char(
-        string="Registraire",
+        string="Registrar",
         tracking=True,
     )
     dns_provider = fields.Char(
-        string="Fournisseur DNS",
+        string="DNS provider",
         tracking=True,
     )
 
     # Domain dates
     date_registration = fields.Date(
-        string="Date d'enregistrement",
+        string="Registration date",
     )
     date_expiration = fields.Date(
-        string="Date d'expiration",
+        string="Expiry date",
         tracking=True,
     )
     days_until_expiration = fields.Integer(
-        string="Jours avant expiration",
+        string="Days until expiry",
         compute="_compute_days_until_expiration",
     )
     auto_renew = fields.Boolean(
-        string="Renouvellement automatique",
+        string="Automatic renewal",
         default=False,
         tracking=True,
     )
     domain_activity_created = fields.Boolean(
-        string="Activite d'expiration creee",
+        string="Expiration activity created",
         default=False,
         copy=False,
     )
@@ -74,52 +78,52 @@ class HostingDomain(models.Model):
     # SSL
     ssl_type = fields.Selection(
         selection=[
-            ("none", "Aucun"),
+            ("none", "None"),
             ("letsencrypt", "Let's Encrypt"),
             ("commercial", "Commercial"),
-            ("self_signed", "Auto-signe"),
+            ("self_signed", "Self-signed"),
         ],
-        string="Type SSL",
+        string="SSL type",
         default="none",
         tracking=True,
     )
     ssl_issuer = fields.Char(
-        string="Emetteur SSL",
+        string="SSL issuer",
     )
     ssl_expiry_date = fields.Date(
-        string="Expiration SSL",
+        string="SSL expiration",
         tracking=True,
     )
     days_until_ssl_expiry = fields.Integer(
-        string="Jours avant expiration SSL",
+        string="Days until SSL expiration",
         compute="_compute_days_until_ssl_expiry",
     )
     ssl_activity_created = fields.Boolean(
-        string="Activite SSL creee",
+        string="SSL activity created",
         default=False,
         copy=False,
     )
 
     # Cost
     annual_cost = fields.Float(
-        string="Cout annuel",
+        string="Annual cost",
         digits=(10, 2),
     )
     currency_id = fields.Many2one(
         comodel_name="res.currency",
-        string="Devise",
+        string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
 
     # State
     state = fields.Selection(
         selection=[
-            ("active", "Actif"),
-            ("expiring_soon", "Expire bientot"),
-            ("expired", "Expire"),
-            ("transferred", "Transfere"),
+            ("active", "Active"),
+            ("expiring_soon", "Expiring soon"),
+            ("expired", "Expired"),
+            ("transferred", "Transferred"),
         ],
-        string="Etat",
+        string="State",
         default="active",
         required=True,
         tracking=True,
@@ -132,16 +136,17 @@ class HostingDomain(models.Model):
         string="Services",
     )
     service_count = fields.Integer(
-        string="Nombre de services",
+        string="Service count",
         compute="_compute_service_count",
     )
 
     # DMARC monitoring
     dmarc_managed = fields.Boolean(
-        string="DMARC suivi",
+        string="DMARC monitored",
         default=False,
         tracking=True,
-        help="Activer la surveillance DMARC pour ce domaine (vérification quotidienne du TXT _dmarc et alerte sur drift).",
+        help="Enable DMARC monitoring for this domain (daily check of the "
+             "_dmarc TXT record and alert on drift).",
     )
     dmarc_policy = fields.Selection(
         selection=[
@@ -149,51 +154,54 @@ class HostingDomain(models.Model):
             ("quarantine", "quarantine"),
             ("reject", "reject"),
         ],
-        string="Policy DMARC attendue",
+        string="Expected DMARC policy",
         tracking=True,
     )
     dmarc_rua = fields.Char(
-        string="Destinataire RUA attendu",
+        string="Expected RUA recipient",
         tracking=True,
-        help="Adresse courriel attendue pour les rapports agrégés (sans le préfixe 'mailto:').",
+        help="Expected email address for aggregate reports (without the "
+             "'mailto:' prefix).",
     )
     dmarc_pct = fields.Integer(
-        string="Pourcentage (pct)",
+        string="Percentage (pct)",
         default=100,
-        help="Pourcentage de messages soumis à la policy (1-100). 100 = défaut DMARC.",
+        help="Percentage of messages subject to the policy (1-100). 100 = "
+             "DMARC default.",
     )
     dmarc_dns_value_expected = fields.Char(
-        string="TXT DMARC attendu",
+        string="Expected DMARC TXT",
         compute="_compute_dmarc_dns_value_expected",
         store=True,
     )
     dmarc_dns_value_observed = fields.Char(
-        string="TXT DMARC observé",
+        string="Observed DMARC TXT",
         readonly=True,
         copy=False,
     )
     dmarc_last_dns_check = fields.Datetime(
-        string="Dernière vérification DNS",
+        string="Last DNS check",
         readonly=True,
         copy=False,
     )
     dmarc_drift = fields.Boolean(
-        string="Drift DMARC",
+        string="DMARC drift",
         compute="_compute_dmarc_drift",
         store=True,
     )
     dmarc_drift_notified = fields.Boolean(
-        string="Drift notifié",
+        string="Drift notified",
         default=False,
         copy=False,
     )
     dmarc_next_review_date = fields.Date(
-        string="Prochaine révision DMARC",
+        string="Next DMARC review",
         tracking=True,
-        help="Date pour réviser la policy (par exemple, passer de quarantine à reject).",
+        help="Date to review the policy (for example, move from "
+             "quarantine to reject).",
     )
     dmarc_review_activity_created = fields.Boolean(
-        string="Activité de révision créée",
+        string="Review activity created",
         default=False,
         copy=False,
     )
@@ -203,12 +211,12 @@ class HostingDomain(models.Model):
         string="Notes",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 
     _sql_constraints = [
-        ("name_uniq", "UNIQUE(name)", "Ce nom de domaine existe deja !"),
+        ("name_uniq", "UNIQUE(name)", "This domain name already exists!"),
     ]
 
     # ------------------------------------------------------------------
@@ -364,7 +372,7 @@ class HostingDomain(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Services - {self.name}",
+            "name": self.env._("Services - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("domain_id", "=", self.id)],
@@ -381,8 +389,10 @@ class HostingDomain(models.Model):
         """Force a DMARC DNS lookup for the selected domain(s) and post chatter."""
         for record in self:
             if not record.dmarc_managed:
+                env = reader_env(record.env)
                 record.message_post(
-                    body="<p>DMARC : suivi désactivé pour ce domaine, vérification ignorée.</p>",
+                    body=Markup("<p>%s</p>") % env._(
+                        "DMARC: monitoring disabled for this domain, check skipped."),
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
@@ -393,15 +403,18 @@ class HostingDomain(models.Model):
     def _dmarc_run_check(self, post_chatter=False):
         """Run a single DMARC DNS lookup for this record."""
         self.ensure_one()
+        # Notes au fil lues par l'équipe d'hébergement (bouton ou travail
+        # planifié) : langue de la société. Markup : un corps str est échappé.
+        env = reader_env(self.env)
         try:
             observed = self._dmarc_doh_lookup(self.name)
         except Exception as exc:
             _logger.warning("DMARC : échec lookup pour %s — %s", self.name, exc)
             if post_chatter:
                 self.message_post(
-                    body=(
-                        f"<p>DMARC : échec de la vérification DNS via "
-                        f"{DMARC_PROVIDER_LABEL} — {exc}</p>"
+                    body=Markup("<p>%s</p>") % env._(
+                        "DMARC: DNS check failed via %(provider)s — %(error)s",
+                        provider=DMARC_PROVIDER_LABEL, error=exc,
                     ),
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
@@ -415,19 +428,19 @@ class HostingDomain(models.Model):
         if post_chatter:
             if observed:
                 self.message_post(
-                    body=(
-                        f"<p>DMARC : TXT observé via {DMARC_PROVIDER_LABEL} — "
-                        f"<code>{observed}</code></p>"
-                    ),
+                    body=Markup(env._(
+                        "<p>DMARC: TXT observed via %(provider)s — "
+                        "<code>%(observed)s</code></p>"
+                    )) % {"provider": DMARC_PROVIDER_LABEL, "observed": observed},
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
             else:
                 self.message_post(
-                    body=(
-                        f"<p>DMARC : aucun enregistrement <code>_dmarc.{self.name}</code> "
-                        f"trouvé via {DMARC_PROVIDER_LABEL}.</p>"
-                    ),
+                    body=Markup(env._(
+                        "<p>DMARC: no <code>_dmarc.%(domain)s</code> record "
+                        "found via %(provider)s.</p>"
+                    )) % {"domain": self.name, "provider": DMARC_PROVIDER_LABEL},
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
@@ -435,18 +448,22 @@ class HostingDomain(models.Model):
         if not self.dmarc_drift and self.dmarc_drift_notified:
             self.dmarc_drift_notified = False
             self.message_post(
-                body="<p>DMARC : alignement rétabli avec la valeur attendue.</p>",
+                body=Markup("<p>%s</p>") % env._(
+                    "DMARC: alignment restored with the expected value."),
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
             )
         elif self.dmarc_drift and previous != (observed or ""):
             # Drift state changed — log it on the chatter even outside the cron
             self.message_post(
-                body=(
-                    f"<p>DMARC : drift détecté.<br/>"
-                    f"Attendu : <code>{self.dmarc_dns_value_expected}</code><br/>"
-                    f"Observé : <code>{observed or '(aucun TXT)'}</code></p>"
-                ),
+                body=Markup(env._(
+                    "<p>DMARC: drift detected.<br/>"
+                    "Expected: <code>%(expected)s</code><br/>"
+                    "Observed: <code>%(observed)s</code></p>"
+                )) % {
+                    "expected": self.dmarc_dns_value_expected,
+                    "observed": observed or env._("(no TXT)"),
+                },
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
             )
@@ -482,18 +499,23 @@ class HostingDomain(models.Model):
         )
 
         for domain in expiring_domains:
-            self.env["mail.activity"].create({
+            # Activité dans la langue de l'assigné, créée dans son env (objet de l'avis).
+            assignee = domain.user_id or self.env.user
+            aenv = user_env(self.env, assignee)
+            aenv["mail.activity"].create({
                 "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
                 "res_id": domain.id,
                 "activity_type_id": activity_type_domain.id if activity_type_domain else False,
-                "summary": f"Le domaine expire dans {domain.days_until_expiration} jours",
-                "note": (
-                    f"Le domaine {domain.name} pour {domain.partner_id.name} "
-                    f"expirera le {domain.date_expiration}. "
-                    f"Veuillez proceder au renouvellement."
+                "summary": aenv._(
+                    "Domain expires in %s days", domain.days_until_expiration),
+                "note": aenv._(
+                    "The domain %(domain)s for %(partner)s will expire on "
+                    "%(date)s. Please proceed with the renewal.",
+                    domain=domain.name, partner=domain.partner_id.name,
+                    date=domain.date_expiration,
                 ),
                 "date_deadline": domain.date_expiration,
-                "user_id": domain.user_id.id or self.env.user.id,
+                "user_id": assignee.id,
             })
             domain.domain_activity_created = True
             if domain.state == "active":
@@ -515,18 +537,22 @@ class HostingDomain(models.Model):
         )
 
         for domain in ssl_expiring:
-            self.env["mail.activity"].create({
+            assignee = domain.user_id or self.env.user
+            aenv = user_env(self.env, assignee)
+            aenv["mail.activity"].create({
                 "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
                 "res_id": domain.id,
                 "activity_type_id": activity_type_ssl.id if activity_type_ssl else False,
-                "summary": f"Certificat SSL expire dans {domain.days_until_ssl_expiry} jours",
-                "note": (
-                    f"Le certificat SSL pour {domain.name} "
-                    f"({domain.ssl_type}) expirera le {domain.ssl_expiry_date}. "
-                    f"Veuillez proceder au renouvellement."
+                "summary": aenv._(
+                    "SSL certificate expires in %s days", domain.days_until_ssl_expiry),
+                "note": aenv._(
+                    "The SSL certificate for %(domain)s (%(type)s) will expire on "
+                    "%(date)s. Please proceed with the renewal.",
+                    domain=domain.name, type=domain.ssl_type,
+                    date=domain.ssl_expiry_date,
                 ),
                 "date_deadline": domain.ssl_expiry_date,
-                "user_id": domain.user_id.id or self.env.user.id,
+                "user_id": assignee.id,
             })
             domain.ssl_activity_created = True
 
@@ -545,29 +571,40 @@ class HostingDomain(models.Model):
         # --- ntfy push summary for newly flagged expirations ---
         if expiring_domains or ssl_expiring or expired_domains:
             Ntfy = self.env["hosting.ntfy"]
+            # Alerte lue par l'équipe d'hébergement : langue de la société.
+            env = reader_env(self.env)
             body_lines = []
             if expired_domains:
-                body_lines.append(f"Domaines expirés : {len(expired_domains)}")
+                body_lines.append(env._("Expired domains: %s", len(expired_domains)))
                 for d in expired_domains[:5]:
                     body_lines.append(f"- {d.name} ({d.date_expiration})")
             if expiring_domains:
                 body_lines.append("")
-                body_lines.append(f"Domaines proches expiration : {len(expiring_domains)}")
+                body_lines.append(
+                    env._("Domains close to expiry: %s", len(expiring_domains)))
                 for d in expiring_domains[:5]:
-                    body_lines.append(
-                        f"- {d.name} — {d.days_until_expiration} j ({d.date_expiration})"
-                    )
+                    body_lines.append(env._(
+                        "- %(domain)s — %(days)s d (%(date)s)",
+                        domain=d.name, days=d.days_until_expiration,
+                        date=d.date_expiration,
+                    ))
             if ssl_expiring:
                 body_lines.append("")
-                body_lines.append(f"Certificats SSL proches expiration : {len(ssl_expiring)}")
+                body_lines.append(
+                    env._("SSL certificates close to expiry: %s", len(ssl_expiring)))
                 for d in ssl_expiring[:5]:
-                    body_lines.append(
-                        f"- {d.name} — {d.days_until_ssl_expiry} j ({d.ssl_expiry_date})"
-                    )
+                    body_lines.append(env._(
+                        "- %(domain)s — %(days)s d (%(date)s)",
+                        domain=d.name, days=d.days_until_ssl_expiry,
+                        date=d.ssl_expiry_date,
+                    ))
             has_expired = bool(expired_domains)
             Ntfy.send(
-                title=("DOMAINES/SSL : expirations détectées"
-                       + (" — domaines déjà expirés" if has_expired else "")),
+                title=(
+                    env._("DOMAINS/SSL: expirations detected — domains already expired")
+                    if has_expired
+                    else env._("DOMAINS/SSL: expirations detected")
+                ),
                 body="\n".join(body_lines),
                 priority="urgent" if has_expired else "high",
                 tags="lock,calendar",
@@ -596,32 +633,43 @@ class HostingDomain(models.Model):
             raise_if_not_found=False,
         )
 
+        # Notes au fil et alerte lues par l'équipe d'hébergement : langue de la société.
+        env = reader_env(self.env)
         for domain in domains:
             previous_drift = domain.dmarc_drift
             domain._dmarc_run_check(post_chatter=False)
+            assignee = domain.user_id or self.env.user
+            aenv = user_env(self.env, assignee)
             if domain.dmarc_drift and not domain.dmarc_drift_notified:
                 new_drifts |= domain
                 domain.message_post(
-                    body=(
-                        f"<p>DMARC : drift détecté lors de la vérification quotidienne.<br/>"
-                        f"Attendu : <code>{domain.dmarc_dns_value_expected}</code><br/>"
-                        f"Observé : <code>{domain.dmarc_dns_value_observed or '(aucun TXT)'}</code></p>"
-                    ),
+                    body=Markup(env._(
+                        "<p>DMARC: drift detected during the daily check.<br/>"
+                        "Expected: <code>%(expected)s</code><br/>"
+                        "Observed: <code>%(observed)s</code></p>"
+                    )) % {
+                        "expected": domain.dmarc_dns_value_expected,
+                        "observed": domain.dmarc_dns_value_observed or env._("(no TXT)"),
+                    },
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
                 if activity_type_drift:
-                    self.env["mail.activity"].create({
+                    # Activité dans la langue de l'assigné, créée dans son env.
+                    aenv["mail.activity"].create({
                         "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
                         "res_id": domain.id,
                         "activity_type_id": activity_type_drift.id,
-                        "summary": f"DMARC drift — {domain.name}",
-                        "note": (
-                            f"Attendu : {domain.dmarc_dns_value_expected}<br/>"
-                            f"Observé : {domain.dmarc_dns_value_observed or '(aucun TXT)'}"
-                        ),
+                        "summary": aenv._("DMARC drift — %s", domain.name),
+                        "note": Markup(aenv._(
+                            "Expected: %(expected)s<br/>Observed: %(observed)s"
+                        )) % {
+                            "expected": domain.dmarc_dns_value_expected,
+                            "observed": domain.dmarc_dns_value_observed
+                            or aenv._("(no TXT)"),
+                        },
                         "date_deadline": today,
-                        "user_id": domain.user_id.id or self.env.user.id,
+                        "user_id": assignee.id,
                     })
                 domain.dmarc_drift_notified = True
             elif not domain.dmarc_drift and previous_drift:
@@ -636,17 +684,17 @@ class HostingDomain(models.Model):
             ):
                 new_reviews |= domain
                 if activity_type_review:
-                    self.env["mail.activity"].create({
+                    aenv["mail.activity"].create({
                         "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
                         "res_id": domain.id,
                         "activity_type_id": activity_type_review.id,
-                        "summary": f"DMARC : révision policy — {domain.name}",
-                        "note": (
-                            f"Policy actuelle : {domain.dmarc_policy}. "
-                            f"Réviser pour durcissement (par ex. quarantine → reject)."
+                        "summary": aenv._("DMARC: policy review — %s", domain.name),
+                        "note": aenv._(
+                            "Current policy: %s. Review for hardening "
+                            "(e.g. quarantine → reject).", domain.dmarc_policy,
                         ),
                         "date_deadline": domain.dmarc_next_review_date,
-                        "user_id": domain.user_id.id or self.env.user.id,
+                        "user_id": assignee.id,
                     })
                 domain.dmarc_review_activity_created = True
 
@@ -654,20 +702,20 @@ class HostingDomain(models.Model):
             Ntfy = self.env["hosting.ntfy"]
             body_lines = []
             if new_drifts:
-                body_lines.append(f"Drifts DMARC : {len(new_drifts)}")
+                body_lines.append(env._("DMARC drifts: %s", len(new_drifts)))
                 for d in new_drifts[:5]:
                     body_lines.append(f"- {d.name} ({d.dmarc_policy})")
             if new_reviews:
                 if body_lines:
                     body_lines.append("")
-                body_lines.append(f"Révisions DMARC dues : {len(new_reviews)}")
+                body_lines.append(env._("DMARC reviews due: %s", len(new_reviews)))
                 for d in new_reviews[:5]:
                     body_lines.append(f"- {d.name} — {d.dmarc_next_review_date}")
             Ntfy.send(
                 title=(
-                    "DMARC : drift détecté"
+                    env._("DMARC: drift detected")
                     if new_drifts
-                    else "DMARC : révisions dues"
+                    else env._("DMARC: reviews due")
                 ),
                 body="\n".join(body_lines),
                 priority="high" if new_drifts else "default",
@@ -771,6 +819,8 @@ class HostingDomain(models.Model):
         # Search existing domain
         existing = self.search([("name", "=ilike", domain_name)], limit=1)
 
+        # Notes au fil d'un travail planifié : langue de la société.
+        env = reader_env(self.env)
         if existing:
             vals = {}
             if expiration_date and existing.date_expiration != expiration_date:
@@ -785,15 +835,17 @@ class HostingDomain(models.Model):
                 # Build chatter message
                 changes = []
                 if "date_expiration" in vals:
-                    changes.append(f"Expiration : {expiration_date}")
+                    changes.append(env._("Expiration: %s", expiration_date))
                 if "auto_renew" in vals:
                     changes.append(
-                        f"Renouvellement auto : {'Oui' if auto_renew else 'Non'}"
+                        env._("Auto-renewal: Yes") if auto_renew
+                        else env._("Auto-renewal: No")
                     )
                 if "registrar" in vals:
-                    changes.append(f"Registraire : {registrar}")
+                    changes.append(env._("Registrar: %s", registrar))
                 existing.message_post(
-                    body=f"<p>Synchronisation Cloudflare — {', '.join(changes)}</p>",
+                    body=Markup("<p>%s</p>") % env._(
+                        "Cloudflare sync — %s", ", ".join(changes)),
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
@@ -810,7 +862,8 @@ class HostingDomain(models.Model):
             "state": "active",
         })
         new_domain.message_post(
-            body=f"<p>Domaine cree automatiquement depuis la synchronisation Cloudflare.</p>",
+            body=Markup("<p>%s</p>") % env._(
+                "Domain created automatically by the Cloudflare sync."),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )

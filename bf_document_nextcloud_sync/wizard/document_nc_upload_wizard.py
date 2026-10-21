@@ -4,7 +4,7 @@ import mimetypes
 import posixpath
 from email.utils import parsedate_to_datetime
 
-from markupsafe import escape as html_escape
+from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -18,7 +18,7 @@ class DocumentNcUploadWizard(models.TransientModel):
     """Wizard to upload a new document version to Nextcloud."""
 
     _name = "document.nc.upload.wizard"
-    _description = "Televerser une version de document sur Nextcloud"
+    _description = "Upload a document version to Nextcloud"
 
     document_id = fields.Many2one(
         "project.document",
@@ -28,43 +28,43 @@ class DocumentNcUploadWizard(models.TransientModel):
     )
     nc_config_id = fields.Many2one(
         "nextcloud.document.config",
-        string="Configuration Nextcloud",
+        string="Nextcloud configuration",
         required=True,
     )
     nc_file_path = fields.Char(
-        string="Chemin de destination",
+        string="Destination path",
         required=True,
-        help="Chemin complet du fichier sur Nextcloud",
+        help="Full path of the file on Nextcloud",
     )
     file_data = fields.Binary(
-        string="Fichier",
+        string="File",
         required=True,
-        help="Fichier a televerser sur Nextcloud",
+        help="File to upload to Nextcloud",
     )
     file_name = fields.Char(
-        string="Nom du fichier",
+        string="File name",
     )
     version_number = fields.Char(
-        string="Numero de version",
-        help="Ex: 1.0, 2.1, etc.",
+        string="Version number",
+        help="E.g. 1.0, 2.1, etc.",
     )
     change_type = fields.Selection(
         [
-            ("major", "Majeure"),
-            ("minor", "Mineure"),
-            ("patch", "Correctif"),
-            ("editorial", "Editoriale"),
+            ("major", "Major"),
+            ("minor", "Minor"),
+            ("patch", "Patch"),
+            ("editorial", "Editorial"),
         ],
-        string="Type de modification",
+        string="Change type",
         default="minor",
     )
     change_summary = fields.Text(
-        string="Resume des modifications",
+        string="Change summary",
     )
     create_version_record = fields.Boolean(
-        string="Creer un enregistrement de version",
+        string="Create a version record",
         default=True,
-        help="Creer automatiquement un enregistrement project.document.version",
+        help="Automatically create a project.document.version record",
     )
 
     @api.constrains("nc_file_path")
@@ -89,7 +89,7 @@ class DocumentNcUploadWizard(models.TransientModel):
         self.ensure_one()
 
         if not self.file_data:
-            raise UserError(_("Veuillez selectionner un fichier."))
+            raise UserError(_("Please select a file."))
 
         config = self.nc_config_id
         path = _sanitize_nc_path(self.nc_file_path)
@@ -175,13 +175,14 @@ class DocumentNcUploadWizard(models.TransientModel):
 
             self.env["project.document.version"].create(version_vals)
 
-        # Post to document chatter
+        # Post to document chatter, in the language of the person uploading
+        # (a str body would be escaped: Markup, the values escaped by `%`).
         doc.message_post(
-            body=_(
-                "<p><strong>Nouvelle version televersee sur Nextcloud</strong></p>"
-                "<p>Fichier: %s</p>"
-                "<p>Taille: %s octets</p>"
-            ) % (html_escape(posixpath.basename(path)), len(file_content)),
+            body=Markup(self.env._(
+                "<p><strong>New version uploaded to "
+                "Nextcloud</strong></p><p>File: %s</p><p>Size: %s "
+                "bytes</p>"
+            )) % (posixpath.basename(path), len(file_content)),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
@@ -190,8 +191,8 @@ class DocumentNcUploadWizard(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Televersement reussi"),
-                "message": _("Fichier televerser sur Nextcloud: %s") % path,
+                "title": _("Upload succeeded"),
+                "message": _("File uploaded to Nextcloud: %s") % path,
                 "type": "success",
                 "sticky": False,
                 "next": {"type": "ir.actions.act_window_close"},

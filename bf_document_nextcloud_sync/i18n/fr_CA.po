@@ -1,0 +1,1141 @@
+# Translation of Document Nextcloud Sync - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_document_nextcloud_sync 18.0.1.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "%s B"
+msgstr "%s o"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "%s GB"
+msgstr "%s Go"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "%s KB"
+msgstr "%s Ko"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "%s MB"
+msgstr "%s Mo"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "- Modified on: %s"
+msgstr "- Modifié le : %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "- Size: %(old)s -> %(new)s bytes (%(delta)s)"
+msgstr "- Taille : %(old)s -> %(new)s octets (%(delta)s)"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.project_view_form_inherit_nc_docs
+msgid "/Project/Documents/"
+msgstr "/Projet/Documents/"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "/Project/Documents/file.pdf"
+msgstr "/Projet/Documents/fichier.pdf"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "/etc/ssl/certs/ca-certificates.crt"
+msgstr "/etc/ssl/certs/ca-certificates.crt"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "/remote.php/dav/files/"
+msgstr "/remote.php/dav/files/"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/wizard/document_nc_upload_wizard.py:0
+msgid ""
+"<p><strong>New version uploaded to Nextcloud</strong></p><p>File: "
+"%s</p><p>Size: %s bytes</p>"
+msgstr ""
+"<p><strong>Nouvelle version televersee sur Nextcloud</strong></p><p>Fichier:"
+" %s</p><p>Taille: %s octets</p>"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid ""
+"<p><strong>Nextcloud share link created</strong></p><p>URL: <a "
+"href=\"%(url)s\">%(url)s</a></p><p>Expiry: %(expiry)s</p>"
+msgstr ""
+"<p><strong>Lien de partage Nextcloud créé</strong></p><p>URL : <a "
+"href=\"%(url)s\">%(url)s</a></p><p>Expiration : %(expiry)s</p>"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "<span class=\"o_stat_text\">Nextcloud</span>"
+msgstr "<span class=\"o_stat_text\">Nextcloud</span>"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid ""
+"A Nextcloud configuration and a file path are required to create a share "
+"link."
+msgstr ""
+"Configuration Nextcloud et chemin de fichier requis pour creer un lien de "
+"partage."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid ""
+"A Nextcloud configuration and a file path are required to refresh the "
+"metadata."
+msgstr ""
+"Configuration Nextcloud et chemin de fichier requis pour rafraichir les "
+"metadonnees."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "A Nextcloud configuration is required to upload a version."
+msgstr "Configuration Nextcloud requise pour televerse une version."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "A Nextcloud folder and a configuration are required to browse."
+msgstr "Dossier Nextcloud et configuration requis pour naviguer."
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__active
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.actions.act_window,help:bf_document_nextcloud_sync.action_nextcloud_document_config
+msgid ""
+"Add a configuration to connect your Odoo documents\n"
+"                to Nextcloud storage through WebDAV."
+msgstr ""
+"Ajoutez une configuration pour connecter vos documents Odoo\n"
+"                au stockage Nextcloud via WebDAV."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__allow_insecure
+msgid "Allow insecure connection"
+msgstr "Autoriser connexion non securisee"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_app_password
+msgid "App password"
+msgstr "Mot de passe d'application"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "Archive"
+msgstr "Archivé"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_securetransfer,
+#. hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_search
+msgid "Archived"
+msgstr "Archives"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Authentication refused. Check the user and the password."
+msgstr "Authentification refusee. Verifiez l'utilisateur et le mot de passe."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__create_version_record
+msgid "Automatically create a project.document.version record"
+msgstr "Creer automatiquement un enregistrement project.document.version"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_base_url
+msgid ""
+"Base URL of the Nextcloud instance (e.g. https://nextcloud.example.com)"
+msgstr ""
+"URL de base de l'instance Nextcloud (ex: https://nextcloud.example.com)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__webdav_path
+msgid "Base WebDAV path (e.g. /remote.php/dav/files/)"
+msgstr "Chemin WebDAV de base (ex: /remote.php/dav/files/)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__ca_bundle_path
+msgid "CA certificate path"
+msgstr "Chemin du certificat CA"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Cannot reach %s. Check the URL and the network."
+msgstr "Impossible de joindre %s. Verifiez l'URL et le reseau."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Cannot read the OCS response for the share."
+msgstr "Impossible de lire la reponse OCS pour le partage."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Change detected automatically on Nextcloud."
+msgstr "Modification détectée automatiquement sur Nextcloud."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+#: code:addons/bf_document_nextcloud_sync/tests/test_langue_lecteur.py:0
+msgid "Change detected on Nextcloud"
+msgstr "Modification detectee sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__change_summary
+msgid "Change summary"
+msgstr "Resume des modifications"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__change_type
+msgid "Change type"
+msgstr "Type de modification"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Check: %d changed out of %d documents"
+msgstr "Verification: %d modifie(s) sur %d documents"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Check: %d changed, %d error(s) out of %d documents"
+msgstr "Verification: %d modifie(s), %d erreur(s) sur %d documents"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__company_id
+msgid "Company"
+msgstr "Societe"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Configuration used by default for new projects"
+msgstr "Configuration utilisee par defaut pour les nouveaux projets"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,title:bf_document_nextcloud_sync.bf_onb_step_settings
+msgid "Connect Nextcloud"
+msgstr "Connecter Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,done_text:bf_document_nextcloud_sync.bf_onb_step_settings
+msgid "Connection established"
+msgstr "Connexion établie"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Connection succeeded. Nextcloud server reachable."
+msgstr "Connexion reussie! Serveur Nextcloud accessible."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Connection test"
+msgstr "Test de connexion"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Connection to %s timed out (30s)."
+msgstr "Connexion a %s expirée (30s)."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__create_version_record
+msgid "Create a version record"
+msgstr "Creer un enregistrement de version"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__create_date
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_res_config_settings__nc_doc_default_config_id
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Default Nextcloud configuration"
+msgstr "Configuration Nextcloud par defaut"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_project__nc_documents_config_id
+msgid "Default Nextcloud configuration for this project's documents"
+msgstr "Configuration Nextcloud par defaut pour les documents de ce projet"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__default_share_expiry_days
+msgid "Default duration of public share links, in days"
+msgstr "Duree par defaut des liens de partage publics en jours"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+msgid "Description of the changes..."
+msgstr "Description des modifications..."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__nc_file_path
+msgid "Destination path"
+msgstr "Chemin de destination"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__display_name
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model,name:bf_document_nextcloud_sync.model_project_document
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__document_id
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.actions.server,name:bf_document_nextcloud_sync.ir_cron_check_nc_modifications_ir_actions_server
+msgid "Documents: check Nextcloud changes"
+msgstr "Documents: Verifier modifications Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__version_number
+msgid "E.g. 1.0, 2.1, etc."
+msgstr "Ex: 1.0, 2.1, etc."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__editorial
+msgid "Editorial"
+msgstr "Editoriale"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Encryption failed. Check the encryption key."
+msgstr "Le chiffrement a echoue. Verifiez la cle de chiffrement."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid ""
+"Encryption key missing. Set NC_DOC_SYNC_FERNET_KEY in the environment or "
+"nc_doc_sync_fernet_key in odoo.conf."
+msgstr ""
+"Cle de chiffrement manquante. Configurez NC_DOC_SYNC_FERNET_KEY dans "
+"l'environnement ou nc_doc_sync_fernet_key dans odoo.conf."
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,description:bf_document_nextcloud_sync.bf_onb_step_settings
+msgid "Enter the Nextcloud URL, user and app password in Settings."
+msgstr ""
+"Renseignez l'URL, l'utilisateur et le mot de passe d'application Nextcloud "
+"dans les Paramètres."
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__nextcloud_document_config__last_sync_status__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Error while creating the folder: %s"
+msgstr "Erreur lors de la creation du dossier: %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Error while downloading: %s"
+msgstr "Erreur lors du telechargement: %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Error while querying Nextcloud: %s"
+msgstr "Erreur lors de la consultation Nextcloud: %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Error while uploading: %s"
+msgstr "Erreur lors du televersement: %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Expiry: %s"
+msgstr "Expiration: %s"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__file_data
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "File changed on Nextcloud: %s"
+msgstr "Fichier modifie sur Nextcloud: %s"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__file_name
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "File not found on Nextcloud: %s"
+msgstr "Fichier introuvable sur Nextcloud: %s"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_size
+msgid "File size (bytes)"
+msgstr "Taille du fichier (octets)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__file_data
+msgid "File to upload to Nextcloud"
+msgstr "Fichier a televerser sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/wizard/document_nc_upload_wizard.py:0
+msgid "File uploaded to Nextcloud: %s"
+msgstr "Fichier televerser sur Nextcloud: %s"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__nc_file_path
+msgid "Full path of the file on Nextcloud"
+msgstr "Chemin complet du fichier sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__share_password_enabled
+msgid "Generate a random password for public share links"
+msgstr "Generer un mot de passe aleatoire pour les liens de partage publics"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__id
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_file_id
+msgid "Internal ID of the file on Nextcloud"
+msgstr "Identifiant interne du fichier sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__write_date
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_last_modified
+msgid "Last modification date of the file on Nextcloud"
+msgstr "Date de derniere modification du fichier sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__last_sync
+msgid "Last sync"
+msgstr "Derniere synchronisation"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__last_sync_message
+msgid "Last sync message"
+msgstr "Message derniere sync"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__last_sync_status
+msgid "Last sync status"
+msgstr "Statut derniere sync"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_securetransfer
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_content_type
+msgid "MIME type"
+msgstr "Type MIME"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__major
+msgid "Major"
+msgstr "Majeure"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Manage configurations"
+msgstr "Gerer les configurations"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,done_text:bf_document_nextcloud_sync.bf_onb_step_config
+msgid "Mapping configured"
+msgstr "Mapping configuré"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Metadata updated from Nextcloud."
+msgstr "Metadonnees mises a jour depuis Nextcloud."
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__minor
+msgid "Minor"
+msgstr "Mineure"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "N/A"
+msgstr "s.o."
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_tree_inherit_nc
+msgid "NC"
+msgstr "NC"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "NC internal link"
+msgstr "Lien interne NC"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_last_modified
+msgid "NC last modified"
+msgstr "Derniere modification NC"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_search_inherit_nc
+msgid "NC synced"
+msgstr "Synchronise NC"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__name
+msgid "Name of this Nextcloud configuration"
+msgstr "Nom de cette configuration Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Nextcloud"
+msgstr "Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.ui.menu,name:bf_document_nextcloud_sync.menu_nc_document_config
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.project_view_form_inherit_nc_docs
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Nextcloud Documents"
+msgstr "Nextcloud Documents"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.actions.act_window,name:bf_document_nextcloud_sync.action_nextcloud_document_config
+msgid "Nextcloud Documents configurations"
+msgstr "Configurations Nextcloud Documents"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_etag
+msgid "Nextcloud ETag"
+msgstr "ETag Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_base_url
+msgid "Nextcloud URL"
+msgstr "URL Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_app_password
+msgid "Nextcloud app password for WebDAV authentication"
+msgstr "Mot de passe d'application Nextcloud pour l'authentification WebDAV"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_config_id
+msgid "Nextcloud config"
+msgstr "Config Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__nc_config_id
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "Nextcloud configuration"
+msgstr "Configuration Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_config_id
+msgid "Nextcloud configuration used for this document"
+msgstr "Configuration Nextcloud utilisee pour ce document"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Nextcloud configurations"
+msgstr "Configurations Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_project__nc_documents_config_id
+msgid "Nextcloud documents config"
+msgstr "Config Nextcloud Documents"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Nextcloud file"
+msgstr "Fichier Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_id
+msgid "Nextcloud file ID"
+msgstr "File ID Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_project__nc_documents_folder
+msgid "Nextcloud folder"
+msgstr "Dossier Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Nextcloud internal link"
+msgstr "Lien interne Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_path
+msgid "Nextcloud path"
+msgstr "Chemin Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding,name:bf_document_nextcloud_sync.bf_onboarding_panel
+msgid "Nextcloud sync: documents"
+msgstr "Sync Nextcloud — Documents"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_user
+msgid "Nextcloud user"
+msgstr "Utilisateur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "No Nextcloud path or external URL is set for this document."
+msgstr "Aucun chemin Nextcloud ni URL externe configure pour ce document."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "No password set for '%s'."
+msgstr "Aucun mot de passe configure pour '%s'."
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_search_inherit_nc
+msgid "Not synced with NC"
+msgstr "Non synchronise NC"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "OCS error creating the share: HTTP %s"
+msgstr "Erreur OCS creation de partage: HTTP %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "OCS error while creating the share: %s"
+msgstr "Erreur OCS lors de la creation du partage: %s"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,step_image_alt:bf_document_nextcloud_sync.bf_onb_step_config
+#: model:onboarding.onboarding.step,step_image_alt:bf_document_nextcloud_sync.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,button_text:bf_document_nextcloud_sync.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__nextcloud_document_config__last_sync_status__partial
+msgid "Partial"
+msgstr "Partiel"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_app_password_encrypted
+msgid "Password (encrypted)"
+msgstr "Mot de passe (chiffre)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__share_password_enabled
+msgid "Password on shares"
+msgstr "Mot de passe sur les partages"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Password: %s"
+msgstr "Mot de passe: %s"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__patch
+msgid "Patch"
+msgstr "Correctif"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_project__nc_documents_folder
+msgid ""
+"Path of the documents folder on Nextcloud (e.g. /Blue Fox/Documents/). New "
+"documents will use this path as a prefix."
+msgstr ""
+"Chemin du dossier documents sur Nextcloud (ex: /Blue Fox/Documents/). Les "
+"nouveaux documents utiliseront ce chemin comme prefixe."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_file_path
+msgid ""
+"Path of the file on Nextcloud (e.g. /Blue Fox/Documents/POL-SEC-FR.pdf)"
+msgstr ""
+"Chemin du fichier sur Nextcloud (ex: /Blue Fox/Documents/POL-SEC-FR.pdf)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__ca_bundle_path
+msgid "Path to a custom CA bundle (optional)"
+msgstr "Chemin vers un bundle CA personnalise (optionnel)"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/wizard/document_nc_upload_wizard.py:0
+msgid "Please select a file."
+msgstr "Veuillez selectionner un fichier."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_share_url
+msgid "Public share URL generated through OCS"
+msgstr "URL de partage public generee via OCS"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_security_awareness
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Refresh"
+msgstr "Rafraichissement"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Refresh from NC"
+msgstr "Rafraichir NC"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.actions.act_window,help:bf_document_nextcloud_sync.action_nextcloud_document_config
+msgid "Set up a Nextcloud connection for documents"
+msgstr "Configurer une connexion Nextcloud pour les documents"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.res_config_settings_view_form_nc_doc_sync
+msgid "Set up the Nextcloud connections"
+msgstr "Configurer les connexions Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,title:bf_document_nextcloud_sync.bf_onb_step_config
+msgid "Set up the folder mapping"
+msgstr "Configurer le mapping de dossiers"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Share created"
+msgstr "Partage cree"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_share_expiry
+msgid "Share expiry"
+msgstr "Expiration du partage"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__default_share_expiry_days
+msgid "Share expiry (days)"
+msgstr "Expiration des partages (jours)"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "Share expiry must be at least 1 day."
+msgstr "L'expiration des partages doit etre d'au moins 1 jour."
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_share_url
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Share link"
+msgstr "Lien de partage"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Share link created."
+msgstr "Lien de partage cree avec succes."
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_project_document__nc_share_password
+msgid "Share link password (send it separately)"
+msgstr "Mot de passe du lien de partage (communiquer separement)"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_share_password
+msgid "Share password"
+msgstr "Mot de passe du partage"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "Share settings"
+msgstr "Parametres de partage"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Sharing"
+msgstr "Partage"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. hosting_management
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_size_display
+msgid "Size"
+msgstr "Taille"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__nextcloud_document_config__last_sync_status__success
+msgid "Success"
+msgstr "Succes"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "Sync status"
+msgstr "Statut"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_synced
+msgid "Synced with NC"
+msgstr "Synchronise avec NC"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "TLS security"
+msgstr "Securite TLS"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "Test connection"
+msgstr "Tester la connexion"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The Nextcloud URL cannot point to a private or local IP address: %s"
+msgstr ""
+"L'URL Nextcloud ne peut pas pointer vers une adresse IP privee ou locale : "
+"%s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The Nextcloud URL is invalid: no hostname."
+msgstr "L'URL Nextcloud est invalide : pas de nom d'hote."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The Nextcloud URL must use HTTPS. URL given: %s"
+msgstr "L'URL Nextcloud doit utiliser HTTPS. URL fournie : %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "The file '%s' was changed on Nextcloud since the last check."
+msgstr ""
+"Le fichier '%s' a ete modifie sur Nextcloud depuis la derniere verification."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "The file name contains forbidden characters (%s): %s"
+msgstr "Le nom de fichier contient des caracteres interdits (%s): %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The path '%s' is outside the allowed folder '%s'."
+msgstr "Le chemin '%s' est en dehors du dossier autorise '%s'."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The path cannot contain '..': %s"
+msgstr "Le chemin ne peut pas contenir '..' : %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The path contains a %%XX sequence and is not supported: %s"
+msgstr "Le chemin contient une sequence %%XX et n'est pas pris en charge : %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "The path contains invalid characters: %s"
+msgstr "Le chemin contient des caracteres invalides : %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "The share URL must use HTTPS."
+msgstr "L'URL de partage doit utiliser HTTPS."
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+msgid "Upload"
+msgstr "Televerser"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model,name:bf_document_nextcloud_sync.model_document_nc_upload_wizard
+msgid "Upload a document version to Nextcloud"
+msgstr "Televerser une version de document sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
+msgid "Upload a new version"
+msgstr "Televerser une nouvelle version"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/wizard/document_nc_upload_wizard.py:0
+msgid "Upload succeeded"
+msgstr "Televersement reussi"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+msgid "Upload to Nextcloud"
+msgstr "Televerser sur Nextcloud"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_project_document_form_inherit_nc
+msgid "Upload version"
+msgstr "Televerser version"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__nextcloud_user
+msgid "User name for WebDAV authentication"
+msgstr "Nom d'utilisateur pour l'authentification WebDAV"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_document_nc_upload_wizard_form
+msgid "Version"
+msgstr "Version"
+
+#. module: bf_document_nextcloud_sync
+#. modules: bf_document_nextcloud_sync, hosting_management
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_document_nc_upload_wizard__version_number
+msgid "Version number"
+msgstr "Numero de version"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,button_text:bf_document_nextcloud_sync.bf_onb_step_config
+msgid "View configuration"
+msgstr "Voir la config"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__allow_insecure
+msgid "WARNING: disables TLS verification. Use only in development/testing."
+msgstr ""
+"ATTENTION: desactive la verification TLS. A utiliser uniquement en "
+"developpement/test."
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "WebDAV GET error: HTTP %s"
+msgstr "Erreur WebDAV GET: HTTP %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "WebDAV MKCOL error: HTTP %s"
+msgstr "Erreur WebDAV MKCOL: HTTP %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "WebDAV PROPFIND error: HTTP %s"
+msgstr "Erreur WebDAV PROPFIND: HTTP %s"
+
+#. module: bf_document_nextcloud_sync
+#. odoo-python
+#: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
+msgid "WebDAV PUT error: HTTP %s"
+msgstr "Erreur WebDAV PUT: HTTP %s"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__webdav_path
+msgid "WebDAV path"
+msgstr "Chemin WebDAV"
+
+#. module: bf_document_nextcloud_sync
+#: model:onboarding.onboarding.step,description:bf_document_nextcloud_sync.bf_onb_step_config
+msgid ""
+"[action:bf_document_nextcloud_sync.action_nextcloud_document_config] Define "
+"which NC folders to sync and where to file uploaded files."
+msgstr ""
+"[action:bf_document_nextcloud_sync.action_nextcloud_document_config] "
+"Définissez quels dossiers NC synchroniser et où classer les fichiers "
+"téléversés."
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "e.g. Blue Fox Nextcloud"
+msgstr "ex: Nextcloud Blue Fox"
+
+#. module: bf_document_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
+msgid "https://nextcloud.example.com"
+msgstr "https://nextcloud.example.com"
+
+#. module: bf_document_nextcloud_sync
+#: model:ir.model,name:bf_document_nextcloud_sync.model_nextcloud_document_config
+msgid "Nextcloud document sync configuration"
+msgstr "Configuration de synchronisation documents Nextcloud"

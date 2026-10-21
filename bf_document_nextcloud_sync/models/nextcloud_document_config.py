@@ -57,15 +57,15 @@ def _validate_nc_url(url):
     parsed = urlparse(url)
     if parsed.scheme != "https":
         raise ValidationError(
-            _("L'URL Nextcloud doit utiliser HTTPS. URL fournie : %s") % url
+            _("The Nextcloud URL must use HTTPS. URL given: %s") % url
         )
     if not parsed.hostname:
-        raise ValidationError(_("L'URL Nextcloud est invalide : pas de nom d'hote."))
+        raise ValidationError(_("The Nextcloud URL is invalid: no hostname."))
     if _is_private_ip(parsed.hostname):
         raise ValidationError(
             _(
-                "L'URL Nextcloud ne peut pas pointer vers une adresse IP "
-                "privee ou locale : %s"
+                "The Nextcloud URL cannot point to a private or local IP "
+                "address: %s"
             )
             % parsed.hostname
         )
@@ -97,19 +97,19 @@ def _sanitize_nc_path(path):
         return path
     if url_unquote(path) != path:
         raise ValidationError(
-            _("Le chemin contient une sequence %%XX et n'est pas pris en charge : %s")
+            _("The path contains a %%XX sequence and is not supported: %s")
             % path
         )
     # Reject null bytes and control characters
     if "\x00" in path or any(ord(c) < 32 for c in path):
         raise ValidationError(
-            _("Le chemin contient des caracteres invalides : %s") % repr(path)
+            _("The path contains invalid characters: %s") % repr(path)
         )
     # Normalize and reject traversal
     normalized = posixpath.normpath(path)
     if ".." in normalized.split("/"):
         raise ValidationError(
-            _("Le chemin ne peut pas contenir '..' : %s") % path
+            _("The path cannot contain '..': %s") % path
         )
     # Ensure path starts with /
     if not normalized.startswith("/"):
@@ -132,7 +132,7 @@ def _validate_path_under_prefix(path, prefix):
     if norm_path != norm_prefix and not norm_path.startswith(norm_prefix + "/"):
         raise ValidationError(
             _(
-                "Le chemin '%s' est en dehors du dossier autorise '%s'."
+                "The path '%s' is outside the allowed folder '%s'."
             )
             % (path, prefix)
         )
@@ -142,95 +142,96 @@ class NextcloudDocumentConfig(models.Model):
     """Configuration for Nextcloud document storage integration."""
 
     _name = "nextcloud.document.config"
-    _description = "Configuration de synchronisation documents Nextcloud"
+    _description = "Nextcloud document sync configuration"
     _order = "sequence, name"
 
     name = fields.Char(
-        string="Nom",
+        string="Name",
         required=True,
-        help="Nom de cette configuration Nextcloud",
+        help="Name of this Nextcloud configuration",
     )
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company",
-        string="Societe",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
 
     # Nextcloud WebDAV configuration
     nextcloud_base_url = fields.Char(
-        string="URL Nextcloud",
+        string="Nextcloud URL",
         required=True,
-        help="URL de base de l'instance Nextcloud (ex: https://nextcloud.example.com)",
+        help="Base URL of the Nextcloud instance (e.g. "
+             "https://nextcloud.example.com)",
     )
     webdav_path = fields.Char(
-        string="Chemin WebDAV",
+        string="WebDAV path",
         required=True,
         default="/remote.php/dav/files/",
-        help="Chemin WebDAV de base (ex: /remote.php/dav/files/)",
+        help="Base WebDAV path (e.g. /remote.php/dav/files/)",
     )
     nextcloud_user = fields.Char(
-        string="Utilisateur Nextcloud",
+        string="Nextcloud user",
         required=True,
-        help="Nom d'utilisateur pour l'authentification WebDAV",
+        help="User name for WebDAV authentication",
     )
     nextcloud_app_password = fields.Char(
-        string="Mot de passe d'application",
+        string="App password",
         compute="_compute_app_password",
         inverse="_inverse_app_password",
         store=False,
         groups="base.group_system",
-        help="Mot de passe d'application Nextcloud pour l'authentification WebDAV",
+        help="Nextcloud app password for WebDAV authentication",
     )
     nextcloud_app_password_encrypted = fields.Char(
-        string="Mot de passe (chiffre)",
+        string="Password (encrypted)",
         groups="base.group_system",
     )
 
     # TLS configuration
     allow_insecure = fields.Boolean(
-        string="Autoriser connexion non securisee",
+        string="Allow insecure connection",
         default=False,
         groups="base.group_system",
-        help="ATTENTION: desactive la verification TLS. "
-        "A utiliser uniquement en developpement/test.",
+        help="WARNING: disables TLS verification. Use only in "
+             "development/testing.",
     )
     ca_bundle_path = fields.Char(
-        string="Chemin du certificat CA",
+        string="CA certificate path",
         groups="base.group_system",
-        help="Chemin vers un bundle CA personnalise (optionnel)",
+        help="Path to a custom CA bundle (optional)",
     )
 
     # Share defaults
     default_share_expiry_days = fields.Integer(
-        string="Expiration des partages (jours)",
+        string="Share expiry (days)",
         default=DEFAULT_SHARE_EXPIRY_DAYS,
-        help="Duree par defaut des liens de partage publics en jours",
+        help="Default duration of public share links, in days",
     )
     share_password_enabled = fields.Boolean(
-        string="Mot de passe sur les partages",
+        string="Password on shares",
         default=True,
-        help="Generer un mot de passe aleatoire pour les liens de partage publics",
+        help="Generate a random password for public share links",
     )
 
     # Statistics
     last_sync = fields.Datetime(
-        string="Derniere synchronisation",
+        string="Last sync",
         readonly=True,
     )
     last_sync_status = fields.Selection(
         [
-            ("success", "Succes"),
-            ("error", "Erreur"),
-            ("partial", "Partiel"),
+            ("success", "Success"),
+            ("error", "Error"),
+            ("partial", "Partial"),
         ],
-        string="Statut derniere sync",
+        string="Last sync status",
         readonly=True,
     )
     last_sync_message = fields.Text(
-        string="Message derniere sync",
+        string="Last sync message",
         readonly=True,
     )
 
@@ -246,7 +247,7 @@ class NextcloudDocumentConfig(models.Model):
         for record in self:
             if record.default_share_expiry_days < 1:
                 raise ValidationError(
-                    _("L'expiration des partages doit etre d'au moins 1 jour.")
+                    _("Share expiry must be at least 1 day.")
                 )
 
     # === Encryption Methods ===
@@ -286,9 +287,8 @@ class NextcloudDocumentConfig(models.Model):
         key = self._get_encryption_key()
         if not key:
             raise UserError(
-                _("Cle de chiffrement manquante. Configurez "
-                  "NC_DOC_SYNC_FERNET_KEY dans l'environnement "
-                  "ou nc_doc_sync_fernet_key dans odoo.conf.")
+                _("Encryption key missing. Set NC_DOC_SYNC_FERNET_KEY in "
+                  "the environment or nc_doc_sync_fernet_key in odoo.conf.")
             )
         try:
             f = Fernet(key)
@@ -296,7 +296,7 @@ class NextcloudDocumentConfig(models.Model):
         except Exception as e:
             _logger.error("Encryption failed: %s", type(e).__name__)
             raise UserError(
-                _("Le chiffrement a echoue. Verifiez la cle de chiffrement.")
+                _("Encryption failed. Check the encryption key.")
             ) from e
 
     def _decrypt_value(self, encrypted_value):
@@ -366,7 +366,7 @@ class NextcloudDocumentConfig(models.Model):
         password = self._decrypt_value(self.nextcloud_app_password_encrypted)
         if not password:
             raise UserError(
-                _("Aucun mot de passe configure pour '%s'.") % self.name
+                _("No password set for '%s'.") % self.name
             )
         return (self.nextcloud_user, password)
 
@@ -417,24 +417,24 @@ class NextcloudDocumentConfig(models.Model):
             )
         except requests.ConnectionError:
             raise UserError(
-                _("Impossible de joindre %s. Verifiez l'URL et le reseau.")
+                _("Cannot reach %s. Check the URL and the network.")
                 % self.nextcloud_base_url
             )
         except requests.Timeout:
             raise UserError(
-                _("Connexion a %s expirée (30s).") % self.nextcloud_base_url
+                _("Connection to %s timed out (30s).") % self.nextcloud_base_url
             )
 
         if resp.status_code == 401:
             raise UserError(
-                _("Authentification refusee. Verifiez l'utilisateur et le mot de passe.")
+                _("Authentication refused. Check the user and the password.")
             )
         if resp.status_code not in (207, 200):
             _logger.error(
                 "PROPFIND %s returned %s", path, resp.status_code
             )
             raise UserError(
-                _("Erreur WebDAV PROPFIND: HTTP %s") % resp.status_code
+                _("WebDAV PROPFIND error: HTTP %s") % resp.status_code
             )
 
         return self._parse_propfind_response(resp.text, path)
@@ -534,17 +534,19 @@ class NextcloudDocumentConfig(models.Model):
                 verify=self._tls_verify,
             )
         except requests.RequestException as e:
+            # Chained (``from e``): callers classify a network failure by
+            # ``error.__cause__``, never by the translated message.
             raise UserError(
-                _("Erreur lors du telechargement: %s") % str(e)
-            )
+                _("Error while downloading: %s") % str(e)
+            ) from e
 
         if resp.status_code == 404:
             raise UserError(
-                _("Fichier introuvable sur Nextcloud: %s") % path
+                _("File not found on Nextcloud: %s") % path
             )
         if resp.status_code != 200:
             raise UserError(
-                _("Erreur WebDAV GET: HTTP %s") % resp.status_code
+                _("WebDAV GET error: HTTP %s") % resp.status_code
             )
         return resp.content
 
@@ -573,12 +575,12 @@ class NextcloudDocumentConfig(models.Model):
             )
         except requests.RequestException as e:
             raise UserError(
-                _("Erreur lors du televersement: %s") % str(e)
+                _("Error while uploading: %s") % str(e)
             )
 
         if resp.status_code not in (200, 201, 204):
             raise UserError(
-                _("Erreur WebDAV PUT: HTTP %s") % resp.status_code
+                _("WebDAV PUT error: HTTP %s") % resp.status_code
             )
         return resp
 
@@ -598,13 +600,13 @@ class NextcloudDocumentConfig(models.Model):
             )
         except requests.RequestException as e:
             raise UserError(
-                _("Erreur lors de la creation du dossier: %s") % str(e)
+                _("Error while creating the folder: %s") % str(e)
             )
 
         # 405 = already exists, that's fine
         if resp.status_code not in (200, 201, 204, 405):
             raise UserError(
-                _("Erreur WebDAV MKCOL: HTTP %s") % resp.status_code
+                _("WebDAV MKCOL error: HTTP %s") % resp.status_code
             )
         return resp
 
@@ -664,13 +666,13 @@ class NextcloudDocumentConfig(models.Model):
             )
         except requests.RequestException as e:
             raise UserError(
-                _("Erreur OCS lors de la creation du partage: %s") % str(e)
+                _("OCS error while creating the share: %s") % str(e)
             )
 
         if resp.status_code not in (200, 201):
             _logger.error("OCS share creation failed: %s %s", resp.status_code, resp.text[:200])
             raise UserError(
-                _("Erreur OCS creation de partage: HTTP %s") % resp.status_code
+                _("OCS error creating the share: HTTP %s") % resp.status_code
             )
 
         # Parse OCS XML response
@@ -697,7 +699,7 @@ class NextcloudDocumentConfig(models.Model):
                 SafeET.EntitiesForbidden, SafeET.ExternalReferenceForbidden) as e:
             _logger.error("Failed to parse OCS response: %s", e)
             raise UserError(
-                _("Impossible de lire la reponse OCS pour le partage.")
+                _("Cannot read the OCS response for the share.")
             )
 
     # === Actions ===
@@ -708,7 +710,7 @@ class NextcloudDocumentConfig(models.Model):
 
         try:
             results = self._webdav_propfind("/", depth="0")
-            msg = _("Connexion reussie! Serveur Nextcloud accessible.")
+            msg = _("Connection succeeded. Nextcloud server reachable.")
             self.write({
                 "last_sync": fields.Datetime.now(),
                 "last_sync_status": "success",
@@ -718,7 +720,7 @@ class NextcloudDocumentConfig(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Test de connexion"),
+                    "title": _("Connection test"),
                     "message": msg,
                     "type": "success",
                     "sticky": False,
@@ -735,7 +737,7 @@ class NextcloudDocumentConfig(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Test de connexion"),
+                    "title": _("Connection test"),
                     "message": msg,
                     "type": "danger",
                     "sticky": True,

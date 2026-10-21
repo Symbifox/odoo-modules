@@ -29,21 +29,21 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_mark_done" string="Marquer comme fait" type="object" class="oe_highlight" icon="fa-check"/>
+                    <button name="action_mark_done" string="Mark as done" type="object" class="oe_highlight" icon="fa-check"/>
                 </header>
                 <sheet>
                     <!-- Overdue Ribbon -->
-                    <widget name="web_ribbon" title="EN RETARD" bg_color="text-bg-danger" invisible="not is_overdue"/>
+                    <widget name="web_ribbon" title="OVERDUE" bg_color="text-bg-danger" invisible="not is_overdue"/>
 
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Nom de la tâche de maintenance"/>
+                            <field name="name" placeholder="Maintenance task name"/>
                         </h1>
                     </div>
 
                     <group>
-                        <group string="Détails du calendrier">
+                        <group string="Schedule details">
                             <field name="service_id" options="{'no_create': True}"/>
                             <field name="partner_id"/>
                             <field name="maintenance_type"/>
@@ -51,7 +51,7 @@
                             <field name="user_id"/>
                             <field name="active"/>
                         </group>
-                        <group string="État">
+                        <group string="State">
                             <field name="last_performed"/>
                             <field name="next_due"/>
                             <field name="days_until_due" decoration-danger="days_until_due &lt; 0" decoration-warning="days_until_due >= 0 and days_until_due &lt;= 7"/>
@@ -61,10 +61,10 @@
 
                     <notebook>
                         <page string="Instructions" name="instructions">
-                            <field name="instructions" placeholder="Instructions étape par étape pour effectuer cette tâche de maintenance..."/>
+                            <field name="instructions" placeholder="Step-by-step instructions to perform this maintenance task..."/>
                         </page>
                         <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Notes ou commentaires supplémentaires..."/>
+                            <field name="notes" placeholder="Additional notes or comments..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -84,27 +84,27 @@
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <separator/>
-                <filter name="filter_my_schedules" string="Mes calendriers" domain="[('user_id', '=', uid)]"/>
+                <filter name="filter_my_schedules" string="My schedules" domain="[('user_id', '=', uid)]"/>
                 <separator/>
-                <filter name="filter_overdue" string="En retard" domain="[('next_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_due_this_week" string="Dû cette semaine" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_due_this_month" string="Dû ce mois-ci" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_overdue" string="Overdue" domain="[('next_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_due_this_week" string="Due this week" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_due_this_month" string="Due this month" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <filter name="filter_security_patch" string="Correction de sécurité" domain="[('maintenance_type', '=', 'security_patch')]"/>
-                <filter name="filter_db_optimize" string="Optimisation de la BD" domain="[('maintenance_type', '=', 'db_optimize')]"/>
-                <filter name="filter_backup_verify" string="Vérification des sauvegardes" domain="[('maintenance_type', '=', 'backup_verify')]"/>
-                <filter name="filter_log_cleanup" string="Nettoyage des journaux" domain="[('maintenance_type', '=', 'log_cleanup')]"/>
-                <filter name="filter_container_update" string="Mise à jour des conteneurs" domain="[('maintenance_type', '=', 'container_update')]"/>
-                <filter name="filter_ssl_renewal" string="Renouvellement SSL" domain="[('maintenance_type', '=', 'ssl_renewal')]"/>
+                <filter name="filter_security_patch" string="Security patch" domain="[('maintenance_type', '=', 'security_patch')]"/>
+                <filter name="filter_db_optimize" string="DB optimization" domain="[('maintenance_type', '=', 'db_optimize')]"/>
+                <filter name="filter_backup_verify" string="Backup checks" domain="[('maintenance_type', '=', 'backup_verify')]"/>
+                <filter name="filter_log_cleanup" string="Log cleanup" domain="[('maintenance_type', '=', 'log_cleanup')]"/>
+                <filter name="filter_container_update" string="Container updates" domain="[('maintenance_type', '=', 'container_update')]"/>
+                <filter name="filter_ssl_renewal" string="SSL renewal" domain="[('maintenance_type', '=', 'ssl_renewal')]"/>
                 <separator/>
-                <filter name="filter_archived" string="Archivé" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Grouper par">
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
                     <filter name="group_service" string="Service" context="{'group_by': 'service_id'}"/>
                     <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
                     <filter name="group_type" string="Type" context="{'group_by': 'maintenance_type'}"/>
-                    <filter name="group_frequency" string="Fréquence" context="{'group_by': 'frequency'}"/>
-                    <filter name="group_user" string="Assigné à" context="{'group_by': 'user_id'}"/>
-                    <filter name="group_next_due" string="Prochaine échéance (mois)" context="{'group_by': 'next_due:month'}"/>
+                    <filter name="group_frequency" string="Frequency" context="{'group_by': 'frequency'}"/>
+                    <filter name="group_user" string="Assigned to" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_next_due" string="Next due date (month)" context="{'group_by': 'next_due:month'}"/>
                 </group>
             </search>
         </field>
@@ -137,13 +137,13 @@
                                 </div>
                                 <div class="mt-2">
                                     <span t-if="record.is_overdue.raw_value" class="badge text-bg-danger">
-                                        En retard (<field name="days_until_due"/> jours)
+                                        Overdue (<field name="days_until_due"/> days)
                                     </span>
                                     <span t-elif="record.days_until_due.raw_value &lt;= 7" class="badge text-bg-warning">
-                                        Dû dans <field name="days_until_due"/> jours
+                                        Due in <field name="days_until_due"/> days
                                     </span>
                                     <span t-else="" class="badge text-bg-secondary">
-                                        Dû : <field name="next_due"/>
+                                        Due: <field name="next_due"/>
                                     </span>
                                 </div>
                                 <div class="mt-2">
@@ -162,7 +162,7 @@
         <field name="name">hosting.maintenance.schedule.calendar</field>
         <field name="model">hosting.maintenance.schedule</field>
         <field name="arch" type="xml">
-            <calendar string="Calendrier de maintenance" date_start="next_due" color="maintenance_type" mode="month">
+            <calendar string="Maintenance calendar" date_start="next_due" color="maintenance_type" mode="month">
                 <field name="color_resolved" invisible="1"/>
                 <field name="name"/>
                 <field name="service_id"/>
@@ -174,23 +174,23 @@
 
     <!-- All Maintenance Schedules Action -->
     <record id="hosting_maintenance_schedule_action" model="ir.actions.act_window">
-        <field name="name">Calendriers de maintenance</field>
+        <field name="name">Maintenance schedules</field>
         <field name="res_model">hosting.maintenance.schedule</field>
         <field name="view_mode">list,kanban,calendar,activity,form</field>
         <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créez votre premier calendrier de maintenance
+                Create your first maintenance schedule
             </p>
             <p>
-                Suivez les tâches de maintenance routinières pour vos services hébergés, incluant les corrections de sécurité, l'optimisation de la base de données, la vérification des sauvegardes, et plus encore.
+                Track routine maintenance tasks for your hosted services, including security patches, database optimization, backup checks, and more.
             </p>
         </field>
     </record>
 
     <!-- Overdue Maintenance Action -->
     <record id="hosting_maintenance_schedule_action_overdue" model="ir.actions.act_window">
-        <field name="name">Maintenance en retard</field>
+        <field name="name">Overdue maintenance</field>
         <field name="res_model">hosting.maintenance.schedule</field>
         <field name="view_mode">list,kanban,calendar,activity,form</field>
         <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
@@ -199,7 +199,7 @@
 
     <!-- Due This Week Maintenance Action -->
     <record id="hosting_maintenance_schedule_action_due_week" model="ir.actions.act_window">
-        <field name="name">Dû cette semaine</field>
+        <field name="name">Due this week</field>
         <field name="res_model">hosting.maintenance.schedule</field>
         <field name="view_mode">list,kanban,calendar,activity,form</field>
         <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>

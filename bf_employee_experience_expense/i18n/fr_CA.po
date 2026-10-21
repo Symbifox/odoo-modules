@@ -1,0 +1,63 @@
+# Translation of Expérience employé : notes de frais - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_employee_experience_expense 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_employee_experience_expense
+#: model:ir.model.fields,field_description:bf_employee_experience_expense.field_hr_expense__ex_benefit_id
+#: model:ir.model.fields,field_description:bf_employee_experience_expense.field_product_product__ex_benefit_id
+#: model:ir.model.fields,field_description:bf_employee_experience_expense.field_product_template__ex_benefit_id
+msgid "Benefit"
+msgstr "Avantage"
+
+#. module: bf_employee_experience_expense
+#. odoo-python
+#: code:addons/bf_employee_experience_expense/models/hr_expense.py:0
+msgid "Expense: %s"
+msgstr "Note de frais : %s"
+
+#. module: bf_employee_experience_expense
+#: model:ir.model.fields,help:bf_employee_experience_expense.field_product_product__ex_benefit_id
+#: model:ir.model.fields,help:bf_employee_experience_expense.field_product_template__ex_benefit_id
+msgid "Expenses using this product feed this benefit's usage register."
+msgstr ""
+"Les dépenses portant ce produit alimentent le registre d'usage de cet "
+"avantage."
+
+#. module: bf_employee_experience_expense
+#: model:ir.model.fields,field_description:bf_employee_experience_expense.field_hr_expense__ex_usage_id
+msgid "Generated usage line"
+msgstr "Usage produit"
+
+#. module: bf_employee_experience_expense
+#: model:ir.model.fields,help:bf_employee_experience_expense.field_hr_expense__ex_benefit_id
+msgid ""
+"Taken from the product, editable. On approval, a confirmed usage line is "
+"created for the amount actually spent."
+msgstr ""
+"Repris du produit, modifiable. À l'approbation, une ligne d'usage confirmée "
+"est créée au montant réellement engagé."
+
+#. module: bf_employee_experience_expense
+#. odoo-python
+#: code:addons/bf_employee_experience_expense/models/hr_expense.py:0
+msgid ""
+"Usage line removed from the register (\"%(benefit)s\", %(amount)s): the "
+"expense is no longer approved. A new approval will create a new one, for the"
+" amount at that time."
+msgstr ""
+"Ligne d'usage retirée du registre (« %(benefit)s », %(amount)s) : la dépense"
+" n'est plus approuvée. Une nouvelle approbation en créera une nouvelle, au "
+"montant d'alors."

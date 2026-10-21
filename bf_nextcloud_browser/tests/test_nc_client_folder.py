@@ -65,6 +65,10 @@ class TestNcClientFolder(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only, so fr_CA
+        # and its terms are loaded here.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(['bf_nextcloud_browser'], ["fr_CA"], overwrite=True)
         Config = cls.env["nextcloud.document.config"]
         cls._key_patch = patch.object(type(Config), "_get_encryption_key", return_value=KEY)
         cls._key_patch.start()
@@ -484,6 +488,8 @@ class TestNcClientFolder(TransactionCase):
         project = self.env["project.project"].create({"name": "Valberge - Agrandissement hangar", "partner_id": self.valberge.id})
         projets = valberge.path + "/(PROJETS)"
         listing = _multistatus(projets, projets + "/001 - Agrandissement hangar", projets + "/002 - Refonte du site")
+        # The line names are written in the language of the person who picks (French here).
+        self.alice.lang = "fr_CA"
         pick = self._pick(project, lambda m, u, **k: _response(207, listing))
         best = pick.line_ids[0]
         self.assertEqual(best.name, "001 - Agrandissement hangar")

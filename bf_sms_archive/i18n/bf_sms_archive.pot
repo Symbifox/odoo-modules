@@ -2,7 +2,7 @@
 # The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_sms_archive 18.0.5.27.0\n"
+"Project-Id-Version: bf_sms_archive 18.0.5.27.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-19 12:12+0000\n"
 "PO-Revision-Date: 2026-10-19 12:12+0000\n"
@@ -3490,4 +3490,48 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_sms_archive/models/call_archive.py:0
 msgid "🔊 Listen"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/push_api.py:0
+msgid "%(company)s SMS messaging"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/controllers/push_api.py:0
+msgid "SMS/MMS messaging via VOIP.ms"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/voipms_transport.py:0
+msgid "VOIP.ms %(method)s failed: %(error)s: %(detail)s"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/voipms_transport.py:0
+msgid ""
+"VOIP.ms API credentials missing (bf_sms_archive.voipms_api_username / "
+"_api_password)."
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/voipms_transport.py:0
+msgid "VOIP.ms method not allowed: %s"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/voipms_transport.py:0
+msgid "getDIDsInfo: status %s"
+msgstr ""
+
+#. module: bf_sms_archive
+#. odoo-python
+#: code:addons/bf_sms_archive/models/voipms_transport.py:0
+msgid "getSMS: status %s"
 msgstr ""

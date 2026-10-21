@@ -3,7 +3,7 @@
 
     <!-- Sequence -->
     <record id="seq_corporate_resolution" model="ir.sequence">
-        <field name="name">Résolution corporative</field>
+        <field name="name">Corporate resolution</field>
         <field name="code">corporate.resolution</field>
         <field name="prefix">RES-%(year)s-</field>
         <field name="padding">3</field>
@@ -14,18 +14,18 @@
         <field name="name">corporate.resolution.form</field>
         <field name="model">corporate.resolution</field>
         <field name="arch" type="xml">
-            <form string="Résolution">
+            <form string="Resolution">
                 <header>
-                    <button name="action_propose" string="Proposer" type="object"
+                    <button name="action_propose" string="Propose" type="object"
                             class="btn-primary" invisible="status != 'draft'"/>
-                    <button name="action_adopt" string="Adopter" type="object"
+                    <button name="action_adopt" string="Adopt" type="object"
                             class="btn-success" invisible="status != 'proposed'"/>
-                    <button name="action_reject" string="Rejeter" type="object"
+                    <button name="action_reject" string="Reject" type="object"
                             class="btn-danger" invisible="status != 'proposed'"/>
-                    <button name="action_reset_draft" string="Brouillon" type="object"
+                    <button name="action_reset_draft" string="Draft" type="object"
                             invisible="status not in ('proposed', 'rejected')"/>
                     <button name="%(action_report_corporate_resolution)d"
-                            string="Imprimer PDF" type="action"
+                            string="Print PDF" type="action"
                             icon="fa-print"/>
                     <field name="status" widget="statusbar" clickable="1"
                            statusbar_visible="draft,proposed,adopted"/>
@@ -38,7 +38,7 @@
                         </h1>
                         <label for="name"/>
                         <h2>
-                            <field name="name" placeholder="Titre de la résolution..."/>
+                            <field name="name" placeholder="Resolution title..."/>
                         </h2>
                     </div>
                     <group>
@@ -59,15 +59,15 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Résolution" name="resolution">
-                            <group string="ATTENDU QUE...">
+                        <page string="Resolution" name="resolution">
+                            <group string="WHEREAS...">
                                 <field name="whereas_text" nolabel="1"/>
                             </group>
-                            <group string="IL EST RÉSOLU QUE...">
+                            <group string="BE IT RESOLVED THAT...">
                                 <field name="resolved_text" nolabel="1"/>
                             </group>
                         </page>
-                        <page string="Signataires" name="signatories">
+                        <page string="Signatories" name="signatories">
                             <field name="signatory_ids" nolabel="1"
                                    context="{'resolution_type': resolution_type}">
                                 <list editable="bottom">
@@ -76,19 +76,14 @@
                                     <field name="capacity"/>
                                     <field name="capacity_custom"
                                            required="capacity == 'other'"
-                                           placeholder="Vice-président, secrétaire et trésorier"/>
+                                           placeholder="Vice-president, secretary and treasurer"/>
                                     <field name="purpose"
-                                           placeholder="aux seules fins d'attester la dénonciation d'intérêt"
+                                           placeholder="for the sole purpose of attesting the disclosure of interest"
                                            optional="show"/>
                                 </list>
                             </field>
                             <div class="text-muted mt-2">
-                                Laissé vide, le PDF d'une résolution du conseil reprend les
-                                administrateurs en poste à la date de la séance, et celui d'une
-                                résolution des membres, deux lignes à remplir pour la présidence
-                                et le secrétariat d'assemblée. Une résolution des actionnaires,
-                                elle, n'a rien à déduire : sans signataire saisi, elle s'imprime
-                                avec une ligne à remplir.
+                                Left empty, the PDF of a board resolution lists the directors in office on the meeting date, and the PDF of a members' resolution prints two lines to fill in for the meeting chair and the meeting secretary. A shareholder resolution has nothing to infer: with no signatory entered, it prints with one line to fill in.
                             </div>
                         </page>
                         <page string="Documents" name="documents">
@@ -116,7 +111,7 @@
         <field name="name">corporate.resolution.list</field>
         <field name="model">corporate.resolution</field>
         <field name="arch" type="xml">
-            <list string="Résolutions"
+            <list string="Resolutions"
                   decoration-success="status == 'adopted'"
                   decoration-muted="status in ('rejected', 'superseded')"
                   decoration-info="status == 'proposed'">
@@ -141,32 +136,32 @@
         <field name="name">corporate.resolution.search</field>
         <field name="model">corporate.resolution</field>
         <field name="arch" type="xml">
-            <search string="Rechercher des résolutions">
+            <search string="Search resolutions">
                 <field name="name"/>
                 <field name="sequence"/>
                 <separator/>
-                <filter string="Brouillon" name="draft"
+                <filter string="Draft" name="draft"
                         domain="[('status', '=', 'draft')]"/>
-                <filter string="Proposé" name="proposed"
+                <filter string="Proposed" name="proposed"
                         domain="[('status', '=', 'proposed')]"/>
-                <filter string="Adopté" name="adopted"
+                <filter string="Adopted" name="adopted"
                         domain="[('status', '=', 'adopted')]"/>
                 <separator/>
-                <filter string="Conseil" name="board"
+                <filter string="Board" name="board"
                         domain="[('resolution_type', 'in', ['board', 'written_board'])]"/>
-                <filter string="Actionnaires" name="shareholder"
+                <filter string="Shareholders" name="shareholder"
                         domain="[('resolution_type', 'in', ['shareholder', 'written_shareholder'])]"/>
-                <filter string="Membres" name="members"
+                <filter string="Members" name="members"
                         domain="[('resolution_type', '=', 'members')]"/>
                 <separator/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter string="Type" name="group_type"
                             context="{'group_by': 'resolution_type'}"/>
-                    <filter string="Statut" name="group_status"
+                    <filter string="Status" name="group_status"
                             context="{'group_by': 'status'}"/>
-                    <filter string="Catégorie" name="group_category"
+                    <filter string="Category" name="group_category"
                             context="{'group_by': 'subject_category'}"/>
-                    <filter string="Date de séance" name="group_date"
+                    <filter string="Meeting day" name="group_date"
                             context="{'group_by': 'meeting_date:year'}"/>
                 </group>
             </search>
@@ -175,13 +170,13 @@
 
     <!-- Action -->
     <record id="corporate_resolution_action" model="ir.actions.act_window">
-        <field name="name">Résolutions</field>
+        <field name="name">Resolutions</field>
         <field name="res_model">corporate.resolution</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="corporate_resolution_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créer votre première résolution corporative
+                Create your first corporate resolution
             </p>
         </field>
     </record>

@@ -22,61 +22,61 @@ class CorporateResolutionSignatory(models.Model):
     """
 
     _name = 'corporate.resolution.signatory'
-    _description = 'Signataire de résolution corporative'
+    _description = "Corporate resolution signatory"
     _order = 'sequence, id'
 
     resolution_id = fields.Many2one(
         'corporate.resolution',
-        string='Résolution',
+        string="Resolution",
         required=True,
         ondelete='cascade',
         index=True,
     )
     sequence = fields.Integer(
-        string='Ordre',
+        string="Order",
         default=10,
-        help="Ordre d'impression des blocs de signature.",
+        help="Print order of the signature blocks.",
     )
     partner_id = fields.Many2one(
         'res.partner',
-        string='Signataire',
+        string="Signatory",
         required=True,
     )
     capacity = fields.Selection(
         selection=[
-            ('sole_shareholder', 'Actionnaire unique'),
-            ('shareholder', 'Actionnaire'),
-            ('sole_director', 'Administrateur unique'),
-            ('director', 'Administrateur'),
-            ('officer', 'Dirigeant'),
-            ('proxy', 'Fondé de pouvoir'),
-            ('assembly_chair', "Présidence d'assemblée"),
-            ('assembly_secretary', "Secrétariat d'assemblée"),
-            ('other', 'Autre'),
+            ('sole_shareholder', "Sole shareholder"),
+            ('shareholder', "Shareholder"),
+            ('sole_director', "Sole director"),
+            ('director', "Director"),
+            ('officer', "Officer"),
+            ('proxy', "Proxy holder"),
+            ('assembly_chair', "Meeting chair"),
+            ('assembly_secretary', "Meeting secretary"),
+            ('other', "Other"),
         ],
-        string='Qualité',
+        string="Capacity",
         required=True,
         default=lambda self: self._default_capacity(),
-        help="Qualité en laquelle la personne signe. C'est elle qui est "
-             "imprimée sous le nom. « Actionnaire » d'office, sauf sur une "
-             "résolution des membres, où elle se choisit (présidence ou "
-             "secrétariat d'assemblée, le plus souvent).",
+        help="Capacity in which the person signs. It is what is printed "
+             "under the name. \"Shareholder\" by default, except on a "
+             "members' resolution, where it must be chosen (meeting chair "
+             "or meeting secretary, most often).",
     )
     capacity_custom = fields.Char(
-        string='Qualité (texte)',
-        help="Qualité littérale, quand la liste ne suffit pas — par exemple "
-             "« Vice-président, secrétaire et trésorier ». Obligatoire quand "
-             "la qualité est « Autre ».",
+        string="Capacity (text)",
+        help="Literal capacity, when the list is not enough, for example "
+             "\"Vice-president, secretary and treasurer\". Required when "
+             "the capacity is \"Other\".",
     )
     capacity_label = fields.Char(
-        string='Qualité imprimée',
+        string="Printed capacity",
         compute='_compute_capacity_label',
     )
     purpose = fields.Char(
-        string='Fins de la signature',
-        help="Mention imprimée sous la qualité quand la signature est donnée "
-             "à une fin limitée — par exemple « aux seules fins d'attester la "
-             "dénonciation d'intérêt ».",
+        string="Signature purpose",
+        help="Note printed under the capacity when the signature is given "
+             "for a limited purpose, for example \"for the sole purpose "
+             "of attesting the disclosure of interest\".",
     )
 
     @api.model
@@ -98,6 +98,7 @@ class CorporateResolutionSignatory(models.Model):
         self.resolution_id._check_members_signatories()
 
     @api.depends('capacity', 'capacity_custom')
+    @api.depends_context('lang')
     def _compute_capacity_label(self):
         libelles = dict(
             self.fields_get(['capacity'])['capacity']['selection']
@@ -117,7 +118,7 @@ class CorporateResolutionSignatory(models.Model):
         """
         for rec in self:
             if rec.capacity == 'other' and not rec.capacity_custom:
-                raise ValidationError(_(
-                    "Précisez la qualité de %s : « Autre » sans texte "
-                    "imprimerait un nom sans qualité."
-                ) % (rec.partner_id.name or _('ce signataire')))
+                raise ValidationError(self.env._(
+                    "Specify the capacity of %s: \"Other\" without text "
+                    "would print a name with no capacity.",
+                    rec.partner_id.name or self.env._("this signatory")))

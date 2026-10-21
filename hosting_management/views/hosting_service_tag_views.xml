@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="name"/>
-                <field name="color_hex" widget="bf_color" string="Couleur"/>
+                <field name="color_hex" widget="bf_color" string="Color"/>
             </list>
         </field>
     </record>
@@ -22,7 +22,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="color_hex" widget="bf_color" string="Couleur"/>
+                        <field name="color_hex" widget="bf_color" string="Color"/>
                         <field name="active"/>
                     </group>
                 </sheet>
@@ -32,12 +32,12 @@
 
     <!-- Hosting Service Tag Action -->
     <record id="hosting_service_tag_action" model="ir.actions.act_window">
-        <field name="name">Étiquettes de service</field>
+        <field name="name">Service tags</field>
         <field name="res_model">hosting.service.tag</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créez des étiquettes pour catégoriser les services
+                Create tags to categorize services
             </p>
         </field>
     </record>

@@ -2,25 +2,25 @@
 <odoo noupdate="1">
 
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Connecter Nextcloud</field>
-        <field name="description">Renseignez l'URL, l'utilisateur et le mot de passe d'application Nextcloud dans les Paramètres.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Connexion établie</field>
+        <field name="title">Connect Nextcloud</field>
+        <field name="description">Enter the Nextcloud URL, user and app password in Settings.</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Connection established</field>
         <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
         <field name="sequence">1</field>
     </record>
 
     <record id="bf_onb_step_config" model="onboarding.onboarding.step">
-        <field name="title">Configurer le mapping de dossiers</field>
-        <field name="description">[action:bf_document_nextcloud_sync.action_nextcloud_document_config] Définissez quels dossiers NC synchroniser et où classer les fichiers téléversés.</field>
-        <field name="button_text">Voir la config</field>
-        <field name="done_text">Mapping configuré</field>
+        <field name="title">Set up the folder mapping</field>
+        <field name="description">[action:bf_document_nextcloud_sync.action_nextcloud_document_config] Define which NC folders to sync and where to file uploaded files.</field>
+        <field name="button_text">View configuration</field>
+        <field name="done_text">Mapping configured</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
 
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Sync Nextcloud — Documents</field>
+        <field name="name">Nextcloud sync: documents</field>
         <field name="route_name">bf_document_nextcloud_sync_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_document_nextcloud_sync</field>
         <field name="step_ids" eval="[

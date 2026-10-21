@@ -10,14 +10,14 @@ class ProjectProject(models.Model):
 
     nc_documents_config_id = fields.Many2one(
         "nextcloud.document.config",
-        string="Config Nextcloud Documents",
-        help="Configuration Nextcloud par defaut pour les documents de ce projet",
+        string="Nextcloud documents config",
+        help="Default Nextcloud configuration for this project's documents",
     )
     nc_documents_folder = fields.Char(
-        string="Dossier Nextcloud",
-        help="Chemin du dossier documents sur Nextcloud "
-        "(ex: /Blue Fox/Documents/). Les nouveaux documents "
-        "utiliseront ce chemin comme prefixe.",
+        string="Nextcloud folder",
+        help="Path of the documents folder on Nextcloud (e.g. /Blue "
+             "Fox/Documents/). New documents will use this path as a "
+             "prefix.",
     )
 
     @api.constrains("nc_documents_folder")

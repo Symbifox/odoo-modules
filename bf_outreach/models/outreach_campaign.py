@@ -491,7 +491,13 @@ class BfOutreachCampaign(models.Model):
         défaut la langue de l'environnement.
         """
         company = self[:1].company_id or self.env.company
-        return (user and user.lang) or company.partner_id.lang or self.env.lang
+        installees = {code for code, _nom in self.env["res.lang"].get_installed()}
+        # Bornée aux langues installées : l'activité est créée dans cet environnement, et une
+        # langue désactivée au contexte lèverait « Invalid language code ».
+        for lang in ((user and user.lang), company.partner_id.lang, self.env.lang):
+            if lang and lang in installees:
+                return lang
+        return "en_US" if "en_US" in installees else min(installees, default="en_US")
 
     # ------------------------------------------------------------------
     # Relances automatiques
@@ -549,7 +555,8 @@ class BfOutreachCampaign(models.Model):
         # Écrit par l'action planifiée (aucune langue) : langue du responsable
         # qui recevra l'activité.
         assignee = self.user_id or self.env.user
-        summary = self.with_context(lang=self._outreach_lang(assignee)).env._(
+        reader = self.with_context(lang=self._outreach_lang(assignee))
+        summary = reader.env._(
             "Outreach: %(due)s contact(s) due, %(late)s of them overdue",
             due=len(due_targets),
             late=len(overdue),
@@ -566,7 +573,9 @@ class BfOutreachCampaign(models.Model):
         }
         if activity_type:
             values["activity_type_id"] = activity_type.id
-        return self.env["mail.activity"].create(values)
+        # Créée dans la langue de l'assigné : l'avis qu'Odoo lui envoie prend son objet dans la
+        # langue de l'appelant (action_notify), le corps dans celle de l'assigné.
+        return reader.env["mail.activity"].create(values)
 
     def action_generate_followups_now(self):
         """Bouton : générer les relances du jour sans attendre l'action planifiée."""

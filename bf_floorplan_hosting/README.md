@@ -27,8 +27,13 @@ stays the truth.
 
 The user interface is in French; the strings are translatable.
 
+## Languages (18.0.1.1.1)
+
+The tooltip names a device's operating system and lifecycle state, and a server's state, in the language of the user who reads the plan, as Hosting Management translates them. They were read from the raw selection, that is the source text: with Hosting Management 18.0.2.63.0, whose source is English, a user set to French would have read them in English.
+
 ## Changelog
 
+* **18.0.1.1.1**: the tooltip reads the operating system, the lifecycle state and the server state in the language of the user who reads the plan.
 * **18.0.1.1.0** — placement filters on endpoints and servers; the assigned
   person and the copied name require read access to the device.
 * **18.0.1.0.0** — first release.

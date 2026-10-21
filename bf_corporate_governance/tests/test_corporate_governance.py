@@ -145,7 +145,14 @@ class TestCorporateSignatories(TransactionCase):
         # jeu d'essai et ferait échouer les replis pour une raison qui n'a rien
         # à voir avec ce qu'ils éprouvent.
         cls.societe = cls.env['res.company'].create({'name': 'Société d\'essai 24525'})
-        cls.env = cls.env(context=dict(cls.env.context, allowed_company_ids=[cls.societe.id]))
+        # Lu en fr_CA : la source du module est anglaise, et ces
+        # essais éprouvent le texte français du bloc de signature (l'anglais l'est
+        # par tests/test_langue_lecteur.py). Sans langue au contexte, Odoo lit la source.
+        cls.env['res.lang']._activate_lang('fr_CA')
+        # Its terms too: a fresh base (the public CI) has none.
+        cls.env['ir.module.module']._load_module_terms(['bf_corporate_governance'], ['fr_CA'], overwrite=True)
+        cls.env = cls.env(context=dict(cls.env.context, allowed_company_ids=[cls.societe.id],
+                                       lang='fr_CA'))
         cls.actionnaire = cls.env['res.partner'].create({'name': 'Actionnaire Unique'})
         cls.dirigeant = cls.env['res.partner'].create({'name': 'Dirigeant Attestant'})
         cls.ancien = cls.env['res.partner'].create({'name': 'Administrateur Sortant'})

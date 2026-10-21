@@ -1,7 +1,11 @@
 {
     "name": "Document Nextcloud Sync",
     "summary": "Synchronisation documents Odoo-Nextcloud via WebDAV",
-    "version": "18.0.1.5.0",
+    # 18.0.1.6.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.6.0",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -5,6 +5,8 @@ from datetime import timedelta
 
 from odoo import api, fields, models
 
+from .hosting_lang import reader_lang
+
 _logger = logging.getLogger(__name__)
 
 
@@ -20,7 +22,7 @@ def _human_bytes(n):
 
 class HostingDashboard(models.AbstractModel):
     _name = "hosting.dashboard"
-    _description = "Tableau de bord d'hébergement"
+    _description = "Hosting dashboard"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
@@ -54,12 +56,21 @@ class HostingDashboard(models.AbstractModel):
     # ------------------------------------------------------------------
 
     @api.model
+    def _audit_lang(self):
+        """Langue du journal d'audit : il est relu par les opérateurs, pas par
+        l'usager qui clique ; celle de la société si elle est installée, sinon en_US
+        (une langue désactivée ferait lever `env.lang`)."""
+        return reader_lang(self.env)
+
+    @api.model
     def action_refresh_all(self):
         """Run health checks + version checks + Docker checks, return summary."""
-        self.env["hosting.audit.log"]._log_event(
+        # Journal d'audit : relu par les opérateurs, dans la langue de la société.
+        journal = self.with_context(lang=self._audit_lang())
+        journal.env["hosting.audit.log"]._log_event(
             action_type="health_check",
             category="ops",
-            description="Actualisation complète du tableau de bord (santé + versions + Docker)",
+            description=journal.env._("Full dashboard refresh (health + versions + Docker)"),
             res_model=self._name,
         )
         health_check_count = 0
@@ -81,7 +92,7 @@ class HostingDashboard(models.AbstractModel):
             has_requests = True
         except ImportError:
             has_requests = False
-            health_check_errors.append("requests library not installed")
+            health_check_errors.append(self.env._("The requests library is not installed."))
 
         if has_requests:
             for service in services_to_check:
@@ -106,7 +117,7 @@ class HostingDashboard(models.AbstractModel):
                     self.env["hosting.health.check"].create({
                         "service_id": service.id,
                         "status": "timeout",
-                        "error_message": "Request timed out after 10 seconds",
+                        "error_message": self.env._("The request timed out after 10 seconds"),
                     })
                     health_check_count += 1
                 except requests.RequestException as e:
@@ -152,7 +163,7 @@ class HostingDashboard(models.AbstractModel):
             docker_check_errors = docker_results.get("errors", [])
         except Exception as e:
             _logger.exception("Docker version check failed")
-            docker_check_errors.append(f"Docker check error: {str(e)[:100]}")
+            docker_check_errors.append(self.env._("Docker check error: %s", str(e)[:100]))
 
         # 4. Recompute stored fields
         if all_services:
@@ -176,10 +187,11 @@ class HostingDashboard(models.AbstractModel):
     @api.model
     def action_run_health_checks(self):
         """Run health checks on all active services with URLs."""
-        self.env["hosting.audit.log"]._log_event(
+        journal = self.with_context(lang=self._audit_lang())
+        journal.env["hosting.audit.log"]._log_event(
             action_type="health_check",
             category="ops",
-            description="Vérification de santé manuelle lancée depuis le tableau de bord",
+            description=journal.env._("Manual health check started from the dashboard"),
             res_model=self._name,
         )
         Service = self.env["hosting.service"]
@@ -194,7 +206,7 @@ class HostingDashboard(models.AbstractModel):
         try:
             import requests
         except ImportError:
-            return {"error": "requests library not installed"}
+            return {"error": self.env._("The requests library is not installed.")}
 
         checked = 0
         up_count = 0
@@ -226,7 +238,7 @@ class HostingDashboard(models.AbstractModel):
                 self.env["hosting.health.check"].create({
                     "service_id": service.id,
                     "status": "timeout",
-                    "error_message": "Request timed out after 10 seconds",
+                    "error_message": self.env._("The request timed out after 10 seconds"),
                 })
                 down_count += 1
                 checked += 1
@@ -273,7 +285,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Expirant dans 30 jours",
+            "name": self.env._("Expiring in 30 days"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -288,7 +300,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Expirant dans 60 jours",
+            "name": self.env._("Expiring in 60 days"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -303,7 +315,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Expirant dans 90 jours",
+            "name": self.env._("Expiring in 90 days"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -317,7 +329,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_updates(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Mises à jour disponibles",
+            "name": self.env._("Available updates"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -330,7 +342,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_storage_alerts(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Alertes de stockage",
+            "name": self.env._("Storage alerts"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -343,7 +355,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_health_issues(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Problèmes de santé",
+            "name": self.env._("Health issues"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [
@@ -356,7 +368,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_active_services(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Services actifs",
+            "name": self.env._("Active services"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("state", "=", "active")],
@@ -366,7 +378,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_suspended_services(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Services suspendus",
+            "name": self.env._("Suspended services"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("state", "=", "suspended")],
@@ -376,7 +388,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_expired_services(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Services expirés",
+            "name": self.env._("Expired services"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
             "domain": [("state", "=", "expired")],
@@ -387,7 +399,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Maintenance en retard",
+            "name": self.env._("Overdue maintenance"),
             "res_model": "hosting.maintenance.schedule",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -403,7 +415,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Prévue cette semaine",
+            "name": self.env._("Due this week"),
             "res_model": "hosting.maintenance.schedule",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -420,7 +432,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Prévue ce mois-ci",
+            "name": self.env._("Due this month"),
             "res_model": "hosting.maintenance.schedule",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -436,7 +448,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_backup_runs(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Exécutions de sauvegarde",
+            "name": self.env._("Backup runs"),
             "res_model": "hosting.backup.run",
             "views": [[False, "list"], [False, "form"]],
             "context": {"search_default_filter_month": 1},
@@ -446,7 +458,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_failed_backups(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Sauvegardes échouées",
+            "name": self.env._("Failed backups"),
             "res_model": "hosting.backup.run",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("state", "in", ["failed", "partial"])],
@@ -456,7 +468,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_restic_repositories(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Dépôts Restic",
+            "name": self.env._("Restic repositories"),
             "res_model": "hosting.backup.repository",
             "views": [[False, "list"], [False, "form"]],
             "context": {"search_default_group_category": 1},
@@ -466,7 +478,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_restic_snapshots(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Snapshots Restic (24h)",
+            "name": self.env._("Restic snapshots (24h)"),
             "res_model": "hosting.backup.snapshot",
             "views": [[False, "list"]],
             "domain": [
@@ -484,7 +496,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_health_checks(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Vérifications de santé",
+            "name": self.env._("Health checks"),
             "res_model": "hosting.health.check",
             "views": [[False, "list"], [False, "form"]],
         }
@@ -635,6 +647,7 @@ class HostingDashboard(models.AbstractModel):
         rows = self.env.cr.dictfetchall()
 
         results = []
+        sans_logiciel = self.env._("(No software)")
         for r in rows:
             t24 = r["total_24h"]
             t7 = r["total_7d"]
@@ -646,7 +659,7 @@ class HostingDashboard(models.AbstractModel):
                 "partner_name": r["partner_name"],
                 "server_url": r["server_url"],
                 "software_id": r["software_id"] or 0,
-                "software_name": r["software_name"] or "(Sans logiciel)",
+                "software_name": r["software_name"] or sans_logiciel,
                 "current_status": r["current_status"],
                 "last_check": (
                     fields.Datetime.to_string(r["last_check"])
@@ -938,7 +951,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_domains(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Domaines",
+            "name": self.env._("Domains"),
             "res_model": "hosting.domain",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("state", "!=", "transferred")],
@@ -949,7 +962,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Domaines expirant (30j)",
+            "name": self.env._("Expiring domains (30d)"),
             "res_model": "hosting.domain",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -964,7 +977,7 @@ class HostingDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "SSL expirant (30j)",
+            "name": self.env._("Expiring SSL (30d)"),
             "res_model": "hosting.domain",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -978,7 +991,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_domains_no_auto_renew(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Domaines sans renouvellement auto",
+            "name": self.env._("Domains without auto-renewal"),
             "res_model": "hosting.domain",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -992,7 +1005,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_audit_log(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Journal d'audit",
+            "name": self.env._("Audit log"),
             "res_model": "hosting.audit.log",
             "views": [[False, "list"], [False, "form"]],
         }
@@ -1001,7 +1014,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_audit_log_24h(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Audit (24h)",
+            "name": self.env._("Audit (24h)"),
             "res_model": "hosting.audit.log",
             "views": [[False, "list"], [False, "form"]],
             "context": {"search_default_filter_today": 1},
@@ -1011,7 +1024,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_audit_log_7d(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Audit (7 jours)",
+            "name": self.env._("Audit (7 days)"),
             "res_model": "hosting.audit.log",
             "views": [[False, "list"], [False, "form"]],
             "context": {"search_default_filter_week": 1},
@@ -1021,7 +1034,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_audit_critical_7d(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Critiques (7 jours)",
+            "name": self.env._("Critical (7 days)"),
             "res_model": "hosting.audit.log",
             "views": [[False, "list"], [False, "form"]],
             "context": {
@@ -1034,7 +1047,7 @@ class HostingDashboard(models.AbstractModel):
     def action_view_security_events_open(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Incidents ouverts",
+            "name": self.env._("Open incidents"),
             "res_model": "hosting.security.event",
             "views": [[False, "list"], [False, "form"]],
             "context": {"search_default_filter_active": 1},

@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class HostingNtfy(models.AbstractModel):
     _name = "hosting.ntfy"
-    _description = "Publication de notifications push via ntfy"
+    _description = "Push notification publishing via ntfy"
 
     @api.model
     def _get_config(self):

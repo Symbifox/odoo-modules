@@ -6,7 +6,7 @@
             <!-- Loading State -->
             <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Chargement...</span>
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
 
@@ -17,11 +17,11 @@
                         <div class="alert alert-warning d-flex align-items-center" role="alert">
                             <i class="fa fa-exclamation-triangle fa-2x me-3"/>
                             <div class="flex-grow-1">
-                                <strong>Erreur de chargement</strong>
-                                <p class="mb-0">Impossible de charger les données du tableau de bord. Veuillez réessayer.</p>
+                                <strong>Loading error</strong>
+                                <p class="mb-0">Could not load the dashboard data. Please try again.</p>
                             </div>
                             <button class="btn btn-outline-warning" t-on-click="refresh">
-                                <i class="fa fa-refresh me-1"/>Réessayer
+                                <i class="fa fa-refresh me-1"/>Retry
                             </button>
                         </div>
                     </div>
@@ -36,22 +36,22 @@
                     <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
                             <h1 class="mb-0">
-                                <i class="fa fa-server me-2"/>Tableau de bord d'hébergement
+                                <i class="fa fa-server me-2"/>Hosting dashboard
                             </h1>
-                            <p class="text-muted mb-0">Vue d'ensemble de l'infrastructure et des services</p>
+                            <p class="text-muted mb-0">Overview of infrastructure and services</p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
                             <button class="btn btn-primary" t-on-click="refreshAll" t-att-disabled="state.refreshing">
-                                <i t-attf-class="fa {{state.refreshing ? 'fa-spinner fa-spin' : 'fa-sync'}} me-1"/>Actualiser tout
+                                <i t-attf-class="fa {{state.refreshing ? 'fa-spinner fa-spin' : 'fa-sync'}} me-1"/>Refresh all
                             </button>
                             <button class="btn btn-outline-secondary" t-on-click="runHealthChecks" t-att-disabled="state.refreshing">
-                                <i class="fa fa-heartbeat me-1"/>Santé
+                                <i class="fa fa-heartbeat me-1"/>Health
                             </button>
                             <button class="btn btn-outline-secondary" t-on-click="checkVersions" t-att-disabled="state.refreshing">
                                 <i class="fa fa-code-fork me-1"/>Versions
                             </button>
                             <button class="btn btn-outline-secondary" t-on-click="refresh" t-att-disabled="state.refreshing">
-                                <i class="fa fa-refresh me-1"/>Recharger
+                                <i class="fa fa-refresh me-1"/>Reload
                             </button>
                         </div>
                     </div>
@@ -63,8 +63,8 @@
                         <div class="alert alert-danger d-flex align-items-center cursor-pointer" role="alert" t-on-click="openHealthIssues">
                             <i class="fa fa-exclamation-triangle fa-2x me-3"/>
                             <div class="flex-grow-1">
-                                <strong>Attention!</strong>
-                                <t t-esc="state.data.uptime_overview.down_count"/> service(s) actuellement en panne.
+                                <strong>Warning!</strong>
+                                <t t-esc="state.data.uptime_overview.down_count"/> service(s) currently down.
                             </div>
                             <i class="fa fa-chevron-right"/>
                         </div>
@@ -75,7 +75,7 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-signal me-2"/>Disponibilité (24h)
+                            <i class="fa fa-signal me-2"/>Uptime (24h)
                         </h5>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
@@ -84,7 +84,7 @@
                                 <h2 t-attf-class="mb-0 {{state.data.uptime_overview.uptime_pct >= 99.5 ? 'text-success' : state.data.uptime_overview.uptime_pct >= 95 ? 'text-warning' : 'text-danger'}}">
                                     <t t-esc="state.data.uptime_overview.uptime_pct"/>%
                                 </h2>
-                                <small class="text-muted">Disponibilité globale</small>
+                                <small class="text-muted">Overall uptime</small>
                             </div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                                 <h2 class="text-primary mb-0">
                                     <t t-esc="formatResponseTime(state.data.uptime_overview.avg_response_ms)"/>
                                 </h2>
-                                <small class="text-muted">Temps de réponse moyen</small>
+                                <small class="text-muted">Average response time</small>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.uptime_overview.down_count > 0 ? 'border-danger' : ''}}" t-on-click="openHealthIssues">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.uptime_overview.down_count > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.uptime_overview.down_count"/>
-                                <small class="text-muted">Services en panne</small>
+                                <small class="text-muted">Services down</small>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                         <div class="card h-100 cursor-pointer" t-on-click="openHealthChecks">
                             <div class="card-body text-center">
                                 <h2 class="text-muted mb-0" t-esc="state.data.uptime_overview.monitored_services"/>
-                                <small class="text-muted">Services surveillés</small>
+                                <small class="text-muted">Monitored services</small>
                             </div>
                         </div>
                     </div>
@@ -121,9 +121,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0"><i class="fa fa-cubes me-2"/>Disponibilité par logiciel</h6>
+                                <h6 class="mb-0"><i class="fa fa-cubes me-2"/>Uptime by software</h6>
                                 <span class="badge text-bg-secondary">
-                                    <t t-esc="state.data.uptime_by_software.length"/> logiciels ·
+                                    <t t-esc="state.data.uptime_by_software.length"/> software ·
                                     <t t-esc="state.data.uptime_by_service.length"/> services
                                 </span>
                             </div>
@@ -133,14 +133,14 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th style="width: 28px;"/>
-                                                <th>Logiciel / Service</th>
+                                                <th>Software / service</th>
                                                 <th>Client</th>
                                                 <th class="text-end">24h</th>
-                                                <th class="text-end">7j</th>
-                                                <th class="text-end">30j</th>
-                                                <th class="text-end">Stockage</th>
-                                                <th class="text-end">Temps rép.</th>
-                                                <th class="text-end">Vérif. (30j)</th>
+                                                <th class="text-end">7d</th>
+                                                <th class="text-end">30d</th>
+                                                <th class="text-end">Storage</th>
+                                                <th class="text-end">Resp. time</th>
+                                                <th class="text-end">Checks (30d)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -155,17 +155,17 @@
                                                     <td>
                                                         <strong t-esc="grp.software_name"/>
                                                         <span class="badge text-bg-light ms-2"
-                                                              t-esc="grp.service_count + ' svc'"/>
+                                                              t-esc="formatServiceCount(grp.service_count)"/>
                                                         <span t-if="grp.worst_status !== 'up'"
                                                               t-att-class="'badge ms-1 ' + getStatusClass(grp.worst_status)"
                                                               t-esc="getStatusLabel(grp.worst_status)"/>
                                                     </td>
                                                     <td class="text-muted small">
                                                         <span t-if="grp.down_count > 0" class="text-danger me-2">
-                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.down_count"/> en panne
+                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.down_count"/> down
                                                         </span>
                                                         <span t-if="grp.degraded_count > 0" class="text-warning me-2">
-                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.degraded_count"/> dégradé
+                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.degraded_count"/> degraded
                                                         </span>
                                                         <span t-if="grp.up_count > 0" class="text-success">
                                                             <i class="fa fa-circle me-1"/><t t-esc="grp.up_count"/> ok
@@ -250,14 +250,14 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-exclamation-triangle me-2"/>Alertes
+                            <i class="fa fa-exclamation-triangle me-2"/>Alerts
                         </h5>
                     </div>
                     <div class="col-md-4 mb-3">
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.updates_available > 0 ? 'border-primary' : ''}}" t-on-click="openUpdates">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.alerts.updates_available > 0 ? 'text-primary' : 'text-muted'}}" t-esc="state.data.alerts.updates_available"/>
-                                <small class="text-muted"><i class="fa fa-refresh me-1"/>Mises à jour</small>
+                                <small class="text-muted"><i class="fa fa-refresh me-1"/>Updates</small>
                             </div>
                         </div>
                     </div>
@@ -265,7 +265,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.storage_alerts > 0 ? 'border-warning' : ''}}" t-on-click="openStorageAlerts">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.alerts.storage_alerts > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.alerts.storage_alerts"/>
-                                <small class="text-muted"><i class="fa fa-database me-1"/>Stockage</small>
+                                <small class="text-muted"><i class="fa fa-database me-1"/>Storage</small>
                             </div>
                         </div>
                     </div>
@@ -273,7 +273,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.health_issues > 0 ? 'border-danger' : ''}}" t-on-click="openHealthIssues">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.alerts.health_issues > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.alerts.health_issues"/>
-                                <small class="text-muted"><i class="fa fa-heartbeat me-1"/>Santé</small>
+                                <small class="text-muted"><i class="fa fa-heartbeat me-1"/>Health</small>
                             </div>
                         </div>
                     </div>
@@ -283,14 +283,14 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-clock-o me-2"/>Services expirant
+                            <i class="fa fa-clock-o me-2"/>Expiring services
                         </h5>
                     </div>
                     <div class="col-md-4 mb-3">
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_30 > 0 ? 'border-danger' : ''}}" t-on-click="openExpiring30">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_30 > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.expiring.expiring_30"/>
-                                <small class="text-muted">30 jours</small>
+                                <small class="text-muted">30 days</small>
                             </div>
                         </div>
                     </div>
@@ -298,7 +298,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_60 > 0 ? 'border-warning' : ''}}" t-on-click="openExpiring60">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_60 > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.expiring.expiring_60"/>
-                                <small class="text-muted">60 jours</small>
+                                <small class="text-muted">60 days</small>
                             </div>
                         </div>
                     </div>
@@ -306,7 +306,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_90 > 0 ? 'border-info' : ''}}" t-on-click="openExpiring90">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_90 > 0 ? 'text-info' : 'text-muted'}}" t-esc="state.data.expiring.expiring_90"/>
-                                <small class="text-muted">90 jours</small>
+                                <small class="text-muted">90 days</small>
                             </div>
                         </div>
                     </div>
@@ -322,15 +322,15 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openMaintenanceOverdue">
-                                    <span><i class="fa fa-exclamation-circle text-danger me-2"/>En retard</span>
+                                    <span><i class="fa fa-exclamation-circle text-danger me-2"/>Overdue</span>
                                     <strong t-attf-class="{{state.data.maintenance.overdue > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.maintenance.overdue"/>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openMaintenanceDueWeek">
-                                    <span><i class="fa fa-calendar text-warning me-2"/>Cette semaine</span>
+                                    <span><i class="fa fa-calendar text-warning me-2"/>This week</span>
                                     <strong t-attf-class="{{state.data.maintenance.due_week > 0 ? 'text-warning' : ''}}" t-esc="state.data.maintenance.due_week"/>
                                 </div>
                                 <div class="d-flex justify-content-between cursor-pointer" t-on-click="openMaintenanceDueMonth">
-                                    <span><i class="fa fa-calendar-o text-primary me-2"/>Ce mois-ci</span>
+                                    <span><i class="fa fa-calendar-o text-primary me-2"/>This month</span>
                                     <strong t-esc="state.data.maintenance.due_month"/>
                                 </div>
                             </div>
@@ -341,11 +341,11 @@
                     <div class="col-md-6 mb-3">
                         <div class="card h-100">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0"><i class="fa fa-database me-2"/>Sauvegardes</h6>
+                                <h6 class="mb-0"><i class="fa fa-database me-2"/>Backups</h6>
                             </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupRuns">
-                                    <span><i class="fa fa-clock-o me-2"/>Dernière exécution</span>
+                                    <span><i class="fa fa-clock-o me-2"/>Last run</span>
                                     <span t-if="state.data.backups.last_run_date">
                                         <span t-attf-class="badge {{state.data.backups.last_run_state === 'success' ? 'text-bg-success' : state.data.backups.last_run_state === 'partial' ? 'text-bg-warning' : 'text-bg-danger'}}"
                                               t-esc="state.data.backups.last_run_state"/>
@@ -353,11 +353,11 @@
                                     <span t-else="" class="text-muted">-</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupRuns">
-                                    <span><i class="fa fa-check-circle text-success me-2"/>Réussis</span>
+                                    <span><i class="fa fa-check-circle text-success me-2"/>Succeeded</span>
                                     <strong class="text-success" t-esc="state.data.backups.success_count"/>
                                 </div>
                                 <div class="d-flex justify-content-between cursor-pointer" t-on-click="openFailedBackups">
-                                    <span><i class="fa fa-times-circle text-danger me-2"/>Échoués</span>
+                                    <span><i class="fa fa-times-circle text-danger me-2"/>Failed</span>
                                     <strong t-attf-class="{{state.data.backups.failed_count > 0 ? 'text-danger' : ''}}" t-esc="state.data.backups.failed_count"/>
                                 </div>
                             </div>
@@ -368,23 +368,23 @@
                     <div t-if="state.data.backups.restic_repo_count" class="col-md-6 mb-3">
                         <div t-attf-class="card h-100 {{state.data.backups.restic_stale_count > 0 ? 'border-warning' : 'border-success'}}">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0"><i class="fa fa-snowflake-o me-2"/>Restic <small class="text-muted ms-1">dédup</small></h6>
+                                <h6 class="mb-0"><i class="fa fa-snowflake-o me-2"/>Restic <small class="text-muted ms-1">dedup</small></h6>
                             </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticRepos">
-                                    <span><i class="fa fa-archive me-2"/>Dépôts actifs</span>
+                                    <span><i class="fa fa-archive me-2"/>Active repositories</span>
                                     <strong t-esc="state.data.backups.restic_repo_count"/>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticRepos">
-                                    <span><i class="fa fa-exclamation-triangle me-2"/>Périmés (>27h)</span>
+                                    <span><i class="fa fa-exclamation-triangle me-2"/>Stale (>27h)</span>
                                     <strong t-attf-class="{{state.data.backups.restic_stale_count > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.backups.restic_stale_count"/>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticSnapshots">
-                                    <span><i class="fa fa-camera me-2"/>Snapshots 24h</span>
+                                    <span><i class="fa fa-camera me-2"/>24h snapshots</span>
                                     <strong t-esc="state.data.backups.restic_snapshots_24h"/>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span><i class="fa fa-cloud me-2"/>Bucket S3</span>
+                                    <span><i class="fa fa-cloud me-2"/>S3 bucket</span>
                                     <strong t-esc="state.data.backups.bucket_total_human"/>
                                 </div>
                             </div>
@@ -396,7 +396,7 @@
                 <div t-if="state.data.domains" class="row mb-4">
                     <div class="col-12">
                         <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-globe me-2"/>Domaines
+                            <i class="fa fa-globe me-2"/>Domains
                         </h5>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
@@ -411,7 +411,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.expiring_30 > 0 ? 'border-danger' : ''}}" t-on-click="openDomainsExpiring">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.domains.expiring_30 > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.domains.expiring_30"/>
-                                <small class="text-muted">Expirant (30j)</small>
+                                <small class="text-muted">Expiring (30d)</small>
                             </div>
                         </div>
                     </div>
@@ -419,7 +419,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.ssl_expiring > 0 ? 'border-warning' : ''}}" t-on-click="openSslExpiring">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.domains.ssl_expiring > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.domains.ssl_expiring"/>
-                                <small class="text-muted">SSL expirant</small>
+                                <small class="text-muted">Expiring SSL</small>
                             </div>
                         </div>
                     </div>
@@ -427,7 +427,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.no_auto_renew > 0 ? 'border-info' : ''}}" t-on-click="openDomainsNoAutoRenew">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.domains.no_auto_renew > 0 ? 'text-info' : 'text-muted'}}" t-esc="state.data.domains.no_auto_renew"/>
-                                <small class="text-muted">Sans renouvellement auto</small>
+                                <small class="text-muted">No auto-renewal</small>
                             </div>
                         </div>
                     </div>
@@ -437,7 +437,7 @@
                 <div t-if="state.data.security" class="row mb-4">
                     <div class="col-12">
                         <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-shield me-2"/>Sécurité et audit
+                            <i class="fa fa-shield me-2"/>Security and audit
                         </h5>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
@@ -452,7 +452,7 @@
                         <div class="card h-100 cursor-pointer" t-on-click="openAuditLog7d">
                             <div class="card-body text-center">
                                 <h2 class="text-muted mb-0" t-esc="state.data.security.audit_7d"/>
-                                <small class="text-muted">Audit (7j)</small>
+                                <small class="text-muted">Audit (7d)</small>
                             </div>
                         </div>
                     </div>
@@ -460,7 +460,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.security.critical_7d > 0 ? 'border-danger' : ''}}" t-on-click="openAuditCritical7d">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.security.critical_7d > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.security.critical_7d"/>
-                                <small class="text-muted">Critiques (7j)</small>
+                                <small class="text-muted">Critical (7d)</small>
                             </div>
                         </div>
                     </div>
@@ -468,7 +468,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.security.incidents_open > 0 ? 'border-warning' : ''}}" t-on-click="openSecurityEventsOpen">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.security.incidents_open > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.security.incidents_open"/>
-                                <small class="text-muted">Incidents ouverts</small>
+                                <small class="text-muted">Open incidents</small>
                             </div>
                         </div>
                     </div>
@@ -485,7 +485,7 @@
                         <div class="card h-100 cursor-pointer border-success" t-on-click="openActiveServices">
                             <div class="card-body text-center">
                                 <h2 class="text-success mb-0" t-esc="state.data.services.active"/>
-                                <small class="text-muted">Actifs</small>
+                                <small class="text-muted">Active</small>
                             </div>
                         </div>
                     </div>
@@ -493,7 +493,7 @@
                         <div class="card h-100 cursor-pointer" t-on-click="openSuspendedServices">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.services.suspended > 0 ? 'text-secondary' : 'text-muted'}}" t-esc="state.data.services.suspended"/>
-                                <small class="text-muted">Suspendus</small>
+                                <small class="text-muted">Suspended</small>
                             </div>
                         </div>
                     </div>
@@ -501,7 +501,7 @@
                         <div t-attf-class="card h-100 cursor-pointer {{state.data.services.expired > 0 ? 'border-danger' : ''}}" t-on-click="openExpiredServices">
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.services.expired > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.services.expired"/>
-                                <small class="text-muted">Expirés</small>
+                                <small class="text-muted">Expired</small>
                             </div>
                         </div>
                     </div>

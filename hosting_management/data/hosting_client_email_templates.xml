@@ -8,11 +8,13 @@
         <!-- ctx : message_body (HTML libre)                              -->
         <!-- ============================================================ -->
         <record id="mail_template_client_generic" model="mail.template">
-            <field name="name">Client : Mod&#232;le polyvalent</field>
+            <field name="name">Client: General-purpose template</field>
             <field name="model_id" ref="base.model_res_partner"/>
+            <!-- Rendu dans la langue du client : sans elle, celle de l'expéditeur. -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
-            <field name="subject">{{ ctx.get('email_subject', 'Information importante') }} - {{ object.company_id.name }}</field>
+            <field name="subject">{{ ctx.get('email_subject', 'Important information') }} - {{ object.company_id.name }}</field>
             <field name="body_html" type="html">
 
 
@@ -20,18 +22,18 @@
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
 <p t-attf-style="margin:0 0 20px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
-                          Bonjour <t t-out="object.name or 'cher client'"/>,
+                          Hello <t t-out="object.name or 'valued customer'"/>,
                         </p>
 
                         <!-- Contenu libre via ctx -->
                         <t t-out="ctx.get('message_body', '')"/>
 
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          N'h&#233;sitez pas &#224; nous contacter pour toute question.
+                          Feel free to contact us with any questions.
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
-                          Cordialement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          Best regards,<br/>
+                          <strong>The <t t-out="company.name or 'support'"/> team</strong>
                         </p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -44,23 +46,25 @@
         <!--       updates_count, next_maintenance                        -->
         <!-- ============================================================ -->
         <record id="mail_template_client_monthly_report" model="mail.template">
-            <field name="name">Client : Rapport mensuel</field>
+            <field name="name">Client: Monthly report</field>
             <field name="model_id" ref="base.model_res_partner"/>
+            <!-- Rendu dans la langue du client : sans elle, celle de l'expéditeur. -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
-            <field name="subject">Rapport mensuel de vos services - {{ ctx.get('report_month', 'ce mois') }} - {{ object.company_id.name }}</field>
+            <field name="subject">Monthly report for your services - {{ ctx.get('report_month', 'this month') }} - {{ object.company_id.name }}</field>
             <field name="body_html" type="html">
 
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Rapport mensuel</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Monthly report</p>
 <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
-                          Bonjour <t t-out="object.name or 'cher client'"/>,
+                          Hello <t t-out="object.name or 'valued customer'"/>,
                         </p>
                         <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          Voici le r&#233;sum&#233; de vos services pour <strong><t t-out="ctx.get('report_month', 'le mois dernier')"/></strong>.
+                          Here is the summary of your services for <strong><t t-out="ctx.get('report_month', 'last month')"/></strong>.
                         </p>
 
                         <!-- KPI Grid - 2x2 -->
@@ -70,7 +74,7 @@
                               <!-- Services actifs -->
                               <td width="48%" style="padding:16px;background-color:#F0F9FF;border-radius:12px;vertical-align:top;">
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#0369A1;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Services actifs
+                                  Active services
                                 </p>
                                 <p t-attf-style="margin:4px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:32px;font-weight:700;color:{{ brand_dark }};line-height:40px;">
                                   <t t-out="ctx.get('services_count', '-')"/>
@@ -80,7 +84,7 @@
                               <!-- Disponibilit&#233; -->
                               <td width="48%" style="padding:16px;background-color:#ECFDF5;border-radius:12px;vertical-align:top;">
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#047857;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Disponibilit&#233;
+                                  Uptime
                                 </p>
                                 <p t-attf-style="margin:4px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:32px;font-weight:700;color:{{ brand_dark }};line-height:40px;">
                                   <t t-out="ctx.get('uptime_rate', '-')"/>
@@ -92,7 +96,7 @@
                               <!-- Sauvegardes -->
                               <td width="48%" style="padding:16px;background-color:#F0FDF4;border-radius:12px;vertical-align:top;">
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#15803D;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Sauvegardes r&#233;ussies
+                                  Successful backups
                                 </p>
                                 <p t-attf-style="margin:4px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:32px;font-weight:700;color:{{ brand_dark }};line-height:40px;">
                                   <t t-out="ctx.get('backups_ok', '-')"/>
@@ -102,7 +106,7 @@
                               <!-- Mises &#224; jour -->
                               <td width="48%" style="padding:16px;background-color:#EFF6FF;border-radius:12px;vertical-align:top;">
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#1D4ED8;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Mises &#224; jour appliqu&#233;es
+                                  Updates applied
                                 </p>
                                 <p t-attf-style="margin:4px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:32px;font-weight:700;color:{{ brand_dark }};line-height:40px;">
                                   <t t-out="ctx.get('updates_count', '-')"/>
@@ -119,7 +123,7 @@
                               <tr>
                                 <td style="padding:16px 20px;background-color:#FFFBEB;border-radius:12px;border-left-width:4px; border-left-style:solid; border-left-color:#F59E0B;">
                                   <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;">
-                                    Prochaine maintenance planifi&#233;e
+                                    Next scheduled maintenance
                                   </p>
                                   <p t-attf-style="margin:6px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:500;color:{{ brand_dark }};">
                                     <t t-out="ctx.get('next_maintenance')"/>
@@ -136,11 +140,11 @@
                         </t>
 
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          Pour toute question sur ce rapport, n'h&#233;sitez pas &#224; nous contacter.
+                          If you have any questions about this report, feel free to contact us.
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
-                          Cordialement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          Best regards,<br/>
+                          <strong>The <t t-out="company.name or 'support'"/> team</strong>
                         </p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -155,23 +159,25 @@
         <!-- templates client : générique, mensuel)                       -->
         <!-- ============================================================ -->
         <record id="mail_template_client_maintenance_notice" model="mail.template">
-            <field name="name">Client : Avis de maintenance</field>
+            <field name="name">Client: Maintenance notice</field>
             <field name="model_id" ref="base.model_res_partner"/>
+            <!-- Rendu dans la langue du client : sans elle, celle de l'expéditeur. -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
-            <field name="subject">Avis de maintenance planifi&#233;e - {{ ctx.get('maintenance_date', '') }} - {{ object.company_id.name }}</field>
+            <field name="subject">Scheduled maintenance notice - {{ ctx.get('maintenance_date', '') }} - {{ object.company_id.name }}</field>
             <field name="body_html" type="html">
 
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Avis de maintenance</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Maintenance notice</p>
 <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
-                          Bonjour <t t-out="object.name or 'cher client'"/>,
+                          Hello <t t-out="object.name or 'valued customer'"/>,
                         </p>
                         <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          Nous vous informons qu'une maintenance planifi&#233;e est pr&#233;vue sur vos services.
+                          We would like to let you know that scheduled maintenance is planned for your services.
                         </p>
 
                         <!-- Maintenance details card -->
@@ -184,10 +190,10 @@
                                   <tbody>
                                     <tr>
                                       <td width="140" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;padding-top:2px;">
-                                        Date et heure
+                                        Date and time
                                       </td>
                                       <td t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:500;color:{{ brand_dark }};">
-                                        <t t-out="ctx.get('maintenance_date', '&#192; d&#233;terminer')"/>
+                                        <t t-out="ctx.get('maintenance_date', 'To be determined')"/>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -201,10 +207,10 @@
                                   <tbody>
                                     <tr>
                                       <td width="140" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;padding-top:2px;">
-                                        Dur&#233;e estim&#233;e
+                                        Estimated duration
                                       </td>
                                       <td t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:500;color:{{ brand_dark }};">
-                                        <t t-out="ctx.get('maintenance_duration', '&#192; d&#233;terminer')"/>
+                                        <t t-out="ctx.get('maintenance_duration', 'To be determined')"/>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -218,10 +224,10 @@
                                   <tbody>
                                     <tr>
                                       <td width="140" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;padding-top:2px;">
-                                        Services affect&#233;s
+                                        Affected services
                                       </td>
                                       <td t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:500;color:{{ brand_dark }};">
-                                        <t t-out="ctx.get('affected_services', 'Tous les services')"/>
+                                        <t t-out="ctx.get('affected_services', 'All services')"/>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -235,10 +241,10 @@
                                   <tbody>
                                     <tr>
                                       <td width="140" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;padding-top:2px;">
-                                        Impact attendu
+                                        Expected impact
                                       </td>
                                       <td t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:500;color:{{ brand_dark }};">
-                                        <t t-out="ctx.get('expected_impact', 'Interruption temporaire possible')"/>
+                                        <t t-out="ctx.get('expected_impact', 'Possible temporary interruption')"/>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -254,11 +260,11 @@
                         </t>
 
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          Nous ferons tout pour minimiser l'impact sur vos op&#233;rations. En cas de question, n'h&#233;sitez pas &#224; nous joindre.
+                          We will do everything we can to minimize the impact on your operations. If you have any questions, feel free to reach out.
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
-                          Cordialement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          Best regards,<br/>
+                          <strong>The <t t-out="company.name or 'support'"/> team</strong>
                         </p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -272,23 +278,25 @@
         <!-- Accent bar : verte #059669 (succ&#232;s)                     -->
         <!-- ============================================================ -->
         <record id="mail_template_client_intervention_report" model="mail.template">
-            <field name="name">Client : Rapport d'intervention</field>
+            <field name="name">Client: Intervention report</field>
             <field name="model_id" ref="base.model_res_partner"/>
+            <!-- Rendu dans la langue du client : sans elle, celle de l'expéditeur. -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
-            <field name="subject">Rapport d'intervention compl&#233;t&#233;e - {{ object.company_id.name }}</field>
+            <field name="subject">Completed intervention report - {{ object.company_id.name }}</field>
             <field name="body_html" type="html">
 
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Intervention complétée</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Intervention completed</p>
 <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
-                          Bonjour <t t-out="object.name or 'cher client'"/>,
+                          Hello <t t-out="object.name or 'valued customer'"/>,
                         </p>
                         <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          Nous avons compl&#233;t&#233; une intervention sur vos services. Voici le r&#233;sum&#233;.
+                          We have completed an intervention on your services. Here is the summary.
                         </p>
 
                         <!-- Success badge -->
@@ -297,7 +305,7 @@
                             <tr>
                               <td style="padding:16px 20px;background-color:#ECFDF5;border-radius:12px;border-left-width:4px; border-left-style:solid; border-left-color:#059669;">
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:600;color:#059669;">
-                                  &#10003; Intervention r&#233;ussie
+                                  &#10003; Intervention successful
                                 </p>
                               </td>
                             </tr>
@@ -311,10 +319,10 @@
                             <tr>
                               <td style="padding:20px 20px 0 20px;">
                                 <p style="margin:0 0 6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Travaux effectu&#233;s
+                                  Work performed
                                 </p>
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
-                                  <t t-out="ctx.get('intervention_summary', 'Maintenance de routine effectu&#233;e avec succ&#232;s.')"/>
+                                  <t t-out="ctx.get('intervention_summary', 'Routine maintenance completed successfully.')"/>
                                 </p>
                               </td>
                             </tr>
@@ -322,10 +330,10 @@
                             <tr>
                               <td style="padding:16px 20px 0 20px;">
                                 <p style="margin:0 0 6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;">
-                                  Dur&#233;e
+                                  Duration
                                 </p>
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
-                                  <t t-out="ctx.get('intervention_duration', 'Non sp&#233;cifi&#233;e')"/>
+                                  <t t-out="ctx.get('intervention_duration', 'Not specified')"/>
                                 </p>
                               </td>
                             </tr>
@@ -333,10 +341,10 @@
                             <tr>
                               <td style="padding:16px 20px 0 20px;">
                                 <p style="margin:0 0 6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;">
-                                  R&#233;sultat
+                                  Result
                                 </p>
                                 <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
-                                  <t t-out="ctx.get('intervention_result', 'Tous les services fonctionnent normalement.')"/>
+                                  <t t-out="ctx.get('intervention_result', 'All services are operating normally.')"/>
                                 </p>
                               </td>
                             </tr>
@@ -345,7 +353,7 @@
                               <tr>
                                 <td style="padding:16px 20px 20px 20px;">
                                   <p style="margin:0 0 6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#0369A1;text-transform:uppercase;letter-spacing:0.5px;">
-                                    Recommandations
+                                    Recommendations
                                   </p>
                                   <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                     <t t-out="ctx.get('recommendations')"/>
@@ -367,11 +375,11 @@
                         </t>
 
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
-                          N'h&#233;sitez pas &#224; nous contacter si vous avez des questions.
+                          Feel free to contact us if you have any questions.
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
-                          Cordialement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          Best regards,<br/>
+                          <strong>The <t t-out="company.name or 'support'"/> team</strong>
                         </p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -385,23 +393,25 @@
         <!-- Design : Plus a&#233;r&#233;, gradient-like accent           -->
         <!-- ============================================================ -->
         <record id="mail_template_client_welcome" model="mail.template">
-            <field name="name">Client : Bienvenue</field>
+            <field name="name">Client: Welcome</field>
             <field name="model_id" ref="base.model_res_partner"/>
+            <!-- Rendu dans la langue du client : sans elle, celle de l'expéditeur. -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
-            <field name="subject">Bienvenue ! Vos services sont pr&#234;ts</field>
+            <field name="subject">Welcome! Your services are ready</field>
             <field name="body_html" type="html">
 
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
-<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Bienvenue !</p>
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Welcome!</p>
 <p t-attf-style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;line-height:30px;color:{{ brand_dark }};font-weight:500;">
-                          Bonjour <t t-out="object.name or 'cher client'"/>,
+                          Hello <t t-out="object.name or 'valued customer'"/>,
                         </p>
                         <p style="margin:0 0 28px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:28px;color:#374151;font-weight:300;">
-                          Nous sommes ravis de vous compter parmi nos clients. Vos services sont maintenant actifs et pr&#234;ts &#224; l'emploi. Voici tout ce dont vous avez besoin pour bien d&#233;marrer.
+                          We are delighted to welcome you as a customer. Your services are now active and ready to use. Here is everything you need to get started.
                         </p>
 
                         <!-- Services activ&#233;s -->
@@ -411,7 +421,7 @@
                               <tr>
                                 <td style="padding:20px;background-color:#F0F9FF;border-radius:12px;">
                                   <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#0369A1;text-transform:uppercase;letter-spacing:0.5px;">
-                                    Vos services activ&#233;s
+                                    Your activated services
                                   </p>
                                   <t t-out="ctx.get('activated_services')"/>
                                 </td>
@@ -426,13 +436,13 @@
                             <tr>
                               <td style="padding:20px;">
                                 <p t-attf-style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;font-weight:600;color:{{ brand_dark }};">
-                                  Comment nous joindre
+                                  How to reach us
                                 </p>
                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                   <tbody>
                                     <tr>
                                       <td style="padding:6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;font-weight:300;">
-                                        Courriel :
+                                        Email:
                                         <a t-attf-href="mailto:{{ ctx.get('support_email') or company.email or '' }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;font-weight:400;">
                                           <t t-out="ctx.get('support_email') or company.email or ''"/>
                                         </a>
@@ -440,7 +450,7 @@
                                     </tr>
                                     <tr>
                                       <td style="padding:6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;font-weight:300;">
-                                        T&#233;l&#233;phone :
+                                        Phone:
                                         <a t-attf-href="tel:{{ ctx.get('support_phone') or company.phone or '' }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;font-weight:400;">
                                           <t t-out="ctx.get('support_phone') or company.phone or ''"/>
                                         </a>
@@ -449,9 +459,9 @@
                                     <t t-if="ctx.get('portal_url')">
                                       <tr>
                                         <td style="padding:6px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;font-weight:300;">
-                                          Portail client :
+                                          Customer portal:
                                           <a t-attf-href="{{ ctx.get('portal_url') }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;font-weight:400;">
-                                            Acc&#233;der au portail
+                                            Go to the portal
                                           </a>
                                         </td>
                                       </tr>
@@ -469,7 +479,7 @@
                             <tr>
                               <td align="center">
                                 <a t-attf-href="{{ ctx.get('cta_url') or company.website or object.get_base_url() }}" t-attf-style="display:inline-block;padding:14px 36px;background-color:{{ brand_primary }};color:#ffffff;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:600;text-decoration:none;border-radius:10px;">
-                                  D&#233;couvrir nos services
+                                  Discover our services
                                 </a>
                               </td>
                             </tr>
@@ -482,11 +492,11 @@
                         </t>
 
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:28px;color:#374151;font-weight:300;">
-                          Nous avons h&#226;te de collaborer avec vous. N'h&#233;sitez pas &#224; nous contacter pour toute question !
+                          We look forward to working with you. Feel free to contact us with any questions!
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
-                          Chaleureusement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          Warm regards,<br/>
+                          <strong>The <t t-out="company.name or 'support'"/> team</strong>
                         </p>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>

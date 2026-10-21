@@ -76,7 +76,13 @@ class TestCourrielMarque(TransactionCase):
         self.assertIn("Hébergeur Essai", corps)
         self.assertIn("Slogan d&#39;essai 4417", corps)
         self.assertIn("https://exemple.test/confidentialite", corps)
-        self.assertNotIn(">Conditions<", corps, "pas de lien de conditions sans adresse")
+        # Pas de lien de conditions sans adresse. Le libellé suit désormais la langue de
+        # la société (« Terms » / « Conditions ») : on vérifie la forme du
+        # bloc de liens, qui ne porte que celui de confidentialité.
+        self.assertRegex(
+            corps,
+            r'font-size:11px;"><a href="https://exemple\.test/confidentialite"[^>]*>[^<]+</a></td>',
+            "pas de lien de conditions sans adresse")
 
     def test_l_enveloppe_suit_la_police_de_la_societe(self):
         corps = self._enveloppe()

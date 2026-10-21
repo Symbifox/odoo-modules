@@ -1,0 +1,1867 @@
+# Translation of Symbifox Credentials - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_credentials 18.0.3.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 07:27+0000\n"
+"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "2nd factor covered"
+msgstr "2e facteur couvert"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "2nd factor status"
+msgstr "État du 2e facteur"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "2nd factor to document"
+msgstr "2e facteur à documenter"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "2nd factor without fallback"
+msgstr "2e facteur sans relève"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/wizard/credential_rotate_wizard.py:0
+msgid "<br/><b>Notes:</b> %s"
+msgstr "<br/><b>Notes :</b> %s"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "<i class=\"fa fa-lock\"/> Restricted"
+msgstr "<i class=\"fa fa-lock\"/> Restreint"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "<i class=\"fa fa-question\" title=\"Second factor to document\"/> 2nd factor?"
+msgstr ""
+"<i class=\"fa fa-question\" title=\"Deuxième facteur à documenter\"/> 2e "
+"facteur ?"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid ""
+"<i class=\"fa fa-shield\" title=\"Second factor without fallback\"/> No "
+"fallback"
+msgstr ""
+"<i class=\"fa fa-shield\" title=\"Deuxième facteur sans relève\"/> Sans "
+"relève"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "<i class=\"fa fa-user\" title=\"Username\"/>"
+msgstr "<i class=\"fa fa-user\" title=\"Nom d'utilisateur\"/>"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "<strong>Supported formats:</strong> .pem, .key, .p12, .ppk, .cer, .crt"
+msgstr ""
+"<strong>Formats supportés :</strong> .pem, .key, .p12, .ppk, .cer, .crt"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_vault_action
+msgid ""
+"A holder is a place where a second factor lives: a team vault, an "
+"authenticator app, someone's phone, a hardware token. The register says "
+"where to look; it keeps no secret."
+msgstr ""
+"Un porteur est un endroit où vit un deuxième facteur : un coffre\n"
+"                d'équipe, une application d'authentification, le téléphone de\n"
+"                quelqu'un, un jeton matériel. Le registre dit où chercher ;\n"
+"                il ne garde aucun secret."
+
+#. module: bf_credentials
+#: model:ir.model.constraint,message:bf_credentials.constraint_project_credential_vault_name_uniq
+msgid "A holder with this name already exists."
+msgstr "Un porteur de ce nom existe déjà."
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__device
+#: model:project.credential.vault,name:bf_credentials.vault_personal_device
+msgid "A person's device"
+msgstr "Appareil d'une personne"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__second_holder
+msgid "A second person can produce a code"
+msgstr "Une deuxième personne peut produire un code"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_api
+msgid "API / Integration"
+msgstr "API / Intégration"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__api_key
+msgid "API key"
+msgstr "Clé API"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__api_key_encrypted
+msgid "API key (encrypted)"
+msgstr "Clé API (chiffrée)"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_api
+msgid "API keys and integration credentials"
+msgstr "Clés API et identifiants d'intégration"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__active
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__active
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__state__active
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_ad
+msgid "Active Directory / Entra ID"
+msgstr "Active Directory / Entra ID"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_credentials.report_action_cred_active
+msgid "Active credentials"
+msgstr "Identifiants actifs"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__notes
+msgid "Additional information or instructions"
+msgstr "Informations ou instructions supplémentaires"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Additional instructions or information..."
+msgstr "Instructions ou informations supplémentaires..."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_rotate_wizard__notes
+msgid "Additional notes on this password rotation"
+msgstr "Notes supplémentaires sur cette rotation de mot de passe"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_fundraising_web
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__base_url
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_vault__item_url_pattern
+msgid ""
+"Address template leading straight to the item at its holder. The {ref} marker is replaced by the credential's reference. Example: https://vault.example.com/#/vault?itemId={ref}\n"
+"⚠️ The link leads to the holder; it never brings a secret in here."
+msgstr ""
+"Gabarit d'adresse menant directement à l'élément chez son porteur. Le marqueur {ref} est remplacé par la référence de l'identifiant. Exemple : https://coffre.exemple.com/#/vault?itemId={ref}\n"
+"⚠️ Le lien mène au porteur ; il ne fait jamais entrer un secret ici."
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__app
+msgid "App notification"
+msgstr "Notification d'une application"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_app
+msgid "Application login"
+msgstr "Connexion applicative"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_securetransfer,
+#. hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+msgid "Archived holders"
+msgstr "Archivés"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__authenticator
+msgid "Authenticator app"
+msgstr "Application d'authentification"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__backup_codes
+msgid "Backup codes"
+msgstr "Codes de secours"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__backup_codes
+msgid "Backup codes only"
+msgstr "Codes de secours seulement"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_holder_ids
+msgid "Can produce a code"
+msgstr "Peuvent produire un code"
+
+#. module: bf_credentials
+#: model:res.groups,comment:bf_credentials.group_credential_user
+msgid "Can view and edit the credentials of the projects they have access to."
+msgstr ""
+"Peut consulter et modifier les identifiants des projets auxquels il a accès."
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_rotate_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_copy.js:0
+msgid "Cannot copy restricted or empty password"
+msgstr "Impossible de copier un mot de passe restreint ou vide"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+"Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
+"comprennent que 0 à 11."
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_cloud
+msgid "Cloud platform"
+msgstr "Plateforme infonuagique"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_cloud
+msgid "Cloud platform credentials (AWS, Azure, GCP, etc.)"
+msgstr "Identifiants de plateforme infonuagique (AWS, Azure, GCP, etc.)"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color_source
+msgid "Color Source"
+msgstr "Source de la couleur"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
+"les règles automatiques."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
+#. hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__confirm_password
+msgid "Confirm password"
+msgstr "Confirmer le mot de passe"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__partner_id
+msgid "Contact person for this credential"
+msgstr "Personne-ressource pour cet identifiant"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_copy.js:0
+msgid "Copied to clipboard"
+msgstr "Copié dans le presse-papiers"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_copy.xml:0
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_state__covered
+msgid "Covered"
+msgstr "Couvert"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_action
+msgid "Create a credential"
+msgstr "Créer un identifiant"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_type_action
+msgid "Create a credential type"
+msgstr "Créer un type d'identifiant"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__create_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__create_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__create_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__create_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__create_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__credential_id
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Credential"
+msgstr "Identifiant"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "Credential Type"
+msgstr "Type d'identifiant"
+
+#. module: bf_credentials
+#: model:ir.actions.act_window,name:bf_credentials.credential_type_action
+#: model:ir.ui.menu,name:bf_credentials.menu_credential_types
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_list
+msgid "Credential Types"
+msgstr "Types d'identifiants"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__credential_count
+#: model:ir.model.fields,field_description:bf_credentials.field_project_project__credential_count
+msgid "Credential count"
+msgstr "Nombre d'identifiants"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Credential expired."
+msgstr "Identifiant expiré."
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__credential_name
+msgid "Credential name"
+msgstr "Nom de l'identifiant"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Credential reactivated."
+msgstr "Identifiant réactivé."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Credential revoked."
+msgstr "Identifiant révoqué."
+
+#. module: bf_credentials
+#: model:ir.model,name:bf_credentials.model_project_credential_type
+msgid "Credential type"
+msgstr "Type d'identifiant"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_type_action
+msgid ""
+"Credential types define the category and which fields are displayed\n"
+"                when creating credentials (e.g., Email, Server, API)."
+msgstr ""
+"Les types d'identifiants définissent la catégorie et les champs affichés\n"
+"                à la création d'un identifiant (ex. : courriel, serveur, API)."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Credential verified as working."
+msgstr "Identifiant vérifié comme fonctionnel."
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+#: model:ir.actions.act_window,name:bf_credentials.credential_action
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__credential_ids
+#: model:ir.model.fields,field_description:bf_credentials.field_project_project__credential_ids
+#: model:ir.module.category,name:bf_credentials.module_category_credentials
+#: model:ir.ui.menu,name:bf_credentials.menu_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_list
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_list
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+#: model_terms:ir.ui.view,arch_db:bf_credentials.project_view_form_inherit_credentials
+msgid "Credentials"
+msgstr "Identifiants"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_project.py:0
+msgid "Credentials - %s"
+msgstr "Identifiants - %s"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_credentials.report_action_cred_expiring
+msgid "Credentials expiring within 30 days"
+msgstr "Identifiants expirant sous 30 jours"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_project__credential_ids
+msgid "Credentials stored for this project"
+msgstr "Identifiants stockés pour ce projet"
+
+#. module: bf_credentials
+#: model:ir.actions.server,name:bf_credentials.ir_cron_check_expiring_credentials_ir_actions_server
+msgid "Credentials: check expirations"
+msgstr "Identifiants : Vérifier les expirations"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__current_password
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "DOMAIN or tenant.onmicrosoft.com"
+msgstr "DOMAINE ou locataire.onmicrosoft.com"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_db
+msgid "Database"
+msgstr "Base de données"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_db
+msgid "Database login credentials (PostgreSQL, MySQL, etc.)"
+msgstr ""
+"Identifiants de connexion à une base de données (PostgreSQL, MySQL, etc.)"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__last_rotated
+msgid "Date of the last password change"
+msgstr "Date du dernier changement de mot de passe"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__last_verified
+msgid "Date this credential was last verified as working"
+msgstr ""
+"Date de la dernière vérification du bon fonctionnement de cet identifiant"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_vault_action
+msgid "Declare a holder"
+msgstr "Déclarer un porteur"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Decryption failed. Check the encryption key."
+msgstr "Le déchiffrement a échoué. Vérifiez la clé de chiffrement."
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__name
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_rotate_wizard__credential_name
+msgid "Descriptive name for this credential"
+msgstr "Nom descriptif pour cet identifiant"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__environment__development
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Development"
+msgstr "Développement"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__display_name
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__display_name
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__display_name
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color_resolved
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "Displayed color"
+msgstr "Couleur affichée"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__domain
+msgid "Domain"
+msgstr "Domaine"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__domain
+msgid "Domain or tenant for authentication (e.g. AD domain)"
+msgstr "Domaine ou locataire pour l'authentification (ex. : domaine AD)"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_email
+msgid "Email account"
+msgstr "Compte courriel"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_email
+msgid "Email account credentials (IMAP, SMTP, webmail)"
+msgstr "Identifiants de compte courriel (IMAP, SMTP, webmail)"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "Encryption failed, nothing was saved. Check the encryption key."
+msgstr ""
+"Le chiffrement a échoué, rien n'a été enregistré. Vérifiez la clé de "
+"chiffrement."
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_copy.js:0
+msgid "Enter password..."
+msgstr "Saisir le mot de passe..."
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__environment
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Environment"
+msgstr "Environnement"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.report_action_cred_mfa_at_risk
+msgid "Every factor has a fallback"
+msgstr "Chaque facteur a sa relève"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.report_action_cred_mfa_unknown
+msgid "Everything is documented"
+msgstr "Tout est documenté"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__expiration_date
+msgid "Expiration date"
+msgstr "Date d'expiration"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__state__expired
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_credentials.report_action_cred_expired
+msgid "Expired credentials"
+msgstr "Identifiants expirés"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+msgid "Expired to date"
+msgstr "Expirés"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__is_expiring_soon
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__state__expiring
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Expiring soon"
+msgstr "Expire bientôt"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+msgid "Expiring within 30 days"
+msgstr "Expirent sous 30j"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_vault_id
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Factor holder"
+msgstr "Porteur du facteur"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_copy.js:0
+msgid "Failed to copy"
+msgstr "Échec de la copie"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "Field Visibility"
+msgstr "Visibilité des champs"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Files"
+msgstr "Fichiers"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__icon
+msgid "Font Awesome class (e.g. fa-envelope, fa-server)"
+msgstr "Classe Font Awesome (ex. : fa-envelope, fa-server)"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_credentials
+#: model:res.groups,comment:bf_credentials.group_credential_manager
+msgid ""
+"Full access to all credentials, including restricted ones, type management "
+"and deletion."
+msgstr ""
+"Accès complet à tous les identifiants, y compris restreints, gestion des "
+"types et suppression."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__hardware
+msgid "Hardware key (FIDO2, YubiKey)"
+msgstr "Clé matérielle (FIDO2, YubiKey)"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__hardware
+#: model:project.credential.vault,name:bf_credentials.vault_hardware_token
+msgid "Hardware token"
+msgstr "Jeton matériel"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+msgid "Held by one person"
+msgstr "Un seul détenteur"
+
+#. module: bf_credentials
+#: model:ir.model,name:bf_credentials.model_project_credential_vault
+msgid "Holder of a second factor"
+msgstr "Porteur d'un deuxième facteur"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_vault__base_url
+msgid "Home page of the holder, if it has one."
+msgstr "Adresse d'accueil du porteur, s'il en a une."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__id
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__id
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__id
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_has_error
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__restricted
+msgid "If checked, the password is only visible to credential managers"
+msgstr ""
+"Si coché, le mot de passe n'est visible que par les gestionnaires "
+"d'identifiants"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__is_expired
+msgid "Is expired"
+msgstr "Est expiré"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_item_url
+msgid "Item link"
+msgstr "Lien vers l'élément"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__item_url_pattern
+msgid "Item link template"
+msgstr "Gabarit du lien vers l'élément"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__key_file
+msgid "Key file"
+msgstr "Fichier de clé"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__key_filename
+msgid "Key file name"
+msgstr "Nom du fichier de clé"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__kind
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__write_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__write_uid
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__write_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__write_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__write_date
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_last_reviewed
+msgid "Last factor review"
+msgstr "Dernière revue du facteur"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__last_rotated
+msgid "Last rotated"
+msgstr "Dernière rotation"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__last_verified
+msgid "Last verified"
+msgstr "Dernière vérification"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_app
+msgid "Login credentials for a web or desktop application"
+msgstr "Identifiants de connexion à une application web ou bureau"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness
+#: model:res.groups,name:bf_credentials.group_credential_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials,
+#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__name
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__name
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__new_password
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.report_action_cred_mfa_unknown
+msgid "No credential is waiting to be told whether it has a second factor."
+msgstr "Aucun identifiant n'attend qu'on dise s'il a un deuxième facteur."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"No encryption key is configured. Store it in the %(env)s environment variable or in %(conf)s in odoo.conf, then restart Odoo.\n"
+"\n"
+"It must NOT live in the database: a dump would carry the key along with what it protects."
+msgstr ""
+"Aucune clé de chiffrement n'est configurée. Rangez-la dans la variable d'environnement %(env)s ou dans %(conf)s de odoo.conf, puis redémarrez Odoo.\n"
+"\n"
+"Elle ne doit PAS vivre dans la base : un dump emporterait la clé avec ce qu'elle protège."
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__none
+msgid "No recovery"
+msgstr "Aucune"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_state__absent
+msgid "No second factor"
+msgstr "Aucun deuxième facteur"
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.report_action_cred_mfa_at_risk
+msgid "No second factor depends on a single holder without written recovery."
+msgstr ""
+"Aucun deuxième facteur ne dépend d'un porteur unique sans reprise écrite."
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__none
+msgid "None"
+msgstr "Aucun"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, hosting_management
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__notes
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__notes
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__notes
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__offline
+#: model:project.credential.vault,name:bf_credentials.vault_offline
+msgid "Offline medium"
+msgstr "Support hors ligne"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"Only a credential manager can change the \"Restricted\" status of a "
+"credential."
+msgstr ""
+"Seul un gestionnaire d'identifiants peut modifier l'état « Restreint » d'un "
+"identifiant."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"Only a credential manager can check the encryption status of the vault."
+msgstr ""
+"Seul un gestionnaire d'identifiants peut contrôler l'état du chiffrement du "
+"coffre."
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "Optional description of this credential type..."
+msgstr "Description facultative de ce type d'identifiant..."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__reference
+msgid "Optional external reference or ticket number"
+msgstr "Référence externe optionnelle ou numéro de billet"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_rotate_wizard_view_form
+msgid "Optional notes on this rotation..."
+msgstr "Notes optionnelles sur cette rotation..."
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. hosting_management
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__other
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_rotate_wizard__rotation_reason__other
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_other
+msgid "Other / ad hoc"
+msgstr "Autre / Ad hoc"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_other
+msgid "Other credentials not covered by the specific types"
+msgstr "Autres identifiants non couverts par les types spécifiques"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_holder_note
+msgid "Other holder"
+msgstr "Autre porteur"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color_hex
+msgid "Own color"
+msgstr "Couleur propre"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__password
+msgid "Password"
+msgstr "Mot de passe"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__password_encrypted
+msgid "Password (encrypted)"
+msgstr "Mot de passe (chiffré)"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/wizard/credential_rotate_wizard.py:0
+msgid "Password changed.<br/><b>Reason:</b> %s"
+msgstr "Mot de passe changé.<br/><b>Raison :</b> %s"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_vault__kind__password_manager
+#: model:project.credential.vault,name:bf_credentials.vault_password_manager
+msgid "Password manager"
+msgstr "Gestionnaire de mots de passe"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+#: model:ir.model,name:bf_credentials.model_project_credential_rotate_wizard
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_rotate_wizard_view_form
+msgid "Password rotation"
+msgstr "Rotation de mot de passe"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_rotate_wizard__rotation_reason__policy
+msgid "Policy requirement"
+msgstr "Exigence de politique"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_rotate_wizard__rotation_reason__compromise
+msgid "Potential compromise"
+msgstr "Compromission potentielle"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__environment__production
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Production"
+msgstr "Production"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__project_id
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__project_id
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_credentials
+#: model:ir.model,name:bf_credentials.model_project_credential
+msgid "Project credential"
+msgstr "Identifiant de projet"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Reactivate"
+msgstr "Réactiver"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_rotate_wizard__rotation_reason
+msgid "Reason"
+msgstr "Raison"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_recovery
+msgid "Recovery"
+msgstr "Reprise"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_reference
+msgid "Reference at the holder"
+msgstr "Référence chez le porteur"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__provider
+msgid "Reissued by the provider"
+msgstr "Réémission par le fournisseur"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__restricted
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Restricted"
+msgstr "Restreint"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Revoke"
+msgstr "Révoquer"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Revoke this credential?"
+msgstr "Révoquer cet identifiant ?"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__state__revoked
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Revoked"
+msgstr "Révoqué"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+msgid "Revoked credentials"
+msgstr "Identifiants révoqués"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/xml/credential_dashboard.xml:0
+msgid "Revoked to date"
+msgstr "Révoqués"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_rotate_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Rotate password"
+msgstr "Rotation du mot de passe"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer
+#. odoo-python
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__sms
+msgid "SMS"
+msgstr "SMS"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__key_file
+msgid "SSH key, certificate or other key file (.pem, .key, .p12, .ppk)"
+msgstr "Clé SSH, certificat ou autre fichier de clé (.pem, .key, .p12, .ppk)"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_rotate_wizard__rotation_reason__scheduled
+msgid "Scheduled rotation"
+msgstr "Rotation planifiée"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_type
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Second factor"
+msgstr "Deuxième facteur"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__mfa_state
+msgid "Second factor status"
+msgstr "État du deuxième facteur"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_credentials.report_action_cred_mfa_unknown
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "Second factor to document"
+msgstr "Deuxième facteur à documenter"
+
+#. module: bf_credentials
+#. odoo-javascript
+#: code:addons/bf_credentials/static/src/js/credential_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_credentials.report_action_cred_mfa_at_risk
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_state__at_risk
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "Second factor without fallback"
+msgstr "Deuxième facteur sans relève"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "Second-factor holder"
+msgstr "Porteur de deuxième facteur"
+
+#. module: bf_credentials
+#: model:ir.actions.act_window,name:bf_credentials.credential_vault_action
+#: model:ir.ui.menu,name:bf_credentials.menu_credential_vaults
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_list
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+msgid "Second-factor holders"
+msgstr "Porteurs de deuxième facteur"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential_rotate_wizard__rotation_reason__security
+msgid "Security incident"
+msgstr "Incident de sécurité"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
+#. bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__sequence
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_server
+msgid "Server / SSH"
+msgstr "Serveur / SSH"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_server
+msgid "Server access credentials, including SSH keys"
+msgstr "Identifiants d'accès serveur, y compris les clés SSH"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_vault__shared
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_search
+msgid "Shared access"
+msgstr "Accessible à plusieurs"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__show_api_key
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__show_api_key
+msgid "Show API key field"
+msgstr "Afficher le champ clé API"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__show_url
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__show_url
+msgid "Show URL field"
+msgstr "Afficher le champ URL"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__show_domain
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__show_domain
+msgid "Show domain field"
+msgstr "Afficher le champ domaine"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__show_key_file
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__show_key_file
+msgid "Show key file field"
+msgstr "Afficher le champ fichier de clé"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__show_api_key
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__show_api_key
+msgid "Show the API key field for credentials of this type"
+msgstr "Afficher le champ clé API pour les identifiants de ce type"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__show_url
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__show_url
+msgid "Show the URL field for credentials of this type"
+msgstr "Afficher le champ URL pour les identifiants de ce type"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__show_domain
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__show_domain
+msgid "Show the domain field for credentials of this type"
+msgstr "Afficher le champ domaine pour les identifiants de ce type"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__show_key_file
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__show_key_file
+msgid "Show the key file upload field for credentials of this type"
+msgstr ""
+"Afficher le champ de téléversement de fichier de clé pour les identifiants "
+"de ce type"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Single-person holder"
+msgstr "Porteur à détenteur unique"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__environment__staging
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Staging"
+msgstr "Pré-production"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
+#. bf_securetransfer, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__state
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: bf_credentials
+#: model_terms:ir.actions.act_window,help:bf_credentials.credential_action
+msgid ""
+"Store and manage project resource credentials securely. Passwords and API "
+"keys are encrypted at rest."
+msgstr ""
+"Stocker et gérer les identifiants des ressources de projet de manière sécurisée.\n"
+"                Les mots de passe et clés API sont chiffrés au repos."
+
+#. module: bf_credentials
+#: model:project.credential.vault,name:bf_credentials.vault_authenticator
+msgid "Synced authenticator app"
+msgstr "Application d'authentification synchronisée"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__environment__testing
+msgid "Testing"
+msgstr "Tests"
+
+#. module: bf_credentials
+#. modules: bf_credentials, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential_type__color_text
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"The \"%(champ)s\" field received %(raison)s.\n"
+"\n"
+"This register keeps no seed: it only says where the second factor lives and who can produce a code. Keep the seed at its holder, and put here the label that lets you find it."
+msgstr ""
+"Le champ « %(champ)s » a reçu %(raison)s.\n"
+"\n"
+"Ce registre ne garde aucune graine : il dit seulement où vit le deuxième facteur et qui peut produire un code. Range la graine chez son porteur, et mets ici l'étiquette qui permet de la retrouver."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"The \"cryptography\" Python package is not installed: this module can "
+"neither encrypt nor decrypt. No secret will be written in clear text."
+msgstr ""
+"Le paquet Python « cryptography » n'est pas installé : ce module ne peut ni "
+"chiffrer ni déchiffrer. Aucun secret ne sera écrit en clair."
+
+#. module: bf_credentials
+#: model:ir.model.constraint,message:bf_credentials.constraint_project_credential_type_code_uniq
+msgid "The code must be unique!"
+msgstr "Le code doit être unique !"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid "The credential will expire on %s."
+msgstr "L'identifiant expirera le %s."
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__vault
+msgid "The factor is in a shared holder"
+msgstr "Le facteur est dans un porteur partagé"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__mfa_reference
+msgid ""
+"The factor's label at its holder, enough to find it without reading it.\n"
+"⚠️ Never the seed itself: this field refuses it."
+msgstr ""
+"L'étiquette du facteur chez son porteur, de quoi le retrouver sans le lire.\n"
+"⚠️ Jamais la graine elle-même : ce champ la refuse."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/wizard/credential_rotate_wizard.py:0
+msgid "The new password cannot be empty."
+msgstr "Le nouveau mot de passe ne peut pas être vide."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/wizard/credential_rotate_wizard.py:0
+msgid "The passwords do not match."
+msgstr "Les mots de passe ne correspondent pas."
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid ""
+"This model says <strong>where</strong> a second factor lives, never what it "
+"contains. The link template leads to the item at its holder; no seed comes "
+"in here."
+msgstr ""
+"Ce modèle dit <strong>où</strong> vit un deuxième facteur, jamais\n"
+"                        ce qu'il contient. Le gabarit de lien mène à l'élément chez son\n"
+"                        porteur ; aucune graine n'entre ici."
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid ""
+"This register says <strong>where</strong> the second factor lives and "
+"<strong>who</strong> can produce a code. It never keeps the seed: stored "
+"here, it would sit in the same database as the password it protects, which "
+"would leave only one factor."
+msgstr ""
+"Ce registre dit <strong>où</strong> vit le deuxième facteur et\n"
+"                                <strong>qui</strong> peut produire un code. Il ne garde jamais la\n"
+"                                graine : rangée ici, elle serait dans la même base que le mot de\n"
+"                                passe qu'elle protège, ce qui ne laisserait qu'un seul facteur."
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid ""
+"This second factor has no named person to produce it, or no written "
+"recovery. The day its holder disappears, access is blocked."
+msgstr ""
+"Ce deuxième facteur n'a personne de nommé pour le produire, ou\n"
+"                                aucune reprise écrite. Le jour où son porteur disparaît, l'accès\n"
+"                                est bloqué."
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/project_credential.py:0
+msgid ""
+"This value cannot be decrypted with the configured key. Either the key is "
+"not the one used to write it, or the value was never encrypted. In both "
+"cases, do not save the record again: that would encrypt the content a second"
+" time."
+msgstr ""
+"Cette valeur ne se déchiffre pas avec la clé configurée. Soit la clé n'est "
+"pas celle qui a servi à l'écrire, soit la valeur n'a jamais été chiffrée. "
+"Dans les deux cas, ne réenregistrez pas la fiche : cela chiffrerait le "
+"contenu une deuxième fois."
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__totp
+msgid "Time-based code (TOTP)"
+msgstr "Code à durée limitée (TOTP)"
+
+#. module: bf_credentials
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_recovery__unknown
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_state__unknown
+#: model:ir.model.fields.selection,name:bf_credentials.selection__project_credential__mfa_type__unknown
+msgid "To document"
+msgstr "À documenter"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
+#. bf_nextcloud_browser, bf_security_awareness, hosting_management
+#. odoo-javascript
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__type_id
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#. odoo-python
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__url
+msgid "URL"
+msgstr "URL"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_vault__shared
+msgid ""
+"Unchecked, the factor can only be produced by the person who holds the "
+"device or token. This is what makes a departure blocking rather than "
+"inconvenient."
+msgstr ""
+"Décoché, le facteur ne peut être produit que par la personne qui détient "
+"l'appareil ou le jeton. C'est ce qui rend un départ bloquant plutôt que "
+"gênant."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential_type__code
+msgid "Unique code for this credential type"
+msgstr "Identifiant unique pour ce type d'identifiant"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer, hosting_management
+#: model:res.groups,name:bf_credentials.group_credential_user
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_credentials
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__username
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_kanban
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#. module: bf_credentials
+#: model:project.credential.type,name:bf_credentials.credential_type_vpn
+msgid "VPN / Remote access"
+msgstr "VPN / Accès distant"
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_vpn
+msgid "VPN and remote access credentials"
+msgstr "Identifiants VPN et d'accès distant"
+
+#. module: bf_credentials
+#. modules: bf_credentials, bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "Verify"
+msgstr "Vérifier"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_credentials.field_project_credential__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_credentials
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__mfa_recovery
+msgid ""
+"What happens if the holder disappears. It is the question nobody asks before"
+" someone leaves."
+msgstr ""
+"Ce qui se passe si le porteur disparaît. C'est la question que personne ne "
+"se pose avant un départ."
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "What you need to know to access it..."
+msgstr "Ce qu'il faut savoir pour y accéder..."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__mfa_holder_note
+msgid ""
+"When the person who holds the factor has no account here: a token in a "
+"drawer, someone at the client."
+msgstr ""
+"Quand la personne qui détient le facteur n'a pas de compte ici : un jeton "
+"dans un tiroir, quelqu'un chez le client."
+
+#. module: bf_credentials
+#: model:ir.model.fields,help:bf_credentials.field_project_credential__mfa_vault_id
+msgid "Where the second factor lives. Never its content."
+msgstr "Où vit le deuxième facteur. Jamais son contenu."
+
+#. module: bf_credentials
+#: model:project.credential.type,description:bf_credentials.credential_type_ad
+msgid "Windows Active Directory or Microsoft Entra ID credentials"
+msgstr "Identifiants Windows Active Directory ou Microsoft Entra ID"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_search
+msgid "Without second factor"
+msgstr "Sans deuxième facteur"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/otp_secret_guard.py:0
+msgid "a base32 seed"
+msgstr "une graine en base32"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/otp_secret_guard.py:0
+msgid "a secret= parameter followed by a base32 seed"
+msgstr "un paramètre secret= suivi d'une graine en base32"
+
+#. module: bf_credentials
+#. odoo-python
+#: code:addons/bf_credentials/models/otp_secret_guard.py:0
+msgid "an otpauth:// address, which carries the seed itself"
+msgstr "une adresse otpauth://, qui porte la graine elle-même"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "e.g. \"Production server\" item in the vault"
+msgstr "ex. : élément « Serveur de production » du coffre"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "e.g. Production database"
+msgstr "ex. : Base de données production"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "e.g. Team vault"
+msgstr "ex. : Coffre d'équipe"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "e.g. token in the reception desk drawer"
+msgstr "ex. : jeton dans le tiroir de la réception"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "e.g., Email Account"
+msgstr "ex. : Compte courriel"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_type_view_form
+msgid "fa-key"
+msgstr "fa-key"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "https://example.com/login"
+msgstr "https://exemple.com/login"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "https://vault.example.com"
+msgstr "https://coffre.exemple.com"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_vault_view_form
+msgid "https://vault.example.com/#/vault?itemId={ref}"
+msgstr "https://coffre.exemple.com/#/vault?itemId={ref}"
+
+#. module: bf_credentials
+#: model_terms:ir.ui.view,arch_db:bf_credentials.credential_view_form
+msgid "user@example.com"
+msgstr "utilisateur@exemple.com"

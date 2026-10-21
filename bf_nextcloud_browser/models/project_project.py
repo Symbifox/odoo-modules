@@ -16,31 +16,31 @@ class ProjectProject(models.Model):
 
     nc_client_partner_id = fields.Many2one(
         "res.partner",
-        string="Client (dossier)",
+        string="Client (folder)",
         related="partner_id.commercial_partner_id",
         groups="base.group_user,bf_nextcloud_browser.group_nc_browser_user",
     )
     nc_client_folder_id = fields.Many2one(
         "bf.nc.client.folder",
-        string="Dossier client",
+        string="Client folder",
         compute="_compute_nc_client_folder_id",
         store=True,
         readonly=False,
         ondelete="set null",
         groups="base.group_user,bf_nextcloud_browser.group_nc_browser_user",
         domain="[('partner_id', '=', nc_client_partner_id)]",
-        help="Le dossier du client dans lequel vit ce projet. Pris d'office "
-        "quand le client n'en a qu'un.",
+        help="The client folder this project lives in. Picked "
+             "automatically when the client has only one.",
     )
     nc_project_subfolder = fields.Char(
-        string="Sous-dossier du projet",
+        string="Project subfolder",
         copy=False,
         groups="base.group_user,bf_nextcloud_browser.group_nc_browser_user",
-        help="Chemin relatif au dossier client, ex. (PROJETS)/001 - Implantation. "
-        "Vide : le projet ouvre le dossier du client.",
+        help="Path relative to the client folder, e.g. (PROJETS)/001 - "
+             "Rollout. Empty: the project opens the client's folder.",
     )
     nc_browser_folder = fields.Char(
-        string="Dossier Nextcloud (navigateur)",
+        string="Nextcloud folder (browser)",
         compute="_compute_nc_browser_folder",
         compute_sudo=True,
         groups="base.group_user,bf_nextcloud_browser.group_nc_browser_user",
@@ -122,7 +122,7 @@ class ProjectProject(models.Model):
         self.ensure_one()
         if not self.partner_id.commercial_partner_id.nc_client_folder_ids:
             raise UserError(
-                _("Rattachez d'abord un dossier Nextcloud au client %s.")
-                % (self.partner_id.commercial_partner_id.display_name or _("du projet"))
+                _("First link a Nextcloud folder to the client %s.")
+                % (self.partner_id.commercial_partner_id.display_name or _("of the project"))
             )
         return self.env["bf.nc.folder.pick"]._open_for(self)

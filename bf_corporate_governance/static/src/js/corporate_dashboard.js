@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { _t } from "@web/core/l10n/translation";
 import { patch } from "@web/core/utils/patch";
 import { KnowledgeDashboard } from "@project_knowledge_matrix/js/knowledge_dashboard";
 
@@ -31,7 +32,7 @@ patch(KnowledgeDashboard.prototype, {
     openOverdueCompliance() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Conformité en retard",
+            name: _t("Overdue compliance"),
             res_model: "corporate.compliance.event",
             views: [[false, "list"], [false, "form"]],
             domain: [["status", "=", "overdue"]],

@@ -23,78 +23,81 @@ class ResConfigSettings(models.TransientModel):
 
     # ── S3 connection (non-secret) ───────────────────────────────────────────
     st_s3_endpoint_url = fields.Char(
-        string="Endpoint S3",
+        string="S3 endpoint",
         config_parameter="bf_securetransfer.s3_endpoint_url",
-        help="URL de l'endpoint S3 compatible (IDrive E2), p. ex. "
+        help="URL of the S3-compatible endpoint (IDrive E2), e.g. "
              "https://<region>.idrivee2-XX.com",
     )
     st_s3_region = fields.Char(
-        string="Région S3",
+        string="S3 region",
         config_parameter="bf_securetransfer.s3_region",
         default="ca-east-1",
-        help="Région du bucket. ca-east-1 = résidence des données au Canada.",
+        help="Bucket region. ca-east-1 = data residency in Canada.",
     )
     st_s3_bucket = fields.Char(
-        string="Bucket S3",
+        string="S3 bucket",
         config_parameter="bf_securetransfer.s3_bucket",
-        help="Le bucket peut être partagé entre tenants (chacun isolé par son "
-             "préfixe de clé ci-dessous) ou dédié. Object lock DÉSACTIVÉ — "
-             "sinon la purge est impossible.",
+        help="The bucket can be shared across tenants (each isolated by "
+             "its key prefix below) or dedicated. Object lock DISABLED, "
+             "otherwise the purge is impossible.",
     )
     st_s3_key_prefix = fields.Char(
-        string="Préfixe de clé (tenant)",
+        string="Key prefix (tenant)",
         config_parameter="bf_securetransfer.s3_key_prefix",
         default="transfers",
-        help="Racine des clés S3 de CE tenant (p. ex. transfers-bf / "
-             "transfers-prod / transfers-staging). Sur un bucket partagé, "
-             "c'est ce qui empêche la purge et les balayages d'un tenant de "
-             "toucher les objets d'un autre. À rendre UNIQUE par instance.",
+        help="Root of THIS tenant's S3 keys (e.g. transfers-acme / "
+             "transfers-staging). On a shared bucket, "
+             "this is what prevents one tenant's purge and sweeps from "
+             "touching another's objects. Must be made UNIQUE per "
+             "instance.",
     )
     st_s3_path_style = fields.Boolean(
-        string="Adressage path-style",
+        string="Path-style addressing",
         config_parameter="bf_securetransfer.s3_path_style",
         default=True,
-        help="Requis par la plupart des S3 compatibles (IDrive E2 inclus).",
+        help="Required by most S3-compatible storage (including IDrive E2).",
     )
     st_cors_origins = fields.Char(
-        string="Origins CORS",
+        string="CORS origins",
         config_parameter="bf_securetransfer.cors_origins",
-        help="Origins autorisés pour les PUT navigateur, séparés par des "
-             "virgules — p. ex. https://secret.example.com. Jamais « * ». "
-             "Appliqués par « Configurer le bucket S3 ».",
+        help="Origins allowed for browser PUTs, comma-separated, e.g. "
+             "https://secret.example.com. Never \"*\". Applied by "
+             "\"Configure the S3 bucket\".",
     )
     st_s3_creds_status = fields.Char(
-        string="Clés d'accès S3",
+        string="S3 access keys",
         readonly=True,
         compute="_compute_st_s3_creds_status",
-        help="Les clés (access/secret) se déclarent dans odoo.conf "
-             "(bf_securetransfer_s3_access_key / _secret_key) ou en variables "
-             "d'environnement — jamais en base de données.",
+        help="The keys (access/secret) are declared in odoo.conf "
+             "(bf_securetransfer_s3_access_key / _secret_key) or in "
+             "environment variables, never in the database.",
     )
 
     # ── public service ───────────────────────────────────────────────────────
     st_public_base_url = fields.Char(
-        string="URL publique de repli",
+        string="Fallback public URL",
         config_parameter="bf_securetransfer.public_base_url",
-        help="Base des liens de partage quand la marque n'a pas de domaine "
-             "propre, p. ex. https://secret.example.com. Ne JAMAIS "
-             "laisser web.base.url fuir dans les liens (sur certains hôtes il pointe "
-             "vers le backend).",
+        help="Base for share links when the brand has no domain of its "
+             "own, e.g. https://secret.example.com. NEVER let "
+             "web.base.url leak into the links (it often points to the "
+             "backend).",
     )
     st_public_upload_enabled = fields.Boolean(
-        string="Téléversement public activé",
+        string="Public upload enabled",
         config_parameter="bf_securetransfer.public_upload_enabled",
         default=True,
-        help="Interrupteur général de la page publique /secrets. Décocher "
-             "pour fermer le service sans désinstaller (p. ex. dogfood BF).",
+        help="Master switch for the public /secrets page. Uncheck to "
+             "close the service without uninstalling (e.g. an instance "
+             "used internally only).",
     )
     st_autoprovision_user_pages = fields.Boolean(
-        string="Créer une page de dépôt par employé",
+        string="Create a drop page per employee",
         config_parameter="bf_securetransfer.autoprovision_user_pages",
-        help="À la création d'un utilisateur interne (hors comptes de service, "
-             "robots et API), crée et maintient automatiquement sa page de "
-             "dépôt personnelle /to/<slug> (renommage, courriel, archivage "
-             "suivis). Décoché = pages créées manuellement seulement.",
+        help="When an internal user is created (excluding service "
+             "accounts, bots and API), automatically creates and "
+             "maintains their personal /to/<slug> drop page (renaming, "
+             "email, archiving tracked). Unchecked = pages created "
+             "manually only.",
     )
     # ⚠ Pas de `default=` : c'était une adresse de Blue Fox, et elle
     # s'installait telle quelle chez chaque locataire. L'avis d'abus porte
@@ -103,79 +106,78 @@ class ResConfigSettings(models.TransientModel):
     # Laissé vide, il tombe sur le courriel de la société du locataire
     # (voir secure.transfer._abuse_desk_email).
     st_abuse_email = fields.Char(
-        string="Courriel du bureau d'abus",
+        string="Abuse desk email",
         config_parameter="bf_securetransfer.abuse_email",
-        help="Adresse alertée (avec détails) lors d'un signalement d'abus. "
-             "Le transfert est suspendu automatiquement et un avis neutre part "
-             "aussi aux destinataires. Laissé vide : le courriel de la société "
-             "prend le relais.",
+        help="Address alerted (with full detail) when abuse is reported. "
+             "The transfer is suspended automatically and a neutral "
+             "notice also goes to the recipients. Left empty: the company "
+             "email takes over.",
     )
     st_require_sender_otp = fields.Boolean(
-        string="Confirmation de l'expéditeur par code (OTP)",
+        string="Sender confirmation by code (OTP)",
         config_parameter="bf_securetransfer.require_sender_otp",
-        help="Exige que l'expéditeur confirme un code envoyé à son courriel "
-             "avant que le transfert parte — prouve qu'il contrôle l'adresse "
-             "(anti-usurpation / anti-piggyback).",
+        help="Requires the sender to confirm a code sent to their email "
+             "before the transfer goes out; this proves they control the "
+             "address (anti-spoofing / anti-piggyback).",
     )
     st_require_recipient_otp = fields.Boolean(
-        string="Confirmation du destinataire par code (OTP)",
+        string="Recipient confirmation by code (OTP)",
         config_parameter="bf_securetransfer.require_recipient_otp",
-        help="Exige que le destinataire saisisse un code envoyé à son courriel "
-             "avant de télécharger — seul le destinataire visé accède aux "
-             "fichiers (renforce la conformité Loi 25).",
+        help="Requires the recipient to enter a code sent to their email "
+             "before downloading; only the intended recipient accesses "
+             "the files (strengthens Law 25 compliance).",
     )
     # ── recipient OTP by SMS (VoIP.ms) ───────────────────────────────────────
     st_sms_enabled = fields.Boolean(
-        string="Code destinataire par SMS (VoIP.ms)",
+        string="Recipient code by SMS (VoIP.ms)",
         config_parameter="bf_securetransfer.sms_enabled",
-        help="Permet d'envoyer le code du destinataire par SMS au lieu du "
-             "courriel (choisi à l'envoi). Exige un DID VoIP.ms activé pour le "
-             "SMS et les identifiants d'API déclarés en odoo.conf.",
+        help="Allows sending the recipient's code by SMS instead of email "
+             "(chosen at send time). Requires a VoIP.ms DID enabled for "
+             "SMS and the API credentials declared in odoo.conf.",
     )
     st_sms_did = fields.Char(
-        string="Numéro expéditeur SMS (DID)",
+        string="SMS sender number (DID)",
         config_parameter="bf_securetransfer.sms_did",
-        help="DID VoIP.ms activé pour le SMS, d'où partent les codes "
-             "(numéro nord-américain à 10 chiffres).",
+        help="VoIP.ms DID enabled for SMS, from which the codes are sent "
+             "(10-digit North American number).",
     )
     st_sms_creds_status = fields.Char(
-        string="Identifiants VoIP.ms",
+        string="VoIP.ms credentials",
         readonly=True,
         compute="_compute_st_sms_creds_status",
-        help="L'utilisateur et le mot de passe de l'API VoIP.ms se déclarent "
-             "dans odoo.conf (bf_securetransfer_voipms_user / _password) ou en "
-             "variables d'environnement — jamais en base de données.",
+        help="The VoIP.ms API user and password are declared in odoo.conf "
+             "(bf_securetransfer_voipms_user / _password) or in "
+             "environment variables, never in the database.",
     )
     # Tenant-wide allowlists (default policy; a brand overrides with its own).
     st_default_sender_allowlist = fields.Char(
-        string="Expéditeurs autorisés (défaut tenant)",
+        string="Authorized senders (tenant default)",
         config_parameter="bf_securetransfer.default_sender_allowlist",
-        help="Politique globale d'expéditeurs pour toute l'instance. Adresse "
-             "complète (jean@client.com) ou domaine (@client.com), séparées "
-             "par des virgules. VIDE = ouvert. Une marque "
-             "avec sa propre liste la remplace.",
+        help="Global sender policy for the whole instance. Full address "
+             "(jean@client.com) or domain (@client.com), comma-separated. "
+             "EMPTY = open. A brand with its own list overrides it.",
     )
     st_default_recipient_allowlist = fields.Char(
-        string="Destinataires autorisés (défaut tenant)",
+        string="Authorized recipients (tenant default)",
         config_parameter="bf_securetransfer.default_recipient_allowlist",
-        help="Politique globale de destinataires. Même format. Renseigné = "
-             "les fichiers ne peuvent être envoyés qu'à ces adresses/domaines "
-             "sur toute l'instance. Une marque avec sa propre liste la remplace.",
+        help="Global recipient policy. Same format. Filled = files can "
+             "only be sent to these addresses/domains across the whole "
+             "instance. A brand with its own list overrides it.",
     )
 
     # ── default limits (0-override per brand) ────────────────────────────────
     st_default_free_max_transfer_mb = fields.Integer(
-        string="Taille max. — palier gratuit (Mo)",
+        string="Max. size, free tier (MB)",
         config_parameter="bf_securetransfer.default_free_max_transfer_mb",
         default=2048,
     )
     st_default_paid_max_transfer_mb = fields.Integer(
-        string="Taille max. — palier payant (Mo)",
+        string="Max. size, paid tier (MB)",
         config_parameter="bf_securetransfer.default_paid_max_transfer_mb",
         default=20480,
     )
     st_default_max_files = fields.Integer(
-        string="Nombre max. de fichiers par transfert",
+        string="Max. number of files per transfer",
         config_parameter="bf_securetransfer.default_max_files",
         default=25,
     )
@@ -185,21 +187,21 @@ class ResConfigSettings(models.TransientModel):
     # clamps it to 100 Mo whatever is set here; bigger sends belong on the
     # public page.
     st_backend_max_upload_mb = fields.Integer(
-        string="Pièces jointes max. depuis le backend (Mo)",
+        string="Max. attachments from the backend (MB)",
         config_parameter="bf_securetransfer.backend_max_upload_mb",
         default=25,
-        help="Taille totale acceptée par l'assistant « Nouvel envoi sécurisé » "
-             "du backend, tous fichiers confondus. Ces octets transitent par "
-             "Odoo (contrairement à la page publique, qui téléverse "
-             "directement vers le stockage) : plafonné à 100 Mo en dur.",
+        help="Total size accepted by the backend \"New secure send\" "
+             "wizard, all files combined. These bytes travel through Odoo "
+             "(unlike the public page, which uploads straight to "
+             "storage): hard-capped at 100 MB.",
     )
     st_default_free_max_retention_days = fields.Integer(
-        string="Rétention max. — palier gratuit (jours)",
+        string="Max. retention, free tier (days)",
         config_parameter="bf_securetransfer.default_free_max_retention_days",
         default=7,
     )
     st_default_paid_max_retention_days = fields.Integer(
-        string="Rétention max. — palier payant (jours)",
+        string="Max. retention, paid tier (days)",
         config_parameter="bf_securetransfer.default_paid_max_retention_days",
         default=90,
     )
@@ -213,8 +215,8 @@ class ResConfigSettings(models.TransientModel):
                  or odoo_config.get("bf_securetransfer_s3_secret_key"))
         )
         label = (
-            _("Configurées (odoo.conf / environnement)") if has_keys
-            else _("Absentes — à déclarer dans odoo.conf, jamais en base")
+            _("Configured (odoo.conf / environment)") if has_keys
+            else _("Missing: declare them in odoo.conf, never in the database")
         )
         for rec in self:
             rec.st_s3_creds_status = label
@@ -223,8 +225,9 @@ class ResConfigSettings(models.TransientModel):
     def _compute_st_sms_creds_status(self):
         has = sms.has_credentials()
         label = (
-            _("Configurés (odoo.conf / environnement)") if has
-            else _("Absents — à déclarer dans odoo.conf, jamais en base")
+            _("Configured (odoo.conf / environment)") if has
+            else _("Missing: must be declared in odoo.conf, never in the "
+                   "database")
         )
         for rec in self:
             rec.st_sms_creds_status = label
@@ -244,8 +247,8 @@ class ResConfigSettings(models.TransientModel):
         failed = {c: r for c, r in report.items() if not r["ok"]}
         if failed:
             message = _(
-                "%(ok)s/%(total)s sondes réussies. En échec : %(detail)s "
-                "(rapport complet dans le journal serveur).",
+                "%(ok)s/%(total)s probes passed. Failed: %(detail)s (full "
+                "report in the server log).",
                 ok=len(report) - len(failed),
                 total=len(report),
                 detail="; ".join(
@@ -254,14 +257,14 @@ class ResConfigSettings(models.TransientModel):
             )
         else:
             message = _(
-                "Les %(total)s sondes ont réussi : CORS appliqué, bucket "
-                "prêt pour le transfert sécurisé.", total=len(report),
+                "All %(total)s probes passed: CORS applied, bucket ready "
+                "for the secure transfer.", total=len(report),
             )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Configuration du bucket S3"),
+                "title": _("S3 bucket setup"),
                 "message": message,
                 "type": "success" if not failed else "warning",
                 "sticky": True,

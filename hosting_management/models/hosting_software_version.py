@@ -5,13 +5,13 @@ from odoo import api, fields, models
 
 class HostingSoftwareVersion(models.Model):
     _name = "hosting.software.version"
-    _description = "Historique des versions de logiciel"
+    _description = "Software version history"
     _order = "software_id, release_date desc, version desc"
     _rec_name = "display_name"
 
     software_id = fields.Many2one(
         comodel_name="hosting.software",
-        string="Logiciel",
+        string="Software",
         required=True,
         ondelete="cascade",
     )
@@ -20,61 +20,61 @@ class HostingSoftwareVersion(models.Model):
         required=True,
     )
     display_name = fields.Char(
-        string="Nom affiché",
+        string="Display name",
         compute="_compute_display_name",
         store=True,
     )
     release_date = fields.Date(
-        string="Date de publication",
+        string="Release date",
     )
     is_lts = fields.Boolean(
         string="LTS",
-        help="Version avec support à long terme",
+        help="Long-term support version",
     )
     support_status = fields.Selection(
         selection=[
-            ("supported", "Supporté"),
-            ("security_only", "Sécurité uniquement"),
-            ("deprecated", "Déprécié"),
-            ("eol", "Fin de vie"),
+            ("supported", "Supported"),
+            ("security_only", "Security only"),
+            ("deprecated", "Deprecated"),
+            ("eol", "End of life"),
         ],
-        string="État du support",
+        string="Support status",
         default="supported",
         required=True,
     )
     release_notes = fields.Html(
-        string="Notes de version",
+        string="Release notes",
         translate=True,
     )
     breaking_changes = fields.Html(
-        string="Changements cassants",
+        string="Breaking changes",
         translate=True,
-        help="Changements cassants importants à connaître",
+        help="Important breaking changes to know about",
     )
     migration_notes = fields.Html(
-        string="Notes de migration",
+        string="Migration notes",
         translate=True,
-        help="Instructions pour migrer vers cette version",
+        help="Instructions to migrate to this version",
     )
     update_impact = fields.Selection(
         selection=[
-            ("none", "Aucun"),
-            ("minor", "Mineur"),
-            ("moderate", "Modéré"),
-            ("major", "Majeur"),
-            ("breaking", "Cassant"),
+            ("none", "None"),
+            ("minor", "Minor"),
+            ("moderate", "Moderate"),
+            ("major", "Major"),
+            ("breaking", "Breaking"),
         ],
-        string="Impact de mise à jour",
+        string="Update impact",
         default="minor",
-        help="Niveau d'impact lors de la mise à jour vers cette version",
+        help="Impact level when updating to this version",
     )
     service_ids = fields.One2many(
         comodel_name="hosting.service",
         inverse_name="installed_version_id",
-        string="Services utilisant cette version",
+        string="Services using this version",
     )
     service_count = fields.Integer(
-        string="Nombre de services",
+        string="Service count",
         compute="_compute_service_count",
     )
 
@@ -82,7 +82,7 @@ class HostingSoftwareVersion(models.Model):
         (
             "software_version_uniq",
             "UNIQUE(software_id, version)",
-            "Cette version existe déjà pour ce logiciel !",
+            "This version already exists for this software!",
         ),
     ]
 

@@ -37,10 +37,9 @@ def _boto3():
         import botocore  # noqa: F401
     except ImportError:
         raise UserError(_(
-            "La bibliothèque Python « boto3 » n'est pas installée sur cette "
-            "instance. L'image Docker du tenant doit être reconstruite avec "
-            "la couche pip boto3/botocore avant d'utiliser le transfert "
-            "sécurisé."
+            "The Python library \"boto3\" is not installed on this "
+            "instance. The tenant's Docker image must be rebuilt with the "
+            "boto3/botocore pip layer before using the secure transfer."
         ))
     return boto3
 
@@ -158,8 +157,8 @@ def params(env):
     bucket = (param(env, "s3_bucket") or "").strip()
     if not endpoint_url or not bucket:
         raise UserError(_(
-            "Le stockage S3 n'est pas configuré : renseignez l'endpoint et "
-            "le bucket dans Configuration → Transfert sécurisé."
+            "S3 storage is not configured: set the endpoint and the "
+            "bucket in Configuration → Secure transfer."
         ))
     access_key = (
         os.environ.get("BF_SECURETRANSFER_S3_ACCESS_KEY")
@@ -171,9 +170,10 @@ def params(env):
     )
     if not access_key or not secret_key:
         raise UserError(_(
-            "Les clés d'accès S3 sont absentes. Déclarez "
-            "bf_securetransfer_s3_access_key / bf_securetransfer_s3_secret_key "
-            "dans odoo.conf (ou l'environnement) — jamais en base de données."
+            "The S3 access keys are missing. Declare "
+            "bf_securetransfer_s3_access_key / "
+            "bf_securetransfer_s3_secret_key in odoo.conf (or the "
+            "environment), never in the database."
         ))
     path_style = str(param(env, "s3_path_style", "1")).strip().lower() in _TRUE_VALUES
     return {
@@ -399,7 +399,7 @@ def mpu_complete(env, key, upload_id):
     client: stitching a multi-GB object can be slow server-side."""
     parts = mpu_list_parts(env, key, upload_id)
     if not parts:
-        raise UserError(_("Aucune partie téléversée pour ce fichier."))
+        raise UserError(_("No part uploaded for this file."))
     p = params(env)
     resp = client(env, long_timeout=True).complete_multipart_upload(
         Bucket=p["bucket"],
@@ -566,7 +566,8 @@ def setup_bucket(env):
     def probe_location():
         resp = c.get_bucket_location(Bucket=p["bucket"])
         loc = resp.get("LocationConstraint") or ""
-        return loc == p["region"], "LocationConstraint=%r (attendu %r)" % (loc, p["region"])
+        return loc == p["region"], env._("LocationConstraint=%r (expected %r)") % (
+            loc, p["region"])
 
     # -- object lock must be OFF, otherwise the purge promise is broken
     def probe_object_lock():
@@ -575,15 +576,16 @@ def setup_bucket(env):
         except ClientError as e:
             code = e.response.get("Error", {}).get("Code") or ""
             if "ObjectLockConfiguration" in code or code in ("404", "NotFound"):
-                return True, "object lock absent (OFF) — purge possible"
+                return True, env._("object lock absent (OFF): purging is possible")
             raise
         enabled = (
             conf.get("ObjectLockConfiguration", {}).get("ObjectLockEnabled")
             == "Enabled"
         )
         if enabled:
-            return False, "object lock ACTIVÉ — la purge est impossible, recréer le bucket sans object lock"
-        return True, "object lock désactivé"
+            return False, env._("object lock ENABLED: purging is impossible, "
+                                "recreate the bucket without object lock")
+        return True, env._("object lock disabled")
 
     # -- CORS: browser PUTs need it; ExposeHeaders ETag is mandatory for MPU.
     # The bucket may be shared by several tenants, each running this action
@@ -592,8 +594,10 @@ def setup_bucket(env):
     def probe_cors():
         merged = apply_cors(env)
         if not merged:
-            return False, "aucune origine (param cors_origins vide et aucun domaine de marque) — CORS non appliqué"
-        return True, "CORS appliqué (PUT seulement, ExposeHeaders ETag), origins fusionnées : %s" % ", ".join(merged)
+            return False, env._("no origin (cors_origins parameter empty and no "
+                                "brand domain): CORS not applied")
+        return True, env._("CORS applied (PUT only, ExposeHeaders ETag), merged "
+                           "origins: %s") % ", ".join(merged)
 
     # -- lifecycle safety net behind the purge cron.
     # Shared-bucket aware: rule IDs carry the tenant prefix and rules from
@@ -647,17 +651,17 @@ def setup_bucket(env):
                 raise
             # The provider choked on the abort rule: keep the one that matters.
             put(foreign + [expire_rule])
-            return True, (
-                "expiration des orphelins posée sur %s/ à %d j ; abandon des "
-                "multipart incomplets REFUSÉ par le fournisseur (non supporté) "
-                "— sans effet ici, le module n'ouvre jamais de multipart. "
-                "%d règle(s) étrangère(s) préservée(s)"
-                % (prefix, expire_days, len(foreign))
+            return True, env._(
+                "orphan expiry set on %(prefix)s/ at %(days)d day(s); abort of "
+                "incomplete multipart uploads REFUSED by the provider (not "
+                "supported), stale ones are swept by the module itself. "
+                "%(foreign)d foreign rule(s) preserved",
+                prefix=prefix, days=expire_days, foreign=len(foreign),
             )
-        return True, (
-            "lifecycle appliqué sur %s/ (abort MPU 2 j + expiration %d j), "
-            "%d règle(s) étrangère(s) préservée(s)"
-            % (prefix, expire_days, len(foreign))
+        return True, env._(
+            "lifecycle applied on %(prefix)s/ (abort MPU after 2 days + expiry "
+            "after %(days)d day(s)), %(foreign)d foreign rule(s) preserved",
+            prefix=prefix, days=expire_days, foreign=len(foreign),
         )
 
     # -- full presigned round-trip: PUT → HEAD → GET → DELETE
@@ -667,21 +671,22 @@ def setup_bucket(env):
         ps = presign_put(env, key, len(body))
         status, _body, _hdrs = _http(ps["url"], "PUT", data=body, headers=ps["headers"])
         if status not in (200, 201, 204):
-            return False, "PUT présigné refusé (HTTP %s)" % status
+            return False, env._("presigned PUT refused (HTTP %s)") % status
         head = head_object(env, key)
         if not head or head["size"] != len(body):
-            return False, "HEAD après PUT incohérent : %r" % (head,)
+            return False, env._("HEAD after PUT inconsistent: %r") % (head,)
         url = presign_get(env, key, "probe.txt", "text/plain")
         status, got, hdrs = _http(url)
         if status != 200 or got != body:
-            return False, "GET présigné incohérent (HTTP %s)" % status
+            return False, env._("presigned GET inconsistent (HTTP %s)") % status
         disp = (hdrs.get("Content-Disposition") or "").lower()
         if "attachment" not in disp:
-            return False, "ResponseContentDisposition non honorée (%r)" % disp
+            return False, env._("ResponseContentDisposition not honored (%r)") % disp
         left = delete_keys(env, [key])
         if left:
-            return False, "DELETE en échec pour %s" % left
-        return True, "PUT/HEAD/GET/DELETE présignés OK, disposition attachment honorée"
+            return False, env._("DELETE failed for %s") % left
+        return True, env._("presigned PUT/HEAD/GET/DELETE OK, attachment "
+                           "disposition honored")
 
     # -- server-side PUT: the backend composer's own path (put_bytes). It is
     #    the ONE upload that does not go through a presigned URL, so the
@@ -695,21 +700,22 @@ def setup_bucket(env):
         body = b"bf_securetransfer server-side put probe"
         etag = put_bytes(env, key, body)
         if not etag:
-            return False, "PutObject sans ETag en réponse"
+            return False, env._("PutObject without an ETag in the response")
         head = head_object(env, key)
         if not head or head["size"] != len(body):
-            return False, "HEAD après PutObject incohérent : %r" % (head,)
+            return False, env._("HEAD after PutObject inconsistent: %r") % (head,)
         if head["etag"] != etag:
-            return False, "ETag PutObject ≠ ETag HEAD (%s / %s)" % (etag, head["etag"])
+            return False, env._("PutObject ETag differs from HEAD ETag (%s / %s)") % (
+                etag, head["etag"])
         url = presign_get(env, key, "probe.txt", "text/plain")
         status, got, _hdrs = _http(url)
         if status != 200 or got != body:
-            return False, "relecture du PUT serveur incohérente (HTTP %s)" % status
+            return False, env._("server PUT read-back inconsistent (HTTP %s)") % status
         left = delete_keys(env, [key])
         if left:
-            return False, "DELETE en échec pour %s" % left
-        return True, ("PutObject serveur OK (envoi backend), ETag épinglable, "
-                      "relecture conforme")
+            return False, env._("DELETE failed for %s") % left
+        return True, env._("server-side PutObject OK (backend send), ETag can "
+                           "be pinned, read-back matches")
 
     # -- is the signed Content-Length actually enforced by the endpoint?
     def probe_content_length():
@@ -719,11 +725,13 @@ def setup_bucket(env):
         try:
             status, _body, _hdrs = _http(ps["url"], "PUT", data=oversize)
             enforced = False
-            detail = ("le endpoint a ACCEPTÉ un corps plus gros que la taille signée "
-                      "(HTTP %s) — les quotas déclarés ne sont pas garantis côté stockage" % status)
+            detail = env._("the endpoint ACCEPTED a body larger than the signed "
+                           "size (HTTP %s): declared quotas are not guaranteed "
+                           "on the storage side") % status
         except urllib.error.HTTPError as e:
             enforced = e.code in (400, 403)
-            detail = "corps sur-dimensionné rejeté (HTTP %s) — Content-Length signé appliqué" % e.code
+            detail = env._("oversized body rejected (HTTP %s): signed "
+                           "Content-Length enforced") % e.code
         delete_keys(env, [key])  # best-effort cleanup either way
         return enforced, detail
 
@@ -735,10 +743,10 @@ def setup_bucket(env):
         c.put_object(Bucket=p["bucket"], Key=k2, Body=b"x")
         left = delete_keys(env, [k1, k2])
         if left:
-            return False, "échec de suppression par lot : %s" % left
+            return False, env._("batch delete failed: %s") % left
         if head_object(env, k1) is not None:
-            return False, "objet encore présent après DeleteObjects"
-        return True, "DeleteObjects par lot OK"
+            return False, env._("object still present after DeleteObjects")
+        return True, env._("batch DeleteObjects OK")
 
     # -- full multipart cycle: initiate → sign → PUT part → list → complete
     def probe_multipart():
@@ -749,18 +757,18 @@ def setup_bucket(env):
             urls = mpu_sign_parts(env, key, upload_id, [1])
             status, _b, hdrs = _http(urls[1], "PUT", data=body)
             if status not in (200, 201, 204):
-                return False, "PUT de partie refusé (HTTP %s)" % status
+                return False, env._("part PUT refused (HTTP %s)") % status
             if not (hdrs.get("ETag") or "").strip('"'):
-                return False, "ETag absent de la réponse UploadPart"
+                return False, env._("ETag missing from the UploadPart response")
             parts = mpu_list_parts(env, key, upload_id)
             if len(parts) != 1 or parts[0]["size"] != len(body):
-                return False, "ListParts incohérent : %r" % (parts,)
+                return False, env._("ListParts inconsistent: %r") % (parts,)
             etag = mpu_complete(env, key, upload_id)
             head = head_object(env, key)
             if not head or head["size"] != len(body):
-                return False, "HEAD après CompleteMultipartUpload incohérent"
+                return False, env._("HEAD after CompleteMultipartUpload inconsistent")
             delete_keys(env, [key])
-            return True, "cycle multipart complet OK (ETag final %s…)" % etag[:8]
+            return True, env._("full multipart cycle OK (final ETag %s…)") % etag[:8]
         except Exception:
             mpu_abort(env, key, upload_id)
             raise

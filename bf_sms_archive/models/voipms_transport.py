@@ -74,13 +74,13 @@ class SmsArchiveVoipms(models.AbstractModel):
     def _voipms_call(self, method, _http_method="GET", **params):
         """Appel REST VOIP.ms. 3 essais, secrets redactés. POST si base64 lourd."""
         if method not in VOIPMS_ALLOWED_METHODS:
-            raise ValueError("Méthode VOIP.ms non autorisée : %s" % method)
+            raise ValueError(self.env._("VOIP.ms method not allowed: %s", method))
         cfg = self._voipms_config()
         if not cfg["username"] or not cfg["password"]:
-            raise ValueError(
-                "Identifiants API VOIP.ms absents "
+            raise ValueError(self.env._(
+                "VOIP.ms API credentials missing "
                 "(bf_sms_archive.voipms_api_username / _api_password)."
-            )
+            ))
         all_params = {
             "api_username": cfg["username"],
             "api_password": cfg["password"],
@@ -113,10 +113,11 @@ class SmsArchiveVoipms(models.AbstractModel):
                 if attempt == 2:
                     # str(e) peut contenir l'URL complète (donc api_password) →
                     # assainir + couper le chaînage pour ne rien re-fuiter.
-                    raise RuntimeError(
-                        "VOIP.ms %s échec : %s : %s"
-                        % (method, type(e).__name__, self._voipms_redact(str(e)))
-                    ) from None
+                    raise RuntimeError(self.env._(
+                        "VOIP.ms %(method)s failed: %(error)s: %(detail)s",
+                        method=method, error=type(e).__name__,
+                        detail=self._voipms_redact(str(e)),
+                    )) from None
                 time.sleep(2)
 
     # ------------------------------------------------------------------
@@ -131,14 +132,14 @@ class SmsArchiveVoipms(models.AbstractModel):
             return data.get("dids", []) or []
         if status in ("no_did", "no_dids"):
             return []
-        raise RuntimeError("getDIDsInfo : statut %s" % status)
+        raise RuntimeError(self.env._("getDIDsInfo: status %s", status))
 
     @api.model
     def _voipms_send_sms(self, did, dst, message):
         """Envoie un segment SMS. Retourne l'id VOIP.ms. Lève sur échec."""
         data = self._voipms_call("sendSMS", did=did, dst=dst, message=message or "")
         if data.get("status") != "success":
-            raise RuntimeError("sendSMS : %s" % data.get("status"))
+            raise RuntimeError("sendSMS: %s" % data.get("status"))
         sms = data.get("sms")
         if isinstance(sms, list):
             return ",".join(str(x) for x in sms)
@@ -152,7 +153,7 @@ class SmsArchiveVoipms(models.AbstractModel):
             params["media%d" % i] = media
         data = self._voipms_call("sendMMS", _http_method="POST", **params)
         if data.get("status") != "success":
-            raise RuntimeError("sendMMS : %s" % data.get("status"))
+            raise RuntimeError("sendMMS: %s" % data.get("status"))
         return str(data.get("mms") or data.get("sms") or "")
 
     @api.model
@@ -174,7 +175,7 @@ class SmsArchiveVoipms(models.AbstractModel):
             return data.get("sms", []) or []
         if status in ("no_sms", "no_message"):
             return []
-        raise RuntimeError("getSMS : statut %s" % status)
+        raise RuntimeError(self.env._("getSMS: status %s", status))
 
     @api.model
     def _voipms_set_callback(self, did, url, enable=1):
@@ -206,5 +207,5 @@ class SmsArchiveVoipms(models.AbstractModel):
             params["sms_forward"] = current.get("sms_forward") or ""
         data = self._voipms_call("setSMS", **params)
         if data.get("status") != "success":
-            raise RuntimeError("setSMS : %s" % data.get("status"))
+            raise RuntimeError("setSMS: %s" % data.get("status"))
         return True

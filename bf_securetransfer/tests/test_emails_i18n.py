@@ -45,6 +45,10 @@ class TestEmailsI18n(BaseNeuve, TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_securetransfer"], ["fr_CA"], overwrite=True)
         cls.brand = cls.env.ref("bf_securetransfer.brand_default")
         icp = cls.env["ir.config_parameter"].sudo()
         # Roomy daily quotas so the suite never trips anti-abuse counters.
@@ -471,6 +475,9 @@ class TestEmailsI18n(BaseNeuve, TransactionCase):
     def test_resolve_locale(self):
         """Si ça casse : la page publique s'affiche en français à un visiteur
         anglophone (ou tente une langue non installée et plante)."""
+        # Le repli « tout le reste → fr_CA » n'est vrai que là où une langue
+        # française est active : on l'épingle, au lieu de dépendre de la base.
+        self.env["res.lang"]._activate_lang("fr_CA")
         self.assertEqual(self._resolve_with_header("en-CA,en;q=0.9"), "en_CA")
         self.assertEqual(self._resolve_with_header("en-US"), "en_CA")
         self.assertEqual(self._resolve_with_header("EN"), "en_CA")
@@ -486,23 +493,38 @@ class TestEmailsI18n(BaseNeuve, TransactionCase):
 
     def test_resolve_locale_falls_back_when_lang_not_installed(self):
         """Si ça casse : on pousse en_CA dans le contexte d'une instance où la
-        langue n'est pas activée → rendu incohérent, voire erreur de contexte."""
-        class _NoLangEnv:
+        langue n'est pas activée → rendu incohérent, voire erreur de contexte.
+
+        Depuis la source anglaise, la locale est la famille de la langue ACTIVE de
+        rendu (``active_lang``, qui lit ``get_installed``) : sans aucune langue
+        anglaise active, un visiteur anglophone a la page française ; avec en_US
+        seule, il a la page anglaise."""
+        class _LangEnv:
+            def __init__(self, codes):
+                self._codes = codes
+                self.company = types.SimpleNamespace(sudo=lambda: types.SimpleNamespace(
+                    partner_id=types.SimpleNamespace(lang="fr_CA")))
+
             def __getitem__(self, name):
                 return self
 
             def sudo(self):
                 return self
 
-            def search(self, *args, **kwargs):
-                return []
+            def get_installed(self):
+                return [(code, code) for code in self._codes]
 
         self.assertEqual(
-            self._resolve_with_header("en-CA", env=_NoLangEnv()), "fr_CA")
+            self._resolve_with_header("en-CA", env=_LangEnv(["fr_CA"])), "fr_CA")
+        self.assertEqual(
+            self._resolve_with_header("en-CA", env=_LangEnv(["fr_CA", "en_US"])),
+            "en_CA")
 
     def test_resolve_locale_without_request(self):
         """Si ça casse : tout appel hors requête HTTP (cron, test, RPC) lève
         au lieu de retomber sur la langue par défaut."""
+        # Repli fr_CA : vrai là où fr_CA est active (épinglée).
+        self.env["res.lang"]._activate_lang("fr_CA")
         self.assertEqual(st_main._resolve_locale(env=self.env), "fr_CA")
 
     # ------------------------------------------------------------ 12. parité _UI_STRINGS
@@ -666,14 +688,35 @@ class TestEmailsI18n(BaseNeuve, TransactionCase):
             self.assertEqual(hooks._po_template_terms(), {})
 
     def test_po_template_terms_reads_shipped_catalog(self):
-        """Si ça casse : le catalogue livré ne produit plus aucun terme et la
-        traduction des gabarits devient un no-op silencieux."""
-        terms = hooks._po_template_terms()
-        self.assertTrue(
-            terms, "aucun terme mail.template extrait de i18n/en_CA.po")
-        for src, tgt in terms.items():
-            self.assertTrue(src and tgt)
-            self.assertNotEqual(src, tgt)
+        """Depuis 18.0.1.22.0, la source des gabarits est ANGLAISE : l'en_CA.po livré ne
+        porte plus de termes français à substituer (il est gardé vide). Le crochet recopie
+        alors le corps ET l'objet anglais tels quels dans la clé en_CA, sans objet de son
+        cru. Si ça casse : un terme français revenu dans en_CA.po remettrait des corps
+        mi-français mi-anglais (vus en base avant la source anglaise), ou le crochet
+        réécrit en en_CA un objet qui diverge de la source (« — » au lieu de « : »)."""
+        self.assertEqual(hooks._po_template_terms(), {})
+        self.assertFalse(hasattr(hooks, "_EN_SUBJECTS"),
+                         "le crochet ne doit plus porter d'objets anglais de son cru")
+        for xid in _TEMPLATE_XIDS:
+            # Une clé en_CA qui diverge de la source, comme l'ancien crochet l'écrivait.
+            tmpl = self.env.ref(xid).sudo()
+            # By SQL: on a base where en_US is inactive (Blue Fox), an ORM write in en_CA
+            # is copied into en_US as well, and the starting state would be wrong.
+            self.env.cr.execute(
+                "UPDATE mail_template SET subject = COALESCE(subject, '{}'::jsonb)"
+                " || jsonb_build_object('en_CA', %s::text) WHERE id = %s",
+                ("Ancien objet — {{ object.name }}", tmpl.id))
+            tmpl.invalidate_recordset(["subject"])
+        hooks.apply_email_translations(self.env)
+        self.env.invalidate_all()
+        for xid in _TEMPLATE_XIDS:
+            tmpl = self.env.ref(xid).sudo()
+            self.assertEqual(tmpl.with_context(lang="en_CA").body_html,
+                             tmpl.with_context(lang="en_US").body_html, xid)
+            en_us = tmpl.with_context(lang="en_US").subject
+            self.assertTrue(en_us, xid)
+            self.assertNotIn(" — ", en_us, xid)
+            self.assertEqual(tmpl.with_context(lang="en_CA").subject, en_us, xid)
 
     # -------------------------------------------------- 15. apply_email_translations
     def test_apply_email_translations_is_idempotent(self):

@@ -26,6 +26,13 @@ pour contenir une graine et qu'aucun de ses calculs n'en déchiffre une.
 
 import re
 
+from odoo.tools import LazyTranslate
+
+# Les raisons sont lues par la personne qui saisit, dans le message d'erreur de
+# `_check_no_otp_secret`. Paresseuses ici (ce module n'a pas d'environnement),
+# traduites dans la langue de l'usager par `env._(raison)` à l'appel.
+_lt = LazyTranslate(__name__)
+
 # Les deux formes d'URI que produisent les applications d'authentification.
 # `otpauth://` porte la graine dans son paramètre `secret` ; `otpauth-migration://`
 # est l'export en lot de Google Authenticator, qui porte toutes les graines à la
@@ -89,10 +96,10 @@ def otp_secret_reason(value, strict=True):
         return None
 
     if _URI.search(value):
-        return "une adresse otpauth://, qui porte la graine elle-même"
+        return _lt("an otpauth:// address, which carries the seed itself")
 
     if _PARAM_SECRET.search(value):
-        return "un paramètre secret= suivi d'une graine en base32"
+        return _lt("a secret= parameter followed by a base32 seed")
 
     if not strict:
         return None
@@ -103,6 +110,6 @@ def otp_secret_reason(value, strict=True):
             and (len(corps) % 8 == 0
                  or len(corps) in _LONGUEURS_AVEC_REMPLISSAGE)
             and _HAS_BASE32_DIGIT.search(corps)):
-        return "une graine en base32"
+        return _lt("a base32 seed")
 
     return None

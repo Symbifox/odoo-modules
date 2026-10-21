@@ -14,23 +14,23 @@ from odoo.exceptions import UserError
 
 class SecureTransferExtendWizard(models.TransientModel):
     _name = "secure.transfer.extend.wizard"
-    _description = "Prolonger l'échéance d'un transfert"
+    _description = "Extend a transfer's expiry"
 
     transfer_id = fields.Many2one(
-        "secure.transfer", string="Transfert", readonly=True, required=True,
+        "secure.transfer", string="Transfer", readonly=True, required=True,
     )
     transfer_state = fields.Selection(
-        related="transfer_id.state", string="État actuel",
+        related="transfer_id.state", string="Current state",
     )
     current_expiry = fields.Datetime(
-        related="transfer_id.expiry_date", string="Échéance actuelle",
+        related="transfer_id.expiry_date", string="Current expiry",
     )
     days = fields.Selection(
-        selection="_selection_days", string="Nouvelle durée", required=True,
-        help="Durée totale de disponibilité, comptée depuis l'envoi.",
+        selection="_selection_days", string="New duration", required=True,
+        help="Total availability, counted from the send.",
     )
     new_expiry = fields.Datetime(
-        string="Nouvelle échéance", compute="_compute_new_expiry",
+        string="New expiry", compute="_compute_new_expiry",
     )
 
     def _selection_days(self):
@@ -41,7 +41,7 @@ class SecureTransferExtendWizard(models.TransientModel):
             self.env.context.get("default_transfer_id") or []).exists()
         if not transfer:
             return []
-        return [(str(d), _("%s jours", d) if d > 1 else _("1 jour"))
+        return [(str(d), _("%s days", d) if d > 1 else _("1 day"))
                 for d in transfer._extension_choices()]
 
     @api.depends("transfer_id", "days")
@@ -63,18 +63,18 @@ class SecureTransferExtendWizard(models.TransientModel):
         )
         transfer = self.env["secure.transfer"].browse(transfer_id or []).exists()
         if not transfer:
-            raise UserError(_("Aucun transfert sélectionné."))
+            raise UserError(_("No transfer selected."))
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_manager"):
             raise UserError(_(
-                "Action réservée aux gestionnaires du transfert sécurisé."
+                "Action restricted to secure transfer managers."
             ))
         choices = transfer._extension_choices()
         if not choices:
             raise UserError(_(
-                "Ce transfert est déjà à la durée maximale offerte par "
-                "« %(brand)s » (%(days)s jours). Créez un nouvel envoi si le "
-                "destinataire a besoin de plus de temps.",
+                "This transfer is already at the longest duration "
+                "\"%(brand)s\" offers (%(days)s days). Create a new send "
+                "if the recipient needs more time.",
                 brand=transfer.brand_id.display_name,
                 days=transfer.retention_days,
             ))

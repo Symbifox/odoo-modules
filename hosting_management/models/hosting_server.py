@@ -5,37 +5,39 @@ import re
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
+from .hosting_lang import reader_env
+
 
 class HostingServer(models.Model):
     _name = "hosting.server"
-    _description = "Serveur d'hébergement"
+    _description = "Hosting server"
     _order = "name"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
-        string="Nom du serveur",
+        string="Server name",
         required=True,
         tracking=True,
-        help="Nom convivial du serveur (ex. : « Production 1 »)",
+        help="Friendly server name (e.g. \"Production 1\")",
     )
     code = fields.Char(
         string="Code",
         required=True,
-        help="Identifiant court (ex. : « PT1 »)",
+        help="Short identifier (e.g. \"SRV1\")",
     )
     hostname = fields.Char(
-        string="Nom d'hôte",
+        string="Hostname",
         required=True,
         tracking=True,
-        help="Nom d'hôte pleinement qualifié (ex. : « server1.example.com »)",
+        help="Fully qualified hostname (e.g. \"server1.example.com\")",
     )
     server_type = fields.Selection(
         selection=[
             ("production", "Production"),
-            ("staging", "Préproduction"),
-            ("development", "Développement"),
+            ("staging", "Staging"),
+            ("development", "Development"),
         ],
-        string="Type de serveur",
+        string="Server type",
         default="production",
         required=True,
         tracking=True,
@@ -48,35 +50,35 @@ class HostingServer(models.Model):
             ("azure", "Azure"),
             ("gcp", "Google Cloud"),
             ("digitalocean", "DigitalOcean"),
-            ("on_premise", "Sur site"),
-            ("other", "Autre"),
+            ("on_premise", "On-premises"),
+            ("other", "Other"),
         ],
-        string="Fournisseur",
+        string="Provider",
         tracking=True,
     )
     location = fields.Char(
-        string="Emplacement",
-        help="Emplacement physique ou centre de données (ex. : « Canada », « EU-West »)",
+        string="Location",
+        help="Physical location or data center (e.g. \"Canada\", \"EU-West\")",
     )
     ip_address = fields.Char(
-        string="Adresse IP",
-        help="Adresse IP principale du serveur",
+        string="IP address",
+        help="Main IP address of the server",
     )
     ssh_user = fields.Char(
-        string="Utilisateur SSH",
+        string="SSH user",
         default="root",
     )
     ssh_port = fields.Integer(
-        string="Port SSH",
+        string="SSH port",
         default=22,
     )
     state = fields.Selection(
         selection=[
-            ("active", "Actif"),
+            ("active", "Active"),
             ("maintenance", "Maintenance"),
-            ("decommissioned", "Décommissionné"),
+            ("decommissioned", "Decommissioned"),
         ],
-        string="État",
+        string="State",
         default="active",
         required=True,
         tracking=True,
@@ -89,7 +91,7 @@ class HostingServer(models.Model):
         string="Services",
     )
     service_count = fields.Integer(
-        string="Nombre de services",
+        string="Service count",
         compute="_compute_service_count",
     )
 
@@ -98,13 +100,13 @@ class HostingServer(models.Model):
         string="Notes",
     )
     active = fields.Boolean(
-        string="Actif",
+        string="Active",
         default=True,
     )
 
     _sql_constraints = [
-        ("code_uniq", "UNIQUE(code)", "Le code du serveur doit être unique !"),
-        ("hostname_uniq", "UNIQUE(hostname)", "Le nom d'hôte doit être unique !"),
+        ("code_uniq", "UNIQUE(code)", "The server code must be unique!"),
+        ("hostname_uniq", "UNIQUE(hostname)", "The hostname must be unique!"),
     ]
 
     _HOSTNAME_RE = re.compile(r"^[a-zA-Z0-9]([a-zA-Z0-9._-]{0,253}[a-zA-Z0-9])?$")
@@ -113,10 +115,11 @@ class HostingServer(models.Model):
     def _check_hostname(self):
         for record in self:
             if record.hostname and not self._HOSTNAME_RE.match(record.hostname):
-                raise ValidationError(
-                    f"Le nom d'hôte « {record.hostname} » contient des caractères non autorisés. "
-                    "Seuls les lettres, chiffres, points, tirets et underscores sont permis."
-                )
+                raise ValidationError(self.env._(
+                    "The hostname \"%s\" contains characters that are not allowed. "
+                    "Only letters, digits, dots, hyphens and underscores are permitted.",
+                    record.hostname,
+                ))
 
     @api.constrains("ip_address")
     def _check_ip_address(self):
@@ -126,9 +129,9 @@ class HostingServer(models.Model):
                     import ipaddress as _ipa
                     _ipa.ip_address(record.ip_address)
                 except ValueError:
-                    raise ValidationError(
-                        f"« {record.ip_address} » n'est pas une adresse IP valide."
-                    )
+                    raise ValidationError(self.env._(
+                        "\"%s\" is not a valid IP address.", record.ip_address
+                    ))
 
     _AUDIT_FIELDS = {"hostname", "ip_address", "state", "provider", "server_type"}
 
@@ -136,7 +139,11 @@ class HostingServer(models.Model):
         tracked = self._AUDIT_FIELDS & set(vals)
         if tracked:
             AuditLog = self.env["hosting.audit.log"]
-            state_labels = dict(self._fields["state"].selection)
+            # Journal d'audit : relu par les opérateurs, dans la langue de la
+            # société (installée, sinon en_US : une langue désactivée ferait lever
+            # `_description_selection`) ; libellés d'état lus sur le même env (pièges 3 et 60).
+            env = reader_env(self.env)
+            state_labels = dict(self._fields["state"]._description_selection(env))
             for rec in self:
                 for fname in tracked:
                     old_val = getattr(rec, fname)
@@ -151,9 +158,9 @@ class HostingServer(models.Model):
                         AuditLog._log_event(
                             action_type="config_change",
                             category="config",
-                            description=(
-                                f"Serveur {rec.name} : {fname} "
-                                f"'{old_val}' → '{new_val}'"
+                            description=env._(
+                                "Server %(server)s: %(field)s '%(old)s' → '%(new)s'",
+                                server=rec.name, field=fname, old=old_val, new=new_val,
                             ),
                             res_model=self._name,
                             res_id=rec.id,
@@ -176,7 +183,7 @@ class HostingServer(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Services - {self.name}",
+            "name": self.env._("Services - %s", self.name),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "kanban"], [False, "form"]],
             "domain": [("server_id", "=", self.id)],

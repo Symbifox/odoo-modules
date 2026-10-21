@@ -5,19 +5,19 @@
         <field name="name">secure.transfer.extend.wizard.form</field>
         <field name="model">secure.transfer.extend.wizard</field>
         <field name="arch" type="xml">
-            <form string="Prolonger l'échéance">
+            <form string="Extend the expiry">
                 <field name="transfer_state" invisible="1"/>
                 <div class="alert alert-info" role="alert" invisible="transfer_state != 'expired'">
-                    Ce transfert est <strong>expiré</strong>. Le prolonger le
-                    rouvrira : le lien déjà transmis recommencera à fonctionner,
-                    sans qu'aucun courriel ne reparte. La prolongation est
-                    inscrite au journal d'accès.
+                    This transfer has <strong>expired</strong>. Extending it will
+                    reopen it: the link already sent starts working again,
+                    and no email goes back out. The extension is
+                    written to the access trail.
                 </div>
                 <div class="alert alert-secondary" role="alert" invisible="transfer_state == 'expired'">
-                    La durée se compte depuis l'envoi, et se choisit parmi celles
-                    que le service offre : c'est cette même grille qui fixe le
-                    filet de cycle de vie du stockage. La prolongation est
-                    inscrite au journal d'accès.
+                    The duration counts from the send, and is picked from those
+                    the service offers: that same grid sets the storage
+                    lifecycle net. The extension is
+                    written to the access trail.
                 </div>
                 <group>
                     <field name="transfer_id" readonly="1"/>
@@ -26,9 +26,9 @@
                     <field name="new_expiry" readonly="1"/>
                 </group>
                 <footer>
-                    <button string="Prolonger" name="action_apply" type="object"
+                    <button string="Extend" name="action_apply" type="object"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
