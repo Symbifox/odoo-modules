@@ -79,7 +79,11 @@ page also carries **Existing tasks discussed** — tasks that were already open
 before the meeting and that it talked about — under the action items, with the
 same exclusions and the same filter (`meeting.record._discussed_tasks_for_report()`,
 bf_meeting 18.0.3.59.0) as the PDF and the email, so the three surfaces cannot
-drift apart. The page draws these sections from
+drift apart. Since v18.0.2.3.0 the action-item rule itself lives in the model
+(`meeting.record._is_action_item()` and `_action_tasks_for_report()`, bf_meeting
+18.0.3.69.0), so the PDF, the email and the portal share it; the report's own
+task is now also recognised by its stage when the meeting was renamed after the
+task was created. The page draws these sections from
 `meeting.record._get_report_data()`, the method feeding the client report, so it
 stays at parity with it.
 
@@ -160,5 +164,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-20, this version converts automatically to
   **LGPL-3.0-or-later**.

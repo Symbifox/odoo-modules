@@ -187,7 +187,7 @@ class MeetingExchange(models.AbstractModel):
         # la copie ne porte que ce que le PDF montre, et un destinataire d'une
         # version antérieure ignorerait une clé qu'il ne connaît pas.
         actions = []
-        for task in record.task_ids | record._discussed_tasks_for_report():
+        for task in record._action_tasks_for_report() | record._discussed_tasks_for_report():
             actions.append({
                 'name': (task.name or '')[:MAX_LINE],
                 'assignees': ', '.join(task.user_ids.mapped('name'))[:MAX_LINE],

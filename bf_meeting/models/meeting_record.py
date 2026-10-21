@@ -16,6 +16,10 @@ from odoo.addons.bf_ai_bridge.tools import transport
 
 _logger = logging.getLogger(__name__)
 
+# L'étape où le raffinage des comptes rendus range la tâche qui porte la rencontre
+# (temps de la séance) : jamais un élément d'action.
+MEETING_REPORT_STAGE = 'Comptes rendus de rencontres'
+
 # Seuil AA du grand texte : la sur-ligne de bannière est en 8 pt gras espacé,
 # donc ce seuil-là et pas 4,5:1.
 _SEUIL_SUR_FOND_SOMBRE = 3.0
@@ -875,18 +879,55 @@ class MeetingRecord(models.Model):
         return (self.partner_id.tz if self.partner_id else None) \
             or self.env['bf.timezone'].default_tz()
 
-    def _discussed_tasks_for_report(self):
-        """Les tâches existantes discutées, telles que le compte rendu les montre.
+    def _is_action_item(self, task):
+        """Ce qui vaut « élément d'action » aux yeux du lecteur du compte rendu.
+
+        Deux exclusions, d'abord constatées sur le portail le 2026-09-04, puis
+        sur le PDF et le courriel le 2026-10-19 :
+        - une tâche annulée n'est plus un engagement : le Meeting Processor en
+          dépose parfois qui sont ensuite recadrées au verbatim et annulées, et le
+          lecteur les voyait encore listées comme actions à faire ;
+        - la tâche qui porte le compte rendu lui-même (elle reçoit le temps de la
+          séance) n'a jamais été une action. On la reconnaît à son étape, ou à son
+          nom quand il est resté celui de la rencontre : la rencontre est souvent
+          renommée après la création de cette tâche (raffinage du compte rendu,
+          numéro de téléphone remplacé par un nom), et le nom seul la laissait
+          passer.
+        Les tâches terminées restent listées : elles disent ce qui a été livré
+        depuis la rencontre.
+        """
+        self.ensure_one()
+        if task.state == '1_canceled':
+            return False
+        # Le nom de l'étape est traduisible ; sa valeur source (`en_US`) est celle
+        # qu'écrit le raffinage des comptes rendus, quelle que soit la langue.
+        if task.stage_id and \
+                task.stage_id.with_context(lang='en_US').name == MEETING_REPORT_STAGE:
+            return False
+        if (task.name or '').strip() == (self.name or '').strip():
+            return False
+        return True
+
+    def _action_tasks_for_report(self):
+        """Les éléments d'action, tels que le compte rendu les montre.
 
         Une seule définition pour le PDF, le courriel, le portail et la copie
         d'échange : quatre filtres écrits séparément finissent par diverger, et
-        le client lirait deux listes différentes du même compte rendu.
-        - une tâche déjà listée parmi les éléments d'action n'est pas répétée ;
-        - une tâche annulée n'est plus un engagement (même règle que le portail).
+        le lecteur lirait des listes différentes du même compte rendu (le
+        portail écartait les tâches annulées, le PDF et le courriel non).
+        """
+        self.ensure_one()
+        return self.task_ids.filtered(self._is_action_item)
+
+    def _discussed_tasks_for_report(self):
+        """Les tâches existantes discutées, telles que le compte rendu les montre.
+
+        Même règle et mêmes quatre surfaces que `_action_tasks_for_report` ;
+        une tâche déjà liée au compte rendu n'est pas répétée ici.
         """
         self.ensure_one()
         return (self.discussed_task_ids - self.task_ids).filtered(
-            lambda t: t.state != '1_canceled')
+            self._is_action_item)
 
     @api.depends('knowledge_item_ids')
     def _compute_knowledge_item_count(self):
@@ -1748,6 +1789,7 @@ class MeetingRecord(models.Model):
             'deliverables': self._iter_entries(data.get('deliverables')),
             'open_questions': self._iter_entries(data.get('open_questions')),
             'decision_count': len(self.decision_ids),
-            'task_count': len(self.task_ids),
+            # Le même compte que la liste « Action items » du même PDF.
+            'task_count': len(self._action_tasks_for_report()),
             'participant_count': len(self.attendance_ids) or len(self.participant_ids),
         }

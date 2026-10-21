@@ -96,10 +96,11 @@
 </ul>
 </t>
 
-<t t-if="object.task_ids">
+<t t-set="action_tasks" t-value="object._action_tasks_for_report()"/>
+<t t-if="action_tasks">
 <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Action items</h3>
 <ul style="margin:0 0 20px 0; padding-left:24px; color:#374151;">
-    <t t-foreach="object.task_ids" t-as="task">
+    <t t-foreach="action_tasks" t-as="task">
         <li style="margin-bottom:6px;">
             <t t-out="task.name"/>
             <t t-if="task.user_ids">

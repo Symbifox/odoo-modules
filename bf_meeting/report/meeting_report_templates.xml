@@ -325,7 +325,8 @@
                             </t>
 
                             <!-- Action items -->
-                            <t t-if="doc.task_ids">
+                            <t t-set="action_tasks" t-value="doc._action_tasks_for_report()"/>
+                            <t t-if="action_tasks">
                                 <div class="mr-section-title">Action items</div>
                                 <table class="mr-table">
                                     <thead>
@@ -336,7 +337,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <t t-foreach="doc.task_ids" t-as="task">
+                                        <t t-foreach="action_tasks" t-as="task">
                                             <tr>
                                                 <td><t t-out="task.name"/></td>
                                                 <td>

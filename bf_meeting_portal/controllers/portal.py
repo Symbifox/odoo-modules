@@ -192,17 +192,14 @@ class PortalMeeting(CustomerPortal):
             ],
             'open_questions': _flatten(data.get('open_questions'), 'question'),
             'deliverables': _flatten(data.get('deliverables'), 'description'),
+            # Les deux listes viennent de bf_meeting : une seule définition pour
+            # le PDF, le courriel, la copie d'échange et cette page.
             'actions': [
-                self._action_ctx(t)
-                for t in rec.task_ids if self._is_action_item(rec, t)
+                self._action_ctx(t) for t in rec._action_tasks_for_report()
             ],
-            # Les tâches ouvertes avant la rencontre dont elle a parlé : le PDF
-            # et le courriel les montrent, la page aussi. Le filtre vient de
-            # bf_meeting, le même pour les quatre surfaces.
+            # Les tâches ouvertes avant la rencontre dont elle a parlé.
             'discussed': [
-                self._action_ctx(t)
-                for t in rec._discussed_tasks_for_report()
-                if self._is_action_item(rec, t)
+                self._action_ctx(t) for t in rec._discussed_tasks_for_report()
             ],
         }
 
@@ -217,23 +214,8 @@ class PortalMeeting(CustomerPortal):
 
     @staticmethod
     def _is_action_item(rec, task):
-        """Ce qui vaut « élément d'action » aux yeux du client.
-
-        Deux exclusions, constatées le 2026-09-04 sur l'aperçu du portail
-        d'un client (compte rendu de statutaire) :
-        - une tâche annulée n'est plus un engagement : le Meeting Processor en
-          dépose parfois qui sont ensuite recadrées au verbatim et annulées, et le
-          client les voyait encore listées comme actions à faire ;
-        - la tâche qui porte le compte rendu lui-même (même nom que la rencontre,
-          elle reçoit le temps de la séance) n'a jamais été une action.
-        Les tâches terminées restent listées, marquées « fait » : elles disent ce
-        qui a été livré depuis la rencontre.
-        """
-        if task.state == '1_canceled':
-            return False
-        if (task.name or '').strip() == (rec.name or '').strip():
-            return False
-        return True
+        """Renvoi à la règle de bf_meeting (`meeting.record._is_action_item`)."""
+        return rec._is_action_item(task)
 
     def _attendance_ctx(self, rec):
         """Présences telles qu'un client doit les lire.

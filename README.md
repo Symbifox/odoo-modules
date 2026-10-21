@@ -252,9 +252,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.2 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.1.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.68.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.69.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
-| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.2.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
+| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.3.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.2 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
 | `bf_membership` | Membres | 18.0.1.0.6 | BUSL-1.1 | The member register of an association, a non-profit or a federation: categories, memberships, renewals and delegates, without depending on an invoice |
 | `bf_membership_account` | Membres : facturation et reçus fiscaux | 18.0.1.0.2 | BUSL-1.1 | Invoices the membership fee in Odoo, follows its payment on the membership, and issues a registered charity's partial tax receipt for money actually received |

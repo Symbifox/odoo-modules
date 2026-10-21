@@ -12,7 +12,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.2.2.0',
+    'version': '18.0.2.3.0',
     'category': 'Services/Project',
     'summary': "Accès portail aux comptes rendus de rencontre déjà envoyés",
     'description': """

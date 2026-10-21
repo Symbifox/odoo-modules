@@ -13,3 +13,4 @@ from . import test_mise_en_page_commune
 from . import test_planifier_depuis_odj
 from . import test_raffinage_automatique
 from . import test_langue_des_lecteurs
+from . import test_elements_d_action
