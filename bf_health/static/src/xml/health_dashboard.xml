@@ -51,7 +51,7 @@
                         <!-- Med compliance -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.medication.log', 'Médicaments du jour')">
+                                 t-on-click="() => this.openModel('health.medication.log')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -70,7 +70,7 @@
                         <!-- Active meds -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.medication', 'Médicaments', 'kanban')">
+                                 t-on-click="() => this.openModel('health.medication', 'kanban')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -86,7 +86,7 @@
                         <!-- Water today -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                 t-on-click="() => this.openModel('health.vital')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -102,7 +102,7 @@
                         <!-- Calories today -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                 t-on-click="() => this.openModel('health.vital')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -123,7 +123,7 @@
                         <!-- Steps today -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                 t-on-click="() => this.openModel('health.vital')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -139,7 +139,7 @@
                         <!-- Active minutes -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                 t-on-click="() => this.openModel('health.vital')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -155,7 +155,7 @@
                         <!-- Sleep -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                 t-on-click="() => this.openModel('health.vital')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -171,7 +171,7 @@
                         <!-- Net calories -->
                         <div class="col-lg-3 col-md-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.meal.log', 'Journal alimentaire')">
+                                 t-on-click="() => this.openModel('health.meal.log')">
                                 <div class="card-body text-center py-3">
                                     <div class="text-uppercase fw-semibold mb-1"
                                          style="font-size: 0.7rem; color: #8899aa;">
@@ -301,7 +301,7 @@
                                             <tbody>
                                                 <t t-foreach="state.data.upcoming_screenings" t-as="scr" t-key="scr.id">
                                                     <tr role="button"
-                                                        t-on-click="() => this.openModel('health.screening', 'Examens', 'kanban')">
+                                                        t-on-click="() => this.openModel('health.screening', 'kanban')">
                                                         <td class="ps-3 fw-medium">
                                                             <t t-esc="scr.name"/>
                                                         </td>
@@ -337,7 +337,7 @@
                                             <tbody>
                                                 <t t-foreach="Object.entries(state.data.substance_weekly)" t-as="entry" t-key="entry[0]">
                                                     <tr role="button"
-                                                        t-on-click="() => this.openModel('health.substance.log', 'Consommation')">
+                                                        t-on-click="() => this.openModel('health.substance.log')">
                                                         <td class="ps-3 fw-medium">
                                                             <t t-esc="substanceLabel(entry[0])"/>
                                                         </td>
@@ -414,7 +414,7 @@
                         <!-- Weekly workouts -->
                         <div class="col-lg-6">
                             <div class="card border-0 shadow-sm h-100" role="button"
-                                 t-on-click="() => this.openModel('health.workout', 'Entraînement')">
+                                 t-on-click="() => this.openModel('health.workout')">
                                 <div class="card-header border-0 py-3"
                                      style="background: linear-gradient(90deg, #16a085 0%, #1abc9c 100%);">
                                     <h5 class="mb-0 text-white fw-semibold">
@@ -452,49 +452,49 @@
                     <div class="row g-2">
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.medication', 'Médicaments', 'kanban')">
+                                    t-on-click="() => this.openModel('health.medication', 'kanban')">
                                 <i class="fa fa-pills me-1"/>Médicaments
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.vital', 'Signes vitaux')">
+                                    t-on-click="() => this.openModel('health.vital')">
                                 <i class="fa fa-stethoscope me-1"/>Signes vitaux
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.lab.test', 'Analyses')">
+                                    t-on-click="() => this.openModel('health.lab.test')">
                                 <i class="fa fa-flask me-1"/>Analyses
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.screening', 'Examens', 'kanban')">
+                                    t-on-click="() => this.openModel('health.screening', 'kanban')">
                                 <i class="fa fa-calendar-check-o me-1"/>Examens
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.condition', 'Conditions')">
+                                    t-on-click="() => this.openModel('health.condition')">
                                 <i class="fa fa-medkit me-1"/>Conditions
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.substance.log', 'Consommation')">
+                                    t-on-click="() => this.openModel('health.substance.log')">
                                 <i class="fa fa-glass me-1"/>Consommation
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.workout', 'Entraînement')">
+                                    t-on-click="() => this.openModel('health.workout')">
                                 <i class="fa fa-bicycle me-1"/>Entraînement
                             </button>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary"
-                                    t-on-click="() => this.openModel('health.meal.log', 'Journal alimentaire')">
+                                    t-on-click="() => this.openModel('health.meal.log')">
                                 <i class="fa fa-cutlery me-1"/>Alimentation
                             </button>
                         </div>

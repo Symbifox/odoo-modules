@@ -326,6 +326,8 @@ msgid "Ajouter une note"
 msgstr "Add a note"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__alcohol
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__alcohol
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__alcohol
@@ -394,6 +396,7 @@ msgstr "Lab test"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_lab_test_action
 #: model:ir.ui.menu,name:bf_health.health_menu_lab
@@ -624,6 +627,8 @@ msgid "Bons jours"
 msgstr "Good days"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__caffeine
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__caffeine
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__caffeine
@@ -678,6 +683,8 @@ msgid "Calories nettes"
 msgstr "Net calories"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__cannabis
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__cannabis
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__cannabis
@@ -892,6 +899,7 @@ msgstr "Health condition"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_condition_action
 #: model:ir.ui.menu,name:bf_health.health_menu_condition
@@ -932,6 +940,7 @@ msgstr "Parent's consent"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_substance_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_substance
@@ -1393,6 +1402,7 @@ msgstr "Saved. Thank you!"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_workout_action
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_workout
@@ -1427,6 +1437,14 @@ msgid "Entrée du journal alimentaire"
 msgstr "Food log entry"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
+msgid "Erreur lors du chargement du tableau de bord"
+msgstr "Error while loading the dashboard"
+
+#. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
 msgid "Examen"
 msgstr "Screening"
@@ -1448,6 +1466,7 @@ msgstr "Physical exam"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_screening_action
 #: model:ir.ui.menu,name:bf_health.health_menu_screening
@@ -2158,6 +2177,8 @@ msgid "Joints"
 msgstr "Joints"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.actions.act_window,name:bf_health.health_meal_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_nutrition_journal
 #: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_pivot
@@ -2720,6 +2741,7 @@ msgstr "Medication"
 #. odoo-javascript
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_medication_action
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__med_line_ids
@@ -2736,6 +2758,8 @@ msgid "Médicaments actifs"
 msgstr "Active medications"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.actions.act_window,name:bf_health.health_medication_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_med_log
 msgid "Médicaments du jour"
@@ -3525,6 +3549,8 @@ msgid "Regrouper par"
 msgstr "Group by"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
 msgid "Renouvellement"
 msgstr "Renewal"
@@ -3666,6 +3692,7 @@ msgstr "Results summary"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_daily_log_wizard_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_wizard
@@ -3823,6 +3850,7 @@ msgstr "Vital sign"
 
 #. module: bf_health
 #. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_vital_action
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_vital
@@ -3997,6 +4025,8 @@ msgid "Sévérité"
 msgstr "Severity"
 
 #. module: bf_health
+#. odoo-javascript
+#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__tobacco
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__tobacco
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__tobacco

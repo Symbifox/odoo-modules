@@ -600,6 +600,12 @@ This module follows established patterns from other Blue Fox custom modules:
 
 ## Changelog
 
+### Version 18.0.2.6.1 (2026-10-22)
+- **Translation**: the dashboard no longer shows French labels to an English-speaking user. The
+  loading-error notice, the quick-entry window title, the substance names, the "Screening" and
+  "Renewal" badges and the titles of the shortcut lists go through `_t`; their catalogue entries
+  carry the `odoo-javascript` marker so the browser receives them.
+
 ### Version 18.0.2.5.1 (2026-10-09)
 - **Security**: a health record shows a neutral name to anyone the record rule refuses (access
   errors in debug mode, many2one and reference fields read with elevated rights).
