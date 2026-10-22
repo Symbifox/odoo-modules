@@ -14,17 +14,35 @@
 import { toRaw } from "@odoo/owl";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
+import { user } from "@web/core/user";
 import { followTurn, pendingToStreaming, stopTurn } from "@bf_claude_chat/js/gen_turn";
 
 //: Attente de la frappe avant de chercher.
 const SEARCH_DEBOUNCE_MS = 300;
 
+/**
+ * Les nombres dans la langue de l'interface : « 1,2 » en français, « 1.2 » en
+ * anglais. Écrits « fr-CA » en dur, ils sortaient à la française sous une
+ * interface anglaise.
+ */
+function numberLocale() {
+    return String(user.lang || "").toLowerCase().startsWith("fr") ? "fr-CA" : "en-CA";
+}
+
+/** « 0,044 $ » en français, « $0.044 » en anglais ; milliers groupés. */
+function dollars(v, n) {
+    const d = Number(v).toLocaleString(numberLocale(), {
+        minimumFractionDigits: n, maximumFractionDigits: n,
+    });
+    return numberLocale() === "fr-CA" ? `${d} $` : `$${d}`;
+}
+
 /** « 12,3 k », « 1,2 M » : les jetons en chiffres lisibles. */
 export function compactTokens(n) {
     const v = Number(n) || 0;
-    if (v >= 1e6) return `${(v / 1e6).toLocaleString("fr-CA", { maximumFractionDigits: 1 })} M`;
-    if (v >= 1e3) return `${(v / 1e3).toLocaleString("fr-CA", { maximumFractionDigits: 1 })} k`;
-    return v.toLocaleString("fr-CA");
+    if (v >= 1e6) return `${(v / 1e6).toLocaleString(numberLocale(), { maximumFractionDigits: 1 })} M`;
+    if (v >= 1e3) return `${(v / 1e3).toLocaleString(numberLocale(), { maximumFractionDigits: 1 })} k`;
+    return v.toLocaleString(numberLocale());
 }
 
 /** Une date Odoo (UTC, « AAAA-MM-JJ HH:MM:SS ») ou ISO, en Date. */
@@ -52,6 +70,16 @@ export function remainingLabel(remise, maintenant = Date.now()) {
 }
 
 /**
+ * Un nombre à `n` décimales, dans la langue de l'interface : `toFixed`
+ * donnait « 1.2 k jetons » sous une interface française.
+ */
+function decimals(v, n) {
+    return Number(v).toLocaleString(numberLocale(), {
+        minimumFractionDigits: n, maximumFractionDigits: n, useGrouping: false,
+    });
+}
+
+/**
  * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
  * et à Comms.
  *
@@ -68,30 +96,35 @@ export function usageLabel(u) {
     // et l'étiquette doit rester juste plutôt que de disparaître.
     const neufs = u.net_tokens
         || (u.input_tokens || 0) + (u.cache_write_tokens || 0) + (u.output_tokens || 0);
+    // `_t` hors du gabarit de chaîne : l'extracteur ne le lirait pas.
+    const mot = _t("tokens");
     if (neufs) {
-        parts.push(neufs >= 1000
-            ? `${(neufs / 1000).toFixed(1)} k jetons`
-            : `${neufs} jetons`);
+        parts.push(neufs >= 1e6
+            ? `${compactTokens(neufs)} ${mot}`
+            : neufs >= 1000
+                ? `${decimals(neufs / 1000, 1)} k ${mot}`
+                : `${neufs} ${mot}`);
     }
-    if (u.cost_usd) parts.push(`${u.cost_usd.toFixed(3)} $`);
-    if (u.duration_ms) parts.push(`${(u.duration_ms / 1000).toFixed(1)} s`);
+    if (u.cost_usd) parts.push(dollars(u.cost_usd, 3));
+    if (u.duration_ms) parts.push(`${decimals(u.duration_ms / 1000, 1)} s`);
     return parts.join(" · ");
 }
 
-export function usageTitle(u) {
+export function usageTitle(u, apiKeyBilling = false) {
     if (!u) return "";
     const relu = u.cache_read_tokens || 0;
-    const lignes = [
-        `Jetons neufs : ${((u.net_tokens
-            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
-               + (u.output_tokens || 0))).toLocaleString("fr-CA")}`,
-        `Contexte relu : ${relu.toLocaleString("fr-CA")} (dix fois moins cher)`,
-        `Total traité : ${((u.total_tokens
-            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
-               + (u.output_tokens || 0) + relu)).toLocaleString("fr-CA")}`,
-        "Coût équivalent API — forfait Max, rien n'est facturé au jeton.",
-    ];
-    return lignes.join("\n");
+    const loc = numberLocale();
+    const neufs = u.net_tokens
+        || (u.input_tokens || 0) + (u.cache_write_tokens || 0) + (u.output_tokens || 0);
+    const total = u.total_tokens || neufs + relu;
+    return [
+        _t("New tokens: %s", neufs.toLocaleString(loc)),
+        _t("Re-read context: %s (ten times cheaper)", relu.toLocaleString(loc)),
+        _t("Processed, re-read context included: %s", total.toLocaleString(loc)),
+        apiKeyBilling
+            ? _t("Cost at public API rates.")
+            : _t("API-equivalent cost: Max plan, nothing is billed per token."),
+    ].join("\n");
 }
 
 /**
@@ -130,10 +163,11 @@ export const METERS = ["session", "week", "tokens", "cost"];
 export const screenMixin = {
     _usageLabels() {
         const meters = this.state && this.state.meters;
-        if (!meters) return { usageLabel, usageTitle };
+        const parJeton = Boolean(this.state && this.state.apiKeyBilling);
+        if (!meters) return { usageLabel, usageTitle: (u) => usageTitle(u, parJeton) };
         return {
             usageLabel: (u) => usageLabel(maskUsage(u, meters)),
-            usageTitle: (u) => (meters.tokens ? usageTitle(maskUsage(u, meters)) : ""),
+            usageTitle: (u) => (meters.tokens ? usageTitle(maskUsage(u, meters), parJeton) : ""),
         };
     },
 
@@ -590,8 +624,7 @@ export const screenMixin = {
         const mot = _t("tokens");
         const parts = [`${compactTokens(t.net_tokens)} ${mot}`];
         if (t.cost_usd && !(meters && !meters.cost)) {
-            parts.push(`${t.cost_usd.toLocaleString("fr-CA", {
-                minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`);
+            parts.push(dollars(t.cost_usd, 2));
         }
         return parts.join(" · ");
     },
@@ -601,9 +634,9 @@ export const screenMixin = {
         if (!t || !t.turns) return "";
         return [
             _t("This conversation: %s turns", t.turns),
-            _t("New tokens: %s", (t.net_tokens || 0).toLocaleString("fr-CA")),
+            _t("New tokens: %s", (t.net_tokens || 0).toLocaleString(numberLocale())),
             _t("Processed, re-read context included: %s",
-               (t.total_tokens || 0).toLocaleString("fr-CA")),
+               (t.total_tokens || 0).toLocaleString(numberLocale())),
             this.state.apiKeyBilling
                 ? _t("Cost at public API rates.")
                 : _t("API-equivalent cost: Max plan, nothing is billed per token."),

@@ -276,6 +276,28 @@ class TestBasculeDeForfait(TransactionCase):
             self.assertFalse(reglages.claude_plan_switch_available)
             self.assertFalse(reglages.claude_plan_switch_error)
 
+    def test_pont_sans_route_de_bascule(self):
+        """Un pont plus ancien répond 404 à `/bascule` : le bloc se cache, sans
+        panne affichée. Une autre erreur HTTP reste une panne."""
+        def ancien(*_a, **_k):
+            raise ValueError("Bridge HTTP 404: Not Found")
+
+        with patch.object(type(self.env["bf.ai.bridge"]), "call", ancien):
+            reglages = self.env["res.config.settings"].create({})
+            self.assertFalse(reglages.claude_plan_switch_available)
+            self.assertFalse(reglages.claude_plan_switch_error)
+            # Le formulaire renvoie le bloc caché, vide : rien ne lève.
+            self.env["res.config.settings"].create({
+                "claude_plan_account_id": False, "claude_plan_user_ids": [(6, 0, [])]})
+
+        def en_panne(*_a, **_k):
+            raise ValueError("Bridge HTTP 500: Internal Server Error")
+
+        with patch.object(type(self.env["bf.ai.bridge"]), "call", en_panne):
+            reglages = self.env["res.config.settings"].create({})
+            self.assertTrue(reglages.claude_plan_switch_available)
+            self.assertTrue(reglages.claude_plan_switch_error)
+
     def test_hors_administration_rien_ne_part(self):
         appels = []
         with patch.object(type(self.env["bf.ai.bridge"]), "call",

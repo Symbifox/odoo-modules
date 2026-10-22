@@ -1,5 +1,19 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.37.1 - 2026-10-22
+
+### Les nombres dans la langue de l'interface
+
+- Les nombres de Gen suivent la langue de l'interface : « 1,2 k jetons ·
+  0,035 $ · 4,1 s » en français, « 1.2 k tokens · $0.035 · 4.1 s » en anglais.
+  L'étiquette sous chaque réponse disait « 1.2 k jetons » en français, et
+  « jetons » sous une interface anglaise ; son infobulle était en français
+  pour tous. Les compteurs écrivaient leurs nombres à la française partout.
+- L'infobulle de l'étiquette dit « coût aux tarifs publics de l'API » chez
+  un locataire qui paie au jeton, plus « rien n'est facturé au jeton ».
+- Essai : un pont sans route `/bascule` (HTTP 404) cache le bloc Forfait,
+  une autre erreur HTTP l'affiche en panne.
+
 ## 18.0.1.37.0 - 2026-10-21
 
 ### Fin de conversation, formules du renard, compteurs, pastille et forfait

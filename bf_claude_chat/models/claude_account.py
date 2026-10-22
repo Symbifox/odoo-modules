@@ -467,7 +467,9 @@ class ClaudeAccountPlanSwitch(models.Model):
         try:
             etat = self._plan_switch_call({"action": "get"})
         except ValueError as e:
-            if "HTTP 404" in str(e):
+            # Le statut, pas le corps cité après lui : un 500 qui citerait
+            # « HTTP 404 » reste une panne.
+            if str(e).startswith("Bridge HTTP 404:"):
                 return vide   # pont sans bascule de forfait : rien à montrer
             _logger.info("Gen : bascule de forfait non lue", exc_info=True)
             return dict(vide, available=True,
