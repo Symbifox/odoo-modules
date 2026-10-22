@@ -170,3 +170,47 @@ class TestFusionContacts(TransactionCase):
         with self.assertRaisesRegex(UserError, "hosting|hébergement"):
             Assistant._hosting_garde_mise_a_jour_globale()
         self._assistant(self.gestion)._hosting_garde_mise_a_jour_globale()
+
+    # ------------------------------------------------------------------
+    # Destinataires hébergement
+    # ------------------------------------------------------------------
+
+    def test_un_destinataire_nomme_ne_disparait_pas(self):
+        """Fusionné dans un contact quelconque, le destinataire lui léguait sa place."""
+        Partner = self.env["res.partner"]
+        ana = Partner.create({"name": "Ana Fusion", "parent_id": self.client.id,
+                              "email": "ana@fusion.example"})
+        moi = Partner.create({"name": "Ana Fusion", "email": "ana@fusion.example"})
+        self.client.hosting_recipient_ids = ana
+        for user in (self.createur, self.usager, self.admin):
+            with self.subTest(user=user.login):
+                with self.assertRaisesRegex(UserError, "hosting recipient|destinataire hébergement"):
+                    self._assistant(user)._merge((ana | moi).ids, dst_partner=moi)
+                self.assertTrue(ana.exists())
+                self.assertEqual(self.client.hosting_recipient_ids, ana)
+        # Garder le destinataire comme destination : il ne disparaît pas, la garde laisse passer.
+        # (La fusion elle-même lit en route des champs réservés à d'autres groupes.)
+        self._assistant(self.admin)._hosting_garde_fusion((ana | moi).ids, ana)
+
+    def test_le_gestionnaire_fusionne_un_destinataire(self):
+        Partner = self.env["res.partner"]
+        ana = Partner.create({"name": "Ana Fusion G", "parent_id": self.client.id,
+                              "email": "ana.g@fusion.example"})
+        double = Partner.create({"name": "Ana Fusion G", "parent_id": self.client.id,
+                                 "email": "ana.g@fusion.example"})
+        self.client.hosting_recipient_ids = ana
+        self._assistant(self.gestion)._hosting_garde_fusion((ana | double).ids, double)
+        # Ce que fait alors le SQL de la fusion : la place passe à la destination, du même client.
+        self.env["base.partner.merge.automatic.wizard"]._merge((ana | double).ids, dst_partner=double)
+        self.assertFalse(ana.exists())
+        self.assertEqual(self.client.hosting_recipient_ids, double)
+
+    def test_le_refus_du_destinataire_en_francais(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        Partner = self.env["res.partner"]
+        ana = Partner.create({"name": "Ana Fusion F", "parent_id": self.client.id, "email": "ana.f@fusion.example"})
+        moi = Partner.create({"name": "Ana Fusion F", "email": "ana.f@fusion.example"})
+        self.client.hosting_recipient_ids = ana
+        self.admin.lang = "fr_CA"
+        with self.assertRaisesRegex(UserError, "destinataire hébergement d'un client"):
+            self._assistant(self.admin).with_context(lang="fr_CA")._merge((ana | moi).ids, dst_partner=moi)

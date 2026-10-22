@@ -231,7 +231,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_home` | Accueil Symbifox | 18.0.2.1.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.6.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.2.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
-| `bf_hosting_status` | Hosting Status Page | 18.0.1.3.1 | BUSL-1.1 | A status page per hosted client, opened by a private link: services, versions, health and recent updates. |
+| `bf_hosting_status` | Hosting Status Page | 18.0.1.4.0 | BUSL-1.1 | A status page per hosted client, opened by a private link: services, versions, health and recent updates. |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.4 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_household_base` | Household Base | 18.0.1.0.0 | LGPL-3 | The household group of a Symbifox Personal instance: who belongs to the household, at most ten accounts, and never an administrator among them |
 | `bf_household_family` | Household Family | 18.0.1.1.0 | LGPL-3 | The family of a household instance: members and their roles, children, family papers and emergency cards |
@@ -411,7 +411,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.27.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
-| `hosting_management` | Gestion d'hébergement | 18.0.2.64.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
+| `hosting_management` | Gestion d'hébergement | 18.0.2.65.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
 | `personal_budget` | Personal Budget | 18.0.2.1.2 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |
 | `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.1 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
 | `privacy_breach_notice_hosting` | Vie privée : avis de violation depuis l'hébergement | 18.0.1.0.0 | BUSL-1.1 | Qualifies a hosting security event for privacy and prepares one draft breach notice per affected organisation |

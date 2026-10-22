@@ -51,6 +51,17 @@ class BasePartnerMergeAutomaticWizard(models.TransientModel):
                 raise UserError(_(
                     "The merge would make the destination a contact of one of its own "
                     "contacts. Unarchive the contacts concerned, or merge them in another order."))
+        # Une fiche nommée destinataire hébergement d'un client : le SQL de la fusion réécrit la
+        # liste vers la destination, qui prend aussi le parent de la source quand elle n'en a
+        # pas. Un contact quelconque devenait ainsi destinataire nommé, avec la page d'état du
+        # client au portail et le lien dans ses avis.
+        if self.env["res.partner"].sudo().with_context(active_test=False).search_count(
+                [("hosting_recipient_ids", "in", sources.ids)]):
+            raise UserError(_(
+                "One of the contacts that would disappear is a hosting recipient of a client: "
+                "the merge would hand its maintenance notices and status page to the "
+                "destination. Remove it from the client's hosting recipients first, or ask a "
+                "hosting manager."))
         # Les contacts d'une fiche qui disparaît passent sous la destination (Odoo réécrit
         # aussi leur `parent_id`) : leurs services changent de client avec eux.
         if Service.search_count([("partner_id", "child_of", sources.ids)]):

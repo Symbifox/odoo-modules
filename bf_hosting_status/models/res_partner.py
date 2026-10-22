@@ -20,7 +20,7 @@ import secrets
 import pytz
 from datetime import timedelta
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import consteq
 from odoo.tools.misc import format_date, format_datetime, format_time, formatLang
@@ -99,6 +99,8 @@ class ResPartner(models.Model):
         rattachait le contact d'un vrai client. Contrôlé APRÈS super(), qui a
         appliqué les défauts, donc tous les chemins passent ici."""
         partenaires = super().create(liste_valeurs)
+        if any(v.get("hosting_status_token") for v in liste_valeurs):
+            self.env.registry.clear_cache()
         if not self.env.su and not self.env.user.has_group(GROUPE_PUBLICATION):
             if any(p.hosting_status_published or p.hosting_status_token for p in partenaires.sudo()):
                 raise AccessError(_(
@@ -124,6 +126,20 @@ class ResPartner(models.Model):
                     "A status page belongs to the client company (%(company)s), "
                     "not to one of its contacts.",
                     company=partenaire.parent_id.display_name))
+
+    @api.model
+    @tools.ormcache()
+    def _hosting_status_jetons_poses(self):
+        """Les jetons posés, pour le masque des messages. En cache : chaque message
+        créé le consulte ; vidé par toute écriture du jeton (`write`, `create`)."""
+        return tuple(self.sudo().with_context(active_test=False).search(
+            [("hosting_status_token", "!=", False)]).mapped("hosting_status_token"))
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "hosting_status_token" in vals:
+            self.env.registry.clear_cache()
+        return res
 
     def action_hosting_status_publish(self):
         self._hosting_status_exiger_le_droit()

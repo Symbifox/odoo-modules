@@ -61,6 +61,24 @@ to it. The fallback address used when the list is empty (the company's email, or
 first contact) receives the notice without the link: whoever holds the link opens the
 page, so it only goes to people chosen for it.
 
+## The link in emails (18.0.1.4.0)
+
+- **Masked in the chatter.** Every chatter message has the token replaced by
+  `jeton-masque`, at creation and on edit: the copy of a notice, a client's reply that
+  quotes it, a link pasted by hand. The mask looks for the token's value, whatever the
+  address around it (with or without `www.`, `http`, a link rewritten by a mail
+  security gateway). The email sent from a template keeps the link; outgoing emails
+  (`mail.mail`) are readable by administrators only.
+- **Judged when it leaves.** Every status link, masked or not, is judged again for each
+  recipient at send time (`_personalize_outgoing_body`): a recipient still named for a
+  published page gets the current token; anyone else (removed, moved, archived, an
+  address in `email_to` or `email_cc`, a page unpublished or a client archived in the
+  meantime) gets the notice without the link paragraph, and any other status link stays
+  masked. A reminder scheduled days ahead follows a new address on its own, and the
+  mask loses nothing for the people entitled to the page.
+- Only links on the database's own address are judged at send time (`get_base_url()` of
+  the client): another site's `/etat/...` address is left alone.
+
 ## Security
 
 - A token of its own (`secrets.token_urlsafe(32)`), compared in constant time;
@@ -83,11 +101,15 @@ page, so it only goes to people chosen for it.
   Hosting Manager group.
 - A hosting user (not manager) can attach a service to a published client: that
   is the role.
+- The original `.eml` attached to an incoming email (the mail gateway's
+  `original_email.eml`, or a filed copy) keeps a client's quote as received, token
+  included. If that happens, « New address » on the company form revokes the old link,
+  and scheduled notices follow.
 
 ## Requirements
 
-- `hosting_management` 18.0.2.64.0 or later (the maintenance windows and the hosting
-  recipients), and Odoo's `portal` module.
+- `hosting_management` 18.0.2.65.0 or later (the maintenance windows, the hosting
+  recipients and the marked link paragraph of the notice), and Odoo's `portal` module.
 
 ## Licence
 
@@ -95,6 +117,10 @@ Business Source License 1.1. Each version converts to LGPL-3.0-or-later on its
 Change Date; for this version, 2030-10-22. See [`LICENSE`](LICENSE).
 
 ## Version history
+
+- **18.0.1.4.0**: the token is masked in every chatter message (notice copy, quoted reply);
+  every status link is judged again for each recipient when the email leaves (new address,
+  unpublished page, recipient removed, moved or archived, client archived).
 
 - **18.0.1.3.1**: the status link in a maintenance notice goes only to the client's named
   hosting recipients, never to the fallback address (company email or first contact).

@@ -17,7 +17,10 @@
     #   du client (hosting_management 18.0.2.64.0) ; l'avis de maintenance porte le lien de la
     #   page quand elle est publiée.
     # 18.0.1.3.1: le lien d'état de l'avis ne part qu'aux destinataires NOMMÉS (pas au repli).
-    "version": "18.0.1.3.1",
+    # 18.0.1.4.0: le jeton masqué dans tout message du chatter (copie de l'avis, réponse
+    #   citée) ; chaque lien d'état jugé à l'envoi, par destinataire : le jeton courant à un
+    #   destinataire encore nommé d'une page publiée, sinon le paragraphe du lien retiré.
+    "version": "18.0.1.4.0",
     "category": "Services",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

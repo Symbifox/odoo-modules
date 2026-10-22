@@ -13,7 +13,10 @@
     # 18.0.2.64.0: destinataires hébergement par client (`hosting_recipient_ids`) : qui
     #   reçoit les avis de maintenance et, avec un compte portail, voit la page d'état ;
     #   l'avis de maintenance porte le lien de la page quand elle est publiée.
-    "version": "18.0.2.64.0",
+    # 18.0.2.65.0: la date de l'avis dans la langue du destinataire ; le paragraphe du lien
+    #   d'état marqué pour être retiré à l'envoi ; sans le groupe hébergement, on ne change
+    #   plus le courriel d'un destinataire nommé et on ne le fusionne plus.
+    "version": "18.0.2.65.0",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

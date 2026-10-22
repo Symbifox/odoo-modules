@@ -166,3 +166,58 @@ class TestDestinataires(TransactionCase):
             "body_html", self.client_a.ids, compute_lang=True)[self.client_a.id]
         self.assertIn("votre page d'état", corps)
         self.assertNotIn("your status page", corps)
+
+    # ------------------------------------------------------------------
+    # Courriel d'un destinataire nommé, langue de l'avis
+    # ------------------------------------------------------------------
+
+    def test_le_courriel_d_un_destinataire_nomme(self):
+        """Sans le groupe, changer le courriel d'un destinataire nommé, c'était prendre sa place."""
+        self.client_a.hosting_recipient_ids = self.ana
+        with self.assertRaises(AccessError):
+            self.ana.with_user(self.contacts).write({"email": "pirate@ailleurs.example"})
+        self.assertEqual(self.ana.email, "ana@alpha-dest.example")
+        # Le même courriel réécrit (formulaire, import), à la casse près : rien ne change.
+        self.ana.with_user(self.contacts).write({"email": "Ana@Alpha-Dest.example"})
+        # Un contact qui n'est pas nommé : libre.
+        self.sans_courriel.with_user(self.contacts).write({"email": "sc@alpha-dest.example"})
+        # La société elle-même, nommée : gardée aussi.
+        self.client_a.hosting_recipient_ids = self.client_a | self.ana
+        with self.assertRaises(AccessError):
+            self.client_a.with_user(self.contacts).write({"email": "pirate@ailleurs.example"})
+        # Avec le groupe hébergement : permis.
+        self.ana.with_user(self.gestion).write({"email": "ana.neuf@alpha-dest.example"})
+        self.assertEqual(self.ana.email, "ana.neuf@alpha-dest.example")
+        # Retiré de la liste : libre à nouveau.
+        self.client_a.hosting_recipient_ids = False
+        self.ana.with_user(self.contacts).write({"email": "ana@alpha-dest.example"})
+        self.assertEqual(self.ana.email, "ana@alpha-dest.example")
+
+    def test_le_courriel_d_un_destinataire_archive_reste_garde(self):
+        """Archivé puis réactivé, il redevient destinataire : la garde le suit."""
+        self.client_a.hosting_recipient_ids = self.ana
+        self.ana.active = False
+        with self.assertRaises(AccessError):
+            self.ana.with_user(self.contacts).write({"email": "pirate@ailleurs.example"})
+
+    def test_la_date_dans_la_langue_du_destinataire(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_US")
+        self.client_a.lang = "fr_CA"
+        self.ana.lang = "en_US"
+        fenetre = self.env["hosting.maintenance.window"].create({
+            "name": "Mise à niveau", "date_start": "2026-11-15 02:30:00",
+            "date_end": "2026-11-15 03:30:00"})
+        self.client_a.tz = self.ana.tz = "America/Toronto"
+        pour_ana = fenetre._hosting_notice_context(self.ana)["maintenance_date"]
+        pour_client = fenetre._hosting_notice_context(self.client_a)["maintenance_date"]
+        self.assertIn("PM", pour_ana)
+        self.assertNotIn("PM", pour_client)
+        self.assertIn("21", pour_client)
+
+    def test_le_refus_du_courriel_en_francais(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.client_a.hosting_recipient_ids = self.ana
+        self.contacts.lang = "fr_CA"
+        with self.assertRaisesRegex(AccessError, "Seul un utilisateur d'hébergement peut changer son courriel"):
+            self.ana.with_user(self.contacts).with_context(lang="fr_CA").write({"email": "pirate@ailleurs.example"})

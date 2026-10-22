@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.tools import email_normalize
 
 from .hosting_maintenance_window import client_de
 
@@ -274,6 +275,26 @@ class ResPartner(models.Model):
                 raise AccessError(_(
                     "Only a hosting user can set a client's hosting recipients."))
         return partenaires
+
+    def write(self, vals):
+        """🔴 Sans le groupe hébergement, le courriel d'un destinataire NOMMÉ ne change pas.
+
+        Le changer suffisait à prendre sa place : ses avis, avec le lien de la page d'état,
+        partent à la nouvelle adresse, et le portail s'ouvre à elle (invitation, ou
+        réinitialisation du mot de passe d'un compte existant : le courriel d'un usager est
+        celui de sa fiche). `portal.wizard` écrit ce courriel sans sudo : il passe ici.
+        """
+        if "email" in vals and not self.env.su \
+                and not self.env.user.has_group("hosting_management.group_hosting_user"):
+            nouveau = email_normalize(vals.get("email") or "") or (vals.get("email") or "")
+            changes = self.sudo().filtered(
+                lambda p: (email_normalize(p.email or "") or (p.email or "")) != nouveau)
+            if changes and self.sudo().with_context(active_test=False).search_count(
+                    [("hosting_recipient_ids", "in", changes.ids)]):
+                raise AccessError(_(
+                    "This contact receives a client's maintenance notices and status page. "
+                    "Only a hosting user can change their email."))
+        return super().write(vals)
 
     @api.constrains("hosting_recipient_ids")
     def _check_hosting_recipients(self):

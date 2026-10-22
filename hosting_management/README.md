@@ -158,6 +158,8 @@ Each client company keeps a list of **hosting recipients** (`hosting_recipient_i
 
 The maintenance notice template shows a "your status page" paragraph only when its context carries `status_url`, which `bf_hosting_status` sets for a published page and a named recipient. Migration 18.0.2.64.0 reloads the template's French translation from the catalogue, so the French notice gets the paragraph too; the other templates and their in-database edits are left alone.
 
+Without the Hosting User group, nobody changes the email of a named recipient (that would hand over their notices, and their portal account through a password reset; the portal invitation wizard goes through the same check), and the contact merge refuses to make a named recipient disappear. The notice's date is written in the recipient's language, like the rest of the template (18.0.2.65.0).
+
 The field carries `groups=` on the model and on the view node, so an internal user without the Hosting group still opens contact forms. Odoo 18 does not check a field's `groups=` at creation: `create` refuses a list from a user without the group. The field is `copy=False`, so duplicating a contact or a user works without the group, and a copied company does not inherit another company's recipients.
 
 ### Activity Integration
@@ -696,6 +698,12 @@ Hosting
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Each text is written in the language of whoever will read it, not of whatever triggers it. What the hosting team reads is written in the company's language, even when a scheduled job, a public route (backup and provisioning reports) or a user set to another language triggers it: health alerts by email and ntfy, the probes' findings, notes left on services, domains and backups, the audit log, stored names and the end-of-support tag of an endpoint. Activities (service, domain and SSL expiry, setup tasks from a template, maintenance) are written in the assignee's language and created in their environment, so Odoo's "assigned to you" notice follows the assignee too. The email digest is written in each recipient's language, subject and status badges included. The fleet warranty alert follows the user in charge of the client's service, and the license expiry email its recipient. Action names, validation errors, VOIP.ms errors and notifications shown to a user follow that user. A language that a contact or the company still holds but that has been deactivated is passed over for an installed one. On upgrade, the shipped scheduled jobs, activity types, backup report template, maintenance colour rule and software notes switch to English only where the database still holds the text that was shipped; an edited value is left alone.
 
 ## Changelog
+
+### Version 18.0.2.65.0
+- Fix: the maintenance notice's date was formatted in the client's language while the template renders in the recipient's; it now follows the recipient.
+- New: without the Hosting User group, the email of a named hosting recipient cannot be changed, and the contact merge refuses a named recipient among the records that would disappear.
+- The status link paragraph of the notice carries the class `o_hosting_status_link`, read by `bf_hosting_status` at send time; migration 18.0.2.65.0 reloads the template's French translation.
+- Tests: email guard (case-insensitive, archived recipient, French message), merge guard, date language.
 
 ### Version 18.0.2.64.0
 - New: hosting recipients per client company. See the "Hosting Recipients" section.

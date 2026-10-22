@@ -199,13 +199,18 @@ class HostingMaintenanceWindow(models.Model):
         ], order="date_start asc, id asc")
 
     def _hosting_notice_context(self, partner):
-        """Le contexte du gabarit d'avis pour UN client : la date dans sa langue et son
-        fuseau, la durée de la fenêtre, et seulement SES services touchés. Une clé sans
-        valeur n'est pas posée : le gabarit garde alors son texte par défaut."""
+        """Le contexte du gabarit d'avis pour UN destinataire : la date dans sa langue et le
+        fuseau de son client, la durée de la fenêtre, et seulement les services touchés de
+        son client. Une clé sans valeur n'est pas posée : le gabarit garde alors son texte
+        par défaut.
+
+        La langue est celle du DESTINATAIRE, comme le gabarit (`{{ object.lang }}`, sinon la
+        langue de l'environnement) : un contact anglophone d'un client francophone recevait
+        un corps anglais et une date française."""
         self.ensure_one()
         client = client_de(partner)
         tz = client.tz or partner.tz or self.env.user.tz or "America/Toronto"
-        langue = client.lang or partner.lang or self.env.lang
+        langue = partner.lang or self.env.lang
         env = self.with_context(lang=langue).env
         zone = pytz.timezone(tz)
         debut_local = pytz.utc.localize(self.date_start).astimezone(zone)

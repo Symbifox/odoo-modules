@@ -692,7 +692,7 @@ msgid ""
 "                        </t>\n"
 "\n"
 "                        <!-- Lien de la page d'&#233;tat : pos&#233; seulement quand la page du client est publi&#233;e. -->\n"
-"                        <p t-if=\"ctx.get('status_url')\" style=\"margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
+"                        <p t-if=\"ctx.get('status_url')\" class=\"o_hosting_status_link\" style=\"margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
 "                          Follow the status of your services, before and during the maintenance, on <a t-att-href=\"ctx.get('status_url')\" t-attf-style=\"color:{{ brand_primary }};font-weight:500;\">your status page</a>.\n"
 "                        </p>\n"
 "\n"
@@ -7682,6 +7682,18 @@ msgstr ""
 #. odoo-python
 #: code:addons/hosting_management/models/res_partner.py:0
 msgid "Only a hosting user can set a client's hosting recipients."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/res_partner.py:0
+msgid "This contact receives a client's maintenance notices and status page. Only a hosting user can change their email."
+msgstr ""
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/wizards/base_partner_merge.py:0
+msgid "One of the contacts that would disappear is a hosting recipient of a client: the merge would hand its maintenance notices and status page to the destination. Remove it from the client's hosting recipients first, or ask a hosting manager."
 msgstr ""
 
 #. module: hosting_management
