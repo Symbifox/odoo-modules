@@ -180,8 +180,9 @@ class ResPartner(models.Model):
             # Les services rattachés à la SOCIÉTÉ seulement. Ni `child_of` (il prend ses
             # sociétés enfants), ni ceux de ses contacts : déplacer un contact sous une
             # autre société est un droit de gestion des contacts, et ferait paraître ses
-            # services sur la page d'un autre client. Sur une base réelle, aucun service actif n'est
-            # rattaché à un contact : le périmètre ne retire rien.
+            # services sur la page d'un autre client. Sur une base réelle, un seul service
+            # actif est rattaché à un contact (un service personnel) ; il ne paraît sur
+            # aucune page.
             ("partner_id", "=", self.id),
             ("state", "=", "active"),
         ])
@@ -331,7 +332,7 @@ class ResPartner(models.Model):
         verifie = max(verifies) if verifies else None
         for f in fenetres:
             del f["service_ids"]
-        return {
+        valeurs = {
             "html_lang": (self.env.lang or "en_US").replace("_", "-"),
             # <title> n'est pas traduit par Odoo dans un gabarit : passé ici.
             "page_title": _("Status of your services"),
@@ -353,3 +354,14 @@ class ResPartner(models.Model):
             "label_version": _("Version"),
             "label_uptime": _("30 days"),
         }
+        self._hosting_status_completer(valeurs, services)
+        return valeurs
+
+    def _hosting_status_completer(self, valeurs, services):
+        """Point d'extension pour un module qui ajoute une section à la page.
+
+        `services` est le jeu de services de la page, dans l'ordre exact de
+        `valeurs["services"]` (une ligne par service, au même rang). Le module qui
+        complète n'ajoute que des chaînes et des nombres, jamais un enregistrement.
+        """
+        return valeurs

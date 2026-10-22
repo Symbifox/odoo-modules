@@ -23,8 +23,13 @@ single failed check, such as a container restart, does not show.
 ## What the page never shows
 
 Internal codes, servers, containers, notes, the probe's error message and HTTP
-code, other clients' services, and security advisories. The page is built from
-a whitelist of values; no record is handed to the template.
+code, and other clients' services. The page is built from a whitelist of values;
+no record is handed to the template.
+
+This module shows no security advisory. A module that adds a section to the page
+overrides `_hosting_status_completer(values, services)`: it receives the page's
+values and its services, in the same order as the service rows, and adds strings
+and numbers only.
 
 ## Publishing
 
@@ -35,8 +40,11 @@ On the client company's form, the **Status page** tab (Hosting Manager group):
 - **New address** revokes the old one;
 - **Unpublish** closes the page.
 
-The page belongs to the client company: services attached to one of its
-contacts are included, and a contact cannot have its own page.
+The page belongs to the client company and lists the services attached to the
+company itself. Services attached to one of its contacts, or to a subsidiary, do
+not appear: moving a contact under another company is a contact-management right,
+and it must not move services onto another client's page. A contact cannot have
+its own page.
 
 ## Security
 
@@ -55,8 +63,9 @@ contacts are included, and a contact cannot have its own page.
 ## Known limits
 
 - Merging contacts (the merge wizard) moves the services of the merged record to
-  the surviving one in SQL: merging a record into a published client makes its
-  services appear on that client's page. It is a destructive, logged action.
+  the surviving one in SQL. Since `hosting_management` 18.0.2.63.2, a merge that
+  would move hosting services to another client is refused to anyone outside the
+  Hosting Manager group.
 - A hosting user (not manager) can attach a service to a published client: that
   is the role.
 
@@ -71,6 +80,10 @@ Business Source License 1.1. Each version converts to LGPL-3.0-or-later on its
 Change Date; for this version, 2030-10-21. See [`LICENSE`](LICENSE).
 
 ## Version history
+
+- **18.0.1.2.0**: extension point `_hosting_status_completer(values, services)` for
+  modules that add a section to the page. Documentation corrected: services
+  attached to a contact do not appear on the company's page.
 
 - **18.0.1.1.0**: announced maintenance windows (`hosting.maintenance.window`,
   `hosting_management` 18.0.2.63.1): upcoming and in-progress windows, then those of

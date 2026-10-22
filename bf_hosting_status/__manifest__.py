@@ -10,7 +10,10 @@
     # 18.0.1.1.0: les fenêtres de maintenance annoncées (hosting.maintenance.window,
     #   hosting_management 18.0.2.63.1) : à venir et des 30 derniers jours, avec les seuls
     #   services du client ; « Maintenance en cours » pendant une fenêtre.
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: point d'extension `_hosting_status_completer(valeurs, services)` pour
+    #   les sections ajoutées par un autre module ; README corrigé : les services d'un
+    #   contact ne paraissent pas sur la page de sa société.
+    "version": "18.0.1.2.0",
     "category": "Services",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
