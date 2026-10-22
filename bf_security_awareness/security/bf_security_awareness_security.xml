@@ -3,24 +3,24 @@
 
     <data noupdate="0">
         <record id="module_category_secaware" model="ir.module.category">
-            <field name="name">Sensibilisation à la sécurité</field>
-            <field name="description">Campagnes d'hameçonnage simulées, profils de risque et formation</field>
+            <field name="name">Security awareness</field>
+            <field name="description">Simulated phishing campaigns, risk profiles and training</field>
             <field name="sequence">55</field>
         </record>
 
         <!-- Operator: runs campaigns and views results. -->
         <record id="group_bf_secaware_user" model="res.groups">
-            <field name="name">Opérateur</field>
+            <field name="name">Operator</field>
             <field name="category_id" ref="module_category_secaware"/>
-            <field name="comment">Peut créer et lancer des campagnes d'hameçonnage et consulter les résultats.</field>
+            <field name="comment">Can create and launch phishing campaigns and view the results.</field>
         </record>
 
         <!-- Manager: full control + history deletion. -->
         <record id="group_bf_secaware_manager" model="res.groups">
-            <field name="name">Gestionnaire</field>
+            <field name="name">Manager</field>
             <field name="category_id" ref="module_category_secaware"/>
             <field name="implied_ids" eval="[(4, ref('group_bf_secaware_user'))]"/>
-            <field name="comment">Accès complet, incluant la suppression de l'historique.</field>
+            <field name="comment">Full access, including deleting history.</field>
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
@@ -28,10 +28,10 @@
              out of every mailbox). Separate from Gestionnaire so previewing and
              actually purging are distinct grants. Implies Gestionnaire. -->
         <record id="group_bf_secaware_purge" model="res.groups">
-            <field name="name">Purge courriel (clawback)</field>
+            <field name="name">Email purge (clawback)</field>
             <field name="category_id" ref="module_category_secaware"/>
             <field name="implied_ids" eval="[(4, ref('group_bf_secaware_manager'))]"/>
-            <field name="comment">Peut exécuter et restaurer un retrait de courriel dans toutes les boîtes. Privilège distinct du rôle Gestionnaire.</field>
+            <field name="comment">Can run and restore an email removal across all mailboxes. A privilege separate from the Manager role.</field>
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
     </data>

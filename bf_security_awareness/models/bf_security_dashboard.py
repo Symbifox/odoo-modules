@@ -10,11 +10,13 @@ TREND_MONTHS = 12
 # A person is a "repeat clicker" once they fail this many simulations.
 REPEAT_FAIL_THRESHOLD = 2
 
+# Risk level -> badge colour, most severe first. The label is the field's own
+# selection label, read in the user's language (``_risk_labels``).
 _RISK_META = [
-    ("critical", "Critique", "danger"),
-    ("high", "Élevé", "warning"),
-    ("moderate", "Modéré", "info"),
-    ("low", "Faible", "success"),
+    ("critical", "danger"),
+    ("high", "warning"),
+    ("moderate", "info"),
+    ("low", "success"),
 ]
 
 
@@ -28,7 +30,7 @@ class BfSecurityDashboard(models.AbstractModel):
     """
 
     _name = "bf.security.dashboard"
-    _description = "Tableau de bord — Sensibilisation à la sécurité"
+    _description = "Security awareness dashboard"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
@@ -45,6 +47,11 @@ class BfSecurityDashboard(models.AbstractModel):
     def _fail_states(self):
         return ("clicked", "submitted")
 
+    def _risk_labels(self):
+        """Risk level -> its label, in the user's language."""
+        return dict(self.env["bf.security.profile"]._fields[
+            "risk_level"]._description_selection(self.env))
+
     # ------------------------------------------------------------------ #
     # Manager / Operator view
     # ------------------------------------------------------------------ #
@@ -53,7 +60,7 @@ class BfSecurityDashboard(models.AbstractModel):
         if not self.env.user.has_group(
                 "bf_security_awareness.group_bf_secaware_user"):
             raise AccessError(_(
-                "Accès réservé à l'équipe de sensibilisation à la sécurité."))
+                "Access restricted to the security awareness team."))
         trend = self._get_trend()
         return {
             "kpis": self._get_kpis(trend),
@@ -146,12 +153,13 @@ class BfSecurityDashboard(models.AbstractModel):
                 [("company_id", "in", cids)], ["risk_level"], ["risk_level"])
         }
         total = sum(grouped.values()) or 0
+        labels = self._risk_labels()
         return {
             "total": total,
             "levels": [
-                {"level": lvl, "label": label, "color": color,
+                {"level": lvl, "label": labels.get(lvl, lvl), "color": color,
                  "count": grouped.get(lvl, 0)}
-                for lvl, label, color in _RISK_META
+                for lvl, color in _RISK_META
             ],
         }
 
@@ -178,15 +186,18 @@ class BfSecurityDashboard(models.AbstractModel):
             p.partner_id.id: p for p in self.env["bf.security.profile"].search(
                 [("partner_id", "in", list(names))])
         }
+        labels = self._risk_labels()
         out = []
         for r in rows:
             prof = profiles.get(r["partner_id"])
+            level = prof.risk_level if prof else "low"
             out.append({
                 "partner_id": r["partner_id"],
-                "name": names.get(r["partner_id"], _("(inconnu)")),
+                "name": names.get(r["partner_id"], self.env._("(unknown)")),
                 "fails": r["fails"],
                 "campaigns": r["campaigns"],
-                "risk_level": prof.risk_level if prof else "low",
+                "risk_level": level,
+                "risk_label": labels.get(level, level),
             })
         return out
 
@@ -269,18 +280,19 @@ class BfSecurityDashboard(models.AbstractModel):
     def _resilience_badge(self, profile):
         """Employee-facing, encouraging reframe of the risk level — we surface
         resilience, never a punitive 'critical risk' label to the person."""
+        _ = self.env._
         if not profile or profile.emails_received == 0:
-            return {"label": "À découvrir", "color": "secondary",
-                    "hint": "Vous n'avez pas encore été testé."}
+            return {"label": _("Not yet tested"), "color": "secondary",
+                    "hint": _("You have not been tested yet.")}
         # Reporting and completed training build resilience; recent failures lower it.
         if profile.risk_level in ("low",) and profile.reported_count:
-            return {"label": "Excellent réflexe", "color": "success",
-                    "hint": "Continuez de signaler les courriels suspects."}
+            return {"label": _("Great reflex"), "color": "success",
+                    "hint": _("Keep reporting suspicious emails.")}
         if profile.risk_level in ("low", "moderate"):
-            return {"label": "Sur la bonne voie", "color": "info",
-                    "hint": "Un dernier effort sur la formation assignée."}
-        return {"label": "À renforcer", "color": "warning",
-                "hint": "Complétez la formation pour aiguiser vos réflexes."}
+            return {"label": _("On the right track"), "color": "info",
+                    "hint": _("One last push on the assigned training.")}
+        return {"label": _("Needs strengthening"), "color": "warning",
+                "hint": _("Complete the training to sharpen your reflexes.")}
 
     # ------------------------------------------------------------------ #
     # Drill-through actions (manager view)
@@ -289,7 +301,7 @@ class BfSecurityDashboard(models.AbstractModel):
     def action_view_high_risk(self):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Personnes à risque élevé"),
+            "name": _("High-risk people"),
             "res_model": "bf.security.profile",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("risk_level", "in", ("high", "critical"))],
@@ -299,7 +311,7 @@ class BfSecurityDashboard(models.AbstractModel):
     def action_view_overdue_training(self):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Formations en retard"),
+            "name": _("Overdue trainings"),
             "res_model": "bf.training.assignment",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("state", "not in", ("done", "cancelled")),

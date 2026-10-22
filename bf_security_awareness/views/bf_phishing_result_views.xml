@@ -41,7 +41,7 @@
                             <field name="bounced" readonly="1"/>
                             <field name="training_assignment_id" readonly="1"/>
                         </group>
-                        <group string="Horodatage">
+                        <group string="Timestamps">
                             <field name="sent_datetime" readonly="1"/>
                             <field name="opened_datetime" readonly="1"/>
                             <field name="clicked_datetime" readonly="1"/>
@@ -49,7 +49,7 @@
                             <field name="reported_datetime" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Soumission du faux formulaire">
+                    <group string="Fake form submission">
                         <field name="credentials_submitted" readonly="1"/>
                         <field name="submitted_username_len" readonly="1"/>
                         <field name="submitted_password_len" readonly="1"/>
@@ -69,20 +69,20 @@
             <search>
                 <field name="partner_id"/>
                 <field name="campaign_id"/>
-                <filter name="submitted" string="Identifiants soumis"
+                <filter name="submitted" string="Credentials submitted"
                         domain="[('state','=','submitted')]"/>
-                <filter name="clicked" string="A cliqué"
+                <filter name="clicked" string="Clicked"
                         domain="[('state','in',('clicked','submitted'))]"/>
-                <filter name="reported" string="A signalé"
+                <filter name="reported" string="Has reported"
                         domain="[('reported','=',True)]"/>
-                <filter name="bounced" string="Rejeté"
+                <filter name="bounced" string="Bounced"
                         domain="[('bounced','=',True)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_campaign" string="Campagne"
+                <group expand="0" string="Group by">
+                    <filter name="group_campaign" string="Campaign"
                             context="{'group_by': 'campaign_id'}"/>
-                    <filter name="group_state" string="État"
+                    <filter name="group_state" string="Status"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_partner" string="Personne"
+                    <filter name="group_partner" string="Person"
                             context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
@@ -112,7 +112,7 @@
     </record>
 
     <record id="bf_phishing_result_action" model="ir.actions.act_window">
-        <field name="name">Résultats</field>
+        <field name="name">Results</field>
         <field name="res_model">bf.phishing.result</field>
         <field name="view_mode">list,form,pivot,graph</field>
         <field name="search_view_id" ref="bf_phishing_result_view_search"/>

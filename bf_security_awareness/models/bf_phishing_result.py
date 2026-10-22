@@ -4,7 +4,9 @@ from urllib.parse import quote
 
 from psycopg2 import IntegrityError
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
+
+from .reader_lang import company_env
 
 _logger = logging.getLogger(__name__)
 
@@ -32,89 +34,89 @@ class BfPhishingResult(models.Model):
     """
 
     _name = "bf.phishing.result"
-    _description = "Résultat de simulation d'hameçonnage"
+    _description = "Phishing simulation result"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
     _primary_email = "email"  # used by mass-mailing recipient resolution
 
     campaign_id = fields.Many2one(
-        "bf.phishing.campaign", string="Campagne",
+        "bf.phishing.campaign", string="Campaign",
         required=True, ondelete="cascade", index=True,
     )
     company_id = fields.Many2one(
         related="campaign_id.company_id", store=True, index=True,
     )
     partner_id = fields.Many2one(
-        "res.partner", string="Personne", required=True,
+        "res.partner", string="Person", required=True,
         ondelete="cascade", index=True, tracking=True,
     )
-    email = fields.Char(string="Courriel ciblé", required=True)
+    email = fields.Char(string="Target email", required=True)
     token = fields.Char(
-        string="Jeton", required=True, index=True, copy=False, readonly=True,
+        string="Token", required=True, index=True, copy=False, readonly=True,
         default=lambda self: secrets.token_urlsafe(32),
     )
     profile_id = fields.Many2one(
-        "bf.security.profile", string="Profil de risque",
+        "bf.security.profile", string="Risk profile",
         ondelete="set null", index=True,
     )
 
     # --- State machine --------------------------------------------------
     state = fields.Selection(
         [
-            ("pending", "En attente d'envoi"),
-            ("sent", "Envoyé"),
-            ("opened", "Ouvert"),
-            ("clicked", "A cliqué"),
-            ("submitted", "Identifiants soumis"),
+            ("pending", "Waiting to be sent"),
+            ("sent", "Sent"),
+            ("opened", "Opened"),
+            ("clicked", "Clicked"),
+            ("submitted", "Credentials submitted"),
         ],
-        string="État", default="pending", required=True, tracking=True,
+        string="Status", default="pending", required=True, tracking=True,
     )
-    reported = fields.Boolean(string="A signalé l'hameçonnage", tracking=True)
-    bounced = fields.Boolean(string="Rejeté (bounce)", tracking=True)
+    reported = fields.Boolean(string="Reported the phishing", tracking=True)
+    bounced = fields.Boolean(string="Bounced (rejected)", tracking=True)
 
     scheduled_send = fields.Datetime(
-        string="Envoi planifié",
-        help="Heure d'envoi planifiée (étalement de campagne). La tâche "
-             "planifiée libère les leurres dont l'heure est arrivée.")
-    sent_datetime = fields.Datetime(string="Envoyé le")
-    opened_datetime = fields.Datetime(string="Ouvert le")
-    clicked_datetime = fields.Datetime(string="Cliqué le")
-    submitted_datetime = fields.Datetime(string="Soumis le")
-    reported_datetime = fields.Datetime(string="Signalé le")
+        string="Scheduled send",
+        help="Scheduled send time (campaign spreading). The scheduled job "
+             "releases the lures whose time has come.")
+    sent_datetime = fields.Datetime(string="Sent on")
+    opened_datetime = fields.Datetime(string="Opened on")
+    clicked_datetime = fields.Datetime(string="Clicked on")
+    submitted_datetime = fields.Datetime(string="Submitted on")
+    reported_datetime = fields.Datetime(string="Reported on")
 
     # --- Credential-capture-safe fields (NO value is ever stored) -------
-    credentials_submitted = fields.Boolean(string="A soumis le faux formulaire")
-    submitted_username_len = fields.Integer(string="Long. identifiant saisi")
-    submitted_password_len = fields.Integer(string="Long. mot de passe saisi")
+    credentials_submitted = fields.Boolean(string="Submitted the fake form")
+    submitted_username_len = fields.Integer(string="Entered username length")
+    submitted_password_len = fields.Integer(string="Entered password length")
 
     # --- Forensic-light -------------------------------------------------
-    click_ip = fields.Char(string="IP du clic")
-    click_country_id = fields.Many2one("res.country", string="Pays du clic")
-    user_agent = fields.Char(string="Agent utilisateur")
+    click_ip = fields.Char(string="Click IP")
+    click_country_id = fields.Many2one("res.country", string="Click country")
+    user_agent = fields.Char(string="User agent")
 
     # --- Links ----------------------------------------------------------
     mailing_trace_id = fields.Many2one(
-        "mailing.trace", string="Trace d'envoi",
+        "mailing.trace", string="Mailing trace",
         compute="_compute_mailing_trace_id", store=False,
     )
     training_assignment_id = fields.Many2one(
-        "bf.training.assignment", string="Formation assignée",
+        "bf.training.assignment", string="Assigned training",
         ondelete="set null",
     )
 
     landing_url = fields.Char(
-        string="Lien piégé", compute="_compute_urls", store=False)
+        string="Trap link", compute="_compute_urls", store=False)
     open_pixel_url = fields.Char(compute="_compute_urls", store=False)
     report_url = fields.Char(compute="_compute_urls", store=False)
     qr_src = fields.Char(
-        string="Source du code QR", compute="_compute_urls", store=False,
-        help="URL d'image du code QR (encode le lien piégé) via le contrôleur "
-             "public de codes-barres d'Odoo.")
+        string="QR code source", compute="_compute_urls", store=False,
+        help="QR code image URL (encodes the trap link) through Odoo's "
+             "public barcode controller.")
 
     _sql_constraints = [
-        ("token_uniq", "unique(token)", "Le jeton doit être unique."),
+        ("token_uniq", "unique(token)", "The token must be unique."),
         ("campaign_partner_uniq", "unique(campaign_id, partner_id)",
-         "Cette personne est déjà ciblée par cette campagne."),
+         "This person is already targeted by this campaign."),
     ]
 
     # ------------------------------------------------------------------ #
@@ -173,6 +175,8 @@ class BfPhishingResult(models.Model):
             return True
         return False
 
+    # The notes below come from the public phishing page (public user) or an
+    # employee's report: the security team reads them, in its company's language.
     def register_sent(self):
         for rec in self:
             if rec._advance_state("sent"):
@@ -195,7 +199,8 @@ class BfPhishingResult(models.Model):
             if user_agent and not rec.user_agent:
                 rec.user_agent = user_agent[:256]
             rec._advance_state("clicked")
-            rec.message_post(body=_("A cliqué sur le lien piégé."))
+            team = company_env(rec, rec.company_id)
+            team.message_post(body=team.env._("Clicked the trap link."))
             rec._maybe_assign_training()
 
     def register_submit(self, username_len=None, password_len=None):
@@ -211,7 +216,8 @@ class BfPhishingResult(models.Model):
             if not rec.submitted_datetime:
                 rec.submitted_datetime = fields.Datetime.now()
             rec._advance_state("submitted")
-            rec.message_post(body=_("A soumis le faux formulaire de connexion."))
+            team = company_env(rec, rec.company_id)
+            team.message_post(body=team.env._("Submitted the fake login form."))
             rec._maybe_assign_training()
 
     def register_report(self):
@@ -219,7 +225,8 @@ class BfPhishingResult(models.Model):
             if not rec.reported:
                 rec.reported = True
                 rec.reported_datetime = fields.Datetime.now()
-                rec.message_post(body=_("A signalé le courriel comme hameçonnage."))
+                team = company_env(rec, rec.company_id)
+                team.message_post(body=team.env._("Reported the email as phishing."))
 
     def register_bounce(self):
         for rec in self:
@@ -257,6 +264,10 @@ class BfPhishingResult(models.Model):
                     "partner_id": self.partner_id.id,
                     "channel_id": channel.id,
                     "source_result_id": self.id,
+                    # 🔴 Le clic arrive par la page publique, en sudo depuis
+                    # l'utilisateur public : par défaut, c'est lui qui « assignait »,
+                    # et ses relances allaient à un compte archivé.
+                    "assigned_by_id": campaign.create_uid.id,
                 })
             assignment.action_enroll()
         except IntegrityError:

@@ -8,26 +8,23 @@
         <field name="name">bf.report.phish.wizard.form</field>
         <field name="model">bf.report.phish.wizard</field>
         <field name="arch" type="xml">
-            <form string="Rapporter un courriel suspect">
+            <form string="Report a suspicious email">
                 <div class="alert alert-info" role="status">
-                    Vous avez reçu un courriel douteux ? Signalez-le ici.
-                    S'il s'agissait d'une simulation de sécurité, votre bon réflexe
-                    sera reconnu. Sinon, l'équipe TI sera alertée pour analyse.
-                    <strong>En cas de doute : ne cliquez sur aucun lien.</strong>
+                    Got a dubious email? Report it here. If it was a security simulation, your good reflex will be recognized. Otherwise, the IT team will be alerted for analysis. <strong>When in doubt: do not click any link.</strong>
                 </div>
                 <group>
                     <field name="category"/>
-                    <field name="email_from" placeholder="ex. support@exemple-banque.com"/>
-                    <field name="subject" placeholder="Sujet du courriel"/>
-                    <field name="suspicious_link" placeholder="Collez le lien SANS cliquer (facultatif)"/>
+                    <field name="email_from" placeholder="e.g. support@example-bank.com"/>
+                    <field name="subject" placeholder="Email subject"/>
+                    <field name="suspicious_link" placeholder="Paste the link WITHOUT clicking (optional)"/>
                 </group>
-                <field name="details" placeholder="Qu'est-ce qui vous a semblé suspect ? (urgence, pièce jointe inattendue, demande inhabituelle…)"/>
-                <separator string="Pièces jointes (capture d'écran, copie du courriel)"/>
+                <field name="details" placeholder="What looked suspicious to you? (urgency, unexpected attachment, unusual request…)"/>
+                <separator string="Attachments (screenshot, copy of the email)"/>
                 <field name="attachment_ids" widget="many2many_binary"/>
                 <footer>
-                    <button name="action_submit" type="object" string="Signaler"
+                    <button name="action_submit" type="object" string="Send report"
                             class="btn-primary" data-hotkey="q"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"
+                    <button string="Cancel" class="btn-secondary" special="cancel"
                             data-hotkey="x"/>
                 </footer>
             </form>
@@ -35,7 +32,7 @@
     </record>
 
     <record id="action_report_phish_wizard" model="ir.actions.act_window">
-        <field name="name">Rapporter un courriel suspect</field>
+        <field name="name">Report a suspicious email</field>
         <field name="res_model">bf.report.phish.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -73,13 +70,13 @@
             <form create="false">
                 <header>
                     <button name="action_mark_threat" type="object"
-                            string="Confirmer la menace" class="btn-danger"
+                            string="Confirm threat" class="btn-danger"
                             invisible="state in ('threat_confirmed','simulation')"/>
                     <button name="action_mark_false_alarm" type="object"
-                            string="Fausse alerte"
+                            string="False alarm"
                             invisible="state in ('false_alarm','simulation')"/>
                     <button name="action_launch_clawback" type="object"
-                            string="Retirer des boîtes (clawback)"
+                            string="Remove from mailboxes (clawback)"
                             class="btn-warning"
                             groups="bf_security_awareness.group_bf_secaware_manager"
                             invisible="is_simulation or state in ('new','false_alarm','simulation')"/>
@@ -91,13 +88,13 @@
                         <button name="action_open_ticket" type="object"
                                 class="oe_stat_button" icon="fa-life-ring"
                                 invisible="not has_ticket">
-                            <span class="o_stat_text">Ticket Helpdesk</span>
+                            <span class="o_stat_text">Helpdesk ticket</span>
                         </button>
                         <button name="action_view_clawbacks" type="object"
                                 class="oe_stat_button" icon="fa-trash"
                                 invisible="clawback_count == 0">
                             <field name="clawback_count" widget="statinfo"
-                                   string="Retraits"/>
+                                   string="Removals"/>
                         </button>
                     </div>
                     <widget name="web_ribbon" title="Simulation" bg_color="text-bg-success"
@@ -124,7 +121,7 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <group string="Précisions">
+                    <group string="Details">
                         <field name="details" nolabel="1"/>
                     </group>
                 </sheet>
@@ -141,20 +138,20 @@
                 <field name="reporter_id"/>
                 <field name="subject"/>
                 <field name="email_from"/>
-                <filter name="to_triage" string="À trier"
+                <filter name="to_triage" string="To triage"
                         domain="[('state','in',('new','triage'))]"/>
-                <filter name="threats" string="Menaces confirmées"
+                <filter name="threats" string="Confirmed threats"
                         domain="[('state','=','threat_confirmed')]"/>
-                <filter name="real" string="Courriels réels"
+                <filter name="real" string="Real emails"
                         domain="[('is_simulation','=',False)]"/>
                 <filter name="simulations" string="Simulations"
                         domain="[('is_simulation','=',True)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_state" string="État"
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="Status"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_category" string="Catégorie"
+                    <filter name="group_category" string="Category"
                             context="{'group_by': 'category'}"/>
-                    <filter name="group_reporter" string="Signaleur"
+                    <filter name="group_reporter" string="Reporter"
                             context="{'group_by': 'reporter_id'}"/>
                 </group>
             </search>
@@ -162,22 +159,20 @@
     </record>
 
     <record id="bf_reported_phish_action" model="ir.actions.act_window">
-        <field name="name">Signalements</field>
+        <field name="name">Reports</field>
         <field name="res_model">bf.reported.phish</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="bf_reported_phish_view_search"/>
         <field name="context">{'search_default_to_triage': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun courriel signalé</p>
-            <p>Les courriels signalés par les employés comme suspects arrivent ici.
-               Les simulations reconnues sont classées automatiquement; les
-               courriels réels sont à trier.</p>
+            <p class="o_view_nocontent_smiling_face">No reported emails</p>
+            <p>Emails that employees report as suspicious land here. Recognized simulations are filed automatically; real emails need triage.</p>
         </field>
     </record>
 
     <!-- Manager menu: triage queue under the Sensibilisation app -->
     <menuitem id="menu_secaware_reported"
-              name="Signalements"
+              name="Reports"
               parent="menu_secaware_root"
               action="bf_reported_phish_action"
               groups="group_bf_secaware_user"
@@ -185,7 +180,7 @@
 
     <!-- Employee menu: the report button, under the single Sensibilisation app -->
     <menuitem id="menu_my_report_phish"
-              name="Rapporter un courriel suspect"
+              name="Report a suspicious email"
               parent="menu_secaware_root"
               action="action_report_phish_wizard"
               groups="base.group_user"

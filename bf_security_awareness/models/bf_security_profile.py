@@ -20,66 +20,66 @@ class BfSecurityProfile(models.Model):
     "keeping a profile of each person tested" requirement."""
 
     _name = "bf.security.profile"
-    _description = "Profil de risque de sécurité"
+    _description = "Security risk profile"
     _inherit = ["mail.thread"]
     _order = "risk_score desc"
     _rec_name = "partner_id"
 
     partner_id = fields.Many2one(
-        "res.partner", string="Personne", required=True,
+        "res.partner", string="Person", required=True,
         ondelete="cascade", index=True,
     )
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company,
     )
 
     result_ids = fields.One2many(
-        "bf.phishing.result", "profile_id", string="Résultats")
+        "bf.phishing.result", "profile_id", string="Results")
     assignment_ids = fields.One2many(
-        "bf.training.assignment", "profile_id", string="Formations")
+        "bf.training.assignment", "profile_id", string="Trainings")
 
     # --- Aggregates -----------------------------------------------------
     campaign_count = fields.Integer(
-        compute="_compute_stats", string="Campagnes", store=True)
+        compute="_compute_stats", string="Campaigns", store=True)
     emails_received = fields.Integer(
-        compute="_compute_stats", string="Courriels reçus", store=True)
+        compute="_compute_stats", string="Emails received", store=True)
     opened_count = fields.Integer(
-        compute="_compute_stats", string="Ouverts", store=True)
+        compute="_compute_stats", string="Emails opened", store=True)
     clicked_count = fields.Integer(
-        compute="_compute_stats", string="Clics", store=True)
+        compute="_compute_stats", string="Clicks", store=True)
     submitted_count = fields.Integer(
-        compute="_compute_stats", string="Identifiants soumis", store=True)
+        compute="_compute_stats", string="Credentials submitted", store=True)
     reported_count = fields.Integer(
-        compute="_compute_stats", string="Signalements", store=True)
+        compute="_compute_stats", string="Reports", store=True)
     last_tested_date = fields.Datetime(
-        compute="_compute_stats", string="Dernier test", store=True)
+        compute="_compute_stats", string="Last test", store=True)
     last_failed_date = fields.Datetime(
-        compute="_compute_stats", string="Dernier échec", store=True)
+        compute="_compute_stats", string="Last failure", store=True)
 
     assigned_course_count = fields.Integer(
-        compute="_compute_training", string="Formations assignées", store=True)
+        compute="_compute_training", string="Assigned trainings", store=True)
     completed_course_count = fields.Integer(
-        compute="_compute_training", string="Formations complétées", store=True)
+        compute="_compute_training", string="Completed trainings", store=True)
     training_completion = fields.Integer(
-        compute="_compute_training", string="Avancement formation (%)",
+        compute="_compute_training", string="Training progress (%)",
         store=True)
 
     risk_score = fields.Float(
-        compute="_compute_risk", string="Score de risque", store=True)
+        compute="_compute_risk", string="Risk score", store=True)
     risk_level = fields.Selection(
         [
-            ("low", "Faible"),
-            ("moderate", "Modéré"),
-            ("high", "Élevé"),
-            ("critical", "Critique"),
+            ("low", "Low"),
+            ("moderate", "Moderate"),
+            ("high", "High"),
+            ("critical", "Critical"),
         ],
-        compute="_compute_risk", string="Niveau de risque", store=True,
+        compute="_compute_risk", string="Risk level", store=True,
     )
 
     _sql_constraints = [
         ("partner_uniq", "unique(partner_id)",
-         "Un seul profil de risque par personne."),
+         "Only one risk profile per person."),
     ]
 
     # ------------------------------------------------------------------ #
@@ -230,7 +230,7 @@ class BfSecurityProfile(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Résultats"),
+            "name": _("Results"),
             "res_model": "bf.phishing.result",
             "view_mode": "list,form",
             "domain": [("profile_id", "=", self.id)],
@@ -240,7 +240,7 @@ class BfSecurityProfile(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Formations"),
+            "name": _("Trainings"),
             "res_model": "bf.training.assignment",
             "view_mode": "list,form",
             "domain": [("profile_id", "=", self.id)],

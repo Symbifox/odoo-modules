@@ -5,21 +5,21 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     security_profile_id = fields.Many2one(
-        "bf.security.profile", string="Profil de risque",
+        "bf.security.profile", string="Risk profile",
         compute="_compute_security_profile_id", search="_search_security_profile",
     )
     security_risk_level = fields.Selection(
-        related="security_profile_id.risk_level", string="Niveau de risque",
+        related="security_profile_id.risk_level", string="Risk level",
         store=False,
     )
     phishing_result_ids = fields.One2many(
-        "bf.phishing.result", "partner_id", string="Résultats d'hameçonnage")
+        "bf.phishing.result", "partner_id", string="Phishing results")
     training_assignment_ids = fields.One2many(
-        "bf.training.assignment", "partner_id", string="Formations assignées")
+        "bf.training.assignment", "partner_id", string="Assigned trainings")
     phishing_result_count = fields.Integer(
-        compute="_compute_secaware_counts", string="Tests d'hameçonnage")
+        compute="_compute_secaware_counts", string="Phishing tests")
     training_assignment_count = fields.Integer(
-        compute="_compute_secaware_counts", string="Formations")
+        compute="_compute_secaware_counts", string="Trainings")
 
     def _compute_security_profile_id(self):
         Profile = self.env["bf.security.profile"]
@@ -42,7 +42,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Résultats d'hameçonnage"),
+            "name": _("Phishing results"),
             "res_model": "bf.phishing.result",
             "view_mode": "list,form",
             "domain": [("partner_id", "=", self.id)],
@@ -52,7 +52,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Formations assignées"),
+            "name": _("Assigned trainings"),
             "res_model": "bf.training.assignment",
             "view_mode": "list,form",
             "domain": [("partner_id", "=", self.id)],

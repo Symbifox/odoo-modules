@@ -8,8 +8,8 @@ high-impact capabilities; this note is the threat model and the controls.
 
 | Capability | Who | Reversible? |
 |---|---|---|
-| Run/preview phishing simulations | `group_bf_secaware_user` (Opérateur) | n/a |
-| Triage reported emails, **Aperçu** of a clawback | `group_bf_secaware_manager` | yes (read-only) |
+| Run/preview phishing simulations | `group_bf_secaware_user` (Operator) | n/a |
+| Triage reported emails, **Preview** of a clawback | `group_bf_secaware_manager` | yes (read-only) |
 | **Execute / restore** a clawback (move mail in every mailbox) | `group_bf_secaware_purge` | yes — both modes restorable |
 
 `group_bf_secaware_purge` ⊃ `manager` ⊃ `user`. Previewing and actually purging
@@ -22,14 +22,14 @@ to remove mail from everyone's inbox.
   enforced both in the action methods (`_check_purge_rights`) and on the buttons.
 - **Reversible removal.** `quarantine` moves matches to a hidden `Quarantaine BF`
   folder; `delete` moves them to each mailbox's Trash. **Both** are restorable to
-  INBOX via *Restaurer* (delete stays recoverable until the mailbox purges Trash).
+  INBOX via *Restore (undo)* (delete stays recoverable until the mailbox purges Trash).
 - **No fuzzy deletion.** `mode=delete` refuses the heuristic strategy — it requires
   an exact `Message-ID` (parsed from the reported `.eml`), re-asserted in `_run`.
 - **Mandatory preview** before any heuristic (From/Subject) execution.
 - **Blast-radius cap (all strategies).** Execution first establishes a live found
   count (running a search even for the `message_id` path); if it exceeds
   `clawback_max_blast_messages` (default 25), execution is blocked until a purge
-  user clicks *Confirmer le rayon élevé*. `0` disables the cap.
+  user clicks *Confirm high blast radius*. `0` disables the cap.
 - **Secrets at rest.** OAuth client secret and per-mailbox passwords are
   Fernet-encrypted; the key is read from `BF_SECAWARE_FERNET_KEY` (env) or
   `bf_secaware_fernet_key` (odoo.conf) — **never the database**. Secret fields are
@@ -45,6 +45,13 @@ to remove mail from everyone's inbox.
 - **Email ingestion is internal-only.** The reporting alias uses
   `alias_contact='employees'` and `message_new` re-checks the sender is an
   internal user — external senders are rejected. This blocks triage spam/DoS.
+- **A report only takes its own uploads.** The *Report a suspicious email*
+  wizard moves its attachments to the report as superuser, and a many2many does
+  not check access to the records it links. It therefore accepts only files the
+  reporting user uploaded in that wizard (`res_model` = the wizard, no
+  `res_field`, `create_uid` = the user) and refuses the whole report otherwise,
+  before creating anything. Before 18.0.2.1.0, any internal user could pull any
+  attachment of the database out of its record by naming its id.
 - **IMAP-injection safe.** Every value reaching an IMAP `SEARCH`/`CREATE`
   (Subject / From / Message-ID, from a `.eml` or a typed report) is screened for
   control characters in `_imap_quote`, so a CR/LF cannot break out of the quoted

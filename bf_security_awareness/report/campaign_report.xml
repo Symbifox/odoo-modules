@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="action_report_phishing_campaign" model="ir.actions.report">
-        <field name="name">Rapport de campagne</field>
+        <field name="name">Named report (confidential)</field>
         <field name="model">bf.phishing.campaign</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_security_awareness.report_phishing_campaign</field>
@@ -16,34 +16,37 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Rapport de campagne d'hameçonnage</h2>
+                        <h2>Phishing campaign report</h2>
                         <h3 class="text-muted"><span t-field="o.name"/></h3>
+                        <p class="mt-2" style="font-weight:bold;">
+                            Confidential: this report contains individual results. Do not hand over outside the organization; use the aggregate report instead.
+                        </p>
 
                         <table class="table table-sm mt-3" style="width:100%;">
                             <tr>
-                                <td><strong>Modèle de leurre</strong></td>
+                                <td><strong>Lure template</strong></td>
                                 <td><span t-field="o.template_id"/></td>
-                                <td><strong>État</strong></td>
+                                <td><strong>Status</strong></td>
                                 <td><span t-field="o.state"/></td>
                             </tr>
                             <tr>
-                                <td><strong>Date d'envoi</strong></td>
+                                <td><strong>Send date</strong></td>
                                 <td><span t-field="o.scheduled_date"/></td>
-                                <td><strong>Destinataires</strong></td>
+                                <td><strong>Recipients</strong></td>
                                 <td><span t-field="o.recipient_count"/></td>
                             </tr>
                         </table>
 
-                        <h4 class="mt-4">Résultats</h4>
+                        <h4 class="mt-4">Results</h4>
                         <table class="table table-sm table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Envoyés</th>
-                                    <th>Ouverts</th>
-                                    <th>Clics</th>
-                                    <th>Identifiants soumis</th>
-                                    <th>Signalements</th>
-                                    <th>Taux d'échec</th>
+                                    <th>Emails sent</th>
+                                    <th>Emails opened</th>
+                                    <th>Clicks</th>
+                                    <th>Credentials submitted</th>
+                                    <th>Reports</th>
+                                    <th>Failure rate</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,14 +61,14 @@
                             </tbody>
                         </table>
 
-                        <h4 class="mt-4">Détail par personne</h4>
+                        <h4 class="mt-4">Breakdown by person</h4>
                         <table class="table table-sm table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Personne</th>
-                                    <th>État</th>
-                                    <th>A signalé</th>
-                                    <th>Cliqué le</th>
+                                    <th>Person</th>
+                                    <th>Status</th>
+                                    <th>Has reported</th>
+                                    <th>Clicked on</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,7 +76,7 @@
                                     <td><span t-field="r.partner_id"/></td>
                                     <td><span t-field="r.state"/></td>
                                     <td>
-                                        <span t-if="r.reported">Oui</span>
+                                        <span t-if="r.reported">Yes</span>
                                         <span t-else="">—</span>
                                     </td>
                                     <td><span t-field="r.clicked_datetime"/></td>
@@ -82,10 +85,7 @@
                         </table>
 
                         <p class="text-muted mt-4" style="font-size:10px;">
-                            Simulation de sécurité interne et autorisée. Aucun mot de
-                            passe n'est conservé : seules la longueur des champs et les
-                            actions (ouverture, clic, soumission, signalement) sont
-                            enregistrées.
+                            Internal, authorized security simulation. No password is kept: only field lengths and actions (open, click, submission, report) are recorded.
                         </p>
                     </div>
                 </t>

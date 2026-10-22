@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_campaign_scheduler" model="ir.cron">
-            <field name="name">Sensibilisation : lancer les campagnes planifiées</field>
+            <field name="name">Security awareness: launch scheduled campaigns</field>
             <field name="model_id" ref="model_bf_phishing_campaign"/>
             <field name="state">code</field>
             <field name="code">model._cron_scheduler()</field>
@@ -13,7 +13,7 @@
         </record>
 
         <record id="cron_recompute_profiles" model="ir.cron">
-            <field name="name">Sensibilisation : recalcul des scores de risque</field>
+            <field name="name">Security awareness: recompute risk scores</field>
             <field name="model_id" ref="model_bf_security_profile"/>
             <field name="state">code</field>
             <field name="code">model._cron_recompute_profiles()</field>
@@ -23,7 +23,7 @@
         </record>
 
         <record id="cron_training_reminders" model="ir.cron">
-            <field name="name">Sensibilisation : rappels de formation</field>
+            <field name="name">Security awareness: training reminders</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="state">code</field>
             <field name="code">model._cron_training_reminders()</field>
@@ -33,7 +33,7 @@
         </record>
 
         <record id="cron_process_clawback" model="ir.cron">
-            <field name="name">Sensibilisation : reprise des retraits de courriel</field>
+            <field name="name">Security awareness: resume email removals</field>
             <field name="model_id" ref="model_bf_clawback_operation"/>
             <field name="state">code</field>
             <field name="code">model._cron_process_clawback()</field>

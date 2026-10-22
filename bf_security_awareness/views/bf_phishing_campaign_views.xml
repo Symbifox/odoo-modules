@@ -41,8 +41,8 @@
                                 <field name="template_id"/>
                             </div>
                             <div>
-                                <span><field name="recipient_count"/> destinataires</span>
-                                · <span><t t-esc="Math.round(record.fail_rate.raw_value)"/>% d'échec</span>
+                                <span><field name="recipient_count"/> recipients</span>
+                                · <span><t t-esc="Math.round(record.fail_rate.raw_value)"/>% failure</span>
                             </div>
                         </div>
                     </t>
@@ -57,18 +57,18 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_prepare" type="object" string="Préparer"
+                    <button name="action_prepare" type="object" string="Prepare"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_launch" type="object" string="Lancer"
+                    <button name="action_launch" type="object" string="Launch"
                             class="btn-primary"
                             invisible="state not in ('scheduled','sending')"
-                            confirm="Lancer la campagne et envoyer les courriels-leurres ?"/>
-                    <button name="action_done" type="object" string="Clôturer"
+                            confirm="Launch the campaign and send the lure emails?"/>
+                    <button name="action_done" type="object" string="Close"
                             invisible="state != 'running'"/>
-                    <button name="action_cancel" type="object" string="Annuler"
+                    <button name="action_cancel" type="object" string="Cancel"
                             invisible="state in ('done','cancelled')"/>
                     <button name="action_reset_to_draft" type="object"
-                            string="Remettre en brouillon"
+                            string="Reset to draft"
                             invisible="state not in ('cancelled',)"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,scheduled,running,done"/>
@@ -78,16 +78,16 @@
                         <button name="action_view_results" type="object"
                                 class="oe_stat_button" icon="fa-list">
                             <field name="recipient_count" widget="statinfo"
-                                   string="Résultats"/>
+                                   string="Results"/>
                         </button>
                         <button name="action_view_mailing" type="object"
                                 class="oe_stat_button" icon="fa-envelope"
                                 invisible="not mailing_id">
-                            <span class="o_stat_text">Envoi de masse</span>
+                            <span class="o_stat_text">Mass mailing</span>
                         </button>
                     </div>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Nom de la campagne"/></h1>
+                        <h1><field name="name" placeholder="Campaign name"/></h1>
                     </div>
                     <group>
                         <group>
@@ -102,7 +102,7 @@
                             <field name="auto_assign_training"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string="Résultats">
+                        <group string="Results">
                             <field name="sent_count"/>
                             <field name="opened_count"/>
                             <field name="clicked_count"/>
@@ -112,11 +112,11 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Destinataires" name="audience">
+                        <page string="Recipients" name="audience">
                             <field name="recipient_partner_ids"
                                    widget="many2many_tags"
                                    readonly="state != 'draft'"/>
-                            <separator string="Listes de diffusion"/>
+                            <separator string="Mailing lists"/>
                             <field name="mailing_list_ids"
                                    widget="many2many_tags"
                                    readonly="state != 'draft'"/>
@@ -135,12 +135,12 @@
             <search>
                 <field name="name"/>
                 <field name="template_id"/>
-                <filter name="running" string="En cours" domain="[('state','=','running')]"/>
-                <filter name="done" string="Terminées" domain="[('state','=','done')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_state" string="État"
+                <filter name="running" string="In progress" domain="[('state','=','running')]"/>
+                <filter name="done" string="Finished" domain="[('state','=','done')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="Status"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_template" string="Modèle"
+                    <filter name="group_template" string="Template"
                             context="{'group_by': 'template_id'}"/>
                 </group>
             </search>
@@ -148,14 +148,13 @@
     </record>
 
     <record id="bf_phishing_campaign_action" model="ir.actions.act_window">
-        <field name="name">Campagnes</field>
+        <field name="name">Campaigns</field>
         <field name="res_model">bf.phishing.campaign</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="bf_phishing_campaign_view_search"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Lancez votre première campagne</p>
-            <p>Une campagne envoie un courriel-leurre à un groupe de personnes et
-               suit qui ouvre, clique ou soumet ses identifiants.</p>
+            <p class="o_view_nocontent_smiling_face">Launch your first campaign</p>
+            <p>A campaign sends a lure email to a group of people and tracks who opens, clicks or submits their credentials.</p>
         </field>
     </record>
 

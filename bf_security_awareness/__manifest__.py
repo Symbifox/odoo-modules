@@ -2,7 +2,16 @@
     "name": "Security Awareness",
     "summary": "Simulated phishing campaigns, per-person risk profiles and "
                "cybersecurity eLearning — a KnowBe4 / Terranova-style offering.",
-    "version": "18.0.2.0.4",
+    # 18.0.2.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    # 18.0.2.3.2: « Rapport agrégé », the campaign figures a
+    #   client can hand to a supplier, nobody named, rates only from
+    #   bf_security_awareness.aggregate_min_recipients (10, never below 5),
+    #   unfavourable rates as a range, neutral reference per company;
+    #   nominative report renamed « Named report (confidential) ».
+    "version": "18.0.2.3.2",
     "category": "Marketing/Security Awareness",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -36,6 +45,7 @@
         "views/bf_training_assignment_views.xml",
         "views/res_partner_views.xml",
         "report/campaign_report.xml",
+        "report/aggregate_report.xml",
         "views/bf_security_awareness_menus.xml",
         "views/bf_security_dashboard_views.xml",
         "views/bf_reported_phish_views.xml",

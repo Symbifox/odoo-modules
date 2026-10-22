@@ -36,113 +36,115 @@ DEFAULT_TEACHABLE_HTML = """
 
 class BfPhishingTemplate(models.Model):
     _name = "bf.phishing.template"
-    _description = "Modèle de simulation d'hameçonnage"
+    _description = "Phishing simulation template"
     _order = "name"
 
-    name = fields.Char(string="Nom", required=True, translate=True)
+    name = fields.Char(string="Name", required=True, translate=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company,
     )
 
     # --- The lure email -------------------------------------------------
     subject = fields.Char(
-        string="Sujet du courriel", required=True, translate=True,
-        help="Sujet du courriel-leurre. Les expressions QWeb (object.*) sont "
-             "rendues par destinataire.",
+        string="Email subject", required=True, translate=True,
+        help="Subject of the lure email. QWeb expressions (object.*) are "
+             "rendered per recipient.",
     )
     email_from = fields.Char(
-        string="Adresse d'expéditeur",
-        help="Adresse affichée comme expéditeur du leurre (ex. "
-             "support@exemple-banque.com).",
+        string="Sender address",
+        help="Address shown as the lure's sender (e.g. "
+             "support@example-bank.com).",
     )
-    sender_name = fields.Char(string="Nom de l'expéditeur")
+    sender_name = fields.Char(string="Sender name")
     # Même nettoyage que le corps d'un envoi de masse (où ce corps est recopié) et
     # qu'un modèle de courriel d'Odoo : ni script ni « on… » ni « javascript: »,
     # mais les styles, tableaux, commentaires Outlook et t-att-href restent, pour
     # qu'un leurre imite un vrai courriel.
     email_body = fields.Html(
-        string="Corps du courriel", sanitize="email_outgoing", translate=True,
+        string="Email body", sanitize="email_outgoing", translate=True,
         default=DEFAULT_EMAIL_BODY,
-        help="Corps HTML du leurre. Insérez le lien piégé avec "
-             "<a t-att-href=\"object.landing_url\">…</a>.",
+        help="HTML body of the lure. Insert the trap link with <a "
+             "t-att-href=\"object.landing_url\">…</a>.",
     )
     attachment_ids = fields.Many2many(
-        "ir.attachment", string="Pièces jointes",
-        help="Pièces jointes ajoutées au leurre (ex. faux document à ouvrir) "
-             "pour tester les personnes qui ouvrent les fichiers.",
+        "ir.attachment", string="Attachments",
+        help="Attachments added to the lure (e.g. a fake document to "
+             "open) to test people who open files.",
     )
     qr_code = fields.Boolean(
-        string="Inclure un code QR (quishing)", default=False,
-        help="Ajoute un code QR encodant le lien piégé, pour tester le réflexe "
-             "de numérisation sur mobile.",
+        string="Include a QR code (quishing)", default=False,
+        help="Adds a QR code encoding the trap link, to test the mobile "
+             "scanning reflex.",
     )
 
     # --- Difficulty & classification ------------------------------------
     difficulty = fields.Selection(
-        [("easy", "Facile"), ("medium", "Moyen"), ("hard", "Difficile")],
-        string="Difficulté", default="medium", required=True,
-        help="Pondère le score de risque : échouer à un leurre facile pèse "
-             "plus lourd qu'à un leurre difficile.",
+        [("easy", "Easy"), ("medium", "Medium"), ("hard", "Hard")],
+        string="Difficulty", default="medium", required=True,
+        help="Weights the risk score: failing an easy lure counts more "
+             "than failing a hard one.",
     )
     category = fields.Selection(
         [
-            ("credential_harvest", "Vol d'identifiants"),
-            ("attachment", "Pièce jointe piégée"),
-            ("wire_fraud", "Fraude au virement"),
-            ("mfa_fatigue", "Fatigue MFA"),
-            ("generic", "Générique"),
+            ("credential_harvest", "Credential theft"),
+            ("attachment", "Booby-trapped attachment"),
+            ("wire_fraud", "Wire fraud"),
+            ("mfa_fatigue", "MFA fatigue"),
+            ("generic", "Generic"),
         ],
-        string="Catégorie", default="credential_harvest", required=True,
+        string="Category", default="credential_harvest", required=True,
     )
 
     # --- Landing behaviour ----------------------------------------------
     landing_mode = fields.Selection(
         [
-            ("credential", "Faux formulaire de connexion puis page éducative"),
-            ("awareness", "Page éducative directe"),
-            ("link_only", "Aucune page (suivi du clic uniquement)"),
+            ("credential", "Fake login form, then learning page"),
+            ("awareness", "Learning page only"),
+            ("link_only", "No page (click tracking only)"),
         ],
-        string="Comportement de la page d'atterrissage",
+        string="Landing page behavior",
         default="credential", required=True,
     )
     landing_title = fields.Char(
-        string="Titre de la fausse page", translate=True,
+        string="Fake page title", translate=True,
         default="Connexion à votre compte",
     )
     landing_html = fields.Html(
-        string="Habillage de la fausse page", sanitize=False, translate=True,
-        help="En-tête de la fausse page (mode « faux formulaire »), rendu AVANT "
-             "le titre et le formulaire. Peut contenir un logo et un bloc "
-             "<style>…</style> pour imiter fidèlement la marque visée.",
+        string="Fake page styling", sanitize=False, translate=True,
+        help="Header of the fake page (\"fake form\" mode), rendered "
+             "BEFORE the title and the form. Can hold a logo and a "
+             "<style>…</style> block to closely imitate the targeted "
+             "brand.",
     )
     landing_button_label = fields.Char(
-        string="Libellé du bouton", translate=True, default="Se connecter",
-        help="Texte du bouton du faux formulaire (ex. « Se connecter », "
-             "« Suivant », « Continuer »).",
+        string="Button label", translate=True, default="Se connecter",
+        help="Text of the fake form's button (e.g. \"Sign in\", \"Next\", "
+             "\"Continue\").",
     )
     capture_field_lengths = fields.Boolean(
-        string="Mesurer la longueur des champs saisis", default=False,
-        help="Si activé, enregistre uniquement la LONGUEUR des champs soumis "
-             "(jamais leur valeur). Le mot de passe n'est jamais stocké.",
+        string="Measure the length of entered fields", default=False,
+        help="When enabled, records only the LENGTH of the submitted "
+             "fields (never their value). The password is never stored.",
     )
     teachable_html = fields.Html(
-        string="Page éducative", sanitize=False, translate=True,
+        string="Learning page", sanitize=False, translate=True,
         default=DEFAULT_TEACHABLE_HTML,
-        help="Message « moment d'apprentissage » affiché après le clic ou la "
-             "soumission. Doit rappeler qu'il s'agit d'une simulation autorisée.",
+        help="\"Teachable moment\" message shown after the click or "
+             "submission. Must remind people that this is an authorized "
+             "simulation.",
     )
 
     # --- Remediation ----------------------------------------------------
     training_channel_id = fields.Many2one(
-        "slide.channel", string="Formation assignée à l'échec",
-        help="Cours de sensibilisation assigné automatiquement à toute "
-             "personne qui clique ou soumet ses identifiants.",
+        "slide.channel", string="Training assigned on failure",
+        help="Security awareness course assigned automatically to anyone "
+             "who clicks or submits their credentials.",
     )
 
     campaign_count = fields.Integer(
-        string="Campagnes", compute="_compute_campaign_count",
+        string="Campaigns", compute="_compute_campaign_count",
     )
 
     def _compute_campaign_count(self):
@@ -158,7 +160,7 @@ class BfPhishingTemplate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Campagnes"),
+            "name": _("Campaigns"),
             "res_model": "bf.phishing.campaign",
             "view_mode": "list,form",
             "domain": [("template_id", "=", self.id)],

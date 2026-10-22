@@ -36,7 +36,7 @@
                         <div class="brandhead"><t t-out="template.landing_html"/></div>
                     </t>
                     <h1 t-esc="template.landing_title or 'Connexion à votre compte'"/>
-                    <form t-attf-action="/phish/#{token}/submit" method="post">
+                    <form t-attf-action="/phish/#{token}/submit" method="post" t-translation="off">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <label for="login">Identifiant ou courriel</label>
                         <input type="text" id="login" name="login" autocomplete="off" required="required"/>
@@ -53,12 +53,12 @@
     <!-- Teachable moment (post-click / post-submit / invalid token)    -->
     <!-- ============================================================== -->
     <template id="phishing_lesson" name="Phishing Teachable Moment">
-        <html lang="fr">
+        <html t-att-lang="page_lang">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <meta name="robots" content="noindex, nofollow"/>
-                <title>Simulation de sécurité</title>
+                <title t-esc="page_title"/>
                 <style>
                     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f3f4;
                          color:#202124;}
@@ -77,29 +77,24 @@
             <body>
                 <div class="wrap">
                     <div class="banner">
-                        <h1>✓ Il s'agissait d'une simulation autorisée</h1>
+                        <h1>✓ This was an authorized simulation</h1>
                     </div>
                     <div class="body">
                         <t t-if="teachable_html">
                             <t t-out="teachable_html"/>
                         </t>
                         <t t-else="">
-                            <p>Bonne nouvelle : <strong>aucune donnée n'a été
-                               compromise</strong>. Ce message faisait partie d'une
-                               simulation d'hameçonnage interne et autorisée, destinée
-                               à renforcer nos réflexes en cybersécurité.</p>
+                            <p>Good news: <strong>no data was compromised</strong>. This message was part of an internal, authorized phishing simulation meant to strengthen our cybersecurity reflexes.</p>
                             <ul>
-                                <li>Méfiez-vous des messages alarmistes qui pressent d'agir.</li>
-                                <li>Vérifiez l'adresse réelle d'un lien avant de cliquer.</li>
-                                <li>Ne saisissez jamais vos identifiants hors du site officiel.</li>
+                                <li>Beware of alarming messages that urge you to act fast.</li>
+                                <li>Check a link's real address before clicking.</li>
+                                <li>Never enter your credentials outside the official site.</li>
                             </ul>
                         </t>
                         <t t-if="training_url">
-                            <a class="cta" t-att-href="training_url">Suivre la formation assignée</a>
+                            <a class="cta" t-att-href="training_url">Take the assigned training</a>
                         </t>
-                        <p class="note">Cette simulation a été menée à des fins de
-                            sensibilisation. Aucun mot de passe n'a été enregistré.
-                            Pour toute question, contactez votre équipe TI.</p>
+                        <p class="note">This simulation was run for security awareness purposes. No password was recorded. For any question, contact your IT team.</p>
                     </div>
                 </div>
             </body>
@@ -110,12 +105,12 @@
     <!-- "Good catch" — reported the phishing                           -->
     <!-- ============================================================== -->
     <template id="phishing_reported" name="Phishing Reported">
-        <html lang="fr">
+        <html t-att-lang="page_lang">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <meta name="robots" content="noindex, nofollow"/>
-                <title>Merci</title>
+                <title t-esc="page_title"/>
                 <style>
                     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f3f4;
                          color:#202124;display:flex;min-height:100vh;align-items:center;
@@ -127,10 +122,9 @@
             </head>
             <body>
                 <div class="card">
-                    <h1>✓ Bien joué !</h1>
-                    <p>Vous avez correctement identifié ce courriel comme une tentative
-                       d'hameçonnage. C'est exactement le bon réflexe.</p>
-                    <p>Continuez à signaler les messages suspects à votre équipe TI.</p>
+                    <h1>✓ Well done!</h1>
+                    <p>You correctly identified this email as a phishing attempt. That is exactly the right reflex.</p>
+                    <p>Keep reporting suspicious messages to your IT team.</p>
                 </div>
             </body>
         </html>

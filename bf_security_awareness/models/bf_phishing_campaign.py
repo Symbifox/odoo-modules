@@ -5,6 +5,8 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from .reader_lang import company_env, operator_env
+
 _logger = logging.getLogger(__name__)
 
 # Appended to every lure body so we capture opens in real time on our own
@@ -29,81 +31,83 @@ QR_SNIPPET = (
 
 class BfPhishingCampaign(models.Model):
     _name = "bf.phishing.campaign"
-    _description = "Campagne de simulation d'hameçonnage"
+    _description = "Phishing simulation campaign"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company,
     )
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("scheduled", "Planifiée"),
-            ("sending", "Envoi en cours"),
-            ("running", "En cours"),
-            ("done", "Terminée"),
-            ("cancelled", "Annulée"),
+            ("draft", "Draft"),
+            ("scheduled", "Scheduled"),
+            ("sending", "Sending"),
+            ("running", "In progress"),
+            ("done", "Done"),
+            ("cancelled", "Canceled"),
         ],
-        string="État", default="draft", required=True, tracking=True,
+        string="Status", default="draft", required=True, tracking=True,
     )
     template_id = fields.Many2one(
-        "bf.phishing.template", string="Modèle de leurre",
+        "bf.phishing.template", string="Lure template",
         required=True, tracking=True,
     )
 
     # --- Audience selection --------------------------------------------
     recipient_partner_ids = fields.Many2many(
-        "res.partner", string="Personnes ciblées",
+        "res.partner", string="Targeted people",
         domain="[('email', '!=', False)]",
     )
     mailing_list_ids = fields.Many2many(
-        "mailing.list", string="Listes de diffusion",
-        help="Les contacts de ces listes sont ajoutés aux personnes ciblées.",
+        "mailing.list", string="Mailing lists",
+        help="Contacts from these lists are added to the targeted people.",
     )
     scheduled_date = fields.Datetime(
-        string="Date d'envoi planifiée",
-        help="Si renseignée, la campagne est lancée automatiquement à cette "
-             "date par la tâche planifiée.",
+        string="Scheduled send date",
+        help="When set, the scheduled job launches the campaign "
+             "automatically on this date.",
     )
     send_window_days = fields.Float(
-        string="Étalement des envois (jours)", default=0.0,
-        help="Répartit aléatoirement les envois sur cette fenêtre (en jours) "
-             "pour éviter qu'un destinataire alerte les autres. 0 = envoi "
-             "immédiat à tous.",
+        string="Send spreading (days)", default=0.0,
+        help="Randomly spreads the sends over this window (in days) so "
+             "that one recipient cannot warn the others. 0 = send to "
+             "everyone at once.",
     )
     mail_server_id = fields.Many2one(
-        "ir.mail_server", string="Serveur d'envoi",
-        help="Serveur SMTP utilisé pour l'envoi des leurres. Vide = serveur par "
-             "défaut du système.",
+        "ir.mail_server", string="Outgoing server",
+        help="SMTP server used to send the lures. Empty = the system's "
+             "default server.",
     )
     auto_assign_training = fields.Boolean(
-        string="Assigner la formation à l'échec", default=True,
+        string="Assign training on failure", default=True,
     )
 
     # --- Engine links ---------------------------------------------------
     utm_campaign_id = fields.Many2one(
-        "utm.campaign", string="Campagne UTM", readonly=True, copy=False)
+        "utm.campaign", string="UTM campaign", readonly=True, copy=False)
     mailing_id = fields.Many2one(
-        "mailing.mailing", string="Envoi de masse", readonly=True, copy=False)
+        "mailing.mailing", string="Mass mailing", readonly=True, copy=False)
     result_ids = fields.One2many(
-        "bf.phishing.result", "campaign_id", string="Résultats")
+        "bf.phishing.result", "campaign_id", string="Results")
 
     # --- Counters -------------------------------------------------------
     recipient_count = fields.Integer(
-        compute="_compute_counters", string="Destinataires")
-    sent_count = fields.Integer(compute="_compute_counters", string="Envoyés")
-    opened_count = fields.Integer(compute="_compute_counters", string="Ouverts")
-    clicked_count = fields.Integer(compute="_compute_counters", string="Clics")
+        compute="_compute_counters", string="Recipients")
+    sent_count = fields.Integer(compute="_compute_counters", string="Emails "
+                                                                    "sent")
+    opened_count = fields.Integer(compute="_compute_counters", string="Emails "
+                                                                      "opened")
+    clicked_count = fields.Integer(compute="_compute_counters", string="Clicks")
     submitted_count = fields.Integer(
-        compute="_compute_counters", string="Identifiants soumis")
+        compute="_compute_counters", string="Credentials submitted")
     reported_count = fields.Integer(
-        compute="_compute_counters", string="Signalements")
+        compute="_compute_counters", string="Reports")
     fail_rate = fields.Float(
-        compute="_compute_counters", string="Taux d'échec (%)",
-        help="Part des destinataires ayant cliqué ou soumis leurs identifiants.")
+        compute="_compute_counters", string="Failure rate (%)",
+        help="Share of recipients who clicked or submitted their credentials.")
 
     @api.depends("result_ids.state", "result_ids.reported")
     def _compute_counters(self):
@@ -154,11 +158,11 @@ class BfPhishingCampaign(models.Model):
         """Materialise one result per recipient and build the engine records."""
         for camp in self:
             if camp.state not in ("draft",):
-                raise UserError(_("La campagne doit être en brouillon."))
+                raise UserError(_("The campaign must be in draft."))
             partners = camp._resolve_target_partners()
             if not partners:
                 raise UserError(_(
-                    "Aucun destinataire avec une adresse courriel valide."))
+                    "No recipient with a valid email address."))
 
             # Create results for partners not yet targeted.
             existing = camp.result_ids.mapped("partner_id")
@@ -181,7 +185,7 @@ class BfPhishingCampaign(models.Model):
     def action_launch(self):
         for camp in self:
             if camp.state not in ("scheduled", "sending"):
-                raise UserError(_("Préparez d'abord la campagne."))
+                raise UserError(_("Prepare the campaign first."))
             if not camp.mailing_id:
                 camp._ensure_mailing()
             camp.state = "sending"
@@ -220,9 +224,12 @@ class BfPhishingCampaign(models.Model):
             _logger.warning(
                 "bf_security_awareness: mass-mail send failed for campaign "
                 "%s: %s", self.id, exc)
-            self.message_post(body=_(
-                "L'envoi de masse a échoué (%s). Les résultats restent suivis "
-                "via le lien piégé.") % exc)
+            # Reached from the scheduled job too (OdooBot): the operator who
+            # launched, else the company's language.
+            camp = operator_env(self, self.company_id)
+            camp.message_post(body=camp.env._(
+                "The mass mailing failed (%s). Results are still tracked "
+                "through the trap link.") % exc)
 
     def action_cancel(self):
         for camp in self:
@@ -246,8 +253,10 @@ class BfPhishingCampaign(models.Model):
         self.ensure_one()
         if self.utm_campaign_id:
             return
+        # Stored name, read by every operator: the company's language.
+        env = company_env(self, self.company_id).env
         self.utm_campaign_id = self.env["utm.campaign"].create({
-            "name": _("Hameçonnage : %s") % self.name,
+            "name": env._("Phishing: %s") % self.name,
         })
 
     def _build_body_html(self):
@@ -300,7 +309,7 @@ class BfPhishingCampaign(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Résultats"),
+            "name": _("Results"),
             "res_model": "bf.phishing.result",
             "view_mode": "list,form,pivot,graph",
             "domain": [("campaign_id", "=", self.id)],
@@ -310,7 +319,7 @@ class BfPhishingCampaign(models.Model):
     def action_view_mailing(self):
         self.ensure_one()
         if not self.mailing_id:
-            raise UserError(_("Aucun envoi de masse n'a encore été créé."))
+            raise UserError(_("No mass mailing has been created yet."))
         return {
             "type": "ir.actions.act_window",
             "res_model": "mailing.mailing",

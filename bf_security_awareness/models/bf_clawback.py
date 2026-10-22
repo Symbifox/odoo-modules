@@ -21,69 +21,71 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
+from .reader_lang import company_env
+
 _logger = logging.getLogger(__name__)
 
 
 class BfClawbackOperation(models.Model):
     _name = "bf.clawback.operation"
-    _description = "Opération de retrait de courriel (clawback)"
+    _description = "Email removal operation (clawback)"
     _inherit = ["mail.thread"]
     _order = "create_date desc"
 
     name = fields.Char(compute="_compute_name", store=True)
     reported_phish_id = fields.Many2one(
-        "bf.reported.phish", string="Signalement", ondelete="cascade",
+        "bf.reported.phish", string="Report", ondelete="cascade",
         index=True, tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company, index=True)
     connector_id = fields.Many2one(
-        "bf.mail.clawback.connector", string="Connecteur", required=True,
+        "bf.mail.clawback.connector", string="Connector", required=True,
         default=lambda self: self._default_connector(), tracking=True)
 
     mode = fields.Selection(
-        [("quarantine", "Quarantaine (dossier dédié, réversible)"),
-         ("delete", "Corbeille (réversible tant que non purgée)")],
-        string="Mode de retrait", required=True,
+        [("quarantine", "Quarantine (dedicated folder, reversible)"),
+         ("delete", "Trash (reversible until emptied)")],
+        string="Removal mode", required=True,
         default=lambda self: self._default_mode(), tracking=True,
-        help="Quarantaine : déplace vers un dossier caché « Quarantaine BF ». "
-             "Corbeille : déplace vers la Corbeille de chaque boîte. Les deux "
-             "sont restaurables vers INBOX par « Restaurer ».")
+        help="Quarantine: moves to a hidden \"Quarantaine BF\" folder. "
+             "Trash: moves to each mailbox's Trash. Both can be restored "
+             "to INBOX with \"Restore\".")
     match_strategy = fields.Selection(
-        [("message_id", "Message-ID exact"),
-         ("heuristic", "Expéditeur + sujet (heuristique)")],
-        string="Stratégie", required=True, default="heuristic", tracking=True)
+        [("message_id", "Exact Message-ID"),
+         ("heuristic", "Sender + subject (heuristic)")],
+        string="Strategy", required=True, default="heuristic", tracking=True)
 
     message_id = fields.Char(string="Message-ID")
-    email_from = fields.Char(string="Expéditeur")
-    subject = fields.Char(string="Sujet")
-    since_date = fields.Date(string="Reçu depuis")
+    email_from = fields.Char(string="Sender")
+    subject = fields.Char(string="Subject")
+    since_date = fields.Date(string="Received since")
 
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("preview", "Aperçu effectué"),
-            ("running", "En cours"),
-            ("done", "Retiré"),
-            ("restored", "Restauré"),
-            ("failed", "Échec"),
+            ("draft", "Draft"),
+            ("preview", "Previewed"),
+            ("running", "In progress"),
+            ("done", "Removed"),
+            ("restored", "Restored"),
+            ("failed", "Failed"),
         ],
-        string="État", default="draft", required=True, tracking=True)
-    launched_by = fields.Many2one("res.users", string="Lancé par", readonly=True)
+        string="Status", default="draft", required=True, tracking=True)
+    launched_by = fields.Many2one("res.users", string="Launched by", readonly=True)
 
     blast_confirmed = fields.Boolean(
-        string="Rayon élevé confirmé", readonly=True,
-        help="Mis à vrai par un gestionnaire pour autoriser un retrait dont "
-             "l'aperçu dépasse le plafond configuré.")
+        string="High blast radius confirmed", readonly=True,
+        help="Set to true by a manager to authorize a removal whose "
+             "preview exceeds the configured cap.")
     authorized = fields.Boolean(
-        string="Retrait autorisé", readonly=True, copy=False,
-        help="Mis à vrai UNIQUEMENT par « Exécuter le retrait », sous le "
-             "privilège Purge et après tous les garde-fous. Le balayage (y "
-             "compris la reprise par tâche planifiée) refuse d'agir sans ce "
-             "drapeau — il ne peut donc pas être contourné via l'état.")
+        string="Removal authorized", readonly=True, copy=False,
+        help="Set to true ONLY by \"Run removal\", under the Purge "
+             "privilege and after every safeguard. The sweep (including "
+             "the scheduled resume) refuses to act without this flag, so "
+             "it cannot be bypassed through the state.")
 
     hit_ids = fields.One2many(
-        "bf.clawback.hit", "operation_id", string="Boîtes balayées")
+        "bf.clawback.hit", "operation_id", string="Swept mailboxes")
     mailboxes_swept = fields.Integer(compute="_compute_totals", store=True)
     messages_found = fields.Integer(compute="_compute_totals", store=True)
     messages_removed = fields.Integer(compute="_compute_totals", store=True)
@@ -107,9 +109,11 @@ class BfClawbackOperation(models.Model):
 
     @api.depends("reported_phish_id", "message_id", "subject")
     def _compute_name(self):
+        # Stored, read by the security team: their company's language.
         for rec in self:
-            label = rec.subject or rec.message_id or _("courriel")
-            rec.name = _("Retrait — %s") % label
+            env = company_env(rec, rec.company_id).env
+            label = rec.subject or rec.message_id or env._("email")
+            rec.name = env._("Removal: %s") % label
 
     @api.depends("hit_ids.state", "hit_ids.found_count", "hit_ids.removed_count")
     def _compute_totals(self):
@@ -129,8 +133,7 @@ class BfClawbackOperation(models.Model):
             if not self.env.user.has_group(
                     "bf_security_awareness.group_bf_secaware_purge"):
                 raise AccessError(_(
-                    "Seul le groupe « Purge courriel » peut autoriser un "
-                    "retrait."))
+                    "Only the \"Email purge\" group can authorize a removal."))
         return super().write(vals)
 
     # ------------------------------------------------------------------ #
@@ -143,8 +146,8 @@ class BfClawbackOperation(models.Model):
         with the per-arg screen in connector._imap_quote."""
         if value and any(ord(c) < 0x20 or ord(c) == 0x7F for c in value):
             raise UserError(_(
-                "%s contient des caractères de contrôle interdits "
-                "(risque d'injection IMAP).") % label)
+                "%s contains forbidden control characters (IMAP injection "
+                "risk).") % label)
         return value
 
     def _criteria(self):
@@ -152,15 +155,17 @@ class BfClawbackOperation(models.Model):
         if self.match_strategy == "message_id":
             if not self.message_id:
                 raise UserError(_(
-                    "Stratégie Message-ID choisie mais aucun Message-ID fourni."))
+                    "Message-ID strategy selected but no Message-ID provided."))
             return {"message_id": self._reject_control(
                 "Message-ID", self.message_id)}
         if not (self.email_from or self.subject):
             raise UserError(_(
-                "Stratégie heuristique : un expéditeur ou un sujet est requis."))
+                "Heuristic strategy: a sender or a subject is required."))
         return {
-            "email_from": self._reject_control("Expéditeur", self.email_from) or None,
-            "subject": self._reject_control("Sujet", self.subject) or None,
+            "email_from": self._reject_control(
+                self.env._("Sender"), self.email_from) or None,
+            "subject": self._reject_control(
+                self.env._("Subject"), self.subject) or None,
             "since": self.since_date or None,
         }
 
@@ -194,11 +199,10 @@ class BfClawbackOperation(models.Model):
         if action == "move":
             if not self.authorized:
                 raise UserError(_(
-                    "Retrait non autorisé. Passez par « Exécuter le retrait »."))
+                    "Removal not authorized. Use \"Run removal\"."))
             if self.mode == "delete" and self.match_strategy != "message_id":
                 raise UserError(_(
-                    "Mode suppression : correspondance exacte par Message-ID "
-                    "requise."))
+                    "Trash mode: an exact Message-ID match is required."))
         connector = self.connector_id
         crit = self._criteria()
         token = (connector._mint_token()
@@ -259,8 +263,8 @@ class BfClawbackOperation(models.Model):
         self._run("search")
         self.state = "preview"
         self.message_post(body=_(
-            "Aperçu : %(found)s courriel(s) trouvé(s) dans %(boxes)s boîte(s). "
-            "Aucun déplacement effectué.") % {
+            "Preview: %(found)s email(s) found in %(boxes)s mailbox(es). "
+            "Nothing was moved.") % {
                 "found": self.messages_found, "boxes": self.mailboxes_swept})
         return True
 
@@ -268,8 +272,8 @@ class BfClawbackOperation(models.Model):
         if not self.env.user.has_group(
                 "bf_security_awareness.group_bf_secaware_purge"):
             raise UserError(_(
-                "Action réservée au groupe « Purge courriel (clawback) ». "
-                "L'aperçu reste accessible aux gestionnaires."))
+                "Action restricted to the \"Email purge (clawback)\" "
+                "group. Managers can still use the preview."))
 
     def action_execute(self):
         self.ensure_one()
@@ -278,15 +282,14 @@ class BfClawbackOperation(models.Model):
         # never a fuzzy From/Subject match.
         if self.mode == "delete" and self.match_strategy != "message_id":
             raise UserError(_(
-                "Le mode Corbeille exige une correspondance exacte par "
-                "Message-ID (joignez le .eml). Utilisez la quarantaine pour un "
-                "retrait heuristique."))
+                "Trash mode requires an exact Message-ID match (attach "
+                "the .eml). Use quarantine for a heuristic removal."))
         require_preview = (self._icp("clawback_require_preview", "1") or "1") == "1"
         if (self.match_strategy == "heuristic" and require_preview
                 and self.state not in ("preview", "running")):
             raise UserError(_(
-                "Un aperçu est requis avant d'exécuter un retrait heuristique. "
-                "Lancez « Aperçu » et vérifiez les correspondances d'abord."))
+                "A preview is required before running a heuristic "
+                "removal. Run \"Preview\" and check the matches first."))
         self._ensure_hits()
         # Make sure we have a live found count BEFORE applying the cap — even
         # for the message_id strategy (which skips the mandatory preview), so
@@ -298,9 +301,9 @@ class BfClawbackOperation(models.Model):
         cap = int(float(self._icp("clawback_max_blast_messages", "25") or 25))
         if cap and self.messages_found > cap and not self.blast_confirmed:
             raise UserError(_(
-                "Rayon d'action élevé : %(found)s courriels trouvés (plafond "
-                "%(cap)s). Vérifiez l'aperçu puis cliquez « Confirmer le rayon "
-                "élevé » avant d'exécuter.") % {
+                "High blast radius: %(found)s emails found (cap %(cap)s). "
+                "Check the preview, then click \"Confirm high blast "
+                "radius\" before running.") % {
                     "found": self.messages_found, "cap": cap})
         if not self.launched_by:
             self.launched_by = self.env.user
@@ -311,12 +314,12 @@ class BfClawbackOperation(models.Model):
         self._run("move")
         self.state = "done"
         body = _(
-            "Retrait exécuté par %(user)s : %(removed)s courriel(s) déplacé(s) "
-            "vers « %(folder)s » dans %(boxes)s boîte(s).") % {
+            "Removal run by %(user)s: %(removed)s email(s) moved to "
+            "\"%(folder)s\" in %(boxes)s mailbox(es).") % {
                 "user": self.env.user.display_name,
                 "removed": self.messages_removed,
                 "folder": (self.connector_id.quarantine_folder
-                           if self.mode == "quarantine" else _("Corbeille")),
+                           if self.mode == "quarantine" else _("Trash")),
                 "boxes": self.mailboxes_swept}
         self.message_post(body=body)
         if self.reported_phish_id:
@@ -330,7 +333,7 @@ class BfClawbackOperation(models.Model):
         self._check_purge_rights()
         self.blast_confirmed = True
         self.message_post(body=_(
-            "Rayon d'action élevé confirmé par %s.") % self.env.user.display_name)
+            "High blast radius confirmed by %s.") % self.env.user.display_name)
         return True
 
     def action_restore(self):
@@ -339,7 +342,7 @@ class BfClawbackOperation(models.Model):
         self._run("restore")
         self.state = "restored"
         self.message_post(body=_(
-            "Courriels restaurés vers INBOX (%(n)s boîte(s)).") % {
+            "Emails restored to INBOX (%(n)s mailbox(es)).") % {
                 "n": len(self.hit_ids.filtered(lambda h: h.state == "restored"))})
         return True
 
@@ -361,24 +364,24 @@ class BfClawbackOperation(models.Model):
 
 class BfClawbackHit(models.Model):
     _name = "bf.clawback.hit"
-    _description = "Boîte balayée (clawback)"
+    _description = "Swept mailbox (clawback)"
     _order = "mailbox_email"
 
     operation_id = fields.Many2one(
         "bf.clawback.operation", required=True, ondelete="cascade", index=True)
-    mailbox_email = fields.Char(string="Boîte", required=True)
+    mailbox_email = fields.Char(string="Mailbox", required=True)
     state = fields.Selection(
         [
-            ("pending", "En attente"),
-            ("searched", "Cherché"),
-            ("removed", "Retiré"),
-            ("restored", "Restauré"),
-            ("error", "Erreur"),
+            ("pending", "Pending"),
+            ("searched", "Searched"),
+            ("removed", "Removed"),
+            ("restored", "Restored"),
+            ("error", "Error"),
         ],
-        string="État", default="pending", required=True)
-    found_count = fields.Integer(string="Trouvés")
-    removed_count = fields.Integer(string="Retirés")
+        string="Status", default="pending", required=True)
+    found_count = fields.Integer(string="Found messages")
+    removed_count = fields.Integer(string="Removed messages")
     # Snapshot of the source-folder UIDs at search time (audit only; restore
     # re-searches the quarantine folder by criteria rather than trusting these).
-    imap_uids = fields.Text(string="UID IMAP (instantané)")
-    error_message = fields.Char(string="Erreur")
+    imap_uids = fields.Text(string="IMAP UIDs (snapshot)")
+    error_message = fields.Char(string="Error")

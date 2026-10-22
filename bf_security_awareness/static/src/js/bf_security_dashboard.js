@@ -3,6 +3,7 @@
 import { registry } from "@web/core/registry";
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { user } from "@web/core/user";
 
 const RISK_BADGE = {
     critical: "danger",
@@ -78,7 +79,9 @@ export class BfSecurityDashboard extends Component {
         if (!period) return "";
         const [y, m] = period.split("-");
         const d = new Date(parseInt(y), parseInt(m) - 1, 1);
-        const s = d.toLocaleDateString("fr-CA", { month: "short", year: "2-digit" });
+        // The user's language, not a fixed "fr-CA".
+        const locale = (user.lang || "en_US").replace("_", "-");
+        const s = d.toLocaleDateString(locale, { month: "short", year: "2-digit" });
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
 

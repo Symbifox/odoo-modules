@@ -69,13 +69,13 @@ def _encrypt(value):
         return ""
     if not Fernet:
         raise UserError(_(
-            "Le paquet « cryptography » est requis pour stocker le secret de "
-            "manière sécurisée (pip install cryptography)."))
+            "The \"cryptography\" package is required to store the secret "
+            "securely (pip install cryptography)."))
     key = _fernet_key()
     if not key:
         raise UserError(_(
-            "Aucune clé de chiffrement configurée (BF_SECAWARE_FERNET_KEY ou "
-            "bf_secaware_fernet_key dans odoo.conf)."))
+            "No encryption key configured (BF_SECAWARE_FERNET_KEY or "
+            "bf_secaware_fernet_key in odoo.conf)."))
     return Fernet(key).encrypt(value.encode()).decode()
 
 
@@ -99,56 +99,58 @@ class BfMailClawbackConnector(models.Model):
     """A mailbox backend the clawback uses to reach internal inboxes."""
 
     _name = "bf.mail.clawback.connector"
-    _description = "Connecteur courriel (clawback)"
+    _description = "Email connector (clawback)"
     _order = "name"
 
-    name = fields.Char(required=True, default="Connecteur courriel interne")
+    name = fields.Char(
+        required=True,
+        default=lambda self: self.env._("Internal email connector"))
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company, index=True)
 
     backend = fields.Selection(
         [
             ("m365_oauth", "Microsoft 365 (OAuth2 app-only / XOAUTH2)"),
-            ("imap_password", "IMAP (mot de passe applicatif par boîte)"),
+            ("imap_password", "IMAP (app password per mailbox)"),
         ],
         string="Type", required=True, default="m365_oauth")
 
     imap_host = fields.Char(
-        string="Hôte IMAP", required=True, default="outlook.office365.com")
-    imap_port = fields.Integer(string="Port IMAP", required=True, default=993)
+        string="IMAP host", required=True, default="outlook.office365.com")
+    imap_port = fields.Integer(string="IMAP port", required=True, default=993)
     search_folder = fields.Char(
-        string="Dossier à balayer", default="INBOX",
-        help="Dossier IMAP fouillé dans chaque boîte (par défaut INBOX).")
+        string="Folder to sweep", default="INBOX",
+        help="IMAP folder searched in each mailbox (INBOX by default).")
     quarantine_folder = fields.Char(
-        string="Dossier de quarantaine", required=True, default="Quarantaine BF",
-        help="Dossier (créé au besoin) où les courriels retirés sont déplacés. "
-             "Le retrait est réversible : la restauration les ramène à INBOX.")
+        string="Quarantine folder", required=True, default="Quarantaine BF",
+        help="Folder (created if needed) where removed emails are moved. "
+             "Removal is reversible: restoring moves them back to INBOX.")
 
     # --- m365_oauth credentials -----------------------------------------
     tenant_id = fields.Char(string="Tenant ID (Entra)")
-    client_id = fields.Char(string="Client ID (app Entra)")
+    client_id = fields.Char(string="Client ID (Entra app)")
     client_secret = fields.Char(
-        string="Secret client",
+        string="Client secret",
         compute="_compute_client_secret", inverse="_inverse_client_secret",
-        help="Stocké chiffré (Fernet). Saisie en écriture seule.")
+        help="Stored encrypted (Fernet). Write-only input.")
     client_secret_encrypted = fields.Char(
-        string="Secret client (chiffré)", copy=False)
+        string="Client secret (encrypted)", copy=False)
 
     # --- audience -------------------------------------------------------
     mailbox_source = fields.Selection(
         [
-            ("internal_users", "Tous les usagers internes (res.users)"),
-            ("manual", "Liste manuelle d'adresses"),
-            ("credentials", "Boîtes déclarées (avec mot de passe)"),
+            ("internal_users", "All internal users (res.users)"),
+            ("manual", "Manual address list"),
+            ("credentials", "Declared mailboxes (with password)"),
         ],
-        string="Boîtes ciblées", required=True, default="internal_users")
+        string="Targeted mailboxes", required=True, default="internal_users")
     manual_emails = fields.Text(
-        string="Adresses (une par ligne)",
-        help="Utilisé quand « Liste manuelle » est choisi.")
+        string="Addresses (one per line)",
+        help="Used when \"Manual address list\" is selected.")
     mailbox_ids = fields.One2many(
-        "bf.mail.clawback.mailbox", "connector_id", string="Boîtes déclarées")
+        "bf.mail.clawback.mailbox", "connector_id", string="Declared mailboxes")
 
     # ------------------------------------------------------------------ #
     # Encrypted secret field
@@ -178,7 +180,8 @@ class BfMailClawbackConnector(models.Model):
         secret = _decrypt(self.client_secret_encrypted)
         if not (self.tenant_id and self.client_id and secret):
             raise UserError(_(
-                "Connecteur M365 incomplet : tenant, client ID et secret requis."))
+                "Incomplete M365 connector: tenant, client ID and secret "
+                "are required."))
         resp = requests.post(
             TOKEN_ENDPOINT % self.tenant_id,
             data={
@@ -191,11 +194,11 @@ class BfMailClawbackConnector(models.Model):
         )
         if resp.status_code != 200:
             raise UserError(_(
-                "Échec de l'obtention du jeton OAuth2 (%(code)s) : %(body)s") % {
+                "Failed to get the OAuth2 token (%(code)s): %(body)s") % {
                     "code": resp.status_code, "body": resp.text[:500]})
         token = resp.json().get("access_token")
         if not token:
-            raise UserError(_("Réponse OAuth2 sans access_token."))
+            raise UserError(_("OAuth2 response without access_token."))
         return token
 
     def action_test_connection(self):
@@ -203,7 +206,7 @@ class BfMailClawbackConnector(models.Model):
         self.ensure_one()
         mailboxes = self._target_mailboxes()
         if not mailboxes:
-            raise UserError(_("Aucune boîte ciblée à tester."))
+            raise UserError(_("No targeted mailbox to test."))
         token = self._mint_token() if self.backend == "m365_oauth" else None
         email = mailboxes[0]
         try:
@@ -212,14 +215,15 @@ class BfMailClawbackConnector(models.Model):
             conn.logout()
         except Exception as exc:  # noqa: BLE001
             raise UserError(_(
-                "Connexion à %(box)s échouée : %(err)s") % {
+                "Connection to %(box)s failed: %(err)s") % {
                     "box": email, "err": exc})
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Connexion réussie"),
-                "message": _("Authentifié sur %(box)s (%(n)s boîtes ciblées).") % {
+                "title": _("Connection successful"),
+                "message": _("Authenticated on %(box)s (%(n)s targeted "
+                             "mailboxes).") % {
                     "box": email, "n": len(mailboxes)},
                 "type": "success",
                 "sticky": False,
@@ -264,7 +268,7 @@ class BfMailClawbackConnector(models.Model):
             mailbox = self.mailbox_ids.filtered(lambda m: m.email == email)[:1]
             if not mailbox:
                 raise UserError(_(
-                    "Aucun mot de passe déclaré pour la boîte %s.") % email)
+                    "No password set for mailbox %s.") % email)
             conn.login(email, mailbox._get_password())
         return conn
 
@@ -284,8 +288,8 @@ class BfMailClawbackConnector(models.Model):
         value = value or ""
         if any(ord(c) < 0x20 or ord(c) == 0x7F for c in value):
             raise UserError(_(
-                "Critère de recherche invalide : caractères de contrôle "
-                "interdits (risque d'injection IMAP)."))
+                "Invalid search criterion: forbidden control characters "
+                "(IMAP injection risk)."))
         return '"%s"' % value.replace("\\", "\\\\").replace('"', '\\"')
 
     def _imap_search(self, conn, folder, message_id=None, email_from=None,
@@ -351,21 +355,21 @@ class BfMailClawbackMailbox(models.Model):
     """A declared mailbox + its app password (for the ``imap_password`` backend)."""
 
     _name = "bf.mail.clawback.mailbox"
-    _description = "Boîte courriel déclarée (clawback)"
+    _description = "Declared mailbox (clawback)"
     _order = "email"
 
     connector_id = fields.Many2one(
         "bf.mail.clawback.connector", required=True, ondelete="cascade")
     email = fields.Char(required=True)
     password = fields.Char(
-        string="Mot de passe applicatif",
+        string="App password",
         compute="_compute_password", inverse="_inverse_password",
-        help="Stocké chiffré (Fernet). Saisie en écriture seule.")
-    password_encrypted = fields.Char(string="Mot de passe (chiffré)", copy=False)
+        help="Stored encrypted (Fernet). Write-only input.")
+    password_encrypted = fields.Char(string="Password (encrypted)", copy=False)
 
     _sql_constraints = [
         ("email_uniq_per_connector", "unique(connector_id, email)",
-         "Cette boîte est déjà déclarée pour ce connecteur."),
+         "This mailbox is already declared for this connector."),
     ]
 
     def _compute_password(self):

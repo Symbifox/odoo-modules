@@ -9,7 +9,7 @@
 
             <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height:400px;">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Chargement…</span>
+                    <span class="visually-hidden">Loading…</span>
                 </div>
             </div>
 
@@ -17,11 +17,11 @@
                 <div class="alert alert-warning d-flex align-items-center">
                     <i class="fa fa-exclamation-triangle fa-2x me-3"/>
                     <div class="flex-grow-1">
-                        <strong>Erreur de chargement</strong>
-                        <p class="mb-0">Impossible de charger le tableau de bord.</p>
+                        <strong>Loading error</strong>
+                        <p class="mb-0">Unable to load the dashboard.</p>
                     </div>
                     <button class="btn btn-outline-warning" t-on-click="refresh">
-                        <i class="fa fa-refresh me-1"/>Réessayer
+                        <i class="fa fa-refresh me-1"/>Retry
                     </button>
                 </div>
             </div>
@@ -32,11 +32,11 @@
                 <div class="row mb-4">
                     <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
-                            <h1 class="mb-0"><i class="fa fa-shield me-2"/>Sensibilisation à la sécurité</h1>
-                            <p class="text-muted mb-0">Posture d'hameçonnage et formation de l'organisation</p>
+                            <h1 class="mb-0"><i class="fa fa-shield me-2"/>Security awareness</h1>
+                            <p class="text-muted mb-0">Organization's phishing posture and training</p>
                         </div>
                         <button class="btn btn-outline-secondary" t-on-click="refresh">
-                            <i class="fa fa-refresh me-1"/>Actualiser
+                            <i class="fa fa-refresh me-1"/>Refresh
                         </button>
                     </div>
                 </div>
@@ -47,10 +47,10 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <h2 class="mb-0 text-danger"><t t-esc="pct(state.data.kpis.phish_prone_pct)"/>%</h2>
-                                <small class="text-muted d-block">% vulnérable au phishing</small>
+                                <small class="text-muted d-block">% vulnerable to phishing</small>
                                 <small t-attf-class="{{ deltaClass(state.data.kpis.phish_prone_delta, false) }}">
                                     <i t-attf-class="fa {{ deltaArrow(state.data.kpis.phish_prone_delta) }} me-1"/>
-                                    <t t-esc="pct(Math.abs(state.data.kpis.phish_prone_delta))"/> pts vs période préc.
+                                    <t t-esc="pct(Math.abs(state.data.kpis.phish_prone_delta))"/> pts vs previous period
                                 </small>
                             </div>
                         </div>
@@ -59,10 +59,10 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <h2 class="mb-0 text-success"><t t-esc="pct(state.data.kpis.report_rate)"/>%</h2>
-                                <small class="text-muted d-block">Taux de signalement</small>
+                                <small class="text-muted d-block">Report rate</small>
                                 <small t-attf-class="{{ deltaClass(state.data.kpis.report_rate_delta, true) }}">
                                     <i t-attf-class="fa {{ deltaArrow(state.data.kpis.report_rate_delta) }} me-1"/>
-                                    <t t-esc="pct(Math.abs(state.data.kpis.report_rate_delta))"/> pts vs période préc.
+                                    <t t-esc="pct(Math.abs(state.data.kpis.report_rate_delta))"/> pts vs previous period
                                 </small>
                             </div>
                         </div>
@@ -73,9 +73,9 @@
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{ state.data.kpis.high_risk > 0 ? 'text-warning' : 'text-muted' }}"
                                     t-esc="state.data.kpis.high_risk"/>
-                                <small class="text-muted d-block">Personnes à risque élevé</small>
+                                <small class="text-muted d-block">High-risk people</small>
                                 <small class="text-danger" t-if="state.data.kpis.critical">
-                                    dont <t t-esc="state.data.kpis.critical"/> critique(s)
+                                    including <t t-esc="state.data.kpis.critical"/> critical
                                 </small>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{ state.data.kpis.overdue_training > 0 ? 'text-danger' : 'text-muted' }}"
                                     t-esc="state.data.kpis.overdue_training"/>
-                                <small class="text-muted d-block">Formations en retard</small>
+                                <small class="text-muted d-block">Overdue trainings</small>
                             </div>
                         </div>
                     </div>
@@ -97,9 +97,9 @@
                     <div class="col-lg-8 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fa fa-line-chart me-2"/>Tendance par campagne</h5>
+                                <h5 class="card-title"><i class="fa fa-line-chart me-2"/>Trend by campaign</h5>
                                 <div t-if="trend.length === 0" class="text-muted text-center py-5">
-                                    Pas encore de campagnes terminées.
+                                    No finished campaigns yet.
                                 </div>
                                 <div t-else="">
                                     <svg viewBox="0 0 100 100" preserveAspectRatio="none"
@@ -115,8 +115,8 @@
                                         </t>
                                     </div>
                                     <div class="mt-2">
-                                        <span class="badge text-bg-danger me-2">% vulnérable</span>
-                                        <span class="badge text-bg-success">% signalement</span>
+                                        <span class="badge text-bg-danger me-2">% vulnerable</span>
+                                        <span class="badge text-bg-success">% reporting</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,9 +127,9 @@
                     <div class="col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fa fa-users me-2"/>Répartition du risque</h5>
+                                <h5 class="card-title"><i class="fa fa-users me-2"/>Risk distribution</h5>
                                 <div t-if="!state.data.risk_distribution.total" class="text-muted text-center py-5">
-                                    Aucun profil pour l'instant.
+                                    No profiles yet.
                                 </div>
                                 <t t-else="">
                                     <t t-foreach="state.data.risk_distribution.levels" t-as="lvl" t-key="lvl.level">
@@ -155,19 +155,19 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fa fa-repeat me-2"/>Récidivistes (à coacher)</h5>
+                                <h5 class="card-title"><i class="fa fa-repeat me-2"/>Repeat offenders (to coach)</h5>
                                 <div t-if="state.data.repeat_clickers.length === 0" class="text-muted text-center py-4">
-                                    Personne n'a échoué à 2 simulations ou plus. 👏
+                                    Nobody has failed 2 or more simulations. 👏
                                 </div>
                                 <table t-else="" class="table table-sm table-hover mb-0">
-                                    <thead><tr><th>Personne</th><th class="text-center">Échecs</th><th class="text-center">Campagnes</th><th>Risque</th></tr></thead>
+                                    <thead><tr><th>Person</th><th class="text-center">Failures</th><th class="text-center">Campaigns</th><th>Risk</th></tr></thead>
                                     <tbody>
                                         <tr t-foreach="state.data.repeat_clickers" t-as="row" t-key="row.partner_id"
                                             class="cursor-pointer" t-on-click="() => this.openProfile(row.partner_id)">
                                             <td t-esc="row.name"/>
                                             <td class="text-center"><span class="badge text-bg-danger" t-esc="row.fails"/></td>
                                             <td class="text-center text-muted" t-esc="row.campaigns"/>
-                                            <td><span t-attf-class="badge text-bg-{{ riskBadge(row.risk_level) }}" t-esc="row.risk_level"/></td>
+                                            <td><span t-attf-class="badge text-bg-{{ riskBadge(row.risk_level) }}" t-esc="row.risk_label"/></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -179,18 +179,18 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fa fa-graduation-cap me-2"/>Formations en retard</h5>
+                                <h5 class="card-title"><i class="fa fa-graduation-cap me-2"/>Overdue trainings</h5>
                                 <div t-if="state.data.overdue_training.length === 0" class="text-muted text-center py-4">
-                                    Aucune formation en retard. 👍
+                                    No overdue training. 👍
                                 </div>
                                 <table t-else="" class="table table-sm table-hover mb-0">
-                                    <thead><tr><th>Personne</th><th>Cours</th><th class="text-center">Retard</th><th class="text-center">%</th></tr></thead>
+                                    <thead><tr><th>Person</th><th>Course</th><th class="text-center">Days late</th><th class="text-center">%</th></tr></thead>
                                     <tbody>
                                         <tr t-foreach="state.data.overdue_training" t-as="a" t-key="a.id"
                                             class="cursor-pointer" t-on-click="() => this.openAssignment(a.id)">
                                             <td t-esc="a.partner"/>
                                             <td class="text-truncate" style="max-width:160px;" t-esc="a.course"/>
-                                            <td class="text-center"><span class="badge text-bg-danger"><t t-esc="a.days_over"/> j</span></td>
+                                            <td class="text-center"><span class="badge text-bg-danger"><t t-esc="a.days_over"/> d</span></td>
                                             <td class="text-center text-muted"><t t-esc="a.completion"/>%</td>
                                         </tr>
                                     </tbody>
@@ -205,12 +205,12 @@
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fa fa-paper-plane me-2"/>Campagnes récentes</h5>
+                                <h5 class="card-title"><i class="fa fa-paper-plane me-2"/>Recent campaigns</h5>
                                 <div t-if="state.data.recent_campaigns.length === 0" class="text-muted text-center py-4">
-                                    Aucune campagne lancée.
+                                    No campaigns launched.
                                 </div>
                                 <table t-else="" class="table table-sm table-hover mb-0">
-                                    <thead><tr><th>Campagne</th><th class="text-center">Destinataires</th><th class="text-center">Clics</th><th class="text-center">Soumis</th><th class="text-center">Signalés</th><th class="text-center">Taux d'échec</th></tr></thead>
+                                    <thead><tr><th>Campaign</th><th class="text-center">Recipients</th><th class="text-center">Clicks</th><th class="text-center">Submitted</th><th class="text-center">Reported</th><th class="text-center">Failure rate</th></tr></thead>
                                     <tbody>
                                         <tr t-foreach="state.data.recent_campaigns" t-as="c" t-key="c.id"
                                             class="cursor-pointer" t-on-click="() => this.openCampaign(c.id)">
@@ -239,34 +239,34 @@
         <div class="o_bf_secaware_my">
 
             <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height:300px;">
-                <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement…</span></div>
+                <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading…</span></div>
             </div>
 
             <div t-elif="!state.data || !state.data.has_data" class="container py-5 text-center text-muted">
                 <i class="fa fa-shield fa-3x mb-3"/>
-                <h4>Ma cybersécurité</h4>
-                <p>Aucune donnée de sensibilisation ne vous est associée pour l'instant.</p>
+                <h4>My cybersecurity</h4>
+                <p>No security awareness data is linked to you yet.</p>
             </div>
 
             <div t-else="" class="container py-4" style="max-width:820px;">
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                     <div>
-                        <h2 class="mb-0">Bonjour <t t-esc="state.data.name"/></h2>
-                        <p class="text-muted mb-0">Votre tableau de bord cybersécurité</p>
+                        <h2 class="mb-0">Hello <t t-esc="state.data.name"/></h2>
+                        <p class="text-muted mb-0">Your cybersecurity dashboard</p>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <span t-attf-class="badge fs-6 text-bg-{{ state.data.resilience.color }}"
                               t-att-title="state.data.resilience.hint" t-esc="state.data.resilience.label"/>
                         <button class="btn btn-danger" t-on-click="openReport">
-                            <i class="fa fa-flag me-1"/>Rapporter comme malveillant
+                            <i class="fa fa-flag me-1"/>Report as malicious
                         </button>
                     </div>
                 </div>
 
                 <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2">
-                    <span><i class="fa fa-shield me-2"/>Un courriel vous semble suspect ? Signalez-le en un clic.</span>
+                    <span><i class="fa fa-shield me-2"/>Does an email look suspicious? Report it in one click.</span>
                     <button class="btn btn-sm btn-outline-danger" t-on-click="openReport">
-                        <i class="fa fa-flag me-1"/>Rapporter comme malveillant
+                        <i class="fa fa-flag me-1"/>Report as malicious
                     </button>
                 </div>
 
@@ -274,19 +274,19 @@
                     <div class="col-4">
                         <div class="card"><div class="card-body py-3">
                             <h3 class="mb-0" t-esc="state.data.tested"/>
-                            <small class="text-muted">Simulations reçues</small>
+                            <small class="text-muted">Simulations received</small>
                         </div></div>
                     </div>
                     <div class="col-4">
                         <div class="card"><div class="card-body py-3">
                             <h3 class="mb-0 text-success" t-esc="state.data.reported"/>
-                            <small class="text-muted">Bien signalées</small>
+                            <small class="text-muted">Correctly reported</small>
                         </div></div>
                     </div>
                     <div class="col-4">
                         <div class="card"><div class="card-body py-3">
                             <h3 class="mb-0 text-primary" t-esc="state.data.completed_courses"/>
-                            <small class="text-muted">Formations complétées</small>
+                            <small class="text-muted">Completed trainings</small>
                         </div></div>
                     </div>
                 </div>
@@ -294,13 +294,13 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <i class="fa fa-graduation-cap me-2"/>Mes formations
+                            <i class="fa fa-graduation-cap me-2"/>My trainings
                             <span t-if="state.data.todo_count" class="badge text-bg-warning ms-2">
-                                <t t-esc="state.data.todo_count"/> à compléter
+                                <t t-esc="state.data.todo_count"/> to complete
                             </span>
                         </h5>
                         <div t-if="state.data.trainings.length === 0" class="text-muted text-center py-3">
-                            Aucune formation assignée. Continuez vos bons réflexes !
+                            No assigned training. Keep up the good habits!
                         </div>
                         <t t-else="">
                             <t t-foreach="state.data.trainings" t-as="t" t-key="t.id">
@@ -308,9 +308,9 @@
                                     <div class="flex-grow-1">
                                         <div>
                                             <t t-esc="t.course"/>
-                                            <span t-if="t.completed" class="badge text-bg-success ms-2">Complétée</span>
-                                            <span t-elif="t.overdue" class="badge text-bg-danger ms-2">En retard</span>
-                                            <span t-elif="t.due_date" class="badge text-bg-light text-muted ms-2">Pour le <t t-esc="t.due_date"/></span>
+                                            <span t-if="t.completed" class="badge text-bg-success ms-2">Completed</span>
+                                            <span t-elif="t.overdue" class="badge text-bg-danger ms-2">Overdue</span>
+                                            <span t-elif="t.due_date" class="badge text-bg-light text-muted ms-2">Due by <t t-esc="t.due_date"/></span>
                                         </div>
                                         <div class="progress mt-1" style="height:6px;">
                                             <div t-attf-class="progress-bar {{ t.completed ? 'bg-success' : 'bg-primary' }}"
@@ -318,7 +318,7 @@
                                         </div>
                                     </div>
                                     <a t-if="!t.completed" t-att-href="courseUrl(t.channel_id)" target="_blank"
-                                       class="btn btn-sm btn-primary">Suivre</a>
+                                       class="btn btn-sm btn-primary">Take course</a>
                                 </div>
                             </t>
                         </t>
@@ -327,8 +327,7 @@
 
                 <div class="alert alert-light border">
                     <i class="fa fa-lightbulb-o me-2"/>
-                    En cas de doute sur un courriel : <strong>ne cliquez pas</strong>, vérifiez l'expéditeur,
-                    et signalez-le à votre équipe TI. Signaler n'est jamais une perte de temps.
+                    When in doubt about an email: <strong>don't click</strong>, check the sender, and report it to your IT team. Reporting is never a waste of time.
                 </div>
             </div>
         </div>

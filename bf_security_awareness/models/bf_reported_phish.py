@@ -1,5 +1,6 @@
 import base64
 import logging
+import unicodedata
 from datetime import timedelta
 from email import message_from_bytes
 from email.utils import parseaddr
@@ -9,18 +10,26 @@ import requests
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
 
+from .reader_lang import company_env, reader_env
+
 _logger = logging.getLogger(__name__)
 
 # Best-practice reporting taxonomy presented to employees. Shared with the
 # report wizard so the dropdown and the stored value stay in sync.
 REPORT_CATEGORIES = [
-    ("phishing", "Hameçonnage (vol d'identifiants)"),
-    ("wire_fraud", "Fraude au virement / au président"),
-    ("malware", "Pièce jointe ou lien suspect"),
-    ("impersonation", "Usurpation d'identité (collègue, fournisseur, dirigeant)"),
-    ("spam", "Pourriel / indésirable"),
-    ("other", "Autre / je ne suis pas certain"),
+    ("phishing", "Phishing (credential theft)"),
+    ("wire_fraud", "Wire fraud / CEO fraud"),
+    ("malware", "Suspicious attachment or link"),
+    ("impersonation", "Impersonation (coworker, vendor, executive)"),
+    ("spam", "Spam / junk"),
+    ("other", "Other / I'm not sure"),
 ]
+
+
+def _ascii_header(text):
+    """An HTTP header value: accents folded, anything else non-ASCII dropped."""
+    return unicodedata.normalize("NFKD", text).encode(
+        "ascii", "ignore").decode("ascii")
 
 
 class BfReportedPhish(models.Model):
@@ -37,66 +46,69 @@ class BfReportedPhish(models.Model):
     """
 
     _name = "bf.reported.phish"
-    _description = "Courriel signalé comme malveillant"
+    _description = "Email reported as malicious"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
 
     name = fields.Char(compute="_compute_name", store=True)
     reporter_id = fields.Many2one(
-        "res.partner", string="Signalé par", required=True,
+        "res.partner", string="Reported by", required=True,
         ondelete="cascade", index=True, tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company, index=True)
     report_date = fields.Datetime(
-        string="Signalé le", default=fields.Datetime.now, tracking=True)
+        string="Reported on", default=fields.Datetime.now, tracking=True)
 
     category = fields.Selection(
-        REPORT_CATEGORIES, string="Catégorie", required=True,
+        REPORT_CATEGORIES, string="Category", required=True,
         default="phishing", tracking=True)
-    email_from = fields.Char(string="Expéditeur signalé")
-    subject = fields.Char(string="Sujet")
-    details = fields.Text(string="Précisions")
-    suspicious_link = fields.Char(string="Lien suspect")
+    email_from = fields.Char(string="Reported sender")
+    subject = fields.Char(string="Subject")
+    details = fields.Text(string="Details")
+    suspicious_link = fields.Char(string="Suspicious link")
     message_id = fields.Char(
         string="Message-ID",
-        help="Identifiant interne unique du courriel (extrait du .eml joint). "
-             "Permet un retrait exact dans toutes les boîtes.")
+        help="Unique internal ID of the email (taken from the attached "
+             ".eml). Allows an exact removal from every mailbox.")
 
     clawback_operation_ids = fields.One2many(
-        "bf.clawback.operation", "reported_phish_id", string="Retraits")
+        "bf.clawback.operation", "reported_phish_id", string="Removals")
     clawback_count = fields.Integer(compute="_compute_clawback_count")
 
     state = fields.Selection(
         [
-            ("new", "Nouveau"),
-            ("triage", "En triage"),
-            ("threat_confirmed", "Menace confirmée"),
-            ("false_alarm", "Fausse alerte"),
-            ("simulation", "Simulation (reconnue)"),
+            ("new", "New"),
+            ("triage", "In triage"),
+            ("threat_confirmed", "Threat confirmed"),
+            ("false_alarm", "False alarm"),
+            ("simulation", "Simulation (recognized)"),
         ],
-        string="État", default="new", required=True, tracking=True)
+        string="Status", default="new", required=True, tracking=True)
 
     is_simulation = fields.Boolean(
-        string="Était une simulation", readonly=True, tracking=True)
+        string="Was a simulation", readonly=True, tracking=True)
     matched_result_id = fields.Many2one(
-        "bf.phishing.result", string="Résultat de simulation lié",
+        "bf.phishing.result", string="Linked simulation result",
         readonly=True, ondelete="set null")
     campaign_id = fields.Many2one(
-        "bf.phishing.campaign", string="Campagne",
+        "bf.phishing.campaign", string="Campaign",
         related="matched_result_id.campaign_id", store=True)
 
     # Soft helpdesk link: a plain id (no m2o) so the module stays installable
     # without any helpdesk addon.
     helpdesk_ticket_id = fields.Integer(
-        string="Ticket Helpdesk", readonly=True)
+        string="Helpdesk ticket", readonly=True)
     has_ticket = fields.Boolean(compute="_compute_has_ticket")
 
     @api.depends("subject", "email_from", "reporter_id")
     def _compute_name(self):
+        # Stored, read by the security team: their company's language, not the
+        # reporter's nor the mail gateway's (OdooBot).
         for rec in self:
-            label = rec.subject or rec.email_from or _("Courriel suspect")
-            rec.name = _("Signalement — %s") % label
+            env = company_env(rec, rec.company_id).env
+            label = rec.subject or rec.email_from or env._("Suspicious email")
+            rec.name = env._("Report: %s") % label
 
     @api.depends("helpdesk_ticket_id")
     def _compute_has_ticket(self):
@@ -135,7 +147,7 @@ class BfReportedPhish(models.Model):
         email_from = msg_dict.get("email_from") or ""
         if not self._is_internal_sender(author, email_from):
             raise UserError(_(
-                "Signalement par courriel refusé : expéditeur externe (%s).")
+                "Email report rejected: external sender (%s).")
                 % (tools.email_normalize(email_from) or email_from or "?"))
         custom_values.setdefault("reporter_id", author.id or False)
         custom_values.setdefault("category", "phishing")
@@ -186,6 +198,19 @@ class BfReportedPhish(models.Model):
         return self.env["ir.config_parameter"].sudo().get_param(
             "bf_security_awareness.%s" % key, default)
 
+    def _security_team_view(self):
+        """This report in the security team's language (its company's).
+
+        The reporter, the mail gateway or a scheduled job writes; the security
+        team reads the notes, the ticket and the alerts."""
+        self.ensure_one()
+        return company_env(self, self.company_id)
+
+    def _category_label(self, env):
+        """The category as ``env``'s language shows it."""
+        return dict(self._fields["category"]._description_selection(env)).get(
+            self.category, self.category)
+
     # ------------------------------------------------------------------ #
     # Triage entry point
     # ------------------------------------------------------------------ #
@@ -202,14 +227,16 @@ class BfReportedPhish(models.Model):
                 "state": "simulation",
             })
             match.register_report()  # credit the reporter on their risk profile
-            self.message_post(body=_(
-                "Signalement reconnu : ce courriel faisait partie d'une "
-                "simulation autorisée. Aucun incident n'a été créé."))
+            team = self._security_team_view()
+            team.message_post(body=team.env._(
+                "Report recognized: this email was part of an authorized "
+                "simulation. No incident was created."))
             return {
                 "is_simulation": True,
                 "message": _(
-                    "Bien joué ! Ce courriel était une simulation de sécurité. "
-                    "Votre bon réflexe a été enregistré — aucun incident créé."),
+                    "Well done! This email was a security simulation. "
+                    "Your good reflex has been recorded, and no incident "
+                    "was created."),
             }
 
         # Real suspicious email -> triage sequence.
@@ -217,13 +244,14 @@ class BfReportedPhish(models.Model):
         self._create_helpdesk_ticket()
         self._schedule_triage_activity()
         self._notify_security_team()
-        self.message_post(body=_(
-            "Courriel suspect transmis au triage de sécurité."))
+        team = self._security_team_view()
+        team.message_post(body=team.env._(
+            "Suspicious email sent to security triage."))
         return {
             "is_simulation": False,
             "message": _(
-                "Merci ! Votre signalement a été transmis à l'équipe de "
-                "sécurité pour analyse."),
+                "Thank you! Your report was sent to the security team for "
+                "analysis."),
         }
 
     def _detect_simulation(self):
@@ -254,18 +282,18 @@ class BfReportedPhish(models.Model):
         if "helpdesk.ticket" not in self.env:
             return False
         Ticket = self.env["helpdesk.ticket"].sudo()
-        cat = dict(REPORT_CATEGORIES).get(self.category, self.category)
-        description = _(
-            "<p>Courriel suspect signalé par <strong>%(rep)s</strong>.</p>"
-            "<ul>"
-            "<li><strong>Catégorie :</strong> %(cat)s</li>"
-            "<li><strong>Expéditeur :</strong> %(from)s</li>"
-            "<li><strong>Sujet :</strong> %(subj)s</li>"
-            "<li><strong>Lien :</strong> %(link)s</li>"
-            "</ul>"
-            "<p><strong>Précisions :</strong><br/>%(details)s</p>"
+        # Read by the helpdesk agents: the security team's language.
+        env = self._security_team_view().env
+        cat = self._category_label(env)
+        description = env._(
+            "<p>Suspicious email reported by "
+            "<strong>%(rep)s</strong>.</p><ul><li><strong>Category:</strong> "
+            "%(cat)s</li><li><strong>Sender:</strong> "
+            "%(from)s</li><li><strong>Subject:</strong> "
+            "%(subj)s</li><li><strong>Link:</strong> "
+            "%(link)s</li></ul><p><strong>Details:</strong><br/>%(details)s</p>"
         ) % {
-            "rep": self.reporter_id.display_name or _("(inconnu)"),
+            "rep": self.reporter_id.display_name or env._("(unknown)"),
             "cat": cat,
             "from": self.email_from or "—",
             "subj": self.subject or "—",
@@ -273,8 +301,8 @@ class BfReportedPhish(models.Model):
             "details": (self.details or "—").replace("\n", "<br/>"),
         }
         vals = {
-            "name": _("Courriel suspect : %s") % (
-                self.subject or self.email_from or _("(sans objet)")),
+            "name": env._("Suspicious email: %s") % (
+                self.subject or self.email_from or env._("(no subject)")),
             "description": description,
             "partner_id": self.reporter_id.id or False,
         }
@@ -307,12 +335,19 @@ class BfReportedPhish(models.Model):
         return self.env.user
 
     def _schedule_triage_activity(self):
-        self.activity_schedule(
+        # The assignee reads it: their language, else the company's. Created in
+        # that language too, so the assignment notice's subject follows.
+        user = self._triage_user()
+        rec = reader_env(
+            self, user.lang,
+            (self.company_id or self.env.company).sudo().partner_id.lang)
+        rec.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Trier le courriel suspect signalé"),
-            note=_("Signalé par %s. Vérifier, confirmer la menace ou classer "
-                   "en fausse alerte.") % self.reporter_id.display_name,
-            user_id=self._triage_user().id,
+            summary=rec.env._("Triage the reported suspicious email"),
+            note=rec.env._("Reported by %s. Review it, confirm the threat or "
+                           "mark it as a false alarm.")
+            % self.reporter_id.display_name,
+            user_id=user.id,
         )
 
     def _notify_security_team(self):
@@ -324,10 +359,11 @@ class BfReportedPhish(models.Model):
             return
         token = self._icp("report_ntfy_token")
         priority = self._icp("report_ntfy_priority", "high") or "high"
-        cat = dict(REPORT_CATEGORIES).get(self.category, self.category)
-        body = _(
-            "Signalé par : %(rep)s\nCatégorie : %(cat)s\nDe : %(from)s\n"
-            "Sujet : %(subj)s"
+        env = self._security_team_view().env
+        cat = self._category_label(env)
+        body = env._(
+            "Reported by: %(rep)s\nCategory: %(cat)s\nFrom: "
+            "%(from)s\nSubject: %(subj)s"
         ) % {
             "rep": self.reporter_id.display_name or "?",
             "cat": cat,
@@ -335,7 +371,7 @@ class BfReportedPhish(models.Model):
             "subj": self.subject or "—",
         }
         headers = {
-            "Title": "Courriel malveillant signale",  # ASCII: HTTP header safe
+            "Title": _ascii_header(env._("Malicious email reported")),
             "Priority": str(priority),
             "Tags": "rotating_light,fishing_pole_and_fish",
         }
@@ -384,14 +420,14 @@ class BfReportedPhish(models.Model):
         self.ensure_one()
         if self.is_simulation:
             raise UserError(_(
-                "Ce signalement est une simulation : aucun retrait requis."))
+                "This report is a simulation: no removal needed."))
         self.apply_eml_metadata()
         connector = self.env["bf.mail.clawback.connector"].search(
             [("active", "=", True)], limit=1)
         if not connector:
             raise UserError(_(
-                "Aucun connecteur courriel actif. Configurez-en un sous "
-                "Sensibilisation › Configuration › Connecteurs courriel."))
+                "No active email connector. Set one up under Security "
+                "Awareness › Configuration › Email connectors."))
         window = int(float(self._icp("clawback_heuristic_window_days", "7") or 7))
         strategy = "message_id" if self.message_id else "heuristic"
         op = self.env["bf.clawback.operation"].create({
@@ -407,7 +443,7 @@ class BfReportedPhish(models.Model):
             self.state = "threat_confirmed"
         return {
             "type": "ir.actions.act_window",
-            "name": _("Retrait du courriel"),
+            "name": _("Remove the email"),
             "res_model": "bf.clawback.operation",
             "res_id": op.id,
             "views": [[False, "form"]],
@@ -418,7 +454,7 @@ class BfReportedPhish(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Retraits de courriel"),
+            "name": _("Email removals"),
             "res_model": "bf.clawback.operation",
             "domain": [("reported_phish_id", "=", self.id)],
             "views": [[False, "list"], [False, "form"]],
@@ -431,9 +467,10 @@ class BfReportedPhish(models.Model):
             return
         token = self._icp("report_ntfy_token")
         priority = self._icp("report_ntfy_priority", "high") or "high"
-        body = _(
-            "Retrait exécuté : %(removed)s courriel(s) déplacé(s) dans "
-            "%(boxes)s boîte(s).\nSujet : %(subj)s\nLancé par : %(user)s"
+        env = self._security_team_view().env
+        body = env._(
+            "Removal done: %(removed)s email(s) moved in %(boxes)s "
+            "mailbox(es).\nSubject: %(subj)s\nLaunched by: %(user)s"
         ) % {
             "removed": operation.messages_removed,
             "boxes": operation.mailboxes_swept,
@@ -441,7 +478,7 @@ class BfReportedPhish(models.Model):
             "user": self.env.user.display_name,
         }
         headers = {
-            "Title": "Clawback execute",  # ASCII: HTTP header safe
+            "Title": _ascii_header(env._("Clawback executed")),
             "Priority": str(priority),
             "Tags": "wastebasket,fishing_pole_and_fish",
         }

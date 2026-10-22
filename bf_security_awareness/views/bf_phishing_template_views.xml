@@ -26,11 +26,11 @@
                         <button name="action_view_campaigns" type="object"
                                 class="oe_stat_button" icon="fa-paper-plane">
                             <field name="campaign_count" widget="statinfo"
-                                   string="Campagnes"/>
+                                   string="Campaigns"/>
                         </button>
                     </div>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Nom du modèle"/></h1>
+                        <h1><field name="name" placeholder="Template name"/></h1>
                     </div>
                     <group>
                         <group>
@@ -48,25 +48,25 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Courriel-leurre" name="lure">
-                            <field name="subject" placeholder="Sujet du courriel"/>
+                        <page string="Lure email" name="lure">
+                            <field name="subject" placeholder="Email subject"/>
                             <field name="email_body"
                                    options="{'style-inline': true}"/>
-                            <separator string="Pièces jointes"/>
+                            <separator string="Attachments"/>
                             <field name="attachment_ids" widget="many2many_binary"/>
                         </page>
-                        <page string="Page d'atterrissage" name="landing">
+                        <page string="Landing page" name="landing">
                             <group>
                                 <field name="landing_title"
                                        invisible="landing_mode != 'credential'"/>
                                 <field name="landing_button_label"
                                        invisible="landing_mode != 'credential'"/>
                             </group>
-                            <separator string="Habillage de la fausse page (mode faux formulaire)"
+                            <separator string="Fake page styling (fake form mode)"
                                        invisible="landing_mode != 'credential'"/>
                             <field name="landing_html"
                                    invisible="landing_mode != 'credential'"/>
-                            <separator string="Page éducative (moment d'apprentissage)"/>
+                            <separator string="Learning page (teachable moment)"/>
                             <field name="teachable_html"/>
                         </page>
                     </notebook>
@@ -76,13 +76,12 @@
     </record>
 
     <record id="bf_phishing_template_action" model="ir.actions.act_window">
-        <field name="name">Modèles de leurre</field>
+        <field name="name">Lure templates</field>
         <field name="res_model">bf.phishing.template</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Créez votre premier modèle de leurre</p>
-            <p>Un modèle définit le courriel d'hameçonnage, la page d'atterrissage
-               et la formation assignée en cas d'échec.</p>
+            <p class="o_view_nocontent_smiling_face">Create your first lure template</p>
+            <p>A template defines the phishing email, the landing page and the training assigned on failure.</p>
         </field>
     </record>
 

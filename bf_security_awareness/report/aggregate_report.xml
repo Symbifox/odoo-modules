@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The figures a client can hand to a supplier. Nobody is
+         named, and neither is the campaign (free text that can carry a
+         department or a person); rates only from the recipient threshold. -->
+    <record id="action_report_phishing_campaign_aggregate" model="ir.actions.report">
+        <field name="name">Aggregate report</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_security_awareness.report_phishing_campaign_aggregate</field>
+        <field name="report_file">bf_security_awareness.report_phishing_campaign_aggregate</field>
+        <field name="print_report_name">'Aggregate report - %s - %s' % (object.report_reference or '', object.template_id.name)</field>
+        <field name="binding_model_id" ref="model_bf_phishing_campaign"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- The reference on the campaign form, to match a printed report. -->
+    <record id="bf_phishing_campaign_view_form_report_reference" model="ir.ui.view">
+        <field name="name">bf.phishing.campaign.form.report.reference</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="inherit_id" ref="bf_phishing_campaign_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="after">
+                <div class="text-muted" invisible="not report_reference">
+                    <span>Report reference:</span> <field name="report_reference" class="oe_inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <template id="report_phishing_campaign_aggregate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="v" t-value="o._aggregate_values()"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Phishing simulation: aggregate report</h2>
+
+                        <table class="table table-sm mt-3" style="width:100%;">
+                            <tr>
+                                <td><strong>Lure template</strong></td>
+                                <td><span t-out="v['lure']"/></td>
+                                <td><strong>Send date</strong></td>
+                                <td>
+                                    <span t-if="v['send_date']" t-out="v['send_date']"
+                                          t-options="{'widget': 'date'}"/>
+                                    <span t-else="">Not sent yet</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recipients</strong></td>
+                                <td><span t-out="v['recipients']"/></td>
+                                <td><strong>Status</strong></td>
+                                <td><span t-field="o.state"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reference</strong></td>
+                                <td><span t-out="v['reference']"/></td>
+                                <td/>
+                                <td/>
+                            </tr>
+                        </table>
+
+                        <t t-if="v['publishable']">
+                            <h4 class="mt-4">Rates</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Open rate</th>
+                                        <th>Click rate</th>
+                                        <th>Credentials submitted</th>
+                                        <th>Report rate</th>
+                                        <th>Assigned trainings completed</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span t-out="v['rates']['opened']" t-options="{'widget': 'float', 'precision': 1}"/> %</td>
+                                        <td>
+                                            <t t-if="'clicked' in v['rates']['bounded']">
+                                                <span t-if="v['rates']['bounded']['clicked'] == 'range'">90% or more</span>
+                                                <span t-else="">Not published</span>
+                                            </t>
+                                            <t t-else=""><span t-out="v['rates']['clicked']" t-options="{'widget': 'float', 'precision': 1}"/> %</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="'submitted' in v['rates']['bounded']">
+                                                <span t-if="v['rates']['bounded']['submitted'] == 'range'">90% or more</span>
+                                                <span t-else="">Not published</span>
+                                            </t>
+                                            <t t-else=""><span t-out="v['rates']['submitted']" t-options="{'widget': 'float', 'precision': 1}"/> %</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="'reported' in v['rates']['bounded']">
+                                                <span t-if="v['rates']['bounded']['reported'] == 'range'">10% or less</span>
+                                                <span t-else="">Not published</span>
+                                            </t>
+                                            <t t-else=""><span t-out="v['rates']['reported']" t-options="{'widget': 'float', 'precision': 1}"/> %</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="v['rates']['training_publishable']">
+                                                <t t-if="'training_completed' in v['rates']['bounded']">
+                                                    <span t-if="v['rates']['bounded']['training_completed'] == 'range'">10% or less</span>
+                                                    <span t-else="">Not published</span>
+                                                </t>
+                                                <t t-else=""><span t-out="v['rates']['training_completed']" t-options="{'widget': 'float', 'precision': 1}"/> %</t>
+                                            </t>
+                                            <span t-elif="v['rates']['training_none_expected']">No training assigned</span>
+                                            <span t-elif="v['rates']['training_hidden']">Not published</span>
+                                            <span t-else="">Too few trainings to publish this rate</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <t t-if="v['previous']">
+                                <h4 class="mt-4">Change since the previous campaign</h4>
+                                <table class="table table-sm" style="width:100%;">
+                                    <tr>
+                                        <td><strong>Previous campaign sent on</strong></td>
+                                        <td>
+                                            <span t-out="v['previous']['send_date']"
+                                                  t-options="{'widget': 'date'}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Recipients of the previous campaign</strong></td>
+                                        <td><span t-out="v['previous']['recipients']"/></td>
+                                    </tr>
+                                    <tr t-foreach="[('clicked_delta', 'click'), ('reported_delta', 'report')]" t-as="ligne">
+                                        <td>
+                                            <strong t-if="ligne[1] == 'click'">Click rate</strong>
+                                            <strong t-else="">Report rate</strong>
+                                        </td>
+                                        <td>
+                                            <span t-if="v['previous'][ligne[0]] is None">Not published: one of the two rates is not given exactly</span>
+                                            <t t-else=""><span t-if="v['previous'][ligne[0]] &gt; 0">+</span><span t-out="v['previous'][ligne[0]]" t-options="{'widget': 'float', 'precision': 1}"/> pts</t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <p class="mt-4">Too few recipients to publish rates without anyone being recognizable.</p>
+                            <p>Rates are shown from this number of recipients: <span t-out="v['threshold']"/></p>
+                        </t>
+
+                        <p class="text-muted mt-4" style="font-size:10px;">Aggregate report: it names no one and shows no department, risk profile or time of action. It can be handed outside the organization.</p>
+                        <p t-if="v['publishable']" class="text-muted" style="font-size:10px;">Rates close to 100 % of failures, or to 0 % of reports or of completed trainings, are shown as a range, or not published, so that no one's result can be inferred.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -103,12 +103,23 @@ class BfSecurityAwarenessController(http.Controller):
             [("code", "=", country_code)], limit=1)
         return country.id or False
 
+    def _page_texts(self, title):
+        """Title and language of a page of ours, in the visitor's language.
+
+        QWeb never translates a ``<title>``: the title is composed here, through
+        the catalogue, and the page's ``lang`` follows the visitor's language."""
+        return {
+            "page_title": title,
+            "page_lang": (request.env.lang or "en_US").replace("_", "-"),
+        }
+
     def _render_lesson(self, result):
         """Teachable page — also the constant fallback for invalid tokens."""
         template = result.campaign_id.template_id if result else False
         return self._render(
             "bf_security_awareness.phishing_lesson",
             {
+                **self._page_texts(request.env._("Security simulation")),
                 "result": result,
                 "template": template,
                 "teachable_html": template.teachable_html if template else False,
@@ -219,5 +230,5 @@ class BfSecurityAwarenessController(http.Controller):
             result.register_report()
         return self._render(
             "bf_security_awareness.phishing_reported",
-            {"result": result},
+            {"result": result, **self._page_texts(request.env._("Thank you"))},
         )

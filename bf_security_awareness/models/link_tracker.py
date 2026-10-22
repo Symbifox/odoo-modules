@@ -1,6 +1,8 @@
 from urllib.parse import urlsplit
 
-from odoo import _, api, models
+from odoo import api, models
+
+from .reader_lang import company_env
 
 
 class LinkTracker(models.Model):
@@ -17,7 +19,9 @@ class LinkTracker(models.Model):
         chaque destinataire, et un GET qui reste bloqué en essai.
         """
         if self._est_lien_piege(url):
-            return _("Simulation d'hameçonnage")
+            # Titre stocké, lu par les opérateurs : la langue de la société, pas
+            # celle du travail planifié qui envoie (OdooBot).
+            return company_env(self).env._("Phishing simulation")
         return super()._get_title_from_url(url)
 
     @api.model

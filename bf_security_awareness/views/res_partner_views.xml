@@ -11,13 +11,13 @@
                         class="oe_stat_button" icon="fa-fish"
                         groups="bf_security_awareness.group_bf_secaware_user">
                     <field name="phishing_result_count" widget="statinfo"
-                           string="Tests d'hameçonnage"/>
+                           string="Phishing tests"/>
                 </button>
                 <button name="action_view_training_assignments" type="object"
                         class="oe_stat_button" icon="fa-graduation-cap"
                         groups="bf_security_awareness.group_bf_secaware_user">
                     <field name="training_assignment_count" widget="statinfo"
-                           string="Formations"/>
+                           string="Trainings"/>
                 </button>
             </div>
         </field>

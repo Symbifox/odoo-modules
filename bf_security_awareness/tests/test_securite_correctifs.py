@@ -5,8 +5,22 @@ from odoo.tests import HttpCase, tagged
 class TestJetonCampagneClose(HttpCase):
     """Une campagne close n'enregistre plus rien par ses jetons."""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        # (the frontend_lang cookie only counts for a language of the website).
+        fr = cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_security_awareness"], ["fr_CA"], overwrite=True)
+        cls.env["website"].search([]).write({
+            "language_ids": [(4, fr.id)], "default_lang_id": fr.id})
+
     def setUp(self):
         super().setUp()
+        # La page suit la langue du visiteur (elle était française en
+        # dur). Les attentes ci-dessous lisent la page française : le visiteur l'est.
+        self.opener.cookies["frontend_lang"] = "fr_CA"
         self.template = self.env["bf.phishing.template"].create({
             "name": "Leurre clos",
             "subject": "Bonjour",
@@ -65,8 +79,22 @@ class TestJetonCampagneClose(HttpCase):
 class TestPolitiqueContenuPagesPubliques(HttpCase):
     """Les pages publiques rendent le HTML brut des leurres : aucun script."""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # French expectations: a fresh base (the public CI) has en_US only
+        # (the frontend_lang cookie only counts for a language of the website).
+        fr = cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_security_awareness"], ["fr_CA"], overwrite=True)
+        cls.env["website"].search([]).write({
+            "language_ids": [(4, fr.id)], "default_lang_id": fr.id})
+
     def setUp(self):
         super().setUp()
+        # La page suit la langue du visiteur (elle était française en
+        # dur). Les attentes ci-dessous lisent la page française : le visiteur l'est.
+        self.opener.cookies["frontend_lang"] = "fr_CA"
         self.template = self.env["bf.phishing.template"].create({
             "name": "Leurre CSP",
             "subject": "Bonjour",

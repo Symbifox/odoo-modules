@@ -46,12 +46,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_enroll" type="object" string="Inscrire"
+                    <button name="action_enroll" type="object" string="Enroll"
                             class="btn-primary" invisible="state != 'pending'"/>
                     <button name="action_send_invite" type="object"
-                            string="Relancer" invisible="state == 'done'"/>
+                            string="Send reminder" invisible="state == 'done'"/>
                     <button name="action_open_course" type="object"
-                            string="Ouvrir le cours"/>
+                            string="Open course"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="pending,invited,in_progress,done"/>
                 </header>
@@ -83,14 +83,14 @@
             <search>
                 <field name="partner_id"/>
                 <field name="channel_id"/>
-                <filter name="overdue" string="En retard"
+                <filter name="overdue" string="Overdue"
                         domain="[('state','not in',('done','cancelled')),('due_date','&lt;',context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="open" string="À compléter"
+                <filter name="open" string="To complete"
                         domain="[('state','not in',('done','cancelled'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_state" string="État"
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="Status"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_channel" string="Cours"
+                    <filter name="group_channel" string="Course"
                             context="{'group_by': 'channel_id'}"/>
                 </group>
             </search>
@@ -98,14 +98,14 @@
     </record>
 
     <record id="bf_training_assignment_action" model="ir.actions.act_window">
-        <field name="name">Formations assignées</field>
+        <field name="name">Assigned trainings</field>
         <field name="res_model">bf.training.assignment</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="bf_training_assignment_view_search"/>
     </record>
 
     <record id="slide_channel_action_secaware" model="ir.actions.act_window">
-        <field name="name">Cours de sensibilisation</field>
+        <field name="name">Security awareness courses</field>
         <field name="res_model">slide.channel</field>
         <field name="view_mode">kanban,list,form</field>
     </record>

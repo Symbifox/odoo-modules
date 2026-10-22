@@ -9,3 +9,4 @@ from . import bf_clawback
 from . import bf_security_dashboard
 from . import res_partner
 from . import link_tracker
+from . import bf_phishing_campaign_aggregate

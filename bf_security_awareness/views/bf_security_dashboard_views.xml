@@ -3,18 +3,18 @@
 
     <!-- Client actions -->
     <record id="action_secaware_dashboard" model="ir.actions.client">
-        <field name="name">Tableau de bord</field>
+        <field name="name">Dashboard</field>
         <field name="tag">bf_secaware_dashboard</field>
     </record>
 
     <record id="action_secaware_my" model="ir.actions.client">
-        <field name="name">Ma cybersécurité</field>
+        <field name="name">My cybersecurity</field>
         <field name="tag">bf_secaware_my</field>
     </record>
 
     <!-- Manager dashboard: first entry under the Sensibilisation app -->
     <menuitem id="menu_secaware_dashboard"
-              name="Tableau de bord"
+              name="Dashboard"
               parent="menu_secaware_root"
               action="action_secaware_dashboard"
               groups="group_bf_secaware_user"
@@ -23,7 +23,7 @@
     <!-- Employee self-service: now lives under the single Sensibilisation app,
          visible to every internal user (admin entries above stay group-gated). -->
     <menuitem id="menu_my_secaware"
-              name="Mon tableau de bord"
+              name="My dashboard"
               parent="menu_secaware_root"
               action="action_secaware_my"
               groups="base.group_user"
