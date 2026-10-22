@@ -1,10 +1,10 @@
 # Rental notices (`bf_rental_notice`)
 
-The other half of the dividing line. The lease is not reproduced: the Tribunal's
-form is sold and carries *Reproduction interdite* on every page. Notices are
-different: the law prescribes their **content**, not their medium. That is
-written in the regulation's own title, *Regulation respecting mandatory lease
-**forms** and the **particulars** of the notice to a new lessee*.
+The other half of the dividing line. The lease is not reproduced: it is
+concluded on the Tribunal's mandatory form. Notices are different: the law
+prescribes their **content**, not their medium. That is written in the
+regulation's own title, *Regulation respecting mandatory lease **forms** and the
+**particulars** of the notice to a new lessee*.
 
 This module records the notices given under a lease (`bf_rental`), computes the
 periods within which each must be given and answered, states what the lessee's
@@ -212,7 +212,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-08-30, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

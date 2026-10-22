@@ -44,16 +44,13 @@ abandonment record carry the chatter; the lease also carries activities.
 
 **It does not produce the lease.** A residential lease in Québec is concluded on
 a mandatory form of the Tribunal administratif du logement (CQLR, c. T-15.01,
-r. 3, s. 1: the lessor must use the Tribunal's form), and every one of the
-twenty form pages published in the regulation carries the footer *Reproduction
-interdite*. That is not engineering caution: it is printed in the regulatory
-text published by the Québec Official Publisher.
+r. 3, s. 1: the lessor must use the Tribunal's form), which may be reproduced
+only with the Tribunal's authorization.
 
-The lessor buys the form from the Tribunal (CAD 2.99 for the printed duplicate,
-or the Tribunal's own electronic lease at the same price). This module records
-what was agreed, states which form was used, and carries the signed document as
-an attachment. It never recomposes it. A test holds that the module ships no
-report that would reproduce the form.
+The lessor obtains the form from the Tribunal, on paper or as the Tribunal's own
+electronic lease. This module records what was agreed, states which form was
+used, and carries the signed document as an attachment. It never recomposes it.
+A test holds that the module ships no report that would reproduce the form.
 
 What the suite *may* produce is the **notices**, and the distinction is in the
 regulation's own title: *Regulation respecting mandatory lease forms **and the
@@ -227,7 +224,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-08-30, this version converts automatically to
+- **Change Date**: on 2030-10-21, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements
