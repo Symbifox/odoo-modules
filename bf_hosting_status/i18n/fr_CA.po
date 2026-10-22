@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 11:22+0000\n"
+"POT-Creation-Date: 2026-10-22 02:06+0000\n"
 "PO-Revision-Date: 2026-10-21 11:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -37,13 +37,13 @@ msgstr "30 jours"
 #. module: bf_hosting_status
 #: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
 msgid ""
-"A page for this client, opened by a private link without an account:\n"
-"                        its active services, their version, their status and the updates of the\n"
-"                        last 30 days. No security advisory and no server detail."
+"A page for this client, opened by a private link without an account, or\n"
+"                        from the portal by its hosting recipients: its active services, their\n"
+"                        version, their status and the updates of the last 30 days. No server detail."
 msgstr ""
-"Une page pour ce client, ouverte par un lien privé, sans compte :\n"
-"                        ses services actifs, leur version, leur état et les mises à jour des\n"
-"                        30 derniers jours. Aucun avis de sécurité, aucun détail de serveur."
+"Une page pour ce client, ouverte par un lien privé sans compte, ou\n"
+"                        depuis le portail par ses destinataires hébergement : ses services actifs, leur\n"
+"                        version, leur état et les mises à jour des 30 derniers jours. Aucun détail de serveur."
 
 #. module: bf_hosting_status
 #. odoo-python
@@ -97,6 +97,11 @@ msgstr "Dernière vérification :"
 #: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
 msgid "Maintenance in progress"
 msgstr "Maintenance en cours"
+
+#. module: bf_hosting_status
+#: model:ir.model,name:bf_hosting_status.model_hosting_maintenance_window
+msgid "Maintenance window"
+msgstr "Fenêtre de maintenance"
 
 #. module: bf_hosting_status
 #: model_terms:ir.ui.view,arch_db:bf_hosting_status.res_partner_view_form_hosting_status
@@ -196,6 +201,7 @@ msgstr "État"
 #. module: bf_hosting_status
 #. odoo-python
 #: code:addons/bf_hosting_status/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.portal_my_home_hosting_status
 #: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
 msgid "Status of your services"
 msgstr "État de vos services"
@@ -282,6 +288,19 @@ msgid "Version"
 msgstr "Version"
 
 #. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.portal_my_home_hosting_status
+msgid ""
+"Your hosted services, their version and status, and planned maintenance"
+msgstr ""
+"Vos services hébergés, leur version et leur état, et les maintenances "
+"planifiées"
+
+#. module: bf_hosting_status
 #: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
 msgid "Your services"
 msgstr "Vos services"
+
+#. module: bf_hosting_status
+#: model_terms:ir.ui.view,arch_db:bf_hosting_status.status_page_html
+msgid "← Back to your account"
+msgstr "← Retour à votre compte"

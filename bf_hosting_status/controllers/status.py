@@ -17,6 +17,7 @@ from werkzeug.exceptions import NotFound
 
 from odoo import http
 from odoo.http import request
+from odoo.addons.portal.controllers.portal import CustomerPortal
 
 from ..models.res_partner import jetons_egaux
 
@@ -77,5 +78,41 @@ class HostingStatusPage(http.Controller):
         except Exception:
             # Route PUBLIQUE : une donnée aberrante ne rend pas une trace au visiteur.
             _logger.exception("Page d'état illisible pour le client %s", partner_id)
+            return refus()
+        return request.render("bf_hosting_status.status_page", valeurs, headers=EN_TETES)
+
+
+class HostingStatusPortal(CustomerPortal):
+    """La même page, ouverte depuis le portail par un destinataire hébergement du client.
+
+    Pas de jeton : le compte suffit, à condition d'être dans la liste du client et de lui
+    appartenir encore (`_hosting_status_client_du_compte`). Indépendant de la publication
+    du lien : dépublier ferme le lien à jeton, pas l'accès des destinataires nommés.
+    """
+
+    @staticmethod
+    def _hosting_status_mon_client():
+        user = request.env.user
+        if user._is_public():
+            return request.env["res.partner"]
+        return request.env["res.partner"]._hosting_status_client_du_compte(user.partner_id)
+
+    def _prepare_home_portal_values(self, counters):
+        valeurs = super()._prepare_home_portal_values(counters)
+        if "hosting_status_count" in counters:
+            valeurs["hosting_status_count"] = len(self._hosting_status_mon_client())
+        return valeurs
+
+    @http.route(["/my/hebergement"], type="http", auth="user", methods=["GET"], sitemap=False)
+    def hosting_status_portal(self, **kw):
+        client = self._hosting_status_mon_client()
+        if not client:
+            return refus()
+        try:
+            valeurs = client.with_context(lang=request.env.lang)._hosting_status_valeurs()
+            valeurs["company"] = client.company_id or request.env.company
+            valeurs["back_url"] = "/my"
+        except Exception:
+            _logger.exception("Page d'état (portail) illisible pour le client %s", client.id)
             return refus()
         return request.render("bf_hosting_status.status_page", valeurs, headers=EN_TETES)

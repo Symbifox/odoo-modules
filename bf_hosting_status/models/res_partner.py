@@ -25,6 +25,8 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import consteq
 from odoo.tools.misc import format_date, format_datetime, format_time, formatLang
 
+from odoo.addons.hosting_management.models.hosting_maintenance_window import client_de
+
 GROUPE_PUBLICATION = "hosting_management.group_hosting_manager"
 LONGUEUR_MAX_JETON = 128
 LONGUEUR_MIN_JETON = 32
@@ -143,6 +145,25 @@ class ResPartner(models.Model):
         for partenaire in self.sudo():
             partenaire.hosting_status_token = secrets.token_urlsafe(32)
         return True
+
+    @api.model
+    def _hosting_status_client_du_compte(self, partenaire):
+        """Le client dont `partenaire` est destinataire hébergement, ou un jeu vide.
+
+        🔴 Deux conditions, vérifiées ici à chaque ouverture : être dans la liste du client
+        ET lui appartenir encore par la règle d'Odoo (`client_de`). Un contact déplacé sous
+        une autre société, ou fusionné ailleurs, garde sa ligne dans la liste jusqu'à ce
+        qu'on la retire ; il ne doit pas garder la page.
+        """
+        Partner = self.env["res.partner"].sudo()
+        partenaire = partenaire.sudo()
+        if not partenaire or not partenaire.active:
+            return Partner
+        client = client_de(partenaire)
+        if (client and client.active and client._hosting_status_est_commercial()
+                and partenaire in client.hosting_recipient_ids):
+            return client
+        return Partner
 
     def _hosting_status_url(self):
         self.ensure_one()

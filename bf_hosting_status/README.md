@@ -46,6 +46,21 @@ not appear: moving a contact under another company is a contact-management right
 and it must not move services onto another client's page. A contact cannot have
 its own page.
 
+## From the portal
+
+The client's **hosting recipients** (`hosting_management`, a list kept on the company
+form) who have a portal account find « Status of your services » on their portal home
+and open the same page at `/my/hebergement`, in their own language, with a link back
+to their account. No token: the account is enough, provided the person is in the
+client's list AND still belongs to the client by Odoo's rule; a contact moved under
+another company loses the page at once. This access does not depend on the private
+link: unpublishing closes the link, not the portal page of the people named.
+
+When the page is published, the maintenance notice sent to a **named** recipient links
+to it. The fallback address used when the list is empty (the company's email, or its
+first contact) receives the notice without the link: whoever holds the link opens the
+page, so it only goes to people chosen for it.
+
 ## Security
 
 - A token of its own (`secrets.token_urlsafe(32)`), compared in constant time;
@@ -71,15 +86,21 @@ its own page.
 
 ## Requirements
 
-- `hosting_management` 18.0.2.63.1 or later (the maintenance windows), and Odoo's
-  `portal` module.
+- `hosting_management` 18.0.2.64.0 or later (the maintenance windows and the hosting
+  recipients), and Odoo's `portal` module.
 
 ## Licence
 
 Business Source License 1.1. Each version converts to LGPL-3.0-or-later on its
-Change Date; for this version, 2030-10-21. See [`LICENSE`](LICENSE).
+Change Date; for this version, 2030-10-22. See [`LICENSE`](LICENSE).
 
 ## Version history
+
+- **18.0.1.3.1**: the status link in a maintenance notice goes only to the client's named
+  hosting recipients, never to the fallback address (company email or first contact).
+- **18.0.1.3.0**: the page in the portal (`/my/hebergement`) for the client's hosting
+  recipients (`hosting_management` 18.0.2.64.0); the maintenance notice links to the
+  published page.
 
 - **18.0.1.2.0**: extension point `_hosting_status_completer(values, services)` for
   modules that add a section to the page. Documentation corrected: services

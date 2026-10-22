@@ -35,6 +35,7 @@
                     h1 { font-size: 1.6rem; margin: 0 0 4px; }
                     h2 { font-size: 1.15rem; margin: 28px 0 8px; }
                     .pale { color: var(--pale); } .petit { font-size: .875rem; }
+                    a { color: var(--info); }
                     table { width: 100%; border-collapse: collapse; }
                     th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--trait); vertical-align: top; }
                     th:last-child, td:last-child { text-align: right; white-space: nowrap; }
@@ -60,6 +61,7 @@
                         <span t-out="company.name"/>
                     </header>
 
+                    <p t-if="back_url" class="petit"><a t-att-href="back_url">← Back to your account</a></p>
                     <h1>Status of your services</h1>
                     <div class="pale" t-out="client_name"/>
                     <div class="pale petit">
@@ -135,6 +137,21 @@
                 </main>
             </body>
         </html>
+    </template>
+
+    <!-- L'entrée du portail : visible seulement pour un destinataire hébergement (le compteur
+         vaut 0 sinon, et Odoo masque une entrée à 0). La priorité évite celles des autres
+         entrées de portal.portal_my_home de la suite. -->
+    <template id="portal_my_home_hosting_status" name="Portal: hosting status"
+              inherit_id="portal.portal_my_home" customize_show="True" priority="48">
+        <div id="portal_common_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Status of your services</t>
+                <t t-set="url" t-value="'/my/hebergement'"/>
+                <t t-set="text">Your hosted services, their version and status, and planned maintenance</t>
+                <t t-set="placeholder_count" t-value="'hosting_status_count'"/>
+            </t>
+        </div>
     </template>
 
 </odoo>

@@ -13,7 +13,11 @@
     # 18.0.1.2.0: point d'extension `_hosting_status_completer(valeurs, services)` pour
     #   les sections ajoutées par un autre module ; README corrigé : les services d'un
     #   contact ne paraissent pas sur la page de sa société.
-    "version": "18.0.1.2.0",
+    # 18.0.1.3.0: la page dans le portail (/my/hebergement) pour les destinataires hébergement
+    #   du client (hosting_management 18.0.2.64.0) ; l'avis de maintenance porte le lien de la
+    #   page quand elle est publiée.
+    # 18.0.1.3.1: le lien d'état de l'avis ne part qu'aux destinataires NOMMÉS (pas au repli).
+    "version": "18.0.1.3.1",
     "category": "Services",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
