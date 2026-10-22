@@ -15,27 +15,135 @@
 
 import { Component, onMounted, onWillUnmount, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
+import { user } from "@web/core/user";
 import { prettyToolName } from "@bf_claude_chat/js/claude_stream";
 
-const FOX_PHRASES = 13;
+// Un répertoire par langue, écrit dans cette langue plutôt que
+// traduit mot à mot (on ne « pense » pas pareil d'une langue à l'autre), et
+// choisi d'après la CONVERSATION : sous une interface en français, une
+// conversation en anglais affichait ses formules en français. Les 13
+// formules d'avant se répétaient vite ; un tour de 97 s en tire plusieurs.
+const FOX_PHRASES = {
+    fr: [
+        "Gen flaire la piste",
+        "Gen suit la trace",
+        "Gen furète dans les dossiers",
+        "Gen dresse les oreilles",
+        "Gen fouille le terrier",
+        "Gen ruse avec la question",
+        "Gen s'approche de la réponse à pas de renard",
+        "Gen réfléchit en renard",
+        "Gen fouine",
+        "Gen fait le guet",
+        "Gen traque l'information",
+        "Gen affûte son flair",
+        "Gen, en pleine réflexion vulpine",
+        "Gen a le museau au vent",
+        "Gen remonte la piste",
+        "Gen gratte sous la surface",
+        "Gen fait le tour du terrier",
+        "Gen renifle les indices",
+        "Gen trotte d'une fiche à l'autre",
+        "Gen ne lâche pas la piste",
+        "Gen médite, la queue en panache",
+        "Gen se faufile dans les détails",
+        "Gen recoupe les traces",
+        "Gen déterre le fil de l'histoire",
+        "Gen rumine ça au fond du terrier",
+        "Gen a le flair en éveil",
+        "Gen jongle avec les indices",
+        "Gen tend l'oreille aux détails",
+        "Gen pèse ça, l'oreille dressée",
+        "Gen fait ses devoirs de renard",
+        "Gen guette le bon indice",
+    ],
+    en: [
+        "Gen is sniffing out the trail",
+        "Gen is on the scent",
+        "Gen is prowling through the records",
+        "Gen is pricking up its ears",
+        "Gen is digging through the den",
+        "Gen is outfoxing the question",
+        "Gen is creeping up on the answer",
+        "Gen is thinking like a fox",
+        "Gen is nosing around",
+        "Gen is keeping watch",
+        "Gen is tracking it down",
+        "Gen is sharpening its nose",
+        "Gen, deep in vulpine thought",
+        "Gen has its nose to the ground",
+        "Gen is following a hunch",
+        "Gen is circling back to check",
+        "Gen is snuffling through the files",
+        "Gen is piecing the trail together",
+        "Gen is padding through the paperwork",
+        "Gen is chasing down a lead",
+        "Gen is turning over every leaf",
+        "Gen is mulling it over in the den",
+        "Gen is reading the tracks",
+        "Gen is scouting ahead",
+        "Gen is following its nose",
+        "Gen is burrowing into the details",
+        "Gen is ears-up and listening",
+        "Gen is weighing the evidence, tail high",
+        "Gen is on the hunt for facts",
+        "Gen is putting two and two together, foxily",
+    ],
+};
 
-/** Une formule du renard, par son rang. `_t` à l'appel : jamais au chargement. */
-function foxPhrase(index) {
-    switch (index % FOX_PHRASES) {
-        case 0: return _t("Gen is sniffing out the trail");
-        case 1: return _t("Gen is on the scent");
-        case 2: return _t("Gen is prowling through the records");
-        case 3: return _t("Gen is pricking up its ears");
-        case 4: return _t("Gen is digging through the den");
-        case 5: return _t("Gen is outfoxing the question");
-        case 6: return _t("Gen is creeping up on the answer");
-        case 7: return _t("Gen is thinking like a fox");
-        case 8: return _t("Gen is nosing around");
-        case 9: return _t("Gen is keeping watch");
-        case 10: return _t("Gen is tracking it down");
-        case 11: return _t("Gen is sharpening its nose");
-        default: return _t("Gen, deep in vulpine thought");
+/** Une formule du renard, par son rang, dans la langue de la conversation. */
+export function foxPhrase(index, lang) {
+    const liste = FOX_PHRASES[lang === "fr" ? "fr" : "en"];
+    return liste[Math.floor(Math.abs(index || 0)) % liste.length];
+}
+
+/** Le nombre de formules d'une langue : le tirage du départ s'y cale. */
+export function foxCount(lang) {
+    return FOX_PHRASES[lang === "fr" ? "fr" : "en"].length;
+}
+
+// Des mots outils propres à chaque langue (« on », « a », « no » sont
+// écartés : ils existent dans les deux).
+const MOTS = {
+    fr: new Set(("le la les des une est pas pour que qui svp avec dans sur merci " +
+        "faire peux ça oui je tu nous du au et mais aussi cette ce voir mettre " +
+        "rajouter préparer valider ta tes ton si donc selon").split(" ")),
+    en: new Set(("the and is are please can you what why how with for this that " +
+        "thanks yes do make we to of it be have should could would").split(" ")),
+};
+
+/** "fr", "en", ou null quand le texte ne tranche pas (« go », « OK », « 1 »). */
+export function guessLang(text) {
+    const mots = String(text || "").toLowerCase().match(/[a-zà-öø-ÿœ']+/g) || [];
+    let fr = 0;
+    let en = 0;
+    for (const mot of mots) {
+        if (MOTS.fr.has(mot) || /[àâçéèêëîïôûùœ]/.test(mot)) {
+            fr++;
+        } else if (MOTS.en.has(mot)) {
+            en++;
+        }
     }
+    if (fr >= 2 && fr > en) return "fr";
+    if (en >= 2 && en > fr) return "en";
+    return null;
+}
+
+/**
+ * La langue de la conversation : celle des derniers messages de la personne
+ * qui tranchent, puis celle de Gen, puis celle de l'interface. Une consigne
+ * interne (« Mets-moi en contexte… », toujours en français) ne compte pas.
+ */
+export function conversationLang(messages, interfaceLang = user.lang) {
+    const lus = (messages || []).filter((m) => m && !m.internal && m.content);
+    for (const role of ["user", "assistant"]) {
+        const recents = lus.filter((m) => m.role === role).slice(-6).reverse();
+        for (const m of recents) {
+            const lang = guessLang(m.content);
+            if (lang) return lang;
+        }
+    }
+    return String(interfaceLang || "").toLowerCase().startsWith("fr") ? "fr" : "en";
 }
 
 /**
@@ -160,7 +268,7 @@ export class GenWaitLine extends Component {
             return step.detail || step.label;
         }
         if (msg.phase === "text") return _t("Gen is writing");
-        return foxPhrase(msg.foxIndex || 0);
+        return foxPhrase(msg.foxIndex || 0, msg.foxLang);
     }
 
     get elapsed() {

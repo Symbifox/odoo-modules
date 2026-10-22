@@ -2,14 +2,14 @@
 
 import { Component, markup, useState, useRef, useEffect, onMounted, onPatched, onWillPatch, onWillUnmount } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
+import { useBus, useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import { closureMixin } from "@bf_claude_chat/js/gen_closure";
-import { screenMixin } from "@bf_claude_chat/js/gen_screen";
+import { badgeTitle, screenMixin } from "@bf_claude_chat/js/gen_screen";
 import { newClientToken, streamingFields } from "@bf_claude_chat/js/gen_turn";
 
 
@@ -370,6 +370,48 @@ export class ClaudeSystrayItem extends Component {
         };
         onMounted(() => window.addEventListener("pagehide", this._onPageHide));
         onWillUnmount(() => window.removeEventListener("pagehide", this._onPageHide));
+
+        // Le nombre sur l'icône, relu à chaque écran.
+        this.badge = useState({ count: 0, scope: false });
+        useBus(this.env.bus, "ACTION_MANAGER:UI-UPDATED", () => this._refreshBadge());
+        // Le passage d'une fiche à la suivante ne lève aucun de ces signaux :
+        // Odoo pousse l'adresse sans événement. On la compare, c'est tout.
+        this._badgeUrl = window.location.href;
+        onMounted(() => {
+            this._refreshBadge();
+            this._badgeWatch = setInterval(() => {
+                if (window.location.href !== this._badgeUrl) {
+                    this._badgeUrl = window.location.href;
+                    this._refreshBadge();
+                }
+            }, 2000);
+        });
+        onWillUnmount(() => {
+            clearTimeout(this._badgeTimer);
+            clearInterval(this._badgeWatch);
+        });
+    }
+
+    /** Relit la pastille, une fois l'écran posé (plusieurs signaux d'affilée). */
+    _refreshBadge() {
+        clearTimeout(this._badgeTimer);
+        this._badgeTimer = setTimeout(async () => {
+            const ctx = capturePageContext(this.action);
+            try {
+                const result = await rpc("/claude-chat/badge", {
+                    res_model: (ctx && ctx.res_id && ctx.model) || false,
+                    res_id: (ctx && ctx.model && ctx.res_id) || false,
+                }, { silent: true });
+                this.badge.count = (result && result.count) || 0;
+                this.badge.scope = (result && result.scope) || false;
+            } catch {
+                // Sans réponse, la pastille garde son dernier compte.
+            }
+        }, 400);
+    }
+
+    get badgeTitle() {
+        return badgeTitle(this.badge.count, this.badge.scope);
     }
 
     // ── Panel toggle ─────────────────────────────────────────
@@ -583,7 +625,7 @@ export class ClaudeSystrayItem extends Component {
         const idx = this.state.messages.push({
             id: `a-${Date.now()}`,
             role: "assistant",
-            ...streamingFields(),
+            ...streamingFields(this.state.messages),
         }) - 1;
         const assistant = this.state.messages[idx]; // reactive proxy
         // A brief nobody asked for does not outlive the page that sent it.
@@ -640,6 +682,7 @@ export class ClaudeSystrayItem extends Component {
     }
 
     async _refreshList(wasNewSession = false) {
+        this._refreshBadge();
         const filterParams = this._sessionFilterParams();
         try {
             const sessResult = await rpc("/claude-chat/sessions", filterParams);

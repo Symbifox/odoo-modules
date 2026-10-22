@@ -24,12 +24,13 @@ qui ne touchent jamais Odoo. C'est `scripts/check_claude_token_budget.py` qui
 relève, et qui verse par `enregistrer_releve`.
 """
 
+import json
 import logging
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -401,6 +402,136 @@ class ClaudeAccount(models.Model):
         if quand.tzinfo is not None:
             quand = quand.astimezone(timezone.utc).replace(tzinfo=None)
         return quand
+
+
+class ClaudeAccountPlanSwitch(models.Model):
+    """La bascule de forfait, lue et écrite par le pont.
+
+    Le pont tient la seule table de bascule et seul il sait quels comptes
+    cette instance peut viser : Odoo ne fait que la montrer et la demander.
+    Un pont sans route `/bascule` (HTTP 404) n'offre pas de bascule : le
+    réglage se cache.
+    """
+
+    _inherit = "claude.account"
+
+    @api.model
+    def _plan_switch_call(self, payload):
+        bridge = self.env["bf.ai.bridge"]
+        return bridge.call("/bascule", dict(payload, tenant=bridge.tenant()), 5) or {}
+
+    @api.model
+    def _plan_switch_message(self, reponse):
+        """Le refus du pont, dans la langue de la personne."""
+        code = reponse.get("code")
+        if code == "several":
+            return _("Several plans are switched for this instance. Change them "
+                     "on the bridge host, not here.")
+        if code == "unreadable":
+            return _("The bridge cannot read its plan switch table: fix it on the "
+                     "server before changing it here.")
+        if code == "refused":
+            return _("The bridge does not open this plan to this instance.")
+        return _("The bridge refused the plan switch: %s", str(reponse.get("error"))[:200])
+
+    @api.model
+    def _plan_switch_key(self, account, users):
+        """La forme comparable d'une bascule : (répertoire, usagers triés)."""
+        rep = account.config_dir if account else ""
+        return [rep, sorted(users.ids) if rep else []]
+
+    @api.model
+    def _plan_switch_snapshot(self):
+        """La bascule lue maintenant, en JSON, ou "" si elle ne se lit pas."""
+        etat = self._plan_switch_read()
+        if etat["error"]:
+            return ""
+        return json.dumps(self._plan_switch_key(etat["account"], etat["users"]))
+
+    @api.model
+    def _plan_switch_unchanged(self, snapshot, account, users):
+        """Vrai si le formulaire renvoie ce qu'il avait lu à son ouverture."""
+        try:
+            lu = json.loads(snapshot) if snapshot else None
+        except ValueError:
+            lu = None
+        return lu is not None and lu == self._plan_switch_key(account, users)
+
+    @api.model
+    def _plan_switch_read(self):
+        """{"account": claude.account, "users": res.users, "error": str|False}."""
+        vide = {"account": self.browse(), "users": self.env["res.users"],
+                "error": False, "available": False}
+        if not self.env.user.has_group("base.group_system"):
+            return vide
+        try:
+            etat = self._plan_switch_call({"action": "get"})
+        except ValueError as e:
+            if "HTTP 404" in str(e):
+                return vide   # pont sans bascule de forfait : rien à montrer
+            _logger.info("Gen : bascule de forfait non lue", exc_info=True)
+            return dict(vide, available=True,
+                        error=_("The bridge did not answer: the plan switch "
+                                "cannot be read or changed right now."))
+        except Exception:  # noqa: BLE001 — un pont muet n'empêche pas d'ouvrir les réglages
+            _logger.info("Gen : bascule de forfait non lue", exc_info=True)
+            return dict(vide, available=True,
+                        error=_("The bridge did not answer: the plan switch "
+                                "cannot be read or changed right now."))
+        if etat.get("error"):
+            return dict(vide, error=self._plan_switch_message(etat), available=True)
+        if not etat.get("targets"):
+            return vide   # aucun forfait ouvert à cette instance : rien à montrer
+        compte = self.search([("config_dir", "=", etat.get("config_dir") or "")], limit=1) \
+            if etat.get("config_dir") else self.browse()
+        uids = [int(u) for u in etat.get("users") or [] if str(u).isdigit()]
+        usagers = self.env["res.users"].browse(uids).exists()
+        # Ne jamais montrer « forfait de l'instance » ou
+        # « tous » pour une bascule que cet écran ne sait pas représenter ; le
+        # prochain enregistrement l'aurait réécrite.
+        if etat.get("config_dir") and not compte:
+            return dict(vide, available=True, error=_(
+                "The plan is switched to an account this instance does not list "
+                "(%s). Change it on the bridge host.",
+                etat["config_dir"]))
+        if uids and not usagers:
+            return dict(vide, available=True, error=_(
+                "The plan is switched for users who no longer exist here. "
+                "Change it on the bridge host."))
+        return {"account": compte, "users": usagers, "error": False, "available": True}
+
+    @api.model
+    def _plan_switch_write(self, account, users):
+        """Demander la bascule au pont, seulement si elle change.
+
+        ⚠️ Les réglages s'enregistrent d'un bloc : un pont muet à l'ouverture
+        rendait des champs vides, et enregistrer un autre réglage aurait
+        retiré la bascule. On relit donc l'état avant d'écrire.
+        """
+        if not self.env.user.has_group("base.group_system"):
+            return
+        actuel = self._plan_switch_read()
+        voulu_dir = account.config_dir if account else ""
+        actuel_dir = actuel["account"].config_dir if actuel["account"] else ""
+        if actuel["error"]:
+            if voulu_dir or users:
+                raise UserError(actuel["error"])
+            return
+        if voulu_dir == actuel_dir and set(users.ids) == set(actuel["users"].ids):
+            return
+        try:
+            reponse = self._plan_switch_call({
+                "action": "set", "config_dir": voulu_dir,
+                "users": users.ids if voulu_dir else []})
+        except Exception as e:  # noqa: BLE001 — pont lent ou en erreur HTTP
+            _logger.warning("Gen : bascule de forfait non écrite", exc_info=True)
+            raise UserError(_("The bridge did not answer: the plan switch "
+                              "cannot be read or changed right now.")) from e
+        if reponse.get("error"):
+            raise UserError(self._plan_switch_message(reponse))
+        _logger.info("Gen : bascule de forfait vers %r pour %s (par uid %s)",
+                     voulu_dir or "le forfait de l'instance", users.ids or "tous",
+                     self.env.uid)
 
 
 class ClaudeAccountWindow(models.Model):

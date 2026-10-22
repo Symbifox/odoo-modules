@@ -75,18 +75,38 @@
 
     <!-- Le forfait et ce que la conversation a consommé, avec ↻ -->
     <t t-name="bf_claude_chat.Meters">
-        <div t-if="state.plan or totalsLabel()"
-             class="bf-gen-meters d-flex align-items-center gap-2 text-muted text-nowrap overflow-hidden">
+        <div t-if="state.plan or totalsLabel() or state.metersAllowed.length"
+             class="bf-gen-meters d-flex align-items-center gap-2 text-muted text-nowrap position-relative">
+            <div class="d-flex align-items-center gap-2 overflow-hidden flex-shrink-1 bf-gen-meters-values">
             <t t-foreach="planWindows()" t-as="w" t-key="w.key">
                 <span t-att-class="'bf-gen-meter' + (w.level ? ' text-' + w.level : '')"
                       t-att-title="w.title + (w.title ? '\n' : '') + planTitle()" t-esc="w.label"/>
             </t>
             <span t-if="totalsLabel()" class="bf-gen-meter bf-gen-meter-total text-truncate"
                   t-att-title="totalsTitle()" t-esc="totalsLabel()"/>
+            </div>
             <button type="button" class="btn btn-link btn-sm p-0 text-muted bf-gen-meters-refresh"
                     title="Refresh the counters" t-on-click.stop="onRefreshUsage">
                 <i t-att-class="'fa fa-refresh' + (state.refreshingUsage ? ' fa-spin' : '')"/>
             </button>
+            <!-- Chacun choisit ses compteurs, parmi ceux qu'il peut voir -->
+            <span t-if="state.metersAllowed.length" class="position-relative">
+            <button type="button"
+                    class="btn btn-link btn-sm p-0 text-muted bf-gen-meters-choose"
+                    title="Choose the counters" t-on-click.stop="onToggleMetersMenu">
+                <i class="fa fa-sliders"/>
+            </button>
+            <div t-if="state.metersMenu" class="bf-gen-meters-menu dropdown-menu show p-2"
+                 t-on-click.stop="() => {}">
+                <t t-foreach="meterChoices()" t-as="c" t-key="c.key">
+                    <label class="d-flex align-items-center gap-2 dropdown-item px-1">
+                        <input type="checkbox" class="form-check-input mt-0" t-att-checked="c.shown"
+                               t-on-change="(ev) => this.onToggleMeter(c.key, ev)"/>
+                        <span t-esc="c.label"/>
+                    </label>
+                </t>
+            </div>
+            </span>
         </div>
     </t>
 
@@ -210,7 +230,8 @@
                 <t t-if="state.activeSessionId">
                     <!-- Chat header with share button -->
                     <div class="bf-chat-panel-header d-flex align-items-center gap-2 px-3 py-2 border-bottom">
-                        <div class="flex-grow-1 overflow-hidden">
+                        <!-- Pas d'overflow-hidden ici, le menu ⚙ s'ouvre dessous -->
+                        <div class="flex-grow-1 bf-gen-meters-host">
                             <t t-call="bf_claude_chat.Meters"/>
                         </div>
                         <button t-if="state.activeSessionId > 0"
@@ -361,9 +382,16 @@
     <!-- Systray: button + side panel -->
     <t t-name="bf_claude_chat.SystrayItem">
         <!-- Systray button in navbar -->
-        <button class="btn d-flex align-items-center gap-1" title="Gen"
+        <button class="btn d-flex align-items-center gap-1" t-att-title="badgeTitle"
                 t-on-click="onTogglePanel">
-            <i class="fa fa-commenting"/>
+            <!-- La pastille se loge sur l'icône, comme celles d'Odoo :
+                 conversations de la fiche (bleu), ou actives ailleurs (clair) -->
+            <span class="position-relative">
+                <i class="fa fa-commenting"/>
+                <span t-if="badge.count"
+                      t-att-class="'badge rounded-pill bf-gen-badge ' + (badge.scope === 'record' ? 'text-bg-primary' : 'text-bg-light')"
+                      t-esc="badge.count > 99 ? '99+' : badge.count"/>
+            </span>
             <span class="d-none d-lg-inline">Gen</span>
         </button>
 
@@ -531,7 +559,7 @@
                         <!-- Chat area -->
                         <div class="bf-side-panel-chat-main d-flex flex-column flex-grow-1">
                             <t t-if="showChat">
-                                <div t-if="state.plan or totalsLabel()" class="px-2 py-1 border-bottom bf-side-panel-meters">
+                                <div t-if="state.plan or totalsLabel() or state.metersAllowed.length" class="px-2 py-1 border-bottom bf-side-panel-meters">
                                     <t t-call="bf_claude_chat.Meters"/>
                                 </div>
                                 <!-- Messages -->

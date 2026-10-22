@@ -16,7 +16,7 @@
 import { _t } from "@web/core/l10n/translation";
 import { rpc } from "@web/core/network/rpc";
 import { streamChat } from "@bf_claude_chat/js/claude_stream";
-import { toolLabel, trackWait } from "@bf_claude_chat/js/gen_wait";
+import { conversationLang, foxCount, toolLabel, trackWait } from "@bf_claude_chat/js/gen_wait";
 
 // Attente avant de se rattacher, puis plafond de patience d'un écran.
 const BACKOFF_MS = [1000, 2000, 4000, 8000, 15000];
@@ -30,8 +30,14 @@ export function newClientToken() {
     return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
 }
 
-/** Les champs d'une bulle d'assistant pendant qu'un tour s'écrit. */
-export function streamingFields() {
+/**
+ * Les champs d'une bulle d'assistant pendant qu'un tour s'écrit.
+ *
+ * `messages` : la conversation, d'où les formules du renard tirent leur
+ * langue.
+ */
+export function streamingFields(messages = []) {
+    const foxLang = conversationLang(messages);
     return {
         content: "",
         prefix: "",
@@ -39,7 +45,8 @@ export function streamingFields() {
         tools: [],
         thinkingTokens: 0,
         phase: "start",
-        foxIndex: Math.floor(Math.random() * 13),
+        foxIndex: Math.floor(Math.random() * foxCount(foxLang)),
+        foxLang,
         startedAt: Date.now(),
         interrupted: false,
         reconnecting: false,
@@ -248,11 +255,11 @@ export async function stopTurn(assistant) {
  *
  *  Le chrono part de la création du tour au serveur, pas de la
  *  réouverture ; il repartait à zéro à chaque retour sur la conversation. */
-export function pendingToStreaming(msg) {
+export function pendingToStreaming(msg, messages = []) {
     const content = msg.content === "…" ? "" : (msg.content || "");
     const depart = msg.create_date
         ? Date.parse(`${String(msg.create_date).replace(" ", "T")}Z`) : NaN;
-    Object.assign(msg, streamingFields(), {
+    Object.assign(msg, streamingFields(messages), {
         content, prefix: "", turnId: msg.id,
         startedAt: Number.isNaN(depart) ? Date.now() : Math.min(depart, Date.now()),
     });

@@ -81,6 +81,9 @@ class TestJournalDesTours(_fermeture._Base):
         self.assertIn("c'est waiting", note)
         self.assertIn("brouillon au chatter", note)
         self.assertNotIn("but de la personne", note)
+        # Des prochaines actions à sa portée sont une offre.
+        self.assertIn("prochaines actions que tu pourrais faire toi-même", note)
+        self.assertIn("une mise en contexte qui finit ainsi est waiting", note)
 
 
 @tagged("post_install", "-at_install")
@@ -279,7 +282,9 @@ class TestRoutesRetouches(HttpCase):
         with patch.object(type(self.env["bf.ai.bridge"]), "call", pont):
             r = self._json("/claude-chat/usage", fresh=True, session_id=self.vivante.id)
             autre = self._json("/claude-chat/usage", session_id=self.sienne.id)
-        self.assertEqual(appels[0], ("/usage", {"tenant": "bf", "fresh": True}))
+        # L'usager voyage, la bascule de forfait est par usager.
+        self.assertEqual(appels[0], ("/usage", {"tenant": "bf", "fresh": True,
+                                                "user_id": self.moi.id}))
         self.assertTrue(r["plan"])
         self.assertEqual([(w["key"], w["utilization"]) for w in r["windows"]],
                          [("five_hour", 38.0), ("seven_day", 16)])

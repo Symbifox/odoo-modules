@@ -896,9 +896,22 @@ body.bf_dark_mode {
         margin-right: 0.5rem;
         opacity: 0.6;
     }
-    .bf-gen-meters-refresh {
+    .bf-gen-meters-refresh,
+    .bf-gen-meters-choose {
         font-size: 0.75rem;
         line-height: 1;
+    }
+    // Les valeurs se tronquent ; les boutons et le menu, jamais.
+    .bf-gen-meters-values {
+        min-width: 0;
+    }
+    // Le choix des compteurs s'ouvre sous la barre.
+    .bf-gen-meters-menu {
+        top: 100%;
+        right: 0;
+        left: auto;
+        font-size: 0.8125rem;
+        z-index: 1056;
     }
 }
 .bf-gen-archived-notice {
@@ -909,4 +922,16 @@ body.bf_dark_mode {
 .bf-gen-archived-switch,
 .bf-gen-scope .btn {
     font-size: 0.75rem;
+}
+
+// La pastille de l'icône Gen, dans la barre du haut.
+.bf-gen-badge {
+    font-size: 0.625rem;
+    line-height: 1;
+    padding: 0.2em 0.45em;
+}
+
+// L'hôte de la barre en plein écran se rétrécit sans rogner le menu.
+.bf-gen-meters-host {
+    min-width: 0;
 }

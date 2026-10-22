@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-08 09:18+0000\n"
+"POT-Creation-Date: 2026-10-22 01:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -54,6 +54,24 @@ msgstr "%(size)s / %(max)s caractères"
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid "%(size)s / %(max)s characters: %(dropped)s instruction(s) would be left out"
 msgstr "%(size)s / %(max)s caractères : %(dropped)s consigne(s) resteraient dehors"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "%s d %s h"
+msgstr "%s j %s h"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "%s h %s min"
+msgstr "%s h %s min"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "%s min"
+msgstr "%s min"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -328,6 +346,12 @@ msgid "Choose the Claude model to use for responses."
 msgstr "Choisir le modèle Claude utilisé pour les réponses."
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Choose the counters"
+msgstr "Choisir les compteurs"
+
+#. module: bf_claude_chat
 #: model:ir.model,name:bf_claude_chat.model_claude_chat_message
 msgid "Claude Chat Message"
 msgstr "Message de conversation Claude"
@@ -341,6 +365,21 @@ msgstr "Session de conversation Claude"
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_model
 msgid "Claude Model"
 msgstr "Modèle Claude"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_switch_available
+msgid "Claude Plan Switch Available"
+msgstr "Bascule de forfait offerte"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_switch_error
+msgid "Claude Plan Switch Error"
+msgstr "Erreur de bascule de forfait"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_switch_snapshot
+msgid "Claude Plan Switch Snapshot"
+msgstr "Bascule de forfait lue à l'ouverture"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__claude_session_id
@@ -511,6 +550,18 @@ msgid "Conversation list"
 msgstr "Liste des conversations"
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Conversation tokens"
+msgstr "Jetons de la conversation"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_meter_usage_group_id
+msgid "Conversation tokens visible to"
+msgstr "Jetons de la conversation visibles par"
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_closure
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Conversations aim to close"
@@ -519,14 +570,31 @@ msgstr "Les conversations visent leur fermeture"
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Cost at API rates"
+msgstr "Coût aux tarifs de l'API"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "Cost at public API rates."
 msgstr "Coût aux tarifs publics de l'API."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_meter_cost_group_id
+msgid "Cost visible to"
+msgstr "Coût visible par"
 
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "Could not save your answer."
 msgstr "Ta réponse n'a pas pu être enregistrée."
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Counters"
+msgstr "Compteurs"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cost_usd
@@ -635,6 +703,16 @@ msgid "Durée (ms)"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_plan_account_id
+msgid "Empty: this instance's own plan. Another account: Gen turns are paid by that Max plan, for the users below (all if empty). Only the accounts the bridge allows for this instance are accepted."
+msgstr "Vide : le forfait de cette instance. Un autre compte : les tours de Gen sont payés par ce forfait Max, pour les usagers ci-dessous (tous si vide). Seuls les comptes que le pont ouvre à cette instance sont acceptés."
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Empty: this instance's own plan. Pick another Max account to have Gen turns paid by it, for the users listed (everyone if none). Takes effect on the next turn, no restart. Only the accounts the bridge allows for this instance are accepted."
+msgstr "Vide : le forfait de cette instance. Choisir un autre compte Max pour lui faire payer les tours de Gen, pour les usagers nommés (tous si aucun). Prend effet au tour suivant, sans redémarrage. Seuls les comptes que le pont ouvre à cette instance sont acceptés."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__state__pending
 msgid "En cours"
 msgstr ""
@@ -685,6 +763,12 @@ msgid "Every conversation"
 msgstr "Toutes les conversations"
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Every internal user"
+msgstr "Tous les usagers internes"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_tree
 msgid "Everyone"
@@ -757,6 +841,7 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 #: model:ir.actions.client,name:bf_claude_chat.action_claude_chat
 #: model:ir.ui.menu,name:bf_claude_chat.menu_claude_chat_root
@@ -768,6 +853,11 @@ msgstr "Gen"
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Gen Assistant"
 msgstr "Assistant Gen"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_meters
+msgid "Gen counters"
+msgstr "Compteurs de Gen"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -794,66 +884,6 @@ msgstr "Gen répond"
 
 #. module: bf_claude_chat
 #. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is creeping up on the answer"
-msgstr "Gen s'approche de la réponse à pas de renard"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is digging through the den"
-msgstr "Gen fouille le terrier"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is keeping watch"
-msgstr "Gen fait le guet"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is nosing around"
-msgstr "Gen fouine"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is on the scent"
-msgstr "Gen suit la trace"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is outfoxing the question"
-msgstr "Gen ruse avec la question"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is pricking up its ears"
-msgstr "Gen dresse les oreilles"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is prowling through the records"
-msgstr "Gen furète dans les dossiers"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is sharpening its nose"
-msgstr "Gen affûte son flair"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is sniffing out the trail"
-msgstr "Gen flaire la piste"
-
-#. module: bf_claude_chat
-#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "Gen is still answering in this conversation."
 msgstr "Gen répond encore dans cette conversation."
@@ -863,18 +893,6 @@ msgstr "Gen répond encore dans cette conversation."
 #: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
 msgid "Gen is still working on your previous request. Here is where it stands."
 msgstr "Gen travaille encore sur ta demande précédente. Voici où en est le tour."
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is thinking like a fox"
-msgstr "Gen réfléchit en renard"
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen is tracking it down"
-msgstr "Gen traque l'information"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -920,9 +938,15 @@ msgstr "La personnalité de Gen est limitée à %(max)s caractères ; ce texte e
 
 #. module: bf_claude_chat
 #. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
-msgid "Gen, deep in vulpine thought"
-msgstr "Gen, en pleine réflexion vulpine"
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Gen: %s active conversations"
+msgstr "Gen : %s conversations actives"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Gen: %s conversations on this record"
+msgstr "Gen : %s conversations sur cette fiche"
 
 #. module: bf_claude_chat
 #. odoo-python
@@ -1504,6 +1528,27 @@ msgid "Plafond mensuel des crédits"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Plan"
+msgstr "Forfait"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Plan counters"
+msgstr "Compteurs du forfait"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_meter_plan_group_id
+msgid "Plan counters visible to"
+msgstr "Compteurs du forfait visibles par"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_account_id
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Plan paying for Gen"
+msgstr "Forfait qui paie Gen"
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Preparing a secure link"
@@ -1814,6 +1859,12 @@ msgid "Seuils"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "Several plans are switched for this instance. Change them on the bridge host, not here."
+msgstr "Plusieurs forfaits sont basculés pour cette instance. Les changer sur l'hôte du pont, pas ici."
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Share to task"
@@ -1936,6 +1987,11 @@ msgid "Switch between title and linked record"
 msgstr "Basculer entre le titre et l'élément associé"
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_user_ids
+msgid "Switched users"
+msgstr "Usagers basculés"
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Tenant"
 msgstr "Locataire"
@@ -1961,6 +2017,30 @@ msgid "Terminé"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The bridge cannot read its plan switch table: fix it on the server before changing it here."
+msgstr "Le pont ne peut pas lire sa table de bascule : la réparer sur le serveur avant de la changer ici."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The bridge did not answer: the plan switch cannot be read or changed right now."
+msgstr "Le pont n'a pas répondu : la bascule de forfait ne peut être ni lue ni changée pour l'instant."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The bridge does not open this plan to this instance."
+msgstr "Le pont n'ouvre pas ce forfait à cette instance."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The bridge refused the plan switch: %s"
+msgstr "Le pont a refusé la bascule de forfait : %s"
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "The conversation could not be archived."
@@ -1983,6 +2063,18 @@ msgid "The first time the panel opens on a record with no conversation yet, Clau
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The plan is switched for users who no longer exist here. Change it on the bridge host."
+msgstr "Le forfait est basculé pour des usagers qui n'existent plus ici. Le changer sur l'hôte du pont."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid "The plan is switched to an account this instance does not list (%s). Change it on the bridge host."
+msgstr "Le forfait est basculé vers un compte que cette instance ne liste pas (%s). Le changer sur l'hôte du pont."
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "This conversation has been dormant for a while. Archive it?"
@@ -1993,6 +2085,11 @@ msgstr "Cette conversation dort depuis un moment. L'archiver ?"
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "This conversation: %s turns"
 msgstr "Cette conversation : %s tours"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "This instance's own plan"
+msgstr "Forfait de cette instance"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -2110,6 +2207,11 @@ msgid "User"
 msgstr "Utilisateur"
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_plan_user_ids
+msgid "Users whose Gen turns go to the plan above. Empty: everyone."
+msgstr "Usagers dont les tours de Gen vont au forfait ci-dessus. Vide : tout le monde."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__utilization
 msgid "Utilisée (%)"
 msgstr ""
@@ -2142,6 +2244,32 @@ msgstr ""
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__closure_state
 msgid "Where the conversation stands, as Gen judged it at the end of its last turn."
 msgstr "Où en est la conversation, selon Gen à la fin de son dernier tour."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_plan_group_id
+msgid "Who sees the Claude plan windows (session, week). Empty: every internal user."
+msgstr "Qui voit les fenêtres du forfait Claude (session, semaine). Vide : tous les usagers internes."
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Who sees the session and week windows of the Claude plan. Empty: every internal user. Each user can still hide them for themselves."
+msgstr "Qui voit les fenêtres session et semaine du forfait Claude. Vide : tous les usagers internes. Chacun peut ensuite les masquer pour lui-même."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_usage_group_id
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Who sees the tokens a conversation used. Empty: every internal user."
+msgstr "Qui voit les jetons qu'une conversation a consommés. Vide : tous les usagers internes."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_cost_group_id
+msgid "Who sees what a conversation would cost at API rates. Empty: every internal user."
+msgstr "Qui voit ce que coûterait une conversation aux tarifs de l'API. Vide : tous les usagers internes."
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Who sees what a conversation would cost at public API rates. Empty: every internal user."
+msgstr "Qui voit ce que coûterait une conversation aux tarifs publics de l'API. Vide : tous les usagers internes."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__end_reason

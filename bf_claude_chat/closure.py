@@ -139,6 +139,11 @@ def closure_note(unlinked=False):
     reste « t'attend » : la personne y répond d'habitude par un « go ». Un
     brouillon montré ici seulement est « t'attend » s'il se valide ici.
 
+    Des prochaines actions à la portée de Gen sont une offre, même sans
+    question : une mise en contexte qui finit par « Prochaines actions »
+    reçoit presque toujours un « go », et la juger « fait » proposait de
+    l'archiver trop tôt.
+
     `unlinked` : la conversation n'a pas de fiche et Gen n'a encore rien
     proposé ; il peut nommer une tâche qu'il connaît, jamais en chercher une
     exprès (un tour ne doit rien coûter de plus pour ça).
@@ -152,7 +157,11 @@ def closure_note(unlinked=False):
         "Regarde d'abord comment finit ta réponse. Si elle se termine par une "
         "question, un choix à faire, des options ou une offre d'agir toi-même "
         "(« je peux… », « veux-tu que… », « dis-moi si… », « j'attends ton feu "
-        "vert »), c'est waiting : la personne répond d'habitude ici. Sinon, done "
+        "vert »), c'est waiting : la personne répond d'habitude ici. Des "
+        "prochaines actions que tu pourrais faire toi-même (rédiger, créer, "
+        "corriger, vérifier, mettre à jour) sont aussi une offre, même sans "
+        "question : une mise en contexte qui finit ainsi est waiting, la "
+        "personne y répond presque toujours « go ». Sinon, done "
         "quand ce que la conversation devait faire est fait et que ce qui reste "
         "vit ailleurs qu'ici : déposé dans Odoo (brouillon au chatter, activité, "
         "échéance, rappel, note) ou un geste que la personne fera seule (envoyer "

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -116,6 +117,80 @@ class ResConfigSettings(models.TransientModel):
              "access and safety rules are set on the bridge, not here. "
              "2,000 characters at most.",
     )
+
+    # Qui voit quels compteurs. Vide = tous les
+    # usagers internes, comme avant.
+    claude_meter_plan_group_id = fields.Many2one(
+        "res.groups", string="Plan counters visible to",
+        config_parameter="bf_claude_chat.meter_plan_group_id",
+        help="Who sees the Claude plan windows (session, week). Empty: every "
+             "internal user.",
+    )
+    claude_meter_usage_group_id = fields.Many2one(
+        "res.groups", string="Conversation tokens visible to",
+        config_parameter="bf_claude_chat.meter_usage_group_id",
+        help="Who sees the tokens a conversation used. Empty: every internal user.",
+    )
+    claude_meter_cost_group_id = fields.Many2one(
+        "res.groups", string="Cost visible to",
+        config_parameter="bf_claude_chat.meter_cost_group_id",
+        help="Who sees what a conversation would cost at API rates. Empty: "
+             "every internal user.",
+    )
+
+    # Le forfait Max qui paie les tours de cette
+    # instance. La bascule vit dans le pont : ces deux champs la lisent et
+    # l'écrivent par lui, ils ne la copient pas en base.
+    claude_plan_account_id = fields.Many2one(
+        "claude.account", string="Plan paying for Gen",
+        compute="_compute_plan_switch", inverse="_inverse_plan_switch",
+        help="Empty: this instance's own plan. Another account: Gen turns are "
+             "paid by that Max plan, for the users below (all if empty). Only "
+             "the accounts the bridge allows for this instance are accepted.",
+    )
+    claude_plan_user_ids = fields.Many2many(
+        "res.users", string="Switched users",
+        compute="_compute_plan_switch", inverse="_inverse_plan_switch",
+        domain=[("share", "=", False)],
+        help="Users whose Gen turns go to the plan above. Empty: everyone.",
+    )
+    claude_plan_switch_error = fields.Char(compute="_compute_plan_switch")
+    claude_plan_switch_available = fields.Boolean(compute="_compute_plan_switch")
+    # Ce que le pont disait À L'OUVERTURE du formulaire.
+    # Les réglages renvoient tous leurs champs à chaque enregistrement ; sans
+    # cet instantané, un formulaire resté ouvert pendant une bascule faite
+    # ailleurs (skill, autre admin) la retirait en enregistrant autre chose.
+    # Calculé avec les autres (une seule lecture du pont, et seulement quand le
+    # formulaire le demande) ; l'inverse vide garde la valeur RENVOYÉE par le
+    # formulaire pendant l'enregistrement.
+    claude_plan_switch_snapshot = fields.Char(
+        compute="_compute_plan_switch", inverse="_inverse_plan_switch_snapshot")
+
+    # ⚠️ Une dépendance réelle : sans elle, le chargement du formulaire
+    # (`onchange` d'un enregistrement neuf) ne calcule pas ces champs et le
+    # bloc restait masqué.
+    @api.depends("company_id")
+    def _compute_plan_switch(self):
+        etat = self.env["claude.account"]._plan_switch_read()
+        for rec in self:
+            rec.claude_plan_account_id = etat["account"]
+            rec.claude_plan_user_ids = etat["users"]
+            rec.claude_plan_switch_error = etat["error"]
+            rec.claude_plan_switch_available = etat["available"]
+            rec.claude_plan_switch_snapshot = "" if etat["error"] else json.dumps(
+                self.env["claude.account"]._plan_switch_key(etat["account"], etat["users"]))
+
+    def _inverse_plan_switch_snapshot(self):
+        """Rien : la valeur renvoyée sert seulement à `_inverse_plan_switch`."""
+
+    def _inverse_plan_switch(self):
+        Compte = self.env["claude.account"]
+        for rec in self:
+            if Compte._plan_switch_unchanged(rec.claude_plan_switch_snapshot,
+                                             rec.claude_plan_account_id,
+                                             rec.claude_plan_user_ids):
+                continue
+            Compte._plan_switch_write(rec.claude_plan_account_id, rec.claude_plan_user_ids)
 
     # A constraint rather than a set_values() override: the settings form saves
     # the record before it runs set_values(), so the refusal lands on the save

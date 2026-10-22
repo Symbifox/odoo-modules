@@ -45,6 +45,8 @@ from odoo.service.model import PG_CONCURRENCY_ERRORS_TO_RETRY
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
+from ..models.claude_chat_session import usage_shown
+
 from ..closure import ClosureFilter, strip_closure
 
 _logger = logging.getLogger(__name__)
@@ -720,6 +722,8 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
                 "mobile": session.origin == "mobile",
                 "titre": titre,
                 "closure": session._closure_payload(),
+                # Ce que la personne voit de la consommation.
+                "meters": session.user_id._gen_meters_shown(),
             }
 
     try:
@@ -746,9 +750,9 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
         "state": vals["state"],
         "end_reason": raison,
         "closure": enregistre["closure"],
-        "usage": {k: vals.get(k, 0) for k in (
+        "usage": usage_shown({k: vals.get(k, 0) for k in (
             "input_tokens", "output_tokens", "cache_read_tokens",
-            "cache_write_tokens", "duration_ms", "cost_usd")},
+            "cache_write_tokens", "duration_ms", "cost_usd")}, enregistre["meters"]),
     }
     api_key = etat.get("api_key") or ""
     session_id = enregistre["session_id"]

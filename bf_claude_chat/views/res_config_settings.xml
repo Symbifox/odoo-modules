@@ -48,6 +48,38 @@
                             </div>
                         </setting>
                     </block>
+                    <block title="Counters">
+                        <setting string="Plan counters"
+                                 help="Who sees the session and week windows of the Claude plan. Empty: every internal user. Each user can still hide them for themselves.">
+                            <field name="claude_meter_plan_group_id" placeholder="Every internal user"/>
+                        </setting>
+                        <setting string="Conversation tokens"
+                                 help="Who sees the tokens a conversation used. Empty: every internal user.">
+                            <field name="claude_meter_usage_group_id" placeholder="Every internal user"/>
+                        </setting>
+                        <setting string="Cost at API rates"
+                                 help="Who sees what a conversation would cost at public API rates. Empty: every internal user.">
+                            <field name="claude_meter_cost_group_id" placeholder="Every internal user"/>
+                        </setting>
+                    </block>
+                    <block title="Plan" invisible="not claude_plan_switch_available">
+                        <setting string="Plan paying for Gen"
+                                 help="Empty: this instance's own plan. Pick another Max account to have Gen turns paid by it, for the users listed (everyone if none). Takes effect on the next turn, no restart. Only the accounts the bridge allows for this instance are accepted.">
+                            <field name="claude_plan_switch_snapshot" invisible="1"/>
+                            <field name="claude_plan_switch_available" invisible="1"/>
+                            <field name="claude_plan_switch_error" invisible="not claude_plan_switch_error"
+                                   class="text-warning" readonly="1"/>
+                            <div class="content-group">
+                                <field name="claude_plan_account_id" placeholder="This instance's own plan"
+                                       options="{'no_create': True, 'no_open': True}"
+                                       readonly="claude_plan_switch_error"/>
+                                <field name="claude_plan_user_ids" widget="many2many_tags"
+                                       placeholder="Everyone" invisible="not claude_plan_account_id"
+                                       readonly="claude_plan_switch_error"
+                                       options="{'no_create': True}"/>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Authentication">
                         <setting string="API Key (optional)"
                                  help="Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently.">

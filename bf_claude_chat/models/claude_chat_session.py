@@ -38,6 +38,26 @@ ARCHIVE_SOURCES = [
 ]
 
 
+_JETONS = ("input_tokens", "output_tokens", "cache_read_tokens",
+           "cache_write_tokens", "net_tokens", "total_tokens")
+
+
+def usage_shown(usage, montrees):
+    """La consommation d'une réponse, moins ce qui est masqué.
+
+    Rend un dict NEUF des seuls champs de consommation : zéro pour les
+    jetons ou le coût que la personne ne voit pas (le téléphone n'affiche
+    pas un zéro).
+    """
+    garde = {k: usage.get(k, 0) for k in _JETONS + ("cost_usd", "duration_ms")
+             if k in usage}
+    if not montrees.get("tokens"):
+        garde.update({k: 0 for k in _JETONS if k in garde})
+    if not montrees.get("cost") and "cost_usd" in garde:
+        garde["cost_usd"] = 0.0
+    return garde
+
+
 class ClaudeChatSession(models.Model):
     _name = "claude.chat.session"
     _description = "Claude Chat Session"
@@ -610,6 +630,43 @@ class ClaudeChatSession(models.Model):
         return {"net_tokens": net or 0, "total_tokens": total or 0,
                 "cost_usd": round(cout or 0.0, 4), "duration_ms": duree or 0,
                 "turns": nombre or 0}
+
+    def _usage_totals_shown(self, montrees):
+        """Les totaux, moins ce que la personne ne voit pas.
+
+        `False` sans les jetons : le téléphone n'a pas de ligne de coût seule.
+        """
+        totaux = self._usage_totals()
+        if not montrees.get("tokens"):
+            return False
+        if not montrees.get("cost"):
+            totaux["cost_usd"] = 0.0
+        return totaux
+
+    @api.model
+    def _badge_count(self, res_model=False, res_id=False):
+        """Le nombre sur l'icône de Gen.
+
+        Sur une fiche : les conversations de la personne sur cette fiche,
+        archivées comprises (« combien de fois on en a parlé »). Ailleurs :
+        ses conversations actives. Rien pour un usager hors Gen.
+        """
+        user = self.env.user
+        if not user._is_internal():
+            return {"count": 0, "scope": False}
+        Session = self.with_context(active_test=False)
+        try:
+            res_id = int(res_id or 0)
+        except (TypeError, ValueError):
+            res_id = 0
+        if res_model and res_id and isinstance(res_model, str):
+            n = Session.search_count([("user_id", "=", user.id),
+                                      ("res_model", "=", res_model),
+                                      ("res_id", "=", res_id)])
+            if n:
+                return {"count": n, "scope": "record"}
+        n = self.search_count([("user_id", "=", user.id)])
+        return {"count": n, "scope": "active"}
 
     @api.model
     def _closure_message_vals(self, closure_vals):

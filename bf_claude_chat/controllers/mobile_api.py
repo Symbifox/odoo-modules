@@ -29,6 +29,8 @@ from odoo.http import request
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
+from ..models.claude_chat_session import usage_shown
+
 from .main import (
     AUTO_BRIEF_PROMPT, _check_rate_limit, _get_settings, _validated_context_ref,
     launch_background_turn, plan_usage,
@@ -221,12 +223,14 @@ class BfClaudeChatMobileApi(http.Controller):
              "duration_ms"],
             order="create_date asc, id asc", limit=200,
         )
+        montrees = request.env.user._gen_meters_shown()
         for row in rows:
+            row.update(usage_shown(row, montrees))
             row["tools"] = _tools(row.pop("tool_log", None))
             # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
             row["end_reason"] = row.get("end_reason") or ""
         return _json({"session_id": session.id, "session_name": session.name,
-                      "messages": rows, "totals": session._usage_totals(),
+                      "messages": rows, "totals": session._usage_totals_shown(montrees),
                       **session._closure_payload()})
 
     # ── Le forfait ────────────────────────────────────────
@@ -339,7 +343,7 @@ class BfClaudeChatMobileApi(http.Controller):
             # contexte relu (~93 % du volume) et se lit très mal. Les deux
             # voyagent, l'app choisit — et elle choisit la même chose que le
             # Cockpit, sinon les deux écrans se contredisent.
-            "usage": {
+            "usage": usage_shown({
                 "input_tokens": message.input_tokens,
                 "output_tokens": message.output_tokens,
                 "cache_read_tokens": message.cache_read_tokens,
@@ -348,7 +352,7 @@ class BfClaudeChatMobileApi(http.Controller):
                 "total_tokens": message.total_tokens,
                 "cost_usd": message.cost_usd,
                 "duration_ms": message.duration_ms,
-            },
+            }, request.env.user._gen_meters_shown()),
         })
 
     @http.route(f"{BASE}/stop", type="http", auth="public", methods=["POST"],

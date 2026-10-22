@@ -164,7 +164,11 @@ conversation had to do is done and what remains lives elsewhere (a draft in the
 chatter, an activity, a deadline, a reminder), the conversation is done. A reply
 that ends on a question, a choice or an offer to act stays "waiting for you",
 and so does a draft shown only in the conversation that must be validated
-there; code not yet deployed and verified is still work left.
+there; code not yet deployed and verified is still work left. Next actions
+that Gen could carry out itself count as an offer too, question or not (1.37.0):
+a context brief that ends on "Next actions: 1. 2. 3." is "waiting for you",
+because the person almost always answers "go", and judging it done proposed
+archiving it too early.
 
 - **Journal**: every reply keeps the judgment of its own turn
   (`claude.chat.message.closure_state` / `closure_reason`), and a conversation
@@ -209,7 +213,23 @@ there; code not yet deployed and verified is still work left.
 - **Counters** at the top of a conversation, for internal users: the Claude plan
   windows (5-hour session, week) read through the bridge, and the total of the
   conversation (new tokens, API-equivalent cost). ↻ asks for a fresh reading.
-  The usage label under each answer survives a reload.
+  The usage label under each answer survives a reload. Each plan window also
+  shows the time left before it resets ("Week 84 % · 2 d 5 h", 1.37.0).
+- **Who sees which counters** (1.37.0): three groups in Settings > Gen (plan
+  windows, conversation tokens, cost at API rates); empty means every internal
+  user, as before. Each user then picks their own among those allowed (the ⚙
+  button of the counter bar, stored in `res.users.gen_meters`). The server only
+  serves what is shown: plan windows, conversation totals, and the per-answer
+  usage on the desktop and phone routes; with no window wanted, the bridge is not
+  called.
+- **Badge on the Gen icon** (1.37.0): on a record, the number of the user's
+  conversations about that record, archived included; elsewhere, their active
+  conversations. Refreshed on every screen change (`/claude-chat/badge`).
+- **Waiting phrases in the conversation's language** (1.37.0): while Gen thinks,
+  the status line draws a fox phrase from a repertoire written in each language
+  (31 in French, 30 in English) rather than translated, picked from the language
+  of the conversation (the person's latest messages, then Gen's, then the
+  interface).
 
 Closure fields are written by the server only, and a conversation can never be
 handed to another user (Odoo checks the write rule before the write, not after).
@@ -263,7 +283,9 @@ modules the mobile routes simply answer 401.
 
 `res.users` gains `gen_list_mode` (Selection `title` / `element`, default
 `title`): what the conversation list shows, shared by the web and the mobile app,
-and `gen_closure_push_date`, the local day of the last daily notification.
+and `gen_closure_push_date`, the local day of the last daily notification, and
+`gen_meters` (Char, comma-separated: `session`, `week`, `tokens`, `cost`), the
+counters the user chose to show (1.37.0).
 
 ### claude.chat.message
 
@@ -307,7 +329,9 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 | `/claude-chat/sessions` | Lists sessions. On a record (res_model/res_id): its whole history, archived included, active first; elsewhere `archived=True` lists archived ones only. Also `query` and `to_follow`; each row carries `active`, `archive_date` and `busy` |
 | `/claude-chat/list-mode` | Remembers whether the list shows titles or linked records |
 | `/claude-chat/messages` | One of the user's sessions, archived included: messages with their usage, `active`, `archive_date` and `totals` |
-| `/claude-chat/usage` | Internal users: the Claude plan (session and week windows) read through the bridge, and `totals` of the user's own `session_id`; `fresh=True` asks for a new reading |
+| `/claude-chat/usage` | Internal users: the Claude plan (session and week windows) read through the bridge for the plan paying this user's turns, and `totals` of the user's own `session_id`; `fresh=True` asks for a new reading. Only the counters the user sees, plus `meters` and `meters_allowed` (1.37.0) |
+| `/claude-chat/meters` | The counters the user chooses to show, among those allowed (1.37.0) |
+| `/claude-chat/badge` | The number on the Gen icon: the user's conversations about `res_model`/`res_id`, or their active ones (1.37.0) |
 | `/claude-chat/say` | Slips a question into the owner's running turn; nothing is recorded until the bridge confirms Gen read it |
 | `/claude-chat/rename-session` | Renames a session |
 | `/claude-chat/delete-session` | Archives a session; `source` = `list` or `banner` |
@@ -426,6 +450,8 @@ the text of `result` is not.
 | Bridge Socket | /run/claude-bridge/bridge.sock | Unix socket path (parameter `bf_ai_bridge.socket`, shared by every module calling the bridge) |
 | Live viewers (parameter `bf_claude_chat.max_live_viewers`) | half the HTTP workers | How many screens may follow a turn live at once. Each one holds an HTTP worker until its turn ends; a refused screen reattaches through `/claude-chat/attach` and the turn carries on without it |
 | Conversations aim to close | False | End-of-turn judgment, the "Archive?" proposal, the nightly follow-up and the daily notification (parameter `bf_claude_chat.closure_enabled`) |
+| Plan / conversation tokens / cost visible to | (empty) | Three groups: who sees the plan windows, the tokens of a conversation, its cost at API rates. Empty means every internal user (1.37.0) |
+| Plan paying for Gen | (empty) | Shown only when the bridge offers a `/bascule` route: another Max account (`claude.account`) pays the Gen turns of the users listed, or of everyone. Read and written through the bridge, never copied into the database; a form left open does not undo a switch made elsewhere (1.37.0) |
 | Gen's personality | (empty) | How Gen speaks here (name, tu/vous, language, length, self-presentation), composed before the steering instructions as `context.identity`. Tone only, 2,000 characters at most; what Gen may do stays on the bridge |
 
 ## Security

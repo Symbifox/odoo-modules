@@ -349,7 +349,7 @@ class ClaudeChatAction extends Component {
         const idx = this.state.messages.push({
             id: `a-${Date.now()}`,
             role: "assistant",
-            ...streamingFields(),
+            ...streamingFields(this.state.messages),
             create_date: new Date().toISOString(),
         }) - 1;
         const assistant = this.state.messages[idx];

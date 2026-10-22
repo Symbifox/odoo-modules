@@ -10,6 +10,8 @@ from collections import defaultdict
 import odoo
 from odoo import fields, http
 from odoo.addons.bf_ai_bridge.tools import transport
+
+from ..models.claude_chat_session import usage_shown
 from odoo.addons.bf_claude_chat.models.claude_chat_instruction import (
     STEERING_MAX_CHARS,
 )
@@ -209,11 +211,19 @@ def plan_usage(env, fresh=False):
     """
     if not env.user._is_internal():
         return {"plan": False}
+    # Seulement les fenêtres que la personne voit (configuration
+    # et choix), et sur le compte qui paie SES tours (`user_id` : la bascule
+    # de forfait est par usager ; un basculé voyait le forfait de l'instance).
+    montrees = env.user._gen_meters_shown()
+    cles = [k for k, m in (("five_hour", "session"), ("seven_day", "week")) if montrees[m]]
+    if not cles:
+        return {"plan": False}
     if _get_api_key(env):
         return {"plan": False, "api_key": True}
     try:
         data = env["bf.ai.bridge"].call(
-            "/usage", {"tenant": env["bf.ai.bridge"].tenant(), "fresh": bool(fresh)}, 8)
+            "/usage", {"tenant": env["bf.ai.bridge"].tenant(), "fresh": bool(fresh),
+                       "user_id": env.user.id}, 8)
     except Exception:
         _logger.info("Gen : forfait non relevé", exc_info=True)
         return {"plan": True, "windows": [], "error": "unavailable"}
@@ -221,7 +231,7 @@ def plan_usage(env, fresh=False):
         {"key": f.get("key"), "utilization": f.get("utilization"),
          "resets_at": f.get("resets_at")}
         for f in (data.get("windows") or [])
-        if f.get("key") in ("five_hour", "seven_day")
+        if f.get("key") in cles
         and isinstance(f.get("utilization"), (int, float))
     ]
     return {"plan": True, "windows": fenetres,
@@ -946,14 +956,14 @@ class ClaudeChatController(http.Controller):
                 "end_reason": msg.end_reason or "",
                 # L'écran qui suivait le tour lit le verdict ici.
                 "closure": msg.session_id._closure_payload(),
-                "usage": usage_vals({"usage": {
+                "usage": usage_shown(usage_vals({"usage": {
                     "input_tokens": msg.input_tokens,
                     "output_tokens": msg.output_tokens,
                     "cache_read_tokens": msg.cache_read_tokens,
                     "cache_write_tokens": msg.cache_write_tokens,
                     "cost_usd": msg.cost_usd,
                     "duration_ms": msg.duration_ms,
-                }}),
+                }}), msg.session_id.user_id._gen_meters_shown()),
             })
 
         def _snapshot_line(msg):
@@ -1363,6 +1373,11 @@ class ClaudeChatController(http.Controller):
              "duration_ms"],
             order="create_date asc, id asc",
         )
+        # Rien de ce que la personne a choisi de masquer, ou que la
+        # configuration lui cache, ne part vers l'écran.
+        montrees = request.env.user._gen_meters_shown()
+        for row in messages:
+            row.update(usage_shown(row, montrees))
         # Au bureau, cette route ne sert qu'à OUVRIR une
         # conversation à l'écran. Le téléphone ne la montrera plus à lire,
         # jusqu'au dernier message FINI : une réponse encore en cours sera « à
@@ -1373,7 +1388,7 @@ class ClaudeChatController(http.Controller):
         return {"messages": messages, "session_name": session.name,
                 "active": session.active,
                 "archive_date": fields.Datetime.to_string(session.archive_date) or False,
-                "totals": session._usage_totals(),
+                "totals": session._usage_totals_shown(request.env.user._gen_meters_shown()),
                 **session._closure_payload()}
 
     @http.route("/claude-chat/usage", type="json", auth="user", methods=["POST"])
@@ -1381,11 +1396,29 @@ class ClaudeChatController(http.Controller):
         """Le forfait qui paie les tours de ce locataire, et ce
         que la conversation affichée a consommé (↻ relit les deux)."""
         result = plan_usage(request.env, bool(fresh))
+        montrees = request.env.user._gen_meters_shown()
+        if request.env.user._is_internal():
+            result["meters"] = montrees
+            result["meters_allowed"] = sorted(request.env.user._gen_meters_allowed())
         session = request.env["claude.chat.session"].with_context(
             active_test=False)._own(session_id) if session_id else None
         if session:
-            result.update(session_id=session.id, totals=session._usage_totals())
+            result.update(session_id=session.id,
+                          totals=session._usage_totals_shown(montrees))
         return result
+
+    @http.route("/claude-chat/meters", type="json", auth="user", methods=["POST"])
+    def set_meters(self, meters=None):
+        """Les compteurs que la personne choisit d'afficher."""
+        if not isinstance(meters, list):
+            return {"error": "invalid"}
+        return {"meters": request.env.user._set_gen_meters(
+            [m for m in meters if isinstance(m, str)])}
+
+    @http.route("/claude-chat/badge", type="json", auth="user", methods=["POST"])
+    def badge(self, res_model=False, res_id=False):
+        """Le nombre sur l'icône de Gen, en haut de l'écran."""
+        return request.env["claude.chat.session"]._badge_count(res_model, res_id)
 
     @http.route("/claude-chat/seen", type="json", auth="user", methods=["POST"])
     def mark_seen(self, session_id, message_id=None):

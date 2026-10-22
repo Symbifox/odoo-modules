@@ -36,6 +36,22 @@ export function parseServerDate(value) {
 }
 
 /**
+ * Le temps qui reste avant la remise à zéro d'une fenêtre du forfait :
+ * « 2 d 5 h », « 3 h 20 min », « 25 min ». La date
+ * n'était lisible qu'au survol.
+ */
+export function remainingLabel(remise, maintenant = Date.now()) {
+    if (!remise) return "";
+    const minutes = Math.ceil((remise.getTime() - maintenant) / 60000);
+    if (!(minutes > 0)) return "";
+    const jours = Math.floor(minutes / 1440);
+    const heures = Math.floor((minutes % 1440) / 60);
+    if (jours) return _t("%s d %s h", jours, heures);
+    if (heures) return _t("%s h %s min", heures, minutes % 60);
+    return _t("%s min", minutes);
+}
+
+/**
  * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
  * et à Comms.
  *
@@ -78,9 +94,47 @@ export function usageTitle(u) {
     return lignes.join("\n");
 }
 
+/**
+ * La consommation d'une réponse, moins les compteurs masqués
+ * (par la configuration ou par la personne). `meters` absent : tout.
+ */
+export function maskUsage(u, meters) {
+    if (!u || !meters) return u;
+    const copie = { ...u };
+    if (!meters.tokens) {
+        for (const k of ["net_tokens", "total_tokens", "input_tokens", "output_tokens",
+                         "cache_read_tokens", "cache_write_tokens"]) {
+            copie[k] = 0;
+        }
+    }
+    if (!meters.cost) copie.cost_usd = 0;
+    return copie;
+}
+
+/**
+ * L'infobulle de la pastille de l'icône Gen.
+ *
+ * ⚠️ Ici et non dans claude_systray.js : l'extracteur de traductions ne lit
+ * aucune chaîne `_t` de ce fichier-là.
+ */
+export function badgeTitle(count, scope) {
+    if (!count) return _t("Gen");
+    return scope === "record"
+        ? _t("Gen: %s conversations on this record", count)
+        : _t("Gen: %s active conversations", count);
+}
+
+/** Les compteurs, dans l'ordre de l'écran. */
+export const METERS = ["session", "week", "tokens", "cost"];
+
 export const screenMixin = {
     _usageLabels() {
-        return { usageLabel, usageTitle };
+        const meters = this.state && this.state.meters;
+        if (!meters) return { usageLabel, usageTitle };
+        return {
+            usageLabel: (u) => usageLabel(maskUsage(u, meters)),
+            usageTitle: (u) => (meters.tokens ? usageTitle(maskUsage(u, meters)) : ""),
+        };
     },
 
     screenState() {
@@ -91,6 +145,9 @@ export const screenMixin = {
             plan: null,              // {windows, measured_at, error} ou null
             totals: null,            // consommation de la conversation affichée
             refreshingUsage: false,
+            meters: null,            // {session, week, tokens, cost} : affichés
+            metersAllowed: [],       // ceux que la configuration permet
+            metersMenu: false,
             apiKeyBilling: false,    // le locataire paie au jeton : pas de forfait
             busyIds: {},             // conversations dont CET écran suit un tour
         };
@@ -230,7 +287,7 @@ export const screenMixin = {
         if (!last || last.role !== "assistant") return;
         if (last.state === "error") last.interrupted = true;
         if (last.state !== "pending") return;
-        pendingToStreaming(last);
+        pendingToStreaming(last, this.state.messages);
         await this._followTurn(last, { turnId: last.id });
         await this._refreshList();
     },
@@ -400,12 +457,72 @@ export const screenMixin = {
             });
             this.state.plan = result && result.plan ? result : null;
             this.state.apiKeyBilling = Boolean(result && result.api_key);
-            if (result && result.totals && result.session_id === this.state.activeSessionId) {
-                this.state.totals = result.totals;
+            if (result && result.meters) {
+                this.state.meters = result.meters;
+                this.state.metersAllowed = result.meters_allowed || [];
+                this._relabelUsage();
+            }
+            if (result && result.session_id === this.state.activeSessionId) {
+                this.state.totals = result.totals || null;
             }
         } catch {
             // Sans relevé, pas de compteur : rien à dire de plus.
         }
+    },
+
+    /** Refaire l'étiquette des réponses chargées, une fois les compteurs connus. */
+    _relabelUsage() {
+        const labels = this._usageLabels();
+        for (const row of this.state.messages || []) {
+            if (row.role === "assistant" && row.duration_ms && !row.streaming) {
+                row.usageLabel = labels.usageLabel(row);
+                row.usageTitle = labels.usageTitle(row);
+            }
+        }
+    },
+
+    meterChoices() {
+        const noms = { session: _t("Session"), week: _t("Week"),
+                       tokens: _t("Conversation tokens"), cost: _t("Cost at API rates") };
+        const meters = this.state.meters || {};
+        return METERS.filter((m) => this.state.metersAllowed.includes(m))
+            .map((m) => ({ key: m, label: noms[m], shown: Boolean(meters[m]) }));
+    },
+
+    onToggleMetersMenu() {
+        this.state.metersMenu = !this.state.metersMenu;
+        if (this._metersCloser) {
+            document.removeEventListener("click", this._metersCloser);
+            this._metersCloser = null;
+        }
+        if (this.state.metersMenu) {
+            // Un clic ailleurs le referme ; le menu arrête les siens (t-on-click.stop).
+            const fermer = () => {
+                this.state.metersMenu = false;
+                document.removeEventListener("click", fermer);
+                this._metersCloser = null;
+            };
+            this._metersCloser = fermer;
+            setTimeout(() => {
+                if (this._metersCloser === fermer) document.addEventListener("click", fermer);
+            }, 0);
+        }
+    },
+
+    async onToggleMeter(key, ev) {
+        const meters = { ...(this.state.meters || {}) };
+        meters[key] = !meters[key];
+        const choisis = METERS.filter((m) => meters[m]);
+        try {
+            const result = await rpc("/claude-chat/meters", { meters: choisis });
+            if (result && result.meters) this.state.meters = result.meters;
+        } catch {
+            // La case revient à l'état réel : OWL ne repeint pas un `checked`
+            // dont la valeur rendue n'a pas changé.
+            if (ev && ev.target) ev.target.checked = Boolean((this.state.meters || {})[key]);
+            return;
+        }
+        await this.loadPlan(false);
     },
 
     async onRefreshUsage() {
@@ -439,9 +556,13 @@ export const screenMixin = {
         return plan.windows.map((w) => {
             const remise = parseServerDate(w.resets_at);
             const pct = Math.round(w.utilization);
+            const reste = remainingLabel(remise);
+            // ⚠️ Pas de gabarit `…` imbriqué dans un autre : le minifieur
+            // d'Odoo y mangeait l'espace (« 38 %· 2 h »).
+            const suite = reste ? " · " + reste : "";
             return {
                 key: w.key,
-                label: `${noms[w.key] || w.key} ${pct} %`,
+                label: `${noms[w.key] || w.key} ${pct} %` + suite,
                 level: pct >= 95 ? "danger" : pct >= 80 ? "warning" : "",
                 title: remise
                     ? _t("Resets %s", remise.toLocaleString([], {
@@ -462,11 +583,13 @@ export const screenMixin = {
     totalsLabel() {
         const t = this.state.totals;
         if (!t || !t.turns) return "";
+        const meters = this.state.meters;
+        if (meters && !meters.tokens) return "";
         // ⚠️ `_t` hors du gabarit de chaîne : l'extracteur ne lit pas un
         // `_t(...)` écrit dans un `${...}`, et le mot restait anglais.
         const mot = _t("tokens");
         const parts = [`${compactTokens(t.net_tokens)} ${mot}`];
-        if (t.cost_usd) {
+        if (t.cost_usd && !(meters && !meters.cost)) {
             parts.push(`${t.cost_usd.toLocaleString("fr-CA", {
                 minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`);
         }

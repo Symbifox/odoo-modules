@@ -1,5 +1,30 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.37.0 - 2026-10-21
+
+### Fin de conversation, formules du renard, compteurs, pastille et forfait
+
+- **Des prochaines actions à la portée de Gen sont une offre.** Une mise en
+  contexte qui finit par « Prochaines actions : 1. 2. 3. » est maintenant
+  « t'attend », plus « fait » : la personne y répond presque toujours « go »,
+  et la juger « fait » proposait de l'archiver trop tôt.
+- **Formules du renard** : un répertoire par langue (31 en français, 30 en
+  anglais), écrit dans chaque langue plutôt que traduit, choisi d'après la
+  langue de la CONVERSATION (derniers messages de la personne, puis de Gen,
+  puis langue de l'interface). Les 13 anciennes chaînes quittent le catalogue.
+- **Temps avant la remise à zéro** à côté de chaque fenêtre du forfait
+  (« Semaine 45 % · 2 j 5 h »), au lieu du seul survol.
+- **Qui voit quels compteurs** : trois groupes dans la configuration (forfait,
+  jetons de la conversation, coût) ; vide = tous les usagers internes, comme
+  avant. Chacun choisit ensuite les siens (bouton ⚙ de la barre des
+  compteurs, `res.users.gen_meters`). Le serveur ne sert que ce qui se voit.
+- **Pastille sur l'icône Gen** : sur une fiche, le nombre de ses conversations
+  sur cette fiche, archivées comprises ; ailleurs, ses conversations actives.
+- **Forfait qui paie Gen**, choisi dans la configuration (compte de
+  `claude.account`, usagers visés ou tous), pour un pont qui offre la route
+  `/bascule` ; sans elle, le réglage se cache. La jauge lit le forfait de
+  l'usager basculé (`user_id` envoyé à `/usage`).
+
 ## 18.0.1.35.1 - 2026-10-18
 
 ### Le persona n'arrive à Gen qu'avec le rôle persona
