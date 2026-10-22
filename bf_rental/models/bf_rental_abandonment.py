@@ -42,6 +42,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import format_date
 
 # Art. 944 : 90 jours pour que le bien soit « oublié », puis un avis « de la
 # même durée ». Le texte compte en JOURS, pas en mois.
@@ -128,6 +129,54 @@ class BfRentalAbandonment(models.Model):
         related="lease_id.currency_id", readonly=True,
     )
     note = fields.Text(string="Note")
+
+    # Sans nom, la fiche s'affichait « bf.rental.abandonment,3 » au fil
+    # d'Ariane. Le départ se nomme par le logement et la date où il a
+    # été constaté. Un bail de chambre n'a pas de logement inscrit : l'immeuble,
+    # à défaut la référence du bail. Le portail ne lit pas cette fiche.
+    #
+    # 🔴 Le nom se lit avec les droits de l'usager, et jamais en sudo() : rien
+    # n'empêche un bail de la société A de viser un logement de la société B.
+    # Lu tel quel, le nom levait une AccessError sur la fraction et le
+    # gestionnaire limité à A ne pouvait plus ouvrir le départ ; lu en sudo(),
+    # il lui montrait un logement qu'il n'a pas le droit de voir. On ne nomme
+    # donc que par ce que l'usager peut lire (ACL et règles) : le logement,
+    # sinon l'immeuble, sinon la référence du bail. Un départ ou un bail
+    # illisible garde le nom d'avant le lot, sans erreur. Le nom dépend donc
+    # de l'usager et de ses sociétés : sans « uid » au contexte, le nom calculé
+    # en administrateur resterait en cache pour l'usager suivant.
+    @api.depends("date_noticed", "lease_id.name", "lease_id.unit_id.name",
+                 "lease_id.unit_id.building_id.name", "lease_id.building_id.name")
+    @api.depends_context("lang", "uid", "allowed_company_ids")
+    def _compute_display_name(self):
+        readable = self._filtered_access("read")
+        leases = readable.lease_id._filtered_access("read")
+        units = leases.unit_id._filtered_access("read")
+        buildings = (units.building_id | leases.building_id)._filtered_access("read")
+        unreadable = self - readable
+        for rec in readable:
+            lease = rec.lease_id
+            if lease and lease not in leases:
+                unreadable |= rec
+                continue
+            unit = lease.unit_id
+            if unit not in units or (unit.building_id
+                                     and unit.building_id not in buildings):
+                unit = unit.browse()
+            building = lease.building_id
+            if building not in buildings:
+                building = building.browse()
+            place = unit.display_name or building.name or lease.name
+            if not (rec.date_noticed and place):
+                rec.display_name = place or False
+                continue
+            rec.display_name = _(
+                "Départ constaté le %(date)s · %(place)s",
+                date=format_date(rec.env, rec.date_noticed),
+                place=place,
+            )
+        if unreadable:
+            super(BfRentalAbandonment, unreadable)._compute_display_name()
 
     @api.depends("kind", "effects_left")
     def _compute_resiliation(self):

@@ -296,6 +296,12 @@ msgid "Déguerpissement sans motif (art. 1975 al. 1)"
 msgstr ""
 
 #. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid "Départ constaté le %(date)s · %(place)s"
+msgstr ""
+
+#. module: bf_rental
 #: model:ir.model,name:bf_rental.model_bf_rental_abandonment
 msgid "Départ du locataire sans préavis"
 msgstr ""
@@ -470,10 +476,11 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:bf_rental.action_bf_rental_lease
 msgid ""
 "Le bail de logement se conclut sur le formulaire obligatoire du\n"
-"                Tribunal administratif du logement, acheté au Tribunal sur papier\n"
-"                ou en format électronique. Ce module enregistre ce qui a été\n"
-"                convenu et porte le formulaire signé en pièce jointe : il ne le\n"
-"                remplace pas et n'en produit pas un qui lui ressemble."
+"                Tribunal administratif du logement, qui ne se reproduit qu'avec\n"
+"                l'autorisation du Tribunal. Le locateur obtient son formulaire du\n"
+"                Tribunal, sur papier ou en bail électronique. Ce module enregistre\n"
+"                ce qui a été convenu et porte le formulaire signé en pièce jointe :\n"
+"                il ne le remplace pas et n'en produit pas un qui lui ressemble."
 msgstr ""
 
 #. module: bf_rental
@@ -488,8 +495,9 @@ msgstr ""
 #. module: bf_rental
 #: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__lease_attachment_ids
 msgid ""
-"Le formulaire officiel rempli et signé, tel qu'il a été acheté au Tribunal. "
-"Le module le PORTE ; il ne le produit pas."
+"Le formulaire officiel rempli et signé, que le locateur a obtenu du "
+"Tribunal, sur papier ou en bail électronique. Le module le PORTE ; il ne le "
+"produit pas."
 msgstr ""
 
 #. module: bf_rental

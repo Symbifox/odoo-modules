@@ -2,8 +2,8 @@
 
 La ligne de partage est dans le titre même du règlement — « Règlement sur les
 **formulaires** de bail obligatoires **et sur les mentions** de l'avis au nouveau
-locataire ». Pour le bail, le droit prescrit le **support**, et le formulaire est
-vendu par le Tribunal, interdit de reproduction. Pour l'avis, il prescrit le
+locataire ». Pour le bail, le droit prescrit le **support** : le formulaire du
+Tribunal, qui ne se reproduit qu'avec son autorisation. Pour l'avis, il prescrit le
 **contenu**. Un avis conforme n'a donc pas à être le modèle du TAL : il a à
 porter ce que le texte exige. C'est cette différence qui rend ce module possible.
 

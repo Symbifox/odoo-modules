@@ -20,6 +20,7 @@ que la loi lui permet. D'où l'état `deposited`.
 """
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import format_date
 
 
 class BfRentalTerm(models.Model):
@@ -70,6 +71,26 @@ class BfRentalTerm(models.Model):
              "reste dû. Un terme acquitté en retard n'a plus de retard : il a "
              "été payé.",
     )
+
+    # Sans nom, la fiche s'affichait « bf.rental.term,12 » au fil d'Ariane.
+    # Le terme se nomme par sa date d'exigibilité, pas par son mois :
+    # un loyer peut être hebdomadaire, et quatre termes d'un même mois
+    # porteraient alors le même nom. ⚠️ Le portail du locataire lit ses termes :
+    # le nom ne prend que ce que ce lecteur lit déjà (la date, la référence de
+    # SON bail), jamais le logement ni l'immeuble, que le portail ne lit pas
+    # (voir bf_rental_portal, `portal_unit_name`).
+    @api.depends("date_due", "lease_id.name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for term in self:
+            if not (term.date_due and term.lease_id):
+                term.display_name = term.lease_id.name or False
+                continue
+            term.display_name = _(
+                "Loyer exigible le %(date)s · %(lease)s",
+                date=format_date(term.env, term.date_due),
+                lease=term.lease_id.name,
+            )
 
     @api.depends("payment_ids.amount", "amount_due")
     def _compute_amounts(self):

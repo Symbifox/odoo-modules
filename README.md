@@ -320,11 +320,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recruitment_source` | Recrutement : statistiques par source d'affichage | 18.0.1.0.1 | BUSL-1.1 | One tracked link per job board, the clicks and applications it brings in, and a conversion rate that states which share of applications it covers |
 | `bf_recruitment_source_expense` | Recrutement : ce que chaque site d'emploi coûte | 18.0.1.0.0 | BUSL-1.1 | Attribute a posting outlay to the board that billed it, and give the cost per application while saying which share of the job's spend it covers |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.1.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
-| `bf_rental` | Locatif : le bail de logement | 18.0.2.4.0 | BUSL-1.1 | What a residential lease agrees to, the mandatory form it cites, and what the module refuses to make up |
-| `bf_rental_notice` | Locatif : les avis | 18.0.1.6.0 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
+| `bf_rental` | Locatif : le bail de logement | 18.0.2.4.1 | BUSL-1.1 | What a residential lease agrees to, the mandatory form it cites, and what the module refuses to make up |
+| `bf_rental_notice` | Locatif : les avis | 18.0.1.6.1 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.9.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
-| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.4.0 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
+| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.4.1 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
 | `bf_route` | Symbifox Work Routes | 18.0.1.1.1 | BUSL-1.1 | Recurring routes for people on the road: stops in order, proof at each stop, mileage, alerts, and a phone screen for the worker |
 | `bf_route_expense` | Symbifox Work Routes: Mileage Expenses | 18.0.1.0.0 | BUSL-1.1 | The kilometres of a route day driven with the worker's own car become a draft expense at the per-km rate |
 | `bf_route_sale` | Symbifox Work Routes: Sales on the Road | 18.0.1.0.4 | BUSL-1.1 | Sell from the truck at each stop: truck stock, invoice at the customer's price, container deposits, payment recorded on the phone |

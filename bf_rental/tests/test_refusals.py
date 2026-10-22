@@ -59,17 +59,19 @@ class TestRentalRefusals(TransactionCase):
             )
 
     def test_the_module_does_not_produce_the_lease_form(self):
-        """🔴 « Tribunal administratif du logement — Reproduction interdite »,
-        au pied de chacune des vingt pages de formulaire publiées au
-        T-15.01, r. 3. Aucun rapport imprimable ne doit viser ce modèle."""
+        """🔴 Le bail se conclut sur le formulaire obligatoire du Tribunal
+        administratif du logement (T-15.01, r. 3), qui ne se reproduit qu'avec
+        l'autorisation du Tribunal. Le module ne le recompose pas : aucun
+        rapport imprimable ne doit viser ce modèle."""
         reports = self.env["ir.actions.report"].search(
             [("model", "=", "bf.rental.lease")]
         )
         self.assertFalse(
             reports,
-            "Un rapport imprimable vise le bail. Le formulaire du Tribunal est "
-            "interdit de reproduction : le module le PORTE en pièce jointe, il "
-            "ne le produit pas.",
+            "Un rapport imprimable vise le bail. Le bail se conclut sur le "
+            "formulaire du Tribunal, qui ne se reproduit qu'avec son "
+            "autorisation : le module le PORTE en pièce jointe, il ne le "
+            "recompose pas.",
         )
 
     # ── Le loyer modique est hors périmètre, et le refus est explicite ──

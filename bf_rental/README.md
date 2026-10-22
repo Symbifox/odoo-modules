@@ -204,11 +204,12 @@ All read against the official consolidated text, current to 7 April 2026.
 
 ## Tests
 
-38 tests, of which the refusals are the spine: the absent deposit field, the
+55 tests, of which the refusals are the spine: the absent deposit field, the
 absent lease report, low-rental housing, the syndicate as lessor, the lease
 without a lessee (at creation and by emptying), the duration and restriction
-checks, the multi-company wall, the sequence, and the abandonment and disposal
-rules.
+checks, the multi-company wall, the sequence, access to the signed form, the
+abandonment and disposal rules, and the name an abandonment record shows,
+including to a manager who cannot read the dwelling of another company.
 
 ## Licence
 
@@ -224,7 +225,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-10-21, this version converts automatically to
+- **Change Date**: on 2030-10-22, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

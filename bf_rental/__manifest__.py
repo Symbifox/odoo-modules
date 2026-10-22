@@ -1,7 +1,7 @@
 {
     "name": "Locatif : le bail de logement",
     "summary": "Ce qu'un bail de logement convient, le formulaire obligatoire qu'il cite, et ce que le module refuse de fabriquer",
-    "version": "18.0.2.4.0",
+    "version": "18.0.2.4.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -35,13 +35,10 @@ Ce que le module NE fait pas, et pourquoi
 
 **Il ne fabrique pas de bail.** Le bail de logement passe par un formulaire
 obligatoire du Tribunal administratif du logement (RLRQ, c. T-15.01, r. 3,
-art. 1), et chacune des vingt pages de formulaire publiées au règlement porte en
-pied la mention « **Reproduction interdite** » du Tribunal administratif du
-logement. Le
-locateur achète son formulaire au Tribunal, sur papier en double exemplaire ou
-en bail électronique, au même prix de 2,99 $. Ce module enregistre ce qui a été
-convenu, dit quel formulaire a été employé, et porte le document signé en pièce
-jointe.
+art. 1), qui ne peut être reproduit qu'avec l'autorisation du Tribunal. Le
+locateur obtient son formulaire du Tribunal, sur papier ou en bail électronique.
+Ce module enregistre ce qui a été convenu, dit quel formulaire a été employé, et
+porte le document signé en pièce jointe. Il ne le recompose jamais.
 
 **Il ne porte aucun champ de dépôt de garantie.** L'art. 1904 al. 2 C.c.Q.
 interdit d'exiger une somme autre que le loyer, « sous forme de dépôt ou

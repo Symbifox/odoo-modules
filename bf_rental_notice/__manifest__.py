@@ -1,7 +1,7 @@
 {
     "name": "Locatif : les avis",
     "summary": "Les avis du louage : leurs délais, et les quatre régimes de silence que le Code ne traite pas pareil",
-    "version": "18.0.1.6.0",
+    "version": "18.0.1.6.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -22,10 +22,10 @@
 Locatif : les avis
 ==================
 
-L'autre moitié de la ligne de partage. Le bail ne se reproduit pas : le
-formulaire du Tribunal est vendu et porte « Reproduction interdite » à chaque
-page. Les avis, eux, se produisent : le droit y prescrit le **contenu**, pas le
-support. C'est écrit dans le titre même du règlement, « Règlement sur les
+L'autre moitié de la ligne de partage. Le module ne reproduit pas le bail : il
+se conclut sur le formulaire obligatoire du Tribunal, qui ne se reproduit
+qu'avec son autorisation. Les avis, eux, se produisent : le droit y prescrit le
+**contenu**, pas le support. C'est écrit dans le titre même du règlement, « Règlement sur les
 formulaires de bail obligatoires **et sur les mentions** de l'avis au nouveau
 locataire ».
 

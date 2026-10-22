@@ -116,11 +116,13 @@ Menu: *Rent*, under the people menu of the property suite.
 
 ## Tests
 
-30 tests, covering the term states and balances, the arrears and the three-week
+35 tests, covering the term states and balances, the arrears and the three-week
 flag, the daily refresh, the end of the rent (its last day, clearing it, a paid
 term after it, a copied lease, and the renewed lease whose end date alone does
 not stop it), the refusals (no resiliation field, no total balance, no interest, no term
-above the agreed rent, no negative payment) and the multi-company wall.
+above the agreed rent, no negative payment), the multi-company wall, and the name
+each instalment and payment shows (due date, amount and lease reference, in the
+reader's language, and only what the lessee already reads at the portal).
 
 ## Licence
 
@@ -136,7 +138,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-08-30, this version converts automatically to
+- **Change Date**: on 2030-10-22, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

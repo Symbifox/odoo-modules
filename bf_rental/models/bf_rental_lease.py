@@ -3,13 +3,11 @@
 🔴 **Le module ne produit pas le bail.** Le bail de logement passe par un
 formulaire obligatoire du Tribunal administratif du logement (RLRQ, c. T-15.01,
 r. 3, art. 1 : « Le locateur **doit** [...] **utiliser le formulaire** du
-Tribunal administratif du logement »), et chacune des vingt pages de formulaire
-publiées au règlement porte en pied « Tribunal administratif du logement —
-**Reproduction interdite** ». Ce n'est pas une prudence d'ingénieur : c'est écrit
-dans le texte réglementaire publié par l'Éditeur officiel.
+Tribunal administratif du logement »), qui ne peut être reproduit qu'avec
+l'autorisation du Tribunal.
 
-Le locateur achète son formulaire au Tribunal — 2,99 $ en double exemplaire sur
-papier, ou le **bail électronique** du TAL au même prix. Ce modèle-ci enregistre
+Le locateur obtient son formulaire du Tribunal, sur papier ou en **bail
+électronique** du TAL. Ce modèle-ci enregistre
 ce qui a été convenu, **cite** le formulaire employé, et porte le document signé
 en pièce jointe. Il ne le recompose jamais.
 
@@ -254,8 +252,9 @@ class BfRentalLease(models.Model):
     lease_attachment_ids = fields.Many2many(
         "ir.attachment",
         string="Formulaire signé",
-        help="Le formulaire officiel rempli et signé, tel qu'il a été acheté "
-             "au Tribunal. Le module le PORTE ; il ne le produit pas.",
+        help="Le formulaire officiel rempli et signé, que le locateur a obtenu "
+             "du Tribunal, sur papier ou en bail électronique. Le module le "
+             "PORTE ; il ne le produit pas.",
     )
     # 🔴 **Réservé à la gestion, et une sonde adversariale dit
     # pourquoi.** Ce champ est un texte LIBRE : un gestionnaire y écrit ce qu'il

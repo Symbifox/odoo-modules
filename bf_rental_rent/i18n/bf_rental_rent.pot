@@ -169,6 +169,12 @@ msgid "Loyer dû jusqu'au"
 msgstr ""
 
 #. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_term.py:0
+msgid "Loyer exigible le %(date)s · %(lease)s"
+msgstr ""
+
+#. module: bf_rental_rent
 #: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__mode
 msgid "Mode"
 msgstr ""
@@ -252,6 +258,12 @@ msgstr ""
 msgid ""
 "Un versement porte un montant positif. Une correction se fait en modifiant "
 "le versement, pas en en créant un négatif qui ferait mentir l'historique."
+msgstr ""
+
+#. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_payment.py:0
+msgid "Versement de %(amount)s reçu le %(date)s · %(lease)s"
 msgstr ""
 
 #. module: bf_rental_rent
