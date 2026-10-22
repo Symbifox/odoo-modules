@@ -259,6 +259,11 @@
                           <t t-out="ctx.get('message_body')"/>
                         </t>
 
+                        <!-- Lien de la page d'état : posé seulement quand la page du client est publiée. -->
+                        <p t-if="ctx.get('status_url')" style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                          Follow the status of your services, before and during the maintenance, on <a t-att-href="ctx.get('status_url')" t-attf-style="color:{{ brand_primary }};font-weight:500;">your status page</a>.
+                        </p>
+
                         <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
                           We will do everything we can to minimize the impact on your operations. If you have any questions, feel free to reach out.
                         </p>

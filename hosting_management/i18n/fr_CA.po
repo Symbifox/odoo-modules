@@ -958,6 +958,11 @@ msgid ""
 "                          <t t-out=\"ctx.get('message_body')\"/>\n"
 "                        </t>\n"
 "\n"
+"                        <!-- Lien de la page d'&#233;tat : pos&#233; seulement quand la page du client est publi&#233;e. -->\n"
+"                        <p t-if=\"ctx.get('status_url')\" style=\"margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
+"                          Follow the status of your services, before and during the maintenance, on <a t-att-href=\"ctx.get('status_url')\" t-attf-style=\"color:{{ brand_primary }};font-weight:500;\">your status page</a>.\n"
+"                        </p>\n"
+"\n"
 "                        <p style=\"margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
 "                          We will do everything we can to minimize the impact on your operations. If you have any questions, feel free to reach out.\n"
 "                        </p>\n"
@@ -1056,6 +1061,11 @@ msgstr ""
 "                        <t t-if=\"ctx.get('message_body')\">\n"
 "                          <t t-out=\"ctx.get('message_body')\"></t>\n"
 "                        </t>\n"
+"\n"
+"                        <!-- Lien de la page d'&#233;tat : pos&#233; seulement quand la page du client est publi&#233;e. -->\n"
+"                        <p t-if=\"ctx.get('status_url')\" style=\"margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
+"                          Suivez l'état de vos services, avant et pendant la maintenance, sur <a t-att-href=\"ctx.get('status_url')\" t-attf-style=\"color:{{ brand_primary }};font-weight:500;\">votre page d'état</a>.\n"
+"                        </p>\n"
 "\n"
 "                        <p style=\"margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;\">\n"
 "                          Nous ferons tout pour minimiser l'impact sur vos opérations. En cas de question, n'hésitez pas à nous joindre.\n"
@@ -8416,6 +8426,12 @@ msgid "Online"
 msgstr "En ligne"
 
 #. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/res_partner.py:0
+msgid "Only a hosting user can set a client's hosting recipients."
+msgstr "Seul un utilisateur d'hébergement peut nommer les destinataires hébergement d'un client."
+
+#. module: hosting_management
 #: model:ir.model.constraint,message:hosting_management.constraint_hosting_health_daily_snapshot_service_date_unique
 msgid "Only one snapshot per service and per day."
 msgstr "Un seul snapshot par service et par jour."
@@ -13181,50 +13197,84 @@ msgstr "Une fenêtre de maintenance doit toucher au moins un service."
 #: code:addons/hosting_management/wizards/base_partner_merge.py:0
 msgid ""
 "One of the contacts that would disappear, or one of its own contacts, "
-"carries hosting services. Merging would move them to another client, "
-"onto its status page and into its maintenance notices. Keep the record "
-"that carries the services as the destination, or ask a hosting manager."
+"carries hosting services. Merging would move them to another client, onto "
+"its status page and into its maintenance notices. Keep the record that "
+"carries the services as the destination, or ask a hosting manager."
 msgstr ""
 "Une des fiches qui disparaîtraient, ou l'un de ses contacts, porte des "
-"services d'hébergement. La fusion les déplacerait vers un autre client, "
-"sur sa page d'état et dans ses avis de maintenance. Gardez comme "
-"destination la fiche qui porte les services, ou demandez à un "
-"gestionnaire d'hébergement."
+"services d'hébergement. La fusion les déplacerait vers un autre client, sur "
+"sa page d'état et dans ses avis de maintenance. Gardez comme destination la "
+"fiche qui porte les services, ou demandez à un gestionnaire d'hébergement."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/wizards/base_partner_merge.py:0
 msgid ""
 "The merge would attach the destination contact to another client, and it "
-"carries hosting services, which would follow it onto that client's "
-"status page and into its maintenance notices. Only a hosting manager can "
-"merge it."
+"carries hosting services, which would follow it onto that client's status "
+"page and into its maintenance notices. Only a hosting manager can merge it."
 msgstr ""
-"La fusion rattacherait la fiche de destination à un autre client, et "
-"elle porte des services d'hébergement, qui la suivraient sur la page "
-"d'état de ce client et dans ses avis de maintenance. Seul un "
-"gestionnaire d'hébergement peut la fusionner."
+"La fusion rattacherait la fiche de destination à un autre client, et elle "
+"porte des services d'hébergement, qui la suivraient sur la page d'état de ce"
+" client et dans ses avis de maintenance. Seul un gestionnaire d'hébergement "
+"peut la fusionner."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/wizards/base_partner_merge.py:0
 msgid ""
-"The merge would make the destination a contact of one of its own "
-"contacts. Unarchive the contacts concerned, or merge them in another "
-"order."
+"The merge would make the destination a contact of one of its own contacts. "
+"Unarchive the contacts concerned, or merge them in another order."
 msgstr ""
 "La fusion ferait de la fiche de destination un contact de l'un de ses "
-"propres contacts. Désarchivez les contacts concernés, ou fusionnez-les "
-"dans un autre ordre."
+"propres contacts. Désarchivez les contacts concernés, ou fusionnez-les dans "
+"un autre ordre."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/wizards/base_partner_merge.py:0
 msgid ""
-"Merging everything automatically would turn subsidiaries into plain "
-"contacts of their parent company, and some of them carry hosting "
-"services. Only a hosting manager can run it."
+"Merging everything automatically would turn subsidiaries into plain contacts"
+" of their parent company, and some of them carry hosting services. Only a "
+"hosting manager can run it."
 msgstr ""
-"Tout fusionner automatiquement ferait des filiales de simples contacts "
-"de leur société mère, et certaines portent des services d'hébergement. "
-"Seul un gestionnaire d'hébergement peut le lancer."
+"Tout fusionner automatiquement ferait des filiales de simples contacts de "
+"leur société mère, et certaines portent des services d'hébergement. Seul un "
+"gestionnaire d'hébergement peut le lancer."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/res_partner.py:0
+msgid ""
+"A hosting recipient must be the company itself or one of its contacts: "
+"%(names)s."
+msgstr ""
+"Un destinataire hébergement doit être la société elle-même ou l'un de ses "
+"contacts : %(names)s."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_res_partner__hosting_recipient_ids
+#: model:ir.model.fields,field_description:hosting_management.field_res_users__hosting_recipient_ids
+msgid "Hosting recipients"
+msgstr "Destinataires hébergement"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/res_partner.py:0
+msgid ""
+"Hosting recipients belong to the client company (%(company)s), not to one of"
+" its contacts."
+msgstr ""
+"Les destinataires hébergement se tiennent sur la société cliente "
+"(%(company)s), pas sur l'un de ses contacts."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_res_partner__hosting_recipient_ids
+#: model:ir.model.fields,help:hosting_management.field_res_users__hosting_recipient_ids
+msgid ""
+"The people who receive this client's maintenance notices and, with a portal "
+"account, see its status page: the company itself or its own contacts."
+msgstr ""
+"Les personnes qui reçoivent les avis de maintenance de ce client et qui, "
+"avec un compte portail, voient sa page d'état : la société elle-même ou ses "
+"propres contacts."

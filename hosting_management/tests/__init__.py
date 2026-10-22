@@ -15,3 +15,4 @@ from . import test_langue_lecteur_b
 from . import test_fiche_sans_groupe
 from . import test_fenetres_maintenance
 from . import test_fusion_contacts
+from . import test_destinataires

@@ -23,6 +23,33 @@ from odoo.exceptions import ValidationError
 from odoo.tools.misc import format_datetime, format_time
 
 
+GABARIT_AVIS = "hosting_management.mail_template_client_maintenance_notice"
+
+
+def recharger_traduction_avis(env):
+    """Recharge depuis les catalogues la SEULE traduction du gabarit d'avis de maintenance.
+
+    Le corps d'un gabarit se traduit d'un bloc : quand son texte anglais change, la
+    traduction déjà en base reste celle d'avant (une mise à jour n'écrase pas une
+    traduction existante), et l'avis partait en français SANS le paragraphe neuf. Ne
+    recharger que ce gabarit, et pas tout le module, préserve les retouches faites en
+    base sur les autres.
+    """
+    from odoo.tools.translate import TranslationImporter
+
+    langues = [code for code, _nom in env["res.lang"].get_installed() if code.split("_")[0] == "fr"]
+    if not langues or not env.ref(GABARIT_AVIS, raise_if_not_found=False):
+        return
+    importer = TranslationImporter(env.cr, verbose=False)
+    for langue in langues:
+        # Comme Odoo : le catalogue de la langue de base, puis celui de la variante.
+        importer.load_file("hosting_management/i18n/fr.po", langue, xmlids={GABARIT_AVIS})
+        if langue != "fr":
+            importer.load_file("hosting_management/i18n/%s.po" % langue, langue, xmlids={GABARIT_AVIS})
+    importer.save(overwrite=True)
+    env["mail.template"].invalidate_model()
+
+
 def client_de(partenaire):
     """Le client commercial d'une fiche, par la règle d'Odoo, SANS lire le champ stocké
     `commercial_partner_id` : il est vide en base sur des fiches anciennes, et « vide ==

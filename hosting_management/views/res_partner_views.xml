@@ -53,6 +53,13 @@
                 <field name="has_sla" invisible="not is_company"
                        groups="hosting_management.group_hosting_user"
                        widget="boolean_toggle"/>
+                <!-- La société ou ses contacts directs : la contrainte du modèle tranche,
+                     le domaine ne fait qu'aider à choisir. -->
+                <field name="hosting_recipient_ids" widget="many2many_tags"
+                       groups="hosting_management.group_hosting_user"
+                       invisible="parent_id and not is_company"
+                       domain="['|', ('id', '=', id), ('parent_id', '=', id)]"
+                       options="{'no_create': True}"/>
             </xpath>
 
             <!-- Onglet Parc informatique (read-only, sans BitLocker — Odoo

@@ -151,6 +151,15 @@ Odoo's contact merge rewrites every foreign key to the merged record in SQL, hos
 
 The wizard's "merge everything automatically" button is refused too when a subsidiary carries hosting services, since it turns every subsidiary into a plain contact of its parent company in raw SQL. Keeping the record that carries the services as the destination is usually enough; the refusal says so.
 
+### Hosting Recipients (18.0.2.64.0)
+Each client company keeps a list of **hosting recipients** (`hosting_recipient_ids`, on the company form, Hosting group only): the people who receive its maintenance notices and who, with a portal account, see its status page when `bf_hosting_status` is installed. A recipient is the company itself or one of its own contacts, by Odoo's rule; a contact later moved under another company stops receiving anything, even while its line is still in the list.
+
+`_hosting_destinataires()` returns the people to write to: the active entries of that list that have an email, otherwise the old rule (the company's email, else its first contact with one). It never invents an address and may return nothing.
+
+The maintenance notice template shows a "your status page" paragraph only when its context carries `status_url`, which `bf_hosting_status` sets for a published page and a named recipient. Migration 18.0.2.64.0 reloads the template's French translation from the catalogue, so the French notice gets the paragraph too; the other templates and their in-database edits are left alone.
+
+The field carries `groups=` on the model and on the view node, so an internal user without the Hosting group still opens contact forms. Odoo 18 does not check a field's `groups=` at creation: `create` refuses a list from a user without the group. The field is `copy=False`, so duplicating a contact or a user works without the group, and a copied company does not inherit another company's recipients.
+
 ### Activity Integration
 - **Automatic Activity Creation**: Maintenance schedules automatically create Odoo activities
 - **Activity Inbox**: Tasks appear in the clock icon (activity inbox) for easy tracking
@@ -688,6 +697,11 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Changelog
 
+### Version 18.0.2.64.0
+- New: hosting recipients per client company. See the "Hosting Recipients" section.
+- New: the maintenance notice links to the client's status page when one is published (context key `status_url`); its French translation is reloaded by migration.
+- New test `tests/test_destinataires.py`: who can be named, list before fallback, a contact moved elsewhere, the fallback skipping a subsidiary company, group restriction at creation and at write, duplication without the group, the contact form without the group, and the link in the English and French notice.
+
 ### Version 18.0.2.63.2
 - New: a guard on Odoo's contact merge. See the "Merging Contacts" section.
 - Fix: the error messages added in 18.0.2.63.1 showed in English to French users. Odoo only translates a Python message when the catalogue marks it `#. odoo-python`; the `fr_CA.po` entries now carry it. The new messages are also in `fr.po`.
@@ -975,7 +989,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-21, this version converts automatically to
+- **Change Date**: on 2030-10-22, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Support

@@ -10,7 +10,10 @@
     #   (hosting.maintenance.window), lues par l'avis et la page d'état.
     # 18.0.2.63.2: la fusion de contacts refuse, hors gestionnaire d'hébergement, de faire
     #   changer de client des services d'hébergement.
-    "version": "18.0.2.63.2",
+    # 18.0.2.64.0: destinataires hébergement par client (`hosting_recipient_ids`) : qui
+    #   reçoit les avis de maintenance et, avec un compte portail, voit la page d'état ;
+    #   l'avis de maintenance porte le lien de la page quand elle est publiée.
+    "version": "18.0.2.64.0",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
