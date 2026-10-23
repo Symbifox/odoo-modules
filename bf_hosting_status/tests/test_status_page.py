@@ -284,3 +284,16 @@ class TestStatusPage(HttpCase):
         valeurs = self.client_a._hosting_status_valeurs()
         self.assertFalse(valeurs["windows_ahead"])
         self.assertEqual([w["name"] for w in valeurs["windows_past"]], ["Fenêtre d'il y a cinq jours"])
+
+    def test_disponibilite_seulement_avec_des_releves_recents(self):
+        """La disponibilité ne paraît que pour un service qui a au moins un relevé sur 30 jours.
+        Les relevés sont comptés par la base, groupés par service, sans être chargés."""
+        vieux = self.env["hosting.service"].create({
+            "name": "Vieux Alpha", "partner_id": self.client_a.id, "state": "active",
+            "software_id": self.svc_a.software_id.id, "server_url": "https://vieux.alpha-essai.example"})
+        self._releve(vieux, "up", fields.Datetime.now() - timedelta(days=40))
+        lignes = {l["name"]: l for l in self.client_a._hosting_status_valeurs()["services"]}
+        self.assertIsNone(lignes["Vieux Alpha"]["uptime"])
+        self.assertIsNotNone(lignes["Nuage Alpha"]["uptime"])
+        self.assertIsNotNone(lignes["Coffre Alpha"]["uptime"])
+        self.assertIsNone(lignes["Outil Alpha"]["uptime"])

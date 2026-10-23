@@ -114,9 +114,13 @@ page, so it only goes to people chosen for it.
 ## Licence
 
 Business Source License 1.1. Each version converts to LGPL-3.0-or-later on its
-Change Date; for this version, 2030-10-22. See [`LICENSE`](LICENSE).
+Change Date; for this version, 2030-10-23. See [`LICENSE`](LICENSE).
 
 ## Version history
+
+- **18.0.1.4.1**: the page of a client with several services opened in tens of seconds; the
+  services that have checks over 30 days are now grouped by the database instead of loading
+  every check.
 
 - **18.0.1.4.0**: the token is masked in every chatter message (notice copy, quoted reply);
   every status link is judged again for each recipient when the email leaves (new address,

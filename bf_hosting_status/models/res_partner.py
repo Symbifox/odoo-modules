@@ -326,10 +326,13 @@ class ResPartner(models.Model):
             "testing": _("Test"),
             "development": _("Development"),
         }
-        avec_releves = set(self.env["hosting.health.check"].sudo().search([
+        # Les services qui ont au moins un relevé sur 30 jours, groupés par la base : charger
+        # les relevés eux-mêmes coûtait des centaines de milliers d'enregistrements pour un
+        # client à plusieurs services (une sonde par minute), soit des dizaines de secondes.
+        avec_releves = {service.id for (service,) in self.env["hosting.health.check"].sudo()._read_group([
             ("service_id", "in", services.ids),
             ("check_date", ">=", maintenant - FENETRE_DISPONIBILITE),
-        ]).service_id.ids)
+        ], ["service_id"])}
         fenetres = self._hosting_status_fenetres(services, maintenant)
         en_fenetre = {sid for f in fenetres if f["phase"] == "in_progress" for sid in f["service_ids"]}
         lignes = []
