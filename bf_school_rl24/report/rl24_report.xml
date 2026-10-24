@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_school_rl24" model="ir.actions.report">
+        <field name="name">Annual statement of child-care fees</field>
+        <field name="model">bf.school.rl24</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_school_rl24.report_school_rl24</field>
+        <field name="report_file">bf_school_rl24.report_school_rl24</field>
+        <field name="print_report_name">'releve24-%s-%s' % (object.year, object.student_id.name)</field>
+        <field name="binding_model_id" ref="model_bf_school_rl24"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_school_rl24_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+            <t t-set="address">
+                <div t-field="o.partner_id" t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
+            </t>
+            <div class="page">
+                <h2>Child-care fees for the services of <t t-out="o.year"/></h2>
+                <table class="table table-sm mt-4">
+                    <tbody>
+                        <tr><th>Payer</th><td t-out="o.partner_id.name"/></tr>
+                        <tr><th>Child</th><td t-out="o.student_id.name"/></tr>
+                        <tr><th>Child-care fees paid for services of <t t-out="o.year"/></th>
+                            <td><strong t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-4">
+                    This statement adds up what you paid for the services of the year that the school
+                    counts as child care for the Relevé 24.
+                </p>
+                <p><strong>This statement is not the Relevé 24.</strong> The school sends you your
+                    official slip by the end of February.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_school_rl24">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="bf_school_rl24.report_school_rl24_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>

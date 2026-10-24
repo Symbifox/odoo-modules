@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===================== School setting, activity fee ===================== -->
+    <record id="bf_school_view_form_childcare_billing" model="ir.ui.view">
+        <field name="name">bf.school.form.childcare.billing</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_childcare.bf_school_view_form_childcare"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='childcare_manager_id']" position="after">
+                <field name="childcare_billing" groups="bf_school_core.group_school_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_activity_view_form_billing" model="ir.ui.view">
+        <field name="name">bf.school.childcare.activity.form.billing</field>
+        <field name="model">bf.school.childcare.activity</field>
+        <field name="inherit_id" ref="bf_school_childcare.bf_school_childcare_activity_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='min_registrations']" position="after">
+                <field name="currency_id" invisible="1"/>
+                <field name="fee" groups="bf_school_core.group_school_manager"/>
+                <field name="fee_rl24" groups="bf_school_core.group_school_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ===================== Rates and tiers ===================== -->
+    <record id="bf_school_childcare_rate_view_list" model="ir.ui.view">
+        <field name="name">bf.school.childcare.rate.list</field>
+        <field name="model">bf.school.childcare.rate</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="school_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="year_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="kind"/>
+                <field name="slot_id" options="{'no_create': True, 'no_open': True}"
+                       readonly="kind not in ('slot', 'full_day', 'walk_in')"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount"/>
+                <field name="block_minutes" invisible="kind != 'late_pickup'"/>
+                <field name="next_block_minutes" invisible="kind != 'late_pickup'"/>
+                <field name="next_block_amount" invisible="kind != 'late_pickup'"/>
+                <field name="tickets" invisible="kind != 'ticket_book'"/>
+                <field name="rl24"/>
+                <field name="rl24_cap" invisible="not rl24"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_rate_view_search" model="ir.ui.view">
+        <field name="name">bf.school.childcare.rate.search</field>
+        <field name="model">bf.school.childcare.rate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="school_id"/>
+                <field name="year_id"/>
+                <filter name="current_year" string="Current school year" domain="[('year_id.state', '=', 'current')]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="by_year" string="School year" context="{'group_by': 'year_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_rate_action" model="ir.actions.act_window">
+        <field name="name">Child care rates</field>
+        <field name="res_model">bf.school.childcare.rate</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_current_year': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set the prices of child care for the school year</p>
+            <p>An occasional period, or a day whatever the periods; a day without class; a child not booked; a short notice; late pick-up by blocks of minutes; a book of tickets.</p>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_tier_view_list" model="ir.ui.view">
+        <field name="name">bf.school.childcare.tier.list</field>
+        <field name="model">bf.school.childcare.tier</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="school_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="year_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="min_periods"/>
+                <field name="max_periods"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount"/>
+                <field name="rl24"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_tier_action" model="ir.actions.act_window">
+        <field name="name">Monthly tiers</field>
+        <field name="res_model">bf.school.childcare.tier</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set the monthly price of a regular registration</p>
+            <p>By its number of periods a week. Used when the school bills regular child care each month.</p>
+        </field>
+    </record>
+
+    <!-- ===================== Charges ===================== -->
+    <record id="bf_school_childcare_charge_view_list" model="ir.ui.view">
+        <field name="name">bf.school.childcare.charge.list</field>
+        <field name="model">bf.school.childcare.charge</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_waive" type="object" string="Waive"
+                            groups="bf_school_core.group_school_manager"/>
+                </header>
+                <field name="date"/>
+                <field name="student_id" options="{'no_open': True}"/>
+                <field name="display_name" string="For"/>
+                <field name="school_id" optional="hide" options="{'no_open': True}"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount" sum="Total"/>
+                <field name="eligible_amount" optional="show" sum="Child care"/>
+                <field name="state" widget="badge" decoration-info="state == 'open'"
+                       decoration-success="state in ('billed', 'ticket')" decoration-muted="state == 'waived'"/>
+                <field name="invoice_names" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_charge_view_form" model="ir.ui.view">
+        <field name="name">bf.school.childcare.charge.form</field>
+        <field name="model">bf.school.childcare.charge</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_waive" type="object" string="Waive" invisible="state != 'open'"
+                            groups="bf_school_core.group_school_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="display_name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="student_id" options="{'no_open': True}"/>
+                            <field name="school_id" options="{'no_open': True}"/>
+                            <field name="date"/>
+                            <field name="kind"/>
+                            <field name="slot_id" invisible="not slot_id" options="{'no_open': True}"/>
+                            <field name="late_minutes" invisible="kind != 'late_pickup'"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="eligible_amount"/>
+                            <field name="invoice_names" invisible="not invoice_names"/>
+                            <field name="ticket_book_id" invisible="not ticket_book_id" options="{'no_open': True}"/>
+                            <field name="waived_reason" invisible="state != 'waived'"/>
+                            <field name="waived_by_id" invisible="state != 'waived'" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_charge_view_search" model="ir.ui.view">
+        <field name="name">bf.school.childcare.charge.search</field>
+        <field name="model">bf.school.childcare.charge</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="school_id"/>
+                <filter name="open" string="To bill" domain="[('state', '=', 'open')]"/>
+                <filter name="billed" string="Billed" domain="[('state', '=', 'billed')]"/>
+                <filter name="ticket" string="Paid by a ticket" domain="[('state', '=', 'ticket')]"/>
+                <filter name="waived" string="Waived" domain="[('state', '=', 'waived')]"/>
+                <separator/>
+                <filter name="date" string="Service date" date="date"/>
+                <group>
+                    <filter name="by_month" string="Month" context="{'group_by': 'date:month'}"/>
+                    <filter name="by_student" string="Student" context="{'group_by': 'student_id'}"/>
+                    <filter name="by_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_charge_action" model="ir.actions.act_window">
+        <field name="name">Child care charges</field>
+        <field name="res_model">bf.school.childcare.charge</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_by_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing charged yet</p>
+            <p>The charges come from the bookings, the sheets and the registrations, when a month is billed.</p>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_charge_waive_view_form" model="ir.ui.view">
+        <field name="name">bf.school.childcare.charge.waive.form</field>
+        <field name="model">bf.school.childcare.charge.waive</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>The school forgives these charges: they are not billed.</p>
+                <group><field name="reason" placeholder="Our mistake: a regular registration covered the period"/></group>
+                <footer>
+                    <button name="action_waive" type="object" string="Waive" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== Billing of a month ===================== -->
+    <record id="bf_school_childcare_billing_run_view_list" model="ir.ui.view">
+        <field name="name">bf.school.childcare.billing.run.list</field>
+        <field name="model">bf.school.childcare.billing.run</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="month" column_invisible="1"/>
+                <field name="month_label"/>
+                <field name="school_id" options="{'no_open': True}"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount_billed"/>
+                <field name="amount_open"/>
+                <field name="invoice_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'billed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_billing_run_view_form" model="ir.ui.view">
+        <field name="name">bf.school.childcare.billing.run.form</field>
+        <field name="model">bf.school.childcare.billing.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute the charges" invisible="not id"
+                            groups="bf_school_core.group_school_manager"/>
+                    <button name="action_bill" type="object" string="Bill the payers" class="btn-primary"
+                            invisible="not id" groups="bf_school_core.group_school_manager"
+                            confirm="Invoice what is still to bill and email the invoices to the adults who pay?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_charges" type="object" class="oe_stat_button" icon="fa-list"
+                                invisible="not id">
+                            <field name="charge_count" widget="statinfo" string="Charges"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="school_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="id"/>
+                            <field name="month" invisible="id"/>
+                            <field name="month_label" invisible="not id"/>
+                            <field name="billed_on" invisible="not billed_on"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_open"/>
+                            <field name="amount_billed"/>
+                            <field name="invoice_count"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_billing_run_action" model="ir.actions.act_window">
+        <field name="name">Monthly billing</field>
+        <field name="res_model">bf.school.childcare.billing.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Bill a month of child care</p>
+            <p>On the first of the month, last month is billed by itself. A month can also be billed here, once it is over.</p>
+        </field>
+    </record>
+
+    <!-- ===================== Books of tickets ===================== -->
+    <record id="bf_school_childcare_ticket_book_view_list" model="ir.ui.view">
+        <field name="name">bf.school.childcare.ticket_book.list</field>
+        <field name="model">bf.school.childcare.ticket_book</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="create_date" string="Bought on" widget="date"/>
+                <field name="student_id" options="{'no_open': True}"/>
+                <field name="year_id" options="{'no_open': True}"/>
+                <field name="payer_id" options="{'no_open': True}"/>
+                <field name="tickets"/>
+                <field name="used"/>
+                <field name="remaining"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="price"/>
+                <field name="invoice_name"/>
+                <field name="state" widget="badge" decoration-success="state == 'paid'" decoration-info="state == 'to_pay'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_ticket_book_view_form" model="ir.ui.view">
+        <field name="name">bf.school.childcare.ticket_book.form</field>
+        <field name="model">bf.school.childcare.ticket_book</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel the book" invisible="state != 'to_pay'"
+                            groups="bf_school_core.group_school_manager"
+                            confirm="Cancel this book and its invoice? Nothing was paid on it."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="display_name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="student_id" options="{'no_open': True}"/>
+                            <field name="school_id" options="{'no_open': True}"/>
+                            <field name="year_id" options="{'no_open': True}"/>
+                            <field name="payer_id" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="tickets"/>
+                            <field name="used"/>
+                            <field name="remaining"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="price"/>
+                            <field name="invoice_name"/>
+                        </group>
+                    </group>
+                    <field name="charge_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="display_name" string="Period"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_childcare_ticket_book_action" model="ir.actions.act_window">
+        <field name="name">Books of tickets</field>
+        <field name="res_model">bf.school.childcare.ticket_book</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No book of tickets yet</p>
+            <p>The families buy them on the portal and pay them online, when the school sells them.</p>
+        </field>
+    </record>
+
+    <!-- ===================== Menus ===================== -->
+    <menuitem id="menu_childcare_billing" name="Billing" parent="bf_school_childcare.menu_childcare_root" sequence="30"
+              groups="bf_school_childcare.group_school_childcare_manager"/>
+    <menuitem id="menu_childcare_billing_runs" name="Monthly billing" parent="menu_childcare_billing"
+              action="bf_school_childcare_billing_run_action" sequence="10"/>
+    <menuitem id="menu_childcare_billing_charges" name="Charges" parent="menu_childcare_billing"
+              action="bf_school_childcare_charge_action" sequence="20"/>
+    <menuitem id="menu_childcare_billing_tickets" name="Books of tickets" parent="menu_childcare_billing"
+              action="bf_school_childcare_ticket_book_action" sequence="30"/>
+    <menuitem id="menu_childcare_billing_rates" name="Rates" parent="bf_school_childcare.menu_childcare_config"
+              action="bf_school_childcare_rate_action" sequence="50" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_childcare_billing_tiers" name="Monthly tiers" parent="bf_school_childcare.menu_childcare_config"
+              action="bf_school_childcare_tier_action" sequence="60" groups="bf_school_core.group_school_manager"/>
+</odoo>

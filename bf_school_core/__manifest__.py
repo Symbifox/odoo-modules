@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.1.0",
     "category": "Education/School",
     "summary": "Schools, school years, levels, groups, students and their guardians, "
                "with roles for shared custody",
@@ -13,7 +13,8 @@ The foundation of the Symbifox school suite, for Québec schools.
 - schools, school years (one current year per school), levels from pre-K to
   Secondary V, groups with their teachers;
 - students are contacts: birth date, permanent code (code permanent),
-  enrolments in groups;
+  enrolments in groups, with the student's level and profile (particular
+  programme) for the year;
 - guardians are linked to each student with explicit roles: parental
   authority, receives notices, can sign, pays, may pick up, emergency contact,
   lives with. Shared custody is a set of links, not a special case;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Triggered when contracts are billed; the hourly run catches what a failure left. -->
+    <record id="ir_cron_school_billing_send" model="ir.cron">
+        <field name="name">School: send the contract invoices</field>
+        <field name="model_id" ref="bf_school_contract.model_bf_school_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

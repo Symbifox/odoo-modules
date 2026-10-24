@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_childcare_billing_month" model="ir.cron">
+        <field name="name">School: bill last month's child care</field>
+        <field name="model_id" ref="model_bf_school_childcare_billing_run"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bill_last_month()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <!-- The first of next month, 6 a.m. in Québec. -->
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_childcare_billing_send" model="ir.cron">
+        <field name="name">School: send the child-care invoices</field>
+        <field name="model_id" ref="model_bf_school_childcare_billing_run"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_childcare_ticket_pdf" model="ir.cron">
+        <field name="name">School: official PDF of the child-care ticket invoices</field>
+        <field name="model_id" ref="model_bf_school_childcare_ticket_book"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_invoice_pdf()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

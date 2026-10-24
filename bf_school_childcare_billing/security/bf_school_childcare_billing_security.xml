@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Each school keeps its own prices, charges, billings and books of tickets. -->
+    <record id="rule_childcare_rate_company" model="ir.rule">
+        <field name="name">Child care billing: rate of the allowed companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_rate"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_tier_company" model="ir.rule">
+        <field name="name">Child care billing: tier of the allowed companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_tier"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_charge_company" model="ir.rule">
+        <field name="name">Child care billing: charge of the allowed companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_charge"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_run_company" model="ir.rule">
+        <field name="name">Child care billing: run of the allowed companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_billing_run"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_ticket_book_company" model="ir.rule">
+        <field name="name">Child care billing: ticket book of the allowed companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_ticket_book"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

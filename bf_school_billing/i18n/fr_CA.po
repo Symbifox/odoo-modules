@@ -1,0 +1,998 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_billing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 23:33+0000\n"
+"PO-Revision-Date: 2026-10-02 13:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"%(invoice)s was settled for %(amount)s without a payment the billing "
+"recognises (write-off or entry): check it before refunding."
+msgstr ""
+"%(invoice)s a été réglée pour %(amount)s sans un paiement que la facturation"
+" reconnaît (radiation ou écriture) : vérifiez-la avant de rembourser."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "%(move)s for %(payer)s."
+msgstr "%(move)s pour %(payer)s."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"%(payer)s has no email address: %(move)s was not sent. Give it to them "
+"another way."
+msgstr ""
+"%(payer)s n'a pas d'adresse courriel : %(move)s n'est pas parti. Remettez-le"
+" autrement."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "%s draft contract(s) prepared."
+msgstr "%s contrat(s) préparé(s) en brouillon."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "%s has no payer: tick « Pays » on a guardian, or add a payer."
+msgstr ""
+"Personne ne paie %s : cochez « Paie » sur un lien familial, ou ajoutez une "
+"part."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "%s is already billed."
+msgstr "%s est déjà facturé."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"%s is signed: check who pays and in what share, then click « Bill the payers"
+" »."
+msgstr ""
+"%s est signé : vérifiez qui paie et dans quelle part, puis cliquez sur « "
+"Facturer les parts »."
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.portal_my_school_invoices_link
+msgid "<i class=\"fa fa-file-text me-1\"/>Invoices and payments"
+msgstr "<i class=\"fa fa-file-text me-1\"/>Factures et paiements"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/share.py:0
+msgid "A bursary or a third party pays a positive amount."
+msgstr "Une bourse ou un tiers paie un montant positif."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "A discount is between 0 and 100 %."
+msgstr "Un rabais est entre 0 et 100 %."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/share.py:0
+msgid "A family share is between 0 and 100 %."
+msgstr "Une part familiale est entre 0 et 100 %."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "A fee is not negative: a discount is a sibling rule or a bursary."
+msgstr ""
+"Des frais ne sont jamais négatifs : un rabais passe par la règle de fratrie "
+"ou par une bourse."
+
+#. module: bf_school_billing
+#: model:ir.model.constraint,message:bf_school_billing.constraint_bf_school_billing_share_contract_partner_unique
+msgid "A payer appears once on a contract."
+msgstr "Une même personne paie une seule part d'un contrat."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "A sibling discount starts at the second child at the earliest."
+msgstr "Un rabais de fratrie commence au deuxième enfant au plus tôt."
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__category__accessory
+msgid "Accessory service"
+msgstr "Service accessoire"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_contract_accessory
+msgid "Accessory service included in a contract"
+msgstr "Service accessoire inclus dans un contrat"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Accessory services"
+msgstr "Services accessoires"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Admission or registration fee"
+msgstr "Droits d'admission ou d'inscription"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__sibling_rank
+msgid ""
+"Among the students enrolled this year who share a payer, by birth date: 1 is"
+" the eldest. Set when the contract is prepared from the catalogue."
+msgstr ""
+"Parmi les élèves qui ont une inscription cette année et une personne qui "
+"paie en commun, par date de naissance : 1 pour la date la plus ancienne. "
+"Fixé quand le contrat est préparé à partir du catalogue."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__amount_paid
+msgid "Amount already paid"
+msgstr "Montant déjà payé"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"An invoice of %s is a draft: confirm or cancel it in the accounting before "
+"recording the termination."
+msgstr ""
+"Une facture de %s est en brouillon : confirmez-la ou annulez-la en "
+"comptabilité avant d'inscrire la résiliation."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/account.py:0
+msgid ""
+"An invoice of a school contract is not reset to draft: correct it with a "
+"credit note."
+msgstr ""
+"Une facture de contrat scolaire ne se remet pas en brouillon : corrigez-la "
+"par un avoir."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__amount
+msgid "Annual amount"
+msgstr "Montant annuel"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_fee__name
+msgid "As the family reads it on the contract and the invoice."
+msgstr "Tel que la famille le lit au contrat et sur la facture."
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Bill the payers"
+msgstr "Facturer les parts"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__billed_amount
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__is_billed
+msgid "Billed"
+msgstr "Facturé"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__billed_on
+msgid "Billed On"
+msgstr "Facturé le"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Billed: %s."
+msgstr "Facturé : %s."
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_view_form_billing
+msgid "Billing"
+msgstr "Facturation"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school__bursary_partner_id
+msgid "Bursary fund"
+msgstr "Fonds de bourses"
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_billing_share__kind__bursary
+msgid "Bursary or third party"
+msgstr "Bourse ou tiers"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_billing_share__amount
+msgid "Bursary or third party: the amount it pays."
+msgstr "Bourse ou tiers : le montant qu'il paie."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__category
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Check the payers, then bill"
+msgstr "Vérifier qui paie, puis facturer"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_account_move_line__school_rl24
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_contract_accessory__rl24__childcare
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__rl24__childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Child care (Relevé 24)"
+msgstr "Garde d'enfants (relevé 24)"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Choose the student's level first."
+msgstr "Choisissez d'abord le niveau de l'élève."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__company_id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__company_id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__contract_id
+msgid "Contract"
+msgstr "Contrat"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Contract %s"
+msgstr "Contrat %s"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_contract
+msgid "Contract for educational services"
+msgstr "Contrat de services éducatifs"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__create_uid
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__create_uid
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__create_date
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__create_date
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__currency_id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__percent
+msgid "Discount (%)"
+msgstr "Rabais (%)"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__display_name
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__display_name
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__category__educational
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Educational services"
+msgstr "Services éducatifs"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Educational services (child care)"
+msgstr "Services éducatifs (garde d'enfants)"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_fee__category
+msgid ""
+"Educational services make the contract's tuition. Accessory services are "
+"added to every contract they apply to; optional ones only when the family "
+"chooses them."
+msgstr ""
+"Les services éducatifs forment les droits de scolarité du contrat. Les "
+"services accessoires s'ajoutent à chaque contrat visé; les services "
+"optionnels, seulement quand la famille les choisit."
+
+#. module: bf_school_billing
+#: model_terms:ir.actions.act_window,help:bf_school_billing.bf_school_fee_action
+msgid ""
+"Educational services make the tuition of the contracts; accessory services are\n"
+"               added to every contract they apply to, optional ones when the family chooses them.\n"
+"               Mark what is child care for the Relevé 24."
+msgstr ""
+"Les services éducatifs forment les droits de scolarité des contrats; les services accessoires\n"
+"               s'ajoutent à chaque contrat visé, les services optionnels quand la famille les choisit.\n"
+"               Marquez ce qui est de la garde d'enfants pour le relevé 24."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_fee__level_ids
+msgid "Empty: every level."
+msgstr "Vide : tous les niveaux."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_fee__profile_ids
+msgid ""
+"Empty: every student, whatever their profile. Otherwise only the students of"
+" these profiles."
+msgstr ""
+"Vide : tous les élèves, quel que soit leur profil. Sinon, seulement les "
+"élèves de ces profils."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "Enter the educational services of %s in the fee catalogue first."
+msgstr "Entrez d'abord les services éducatifs de %s au catalogue des frais."
+
+#. module: bf_school_billing
+#: model_terms:ir.actions.act_window,help:bf_school_billing.bf_school_fee_action
+msgid "Enter the fees of a school year"
+msgstr "Entrez les frais d'une année scolaire"
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_billing_share__kind__family
+msgid "Family"
+msgstr "Famille"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_billing_share__percent
+msgid "Family: its share of what the bursaries leave."
+msgstr "Famille : sa part de ce que les bourses laissent à payer."
+
+#. module: bf_school_billing
+#: model:ir.actions.act_window,name:bf_school_billing.bf_school_fee_action
+#: model:ir.ui.menu,name:bf_school_billing.menu_school_fees
+msgid "Fee catalogue"
+msgstr "Catalogue des frais"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_year__fee_ids
+msgid "Fees"
+msgstr "Frais"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__amount
+msgid "Fixed amount"
+msgstr "Montant fixe"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__amount_paid
+msgid ""
+"Follows the payments of the contract's invoices once it is billed; typed by "
+"hand for a contract billed outside Symbifox."
+msgstr ""
+"Suit les paiements des factures du contrat une fois celui-ci facturé; saisi "
+"à la main pour un contrat facturé hors de Symbifox."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract_accessory__fee_id
+msgid "From the catalogue"
+msgstr "Du catalogue"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__from_rank
+msgid "From the child"
+msgstr "À partir de l'enfant"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school__billing_installment_count
+msgid "Instalments"
+msgstr "Versements"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_id
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Invoice not sent: no email address"
+msgstr "Facture non envoyée : pas d'adresse courriel"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_name
+msgid "Invoice number"
+msgstr "Numéro de facture"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__school_move_ids
+msgid "Invoices and credit notes"
+msgstr "Factures et avoirs"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid ""
+"Issue the invoices of this contract to its payers? They are sent by email "
+"with their due dates."
+msgstr ""
+"Émettre les factures de ce contrat aux personnes qui le paient? Elles leur "
+"sont envoyées par courriel avec leurs échéances."
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__kind
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__name
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__write_uid
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__write_uid
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__write_date
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__write_date
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Left"
+msgstr "Reste"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_residual
+msgid "Left to pay"
+msgstr "Reste à payer"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__level_id
+msgid "Level"
+msgstr "Niveau"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__level_ids
+msgid "Levels"
+msgstr "Niveaux"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_next_due
+msgid "Next due date"
+msgstr "Prochaine échéance"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Nobody pays what the bursaries of %s leave."
+msgstr "Personne ne paie ce que les bourses de %s laissent à payer."
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_contract_accessory__rl24__none
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__rl24__none
+msgid "Not child care"
+msgstr "Pas de la garde d'enfants"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "Not prepared: %s."
+msgstr "Non préparés : %s."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school__billing_installment_count
+msgid "Number of instalments of a new contract. At least two (Act s. 70)."
+msgstr ""
+"Nombre de versements d'un nouveau contrat. Au moins deux (art. 70 de la "
+"Loi)."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__tuition_rl24
+msgid "Of which child care (Relevé 24)"
+msgstr "Dont garde d'enfants (relevé 24)"
+
+#. module: bf_school_billing
+#: model:ir.model.constraint,message:bf_school_billing.constraint_bf_school_sibling_rule_school_rank_unique
+msgid "One discount per rank."
+msgstr "Un rabais par rang."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Only a draft contract is priced again."
+msgstr "Seul un contrat en brouillon est tarifé de nouveau."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Only a signed contract is billed."
+msgstr "Seul un contrat signé est facturé."
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__category__option
+msgid "Optional service"
+msgstr "Service optionnel"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "Optional services"
+msgstr "Services optionnels"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_overdue
+msgid "Overdue"
+msgstr "En retard"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__invoice_paid
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_list_billing
+msgid "Paid"
+msgstr "Payé"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__registration_billed
+msgid "Part of the price, invoiced before the contract: not billed again."
+msgstr ""
+"Fait partie du prix, facturé avant le contrat : n'est pas facturé de "
+"nouveau."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__partner_id
+msgid "Payer"
+msgstr "Qui paie"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_billing_share
+msgid "Payer of a contract"
+msgstr "Part de paiement d'un contrat"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__share_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Payers"
+msgstr "Qui paie"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Payers from the family"
+msgstr "Adultes de la famille qui paient"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_view_form_billing
+msgid ""
+"Prepare a draft contract, priced from the fee catalogue, for every enrolled "
+"student of this year who has none?"
+msgstr ""
+"Préparer un contrat en brouillon, tarifé selon le catalogue des frais, pour "
+"chaque élève qui a une inscription cette année et n'a pas de contrat?"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_view_form_billing
+msgid "Prepare the contracts"
+msgstr "Préparer les contrats"
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Price from the catalogue"
+msgstr "Tarifer selon le catalogue"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__profile_id
+msgid "Profile"
+msgstr "Profil"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__profile_ids
+msgid "Profiles"
+msgstr "Profils"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__sibling_rank
+msgid "Rank in the family"
+msgstr "Rang dans la famille"
+
+#. module: bf_school_billing
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_contract_accessory__rl24__prescribed
+#: model:ir.model.fields.selection,name:bf_school_billing.selection__bf_school_fee__rl24__prescribed
+msgid "Reduced contribution (prescribed fees, no Relevé 24)"
+msgstr "Contribution réduite (frais prescrits, sans relevé 24)"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Refund by %s (Act s. 74)"
+msgstr "Rembourser au plus tard le %s (art. 74 de la Loi)"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__registration_billed
+msgid "Registration fee invoiced by the re-enrolment"
+msgstr "Droits d'inscription facturés à la réinscription"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract_accessory__rl24
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__rl24
+msgid "Relevé 24"
+msgstr "Relevé 24"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__activity_user_id
+msgid "Responsible User"
+msgstr "Responsable"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__school_id
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_sibling_rule__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_account_bank_statement_line__school_contract_id
+#: model:ir.model.fields,field_description:bf_school_billing.field_account_move__school_contract_id
+msgid "School contract"
+msgstr "Contrat scolaire"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_fee
+msgid "School fee"
+msgstr "Frais scolaires"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_year
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_fee_view_search
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_billing
+#: model:ir.actions.server,name:bf_school_billing.ir_cron_school_billing_send_ir_actions_server
+msgid "School: send the contract invoices"
+msgstr "École : envoyer les factures des contrats"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_account_bank_statement_line__school_billing_sent
+#: model:ir.model.fields,field_description:bf_school_billing.field_account_move__school_billing_sent
+msgid "Sent by the school billing"
+msgstr "Envoyée par la facturation scolaire"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__sequence
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_billing_share__percent
+msgid "Share (%)"
+msgstr "Part (%)"
+
+#. module: bf_school_billing
+#: model:ir.model,name:bf_school_billing.model_bf_school_sibling_rule
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school__sibling_rule_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_view_form_billing
+msgid "Sibling discount"
+msgstr "Rabais de fratrie"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_contract__sibling_percent
+msgid "Sibling discount (%)"
+msgstr "Rabais de fratrie (%)"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,field_description:bf_school_billing.field_bf_school_fee__sibling_discount
+msgid "Sibling discount applies"
+msgstr "Rabais de fratrie applicable"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "Termination of %s"
+msgstr "Résiliation de %s"
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "The amount paid of a billed contract follows its invoices."
+msgstr "Le montant payé d'un contrat facturé suit ses factures."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/account.py:0
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "The billing sets this, not a person."
+msgstr "C'est la facturation qui fixe cette valeur, pas une personne."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"The bursaries of %(contract)s (%(fixed)s) exceed what is billed "
+"(%(billable)s)."
+msgstr ""
+"Les bourses de %(contract)s (%(fixed)s) dépassent ce qui est facturé "
+"(%(billable)s)."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "The child-care part is between nothing and the educational services."
+msgstr ""
+"La part de garde d'enfants va de zéro au montant des services éducatifs."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/account.py:0
+msgid ""
+"The contract %s is terminated: its invoices are not confirmed any more."
+msgstr "Le contrat %s est résilié : ses factures ne se confirment plus."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "The family shares of %s must add up to 100 %%."
+msgstr "Les parts familiales de %s doivent totaliser 100 %%."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/share.py:0
+msgid "The invoice of a payer is set by the billing."
+msgstr "La facture d'une part est fixée par la facturation."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__tuition_rl24
+msgid ""
+"The part of the educational services that is child care: all of it in pre-K "
+"and kindergarten (Revenu Québec, letter 17-038083-001), none at compulsory "
+"school age."
+msgstr ""
+"La part des services éducatifs qui est de la garde d'enfants : la totalité "
+"en prématernelle et en maternelle (Revenu Québec, lettre 17-038083-001), "
+"aucune à l'âge de la fréquentation scolaire obligatoire."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"The payers of %s are already invoiced: a change goes through a credit note "
+"in the accounting."
+msgstr ""
+"Les parts de %s sont déjà facturées : un changement passe par un avoir en "
+"comptabilité."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "The price is paid in at least two instalments (Act s. 70)."
+msgstr "Le prix se paie en au moins deux versements (art. 70 de la Loi)."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "The profiles of a fee are its school's."
+msgstr "Les profils visés par des frais sont ceux de leur école."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_sibling_rule__from_rank
+msgid ""
+"The rank of the child in the family, by birth date: 1 is the eldest "
+"enrolled."
+msgstr ""
+"Le rang de l'enfant dans la famille, par date de naissance : 1 pour la date "
+"la plus ancienne."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid ""
+"The re-enrolment of %(student)s invoiced a registration fee of %(fee)s that "
+"is not in the price of %(contract)s: terminate this contract and make a new "
+"one with it."
+msgstr ""
+"La réinscription de %(student)s a facturé des droits d'inscription de "
+"%(fee)s qui ne sont pas dans le prix de %(contract)s : résiliez ce contrat "
+"et faites-en un nouveau qui les inclut."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_fee__rl24
+msgid ""
+"The school decides, fee by fee: a question of fact (Revenu Québec, letters "
+"17-038083-001 and 25-070654-001). Generally child care: pre-K and "
+"kindergarten, a real child-care service (optional, attendance taken, the "
+"student stays under supervision). Generally not: teaching at compulsory "
+"school age, the supervision of the lunch break, homework help, regular "
+"sports, meals billed apart. Prescribed: the parental contribution set under "
+"s. 84 of the Act respecting private education."
+msgstr ""
+"L'école décide, frais par frais : c'est une question de fait (Revenu Québec,"
+" lettres 17-038083-001 et 25-070654-001). En général, de la garde d'enfants "
+": la prématernelle et la maternelle, un véritable service de garde "
+"(facultatif, présences prises, l'élève demeure sous surveillance). En "
+"général, pas de la garde : l'enseignement à l'âge de la fréquentation "
+"scolaire obligatoire, la surveillance de la pause du dîner, l'aide aux "
+"devoirs, le sport pratiqué régulièrement, les repas facturés à part. Frais "
+"prescrits : la contribution parentale fixée selon l'article 84 de la Loi sur"
+" l'enseignement privé."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_account_move_line__school_rl24
+msgid ""
+"This line pays for child care in the sense of the Taxation Act: what is paid"
+" on it goes on the payer's Relevé 24."
+msgstr ""
+"Cette ligne paie de la garde d'enfants au sens de la Loi sur les impôts : ce"
+" qui est payé dessus va au relevé 24 de la personne qui paie."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "To refund: %s."
+msgstr "À rembourser : %s."
+
+#. module: bf_school_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_billing.bf_school_contract_view_form_billing
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school_contract__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_school_billing
+#: model:ir.model.fields,help:bf_school_billing.field_bf_school__bursary_partner_id
+msgid ""
+"Who pays the bursaries: the school's foundation or bursary fund. Suggested "
+"as the payer of a bursary on a contract."
+msgstr ""
+"Qui paie les bourses : la fondation ou le fonds de bourses de l'école. "
+"Proposé pour payer une bourse sur un contrat."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/fee.py:0
+msgid "Without a level, so without a contract: %s."
+msgstr "Sans niveau, donc sans contrat : %s."
+
+#. module: bf_school_billing
+#. odoo-python
+#: code:addons/bf_school_billing/models/school_contract.py:0
+msgid "bursary or third-party share of contract %s"
+msgstr "part de la bourse ou du tiers au contrat %s"

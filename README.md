@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**254 modules are BUSL-1.1.** The source is published and auditable, and **you
+**257 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -335,12 +335,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.4.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.7 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |
 | `bf_school_attendance` | Symbifox École : présences | 18.0.1.0.3 | BUSL-1.1 | Roll call by half-day or period, absences declared and justified by the families on the portal, same-day notice of an unjustified absence |
+| `bf_school_billing` | Symbifox École : facturation des familles | 18.0.1.0.0 | BUSL-1.1 | Fee catalogue by level and profile, contracts priced from it with the sibling discount, one invoice a year per payer on the contract's instalments, bursaries, termination credited |
 | `bf_school_calendar` | Symbifox École : calendrier scolaire | 18.0.1.0.0 | BUSL-1.1 | The school calendar of each school and year: class days, pedagogical days, breaks, holidays and closures, and whether child care opens |
 | `bf_school_charlemagne` | Symbifox École : transmission à Charlemagne | 18.0.1.0.0 | BUSL-1.1 | The student headcount, the local results and the ministerial exams sent to the Ministry of Education's Charlemagne system: XML, signed and encrypted, by SFTP |
 | `bf_school_childcare` | Symbifox École : service de garde | 18.0.1.0.0 | BUSL-1.1 | School child care: periods and places, regular registrations, occasional bookings, daily sheets with arrivals and departures, who may pick up a child, leaving alone |
+| `bf_school_childcare_billing` | Symbifox École : facturation du service de garde | 18.0.1.0.0 | BUSL-1.1 | Child care billed each month to the adults who pay: rates, monthly tiers, late pick-up, books of tickets, and the Relevé 24 |
 | `bf_school_conduct` | Symbifox École : conduite et suivi mensuel | 18.0.1.0.3 | BUSL-1.1 | Breaches of the rules of conduct with graduated sanctions, parents' notices under the law, and the monthly news of Régime pédagogique s. 29.2 |
 | `bf_school_contract` | Symbifox École : contrat de services éducatifs | 18.0.1.0.3 | BUSL-1.1 | Québec private school contract for educational services: the Act's caps enforced, mandatory mentions printed, signed with Symbifox Sign |
-| `bf_school_core` | Symbifox École | 18.0.1.0.2 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
+| `bf_school_core` | Symbifox École | 18.0.1.1.0 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
 | `bf_school_device` | Symbifox École : postes des élèves | 18.0.1.0.1 | BUSL-1.1 | Student accounts in the school's directory and Blue Fox OS computers lent to students, bridged to the Blue Fox OS policy |
 | `bf_school_forms` | Symbifox École : autorisations | 18.0.1.0.3 | BUSL-1.1 | Field trip and activity authorisations: one click per guardian, dated evidence, a refusal always wins |
 | `bf_school_gradebook` | Symbifox École : carnet de notes | 18.0.1.0.1 | BUSL-1.1 | Evaluations and grades by course, results by competency and discipline, the 20/20/60 weighting over the three terms and the ministerial exams |
@@ -353,6 +355,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_privacy` | Symbifox École : consentements | 18.0.1.0.1 | BUSL-1.1 | Law 25 consents for a school: photos, publication, family contact list, educational platforms, asked each year of the right person |
 | `bf_school_record` | Symbifox École : dossier de l'élève | 18.0.1.0.0 | BUSL-1.1 | The student's file with the eight pieces the regulation requires, the register of enrolment, the transfer to the receiving school and the copy given to the person |
 | `bf_school_report_card` | Symbifox École : bulletins | 18.0.1.0.1 | BUSL-1.1 | Elementary and secondary report cards from the gradebook, sealed when issued, shown to the families with a read receipt, and the written communications the regulation requires |
+| `bf_school_rl24` | Symbifox École : relevé 24 | 18.0.1.0.0 | BUSL-1.1 | Child-care fees paid, by calendar year, payer and child, for the Relevé 24: annual statement on the family portal, export for the school's slip software |
 | `bf_school_slides` | Symbifox École : contenus de cours | 18.0.1.0.0 | BUSL-1.1 | Course contents in the eLearning app, given to the students of school groups and their parents, and renewed from one school year to the next |
 | `bf_school_student_portal` | Symbifox École : l'élève au portail | 18.0.1.0.2 | BUSL-1.1 | Students sign in to the family portal with their school directory account, the one that opens the school's computers |
 | `bf_school_timetable` | Symbifox École : horaire | 18.0.1.0.0 | BUSL-1.1 | The timetable in a cycle of school days, rooms with no double booking, the family's week in the portal and a calendar link for each child |
@@ -473,7 +476,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **254 modules: BUSL-1.1.** Production use for your own internal business
+- **257 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_childcare_rate_manager,bf.school.childcare.rate child care manager,model_bf_school_childcare_rate,bf_school_childcare.group_school_childcare_manager,1,0,0,0
+access_childcare_rate_admin,bf.school.childcare.rate administration,model_bf_school_childcare_rate,bf_school_core.group_school_manager,1,1,1,1
+access_childcare_tier_manager,bf.school.childcare.tier child care manager,model_bf_school_childcare_tier,bf_school_childcare.group_school_childcare_manager,1,0,0,0
+access_childcare_tier_admin,bf.school.childcare.tier administration,model_bf_school_childcare_tier,bf_school_core.group_school_manager,1,1,1,1
+access_childcare_charge_manager,bf.school.childcare.charge child care manager,model_bf_school_childcare_charge,bf_school_childcare.group_school_childcare_manager,1,0,0,0
+access_childcare_charge_admin,bf.school.childcare.charge administration,model_bf_school_childcare_charge,bf_school_core.group_school_manager,1,1,0,0
+access_childcare_charge_waive_admin,bf.school.childcare.charge.waive administration,model_bf_school_childcare_charge_waive,bf_school_core.group_school_manager,1,1,1,1
+access_childcare_run_manager,bf.school.childcare.billing.run child care manager,model_bf_school_childcare_billing_run,bf_school_childcare.group_school_childcare_manager,1,0,0,0
+access_childcare_run_admin,bf.school.childcare.billing.run administration,model_bf_school_childcare_billing_run,bf_school_core.group_school_manager,1,1,1,0
+access_childcare_ticket_book_manager,bf.school.childcare.ticket_book child care manager,model_bf_school_childcare_ticket_book,bf_school_childcare.group_school_childcare_manager,1,0,0,0
+access_childcare_ticket_book_admin,bf.school.childcare.ticket_book administration,model_bf_school_childcare_ticket_book,bf_school_core.group_school_manager,1,1,0,0

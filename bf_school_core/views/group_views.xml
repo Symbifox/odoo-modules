@@ -24,6 +24,9 @@
                             <field name="enrollment_ids">
                                 <list editable="bottom" decoration-muted="state == 'left'">
                                     <field name="student_id" context="{'default_is_student': True}"/>
+                                    <field name="school_id" column_invisible="1"/>
+                                    <field name="level_id" options="{'no_create': True}"/>
+                                    <field name="profile_id" options="{'no_create': True}" optional="show"/>
                                     <field name="date_start"/>
                                     <field name="date_end" optional="hide"/>
                                     <field name="state" widget="badge" decoration-success="state == 'active'"/>

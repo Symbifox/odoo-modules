@@ -1,0 +1,1371 @@
+# Translation of Symbifox École : facturation du service de garde - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_school_childcare_billing 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 11:01+0000\n"
+"PO-Revision-Date: 2026-10-24 10:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "%(count)s tickets · %(student)s · %(year)s"
+msgstr "%(count)s billets · %(student)s · %(year)s"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "%(kind)s, %(date)s, %(minutes)s min"
+msgstr "%(kind)s, %(date)s, %(minutes)s min"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "%(kind)s, %(date)s: %(activity)s"
+msgstr "%(kind)s, %(date)s : %(activity)s"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "%(kind)s, %(month)s"
+msgstr "%(kind)s, %(month)s"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid ""
+"%(payer)s has no email address: %(move)s was not sent. Give it to them "
+"another way."
+msgstr ""
+"%(payer)s n'a pas d'adresse courriel : %(move)s n'est pas parti. Remettez-le"
+" autrement."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "%(year)s · %(low)s to %(high)s periods a week"
+msgstr "%(year)s · %(low)s à %(high)s périodes par semaine"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "%s (not child care)"
+msgstr "%s (hors garde d'enfants)"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "%s has not ended: a month is billed once it is over."
+msgstr "%s n'est pas terminé : un mois se facture une fois écoulé."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "A billing keeps its school and its month."
+msgstr "Une facturation garde son école et son mois."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "A billing starts to bill."
+msgstr "Une facturation commence à facturer."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "A block of late pick-up lasts at least one minute."
+msgstr "Un bloc de retard dure au moins une minute."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "A book holds at least one ticket."
+msgstr "Un carnet contient au moins un billet."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "A book of tickets changes with its payment."
+msgstr "Un carnet de billets change avec son paiement."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "A book of tickets is bought on the family portal."
+msgstr "Un carnet de billets s'achète au portail des familles."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "A book of tickets is cancelled, not deleted."
+msgstr "Un carnet de billets s'annule, il ne se supprime pas."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "A charge billed or paid by a ticket stays."
+msgstr "Des frais facturés ou payés par un billet restent."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid ""
+"A charge is not changed by hand: waive it, or correct the invoice with a "
+"credit note."
+msgstr ""
+"Des frais ne se modifient pas à la main : exonérez-les, ou corrigez la "
+"facture par une note de crédit."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "A charge is not deleted: waive it."
+msgstr "Des frais ne se suppriment pas : exonérez-les."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/account.py:0
+msgid ""
+"A child-care invoice is not reset to draft: correct it with a credit note."
+msgstr ""
+"Une facture de garde ne revient pas en brouillon : corrigez-la par une note "
+"de crédit."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "A price is zero or more."
+msgstr "Un prix vaut zéro ou plus."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "A rate, its school year and its period belong to the same school."
+msgstr ""
+"Un tarif, son année scolaire et sa période appartiennent à la même école."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.constraint,message:bf_school_childcare_billing.constraint_bf_school_childcare_billing_run_school_month_unique
+msgid "A school bills a month once."
+msgstr "Une école facture un mois une seule fois."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.constraint,message:bf_school_childcare_billing.constraint_bf_school_childcare_charge_key_unique
+msgid "A source is charged once."
+msgstr "Une source n'est facturée qu'une fois."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.portal_school_childcare_tickets
+msgid ""
+"A ticket pays one occasional period (or day) of this school year. Tickets "
+"are not refunded."
+msgstr ""
+"Un billet paie une période (ou une journée) occasionnelle de cette année "
+"scolaire. Les billets ne sont pas remboursés."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "A tier and its school year belong to the same school."
+msgstr "Un palier et son année scolaire appartiennent à la même école."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid ""
+"A tier goes from one period a week or more, to as many or more, at a price "
+"of zero or more."
+msgstr ""
+"Un palier va d'une période par semaine ou plus, à autant ou plus, à un prix "
+"de zéro ou plus."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__activity_id
+msgid "Activity"
+msgstr "Activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d'exception d'activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_activity__fee
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__activity
+msgid "Activity fee"
+msgstr "Frais d'activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_activity__fee_rl24
+msgid "Activity fee is child care"
+msgstr "Frais d'activité admissibles comme garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__amount
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_rate_action
+msgid ""
+"An occasional period, or a day whatever the periods; a day without class; a "
+"child not booked; a short notice; late pick-up by blocks of minutes; a book "
+"of tickets."
+msgstr ""
+"Une période occasionnelle, ou une journée peu importe les périodes; une "
+"journée sans classe; un enfant non réservé; un préavis court; le retard par "
+"blocs de minutes; un carnet de billets."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_activity__fee_rl24
+msgid ""
+"An outing or a show is usually not child care for the Relevé 24: leave "
+"unticked."
+msgstr ""
+"Une sortie ou un spectacle n'est généralement pas de la garde au sens du "
+"relevé 24 : laissez décoché."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__month
+msgid "Any day of the month billed."
+msgstr "N'importe quel jour du mois facturé."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_rate_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__line_id
+msgid "Attendance"
+msgstr "Présences"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_billing_run_action
+msgid "Bill a month of child care"
+msgstr "Facturer un mois de service de garde"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_billing_run_view_form
+msgid "Bill the payers"
+msgstr "Facturer le mois"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__amount_billed
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_billing_run__state__billed
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__state__billed
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Billed"
+msgstr "Facturé"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__billed_on
+msgid "Billed On"
+msgstr "Facturé le"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_activity__fee
+msgid "Billed to each child booked, on top of the period."
+msgstr "Facturés à chaque enfant réservé, en plus de la période."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Billed: %s."
+msgstr "Facturé : %s."
+
+#. module: bf_school_childcare_billing
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing
+msgid "Billing"
+msgstr "Facturation"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "Book of %(count)s child care tickets, %(year)s: %(student)s"
+msgstr ""
+"Carnet de %(count)s billets de service de garde, %(year)s : %(student)s"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_ticket_book
+msgid "Book of child care tickets"
+msgstr "Carnet de billets de service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__ticket_book
+msgid "Book of tickets"
+msgstr "Carnet de billets"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__tickets
+msgid ""
+"Book of tickets: one ticket pays one occasional period, or one occasional "
+"day when the school prices by the day."
+msgstr ""
+"Carnet de billets : un billet paie une période occasionnelle, ou une journée"
+" occasionnelle quand l'école facture à la journée."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__booking_id
+msgid "Booking"
+msgstr "Réservation"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.act_window,name:bf_school_childcare_billing.bf_school_childcare_ticket_book_action
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing_tickets
+msgid "Books of tickets"
+msgstr "Carnets de billets"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__payer_id
+msgid "Bought by"
+msgstr "Acheté par"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_ticket_book_view_list
+msgid "Bought on"
+msgstr "Acheté le"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/controllers/portal.py:0
+msgid "Buy %(count)s tickets, %(price)s"
+msgstr "Acheter %(count)s billets, %(price)s"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid ""
+"Buying tickets belongs to the adults with parental authority over the child."
+msgstr ""
+"Acheter des billets revient aux adultes qui ont l'autorité parentale sur "
+"l'enfant."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_tier_action
+msgid ""
+"By its number of periods a week. Used when the school bills regular child "
+"care each month."
+msgstr ""
+"Selon son nombre de périodes par semaine. Sert quand l'école facture la "
+"garde régulière chaque mois."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_waive_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_ticket_book_view_form
+msgid "Cancel the book"
+msgstr "Annuler le carnet"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_ticket_book_view_form
+msgid "Cancel this book and its invoice? Nothing was paid on it."
+msgstr "Annuler ce carnet et sa facture? Rien n'a été payé dessus."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_ticket_book__state__cancelled
+msgid "Cancelled"
+msgstr "Annulation"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__charge_count
+msgid "Charge Count"
+msgstr "Nombre de frais"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__charge_ids
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing_charges
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_billing_run_view_form
+msgid "Charges"
+msgstr "Frais"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_account_move_line__school_childcare_student_id
+msgid "Child (child care)"
+msgstr "Enfant (service de garde)"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_list
+msgid "Child care"
+msgstr "Service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__eligible_amount
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__rl24
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__rl24
+msgid "Child care (Relevé 24)"
+msgstr "Garde d'enfants (relevé 24)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_activity
+msgid "Child care activity"
+msgstr "Activité du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_account_bank_statement_line__school_childcare_run_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_account_move__school_childcare_run_id
+msgid "Child care billing"
+msgstr "Facturation du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_billing_run
+msgid "Child care billing of a month"
+msgstr "Facturation d'un mois de service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_charge
+msgid "Child care charge"
+msgstr "Frais de service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.act_window,name:bf_school_childcare_billing.bf_school_childcare_charge_action
+msgid "Child care charges"
+msgstr "Frais de service de garde"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Child care not billed: no payer"
+msgstr "Garde non facturée : personne ne paie"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_rate
+msgid "Child care rate"
+msgstr "Tarif du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.act_window,name:bf_school_childcare_billing.bf_school_childcare_rate_action
+msgid "Child care rates"
+msgstr "Tarifs du service de garde"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "Child care tickets"
+msgstr "Billets de service de garde"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Child care, %s"
+msgstr "Service de garde, %s"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__walk_in
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__walk_in
+msgid "Child not booked"
+msgstr "Enfant non réservé"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_rl24
+msgid "Child-care fees paid (Relevé 24)"
+msgstr "Frais de garde payés (relevé 24)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_billing_run_view_form
+msgid "Compute the charges"
+msgstr "Calculer les frais"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_activity__currency_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__currency_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__currency_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__currency_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__currency_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_rate_view_search
+msgid "Current school year"
+msgstr "Année scolaire en cours"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__full_day
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__full_day
+msgid "Day without class"
+msgstr "Journée sans classe"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__rl24_cap
+msgid "Eligible per unit"
+msgstr "Admissible par unité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__slot_id
+msgid ""
+"Empty: every period of the school. A rate for one period wins over the "
+"general one."
+msgstr ""
+"Vide : toutes les périodes de l'école. Le tarif d'une période l'emporte sur "
+"le tarif général."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__block_minutes
+msgid "First block (minutes)"
+msgstr "Premier bloc (minutes)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par exemple fa-tasks"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_list
+msgid "For"
+msgstr "Pour"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__min_periods
+msgid "From (periods per week)"
+msgstr "De (périodes par semaine)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône indiquant une activité en exception."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_error
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__invoice_id
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Invoice not sent: no email address"
+msgstr "Facture non envoyée : pas d'adresse courriel"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__invoice_name
+msgid "Invoice number"
+msgstr "Numéro de facture"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__invoice_names
+msgid "Invoice numbers"
+msgstr "Numéros de facture"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_billing_run_view_form
+msgid ""
+"Invoice what is still to bill and email the invoices to the adults who pay?"
+msgstr ""
+"Facturer ce qui reste à facturer et envoyer les factures par courriel aux "
+"adultes qui paient?"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__invoice_count
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__invoice_ids
+msgid "Invoices"
+msgstr "Factures"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__key
+msgid "Key"
+msgstr "Clé fonctionnelle"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__kind
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__kind
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__late_pickup
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__late_pickup
+msgid "Late pick-up"
+msgstr "Retard à venir chercher l'enfant"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__next_block_minutes
+msgid "Late pick-up: the length of each block after the first."
+msgstr "Retard : la durée de chaque bloc après le premier."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__block_minutes
+msgid "Late pick-up: the minutes the first block covers."
+msgstr "Retard : les minutes que couvre le premier bloc."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__next_block_amount
+msgid ""
+"Late pick-up: the price of each block after the first. Empty: the price of "
+"the first block."
+msgstr ""
+"Retard : le prix de chaque bloc après le premier. Vide : le prix du premier "
+"bloc."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__late_minutes
+msgid "Minutes late"
+msgstr "Minutes de retard"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__month
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__month
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__month_label
+msgid "Month billed"
+msgstr "Mois facturé"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.act_window,name:bf_school_childcare_billing.bf_school_childcare_billing_run_action
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing_runs
+msgid "Monthly billing"
+msgstr "Facturation mensuelle"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_tier
+msgid "Monthly child care tier"
+msgstr "Palier mensuel du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school__childcare_billing__monthly
+msgid "Monthly invoice"
+msgstr "Facture mensuelle"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Monthly tier for %s periods a week"
+msgstr "Palier mensuel pour %s périodes par semaine"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.act_window,name:bf_school_childcare_billing.bf_school_childcare_tier_action
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing_tiers
+msgid "Monthly tiers"
+msgstr "Paliers mensuels"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement de la prochaine activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__next_block_amount
+msgid "Next blocks"
+msgstr "Blocs suivants"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__next_block_minutes
+msgid "Next blocks (minutes)"
+msgstr "Blocs suivants (minutes)"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_ticket_book_action
+msgid "No book of tickets yet"
+msgstr "Aucun carnet de billets pour l'instant"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid ""
+"Nobody pays for %s: tick « Pays » on an adult of the family, then bill "
+"again."
+msgstr ""
+"Personne ne paie pour %s : cochez « Paie » sur un adulte de la famille, puis"
+" facturez de nouveau."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_charge_action
+msgid "Nothing charged yet"
+msgstr "Aucuns frais pour l'instant"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "Nothing was charged where no price is set:"
+msgstr "Rien n'a été facturé là où aucun prix n'est fixé :"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__day
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__day
+msgid "Occasional day"
+msgstr "Journée occasionnelle"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__slot
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__slot
+msgid "Occasional period"
+msgstr "Période occasionnelle"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school__childcare_billing__contract
+msgid "On the contract"
+msgstr "Au contrat"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school__childcare_billing
+msgid ""
+"On the contract: the regular registrations are a fee of the contract for "
+"educational services, billed with it. Monthly invoice: each month, by the "
+"tier of periods per week. Occasional periods, late pick-ups and activities "
+"are always billed each month."
+msgstr ""
+"Au contrat : les inscriptions régulières sont des frais du contrat de "
+"services éducatifs, facturés avec lui. Facture mensuelle : chaque mois, "
+"selon le palier de périodes par semaine. Les périodes occasionnelles, les "
+"retards et les activités se facturent toujours chaque mois."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_billing_run_action
+msgid ""
+"On the first of the month, last month is billed by itself. A month can also "
+"be billed here, once it is over."
+msgstr ""
+"Le premier du mois, le mois précédent se facture tout seul. Un mois peut "
+"aussi se facturer ici, une fois écoulé."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid ""
+"Only a book not paid at all is cancelled; a payment is refunded in the "
+"accounting."
+msgstr ""
+"Seul un carnet sans aucun paiement s'annule; un paiement se rembourse dans "
+"la comptabilité."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "Only a charge still to bill is waived."
+msgstr "Seuls des frais encore à facturer sont exonérés."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_waive_view_form
+msgid "Our mistake: a regular registration covered the period"
+msgstr "Notre erreur : une inscription régulière couvrait la période"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_ticket_book__state__paid
+msgid "Paid"
+msgstr "Paiement reçu"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__state__ticket
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Paid by a ticket"
+msgstr "Payés par un billet"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__ticket_book_id
+msgid "Paid by the book"
+msgstr "Payés par le carnet"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__usable
+msgid "Paid, and its invoice neither unpaid since nor credited."
+msgstr "Payé, et sa facture ni redevenue impayée ni créditée depuis."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_account_partial_reconcile
+msgid "Partial Reconcile"
+msgstr "Lettrage partiel"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/controllers/portal.py:0
+msgid "Pay the book of %s tickets"
+msgstr "Payer le carnet de %s billets"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__amount
+msgid "Per month"
+msgstr "Par mois"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__slot_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_ticket_book_view_form
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__charge_ids
+msgid "Periods paid"
+msgstr "Périodes payées"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__price
+msgid "Price"
+msgstr "Prix"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__quantity
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: bf_school_childcare_billing
+#: model:ir.ui.menu,name:bf_school_childcare_billing.menu_childcare_billing_rates
+msgid "Rates"
+msgstr "Tarifs"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__registration_id
+msgid "Registration"
+msgstr "Inscription"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school__childcare_billing
+msgid "Regular child care billed"
+msgstr "Garde régulière facturée"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__regular
+msgid "Regular registration"
+msgstr "Inscription régulière"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_user_id
+msgid "Responsible User"
+msgstr "Responsable"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "Say why the charge is waived."
+msgstr "Dites pourquoi les frais sont exonérés."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__year_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__year_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__year_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_rate_view_search
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.server,name:bf_school_childcare_billing.ir_cron_childcare_billing_month_ir_actions_server
+msgid "School: bill last month's child care"
+msgstr "École : facturer le service de garde du mois précédent"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.server,name:bf_school_childcare_billing.ir_cron_childcare_ticket_pdf_ir_actions_server
+msgid "School: official PDF of the child-care ticket invoices"
+msgstr "École : PDF officiel des factures de billets du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.actions.server,name:bf_school_childcare_billing.ir_cron_childcare_billing_send_ir_actions_server
+msgid "School: send the child-care invoices"
+msgstr "École : envoyer les factures du service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__date
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Service date"
+msgstr "Date du service"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_tier_action
+msgid "Set the monthly price of a regular registration"
+msgstr "Fixez le prix mensuel d'une inscription régulière"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_rate_action
+msgid "Set the prices of child care for the school year"
+msgstr "Fixez les prix du service de garde pour l'année scolaire"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__kind__late_notice
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_rate__kind__late_notice
+msgid "Short notice supplement"
+msgstr "Supplément de préavis court"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__state
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__state
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut selon les activités\n"
+"En retard : l'échéance est dépassée\n"
+"Aujourd'hui : l'activité est aujourd'hui\n"
+"Planifiée : activités à venir."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__student_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/school.py:0
+msgid "The Administration sets the fee of an activity."
+msgstr "L'Administration fixe les frais d'une activité."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/run.py:0
+msgid "The billing of the month failed: bill it with the button."
+msgstr "La facturation du mois a échoué : facturez-le avec le bouton."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/account.py:0
+msgid "The billing sets this, not a person."
+msgstr "C'est la facturation qui fixe cette valeur, pas une personne."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_charge_action
+msgid ""
+"The charges come from the bookings, the sheets and the registrations, when a"
+" month is billed."
+msgstr ""
+"Les frais viennent des réservations, des feuilles et des inscriptions, quand"
+" un mois se facture."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/charge.py:0
+msgid "The charges come from the bookings, the sheets and the registrations."
+msgstr ""
+"Les frais viennent des réservations, des feuilles et des inscriptions."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "The child does not attend child care at school."
+msgstr "L'enfant ne fréquente pas le service de garde de l'école."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_account_move_line__school_childcare_student_id
+msgid ""
+"The child whose child care this line pays: the Relevé 24 is per payer and "
+"per child."
+msgstr ""
+"L'enfant dont cette ligne paie la garde : le relevé 24 est par personne qui "
+"paie et par enfant."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.actions.act_window,help:bf_school_childcare_billing.bf_school_childcare_ticket_book_action
+msgid ""
+"The families buy them on the portal and pay them online, when the school "
+"sells them."
+msgstr ""
+"Les familles les achètent au portail et les paient en ligne, quand l'école "
+"en vend."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_charge__month
+msgid "The first day of the month served."
+msgstr "Le premier jour du mois de service."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__rl24_cap
+msgid ""
+"The most of one unit that is child care (an outing day of 47 $ whose child "
+"care is 22 $). Empty: the whole price."
+msgstr ""
+"La part maximale d'une unité qui est de la garde (une journée de sortie à 47"
+" $ dont la garde vaut 22 $). Vide : le prix entier."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_charge__eligible_amount
+msgid "The part of the amount that is child care."
+msgstr "La part du montant qui est de la garde."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__amount
+msgid ""
+"The price of one unit. Late pick-up: the first block. Book of tickets: the "
+"book."
+msgstr ""
+"Le prix d'une unité. Retard : le premier bloc. Carnet de billets : le "
+"carnet."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/ticket.py:0
+msgid "The school does not sell books of tickets."
+msgstr "L'école ne vend pas de carnets de billets."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_waive_view_form
+msgid "The school forgives these charges: they are not billed."
+msgstr "L'école renonce à ces frais : ils ne sont pas facturés."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid ""
+"This rate already exists for that year and period: change it or archive it."
+msgstr ""
+"Ce tarif existe déjà pour cette année et cette période : modifiez-le ou "
+"archivez-le."
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "This rate applies to the whole school: leave the period empty."
+msgstr "Ce tarif s'applique à toute l'école : laissez la période vide."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__tickets
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.portal_school_childcare_tickets
+msgid "Tickets"
+msgstr "Billets"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_rate__tickets
+msgid "Tickets in the book"
+msgstr "Billets du carnet"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__remaining
+msgid "Tickets left"
+msgstr "Billets restants"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.portal_school_childcare_tickets
+msgid "Tickets left:"
+msgstr "Billets restants :"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__usable
+msgid "Tickets usable"
+msgstr "Billets utilisables"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_ticket_book__used
+msgid "Tickets used"
+msgstr "Billets utilisés"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_tier__max_periods
+msgid "To (periods per week)"
+msgstr "À (périodes par semaine)"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__amount_open
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_billing_run__state__draft
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__state__open
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "To bill"
+msgstr "À facturer"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_ticket_book__state__to_pay
+msgid "To pay"
+msgstr "À payer"
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_school_childcare_billing
+#. odoo-python
+#: code:addons/bf_school_childcare_billing/models/rate.py:0
+msgid "Two tiers of the same year cover the same number of periods."
+msgstr "Deux paliers de la même année couvrent le même nombre de périodes."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception."
+
+#. module: bf_school_childcare_billing
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_list
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_waive_view_form
+msgid "Waive"
+msgstr "Exonérer"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model,name:bf_school_childcare_billing.model_bf_school_childcare_charge_waive
+msgid "Waive child care charges"
+msgstr "Exonérer des frais de service de garde"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields.selection,name:bf_school_childcare_billing.selection__bf_school_childcare_charge__state__waived
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare_billing.bf_school_childcare_charge_view_search
+msgid "Waived"
+msgstr "Exonérés"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__waived_by_id
+msgid "Waived by"
+msgstr "Exonération par"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_billing_run__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_billing_run__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_rate__rl24
+msgid ""
+"What is paid at this rate goes on the payer's Relevé 24. Ticked by default, "
+"except for late pick-up."
+msgstr ""
+"Ce qui est payé à ce tarif va au relevé 24 de la personne qui paie. Coché "
+"par défaut, sauf pour le retard."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,help:bf_school_childcare_billing.field_bf_school_childcare_charge__key
+msgid "What the charge is for: a source is charged once."
+msgstr "Ce que les frais couvrent : une source n'est facturée qu'une fois."
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge_waive__reason
+msgid "Why"
+msgstr "Motif"
+
+#. module: bf_school_childcare_billing
+#: model:ir.model.fields,field_description:bf_school_childcare_billing.field_bf_school_childcare_charge__waived_reason
+msgid "Why waived"
+msgstr "Motif de l'exonération"

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_rl24_compute_view_form" model="ir.ui.view">
+        <field name="name">bf.school.rl24.compute.form</field>
+        <field name="model">bf.school.rl24.compute</field>
+        <field name="arch" type="xml">
+            <form>
+                <p class="text-muted">
+                    What each payer paid for each child's child care, on the contract invoices,
+                    for the services of the calendar year. Issued statements are never rewritten;
+                    the export lists the issued ones.
+                </p>
+                <group>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="year" options="{'format': false}"/>
+                </group>
+                <footer>
+                    <button name="action_compute" type="object" string="Compute" class="btn-primary"/>
+                    <button name="action_export" type="object" string="Export the issued statements"/>
+                    <button special="cancel" string="Close"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_rl24_compute_action" model="ir.actions.act_window">
+        <field name="name">Compute the Relevé 24</field>
+        <field name="res_model">bf.school.rl24.compute</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

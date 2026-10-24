@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 20:37+0000\n"
-"PO-Revision-Date: 2026-09-27 20:37+0000\n"
+"POT-Creation-Date: 2026-10-02 13:06+0000\n"
+"PO-Revision-Date: 2026-10-02 13:06+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,12 @@ msgstr ""
 msgid ""
 "%(adult)s signs for %(student)s without parental authority. Only a holder of"
 " parental authority or a tutor signs for a minor."
+msgstr ""
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/enrollment.py:0
+msgid "%(level)s is not a level of the group %(group)s."
 msgstr ""
 
 #. module: bf_school_core
@@ -55,6 +61,12 @@ msgstr ""
 
 #. module: bf_school_core
 #. odoo-python
+#: code:addons/bf_school_core/models/enrollment.py:0
+msgid "A profile belongs to the student's school."
+msgstr ""
+
+#. module: bf_school_core
+#. odoo-python
 #: code:addons/bf_school_core/models/school.py:0
 msgid "A school year ends after it starts."
 msgstr ""
@@ -85,6 +97,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school__active
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__active
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__active
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__active
 msgid "Active"
 msgstr ""
 
@@ -146,6 +159,7 @@ msgstr ""
 
 #. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__code
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__code
 msgid "Code"
 msgstr ""
 
@@ -154,6 +168,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__company_id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__company_id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__company_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__company_id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__company_id
 msgid "Company"
 msgstr ""
@@ -174,6 +189,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__create_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__create_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__create_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__create_uid
 msgid "Created by"
 msgstr ""
@@ -184,6 +200,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__create_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__create_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__create_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__create_date
 msgid "Created on"
 msgstr ""
@@ -211,6 +228,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__display_name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__display_name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__display_name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__display_name
 msgid "Display Name"
 msgstr ""
@@ -381,6 +399,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__id
 msgid "ID"
 msgstr ""
@@ -416,6 +435,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__write_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__write_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__write_uid
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__write_uid
 msgid "Last Updated by"
 msgstr ""
@@ -426,6 +446,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__write_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__write_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__write_date
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__write_date
 msgid "Last Updated on"
 msgstr ""
@@ -448,6 +469,11 @@ msgstr ""
 #. module: bf_school_core
 #: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__tutor
 msgid "Legal tutor"
+msgstr ""
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__level_id
+msgid "Level"
 msgstr ""
 
 #. module: bf_school_core
@@ -513,6 +539,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school__name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__name
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__name
 msgid "Name"
 msgstr ""
@@ -602,6 +629,17 @@ msgid "Preschool"
 msgstr ""
 
 #. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__profile_id
+msgid "Profile"
+msgstr ""
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__profile_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "Profiles"
+msgstr ""
+
+#. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school__rating_ids
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__rating_ids
 msgid "Ratings"
@@ -642,6 +680,7 @@ msgstr ""
 #: model:ir.model,name:bf_school_core.model_bf_school
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__school_id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__school_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__school_id
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__school_id
 #: model:ir.module.category,name:bf_school_core.module_category_school
 #: model:ir.ui.menu,name:bf_school_core.menu_school_root
@@ -663,6 +702,11 @@ msgstr ""
 #. module: bf_school_core
 #: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
 msgid "School name"
+msgstr ""
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_profile
+msgid "School profile (particular programme)"
 msgstr ""
 
 #. module: bf_school_core
@@ -723,6 +767,7 @@ msgstr ""
 #. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__sequence
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__sequence
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_profile__sequence
 msgid "Sequence"
 msgstr ""
 
@@ -811,6 +856,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_enrollment__profile_id
+msgid "The particular programme the student follows this year, if any."
+msgstr ""
+
+#. module: bf_school_core
 #. odoo-python
 #: code:addons/bf_school_core/models/school.py:0
 msgid "The school year belongs to another school."
@@ -825,6 +875,13 @@ msgstr ""
 #: model:ir.model.fields,help:bf_school_core.field_bf_school_group__teacher_ids
 msgid ""
 "The staff members who teach this group. They see its students and families."
+msgstr ""
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_enrollment__level_id
+msgid ""
+"The student's level this year. Set from the group when the group has a "
+"single level; to choose in a multi-level group."
 msgstr ""
 
 #. module: bf_school_core

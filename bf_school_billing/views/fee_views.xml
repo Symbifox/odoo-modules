@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_fee_view_list" model="ir.ui.view">
+        <field name="name">bf.school.fee.list</field>
+        <field name="model">bf.school.fee</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="school_id" column_invisible="True"/>
+                <field name="year_id" options="{'no_create': True}"/>
+                <field name="category"/>
+                <field name="name"/>
+                <field name="level_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="profile_ids" widget="many2many_tags" options="{'no_create': True}" optional="show"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="sibling_discount" optional="show"/>
+                <field name="rl24"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_fee_view_search" model="ir.ui.view">
+        <field name="name">bf.school.fee.search</field>
+        <field name="model">bf.school.fee</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="year_id"/>
+                <field name="level_ids"/>
+                <field name="profile_ids"/>
+                <filter name="educational" string="Educational services" domain="[('category', '=', 'educational')]"/>
+                <filter name="accessory" string="Accessory services" domain="[('category', '=', 'accessory')]"/>
+                <filter name="option" string="Optional services" domain="[('category', '=', 'option')]"/>
+                <separator/>
+                <filter name="childcare" string="Child care (Relevé 24)" domain="[('rl24', '=', 'childcare')]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_year" string="School year" context="{'group_by': 'year_id'}"/>
+                    <filter name="by_category" string="Kind" context="{'group_by': 'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_fee_action" model="ir.actions.act_window">
+        <field name="name">Fee catalogue</field>
+        <field name="res_model">bf.school.fee</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Enter the fees of a school year</p>
+            <p>Educational services make the tuition of the contracts; accessory services are
+               added to every contract they apply to, optional ones when the family chooses them.
+               Mark what is child care for the Relevé 24.</p>
+        </field>
+    </record>
+
+    <record id="bf_school_view_form_billing" model="ir.ui.view">
+        <field name="name">bf.school.form.billing</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='year_ids']/list/button[@name='action_set_current']" position="after">
+                <button name="action_school_prepare_contracts" type="object" string="Prepare the contracts"
+                        icon="fa-file-text-o" groups="bf_school_core.group_school_manager"
+                        invisible="state == 'closed'"
+                        confirm="Prepare a draft contract, priced from the fee catalogue, for every enrolled student of this year who has none?"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Billing" name="billing" groups="bf_school_core.group_school_manager">
+                    <group>
+                        <group>
+                            <field name="billing_installment_count"/>
+                            <field name="bursary_partner_id"/>
+                        </group>
+                        <group string="Sibling discount">
+                            <field name="sibling_rule_ids" nolabel="1" colspan="2">
+                                <list editable="bottom">
+                                    <field name="from_rank"/>
+                                    <field name="percent"/>
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

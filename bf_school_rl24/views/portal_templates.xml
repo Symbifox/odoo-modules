@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_rl24_link" name="School: link to the child-care statements"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a t-if="school_rl24_any or any(c['roles']['is_payer'] for c in cards)" href="/my/school/rl24" class="btn btn-secondary">
+                <i class="fa fa-file-text-o me-1"/>Relevé 24</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_rl24" name="School: Relevé 24 breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="38">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_rl24'" class="breadcrumb-item active">Relevé 24</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_rl24" name="School: child-care statements">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Child-care fees paid</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Child-care fees paid</t>
+            </t>
+            <p class="mt-3">What you paid for the services that the school counts as child care for the
+                Relevé 24, by year of the services. These statements are not the Relevé 24: the school
+                sends you the official slip by the end of February.</p>
+            <div t-if="not statements" class="alert alert-info">No statement yet.</div>
+            <table t-else="" class="table o_school_rl24">
+                <thead><tr><th>Year</th><th>Child</th><th class="text-end">Paid</th><th/></tr></thead>
+                <tbody>
+                    <tr t-foreach="statements" t-as="s">
+                        <td t-out="s.year"/>
+                        <td t-out="s.student_id.name"/>
+                        <td class="text-end" t-out="s.amount" t-options="{'widget': 'monetary', 'display_currency': s.currency_id}"/>
+                        <td class="text-end"><a t-attf-href="/my/school/rl24/#{s.id}/pdf" class="btn btn-sm btn-link">
+                            <i class="fa fa-download me-1"/>PDF</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </t>
+    </template>
+</odoo>

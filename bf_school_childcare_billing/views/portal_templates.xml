@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_school_childcare_tickets" name="School: child care tickets"
+              inherit_id="bf_school_childcare.portal_school_childcare">
+        <!-- 🔴 Anchored on a class: a text is translated, and the page broke in French. -->
+        <xpath expr="//h5[hasclass('o_school_childcare_next')]" position="before">
+            <t t-if="card.get('ticket_rate') or card.get('tickets_left') or card.get('books_to_pay')">
+                <h5>Tickets</h5>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3 o_school_childcare_tickets">
+                    <span>Tickets left: <strong t-out="card['tickets_left']"/></span>
+                    <a t-foreach="card['books_to_pay']" t-as="book" class="btn btn-sm btn-outline-primary"
+                       t-attf-href="/my/school/childcare/tickets/#{book.id}/pay" t-out="card['book_labels'][book.id]"/>
+                    <form t-if="card.get('ticket_rate')" method="post" action="/my/school/childcare/tickets/buy"
+                          class="d-inline">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="student_id" t-att-value="child.id"/>
+                        <button type="submit" class="btn btn-sm btn-primary" t-out="card['ticket_buy_label']"/>
+                    </form>
+                    <p class="small text-muted w-100 mb-0">A ticket pays one occasional period (or day) of this school year. Tickets are not refunded.</p>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

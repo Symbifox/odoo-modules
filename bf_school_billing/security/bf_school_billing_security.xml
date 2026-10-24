@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The price list, the discounts and who pays: the school office only, like the
+         contract. Teachers have no access right at all. -->
+    <record id="rule_school_fee_company" model="ir.rule">
+        <field name="name">School fee: my companies</field>
+        <field name="model_id" ref="model_bf_school_fee"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_sibling_rule_company" model="ir.rule">
+        <field name="name">Sibling discount: my companies</field>
+        <field name="model_id" ref="model_bf_school_sibling_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_billing_share_company" model="ir.rule">
+        <field name="name">Payer of a contract: my companies</field>
+        <field name="model_id" ref="model_bf_school_billing_share"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

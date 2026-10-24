@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_invoices_link" name="School: link to the invoices"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a t-if="any(c['roles']['is_payer'] for c in cards)" href="/my/invoices" class="btn btn-secondary">
+                <i class="fa fa-file-text me-1"/>Invoices and payments</a>
+        </xpath>
+    </template>
+</odoo>

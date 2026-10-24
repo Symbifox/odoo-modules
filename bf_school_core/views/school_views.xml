@@ -50,6 +50,16 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Profiles" name="profiles">
+                            <field name="profile_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>

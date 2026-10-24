@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_contract_view_form_billing" model="ir.ui.view">
+        <field name="name">bf.school.contract.form.billing</field>
+        <field name="model">bf.school.contract</field>
+        <field name="inherit_id" ref="bf_school_contract.bf_school_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_school_bill" type="object" string="Bill the payers" class="btn-primary"
+                        invisible="state != 'signed' or is_billed"
+                        confirm="Issue the invoices of this contract to its payers? They are sent by email with their due dates."/>
+                <button name="action_school_reprice" type="object" string="Price from the catalogue"
+                        invisible="state != 'draft'"/>
+            </xpath>
+            <xpath expr="//field[@name='year_id']" position="after">
+                <field name="is_billed" invisible="1"/>
+                <field name="level_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                <field name="profile_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='tuition']" position="after">
+                <field name="tuition_rl24" readonly="state != 'draft'"/>
+                <field name="sibling_rank" invisible="sibling_rank &lt; 2"/>
+                <field name="sibling_percent" invisible="not sibling_percent"/>
+            </xpath>
+            <xpath expr="//field[@name='accessory_ids']/list/field[@name='name']" position="before">
+                <field name="fee_id" optional="show" options="{'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='accessory_ids']/list/field[@name='price']" position="after">
+                <field name="rl24" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='amount_paid']" position="attributes">
+                <attribute name="readonly">state == 'terminated' or is_billed</attribute>
+            </xpath>
+            <xpath expr="//page[@name='accessories']" position="after">
+                <page string="Payers" name="payers">
+                    <button name="action_school_default_shares" type="object" string="Payers from the family"
+                            class="btn-link" icon="fa-users" invisible="share_ids or is_billed or state == 'terminated'"/>
+                    <field name="share_ids" readonly="is_billed or state == 'terminated'">
+                        <list editable="bottom" decoration-danger="invoice_overdue">
+                            <field name="sequence" widget="handle"/>
+                            <field name="partner_id"/>
+                            <field name="kind"/>
+                            <field name="percent" invisible="kind != 'family'"/>
+                            <field name="amount" invisible="kind != 'bursary'"/>
+                            <field name="billed_amount" sum="Total"/>
+                            <field name="invoice_name"/>
+                            <field name="invoice_paid" sum="Paid"/>
+                            <field name="invoice_residual" sum="Left"/>
+                            <field name="invoice_next_due"/>
+                            <field name="invoice_overdue" column_invisible="True"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_contract_view_list_billing" model="ir.ui.view">
+        <field name="name">bf.school.contract.list.billing</field>
+        <field name="model">bf.school.contract</field>
+        <field name="inherit_id" ref="bf_school_contract.bf_school_contract_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='total_price']" position="after">
+                <field name="amount_paid" sum="Paid" optional="show"/>
+                <field name="level_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

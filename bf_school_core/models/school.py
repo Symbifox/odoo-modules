@@ -21,6 +21,7 @@ class School(models.Model):
     active = fields.Boolean(default=True)
     year_ids = fields.One2many("bf.school.year", "school_id", "School years")
     group_ids = fields.One2many("bf.school.group", "school_id", "Groups")
+    profile_ids = fields.One2many("bf.school.profile", "school_id", "Profiles")
     current_year_id = fields.Many2one(
         "bf.school.year", "Current year", compute="_compute_current_year_id")
     student_count = fields.Integer("Students", compute="_compute_student_count")
@@ -140,6 +141,25 @@ class SchoolLevel(models.Model):
     _sql_constraints = [
         ("code_unique", "UNIQUE(code)", "A level code is used only once."),
     ]
+
+
+class SchoolProfile(models.Model):
+    """A particular programme of the school (sport-études, international education…).
+
+    A student follows at most one profile a year, carried by the enrolment. Billing prices
+    by level and profile; the report card will read it too.
+    """
+
+    _name = "bf.school.profile"
+    _description = "School profile (particular programme)"
+    _order = "school_id, sequence, id"
+
+    name = fields.Char(required=True, translate=True)
+    code = fields.Char()
+    school_id = fields.Many2one("bf.school", required=True, ondelete="cascade", index=True)
+    company_id = fields.Many2one(related="school_id.company_id", store=True)
+    sequence = fields.Integer(default=10)
+    active = fields.Boolean(default=True)
 
 
 class SchoolGroup(models.Model):

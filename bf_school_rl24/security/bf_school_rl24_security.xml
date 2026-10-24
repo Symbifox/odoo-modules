@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- What a family paid is the school office's, like the contracts. Families read their
+         own issued statements through the portal controller, never through the ORM. -->
+    <record id="rule_school_rl24_company" model="ir.rule">
+        <field name="name">Child-care statement: my companies</field>
+        <field name="model_id" ref="model_bf_school_rl24"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- 🔴 The export lives as an attachment of the wizard: without a rule, an office user of
+         another company could download it by its id while the wizard exists. -->
+    <record id="rule_school_rl24_compute_own" model="ir.rule">
+        <field name="name">Relevé 24 computation: my own, in my companies</field>
+        <field name="model_id" ref="model_bf_school_rl24_compute"/>
+        <field name="domain_force">[('create_uid', '=', user.id), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

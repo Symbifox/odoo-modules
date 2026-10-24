@@ -1,0 +1,511 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_rl24
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 13:45+0000\n"
+"PO-Revision-Date: 2026-10-02 13:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_rl24
+#: model:ir.actions.report,print_report_name:bf_school_rl24.action_report_school_rl24
+msgid "'releve24-%s-%s' % (object.year, object.student_id.name)"
+msgstr "'releve24-%s-%s' % (object.year, object.student_id.name)"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid "<i class=\"fa fa-download me-1\"/>PDF"
+msgstr "<i class=\"fa fa-download me-1\"/>PDF"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_my_school_rl24_link
+msgid "<i class=\"fa fa-file-text-o me-1\"/>Relevé 24"
+msgstr "<i class=\"fa fa-file-text-o me-1\"/>Relevé 24"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid ""
+"<strong>This statement is not the Relevé 24.</strong> The school sends you your\n"
+"                    official slip by the end of February."
+msgstr ""
+"<strong>Cet état n'est pas le relevé 24.</strong> L'école vous remet votre\n"
+"                    relevé officiel au plus tard à la fin de février."
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid "A statement is computed for a year that has begun."
+msgstr "Un état se calcule pour une année commencée."
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid "A statement is created by the computation of its year."
+msgstr "Un état se crée par le calcul de son année."
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid "A statement moves with its buttons and its computation."
+msgstr "Un état ne change que par ses boutons et son calcul."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_rl24
+#: model:ir.actions.report,name:bf_school_rl24.action_report_school_rl24
+msgid "Annual statement of child-care fees"
+msgstr "État annuel des frais de garde d'enfants"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__year
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__year
+msgid "Calendar year"
+msgstr "Année civile"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__is_outdated
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_search
+msgid "Changed since issued"
+msgstr "Modifié depuis l'émission"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__student_id
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid "Child"
+msgstr "Enfant"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "Child's birth date"
+msgstr "Date de naissance de l'enfant"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid "Child-care fees for the services of"
+msgstr "Frais de garde pour les services de"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__amount
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid "Child-care fees paid"
+msgstr "Frais de garde payés"
+
+#. module: bf_school_rl24
+#: model:ir.model,name:bf_school_rl24.model_bf_school_rl24
+msgid "Child-care fees paid (Relevé 24)"
+msgstr "Frais de garde payés (relevé 24)"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid "Child-care fees paid for services of"
+msgstr "Frais de garde payés pour les services de"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "City"
+msgstr "Ville"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_compute_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__company_id
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_compute_view_form
+msgid "Compute"
+msgstr "Calculer"
+
+#. module: bf_school_rl24
+#: model:ir.ui.menu,name:bf_school_rl24.menu_school_rl24_compute
+msgid "Compute a year"
+msgstr "Calculer une année"
+
+#. module: bf_school_rl24
+#: model_terms:ir.actions.act_window,help:bf_school_rl24.bf_school_rl24_action
+msgid ""
+"Compute a year: what each payer paid for each child's child care, from the\n"
+"               contract invoices."
+msgstr ""
+"Calculez une année : ce que chaque payeur a payé pour la garde de chaque enfant, d'après\n"
+"               les factures des contrats."
+
+#. module: bf_school_rl24
+#: model:ir.actions.act_window,name:bf_school_rl24.bf_school_rl24_compute_action
+msgid "Compute the Relevé 24"
+msgstr "Calculer le relevé 24"
+
+#. module: bf_school_rl24
+#: model:ir.model,name:bf_school_rl24.model_bf_school_rl24_compute
+msgid "Compute the child-care statements of a year"
+msgstr "Calculer les états de frais de garde d'une année"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__create_uid
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__create_date
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__display_name
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_compute_view_form
+msgid "Export the issued statements"
+msgstr "Exporter les états émis"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__id
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__message_has_error
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_list
+msgid "Issue"
+msgstr "Émettre"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields.selection,name:bf_school_rl24.selection__bf_school_rl24__state__issued
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_search
+msgid "Issued"
+msgstr "Émis"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__issued_on
+msgid "Issued On"
+msgstr "Émis le"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__was_issued
+msgid ""
+"Issued at least once: never deleted, even brought back to zero (a corrected "
+"slip)."
+msgstr ""
+"Émis au moins une fois : jamais supprimé, même ramené à zéro (un relevé "
+"corrigé)."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__write_uid
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__write_date
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24_compute__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_rl24
+#: model_terms:ir.actions.act_window,help:bf_school_rl24.bf_school_rl24_action
+msgid "No child-care fees counted yet"
+msgstr "Aucuns frais de garde comptés pour l'instant"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid "No statement yet."
+msgstr "Aucun état pour l'instant."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_rl24
+#: model:ir.model.constraint,message:bf_school_rl24.constraint_bf_school_rl24_rl24_unique
+msgid "One statement per payer, child and year."
+msgstr "Un état par personne qui paie, enfant et année."
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid "Only a statement to review is issued."
+msgstr "Seul un état à vérifier s'émet."
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid "Paid"
+msgstr "Payé"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__amount_now
+msgid "Paid today"
+msgstr "Payé à ce jour"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid "Payer"
+msgstr "Qui paie"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "Postal code"
+msgstr "Code postal"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "Province"
+msgstr "Province"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_rl24
+#: model:ir.actions.act_window,name:bf_school_rl24.bf_school_rl24_action
+#: model:ir.ui.menu,name:bf_school_rl24.menu_school_rl24_root
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_breadcrumbs_school_rl24
+msgid "Relevé 24"
+msgstr "Relevé 24"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "Relevé 24, %s"
+msgstr "Relevé 24, %s"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_rl24
+#: model:ir.ui.menu,name:bf_school_rl24.menu_school_rl24
+msgid "Statements"
+msgstr "États"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "Street"
+msgstr "Adresse"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_form
+msgid "The payments changed since this statement was issued."
+msgstr "Les paiements ont changé depuis l'émission de cet état."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__amount_now
+msgid "The same amount, counted again on today's payments."
+msgstr "Le même montant, recompté sur les paiements à ce jour."
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.report_school_rl24_document
+msgid ""
+"This statement adds up what you paid for the services of the year that the school\n"
+"                    counts as child care for the Relevé 24."
+msgstr ""
+"Cet état additionne ce que vous avez payé pour les services de l'année que l'école\n"
+"                    compte comme frais de garde pour le relevé 24."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields.selection,name:bf_school_rl24.selection__bf_school_rl24__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_search
+msgid "To review"
+msgstr "À vérifier"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid "Unsupported search."
+msgstr "Recherche non prise en charge."
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_list
+msgid "Update the changed ones"
+msgstr "Mettre à jour ceux qui ont changé"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_form
+msgid "Update to today's payments"
+msgstr "Mettre à jour selon les paiements à ce jour"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/models/rl24.py:0
+msgid ""
+"Updated to the payments of today: issue it again and tell the family a "
+"corrected slip will follow."
+msgstr ""
+"Mis à jour selon les paiements à ce jour : émettez-le de nouveau et avisez "
+"la famille qu'un relevé corrigé suivra."
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__was_issued
+msgid "Was Issued"
+msgstr "Déjà émis"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_rl24
+#: model:ir.model.fields,help:bf_school_rl24.field_bf_school_rl24__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_compute_view_form
+msgid ""
+"What each payer paid for each child's child care, on the contract invoices,\n"
+"                    for the services of the calendar year. Issued statements are never rewritten;\n"
+"                    the export lists the issued ones."
+msgstr ""
+"Ce que chaque payeur a payé pour la garde de chaque enfant, sur les factures des contrats,\n"
+"                    pour les services de l'année civile. Un état émis n'est jamais réécrit;\n"
+"                    l'export liste les états émis."
+
+#. module: bf_school_rl24
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid ""
+"What you paid for the services that the school counts as child care for the\n"
+"                Relevé 24, by year of the services. These statements are not the Relevé 24: the school\n"
+"                sends you the official slip by the end of February."
+msgstr ""
+"Ce que vous avez payé pour les services que l'école compte comme frais de garde pour le\n"
+"                relevé 24, par année des services. Ces états ne sont pas le relevé 24 : l'école vous remet\n"
+"                le relevé officiel au plus tard à la fin de février."
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+#: model:ir.model.fields,field_description:bf_school_rl24.field_bf_school_rl24__year_label
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.bf_school_rl24_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_rl24.portal_school_rl24
+msgid "Year"
+msgstr "Année"
+
+#. module: bf_school_rl24
+#. odoo-python
+#: code:addons/bf_school_rl24/wizard/rl24_compute.py:0
+msgid "You do not work for %s."
+msgstr "Vous ne travaillez pas pour %s."

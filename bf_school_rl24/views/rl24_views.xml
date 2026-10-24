@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_rl24_view_list" model="ir.ui.view">
+        <field name="name">bf.school.rl24.list</field>
+        <field name="model">bf.school.rl24</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="is_outdated" decoration-muted="state == 'draft'">
+                <header>
+                    <button name="action_issue" type="object" string="Issue"/>
+                    <button name="action_update" type="object" string="Update the changed ones"/>
+                </header>
+                <field name="year_label"/>
+                <field name="partner_id"/>
+                <field name="student_id"/>
+                <field name="amount" sum="Total"/>
+                <field name="amount_now" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="is_outdated" column_invisible="True"/>
+                <field name="state" widget="badge" decoration-success="state == 'issued'"/>
+                <field name="issued_on" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_rl24_view_form" model="ir.ui.view">
+        <field name="name">bf.school.rl24.form</field>
+        <field name="model">bf.school.rl24</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue" type="object" string="Issue" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_update" type="object" string="Update to today's payments"
+                            invisible="not is_outdated"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not is_outdated">
+                        The payments changed since this statement was issued.
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="year" options="{'format': false}"/>
+                            <field name="partner_id"/>
+                            <field name="student_id"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="amount_now"/>
+                            <field name="is_outdated" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="issued_on"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_rl24_view_search" model="ir.ui.view">
+        <field name="name">bf.school.rl24.search</field>
+        <field name="model">bf.school.rl24</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="student_id"/>
+                <field name="year_label"/>
+                <filter name="draft" string="To review" domain="[('state', '=', 'draft')]"/>
+                <filter name="issued" string="Issued" domain="[('state', '=', 'issued')]"/>
+                <filter name="outdated" string="Changed since issued" domain="[('is_outdated', '=', True)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_year" string="Year" context="{'group_by': 'year_label'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_rl24_action" model="ir.actions.act_window">
+        <field name="name">Relevé 24</field>
+        <field name="res_model">bf.school.rl24</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No child-care fees counted yet</p>
+            <p>Compute a year: what each payer paid for each child's child care, from the
+               contract invoices.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_rl24_root" name="Relevé 24" parent="bf_school_core.menu_school_root"
+              sequence="45" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_rl24" name="Statements" parent="menu_school_rl24_root"
+              action="bf_school_rl24_action" sequence="10"/>
+    <menuitem id="menu_school_rl24_compute" name="Compute a year" parent="menu_school_rl24_root"
+              action="bf_school_rl24_compute_action" sequence="20"/>
+</odoo>

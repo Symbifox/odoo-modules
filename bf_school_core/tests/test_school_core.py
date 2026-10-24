@@ -229,3 +229,17 @@ class TestGuardianDefaults(SchoolCase):
             {"student_id": self.child.id, "guardian_id": self.env["res.partner"].create({"name": "Mamie"}).id,
              "relationship": "grandparent", "receives_notices": True})
         self.assertTrue(explicit.receives_notices, "the school decides")
+
+
+@tagged("post_install", "-at_install")
+class TestFrenchLabels(TransactionCase):
+
+    def test_a_student_who_left_reads_parti(self):
+        # 🔴 The billing's "Left" (what remains to be paid, « Reste ») went into this selection
+        # when the catalogues were merged: a student who left read « Reste », as if staying.
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_school_core"], ["fr_CA"], overwrite=True)
+        self.env.registry.clear_cache()
+        states = dict(self.env["bf.school.enrollment"].with_context(lang="fr_CA").fields_get(
+            ["state"], ["selection"])["state"]["selection"])
+        self.assertEqual((states["active"], states["left"]), ("Inscrit", "Parti"))
