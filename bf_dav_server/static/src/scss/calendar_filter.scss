@@ -1,0 +1,14 @@
+// Part of bf_dav_server. See LICENSE file for full copyright and licensing details.
+//
+// Each checkbox of the "Calendars" section takes its calendar's color, also
+// where a theme paints every checked box in one brand color (!important).
+@for $i from 1 through length($o-colors-complete) {
+    $color: nth($o-colors-complete, $i);
+    .o_calendar_filter[data-name="bf_dav_calendar_id"] .o_cw_filter_color_#{$i - 1} .o_cw_filter_input_bg {
+        border-color: $color !important;
+
+        &:checked {
+            background-color: $color !important;
+        }
+    }
+}

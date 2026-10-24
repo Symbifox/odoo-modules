@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**253 modules are BUSL-1.1.** The source is published and auditable, and **you
+**254 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -176,6 +176,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.0 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
+| `bf_dav_server` | Calendar and contacts sync (CalDAV, CardDAV) | 18.0.1.1.2 | BUSL-1.1 | Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write the Odoo agenda and contacts directly, reminders and their state included |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.2.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
@@ -472,7 +473,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **253 modules: BUSL-1.1.** Production use for your own internal business
+- **254 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

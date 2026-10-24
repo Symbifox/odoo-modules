@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_dav_calendar_user,bf.dav.calendar user,model_bf_dav_calendar,base.group_user,1,1,1,1
+access_bf_dav_calendar_system,bf.dav.calendar system,model_bf_dav_calendar,base.group_system,1,1,1,1
+access_bf_dav_addressbook_user,bf.dav.addressbook user,model_bf_dav_addressbook,base.group_user,1,0,0,0
+access_bf_dav_addressbook_system,bf.dav.addressbook system,model_bf_dav_addressbook,base.group_system,1,1,1,1
+access_bf_dav_card_system,bf.dav.card system,model_bf_dav_card,base.group_system,1,1,1,1
+access_bf_dav_change_system,bf.dav.change system,model_bf_dav_change,base.group_system,1,0,0,0
+access_bf_dav_user_data_system,bf.dav.user.data system,model_bf_dav_user_data,base.group_system,1,1,1,1
+access_bf_dav_resource_extra_system,bf.dav.resource.extra system,model_bf_dav_resource_extra,base.group_system,1,1,1,1
+access_bf_dav_password_wizard_user,bf.dav.password.wizard user,model_bf_dav_password_wizard,base.group_user,1,1,1,0

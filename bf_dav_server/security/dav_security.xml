@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_bf_dav_calendar_own" model="ir.rule">
+        <field name="name">CalDAV calendars: own</field>
+        <field name="model_id" ref="model_bf_dav_calendar"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_bf_dav_calendar_system" model="ir.rule">
+        <field name="name">CalDAV calendars: all (administrators)</field>
+        <field name="model_id" ref="model_bf_dav_calendar"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <record id="rule_bf_dav_addressbook_own" model="ir.rule">
+        <field name="name">CardDAV address books: company and own</field>
+        <field name="model_id" ref="model_bf_dav_addressbook"/>
+        <field name="domain_force">['|', ('kind', '=', 'company'), ('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_bf_dav_addressbook_system" model="ir.rule">
+        <field name="name">CardDAV address books: all (administrators)</field>
+        <field name="model_id" ref="model_bf_dav_addressbook"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <record id="rule_bf_dav_password_wizard_own" model="ir.rule">
+        <field name="name">App password wizard: own</field>
+        <field name="model_id" ref="model_bf_dav_password_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

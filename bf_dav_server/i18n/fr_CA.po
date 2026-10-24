@@ -1,0 +1,692 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_dav_server 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 10:09+0000\n"
+"PO-Revision-Date: 2026-10-24 10:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid ""
+"<strong>Write this password down now: it will not be shown again.</strong>"
+msgstr ""
+"<strong>Notez ce mot de passe maintenant : il ne sera plus affiché.</strong>"
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_card_book_uid_uniq
+msgid "A card UID is unique in its book."
+msgstr "L'UID d'une fiche est unique dans son carnet."
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_card_book_href_uniq
+msgid "A card address is unique in its book."
+msgstr "L'adresse d'une fiche est unique dans son carnet."
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_addressbook.py:0
+msgid "A personal address book needs an owner."
+msgstr "Un carnet personnel doit avoir un propriétaire."
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_calendar.py:0
+msgid "A user has only one default calendar."
+msgstr "Un usager n'a qu'un seul agenda par défaut."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__active
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_key_count
+msgid "App passwords"
+msgstr "Mots de passe d'application"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__book_id
+msgid "Book"
+msgstr "Carnet"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_caldav.py:0
+msgid "Busy"
+msgstr "Occupé"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_calendar
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_calendar_id
+msgid "CalDAV calendar"
+msgstr "Agenda CalDAV"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_calendar_ids
+msgid "CalDAV calendars"
+msgstr "Agendas CalDAV"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_href
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_recurrence__bf_dav_href
+msgid "CalDAV resource name"
+msgstr "Nom de la ressource CalDAV"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_service
+msgid "CalDAV/CardDAV server"
+msgstr "Serveur CalDAV/CardDAV"
+
+#. module: bf_dav_server
+#: model:ir.actions.server,name:bf_dav_server.cron_purge_change_journal_ir_actions_server
+msgid "CalDAV/CardDAV: forget old sync changes"
+msgstr "CalDAV/CardDAV : oublier les anciens changements de synchronisation"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__caldav_url
+msgid "Caldav Url"
+msgstr "Adresse CalDAV"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_calendar.py:0
+msgid "Calendar"
+msgstr "Agenda"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_calendar_event_form_dav
+msgid "Calendar (apps)"
+msgstr "Agenda (applications)"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_calendar_attendee
+msgid "Calendar Attendee Information"
+msgstr "Informations des participants du calendrier"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_calendar_event
+msgid "Calendar Event"
+msgstr "Événement calendrier"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_users_form_simple_modif_dav
+msgid "Calendar and contacts apps"
+msgstr "Applications d'agenda et de contacts"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/wizard/dav_password_wizard.py:0
+msgid "Calendar and contacts: %s"
+msgstr "Agenda et contacts : %s"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+msgid "Calendar for apps"
+msgstr "Agenda pour les applications"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_calendar_event__bf_dav_calendar_id
+msgid "Calendar this event lives in for CalDAV clients."
+msgstr "Agenda dans lequel les applications CalDAV voient cet événement."
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_calendar_event_calendar_dav
+msgid "Calendars"
+msgstr "Agendas"
+
+#. module: bf_dav_server
+#: model:ir.actions.act_window,name:bf_dav_server.action_bf_dav_calendar
+#: model:ir.ui.menu,name:bf_dav_server.menu_bf_dav_calendar
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_list
+msgid "Calendars for apps"
+msgstr "Agendas pour les applications"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__card_ids
+msgid "Card"
+msgstr "Fiche"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__card_count
+msgid "Card Count"
+msgstr "Nombre de fiches"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_addressbook
+msgid "CardDAV address book"
+msgstr "Carnet d'adresses CardDAV"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_card
+msgid "CardDAV card"
+msgstr "Fiche CardDAV"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_partner__bf_dav_href
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_href
+msgid "CardDAV resource name"
+msgstr "Nom de la ressource CardDAV"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__carddav_url
+msgid "Carddav Url"
+msgstr "Adresse CardDAV"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_calendar__dead_props
+msgid "Client properties stored as is (PROPPATCH), JSON."
+msgstr "Propriétés du client gardées telles quelles (PROPPATCH), en JSON."
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__collection_key
+msgid "Collection Key"
+msgstr "Clé de la collection"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__color
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__odoo_color
+msgid "Color in Odoo"
+msgstr "Couleur dans Odoo"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+msgid "Color in apps"
+msgstr "Couleur dans les applications"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_calendar__odoo_color
+msgid ""
+"Color of this calendar and of its events in Odoo's Calendar app (Odoo "
+"palette)."
+msgstr ""
+"Couleur de cet agenda et de ses événements dans l'application Calendrier "
+"d'Odoo (palette d'Odoo)."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_calendar__color
+msgid "Color proposed to calendar apps (hex)."
+msgstr "Couleur proposée aux applications d'agenda (hex)."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_addressbook__exclude_tag_ids
+msgid "Company book: contacts carrying one of these tags are not served."
+msgstr ""
+"Carnet de la société : les contacts qui portent une de ces étiquettes ne "
+"sont pas servis."
+
+#. module: bf_dav_server
+#: model:ir.model.fields.selection,name:bf_dav_server.selection__bf_dav_addressbook__kind__company
+msgid "Company contacts"
+msgstr "Contacts de la société"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid "Create"
+msgstr "Créer"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__create_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__create_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__create_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__create_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_caldav.py:0
+msgid ""
+"Created from a calendar app while it was uploading many events at once: no "
+"invitation was sent. Send it from Odoo if the guests should get one."
+msgstr ""
+"Créé depuis une application d'agenda pendant qu'elle téléversait beaucoup "
+"d'événements d'un coup : aucune invitation n'est partie. Envoyez-la depuis "
+"Odoo si les invités doivent la recevoir."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__create_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__create_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__create_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__create_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__create_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_change
+msgid "DAV change journal"
+msgstr "Journal des changements DAV"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_resource_extra
+msgid "DAV object extra properties"
+msgstr "Propriétés supplémentaires d'un objet DAV"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_user_data
+msgid "DAV per-user object data"
+msgstr "Données d'un objet DAV par usager"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__dead_props
+msgid "Dead Props"
+msgstr "Propriétés gardées"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__is_default
+msgid "Default"
+msgstr "Par défaut"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__name
+msgid "Device"
+msgstr "Appareil"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__display_name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_dav_server
+#: model:ir.model.fields.selection,name:bf_dav_server.selection__bf_dav_password_wizard__state__done
+msgid "Done"
+msgstr "Fait"
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_addressbook_owner_slug_uniq
+msgid "Each address book address must be unique."
+msgstr "L'adresse de chaque carnet doit être unique."
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_calendar_owner_slug_uniq
+msgid "Each calendar address must be unique per user."
+msgstr "L'adresse de chaque agenda doit être unique pour un usager."
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_calendar
+msgid ""
+"Each calendar here appears as its own calendar in Thunderbird, Apple "
+"Calendar and DAVx5."
+msgstr ""
+"Chaque agenda de cette liste apparaît comme un agenda distinct dans "
+"Thunderbird, Calendrier d'Apple et DAVx5."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__etag
+msgid "Etag"
+msgstr "Étiquette de version"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__event_count
+msgid "Event Count"
+msgstr "Nombre d'événements"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_calendar_recurrence
+msgid "Event Recurrence Rule"
+msgstr "Règle de récurrence de l'événement"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+msgid "Events"
+msgstr "Événements"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__exclude_tag_ids
+msgid "Excluded tags"
+msgstr "Étiquettes exclues"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_password_wizard__name
+msgid "For example: Thunderbird office, Android phone."
+msgstr "Par exemple : Thunderbird du bureau, téléphone Android."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_card__name
+msgid "Formatted name, for display in Odoo only."
+msgstr "Nom affiché, pour Odoo seulement."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__href
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__href
+msgid "Href"
+msgstr "Adresse"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid ""
+"In Thunderbird or on a Mac, the server address and your login are enough: the\n"
+"                        app finds your calendars and address books. On Android, add a DAVx5 account\n"
+"                        with \"Login with URL and user name\"."
+msgstr ""
+"Dans Thunderbird ou sur un Mac, l'adresse du serveur et votre identifiant "
+"suffisent : l'application trouve vos agendas et vos carnets d'adresses. Sur "
+"Android, ajoutez un compte DAVx5 avec « Connexion avec une URL et un nom "
+"d'usager »."
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_addressbook.py:0
+msgid "Invalid address book address: %s"
+msgstr "Adresse de carnet invalide : %s"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_calendar.py:0
+msgid "Invalid calendar address: %s"
+msgstr "Adresse d'agenda invalide : %s"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_user_data__moz
+msgid "JSON: Thunderbird reminder properties"
+msgstr "JSON : propriétés de rappel de Thunderbird"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_user_data__valarms
+msgid "JSON: component key -> raw VALARM blocks"
+msgstr "JSON : clé du composant -> blocs VALARM bruts"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_resource_extra__props
+msgid "JSON: component key -> raw property lines"
+msgstr "JSON : clé du composant -> lignes de propriété brutes"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__key
+msgid "Key"
+msgstr "Clé"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__write_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__write_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__write_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__write_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__write_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__write_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__write_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__write_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__write_date
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_calendar__slug
+msgid ""
+"Last part of the collection address. Changing it makes clients see a new "
+"calendar."
+msgstr ""
+"Dernière partie de l'adresse de l'agenda. La changer fait voir un nouvel "
+"agenda aux applications."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__login
+msgid "Login"
+msgstr "Identifiant"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__moz
+msgid "Moz"
+msgstr "Moz"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__name
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_dav_server
+#: model:ir.model.fields.selection,name:bf_dav_server.selection__bf_dav_password_wizard__state__new
+msgid "New"
+msgstr "Nouveau"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_users_form_simple_modif_dav
+msgid "New app password"
+msgstr "Nouveau mot de passe d'application"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_bf_dav_password_wizard
+msgid "New calendar and contacts app password"
+msgstr "Nouveau mot de passe d'application pour l'agenda et les contacts"
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_calendar
+msgid "No calendar yet"
+msgstr "Aucun agenda pour l'instant"
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_resource_extra_resource_uniq
+msgid "One row per object."
+msgstr "Une ligne par objet."
+
+#. module: bf_dav_server
+#: model:ir.model.constraint,message:bf_dav_server.constraint_bf_dav_user_data_user_resource_uniq
+msgid "One row per user and object."
+msgstr "Une ligne par usager et par objet."
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/wizard/dav_password_wizard.py:0
+msgid "Only internal users can sync calendars and contacts."
+msgstr ""
+"Seuls les usagers internes peuvent synchroniser l'agenda et les contacts."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_recurrence_id
+msgid "Original occurrence start (CalDAV)"
+msgstr "Début d'origine de l'occurrence (CalDAV)"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__owner_id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__owner_id
+msgid "Owner"
+msgstr "Propriétaire"
+
+#. module: bf_dav_server
+#: model:ir.model.fields.selection,name:bf_dav_server.selection__bf_dav_addressbook__kind__personal
+msgid "Personal"
+msgstr "Personnel"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_addressbook.py:0
+msgid "Personal contacts"
+msgstr "Contacts personnels"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__props
+msgid "Props"
+msgstr "Propriétés"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_calendar_event__bf_dav_recurrence_id
+msgid ""
+"RECURRENCE-ID: the start this occurrence had in its series before any move."
+msgstr ""
+"RECURRENCE-ID : le début qu'avait cette occurrence dans sa série avant "
+"d'être déplacée."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_calendar__is_default
+msgid ""
+"Receives the events created in Odoo and every event the owner attends that "
+"lives in someone else's calendar."
+msgstr ""
+"Reçoit les événements créés dans Odoo et chaque événement auquel le "
+"propriétaire participe et qui vit dans l'agenda de quelqu'un d'autre."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_change__resource_key
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_resource_extra__resource_key
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__resource_key
+msgid "Resource Key"
+msgstr "Clé de la ressource"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid "Server (Thunderbird, Apple)"
+msgstr "Serveur (Thunderbird, Apple)"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__server_url
+msgid "Server Url"
+msgstr "Adresse du serveur"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+msgid "Shown to calendar apps"
+msgstr "Affichée dans les applications d'agenda"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__slug
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__slug
+msgid "Slug"
+msgstr "Adresse courte"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_addressbook.py:0
+msgid "There is only one company address book."
+msgstr "Il n'y a qu'un seul carnet de la société."
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
+msgid "Thunderbird office, Android phone..."
+msgstr "Thunderbird du bureau, téléphone Android..."
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_users_form_simple_modif_dav
+msgid ""
+"Thunderbird, Apple Calendar and Contacts, and Android (with DAVx5) can read and\n"
+"                        write your Odoo calendar and contacts. Give each device its own app password:\n"
+"                        it opens your calendars and contacts only, and you can revoke it above, in the\n"
+"                        list of keys."
+msgstr ""
+"Thunderbird, Calendrier et Contacts d'Apple, et Android (avec DAVx5) peuvent"
+" lire et modifier votre agenda et vos contacts Odoo. Donnez à chaque "
+"appareil son propre mot de passe d'application : il n'ouvre que votre agenda"
+" et vos contacts, et vous pouvez le révoquer plus haut, dans la liste des "
+"clés."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__uid
+msgid "Uid"
+msgstr "UID"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_bf_dav_password_wizard__login
+msgid "Used to log into the system"
+msgstr "Utilisé pour se connecter au système"
+
+#. module: bf_dav_server
+#: model:ir.model,name:bf_dav_server.model_res_users
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__user_id
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__user_id
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_user_data__valarms
+msgid "Valarms"
+msgstr "Rappels bruts"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_card__vcard
+msgid "Vcard"
+msgstr "vCard"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/wizard/dav_password_wizard.py:0
+msgid "You can only create app passwords for yourself."
+msgstr ""
+"Vous ne pouvez créer des mots de passe d'application que pour vous-même."
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_recurrence__bf_dav_uid
+msgid "iCalendar UID"
+msgstr "UID iCalendar"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_partner__bf_dav_uid
+#: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_uid
+msgid "vCard UID"
+msgstr "UID vCard"
