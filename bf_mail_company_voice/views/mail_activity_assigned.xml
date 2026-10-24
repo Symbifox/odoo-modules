@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Une activité créée par une page publique disait « Public user vient de
+         vous attribuer l'activité ». C'est l'entreprise qui l'attribue. Ancre sur
+         l'attribut, jamais sur le texte (traduit). On n'utilise PAS position="replace" :
+         lxml perd la queue du nœud remplacé, c'est-à-dire la phrase « vient de vous
+         attribuer l'activité suivante : ». -->
+    <template id="message_activity_assigned_company_voice" inherit_id="mail.message_activity_assigned">
+        <xpath expr="//span[@t-field='activity.create_uid.name']" position="before">
+            <t t-if="activity.create_uid and activity.create_uid._is_public()" t-out="activity.env['mail.message'].sudo()._bf_voice_company(activity.res_model, activity.res_id).name"/>
+        </xpath>
+        <xpath expr="//span[@t-field='activity.create_uid.name']" position="attributes">
+            <attribute name="t-if">not (activity.create_uid and activity.create_uid._is_public())</attribute>
+        </xpath>
+    </template>
+</odoo>

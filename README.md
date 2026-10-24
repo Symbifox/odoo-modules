@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**90 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**91 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -248,6 +248,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
+| `bf_mail_company_voice` | Company Voice for Automatic Notices | 18.0.1.0.2 | LGPL-3 | Automatic notices speak for the company, never as « Public user » or a bot. |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
@@ -471,7 +472,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **90 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **91 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
