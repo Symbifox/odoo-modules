@@ -2,8 +2,9 @@
 
 Bridge between **BF Working Hours** and **Privacy Consent**, installed automatically when both are.
 
-- Declares two purposes in the privacy register: *Working time reconstructed for the person*
-  and *Working time indicators for the person*, both requiring express consent, without expiry.
+- Declares three purposes in the privacy register: *Working time reconstructed for the person*,
+  *Working time indicators for the person* and *Earlier days taken into the working time of the
+  person*, all requiring express consent, without expiry.
 - Each activation, from *My choices* or the preferences, becomes a **granted consent** of the person, with its
   evidence: it appears in their privacy page beside their other consents.
 - Turning the feature off withdraws the consent. The person can also withdraw it from their

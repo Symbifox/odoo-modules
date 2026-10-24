@@ -34,6 +34,18 @@
                                         invisible="not bf_work_insights_enabled"/>
                             </div>
                         </group>
+                        <group string="My earlier days" invisible="not bf_work_hours_enabled">
+                            <field name="bf_work_history_enabled" readonly="1"/>
+                            <div colspan="2">
+                                <button name="action_bf_work_activate" type="object" class="btn-primary"
+                                        string="Read the notice and take them in" context="{'bf_work_scope': 'history'}"
+                                        invisible="bf_work_history_enabled"/>
+                                <button name="action_bf_work_withdraw" type="object" class="btn-secondary"
+                                        string="Turn off and destroy my earlier days" context="{'bf_work_scope': 'history'}"
+                                        invisible="not bf_work_history_enabled"
+                                        confirm="Your days from before you turned your hours on will be destroyed. Continue?"/>
+                            </div>
+                        </group>
                     </group>
                 </page>
             </xpath>

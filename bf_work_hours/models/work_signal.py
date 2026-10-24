@@ -1,10 +1,11 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
 from .tools import IMPERSONATION_KEY
+from .work_day import RECOMPUTE_DAYS
 
 # Two browser heartbeats closer than this extend the same stretch. The web
 # client reports every minute; three minutes absorbs a late report.
@@ -74,13 +75,8 @@ class WorkSignal(models.Model):
         activated "Propose my hours". Already known traces are skipped.
         Returns the number of traces added.
         """
-        if self.env.su:
-            raise UserError(_("Traces are pushed by the person concerned, not as superuser."))
-        if request and request.session.get(IMPERSONATION_KEY):
-            raise AccessError(_("Not while being impersonated."))
-        user = self.env.user
-        if user.id not in self.env["bf.work.consent"]._bf_active_user_ids("hours"):
-            raise AccessError(_("Turn on “Propose my hours” first, in Working Time > My choices."))
+        user = self._bf_push_caller()
+        oldest = self._bf_push_oldest(user)
         if len(signals) > PUSH_MAX:
             raise UserError(_("At most %s traces per call.", PUSH_MAX))
         rows = []
@@ -92,8 +88,9 @@ class WorkSignal(models.Model):
             stop = fields.Datetime.to_datetime(signal.get("stop") or signal["start"])
             if stop < start or stop > fields.Datetime.now() + timedelta(minutes=5):
                 raise UserError(_("A trace must end after it starts, and not in the future."))
-            if start < fields.Datetime.now() - PUSH_MAX_AGE:
-                raise UserError(_("A pushed trace is at most %s hours old.", int(PUSH_MAX_AGE.total_seconds() // 3600)))
+            if start < oldest:
+                raise UserError(_("A pushed trace starts on %(oldest)s UTC at the earliest (earlier days: only "
+                                  "if you chose to take them in).", oldest=fields.Datetime.to_string(oldest)))
             if stop - start > PUSH_MAX_SPAN:
                 raise UserError(_("A pushed trace lasts at most %s hours.", PUSH_MAX_SPAN.seconds // 3600))
             rows.append((source, start, stop))
@@ -107,7 +104,53 @@ class WorkSignal(models.Model):
         self.sudo().create([
             {"user_id": user.id, "source": s, "date_start": a, "date_stop": b} for s, a, b in new
         ])
+        # Earlier days the hourly job no longer redoes: redo those the new traces touch.
+        Day = self.env["bf.work.day"].sudo()
+        tz = Day._bf_tz(user)
+        recent = datetime.now(tz).date() - timedelta(days=RECOMPUTE_DAYS)
+        old_days = {Day._bf_local_date(d, tz) for _s, a, b in new for d in (a, b)} - {None}
+        old_days = sorted(d for d in old_days if d < recent)
+        if old_days:
+            Day._bf_compute(user, old_days)
         return len(new)
+
+    @api.model
+    def bf_work_push_window(self):
+        """For the person's own local tool: whether it may push, and the earliest
+        moment a trace may start (UTC), so that it sends no more than that."""
+        user = self._bf_push_caller(check_enabled=False)
+        if user.id not in self.env["bf.work.consent"]._bf_active_user_ids("hours"):
+            return {"enabled": False, "earliest": False}
+        return {"enabled": True, "earliest": fields.Datetime.to_string(self._bf_push_oldest(user))}
+
+    @api.model
+    def _bf_push_caller(self, check_enabled=True):
+        """The person pushing: themselves, never as superuser, never under an impersonation."""
+        if self.env.su:
+            raise UserError(_("Traces are pushed by the person concerned, not as superuser."))
+        if request and request.session.get(IMPERSONATION_KEY):
+            raise AccessError(_("Not while being impersonated."))
+        user = self.env["res.users"].browse(self.env.uid)
+        if check_enabled and user.id not in self.env["bf.work.consent"]._bf_active_user_ids("hours"):
+            raise AccessError(_("Turn on “Propose my hours” first, in Working Time > My choices."))
+        return user
+
+    @api.model
+    def _bf_push_oldest(self, user):
+        """The earliest start of a pushed trace.
+
+        🔴 Never before the start of reading: a trace from before the activation
+        is not collected at all, not merely left unread (18.0.1.0.2 kept 48 hours
+        of them). Within that: 48 hours back, or, for the earlier days the person
+        chose to take in, as far as the raw traces are kept.
+        """
+        Consent = self.env["bf.work.consent"].sudo()
+        now = fields.Datetime.now()
+        read_from = Consent._bf_read_from(user) or now
+        if Consent._bf_history(user):
+            days = int(self.env["ir.config_parameter"].sudo().get_param("bf_work_hours.signal_retention_days", 60))
+            return max(read_from, now - timedelta(days=max(days, 1)))
+        return max(read_from, now - PUSH_MAX_AGE)
 
     @api.model
     def _bf_purge(self):

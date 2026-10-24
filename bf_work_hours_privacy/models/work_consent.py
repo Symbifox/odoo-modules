@@ -7,7 +7,8 @@ from odoo.tools import clean_context
 _logger = logging.getLogger(__name__)
 
 PURPOSES = {"hours": "bf_work_hours_privacy.purpose_work_hours",
-            "insights": "bf_work_hours_privacy.purpose_work_insights"}
+            "insights": "bf_work_hours_privacy.purpose_work_insights",
+            "history": "bf_work_hours_privacy.purpose_work_history"}
 
 
 class WorkConsent(models.Model):
@@ -41,7 +42,7 @@ class WorkConsent(models.Model):
         """Mirror each activation as a granted consent of the person."""
         Consent = self.env["privacy.consent"]
         for consent in self:
-            purpose = self.env.ref(PURPOSES[consent.scope], raise_if_not_found=False)
+            purpose = PURPOSES.get(consent.scope) and self.env.ref(PURPOSES[consent.scope], raise_if_not_found=False)
             if not purpose:
                 continue
             # A clean context: no default (expiry, archive) sent by the caller or set

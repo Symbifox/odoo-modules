@@ -1,5 +1,11 @@
 # Changelog
 
+## 18.0.1.1.0 (2026-10-12)
+
+- A third purpose, *Earlier days taken into the working time of the person*: choosing to take in
+  one's earlier days (BF Working Hours 18.0.1.1.0) becomes a consent of its own in the register,
+  withdrawn with the hours or alone.
+
 ## 18.0.1.0.2 (2026-10-11)
 
 - The summary and the README say what the module declares (two purposes) and that an

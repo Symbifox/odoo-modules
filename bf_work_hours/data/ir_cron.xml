@@ -9,4 +9,15 @@
         <field name="interval_type">hours</field>
         <field name="active" eval="True"/>
     </record>
+    <!-- Started at once when a person chooses to take in their earlier days; runs again
+         by itself while days remain. Daily only as a safety net. -->
+    <record id="cron_bf_work_history" model="ir.cron">
+        <field name="name">Working time: take in earlier days</field>
+        <field name="model_id" ref="model_bf_work_day"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_work_history()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
 </odoo>

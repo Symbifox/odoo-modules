@@ -165,6 +165,17 @@ class TestConsentGuards(WorkHoursCase):
         with self.assertRaises(UserError):
             self.Consent.with_user(self.bob).create({"scope": "insights"})
 
+    def test_the_scope_is_named_not_defaulted(self):
+        """🟠 The notice kept is chosen from the scope sent: a context default would keep another one."""
+        Consent = self.Consent.with_user(self.alice)
+        for scope in ("hours", "insights"):
+            with self.assertRaises(UserError):
+                Consent.with_context(default_scope=scope).create({})
+        self.assertFalse(self.Consent.sudo().search([("user_id", "=", self.alice.id)]))
+        consent = Consent.with_context(default_scope="insights").create({"scope": "hours"})
+        self.assertEqual(consent.scope, "hours")
+        self.assertIn("o_bf_work_notice_hours", consent.notice_text)
+
     def test_my_choices_page(self):
         """The page in the app shows the reader's own state and goes through the same guards."""
         Choices = self.env["bf.work.choices"]
@@ -176,8 +187,8 @@ class TestConsentGuards(WorkHoursCase):
         saved = Choices.with_user(self.alice).create({})
         self.assertFalse(saved.hours_enabled)
         action = saved.action_activate_hours()
-        self.assertEqual(action["res_model"], "bf.work.activate.wizard")
-        self.assertTrue(action["context"].get("bf_work_back_to_choices"))
+        self.assertEqual(action["tag"], "bf_work_hours.consent", "The consent screen, not a dialog.")
+        self.assertEqual(action["params"], {"scope": "hours", "mode": "activate"})
         self.activate(self.alice)
         # 🔴 Seen in the browser: the saved page said "off" after the activation.
         saved.invalidate_recordset()

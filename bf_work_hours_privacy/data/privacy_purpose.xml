@@ -20,4 +20,14 @@
         <field name="context_scope">general</field>
         <field name="company_id" eval="False"/>
     </record>
+    <record id="purpose_work_history" model="privacy.purpose">
+        <field name="code">bf_work_history</field>
+        <field name="name">Earlier days taken into the working time of the person</field>
+        <field name="plain_language_summary"><![CDATA[<p>The traces you left before turning your working time on (calendar, meeting reports and the sources installed), read again to reconstruct your earlier days, as far back as you chose. A new use of traces recorded for other purposes, so a consent of its own; turning it off destroys the days from before your activation.</p>]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">0</field>
+        <field name="context_scope">general</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

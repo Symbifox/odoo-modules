@@ -4,7 +4,7 @@ from odoo.exceptions import AccessError
 from .tools import acting_in_own_web_session
 from .work_day import INSIGHT_FIELDS
 
-WORK_SELF_FIELDS = ["bf_work_hours_enabled", "bf_work_insights_enabled"]
+WORK_SELF_FIELDS = ["bf_work_hours_enabled", "bf_work_insights_enabled", "bf_work_history_enabled"]
 
 
 class ResUsers(models.Model):
@@ -19,6 +19,10 @@ class ResUsers(models.Model):
     bf_work_insights_enabled = fields.Boolean(
         string="My indicators", compute="_compute_bf_work_enabled",
         help="Span of the day, longest stretch, meetings, time outside working hours: for you, and for the colleagues you name.",
+    )
+    bf_work_history_enabled = fields.Boolean(
+        string="My earlier days", compute="_compute_bf_work_enabled",
+        help="Your days from before you turned your hours on, taken in from the same traces.",
     )
     # The days' record rule goes through this relation, evaluated by the database
     # on every query: a rule that baked user ids into its domain would be cached
@@ -47,10 +51,12 @@ class ResUsers(models.Model):
         Consent = self.env["bf.work.consent"].sudo()
         hours = Consent._bf_active_user_ids("hours")
         insights = Consent._bf_active_user_ids("insights")
+        history = Consent._bf_active_user_ids("history")
         for user in self:
             mine = user._bf_work_is_reader()
             user.bf_work_hours_enabled = mine and user.id in hours
             user.bf_work_insights_enabled = mine and user.id in insights
+            user.bf_work_history_enabled = mine and user.id in history
 
     @api.depends_context("uid")
     def _compute_bf_work_shared_owner_ids(self):
@@ -66,16 +72,16 @@ class ResUsers(models.Model):
             raise AccessError(_("Only the person concerned can turn this on or off, in their own session."))
 
     def action_bf_work_activate(self):
-        """Open the notice; the feature turns on only from the notice."""
+        """Open the consent screen; the feature turns on only from its notice."""
         self._bf_work_check_self()
         scope = self.env.context.get("bf_work_scope", "hours")
         return {
-            "type": "ir.actions.act_window",
-            "res_model": "bf.work.activate.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_scope": scope},
+            "type": "ir.actions.client",
+            "tag": "bf_work_hours.consent",
+            "target": "current",
             "name": _("Before you turn it on"),
+            # Once turned on, back to My choices, where the switches show it.
+            "params": {"scope": scope, "mode": "activate"},
         }
 
     def action_bf_work_withdraw(self):
@@ -89,7 +95,8 @@ class ResUsers(models.Model):
         return {"type": "ir.actions.client", "tag": "reload"}
 
     def _bf_work_forget(self, scopes):
-        """What a withdrawal destroys: everything for hours, the indicators for insights."""
+        """What a withdrawal destroys: everything for hours, the indicators for insights,
+        the days before the activation of the hours for the earlier days."""
         self.ensure_one()
         Day = self.env["bf.work.day"].sudo()
         if "hours" in scopes:
@@ -97,6 +104,10 @@ class ResUsers(models.Model):
             self.env["bf.work.share"].sudo().search([("owner_id", "=", self.id), ("active", "=", True)]
                                                     ).action_revoke()
             Day.search([("user_id", "=", self.id)]).unlink()
-        elif "insights" in scopes:
+            return
+        if "history" in scopes:
+            Day._bf_forget_before_activation(self)
+        if "insights" in scopes:
+            # The indicators of the days still kept (the earlier days were taken in with them).
             Day.search([("user_id", "=", self.id)]).write(
                 dict.fromkeys(INSIGHT_FIELDS, False) | {"insights_included": False})

@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_work_hours 18.0.1.0.2\n"
+"Project-Id-Version: bf_work_hours 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 21:43+0000\n"
-"PO-Revision-Date: 2026-10-10 21:43+0000\n"
+"POT-Creation-Date: 2026-10-12 03:51+0000\n"
+"PO-Revision-Date: 2026-10-12 03:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -14,6 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+msgid "%(count)s day(s) recomputed, the last %(max)s at most."
+msgstr "%(count)s journée(s) recalculée(s), les %(max)s dernières au plus."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"A calendar answer given before this feature was installed counts for the "
+"hours the meeting had at the installation."
+msgstr ""
+"Une réponse d'agenda donnée avant l'installation de cette fonction compte "
+"pour les heures qu'avait la rencontre au moment de l'installation."
 
 #. module: bf_work_hours
 #: model_terms:ir.actions.act_window,help:bf_work_hours.action_bf_work_day_shared
@@ -27,14 +43,18 @@ msgstr ""
 #. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/models/work_signal.py:0
-msgid "A pushed trace is at most %s hours old."
-msgstr "Une trace poussée date d'au plus %s heures."
+msgid "A pushed trace lasts at most %s hours."
+msgstr "Une trace poussée dure au plus %s heures."
 
 #. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/models/work_signal.py:0
-msgid "A pushed trace lasts at most %s hours."
-msgstr "Une trace poussée dure au plus %s heures."
+msgid ""
+"A pushed trace starts on %(oldest)s UTC at the earliest (earlier days: only "
+"if you chose to take them in)."
+msgstr ""
+"Une trace poussée commence au plus tôt le %(oldest)s UTC (jours d'avant : "
+"seulement si vous avez choisi de les reprendre)."
 
 #. module: bf_work_hours
 #. odoo-python
@@ -62,15 +82,6 @@ msgid "A trace must end after it starts, and not in the future."
 msgstr "Une trace doit finir après son début, et pas dans le futur."
 
 #. module: bf_work_hours
-#. odoo-python
-#: code:addons/bf_work_hours/models/work_day.py:0
-#: code:addons/bf_work_hours/models/work_signal.py:0
-msgid "Turn on “Propose my hours” first, in Working Time > My choices."
-msgstr ""
-"Activez d'abord « Me proposer mes heures », dans Temps de travail > Mes "
-"choix."
-
-#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__active
 msgid "Active"
 msgstr "Actif"
@@ -88,6 +99,14 @@ msgstr ""
 "vos indicateurs si vous les avez activés (première et dernière trace de la "
 "journée, rencontres, temps hors horaire). Jamais vos traces brutes. "
 "Révocable en tout temps."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_activate_wizard__history_span__all
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_consent__history_span__all
+msgid "All the history kept"
+msgstr "Tout l'historique conservé"
 
 #. module: bf_work_hours
 #. odoo-python
@@ -117,6 +136,12 @@ msgstr ""
 "                        Votre feuille de temps reste le registre de vos heures."
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "And your days from before?"
+msgstr "Et vos jours d'avant ?"
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_calendar_attendee__bf_work_state_by
 msgid "Answered by"
 msgstr "Réponse donnée par"
@@ -132,6 +157,11 @@ msgid "Answered for (start)"
 msgstr "Réponse pour (début)"
 
 #. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__seen_at
+msgid "Answered on"
+msgstr "Répondu le"
+
+#. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/wizard/activate_wizard.py:0
 msgid ""
@@ -140,6 +170,16 @@ msgid ""
 msgstr ""
 "En tout temps, dans Temps de travail > Mes choix. Éteindre « Me proposer mes"
 " heures » détruit vos traces et vos journées, et met fin à vos partages."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"At any time, from Working Time > My choices: the days from before your hours"
+" were turned on are destroyed; the days since stay."
+msgstr ""
+"En tout temps, dans Temps de travail > Mes choix : les journées d'avant "
+"l'activation de vos heures sont détruites ; celles d'après restent."
 
 #. module: bf_work_hours
 #. odoo-python
@@ -177,12 +217,20 @@ msgid "Calendar Event"
 msgstr "Événement calendrier"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_consent.py:0
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Choose how far back your earlier days are taken in."
+msgstr "Choisissez jusqu'où vos jours d'avant sont repris."
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_activate_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_choices__create_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__create_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__create_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__create_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__create_uid
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -193,6 +241,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__create_date
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__create_date
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__create_date
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -212,12 +261,23 @@ msgid "Date Stop"
 msgstr "Fin"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Days: %(day_days)s days. “All the history kept” goes back that far, and no "
+"further."
+msgstr ""
+"Journées : %(day_days)s jours. « Tout l'historique conservé » remonte "
+"jusque-là, pas plus loin."
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_activate_wizard__display_name
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_choices__display_name
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__display_name
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__display_name
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__display_name
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__display_name
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
@@ -251,12 +311,40 @@ msgstr ""
 #. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/wizard/activate_wizard.py:0
-msgid ""
-"From the day you turn it on, and never before, Odoo reads these traces of "
-"yours only:"
+#: code:addons/bf_work_hours/wizard/choices.py:0
+msgid "From %(date)s"
+msgstr "Depuis le %(date)s"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_activate_wizard__history_span__none
+msgid "From now on"
+msgstr "À partir de maintenant"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "From the moment you turn it on, Odoo reads these traces of yours only:"
 msgstr ""
-"À partir du jour où vous l'activez, jamais avant, Odoo lit ces traces-ci, "
-"les vôtres seulement :"
+"À partir du moment où vous l'activez, Odoo lit ces traces-ci, les vôtres "
+"seulement :"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "Go on without it"
+msgstr "Continuer sans activer"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid ""
+"Going on without it changes nothing for you. You can turn it on later from "
+"My choices."
+msgstr ""
+"Continuer sans activer ne change rien pour vous. Vous pourrez l'activer plus"
+" tard dans Mes choix."
 
 #. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__granted_at
@@ -281,12 +369,32 @@ msgstr ""
 "chiffre repose."
 
 #. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_activate_wizard__history_span
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__history_span
+msgid "How far back"
+msgstr "Jusqu'où"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "How far back?"
+msgstr "Jusqu'où remonter ?"
+
+#. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/wizard/activate_wizard.py:0
 msgid "How long it is kept"
 msgstr "Combien de temps c'est gardé"
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "I have read these notices and I turn these features on myself"
+msgstr "J'ai lu ces avis et j'active moi-même ces fonctions"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_activate_wizard__understood
 msgid "I have read this notice and I turn the feature on myself"
 msgstr "J'ai lu cet avis et j'active moi-même la fonction"
@@ -298,6 +406,7 @@ msgstr "J'ai lu cet avis et j'active moi-même la fonction"
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__id
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__id
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__id
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__id
 msgid "ID"
 msgstr "ID"
 
@@ -307,9 +416,25 @@ msgid "Idle gap (minutes)"
 msgstr "Écart d'inactivité (minutes)"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "If you take in your earlier days, those days get these figures too."
+msgstr ""
+"Si vous reprenez vos jours d'avant, ces journées reçoivent aussi ces "
+"chiffres."
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__meeting_hours
 msgid "In meetings"
 msgstr "En rencontre"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/choices.py:0
+msgid "In progress: back to %(date)s so far, %(target)s at the end"
+msgstr ""
+"En cours : repris jusqu'au %(date)s pour l'instant, jusqu'au %(target)s à la"
+" fin"
 
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_day_form
@@ -337,14 +462,16 @@ msgstr ""
 "un script qui utilise votre compte a pu les écrire."
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "It is already on. You can turn it off at any time from My choices."
+msgstr ""
+"C'est déjà activé. Vous pouvez l'éteindre en tout temps dans Mes choix."
+
+#. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_day_search
 msgid "Last 30 days"
 msgstr "30 derniers jours"
-
-#. module: bf_work_hours
-#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__last_activity
-msgid "Last trace"
-msgstr "Dernière trace"
 
 #. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_activate_wizard__write_uid
@@ -353,6 +480,7 @@ msgstr "Dernière trace"
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__write_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__write_uid
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__write_uid
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
@@ -363,8 +491,14 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__write_date
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_share__write_date
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__write_date
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
+
+#. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__last_activity
+msgid "Last trace"
+msgstr "Dernière trace"
 
 #. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__longest_session_hours
@@ -390,6 +524,16 @@ msgid "My choices"
 msgstr "Mes choix"
 
 #. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_choices__history_enabled
+#: model:ir.model.fields,field_description:bf_work_hours.field_res_users__bf_work_history_enabled
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_activate_wizard__scope__history
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_consent__scope__history
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
+msgid "My earlier days"
+msgstr "Mes jours d'avant"
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_choices__insights_enabled
 #: model:ir.model.fields,field_description:bf_work_hours.field_res_users__bf_work_insights_enabled
 #: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_activate_wizard__scope__insights
@@ -407,6 +551,7 @@ msgstr "Mes partages"
 
 #. module: bf_work_hours
 #: model:ir.actions.act_window,name:bf_work_hours.action_bf_work_day_mine
+#: model:ir.actions.server,name:bf_work_hours.action_bf_work_home
 #: model:ir.ui.menu,name:bf_work_hours.menu_bf_work_mine
 msgid "My working time"
 msgstr "Mon temps de travail"
@@ -417,15 +562,35 @@ msgid "Nobody shares their days with you"
 msgstr "Personne ne vous partage ses journées"
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_activate_wizard_form
 msgid "Not now"
 msgstr "Pas maintenant"
 
 #. module: bf_work_hours
 #. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Not read again, since they are captured only once your hours are on: "
+"%(sources)s. What you did in Odoo before then counts only through the "
+"sources above."
+msgstr ""
+"Non relues, car captées seulement une fois vos heures activées : "
+"%(sources)s. Ce que vous avez fait dans Odoo avant cela ne compte qu'à "
+"travers les sources ci-dessus."
+
+#. module: bf_work_hours
+#. odoo-python
 #: code:addons/bf_work_hours/models/work_signal.py:0
 msgid "Not while being impersonated."
 msgstr "Pas pendant qu'on vous incarne."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Nothing decided automatically"
+msgstr "Rien de décidé automatiquement"
 
 #. module: bf_work_hours
 #. odoo-python
@@ -437,6 +602,16 @@ msgstr ""
 "Rien n'est décidé automatiquement à partir de ces chiffres. Le registre de "
 "vos heures de travail chez votre employeur reste la feuille de temps que "
 "vous saisissez et approuvez."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+msgid ""
+"Nothing is read before you turned it on, on %(date)s. To take in your "
+"earlier days: Working Time > My choices."
+msgstr ""
+"Rien n'est lu avant votre activation, le %(date)s. Pour reprendre vos jours "
+"d'avant : Temps de travail > Mes choix."
 
 #. module: bf_work_hours
 #: model_terms:ir.actions.act_window,help:bf_work_hours.action_bf_work_day_mine
@@ -464,6 +639,17 @@ msgid "Odoo (calendar synchronization)"
 msgstr "Odoo (synchronisation de l'agenda)"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Odoo can reconstruct the time you really work from your own traces, and show"
+" it to you. Read what it reads and who sees it, then decide."
+msgstr ""
+"Odoo peut reconstituer le temps que vous travaillez vraiment à partir de vos"
+" propres traces, et vous le montrer. Lisez ce qu'il lit et qui le voit, puis"
+" décidez."
+
+#. module: bf_work_hours
 #: model:ir.model.fields,help:bf_work_hours.field_res_users__bf_work_hours_enabled
 msgid ""
 "Odoo reconstructs your working time from your own traces and shows it to "
@@ -471,6 +657,12 @@ msgid ""
 msgstr ""
 "Odoo reconstitue votre temps de travail à partir de vos propres traces et ne"
 " le montre qu'à vous et aux collègues que vous nommez."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Off until you turn it on"
+msgstr "Éteint tant que vous ne l'activez pas"
 
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
@@ -482,6 +674,11 @@ msgstr ""
 "Éteint tant que vous ne l'activez pas. Vous êtes la seule personne à le "
 "voir, à moins de partager vos journées avec une ou un collègue que vous "
 "nommez."
+
+#. module: bf_work_hours
+#: model:ir.model.constraint,message:bf_work_hours.constraint_bf_work_welcome_user_unique
+msgid "One answer per person."
+msgstr "Une réponse par personne."
 
 #. module: bf_work_hours
 #: model:ir.model.constraint,message:bf_work_hours.constraint_bf_work_day_user_date_unique
@@ -498,6 +695,13 @@ msgstr ""
 "Seulement si vous en installez un vous-même : les moments que rapporte un de"
 " vos outils locaux, comme les invites tapées dans un terminal. Pas ce que "
 "vous avez tapé."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+#: code:addons/bf_work_hours/wizard/choices.py:0
+msgid "Only internal users can do this."
+msgstr "Seules les personnes qui ont un accès interne peuvent faire ceci."
 
 #. module: bf_work_hours
 #. odoo-python
@@ -540,6 +744,12 @@ msgstr ""
 "session."
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "Only the person concerned can turn this on, in their own session."
+msgstr "Seule la personne concernée peut l'activer, dans sa propre session."
+
+#. module: bf_work_hours
 #. odoo-python
 #: code:addons/bf_work_hours/models/work_consent.py:0
 msgid "Only the person concerned can withdraw this activation."
@@ -550,6 +760,22 @@ msgstr "Seule la personne concernée peut retirer cette activation."
 #: code:addons/bf_work_hours/models/work_share.py:0
 msgid "Only the person who shared can revoke."
 msgstr "Seule la personne qui a partagé peut révoquer."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Only what happens from today"
+msgstr "Seulement ce qui se passe à partir d'aujourd'hui"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid ""
+"Optional, and a choice of its own: you can turn it off alone, or leave it "
+"for later in My choices."
+msgstr ""
+"Facultatif, et un choix à part : vous pouvez l'éteindre séparément, ou le "
+"remettre à plus tard dans Mes choix."
 
 #. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__outside_hours
@@ -587,8 +813,19 @@ msgstr "Traces brutes : %(signal_days)s jours. Journées : %(day_days)s jours."
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
+msgid "Read the notice and take them in"
+msgstr "Lire l'avis et les reprendre"
+
+#. module: bf_work_hours
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
 msgid "Read the notice and turn on"
 msgstr "Lire l'avis et activer"
+
+#. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__read_from
+msgid "Reads from"
+msgstr "Lit depuis"
 
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_day_list
@@ -626,6 +863,18 @@ msgstr "Horaire connu"
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__scope
 msgid "Scope"
 msgstr "Portée"
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "See my days"
+msgstr "Voir mes journées"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Seen by you, and the colleagues you name"
+msgstr "Vu par vous, et par les collègues que vous nommez"
 
 #. module: bf_work_hours
 #. odoo-python
@@ -702,14 +951,65 @@ msgstr ""
 "vous), pour les heures qu'elles avaient au moment de l'acceptation."
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/choices.py:0
+msgid "Starting, back to %(target)s"
+msgstr "Au départ, jusqu'au %(target)s"
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_day__session_count
 msgid "Stretches"
 msgstr "Plages"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Take in the days before you turned your hours on, from the same traces. Read"
+" the notice, then decide."
+msgstr ""
+"Reprenez les journées d'avant l'activation de vos heures, à partir des mêmes"
+" traces. Lisez l'avis, puis décidez."
+
+#. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
+msgid "Take them in"
+msgstr "Les reprendre"
+
+#. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_choices__history_status
+msgid "Taken in"
+msgstr "Repris"
+
+#. module: bf_work_hours
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__computed_from
+msgid "Taken in back to"
+msgstr "Repris jusqu'au"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Taking in your earlier days is a choice of its own, apart from your hours: "
+"you can turn it off alone, and refusing it has no consequence for you."
+msgstr ""
+"Reprendre vos jours d'avant est un choix à part, distinct de vos heures : "
+"vous pouvez l'éteindre séparément, et le refuser n'a aucune conséquence pour"
+" vous."
+
+#. module: bf_work_hours
 #: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_signal__source__terminal
 msgid "Terminal"
 msgstr "Terminal"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_activate_wizard__history_span__30
+#: model:ir.model.fields.selection,name:bf_work_hours.selection__bf_work_consent__history_span__30
+msgid "The last 30 days"
+msgstr "Les 30 derniers jours"
 
 #. module: bf_work_hours
 #: model:ir.model.fields,help:bf_work_hours.field_bf_work_consent__notice_text
@@ -733,6 +1033,60 @@ msgstr "La même journée avec un écart d'inactivité de 30 minutes."
 #: model:ir.model.fields,help:bf_work_hours.field_bf_work_day__hours_low
 msgid "The same day with a 5-minute idle gap."
 msgstr "La même journée avec un écart d'inactivité de 5 minutes."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"The same people as your other days: you, and the colleagues you share your "
+"days with. A system administrator who changes the security settings or runs "
+"code on the server could reach these data, as with any data in Odoo."
+msgstr ""
+"Les mêmes personnes que pour vos autres journées : vous, et les collègues à "
+"qui vous partagez vos journées. Une administration système qui modifie les "
+"réglages de sécurité ou exécute du code sur le serveur pourrait atteindre "
+"ces données, comme toute donnée d'Odoo."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"The same traces as for your hours, from %(date)s (%(reach)s) instead of the "
+"moment you turned your hours on:"
+msgstr ""
+"Les mêmes traces que pour vos heures, à partir du %(date)s (%(reach)s) "
+"plutôt qu'à partir de l'activation de vos heures :"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"The span of your days, your longest stretch, your meetings and your time "
+"outside working hours, for you. Read the notice, then decide."
+msgstr ""
+"L'amplitude de vos journées, votre plus longue plage, vos rencontres et "
+"votre temps hors horaire, pour vous. Lisez l'avis, puis décidez."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_consent.py:0
+msgid ""
+"There is nothing to take in: your hours were already on at the start of the "
+"span you chose."
+msgstr ""
+"Il n'y a rien à reprendre : vos heures étaient déjà activées au début de la "
+"période choisie."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"These traces were first recorded for other purposes. Reading them again to "
+"reconstruct your working time is a new use: it needs your own consent."
+msgstr ""
+"Ces traces ont d'abord été recueillies à d'autres fins. Les relire pour "
+"reconstituer votre temps de travail est un nouvel usage : il demande votre "
+"propre consentement."
 
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_share_form
@@ -790,13 +1144,30 @@ msgstr "Éteindre"
 #. module: bf_work_hours
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
+msgid "Turn off and destroy my earlier days"
+msgstr "Éteindre et détruire mes jours d'avant"
+
+#. module: bf_work_hours
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
 msgid "Turn off and destroy my traces"
 msgstr "Éteindre et détruire mes traces"
 
 #. module: bf_work_hours
+#. odoo-javascript
+#: code:addons/bf_work_hours/static/src/consent/consent_screen.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_activate_wizard_form
 msgid "Turn on"
 msgstr "Activer"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+#: code:addons/bf_work_hours/models/work_signal.py:0
+msgid "Turn on “Propose my hours” first, in Working Time > My choices."
+msgstr ""
+"Activez d'abord « Me proposer mes heures », dans Temps de travail > Mes "
+"choix."
 
 #. module: bf_work_hours
 #. odoo-python
@@ -805,6 +1176,16 @@ msgstr "Activer"
 msgid "Turn on “Propose my hours” first: the indicators are computed from it."
 msgstr ""
 "Activez d'abord « Me proposer mes heures » : les indicateurs en sont tirés."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_consent.py:0
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Turn on “Propose my hours” first: your earlier days are taken in with it."
+msgstr ""
+"Activez d'abord « Me proposer mes heures » : vos jours d'avant sont repris "
+"avec elle."
 
 #. module: bf_work_hours
 #: model_terms:ir.actions.act_window,help:bf_work_hours.action_bf_work_day_mine
@@ -830,6 +1211,13 @@ msgstr ""
 
 #. module: bf_work_hours
 #. odoo-python
+#: code:addons/bf_work_hours/models/work_consent.py:0
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Unknown choice."
+msgstr "Choix inconnu."
+
+#. module: bf_work_hours
+#. odoo-python
 #: code:addons/bf_work_hours/models/work_signal.py:0
 msgid "Unknown source: %s"
 msgstr "Source inconnue : %s"
@@ -837,6 +1225,7 @@ msgstr "Source inconnue : %s"
 #. module: bf_work_hours
 #: model:ir.model,name:bf_work_hours.model_res_users
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_signal__user_id
+#: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_welcome__user_id
 msgid "User"
 msgstr "Utilisateur"
 
@@ -850,6 +1239,12 @@ msgstr "Semaine"
 #: code:addons/bf_work_hours/wizard/activate_wizard.py:0
 msgid "What is read"
 msgstr "Ce qui est lu"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "What is read again"
+msgstr "Ce qui est relu"
 
 #. module: bf_work_hours
 #. odoo-python
@@ -894,6 +1289,12 @@ msgid "Who sees it"
 msgstr "Qui le voit"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Why a separate choice"
+msgstr "Pourquoi un choix à part"
+
+#. module: bf_work_hours
 #: model:ir.model.fields,field_description:bf_work_hours.field_bf_work_consent__withdrawn_at
 msgid "Withdrawn At"
 msgstr "Retiré le"
@@ -904,6 +1305,9 @@ msgid "Working Time"
 msgstr "Temps de travail"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+#: code:addons/bf_work_hours/wizard/choices.py:0
 #: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
 msgid "Working time"
 msgstr "Temps de travail"
@@ -922,6 +1326,11 @@ msgstr "Temps de travail : avis d'activation"
 #: model:ir.model,name:bf_work_hours.model_bf_work_share
 msgid "Working time: days shared with a colleague"
 msgstr "Temps de travail : journées partagées avec une personne"
+
+#. module: bf_work_hours
+#: model:ir.model,name:bf_work_hours.model_bf_work_welcome
+msgid "Working time: first visit answered"
+msgstr "Temps de travail : réponse à la première visite"
 
 #. module: bf_work_hours
 #: model:ir.model,name:bf_work_hours.model_bf_work_choices
@@ -943,6 +1352,11 @@ msgstr ""
 #: model:ir.model,name:bf_work_hours.model_bf_work_collector
 msgid "Working time: sources of traces"
 msgstr "Temps de travail : sources des traces"
+
+#. module: bf_work_hours
+#: model:ir.actions.server,name:bf_work_hours.cron_bf_work_history_ir_actions_server
+msgid "Working time: take in earlier days"
+msgstr "Temps de travail : reprendre les jours d'avant"
 
 #. module: bf_work_hours
 #: model:ir.model,name:bf_work_hours.model_bf_work_signal
@@ -973,9 +1387,88 @@ msgstr "Vous ne partagez vos journées avec personne"
 
 #. module: bf_work_hours
 #. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Your days from before are not read, unless you choose to take them in: a "
+"separate choice, with its own notice, that you can turn off on its own."
+msgstr ""
+"Vos jours d'avant ne sont pas lus, sauf si vous choisissez de les reprendre "
+": un choix à part, avec son propre avis, que vous pouvez éteindre "
+"séparément."
+
+#. module: bf_work_hours
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_bf_work_choices_form
+#: model_terms:ir.ui.view,arch_db:bf_work_hours.view_users_form_simple_modif_bf_work
+msgid ""
+"Your days from before you turned your hours on will be destroyed. Continue?"
+msgstr ""
+"Vos journées d'avant l'activation de vos heures seront détruites. Continuer "
+"?"
+
+#. module: bf_work_hours
+#: model:ir.model.fields,help:bf_work_hours.field_res_users__bf_work_history_enabled
+msgid ""
+"Your days from before you turned your hours on, taken in from the same "
+"traces."
+msgstr ""
+"Vos journées d'avant l'activation de vos heures, reprises à partir des mêmes"
+" traces."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Your days from before, reconstructed the same way and with the same bounds, "
+"and your indicators for those days if you turned them on. They appear a "
+"slice at a time, within minutes."
+msgstr ""
+"Vos journées d'avant, reconstituées de la même façon et avec les mêmes "
+"bornes, et vos indicateurs pour ces journées si vous les avez activés. Elles"
+" apparaissent par tranches, en quelques minutes."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Your earlier days"
+msgstr "Vos jours d'avant"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+msgid ""
+"Your earlier days are being taken in, back to %(date)s: they appear a slice "
+"at a time."
+msgstr ""
+"Vos jours d'avant sont en cours de reprise, jusqu'au %(date)s : ils "
+"apparaissent par tranches."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/models/work_day.py:0
+msgid "Your earlier days are taken in from %(date)s."
+msgstr "Vos jours d'avant sont repris depuis le %(date)s."
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Your indicators"
+msgstr "Vos indicateurs"
+
+#. module: bf_work_hours
+#. odoo-python
 #: code:addons/bf_work_hours/models/work_collector.py:0
 msgid "Your own tools"
 msgstr "Vos propres outils"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid ""
+"Your own tools reach back no further than the raw traces are kept: "
+"%(signal_days)s days."
+msgstr ""
+"Vos propres outils ne remontent pas plus loin que la conservation des traces"
+" brutes : %(signal_days)s jours."
 
 #. module: bf_work_hours
 #. odoo-python
@@ -1002,6 +1495,24 @@ msgstr ""
 "Continuer ?"
 
 #. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "Your working time, seen by you first"
+msgstr "Votre temps de travail, vu d'abord par vous"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "all the history kept"
+msgstr "tout l'historique conservé"
+
+#. module: bf_work_hours
+#. odoo-python
+#: code:addons/bf_work_hours/wizard/activate_wizard.py:0
+msgid "the last 30 days"
+msgstr "les 30 derniers jours"
+
+#. module: bf_work_hours
 #: model:ir.module.module,shortdesc:base.module_bf_work_hours
 msgid "BF Working Hours"
 msgstr "BF Temps de travail"
@@ -1013,6 +1524,6 @@ msgid ""
 " uncertainty band, seen by the person and the colleagues they name; off "
 "until the person turns it on"
 msgstr ""
-"Le temps vraiment travaillé de chaque personne, reconstitué à partir de ses "
-"propres traces avec une marge d'incertitude, vu par la personne et par les "
-"collègues qu'elle nomme ; éteint tant qu'elle ne l'active pas"
+"Le vrai temps de travail de chaque personne, reconstitué à partir de ses "
+"propres traces et montré à elle seule, avec une marge d'incertitude ; éteint"
+" tant que la personne ne l'active pas"

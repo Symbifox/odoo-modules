@@ -1,0 +1,277 @@
+// Working time: the consent screen. Odoo 18's CSS variables, which a dark theme
+// redefines (bf_dark_mode does, on body.bf_dark_mode), with Odoo's SCSS values as
+// fallback; the brand blue is an accent, never text on a dark background.
+.o_bf_work_consent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--body-bg, #{$o-gray-100});
+
+    // Headings in the body's typeface: a heading font of the theme may space words wide.
+    h1, h2, h4 {
+        font-family: inherit;
+        word-spacing: normal;
+    }
+
+    // The screen scrolls by itself, so that the decision can stay at the bottom.
+    .o_bf_work_consent_scroll {
+        flex: 1 1 auto;
+        overflow-y: auto;
+    }
+
+    .o_bf_work_consent_wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 2.5rem 1rem 0;
+    }
+
+    .o_bf_work_consent_hero {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 1.25rem;
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 0 0.35rem;
+        }
+    }
+
+    .o_bf_work_consent_icon {
+        width: 80px;
+        height: 80px;
+        flex: none;
+    }
+
+    .o_bf_work_consent_subtitle {
+        font-size: 1.05rem;
+        color: var(--secondary-color, #{$text-muted});
+        margin: 0;
+    }
+
+    .o_bf_work_consent_promises {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1.5rem;
+
+        li {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            background-color: var(--o-view-background-color, #{$o-view-background-color});
+            border: 1px solid var(--border-color, #{$border-color});
+            font-size: 0.9rem;
+        }
+
+        .fa {
+            color: var(--bf-dark-accent-text, var(--primary, #{$primary}));
+        }
+    }
+
+    .o_bf_work_consent_done {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 0.75rem;
+    }
+
+    .o_bf_work_consent_card {
+        background-color: var(--o-view-background-color, #{$o-view-background-color});
+        border: 1px solid var(--border-color, #{$border-color});
+        border-radius: 0.9rem;
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+    }
+
+    // The notice, as the server wrote it: one block per heading, flowing in two columns.
+    .o_bf_work_notice {
+        columns: 2;
+        column-gap: 2.25rem;
+    }
+
+    .o_bf_work_notice_part {
+        break-inside: avoid;
+        margin-bottom: 1.25rem;
+
+        h4 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--secondary-color, #{$text-muted});
+            margin: 0 0 0.4rem;
+        }
+
+        p {
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            padding-left: 1.1rem;
+            margin-bottom: 0.5rem;
+            columns: 2;
+            column-gap: 2.25rem;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+            break-inside: avoid;
+        }
+
+        // The opening words and the list of sources take the full width.
+        &:first-child,
+        &:has(ul) {
+            column-span: all;
+        }
+    }
+
+    .o_bf_work_notice_lead {
+        font-size: 1.02rem;
+        padding-left: 0.9rem;
+        border-left: 3px solid var(--primary, #{$primary});
+        margin-bottom: 0;
+    }
+
+    .o_bf_work_consent_help {
+        color: var(--secondary-color, #{$text-muted});
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .o_bf_work_consent_spans {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.6rem;
+    }
+
+    .o_bf_work_consent_span {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+        padding: 0.8rem 1rem;
+        text-align: left;
+        border-radius: 0.75rem;
+        border: 1.5px solid var(--border-color, #{$border-color});
+        background-color: var(--o-view-background-color, #{$o-view-background-color});
+        color: inherit;
+        transition: border-color 0.15s, background-color 0.15s;
+
+        &:hover:not(:disabled) {
+            border-color: var(--primary, #{$primary});
+        }
+
+        &.o_selected {
+            border-color: var(--primary, #{$primary});
+            background-color: rgba(var(--primary-rgb, #{red($primary)}, #{green($primary)}, #{blue($primary)}), 0.12);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    .o_bf_work_consent_span_label {
+        font-weight: 600;
+    }
+
+    .o_bf_work_consent_span_hint {
+        font-size: 0.85rem;
+        color: var(--secondary-color, #{$text-muted});
+    }
+
+    .o_bf_work_consent_history_notice {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px dashed var(--border-color, #{$border-color});
+    }
+
+    // Stays in view while the notice scrolls: the decision is always one glance away.
+    .o_bf_work_consent_actions {
+        position: sticky;
+        bottom: 0;
+        padding: 1.5rem 0 1.5rem;
+        background: linear-gradient(to bottom, transparent, var(--body-bg, #{$o-gray-100}) 1.25rem);
+    }
+
+    .o_bf_work_consent_check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        margin-bottom: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+
+        .form-check-input {
+            margin-top: 0.2rem;
+            flex: none;
+        }
+    }
+
+    // Two choices of the same size: going on without it is as easy as turning it on.
+    .o_bf_work_consent_buttons {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.6rem;
+
+        .btn {
+            flex: 1 1 0;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .o_bf_work_consent_wrap {
+            padding-top: 1.25rem;
+        }
+
+        .o_bf_work_consent_hero h1 {
+            font-size: 1.35rem;
+        }
+
+        .o_bf_work_consent_icon {
+            width: 56px;
+            height: 56px;
+        }
+
+        .o_bf_work_notice {
+            columns: 1;
+        }
+
+        .o_bf_work_notice_part ul {
+            columns: 1;
+        }
+
+        // A narrow screen keeps the notice in view: a lighter footer.
+        .o_bf_work_consent_actions {
+            padding: 1rem 0 0.75rem;
+
+            .o_bf_work_consent_help {
+                display: none;
+            }
+        }
+
+        .o_bf_work_consent_check {
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .o_bf_work_consent_buttons .btn {
+            font-size: 1rem;
+            padding: 0.5rem 0.5rem;
+        }
+    }
+}

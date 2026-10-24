@@ -1,6 +1,6 @@
 {
     "name": "BF Working Hours",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "summary": "Each person's real working time, reconstructed from their own traces with an uncertainty band, "
                "seen by the person and the colleagues they name; off until the person turns it on",
@@ -20,7 +20,12 @@
         "views/menus.xml",
     ],
     "assets": {
-        "web.assets_backend": ["bf_work_hours/static/src/heartbeat_service.js"],
+        "web.assets_backend": [
+            "bf_work_hours/static/src/heartbeat_service.js",
+            "bf_work_hours/static/src/consent/consent_screen.js",
+            "bf_work_hours/static/src/consent/consent_screen.xml",
+            "bf_work_hours/static/src/consent/consent_screen.scss",
+        ],
     },
     "post_init_hook": "post_init_hook",
     "installable": True,

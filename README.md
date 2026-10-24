@@ -398,12 +398,12 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_work_category_meeting` | BF Work Category - Meetings | 18.0.1.0.1 | BUSL-1.1 | Work category on meeting records, from their project |
 | `bf_work_category_notes` | BF Work Category - Notes | 18.0.1.0.1 | LGPL-3 | Work category on notes, from the record they are attached to |
 | `bf_work_category_timesheet` | BF Work Category - Timesheets | 18.0.1.0.2 | LGPL-3 | Work category on timesheet lines, from their task or their project |
-| `bf_work_hours` | BF Working Hours | 18.0.1.0.2 | LGPL-3 | Each person's real working time, reconstructed from their own traces with an uncertainty band, seen by the person and the colleagues they name; off until the person turns it on |
+| `bf_work_hours` | BF Working Hours | 18.0.1.1.0 | LGPL-3 | Each person's real working time, reconstructed from their own traces with an uncertainty band, seen by the person and the colleagues they name; off until the person turns it on |
 | `bf_work_hours_claude_chat` | BF Working Hours - Gen | 18.0.1.0.1 | BUSL-1.1 | Prompts a person sends to Gen count as traces of their working time |
 | `bf_work_hours_email` | BF Working Hours - Email | 18.0.1.0.0 | BUSL-1.1 | Emails a person sends from their mail client count as traces of their working time |
 | `bf_work_hours_meeting` | BF Working Hours - Meetings | 18.0.1.0.0 | BUSL-1.1 | Meeting reports where a person was present count as meetings in their working time |
 | `bf_work_hours_notes` | BF Working Hours - Notes | 18.0.1.0.0 | LGPL-3 | Notes a person writes count as traces of their working time |
-| `bf_work_hours_privacy` | BF Working Hours - Privacy | 18.0.1.0.2 | BUSL-1.1 | Declares the two working time purposes and mirrors each activation as a consent in the privacy register |
+| `bf_work_hours_privacy` | BF Working Hours - Privacy | 18.0.1.1.0 | BUSL-1.1 | Declares the three working time purposes and mirrors each activation as a consent in the privacy register |
 | `bf_work_hours_timer` | BF Working Hours - Timer | 18.0.1.0.1 | LGPL-3 | Timer segments count as traces of working time, start and end kept |
 | `bf_work_hours_timesheet` | BF Working Hours - Timesheets | 18.0.1.0.0 | LGPL-3 | Entered timesheet hours beside the reconstructed hours: two numbers, never one replacing the other |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.1.0 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |

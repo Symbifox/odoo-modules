@@ -6,6 +6,9 @@ from .engine import Item
 
 # A meeting of 8 hours or more is a block in the calendar, not a meeting.
 MEETING_MAX = timedelta(hours=8)
+# Sources captured live, only once the hours are on: nothing of them exists from before,
+# so taking in the earlier days finds none (bf_work_hours_timer adds "timer").
+LIVE_SOURCES = ("presence", "timer")
 
 
 class WorkCollector(models.AbstractModel):

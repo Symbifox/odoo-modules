@@ -18,24 +18,36 @@ Quebec's private sector privacy act (section 8.1 names "work performance"), and
 the Commission d'accès à l'information reads it as **off by default, switched on
 by the person concerned**. So:
 
-- Nothing is collected until the person opens *Working Time > My choices* (or
-  the *Working time* tab of their preferences), reads the notice (what is read,
-  who sees it, how long it is kept, how to turn it off) and turns the feature on
-  **themselves**. The notice the server wrote is kept with the activation, word
-  for word.
+- Nothing is collected until the person reads the notice (what is read, who
+  sees it, how long it is kept, how to turn it off) and turns the feature on
+  **themselves**. The first time they open *Working Time*, the consent screen
+  comes first: *Turn on*, or *Go on without it*, two buttons of the same size;
+  either answer is final for that screen, which does not come back. Later, the
+  same screen opens from *Working Time > My choices* or the *Working time* tab
+  of their preferences. The notice the server wrote is kept with the
+  activation, word for word: the screen lays it out, it never writes its own.
 - **In their own web session only**: not through an API key (an agent or a
   script holding it), not while someone impersonates them. The same holds for
   turning it off, sharing and revoking.
-- Two switches: **Propose my hours** (the reconstructed hours) and **My
+- Three switches: **Propose my hours** (the reconstructed hours), **My
   indicators** (span of the day, longest stretch, meetings, time outside the
-  working schedule). The second needs the first.
+  working schedule) and **My earlier days** (see below). The last two need the
+  first.
 - **Nobody else can turn it on, off, or read it in Odoo's screens and RPC**,
   managers and administrators included: global record rules bind every user.
   A system administrator who changes the security settings or runs code on the
   server could still reach the data, as with any data in Odoo; the notice says so.
 - Turning *Propose my hours* off **destroys** the traces and the days and ends
   the shares. The activation itself is kept as evidence, marked withdrawn.
-- Days before the activation are never read, even when their traces exist.
+- Days before the activation are read only if the person chooses **My
+  earlier days**, a consent of its own with its own notice: reading again traces
+  recorded for other purposes is a new use (section 12). The person picks how
+  far back: the last 30 days, or all the history kept (as far as a day is kept,
+  `bf_work_hours.day_retention_days`). It can be chosen on the first screen
+  with the hours, or later in *My choices*, and turned off alone, which destroys
+  the days from before the activation of the hours. A job takes the earlier
+  days in a slice at a time, starting at once (*Working time: take in earlier
+  days*).
 
 ## What counts as a trace
 
@@ -47,12 +59,17 @@ person's name.
 |---|---|---|
 | Browser activity | this module | Whether the person used the keyboard or the mouse in Odoo during the last two minutes, reported once a minute by a small service of their own web session (Odoo itself only reports presence when it changes). Never from an API key, never under an impersonation. Not what was typed, not which page. |
 | Calendar | this module | Meetings with at least one other attendee, busy, under 8 hours, that the person accepted themselves (or that a calendar synchronization accepted for them). Each answer is stamped when it is written (by the person, by Odoo in a job, by someone else) with the hours of the meeting at that moment, and again when the line is handed to someone else: an answer written by a colleague does not count, and a meeting a colleague moves counts only for the hours that were accepted. A meeting the person moves themselves carries the answer to its new hours. Answers given before the installation are stamped at installation from their last writer. |
-| Your own tools | this module (`bf_work_push`) | Moments a local tool of the person reports for them, under their own identity. |
+| Your own tools | this module (`bf_work_push`) | Moments a local tool of the person reports for them, under their own identity: never from before the start of reading, 48 hours back at most, or further with *My earlier days* (within the retention of raw traces). The tool asks how far back it may go (`bf_work_push_window`). |
 | Gen prompts | `bf_work_hours_claude_chat` | When a prompt was sent, not its text. |
 | Notes | `bf_work_hours_notes` | When a note was created. |
 | Emails sent from the mail client | `bf_work_hours_email` | When it was sent (read back from the Sent folder). |
 | Meeting reports | `bf_work_hours_meeting` | Start and length of the meetings where the person is marked present. |
 | Timer | `bf_work_hours_timer` | Start and end of each stretch the timer ran, kept when it stops (with the mobile timer, ended at the real moment of a pause made offline on the phone). A running timer does not count yet; a stretch of more than 12 hours is a forgotten timer and is left out. |
+
+*My earlier days* reads again the calendar, the meeting reports, Gen prompts,
+notes, emails and the person's own tools. Browser activity and the timer are
+captured live, only once the hours are on: there is none from before, and a
+stretch that started before the activation counts only from it.
 
 ## How the hours are rebuilt
 
@@ -89,7 +106,11 @@ Raw traces: 60 days (`bf_work_hours.signal_retention_days`). Days: 400 days
 (`bf_work_hours.day_retention_days`). An hourly job purges first, then
 reconstructs the last 7 days of every person who turned the feature on, one
 person at a time (a failure for one does not stop the others). Indicators are
-computed only from the day they were turned on.
+computed from the day they were turned on, and over the earlier days taken in
+(the days before the activation of the hours); the days between the activation
+of the hours and that of the indicators get none, as without earlier days.
+*Recompute my last days* redoes the same 7 days at once and says what it did:
+how many days, and from when the traces are read.
 
 With **Privacy Consent** installed, each activation also appears in the privacy
 register as the person's consent (`bf_work_hours_privacy`): the people in charge

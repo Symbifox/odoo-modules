@@ -1,5 +1,33 @@
 # Changelog
 
+## 18.0.1.1.0 (2026-10-12)
+
+- **My earlier days**: a third switch, a consent of its own with its own notice, to take in the
+  days before the activation of the hours, the last 30 days or all the history kept. A job takes
+  them in a slice at a time, starting at once. *My indicators* turned on later reach those days
+  too: the job takes them in again; the days between the activation of the hours and that of the
+  indicators get none, as without earlier days. A span that reaches no further back than the
+  activation of the hours is refused (the screen greys it out). Turning it off destroys the days
+  from before the activation and redoes the day of the activation and the next one (a stretch
+  from before could run past midnight); if that fails, those two days are destroyed rather than
+  kept, and the withdrawal goes on. Browser activity and the timer are never read before the
+  activation. Its notice says how far back each source reaches (the person's own tools: the
+  retention of raw traces; a calendar answer given before the installation: the hours of the
+  meeting at the installation) and that a system administrator could reach the data.
+- **The consent screen**: a full page instead of a dialog, shown the first time a person opens
+  *Working Time* (*Turn on* or *Go on without it*, two buttons of the same size, not shown
+  again), and when they turn a feature on from *My choices* or their preferences. It lays out
+  the notice the server writes, which stays the text kept with the activation (notice version 3).
+- *Recompute my last days* says what it did: how many days, and from when the traces are read.
+- 🔴 A local tool can no longer push traces from before the activation: 18.0.1.0.2 kept up to
+  48 hours of them (never read, but collected). `bf_work_push_window` tells the tool how far back
+  it may go.
+- A withdrawal followed by a new activation in the same transaction no longer hits the index of
+  live activations.
+- An activation must name its scope in the call: with a context default instead, the notice kept
+  could be that of another scope (18.0.1.0.2 too). The two calls of the consent screen
+  (`bf_screen_data`, `bf_welcome_skip`) refuse portal users.
+
 ## 18.0.1.0.2 (2026-10-11)
 
 - Nobody can learn whether a colleague turned the feature on, or with whom they share their

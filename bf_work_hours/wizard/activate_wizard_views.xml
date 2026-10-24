@@ -49,10 +49,29 @@
                                         string="Turn off" invisible="not insights_enabled"/>
                             </div>
                         </group>
+                        <group string="My earlier days" invisible="not hours_enabled">
+                            <field name="history_enabled" readonly="1"/>
+                            <field name="history_status" readonly="1" invisible="not history_enabled"/>
+                            <div colspan="2">
+                                <button name="action_activate_history" type="object" class="btn-primary"
+                                        string="Read the notice and take them in" invisible="history_enabled"/>
+                                <button name="action_withdraw_history" type="object" class="btn-secondary"
+                                        string="Turn off and destroy my earlier days" invisible="not history_enabled"
+                                        confirm="Your days from before you turned your hours on will be destroyed. Continue?"/>
+                            </div>
+                        </group>
                     </group>
                 </sheet>
             </form>
         </field>
+    </record>
+
+    <!-- The app's entry: the consent screen at the first visit, the person's days after. -->
+    <record id="action_bf_work_home" model="ir.actions.server">
+        <field name="name">My working time</field>
+        <field name="model_id" ref="model_bf_work_choices"/>
+        <field name="state">code</field>
+        <field name="code">action = model._bf_home()</field>
     </record>
 
     <record id="action_bf_work_choices" model="ir.actions.act_window">

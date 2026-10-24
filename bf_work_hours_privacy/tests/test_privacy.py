@@ -151,3 +151,38 @@ class TestPrivacyRegisterGuards(WorkHoursCase):
         self.env["ir.default"].set("privacy.consent", "active", False)
         consent = self.Consent.with_user(self.alice).create({"scope": "hours"})
         self.assertTrue(consent.sudo().privacy_consent_id.active)
+
+
+@tagged("post_install", "-at_install")
+class TestPrivacyEarlierDays(WorkHoursCase):
+    """« My earlier days » is a consent of its own in the register too."""
+
+    def take_in(self, user, span="30"):
+        self.env["bf.work.activate.wizard"].with_user(user).create(
+            {"scope": "history", "understood": True, "history_span": span}).action_confirm()
+        return self.Consent.sudo().search([("user_id", "=", user.id), ("scope", "=", "history"),
+                                           ("withdrawn_at", "=", False)])
+
+    def test_its_own_purpose_and_mirror(self):
+        hours = self.activate(self.alice)
+        history = self.take_in(self.alice)
+        mirror = history.privacy_consent_id
+        self.assertEqual(mirror.purpose_id, self.env.ref("bf_work_hours_privacy.purpose_work_history"))
+        self.assertEqual(mirror.status, "granted")
+        self.assertNotEqual(mirror, hours.sudo().privacy_consent_id)
+        self.assertTrue("privacy register" in history.notice_text
+                        or "registre de la vie privée" in history.notice_text, "The register is named in it.")
+
+    def test_withdrawn_from_the_register(self):
+        hours = self.activate(self.alice)
+        history = self.take_in(self.alice)
+        history.privacy_consent_id.with_user(self.alice).sudo().write({"status": "withdrawn"})
+        self.assertTrue(history.withdrawn_at)
+        self.assertTrue(hours.is_active, "Taking back the earlier days leaves the hours on.")
+
+    def test_the_hours_withdrawn_take_the_earlier_days_along(self):
+        hours = self.activate(self.alice)
+        history = self.take_in(self.alice)
+        hours.sudo().privacy_consent_id.with_user(self.alice).sudo().write({"status": "withdrawn"})
+        self.assertTrue(history.withdrawn_at)
+        self.assertEqual(history.privacy_consent_id.status, "withdrawn")

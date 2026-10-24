@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_work_hours.ConsentScreen">
+        <div class="o_action o_bf_work_consent">
+          <div class="o_bf_work_consent_scroll">
+            <div class="o_bf_work_consent_wrap">
+                <header class="o_bf_work_consent_hero">
+                    <img src="/bf_work_hours/static/description/icon.png" alt="" class="o_bf_work_consent_icon"/>
+                    <div>
+                        <h1 t-esc="data.title"/>
+                        <p class="o_bf_work_consent_subtitle" t-esc="data.subtitle"/>
+                    </div>
+                </header>
+
+                <ul class="o_bf_work_consent_promises">
+                    <li t-foreach="data.promises" t-as="promise" t-key="promise_index">
+                        <i t-attf-class="fa fa-fw {{ ['fa-toggle-off', 'fa-eye', 'fa-hand-paper-o'][promise_index] }}" aria-hidden="true"/>
+                        <span t-esc="promise"/>
+                    </li>
+                </ul>
+
+                <div t-if="alreadyOn" class="alert alert-success o_bf_work_consent_done">
+                    <i class="fa fa-check-circle" aria-hidden="true"/>
+                    <span>It is already on. You can turn it off at any time from My choices.</span>
+                </div>
+
+                <div t-if="data.notice" class="o_bf_work_consent_card">
+                    <t t-out="notice"/>
+                </div>
+
+                <div t-if="data.history.length and !alreadyOn" class="o_bf_work_consent_card o_bf_work_consent_history">
+                    <h2 t-if="scope === 'hours'">And your days from before?</h2>
+                    <h2 t-else="">How far back?</h2>
+                    <p class="o_bf_work_consent_help" t-if="scope === 'hours'">
+                        Optional, and a choice of its own: you can turn it off alone, or leave it for later in My choices.
+                    </p>
+                    <div class="o_bf_work_consent_spans" role="radiogroup">
+                        <button t-foreach="data.history" t-as="option" t-key="option.span" type="button" role="radio"
+                                class="o_bf_work_consent_span"
+                                t-att-class="{ 'o_selected': state.span === option.span }"
+                                t-att-aria-checked="state.span === option.span ? 'true' : 'false'"
+                                t-att-disabled="!option.available"
+                                t-on-click="() => this.pick(option)">
+                            <span class="o_bf_work_consent_span_label" t-esc="option.label"/>
+                            <span class="o_bf_work_consent_span_hint" t-esc="option.hint"/>
+                        </button>
+                    </div>
+                    <div t-if="historyNotice" class="o_bf_work_consent_history_notice">
+                        <t t-out="historyNotice"/>
+                    </div>
+                </div>
+
+                <footer class="o_bf_work_consent_actions">
+                    <t t-if="alreadyOn">
+                        <div class="o_bf_work_consent_buttons">
+                            <button type="button" class="btn btn-primary btn-lg" t-on-click="openDays">See my days</button>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <label class="o_bf_work_consent_check">
+                            <input type="checkbox" class="form-check-input" t-model="state.understood"
+                                   t-att-disabled="!data.can_act"/>
+                            <span t-if="scope === 'hours' and historyNotice">I have read these notices and I turn these features on myself</span>
+                            <span t-else="">I have read this notice and I turn the feature on myself</span>
+                        </label>
+                        <div class="o_bf_work_consent_buttons">
+                            <button type="button" class="btn btn-primary btn-lg" t-att-disabled="!canTurnOn"
+                                    t-on-click="turnOn">
+                                <t t-if="scope === 'history'">Take them in</t>
+                                <t t-else="">Turn on</t>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg" t-on-click="goOn">
+                                <t t-if="mode === 'welcome'">Go on without it</t>
+                                <t t-else="">Not now</t>
+                            </button>
+                        </div>
+                        <p t-if="!data.can_act" class="o_bf_work_consent_help">
+                            Only the person concerned can turn this on, in their own session.
+                        </p>
+                        <p t-elif="mode === 'welcome'" class="o_bf_work_consent_help">
+                            Going on without it changes nothing for you. You can turn it on later from My choices.
+                        </p>
+                    </t>
+                </footer>
+            </div>
+          </div>
+        </div>
+    </t>
+</templates>

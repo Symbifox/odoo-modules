@@ -2,16 +2,21 @@
 # The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_work_hours_privacy 18.0.1.0.2\n"
+"Project-Id-Version: bf_work_hours_privacy 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 21:45+0000\n"
-"PO-Revision-Date: 2026-10-10 21:45+0000\n"
+"POT-Creation-Date: 2026-10-12 03:51+0000\n"
+"PO-Revision-Date: 2026-10-12 03:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+
+#. module: bf_work_hours_privacy
+#: model:privacy.purpose,name:bf_work_hours_privacy.purpose_work_history
+msgid "Earlier days taken into the working time of the person"
+msgstr ""
 
 #. module: bf_work_hours_privacy
 #: model:ir.model,name:bf_work_hours_privacy.model_privacy_consent
@@ -39,6 +44,16 @@ msgstr ""
 #. module: bf_work_hours_privacy
 #: model:ir.model.fields,field_description:bf_work_hours_privacy.field_bf_work_consent__privacy_consent_id
 msgid "Privacy Consent"
+msgstr ""
+
+#. module: bf_work_hours_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_work_hours_privacy.purpose_work_history
+msgid ""
+"The traces you left before turning your working time on (calendar, meeting "
+"reports and the sources installed), read again to reconstruct your earlier "
+"days, as far back as you chose. A new use of traces recorded for other "
+"purposes, so a consent of its own; turning it off destroys the days from "
+"before your activation."
 msgstr ""
 
 #. module: bf_work_hours_privacy
@@ -71,6 +86,20 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_work_hours_privacy/models/privacy_consent.py:0
 msgid "This consent mirrors an activation: it is not copied."
+msgstr ""
+
+#. module: bf_work_hours_privacy
+#. odoo-python
+#: code:addons/bf_work_hours_privacy/models/work_consent.py:0
+msgid ""
+"Turned on by the person themselves, in their own session, after reading the "
+"notice (version %s), kept with the activation."
+msgstr ""
+
+#. module: bf_work_hours_privacy
+#. odoo-python
+#: code:addons/bf_work_hours_privacy/models/work_consent.py:0
+msgid "Turned on by the person, in their own session"
 msgstr ""
 
 #. module: bf_work_hours_privacy
@@ -110,21 +139,6 @@ msgstr ""
 #. module: bf_work_hours_privacy
 #: model:ir.module.module,summary:base.module_bf_work_hours_privacy
 msgid ""
-"Declares the two working time purposes and mirrors each activation as a "
+"Declares the three working time purposes and mirrors each activation as a "
 "consent in the privacy register"
-msgstr ""
-
-#. module: bf_work_hours_privacy
-#. odoo-python
-#: code:addons/bf_work_hours_privacy/models/work_consent.py:0
-#, python-format
-msgid ""
-"Turned on by the person themselves, in their own session, after reading the "
-"notice (version %s), kept with the activation."
-msgstr ""
-
-#. module: bf_work_hours_privacy
-#. odoo-python
-#: code:addons/bf_work_hours_privacy/models/work_consent.py:0
-msgid "Turned on by the person, in their own session"
 msgstr ""

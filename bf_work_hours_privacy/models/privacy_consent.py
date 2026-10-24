@@ -3,7 +3,8 @@ from odoo.exceptions import UserError
 
 from odoo.addons.bf_work_hours.models.tools import acting_in_own_web_session
 
-WORK_PURPOSES = ("bf_work_hours_privacy.purpose_work_hours", "bf_work_hours_privacy.purpose_work_insights")
+WORK_PURPOSES = ("bf_work_hours_privacy.purpose_work_hours", "bf_work_hours_privacy.purpose_work_insights",
+                 "bf_work_hours_privacy.purpose_work_history")
 # Never moved, never given an expiry, by anyone, on a mirror.
 FROZEN = {"subject_partner_id", "purpose_id", "expires_at", "active", "company_id",
           "access_token_expires_at", "access_token", "given_by_partner_ids"}
