@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Le persona n'avait aucune fiche au registre des traitements, alors
+            qu'il porte, sur des personnes nommées, un profil relationnel et une
+            appréciation de leur solvabilité.
+
+            Une seule finalité pour les deux, parce qu'ils servent la même fin
+            (bien conduire la relation d'affaires avec la personne) et qu'ils
+            tombent ensemble. Qui voit quoi est déjà réglé par bf_persona
+            18.0.3.3.0 : le résumé ci-dessous le dit à la personne.
+
+            ⚠️ Pas de consentement à recueillir : le profil sert la relation
+            d'affaires en cours. Son résumé (sans la cote de payeur) part vers
+            l'assistant de rédaction, un service d'IA, quand un usager lui demande
+            de l'aide (bf_claude_chat) : le texte public le DIT, il est en
+            noupdate et le corriger plus tard exigerait une migration.
+            La durée, elle, est bornée par la fin de cette relation.
+        -->
+        <record id="purpose_persona_relationship" model="privacy.purpose">
+            <field name="code">persona_relationship</field>
+            <field name="name">Profil relationnel des contacts et cote de payeur</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Pour bien vous écrire, nous tenons une fiche sur la façon dont
+                vous préférez être abordé : tutoiement ou vouvoiement, salutation,
+                formule de clôture, langue, personnes à mettre en copie ou à ne
+                jamais mettre en copie, et ce qu'il faut savoir avant de vous
+                écrire. Elle note aussi des faits mesurés sur nos échanges :
+                dates du dernier courriel reçu et envoyé, nombre de messages,
+                messages restés sans réponse.</p>
+                <p>Si nous vous facturons, la fiche peut porter une appréciation
+                de vos habitudes de paiement (délai moyen entre la facture et le
+                paiement, qualité de payeur, notes). Cette appréciation n'est
+                visible que des quelques personnes chargées de la gestion des
+                fiches.</p>
+                <p>La fiche n'est pas vendue. Hors de notre entreprise, seul le
+                fournisseur de notre assistant de rédaction, un service
+                d'intelligence artificielle situé hors du Québec, en reçoit le
+                résumé (style d'adresse, salutation, ton, ce qu'il faut savoir
+                avant de vous écrire, personnes à mettre en copie), quand l'un des
+                nôtres lui demande de l'aider à vous écrire ; jamais
+                l'appréciation de vos habitudes de paiement.</p>
+                <p>La fiche est proposée à la destruction trois ans après notre
+                dernier échange avec vous, et détruite sur approbation de notre
+                responsable de la vie privée, mais jamais tant qu'une facture qui
+                vous est adressée reste impayée. Si vous nous demandez d'effacer
+                vos renseignements, elle est détruite avec eux.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">27</field>
+        </record>
+
+        <!--
+            ⚠️ La durée déclarée ici documente le régime ; ce qui PILOTE le
+            balayage, c'est la règle PER-001 du calendrier.
+        -->
+        <record id="retention_policy_persona_relationship" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_persona_relationship"/>
+            <field name="retention_days">1095</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Contact visé, style d'adresse, salutation, formule de clôture, langue, appellations et consignes avant d'écrire, détails personnels, éléments de connaissance partagés, ton perçu et notes de ton, faits de la relation (dates et volumes des échanges, messages sans réponse, longueur médiane de nos messages, état de la relation), règles de copie et leurs constats, indicateurs et leurs notes, qualité de payeur, notes sur le paiement, délai moyen de paiement, historique des modifications suivies (dont la qualité de payeur).</field>
+            <field name="notes">1 095 jours = 3 ans après la fin de la relation, la durée de PER-001. Fin de la relation : le dernier courriel reçu de la personne ou envoyé à elle ; pour un persona de société, de n'importe qui de la société ; pour le titulaire du compte, sa dernière facture ; à défaut, la création du persona. Une demande d'effacement détruit le persona, quelle que soit la méthode de la demande. Jamais proposé tant qu'une facture adressée au contact reste impayée.</field>
+        </record>
+
+    </data>
+</odoo>

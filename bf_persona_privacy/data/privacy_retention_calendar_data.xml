@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            PER-001 — le persona d'un contact.
+
+            Trois ans, alignés sur COR-001 (correspondance) : le profil est tiré
+            des courriels, il ne doit ni leur survivre ni mourir avant eux.
+
+            L'ancrage est le SILENCE, pas un signal déclaratif : en pratique,
+            un projet archivé ou en étape « Terminé » est souvent encore
+            actif. Seul le dernier échange a discriminé.
+        -->
+        <record id="retention_persona" model="privacy.retention.calendar">
+            <field name="name">Persona des contacts — profil relationnel et cote de payeur</field>
+            <field name="code">PER-001</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Personas des contacts (`contact.persona`) avec leurs indicateurs (`contact.persona.kpi`), leurs règles de copie (`contact.cc.rule`) et leur fil (dont l'historique de la qualité de payeur).</field>
+            <field name="legal_basis">Art. 3.2 et 23 LPRPSP : une fois la fin accomplie, le renseignement se détruit. Le persona sert à conduire la relation d'affaires ; trois ans après le dernier échange, elle est finie. Durée alignée sur COR-001, la correspondance dont le persona est tiré. Une facture impayée garde la relation ouverte.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">contact.persona</field>
+            <field name="notes">Ancrage : le dernier courriel reçu de la personne ou envoyé à elle (comme destinataire ou comme abonnée ; notes internes exclues), au fil d'un dossier comme dans l'inbox unifiée ; la personne est reconnue par sa fiche, les autres fiches à la même adresse (archivées comprises) et l'adresse elle-même ; pour un persona de société, n'importe qui de la société ; pour le titulaire du compte (une société, ou un particulier facturé à son nom), sa dernière facture ; à défaut, la création du persona. Jamais proposé tant qu'une facture adressée au contact (pour une société : à elle ou à ses gens ; à ses doublons) reste impayée. Un persona archivé suit la même règle. Le cron du pont `bf_persona_privacy` dépose les personas échus dans une campagne laissée EN RÉVISION ; l'approbation et l'exécution appartiennent au responsable de la vie privée.</field>
+        </record>
+
+    </data>
+</odoo>

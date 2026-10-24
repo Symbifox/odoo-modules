@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Le responsable de la vie privée approuve une campagne de personas sans
+        rôle persona : la ligne ne dit que « Persona #N ». Cette colonne, calculée
+        et non stockée, lui montre le contact et ses derniers signes de vie.
+    -->
+    <record id="privacy_destruction_campaign_view_form_persona" model="ir.ui.view">
+        <field name="name">privacy.destruction.campaign.form.bf_persona_privacy</field>
+        <field name="model">privacy.destruction.campaign</field>
+        <field name="inherit_id" ref="privacy_consent.privacy_destruction_campaign_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']/list/field[@name='res_name']" position="after">
+                <field name="bf_persona_review" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
