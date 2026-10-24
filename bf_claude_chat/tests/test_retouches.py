@@ -351,7 +351,8 @@ class TestMobileRetouches(HttpCase):
         return self.url_open(url, data=json.dumps(body), headers=entetes, timeout=30)
 
     def test_api_9_total_forfait_et_archivage(self):
-        self.assertEqual(self._appel("/ping").json()["api"], 9)
+        # Au moins 9 : l'api 10 garde tout ce que la 9 apporte.
+        self.assertGreaterEqual(self._appel("/ping").json()["api"], 9)
         corps = self._appel(f"/messages?session_id={self.session.id}").json()
         self.assertEqual(corps["totals"]["net_tokens"], 600)
         with patch.object(type(self.env["bf.ai.bridge"]), "call",

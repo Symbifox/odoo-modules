@@ -240,6 +240,23 @@ The feature is off by default (Settings > Gen).
 Under the Gen menu, restricted to `base.group_system`: every session, plus
 token and cost counters per turn (pivot, graph and list views).
 
+### Reported answers (1.38.0)
+
+App stores require an app that generates content with AI to let people report
+an offensive answer without leaving the app. The companion mobile app puts a
+"Report this answer" flag under each of Gen's answers: a reason (offensive or
+inappropriate, false or misleading, dangerous, other), optional details, and a
+sentence telling the person where the report goes. Offline, the report waits in
+the app's queue and is replayed without creating a duplicate.
+
+A report stays on the instance. Administrators find them under
+Gen > Administration > Reported Answers ("Réponses signalées" in French), filtered
+on "New", and mark each one reviewed. Nothing in the module sends a report, its
+reason or its details anywhere: a host that wants to be notified reads the id,
+the reason and the date of new reports, never the answer, the details or the
+person's name. A daily cron erases the details of reports older than 12 months;
+the reason, status, date and person stay.
+
 ### Mobile API
 
 `/bf_claude_chat/mobile/v1/*` serves the companion mobile app. A turn is
@@ -308,6 +325,24 @@ counters the user chose to show (1.37.0).
 | followup | Boolean | A follow-up posted by the nightly pass, not by a turn of Gen |
 | closure_state, closure_reason | Selection, Char | The closure judgment of this turn (server-written) |
 
+### claude.chat.flag
+
+A report on one of Gen's answers, made from the mobile app (1.38.0).
+Administrators only: Gen > Administration > Reported Answers.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| message_id | Many2one(claude.chat.message) | The reported answer; emptied if the owner deletes the conversation |
+| session_id / answer | related | The conversation and the text of the answer, for review |
+| user_id | Many2one(res.users) | Who reported it - always the owner of the conversation |
+| reason | Selection | offensive, false, dangerous, other |
+| comment | Text | Optional details, 1,000 characters at most; erased after 12 months |
+| state | Selection (new/reviewed) | Review status |
+
+One report per answer and per person (SQL constraint); at most 20 per person
+per hour. A report is displayed as its reason and date ("Dangerous ·
+2026-10-24"), in the viewer's language.
+
 ### claude.chat.instruction
 
 | Field | Type | Description |
@@ -355,7 +390,7 @@ bearer token (no session cookie, `save_session=False`):
 |-------|-------------|
 | `GET  /bf_claude_chat/mobile/v1/ping` | Discovery; the version is disclosed only to a recognised device |
 | `GET  /bf_claude_chat/mobile/v1/sessions` | The device user's conversations, each with `busy` and the running `turn_id` |
-| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages, with `end_reason`, and `totals` for the whole conversation |
+| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages, with `end_reason`, `reported` (the user already reported this answer, 1.38.0), and `totals` for the whole conversation |
 | `GET  /bf_claude_chat/mobile/v1/usage` | The Claude plan, like `/claude-chat/usage`; `?fresh=1` for a new reading |
 | `POST /bf_claude_chat/mobile/v1/ask` | Records the question, returns a turn_id; `409 busy` (with the running `turn_id`) while that conversation already has a turn |
 | `GET  /bf_claude_chat/mobile/v1/turn` | Turn state, partial text, tool log and `end_reason` (`stopped` after the Stop button) |
@@ -366,6 +401,7 @@ bearer token (no session cookie, `save_session=False`):
 | `POST /bf_claude_chat/mobile/v1/closure-answer` | `archive` or `later` on Gen's proposal |
 | `POST /bf_claude_chat/mobile/v1/link-answer` | Links the conversation to the suggested task, or not |
 | `POST /bf_claude_chat/mobile/v1/seen` | The conversation is on screen up to `message_id`: what Gen wrote before it is no longer "to read" |
+| `POST /bf_claude_chat/mobile/v1/report` | Reports one of Gen's answers: `message_id`, `reason`, optional `comment`. Returns `report_id` and `already`; 404 for an answer that is not the caller's (or a question, or an internal directive), 409 while it is still being written, 400 for a malformed body, 429 past 20 reports an hour (1.38.0) |
 
 `/sessions` accepts `q` (every word must appear in the title or a visible
 message), `limit` and `offset`, and returns `res_label` ("Type · Name", or
@@ -376,7 +412,9 @@ renaming and "Send to Gen" from a record, 6 adds `res_label` and `/list-mode`,
 `/messages`, `followup` on a follow-up message, `/sessions?follow=1`,
 `/closure-answer` and `/link-answer`, 8 adds `unread` on each conversation of
 `/sessions` (Gen wrote since the last reading) and `/seen`, 9 adds `totals` in
-`/messages` and `/usage`. Reading `/messages` does not count as reading: the app
+`/messages` and `/usage`, 10 adds `/report` and `reported` on each message of
+`/messages`. A second report of the same answer (an offline replay) returns the
+first one with `already`, and never creates a duplicate. Reading `/messages` does not count as reading: the app
 reloads it at the end of a turn even when the user has left.
 
 ## Talking to the bridge
@@ -482,6 +520,10 @@ the text of `result` is not.
 - The Anthropic API key is encrypted at rest with Fernet, the key coming from
   `BF_CLAUDE_CHAT_FERNET_KEY` or `odoo.conf` - never from the database
 - Per-user rate limit of 30 requests/minute, held per worker process
+- **Reported answers stay on the instance** (1.38.0): `claude.chat.flag` has no
+  access for ordinary users or portal users; it is created only by the mobile
+  route, which checks that the answer belongs to the caller, and read by
+  administrators. The module sends nothing outside the instance
 
 ## Technical note: the overlay portal pattern
 
@@ -599,3 +641,8 @@ docker exec <container> odoo -c /etc/odoo/odoo.conf -d <db> -u bf_claude_chat --
 ```
 
 After updating, force a browser asset reload: `Ctrl+Shift+R`.
+
+## Licence
+
+Business Source License 1.1, see `LICENSE`. This version becomes available
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-24).

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 01:57+0000\n"
-"PO-Revision-Date: 2026-10-22 01:57+0000\n"
+"POT-Creation-Date: 2026-10-24 09:56+0000\n"
+"PO-Revision-Date: 2026-10-24 09:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -155,6 +155,16 @@ msgid "All Sessions"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__message_id
+msgid "Answer"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__answer
+msgid "Answer Text"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Answer interrupted."
@@ -288,6 +298,11 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__autre
 msgid "Autre passe"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+msgid "Back to New"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -559,6 +574,11 @@ msgid "Contexte relu"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__session_id
+msgid "Conversation"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "Conversation archived."
@@ -630,6 +650,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__create_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__create_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__create_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__create_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__create_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__create_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__create_uid
@@ -640,6 +661,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__create_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__create_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__create_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__create_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__create_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__create_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__create_date
@@ -662,8 +684,19 @@ msgid "Crédits utilisés (%)"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__reason__dangerous
+msgid "Dangerous"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__dernier_releve
 msgid "Dernier relevé"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__comment
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+msgid "Details"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -682,6 +715,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__display_name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__display_name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__display_name
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__display_name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__display_name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__display_name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__display_name
@@ -821,6 +855,11 @@ msgid "Failure counter cleared on %s session(s)."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__reason__false
+msgid "False or misleading"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__fenetre
 msgid "Fenêtre"
 msgstr ""
@@ -882,6 +921,11 @@ msgstr ""
 #: model:ir.ui.menu,name:bf_claude_chat.menu_claude_chat_root
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Gen"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_claude_chat_flag
+msgid "Gen Answer Report"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -995,6 +1039,11 @@ msgid "Gen: conversations to follow"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.actions.server,name:bf_claude_chat.ir_cron_purge_flag_details_ir_actions_server
+msgid "Gen: erase the details of reports older than 12 months"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.actions.server,name:bf_claude_chat.ir_cron_closure_followup_ir_actions_server
 msgid "Gen: follow up on conversations left without news"
 msgstr ""
@@ -1060,6 +1109,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__id
@@ -1209,6 +1259,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__write_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__write_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__write_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__write_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__write_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__write_uid
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__write_uid
@@ -1219,6 +1270,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__write_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__write_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__write_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__write_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__write_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__write_date
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__write_date
@@ -1344,6 +1396,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+msgid "Mark as Reviewed"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Max Turns"
 msgstr ""
@@ -1425,6 +1482,12 @@ msgid "Near-identical wording (%(pct)d%% match). Keep one."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__state__new
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_search
+msgid "New"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "New Chat"
@@ -1480,6 +1543,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_flag
+msgid "No reported answer"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Not yet"
@@ -1489,6 +1557,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__note
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_account_form
 msgid "Note"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__reason__offensive
+msgid "Offensive or inappropriate"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1545,6 +1618,7 @@ msgid "Order in which instructions are composed into the prompt."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__reason__other
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__other
 msgid "Other"
 msgstr ""
@@ -1647,12 +1721,6 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
-msgid "Re-read context: %s (ten times cheaper)"
-msgstr ""
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "Processed, re-read context included: %s"
 msgstr ""
 
@@ -1697,6 +1765,12 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Re-read context: %s (ten times cheaper)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Reading a web page"
 msgstr ""
@@ -1723,6 +1797,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Reading the task"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__reason
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_search
+msgid "Reason"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1788,6 +1868,28 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+msgid "Reported Answer"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.act_window,name:bf_claude_chat.action_claude_flag
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_flag_admin
+msgid "Reported Answers"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__user_id
+msgid "Reported By"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_list
+msgid "Reported On"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "Resets %s"
@@ -1817,6 +1919,11 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__prefix_len
 msgid "Resumed Text Length"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__state__reviewed
+msgid "Reviewed"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1958,7 +2065,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
 msgid ""
-"Several plans are switched for this instance. Change them on the bridge host, not here."
+"Several plans are switched for this instance. Change them on the bridge "
+"host, not here."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2032,6 +2140,11 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__state
 msgid "State"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__state
+msgid "Status"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2164,6 +2277,17 @@ msgid "The conversation could not be restored."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
+msgid "The conversation was deleted by its owner."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_flag.py:0
+msgid "The details are too long."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__body
 msgid ""
 "The directive itself, written as you would say it to a colleague. This text "
@@ -2182,14 +2306,21 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
 msgid ""
-"The plan is switched for users who no longer exist here. Change it on the bridge host."
+"The plan is switched for users who no longer exist here. Change it on the "
+"bridge host."
 msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
 msgid ""
-"The plan is switched to an account this instance does not list (%s). Change it on the bridge host."
+"The plan is switched to an account this instance does not list (%s). Change "
+"it on the bridge host."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.constraint,message:bf_claude_chat.constraint_claude_chat_flag_une_fois_par_reponse
+msgid "This answer is already reported."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2364,6 +2495,12 @@ msgstr ""
 msgid ""
 "What the turn sent to the bridge, without the API key: an automatic resume "
 "starts again from it, even when the cron runs it."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_flag
+msgid ""
+"When someone reports an answer from Gen in Symbifox Mobile, it lands here."
 msgstr ""
 
 #. module: bf_claude_chat

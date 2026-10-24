@@ -1,5 +1,44 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.38.0 - 2026-10-24
+
+### Signaler une réponse de Gen depuis Symbifox Mobile
+
+Google Play exige, de toute appli qui génère du contenu par IA, que la
+personne puisse signaler une réponse offensante sans quitter l'appli, et que
+le développeur se serve des signalements pour régler son filtrage. Symbifox
+Mobile 3.23.0 met un drapeau sous chaque réponse de Gen.
+
+- **Modèle `claude.chat.flag`** : la réponse, la personne qui signale (qui
+  est aussi la propriétaire de la conversation), le motif (offensante,
+  fausse, dangereuse, autre), des précisions facultatives (1 000 caractères
+  au plus) et un état « À traiter » / « Traité ». Un seul signalement par
+  réponse et par personne. La conversation supprimée, le signalement reste,
+  sans le texte. Chaque signalement s'affiche par son motif et sa date
+  (« Dangereuse · 2026-10-23 »).
+- **Administrateurs seulement** : Gen > Administration > Réponses signalées.
+  Aucun droit pour un usager ordinaire ni pour un portail ; le signalement se
+  crée par la route mobile, qui vérifie que la réponse est à l'appelant.
+- **Route `/bf_claude_chat/mobile/v1/report`** (api 10) : 404 pour une
+  réponse qui n'est pas à soi, une question ou une consigne interne ; 409
+  pendant que la réponse s'écrit ; 400 sur un corps mal formé (pas un objet
+  JSON, identifiant ou motif d'un autre type, motif inconnu, précisions trop
+  longues), jamais 500 ; 429 au-delà de 20 signalements à l'heure. Un second
+  envoi (rejeu de la file hors ligne) rend le premier avec `already`. Deux
+  envois simultanés : le second rend `already` avec `report_id` 0 (le premier
+  n'est pas lisible depuis sa transaction), sans doublon ni 429, et l'INSERT
+  refusé n'écrit rien au journal (il y aurait mis les précisions). Seule la
+  contrainte unique vaut « déjà » : une réponse supprimée entre le contrôle et
+  l'écriture rend 404. Les précisions perdent leurs caractères nuls et leurs
+  demi-paires de substitution isolées, que PostgreSQL n'écrit pas (c'était un
+  500, et le signalement en file hors ligne était refusé pour toujours).
+- `/messages` dit, pour chaque message, s'il est déjà signalé (`reported`).
+- **Conservation** : un cron quotidien efface les précisions des signalements
+  de plus de 12 mois ; le motif, l'état, la date et la personne restent.
+- **Rien ne sort de l'instance** : le module n'envoie rien. Un hébergeur qui
+  veut être avisé ne lit que l'identifiant, le motif et la date des
+  signalements neufs.
+
 ## 18.0.1.37.1 - 2026-10-22
 
 ### Les nombres dans la langue de l'interface

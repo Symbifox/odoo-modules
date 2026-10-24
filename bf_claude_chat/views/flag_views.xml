@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Signalements des réponses de Gen. Administrateurs seulement :
+         ils voient déjà toutes les conversations (règles admin du module). -->
+    <record id="view_claude_flag_list" model="ir.ui.view">
+        <field name="name">claude.chat.flag.list</field>
+        <field name="model">claude.chat.flag</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-bf="state == 'new'">
+                <field name="create_date" string="Reported On"/>
+                <field name="reason"/>
+                <field name="user_id"/>
+                <field name="session_id"/>
+                <field name="state" widget="badge" decoration-warning="state == 'new'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_claude_flag_form" model="ir.ui.view">
+        <field name="name">claude.chat.flag.form</field>
+        <field name="model">claude.chat.flag</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_mark_reviewed" string="Mark as Reviewed"
+                            type="object" class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_mark_new" string="Back to New"
+                            type="object" invisible="state != 'reviewed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reason"/>
+                            <field name="user_id"/>
+                            <field name="create_date" string="Reported On"/>
+                        </group>
+                        <group>
+                            <field name="session_id"/>
+                            <field name="message_id"/>
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="comment" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Reported Answer">
+                        <field name="answer" nolabel="1" colspan="2"
+                               placeholder="The conversation was deleted by its owner."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_claude_flag_search" model="ir.ui.view">
+        <field name="name">claude.chat.flag.search</field>
+        <field name="model">claude.chat.flag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <filter name="filter_new" string="New" domain="[('state', '=', 'new')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_reason" string="Reason" context="{'group_by': 'reason'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_claude_flag" model="ir.actions.act_window">
+        <field name="name">Reported Answers</field>
+        <field name="res_model">claude.chat.flag</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_new': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No reported answer</p>
+            <p>When someone reports an answer from Gen in Symbifox Mobile, it lands here.</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_claude_flag_admin"
+        name="Reported Answers"
+        parent="menu_claude_admin"
+        action="action_claude_flag"
+        sequence="20"
+        groups="base.group_system"
+    />
+</odoo>

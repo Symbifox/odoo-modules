@@ -42,4 +42,17 @@
         <field name="interval_type">days</field>
         <field name="priority">20</field>
     </record>
+    <!-- Signalements des réponses de Gen : les précisions de plus de
+         12 mois sont effacées ; motif, état et date restent. -->
+    <record id="ir_cron_purge_flag_details" model="ir.cron">
+        <field name="name">Gen: erase the details of reports older than 12 months</field>
+        <field name="model_id" ref="model_claude_chat_flag"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_purger_precisions()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 07:30:00')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="priority">30</field>
+    </record>
 </odoo>

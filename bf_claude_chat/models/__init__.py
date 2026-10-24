@@ -4,3 +4,4 @@ from . import claude_chat_message
 from . import claude_chat_instruction
 from . import res_config_settings
 from . import res_users
+from . import claude_chat_flag

@@ -12,3 +12,4 @@ from . import test_non_lu
 from . import test_retouches
 from . import test_persona_role
 from . import test_compteurs_et_forfait
+from . import test_signalement

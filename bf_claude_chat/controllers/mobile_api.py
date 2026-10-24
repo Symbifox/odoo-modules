@@ -24,11 +24,14 @@ moitiés de l'app, le contrôleur reconnaît celle qui est là.
 import json
 import logging
 
+import psycopg2.errors
+
 from odoo import http
 from odoo.http import request
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
+from ..models.claude_chat_flag import MOTIFS, PRECISIONS_MAX, nettoyer_precisions
 from ..models.claude_chat_session import usage_shown
 
 from .main import (
@@ -146,7 +149,11 @@ class BfClaudeChatMobileApi(http.Controller):
             # tours), et `/usage?fresh=1` : le forfait (`plan`, `windows` :
             # five_hour et seven_day avec `utilization` et `resets_at`,
             # `measured_at`). Le pont garde un relevé 5 min, 15 s avec fresh.
-            "api": 9,
+            # api 10 : `/report` signale une réponse de Gen (motif,
+            # précisions facultatives ; un seul par réponse et par personne),
+            # et `reported` sur chaque message de `/messages`. Exigé par
+            # Google Play pour le contenu généré par IA.
+            "api": 10,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -224,7 +231,14 @@ class BfClaudeChatMobileApi(http.Controller):
             order="create_date asc, id asc", limit=200,
         )
         montrees = request.env.user._gen_meters_shown()
+        # Ce que la personne a déjà signalé. sudo : le modèle n'a
+        # aucun droit pour un usager ; on ne lit que SES signalements.
+        signales = set(request.env["claude.chat.flag"].sudo().search([
+            ("user_id", "=", request.env.user.id),
+            ("message_id", "in", [r["id"] for r in rows]),
+        ]).message_id.ids)
         for row in rows:
+            row["reported"] = row["id"] in signales
             row.update(usage_shown(row, montrees))
             row["tools"] = _tools(row.pop("tool_log", None))
             # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
@@ -390,6 +404,74 @@ class BfClaudeChatMobileApi(http.Controller):
         except Exception:  # noqa: BLE001
             _logger.info("Gen mobile : arrêt non transmis au pont", exc_info=True)
         return _json({"ok": True, "status": "stopping"})
+
+    # ── Signaler une réponse ──────────────────────────────
+    @http.route(f"{BASE}/report", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    def report(self, **kw):
+        """Signaler une réponse de Gen : motif, précisions facultatives.
+
+        Exigé par Google Play pour une appli qui génère du contenu par IA. Le
+        signalement reste sur CETTE instance ; un hébergeur qui veut être
+        avisé n'en lit que le motif et la date (voir `claude.chat.flag`).
+        Un second envoi de la même réponse (rejeu de la file hors ligne) rend
+        le premier signalement avec `already`, sans rien créer ; deux envois
+        simultanés aussi, mais `report_id` vaut alors 0 (le premier n'est pas
+        lisible depuis la transaction du second). Un corps qui n'a pas la
+        forme attendue rend 400, jamais 500. Les précisions perdent leurs
+        caractères nuls et leurs demi-paires de substitution (PostgreSQL ne
+        les écrit pas) ; une réponse supprimée entre le contrôle et l'écriture
+        rend 404.
+        """
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        user = request.env.user
+        body = _body()
+        if not isinstance(body, dict):
+            return _json({"error": "requête invalide"}, 400)
+        mid = body.get("message_id")
+        # Un identifiant en texte se lit s'il est fait de chiffres (au plus 10 :
+        # `int()` refuse les très longs, et rien d'utile ne les dépasse).
+        if isinstance(mid, str) and mid.strip().isdecimal() and len(mid.strip()) <= 10:
+            mid = int(mid)
+        # Un booléen est un `int` pour Python : `true` ne vaut pas la réponse 1.
+        if isinstance(mid, bool) or not isinstance(mid, int):
+            return _json({"error": "réponse invalide"}, 400)
+        # sudo pour le contrôle : la réponse d'un autre doit rendre 404, pas
+        # une erreur d'accès qui dirait qu'elle existe.
+        message = request.env["claude.chat.message"].sudo().browse(mid).exists()
+        if (not message or message.role != "assistant" or message.internal
+                or message.session_id.user_id != user):
+            return _json({"error": "réponse introuvable"}, 404)
+        if message.state == "pending":
+            return _json({"error": "busy"}, 409)
+        reason = body.get("reason")
+        if not isinstance(reason, str) or reason not in dict(MOTIFS):
+            return _json({"error": "motif inconnu"}, 400)
+        comment = body.get("comment") or ""
+        if not isinstance(comment, str):
+            return _json({"error": "précisions invalides"}, 400)
+        # Un caractère nul ou une demi-paire de substitution ferait lever
+        # psycopg2 (500), et l'op en file serait refusée pour toujours : on
+        # les retire plutôt que de refuser le signalement.
+        comment = nettoyer_precisions(comment)
+        if len(comment.strip()) > PRECISIONS_MAX:
+            return _json({"error": "précisions trop longues"}, 400)
+        try:
+            flag, deja = request.env["claude.chat.flag"]._signaler(
+                message, user, reason, comment)
+        except psycopg2.errors.ForeignKeyViolation:
+            # La réponse supprimée entre le contrôle et l'INSERT.
+            return _json({"error": "réponse introuvable"}, 404)
+        # `deja` AVANT le plafond : un envoi simultané rend « déjà » sans fiche
+        # lisible, ce n'est pas un refus.
+        if deja:
+            return _json({"ok": True, "report_id": flag.id or 0, "already": True})
+        if not flag:
+            return _json({"error": "Trop de signalements — réessaie plus tard."}, 429)
+        return _json({"ok": True, "report_id": flag.id, "already": False})
 
     @http.route(f"{BASE}/delete-session", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)

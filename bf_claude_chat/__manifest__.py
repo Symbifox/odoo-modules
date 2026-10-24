@@ -1,6 +1,6 @@
 {
     "name": "Gen",
-    "version": "18.0.1.37.1",
+    "version": "18.0.1.38.0",
     "category": "Productivity",
     "summary": "Chat with Gen, the AI assistant, directly inside Odoo",
     "website": "https://symbifox.com",
@@ -15,6 +15,7 @@
         "security/ir.model.access.csv",
         "data/ir_cron.xml",
         "views/menu.xml",
+        "views/flag_views.xml",
         "views/instruction_views.xml",
         "views/account_views.xml",
         "views/res_config_settings.xml",
