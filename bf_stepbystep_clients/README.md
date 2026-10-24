@@ -123,6 +123,15 @@ The same version reserves the dashboard to project users
 hours in raw SQL; any other user calling it over RPC, a portal user included,
 now gets an access error instead of every mandate.
 
+## Private projects (v18.0.2.4.4)
+
+The dashboard lists only the projects the user can read in Project: a private
+project (visible to its followers) that the user does not follow is left out of
+the cards and the counters. The mandate detail, like the list, is reserved to
+project users; a portal client who follows a shared project can read the project
+itself but not its dashboard detail (tasks, hours, internal stages).
+The **Progress** menu itself now shows only to project users.
+
 ## Installation
 
 ```bash
@@ -145,5 +154,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-23, this version converts automatically to
+- **Change Date**: on 2030-10-24, this version converts automatically to
   **LGPL-3.0-or-later**.

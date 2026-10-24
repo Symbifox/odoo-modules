@@ -93,15 +93,24 @@ class BfStepbystepDashboard(models.AbstractModel):
     # ------------------------------------------------------------------
 
     @api.model
-    def get_dashboard_data(self):
-        """Return all dashboard data for the OWL component."""
-        # Public method (callable over RPC by any user, portal included) reading
-        # projects, clients and hours in raw SQL: reserved to project users.
+    def _check_project_user(self):
+        """Both public methods (callable over RPC by any user, portal included)
+        read projects, clients, tasks and hours in raw SQL: project users only."""
         if not self.env.su and not self.env.user.has_group("project.group_project_user"):
             raise AccessError(_("The progression dashboard is reserved to project users."))
+
+    @api.model
+    def get_dashboard_data(self):
+        """Return all dashboard data for the OWL component."""
+        self._check_project_user()
         today = date.today()
 
         projects = self._get_projects()
+        # The SQL above ignores record rules: keep only the projects this user
+        # can read in Project (a private project they do not follow is left out).
+        readable = set(self.env["project.project"].search(
+            [("id", "in", [p["id"] for p in projects])]).ids)
+        projects = [p for p in projects if p["id"] in readable]
         hours_map = self._get_hours_by_project()
         activity_map = self._get_last_activity_by_project()
         task_count_map = self._get_task_counts_by_project()
@@ -248,6 +257,7 @@ class BfStepbystepDashboard(models.AbstractModel):
     @api.model
     def get_client_detail(self, project_id):
         """Return detailed data for a single client project."""
+        self._check_project_user()
         today = date.today()
 
         Project = self.env["project.project"]
@@ -258,8 +268,7 @@ class BfStepbystepDashboard(models.AbstractModel):
         # SQL below, so an arbitrary project_id can't exfiltrate another
         # company's / user's mandate detail.
         try:
-            proj.check_access_rights("read")
-            proj.check_access_rule("read")
+            proj.check_access("read")
         except Exception:
             return {"error": "Project not found"}
 

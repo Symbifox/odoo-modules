@@ -87,3 +87,37 @@ class TestBudgetDuTableau(TransactionCase):
             self.tableau.with_user(portail).get_dashboard_data()
         interne = new_test_user(self.env, login="chef_tableau", groups="project.group_project_user")
         self.assertIn("projects", self.tableau.with_user(interne).get_dashboard_data())
+
+    def test_projet_prive_hors_de_la_liste(self):
+        """La liste lit les projets en SQL brut : un projet privé que l'usager ne suit pas
+        n'y paraît pas, ni dans les compteurs (18.0.2.4.4)."""
+        chef = new_test_user(self.env, login="chef_prive", groups="project.group_project_user")
+        prive = self._projet("Mandat privé", 10, 777)
+        prive.privacy_visibility = "followers"
+        ouvert = self.env["project.project"].create({
+            "name": "Mandat ouvert", "privacy_visibility": "employees",
+        })
+        donnees = self.tableau.with_user(chef).get_dashboard_data()
+        ids = {p["id"] for p in donnees["projects"]}
+        self.assertNotIn(prive.id, ids)
+        self.assertIn(ouvert.id, ids)
+        self.assertEqual(donnees["summary"]["total_projects"], len(donnees["projects"]))
+        self.assertAlmostEqual(donnees["summary"]["total_hours"],
+                               sum(p["hours_consumed"] for p in donnees["projects"]), delta=0.1)
+        self.assertIn("error", self.tableau.with_user(chef).get_client_detail(prive.id))
+
+        prive.message_subscribe(partner_ids=chef.partner_id.ids)
+        ids = {p["id"] for p in self.tableau.with_user(chef).get_dashboard_data()["projects"]}
+        self.assertIn(prive.id, ids)
+
+    def test_detail_refuse_au_portail(self):
+        """Un client du portail qui suit un projet partagé peut le lire : le détail du
+        tableau (tâches, heures, étapes internes) lui reste refusé (18.0.2.4.4)."""
+        portail = new_test_user(self.env, login="portail_detail", groups="base.group_portal")
+        projet = self.env["project.project"].create({
+            "name": "Mandat partagé", "privacy_visibility": "portal",
+        })
+        projet.message_subscribe(partner_ids=portail.partner_id.ids)
+        projet.with_user(portail).check_access("read")
+        with self.assertRaises(AccessError):
+            self.tableau.with_user(portail).get_client_detail(projet.id)
