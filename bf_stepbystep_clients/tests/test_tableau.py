@@ -1,0 +1,89 @@
+"""Le budget d'un mandat vient des heures allouées du projet, jamais d'un défaut.
+
+Avant la 18.0.2.4.3, un projet sans heures allouées prenait un budget de 40 h :
+chaque mandat sans budget sortait « Dépassé », à des milliers de pour cent.
+"""
+from odoo.exceptions import AccessError
+from odoo.tests import TransactionCase, new_test_user, tagged
+
+
+@tagged("post_install", "-at_install")
+class TestBudgetDuTableau(TransactionCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.tableau = cls.env["bf.stepbystep.dashboard"]
+        cls.employe = cls.env["hr.employee"].create({
+            "name": "Saisie budget", "user_id": cls.env.user.id,
+            "company_id": cls.env.company.id,
+        })
+
+    def _projet(self, nom, alloue, heures):
+        projet = self.env["project.project"].create({
+            "name": nom, "allow_timesheets": True, "allocated_hours": alloue,
+        })
+        if heures:
+            self.env["account.analytic.line"].create({
+                "name": "Travail", "project_id": projet.id,
+                "employee_id": self.employe.id, "unit_amount": heures,
+            })
+        return projet
+
+    def _carte(self, donnees, projet):
+        return next(p for p in donnees["projects"] if p["id"] == projet.id)
+
+    def test_sans_budget_aucun_pourcentage_ni_depassement(self):
+        avant = self.tableau.get_dashboard_data()["summary"]
+        projet = self._projet("Mandat sans budget", 0, 120)
+        donnees = self.tableau.get_dashboard_data()
+        carte = self._carte(donnees, projet)
+        self.assertFalse(carte["has_budget"])
+        self.assertEqual(carte["budget_hours"], 0)
+        self.assertEqual(carte["budget_pct"], 0)
+        self.assertEqual(carte["budget_status"], "none")
+        self.assertEqual(carte["hours_consumed"], 120)
+        apres = donnees["summary"]
+        for compteur in ("over_budget", "critical_budget", "warning_budget"):
+            self.assertEqual(apres[compteur], avant[compteur], compteur)
+
+        detail = self.tableau.get_client_detail(projet.id)["project"]
+        self.assertFalse(detail["has_budget"])
+        self.assertEqual(detail["budget_hours"], 0)
+        self.assertEqual(detail["budget_pct"], 0)
+        self.assertEqual(detail["budget_status"], "none")
+        self.assertEqual(detail["remaining_hours"], 0)
+
+    def test_budget_depasse(self):
+        avant = self.tableau.get_dashboard_data()["summary"]["over_budget"]
+        projet = self._projet("Mandat de 100 h", 100, 120)
+        donnees = self.tableau.get_dashboard_data()
+        carte = self._carte(donnees, projet)
+        self.assertTrue(carte["has_budget"])
+        self.assertEqual(carte["budget_hours"], 100)
+        self.assertEqual(carte["budget_pct"], 120)
+        self.assertEqual(carte["budget_status"], "over")
+        self.assertEqual(donnees["summary"]["over_budget"], avant + 1)
+
+        detail = self.tableau.get_client_detail(projet.id)["project"]
+        self.assertTrue(detail["has_budget"])
+        self.assertEqual(detail["budget_pct"], 120)
+        self.assertEqual(detail["budget_status"], "over")
+        self.assertEqual(detail["remaining_hours"], 0)
+
+    def test_budget_en_regle(self):
+        projet = self._projet("Mandat de 200 h", 200, 50)
+        carte = self._carte(self.tableau.get_dashboard_data(), projet)
+        self.assertEqual(carte["budget_pct"], 25)
+        self.assertEqual(carte["budget_status"], "ok")
+        detail = self.tableau.get_client_detail(projet.id)["project"]
+        self.assertEqual(detail["remaining_hours"], 150)
+
+    def test_tableau_refuse_au_portail(self):
+        """Le tableau lit projets, clients et heures en SQL brut : un usager du portail
+        qui appelle la méthode par RPC n'en reçoit rien."""
+        portail = new_test_user(self.env, login="portail_tableau", groups="base.group_portal")
+        with self.assertRaises(AccessError):
+            self.tableau.with_user(portail).get_dashboard_data()
+        interne = new_test_user(self.env, login="chef_tableau", groups="project.group_project_user")
+        self.assertIn("projects", self.tableau.with_user(interne).get_dashboard_data())

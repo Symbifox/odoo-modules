@@ -170,6 +170,7 @@
                                             <option value="warning">Warning (75-89%)</option>
                                             <option value="critical">Critical (90-100%)</option>
                                             <option value="over">Over budget (&gt; 100%)</option>
+                                            <option value="none">No budget</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
@@ -234,13 +235,14 @@
                                     <div class="mb-2">
                                         <div class="d-flex justify-content-between mb-1">
                                             <small class="text-muted">
-                                                <t t-esc="proj.hours_consumed"/> / <t t-esc="proj.budget_hours"/> h
+                                                <t t-esc="proj.hours_consumed"/><t t-if="proj.has_budget"> / <t t-esc="proj.budget_hours"/></t> h
                                             </small>
-                                            <small t-att-class="getBudgetClass(proj.budget_status)">
+                                            <small t-if="proj.has_budget" t-att-class="getBudgetClass(proj.budget_status)">
                                                 <t t-esc="proj.budget_pct"/>%
                                             </small>
+                                            <small t-else="" class="text-muted fst-italic">No budget</small>
                                         </div>
-                                        <div class="progress" style="height: 6px;">
+                                        <div t-if="proj.has_budget" class="progress" style="height: 6px;">
                                             <div t-attf-class="progress-bar {{proj.budget_status === 'ok' ? 'bg-success' : proj.budget_status === 'warning' ? 'bg-warning' : 'bg-danger'}}"
                                                  t-attf-style="width: {{Math.min(100, proj.budget_pct)}}%"/>
                                         </div>
@@ -389,15 +391,18 @@
                                 <div class="card-body text-center">
                                     <small class="text-muted d-block mb-1">Hours used</small>
                                     <strong>
-                                        <t t-esc="state.detailData.project.hours_consumed"/> / <t t-esc="state.detailData.project.budget_hours"/> h
+                                        <t t-esc="state.detailData.project.hours_consumed"/><t t-if="state.detailData.project.has_budget"> / <t t-esc="state.detailData.project.budget_hours"/></t> h
                                     </strong>
-                                    <div class="progress mt-2" style="height: 6px;">
-                                        <div t-attf-class="progress-bar {{state.detailData.project.budget_pct > 100 ? 'bg-danger' : state.detailData.project.budget_pct >= 75 ? 'bg-warning' : 'bg-success'}}"
-                                             t-attf-style="width: {{Math.min(100, state.detailData.project.budget_pct)}}%"/>
-                                    </div>
-                                    <small class="text-muted">
-                                        <t t-esc="state.detailData.project.remaining_hours"/> h remaining
-                                    </small>
+                                    <t t-if="state.detailData.project.has_budget">
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div t-attf-class="progress-bar {{state.detailData.project.budget_pct > 100 ? 'bg-danger' : state.detailData.project.budget_pct >= 75 ? 'bg-warning' : 'bg-success'}}"
+                                                 t-attf-style="width: {{Math.min(100, state.detailData.project.budget_pct)}}%"/>
+                                        </div>
+                                        <small class="text-muted">
+                                            <t t-esc="state.detailData.project.remaining_hours"/> h remaining
+                                        </small>
+                                    </t>
+                                    <small t-else="" class="text-muted fst-italic d-block mt-2">No budget</small>
                                 </div>
                             </div>
                         </div>

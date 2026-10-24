@@ -15,7 +15,9 @@
     #   le module website (la démo), elle rendait une 500 (KeyError 'website').
     # 18.0.2.4.2: « Étape 2 sur 4: » n'avait pas d'espace avant le deux-points en
     #   français ; séparateur neutre (point médian) entre le rang et le nom de l'étape.
-    "version": "18.0.2.4.2",
+    # 18.0.2.4.3: un mandat sans heures allouées n'a plus de budget inventé de 40 h
+    #   (« Sans budget », hors des alertes) ; le tableau est réservé aux usagers des projets.
+    "version": "18.0.2.4.3",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

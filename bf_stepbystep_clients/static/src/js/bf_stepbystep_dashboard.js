@@ -227,6 +227,10 @@ export class BfStepbystepDashboard extends Component {
                 return a.name.localeCompare(b.name, "fr-CA");
             }
             if (sortBy === "budget") {
+                // Mandates without a budget go last, not mixed with those at 0 %.
+                if (Boolean(a.has_budget) !== Boolean(b.has_budget)) {
+                    return a.has_budget ? -1 : 1;
+                }
                 return b.budget_pct - a.budget_pct;
             }
             if (sortBy === "progress") {
@@ -263,6 +267,7 @@ export class BfStepbystepDashboard extends Component {
             warning: "text-warning",
             critical: "text-danger",
             over: "text-danger fw-bold",
+            none: "text-muted",
         };
         return map[status] || "";
     }

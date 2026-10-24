@@ -14,7 +14,8 @@ your own project stages.
 
 - **OWL dashboard** (`bf.stepbystep.dashboard`) listing every active engagement
   with, for each one: the current step, progress as a percentage, the hours
-  budget consumed and progress through the schedule.
+  consumed against the project's allocated hours, and progress through the
+  schedule.
 - **Per-client detail view**: the full sequence of steps, the step reached, the
   tasks and the hours.
 - **Per-stage configurable progress** through four fields added to
@@ -108,6 +109,20 @@ that add content to a step. The controller's `_progression_mode_de_depot()`
 returns `"direct"`; a bridge module can switch it, for instance to upload through
 `bf_securetransfer` storage.
 
+## Mandates without a budget (v18.0.2.4.3)
+
+The budget of a mandate is the project's allocated hours. A project without
+allocated hours now reads "No budget": its card and detail show the hours
+consumed, with no percentage, no budget bar and no budget alert, and it is left
+out of the Over budget, Critical and Warning counters. The budget filter offers
+"No budget" to list these mandates. Earlier versions assumed 40 hours, which put
+every unbudgeted mandate over budget.
+
+The same version reserves the dashboard to project users
+(`project.group_project_user`). Its data method reads projects, clients and
+hours in raw SQL; any other user calling it over RPC, a portal user included,
+now gets an access error instead of every mandate.
+
 ## Installation
 
 ```bash
@@ -130,5 +145,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-23, this version converts automatically to
   **LGPL-3.0-or-later**.

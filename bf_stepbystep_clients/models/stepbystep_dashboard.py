@@ -2,11 +2,14 @@ import logging
 from datetime import date, timedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
-# Default budget when project.allocated_hours is unset
-DEFAULT_BUDGET_HOURS = 40
+# A project without allocated hours has no budget: no percentage, no status,
+# and it stays out of the budget counters. (Before 18.0.2.4.3 a default of 40 h
+# was assumed, which put every unbudgeted mandate "over budget".)
+NO_BUDGET = "none"
 
 # A project carrying this tag (project.tags) is on hold. The label carries an
 # emoji and has already shifted between singular and plural, so match on the
@@ -46,6 +49,15 @@ def _abbreviate(name):
     return name
 
 
+def _budget_figures(allocated, hours):
+    """Return (has_budget, budget_hours, budget_pct, budget_status)."""
+    budget = allocated or 0.0
+    if budget <= 0:
+        return False, 0.0, 0, NO_BUDGET
+    pct = round((hours / budget) * 100, 1)
+    return True, budget, pct, _budget_status(pct)
+
+
 def _budget_status(pct):
     if pct > 100:
         return "over"
@@ -83,6 +95,10 @@ class BfStepbystepDashboard(models.AbstractModel):
     @api.model
     def get_dashboard_data(self):
         """Return all dashboard data for the OWL component."""
+        # Public method (callable over RPC by any user, portal included) reading
+        # projects, clients and hours in raw SQL: reserved to project users.
+        if not self.env.su and not self.env.user.has_group("project.group_project_user"):
+            raise AccessError(_("The progression dashboard is reserved to project users."))
         today = date.today()
 
         projects = self._get_projects()
@@ -109,10 +125,9 @@ class BfStepbystepDashboard(models.AbstractModel):
             pid = proj["id"]
             name = proj["name"] or ""
             is_paused = bool(proj.get("is_paused"))
-            budget = proj.get("allocated_hours") or DEFAULT_BUDGET_HOURS
             hours = hours_map.get(pid, 0.0)
-            budget_pct = round((hours / budget) * 100, 1) if budget else 0
-            b_status = _budget_status(budget_pct)
+            has_budget, budget, budget_pct, b_status = _budget_figures(
+                proj.get("allocated_hours"), hours)
 
             activity = activity_map.get(pid, {})
             last_date = activity.get("date")
@@ -182,6 +197,7 @@ class BfStepbystepDashboard(models.AbstractModel):
                 "partner_id": proj.get("partner_id") or 0,
                 "sector": sector,
                 "hours_consumed": round(hours, 2),
+                "has_budget": has_budget,
                 "budget_hours": budget,
                 "budget_pct": budget_pct,
                 "budget_status": b_status,
@@ -247,7 +263,6 @@ class BfStepbystepDashboard(models.AbstractModel):
         except Exception:
             return {"error": "Project not found"}
 
-        budget = proj.allocated_hours or DEFAULT_BUDGET_HOURS
 
         self.env.cr.execute("""
             SELECT COALESCE(SUM(unit_amount), 0)
@@ -255,7 +270,8 @@ class BfStepbystepDashboard(models.AbstractModel):
             WHERE project_id = %s
         """, (project_id,))
         hours = self.env.cr.fetchone()[0] or 0.0
-        budget_pct = round((hours / budget) * 100, 1) if budget else 0
+        has_budget, budget, budget_pct, b_status = _budget_figures(
+            proj.allocated_hours, hours)
 
         date_start = proj.date_start
         date_end = proj.date
@@ -444,9 +460,11 @@ class BfStepbystepDashboard(models.AbstractModel):
                 "date_end": str(date_end) if date_end else "",
                 "timeline_pct": timeline_pct,
                 "hours_consumed": round(hours, 2),
+                "has_budget": has_budget,
                 "budget_hours": budget,
                 "budget_pct": budget_pct,
-                "remaining_hours": round(max(0, budget - hours), 2),
+                "budget_status": b_status,
+                "remaining_hours": round(max(0, budget - hours), 2) if has_budget else 0,
             },
             "modules": modules,
             "overdue_tasks": overdue_tasks,
