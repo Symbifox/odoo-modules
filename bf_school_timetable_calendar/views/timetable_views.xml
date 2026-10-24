@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_timetable_view_form_calendar" model="ir.ui.view">
+        <field name="name">bf.school.timetable.form.calendar</field>
+        <field name="model">bf.school.timetable</field>
+        <field name="inherit_id" ref="bf_school_timetable.bf_school_timetable_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <field name="calendar_kept" invisible="1"/>
+                <div class="alert alert-info mb-0" role="status" invisible="not calendar_kept">
+                    The days follow the school calendar: a pedagogical day, a break or a holiday is entered there. Here, mark the exam days.
+                </div>
+            </xpath>
+            <!-- The days of a timetable that follows the calendar are not added, removed or moved here. -->
+            <xpath expr="//field[@name='day_ids']" position="attributes">
+                <attribute name="invisible">calendar_kept</attribute>
+            </xpath>
+            <xpath expr="//field[@name='day_ids']" position="after">
+                <field name="day_ids" invisible="not calendar_kept">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="date" readonly="1"/>
+                        <field name="kind"/>
+                        <field name="cycle_day"/>
+                        <field name="note"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

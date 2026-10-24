@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_school_calendar_day_company" model="ir.rule">
+        <field name="name">School calendar: my companies</field>
+        <field name="model_id" ref="model_bf_school_calendar_day"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_childcare_link" name="School: link to child care"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a t-if="request.env.user.partner_id._school_authority_links()" href="/my/school/childcare"
+               class="btn btn-secondary"><i class="fa fa-child me-1"/>Child care</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_childcare" name="School: child care breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="36">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_childcare'" class="breadcrumb-item"><a href="/my/school">My children</a></li>
+            <li t-if="page_name == 'school_childcare'" class="breadcrumb-item active">Child care</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_childcare" name="School: child care">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Child care</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Child care</t>
+            </t>
+            <div t-if="message" t-attf-class="alert {{ 'alert-danger' if error else 'alert-success' }} mt-3" role="alert"
+                 t-out="message"/>
+            <div t-if="not cards" class="alert alert-info mt-3">
+                Child care is managed by the adults with parental authority. The school has not linked any child to
+                your account with this role.
+            </div>
+            <div t-foreach="cards" t-as="card" class="card mt-3 o_school_childcare_child">
+                <t t-set="child" t-value="card['student']"/>
+                <div class="card-header"><h4 class="mb-0" t-out="child.name"/></div>
+                <div class="card-body">
+                    <p t-if="not card['school']" class="text-muted mb-0">
+                        Child care is for the preschool and elementary students of the school.
+                    </p>
+                    <t t-if="card['school']">
+                        <!-- Registration -->
+                        <h5>Registration</h5>
+                        <div t-if="not card['registrations']" class="text-muted">No regular registration.</div>
+                        <div t-foreach="card['registrations']" t-as="reg" class="mb-2">
+                            <span t-if="reg.state == 'active'" class="badge text-bg-success me-1">In force</span>
+                            <span t-else="" class="badge text-bg-info me-1">Requested</span>
+                            <t t-out="reg._school_period_label()"/>
+                            <ul class="mb-0">
+                                <li t-foreach="reg._school_schedule_lines()" t-as="schedule_line" t-out="schedule_line"/>
+                            </ul>
+                        </div>
+                        <details class="mb-3">
+                            <summary>Ask for a regular registration</summary>
+                            <form method="post" action="/my/school/childcare/register" class="mt-2">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                <div class="mb-2" style="max-width: 16rem;">
+                                    <label class="form-label">From</label>
+                                    <input class="form-control" type="date" name="date_start" required="1"
+                                           t-att-value="card['today']"/>
+                                </div>
+                                <div t-foreach="card['slots']" t-as="slot" class="mb-2">
+                                    <div class="fw-semibold" t-out="slot.display_name"/>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <t t-foreach="day_fields" t-as="day">
+                                            <label t-if="slot[day]" class="form-check-label">
+                                                <input type="checkbox" class="form-check-input me-1"
+                                                       t-att-name="'slot_%s_%s' % (slot.id, day)"/>
+                                                <t t-out="day_labels[day]"/>
+                                            </label>
+                                        </t>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Send the request</button>
+                            </form>
+                        </details>
+
+                        <!-- The next days -->
+                        <h5 class="o_school_childcare_next">The next two weeks</h5>
+                        <div class="list-group mb-3">
+                            <div t-foreach="card['days']" t-as="day" class="list-group-item">
+                                <div class="fw-semibold">
+                                    <span t-out="day['date']" t-options='{"widget": "date", "format": "EEEE d MMMM"}'/>
+                                    <span t-if="day['closed']" class="badge text-bg-secondary ms-1">Child care closed</span>
+                                </div>
+                                <div t-foreach="day['entries']" t-as="entry"
+                                     class="d-flex flex-wrap align-items-center gap-2 mt-1 o_school_childcare_entry">
+                                    <span t-out="entry['slot'].display_name"/>
+                                    <span t-if="entry['activity']" class="text-muted small" t-out="entry['activity'].name"/>
+                                    <span t-if="entry['absent']" class="badge text-bg-warning">Absence noted</span>
+                                    <span t-elif="entry['registered']" class="badge text-bg-success">On the schedule</span>
+                                    <span t-elif="entry['booking']" class="badge text-bg-info">Booked</span>
+                                    <span t-elif="entry['full']" class="badge text-bg-secondary">Full</span>
+                                    <span t-elif="entry['too_late']" class="text-muted small">Too late to book here: call the office</span>
+                                    <form t-if="entry['can_book']" method="post" action="/my/school/childcare/book" class="d-inline">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                        <input type="hidden" name="slot_id" t-att-value="entry['slot'].id"/>
+                                        <input type="hidden" name="date" t-att-value="day['date']"/>
+                                        <button type="submit" class="btn btn-sm btn-primary">Book</button>
+                                    </form>
+                                    <form t-if="entry['can_cancel']" method="post"
+                                          t-attf-action="/my/school/childcare/booking/{{ entry['booking'].id }}/cancel" class="d-inline">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Cancel the booking</button>
+                                    </form>
+                                    <form t-if="(entry['registered'] or entry['booking']) and not entry['absent']" method="post"
+                                          action="/my/school/childcare/absence" class="d-inline">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                        <input type="hidden" name="slot_id" t-att-value="entry['slot'].id"/>
+                                        <input type="hidden" name="date" t-att-value="day['date']"/>
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">Will be absent</button>
+                                    </form>
+                                </div>
+                                <div t-if="not day['entries'] and not day['closed']" class="text-muted small">No period for this child.</div>
+                            </div>
+                        </div>
+                        <details class="mb-3">
+                            <summary>Declare an absence</summary>
+                            <form method="post" action="/my/school/childcare/absence" class="row g-2 mt-1">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                <div class="col-12 col-md-4"><label class="form-label">Date</label>
+                                    <input class="form-control" type="date" name="date" required="1" t-att-value="card['today']"/></div>
+                                <div class="col-12 col-md-4"><label class="form-label">Period</label>
+                                    <select class="form-select" name="slot_id">
+                                        <option value="">The whole day</option>
+                                        <option t-foreach="card['slots']" t-as="slot" t-att-value="slot.id" t-out="slot.display_name"/>
+                                    </select></div>
+                                <div class="col-12 col-md-4"><label class="form-label">Reason (optional)</label>
+                                    <input class="form-control" name="reason" maxlength="200"/></div>
+                                <div class="col-12"><button type="submit" class="btn btn-primary">Declare</button></div>
+                            </form>
+                        </details>
+
+                        <!-- Who may pick up the child -->
+                        <h5>Who may pick up the child</h5>
+                        <ul class="list-unstyled mb-2">
+                            <li t-foreach="card['guardians']" t-as="adult"><i class="fa fa-user me-1"/><t t-out="adult.name"/></li>
+                            <li t-foreach="card['persons']" t-as="person" class="d-flex flex-wrap align-items-center gap-2">
+                                <span><i class="fa fa-user-plus me-1"/><t t-out="person.display_name"/>,
+                                    <t t-out="person._validity_label()"/></span>
+                                <form method="post" t-attf-action="/my/school/childcare/person/{{ person.id }}/remove" class="d-inline">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                </form>
+                            </li>
+                        </ul>
+                        <details class="mb-3">
+                            <summary>Add a person</summary>
+                            <form method="post" action="/my/school/childcare/person/add" class="row g-2 mt-1">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                <div class="col-12 col-md-6"><label class="form-label">Full name</label>
+                                    <input class="form-control" name="name" required="1" maxlength="128"/></div>
+                                <div class="col-12 col-md-6"><label class="form-label">Relationship to the child</label>
+                                    <input class="form-control" name="relationship" maxlength="64"/></div>
+                                <div class="col-12 col-md-4"><label class="form-label">Phone</label>
+                                    <input class="form-control" name="phone" type="tel" maxlength="32"/></div>
+                                <div class="col-6 col-md-4"><label class="form-label">From</label>
+                                    <input class="form-control" type="date" name="date_from" required="1" t-att-value="card['today']"/></div>
+                                <div class="col-6 col-md-4"><label class="form-label">Until (optional)</label>
+                                    <input class="form-control" type="date" name="date_to"/></div>
+                                <div class="col-12 text-muted small">The school checks an ID the first time.</div>
+                                <div class="col-12"><button type="submit" class="btn btn-primary">Add</button></div>
+                            </form>
+                        </details>
+
+                        <!-- Leaving alone -->
+                        <h5>Leaving alone</h5>
+                        <div t-if="not card['walks']" class="text-muted mb-2">No permission to leave alone.</div>
+                        <div t-foreach="card['walks']" t-as="walk" class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                            <span><t t-out="walk._school_summary()"/>
+                                (<span t-field="walk.signed_on" t-options="{'widget': 'datetime', 'tz_name': card['tz']}"/>)</span>
+                            <form method="post" t-attf-action="/my/school/childcare/walk_alone/{{ walk.id }}/revoke" class="d-inline">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Revoke</button>
+                            </form>
+                        </div>
+                        <details class="mb-3">
+                            <summary>Allow the child to leave alone</summary>
+                            <form method="post" action="/my/school/childcare/walk_alone/sign" class="row g-2 mt-1">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                <div class="col-12 d-flex flex-wrap gap-3">
+                                    <t t-foreach="day_fields" t-as="day">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input me-1" t-att-name="'day_%s' % day"/>
+                                            <t t-out="day_labels[day]"/>
+                                        </label>
+                                    </t>
+                                </div>
+                                <div class="col-12 col-md-4"><label class="form-label">From (time)</label>
+                                    <input class="form-control" type="time" name="from_time" required="1" value="15:30"/></div>
+                                <div class="col-6 col-md-4"><label class="form-label">From</label>
+                                    <input class="form-control" type="date" name="date_from" required="1" t-att-value="card['today']"/></div>
+                                <div class="col-6 col-md-4"><label class="form-label">Until (optional)</label>
+                                    <input class="form-control" type="date" name="date_to"/></div>
+                                <div class="col-12">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input me-1" name="accept" required="1"/>
+                                        I allow the child to leave child care alone on these days, from this time. Once the
+                                        child has left, the school is no longer responsible for the way home.
+                                    </label>
+                                </div>
+                                <div class="col-12"><button type="submit" class="btn btn-primary">Sign</button></div>
+                            </form>
+                        </details>
+
+                        <!-- Departures -->
+                        <h5>Departures, last 30 days</h5>
+                        <div t-if="not card['departures']" class="text-muted">No departure yet.</div>
+                        <div class="list-group">
+                            <div t-foreach="card['departures']" t-as="line" class="list-group-item">
+                                <span t-out="line.date" t-options='{"widget": "date"}'/> ·
+                                <t t-out="line.slot_id.name"/> ·
+                                <t t-out="line.departed_time"/> ·
+                                <t t-out="line.departure_label"/>
+                                <span t-if="line.late_minutes" class="badge text-bg-warning ms-1"><t t-out="line.late_minutes"/> min late</span>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

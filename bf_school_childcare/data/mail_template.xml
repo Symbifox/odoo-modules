@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 No gender agreement: a contact carries no gender. The texts say "the registration of X",
+         "X may now pick up Y", never "X is registered" nor "X is allowed". -->
+    <data noupdate="1">
+        <record id="mail_template_childcare_registration_confirmed" model="mail.template">
+            <field name="name">School: child care registration confirmed</field>
+            <field name="model_id" ref="model_bf_school_childcare_registration"/>
+            <field name="subject">{{ object.student_id.name }}: child care registration confirmed</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The child care registration of <strong t-out="object.student_id.name or ''"/> at <t t-out="object.school_id.name or ''"/> is confirmed, <t t-out="object._school_period_label() or ''"/>:</p>
+    <ul style="margin:0 0 12px 0;">
+        <li t-foreach="object._school_schedule_lines()" t-as="schedule_line" t-out="schedule_line"/>
+    </ul>
+    <p style="margin:0 0 12px 0;">On the family portal, you book another day, declare an absence and choose who may pick up the child.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/childcare"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Child care on the portal
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_childcare_person_change" model="mail.template">
+            <field name="name">School: who may pick up a child (person)</field>
+            <field name="model_id" ref="model_bf_school_childcare_pickup_person"/>
+            <field name="subject">{{ object.student_id.name }}: who may pick up the child at child care</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p t-if="ctx.get('childcare_change') == 'removed'" style="margin:0 0 12px 0;"><strong t-out="object.name or ''"/> may no longer pick up <strong t-out="object.student_id.name or ''"/> at child care. Change made by <t t-out="object.revoked_by_id.name or ''"/>.</p>
+    <p t-else="" style="margin:0 0 12px 0;"><strong t-out="object.display_name or ''"/> may now pick up <strong t-out="object.student_id.name or ''"/> at child care, <t t-out="object._validity_label() or ''"/>. An ID is checked the first time. Change made by <t t-out="object.added_by_id.name or ''"/>.</p>
+    <p style="margin:0 0 12px 0;">Every adult with parental authority receives this notice. If you did not expect this change, contact the school at once.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/childcare"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See who may pick up the child
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_childcare_walk_alone_change" model="mail.template">
+            <field name="name">School: who may pick up a child (leaving alone)</field>
+            <field name="model_id" ref="model_bf_school_childcare_walk_alone"/>
+            <field name="subject">{{ object.student_id.name }}: leaving child care alone</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p t-if="ctx.get('childcare_change') == 'revoked'" style="margin:0 0 12px 0;">The permission for <strong t-out="object.student_id.name or ''"/> to leave child care alone is revoked. Change made by <t t-out="object.revoked_by_id.name or ''"/>. From now on, an adult picks up the child.</p>
+    <p t-else="" style="margin:0 0 12px 0;"><t t-out="object.signed_by_id.name or ''"/> signed the permission for <strong t-out="object.student_id.name or ''"/> to leave child care alone on <t t-out="object._weekday_label() or ''"/>, from <t t-out="object._school_time_label() or ''"/>, <t t-out="object._validity_label() or ''"/>.</p>
+    <p style="margin:0 0 12px 0;">Every adult with parental authority receives this notice. If you did not expect this change, contact the school at once.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/childcare"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See who may pick up the child
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_childcare_activity_cancelled" model="mail.template">
+            <field name="name">School: child care activity cancelled</field>
+            <field name="model_id" ref="model_bf_school_childcare_booking"/>
+            <field name="subject">{{ object.student_id.name }}: activity cancelled, {{ object.activity_id.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The child care activity <strong t-out="object.activity_id.name or ''"/> of <t t-out="object._school_date_label() or ''"/> is cancelled. The booking of <strong t-out="object.student_id.name or ''"/> is cancelled at no charge.</p>
+    <p style="margin:0 0 12px 0;">To book child care another way that day, look at the family portal or call the school office.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/childcare"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Child care on the portal
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

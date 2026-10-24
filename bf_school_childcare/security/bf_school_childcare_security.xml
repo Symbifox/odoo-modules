@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_school_childcare" model="ir.module.category">
+        <field name="name">School child care</field>
+        <field name="sequence">61</field>
+    </record>
+
+    <!-- 🔴 The educator is NOT school staff: staff read the links of every family and the
+         conduct of every student. The educator reads the daily sheets, and what the educator needs
+         about a child of the sheet (alert, who may pick up, restriction flag) is computed in sudo. -->
+    <record id="group_school_childcare" model="res.groups">
+        <field name="name">Educator</field>
+        <field name="category_id" ref="module_category_school_childcare"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Opens the daily sheets, records arrivals and departures. Reads neither the
+            family links nor the conduct.</field>
+    </record>
+
+    <record id="group_school_childcare_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_school_childcare"/>
+        <field name="implied_ids" eval="[(4, ref('group_school_childcare'))]"/>
+        <field name="comment">Periods, registrations, bookings, activities, people allowed or not allowed to
+            pick up a child, permissions to leave alone; reopens a closed sheet.</field>
+    </record>
+
+    <!-- The school Administration runs child care too. -->
+    <record id="bf_school_core.group_school_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_school_childcare_manager'))]"/>
+    </record>
+
+    <!-- The educator works on the open sheets; the manager sees them all. -->
+    <record id="rule_childcare_sheet_educator" model="ir.rule">
+        <field name="name">Child care sheet: the open ones</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet"/>
+        <field name="groups" eval="[(6, 0, [ref('group_school_childcare')])]"/>
+        <field name="domain_force">[('state', '=', 'open')]</field>
+    </record>
+    <record id="rule_childcare_sheet_manager" model="ir.rule">
+        <field name="name">Child care sheet: the manager sees all</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet"/>
+        <field name="groups" eval="[(6, 0, [ref('group_school_childcare_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_childcare_sheet_line_educator" model="ir.rule">
+        <field name="name">Child on a sheet: the open sheets</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet_line"/>
+        <field name="groups" eval="[(6, 0, [ref('group_school_childcare')])]"/>
+        <field name="domain_force">[('sheet_id.state', '=', 'open')]</field>
+    </record>
+    <record id="rule_childcare_sheet_line_manager" model="ir.rule">
+        <field name="name">Child on a sheet: the manager sees all</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet_line"/>
+        <field name="groups" eval="[(6, 0, [ref('group_school_childcare_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Multi-company: a rule without a group applies to everyone, on top of the rest. -->
+    <record id="rule_childcare_slot_company" model="ir.rule">
+        <field name="name">Child care period: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_slot"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_registration_company" model="ir.rule">
+        <field name="name">Child care registration: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_registration"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_registration_line_company" model="ir.rule">
+        <field name="name">Child care registration period: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_registration_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_booking_company" model="ir.rule">
+        <field name="name">Child care booking: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_booking"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_activity_company" model="ir.rule">
+        <field name="name">Child care activity: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_activity"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_absence_company" model="ir.rule">
+        <field name="name">Child care absence: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_absence"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_sheet_company" model="ir.rule">
+        <field name="name">Child care sheet: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_sheet_line_company" model="ir.rule">
+        <field name="name">Child on a sheet: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_sheet_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- 🔴 These follow the student's SCHOOL, never the student card (often without company). -->
+    <record id="rule_childcare_pickup_person_company" model="ir.rule">
+        <field name="name">Person allowed to pick up: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_pickup_person"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_restriction_company" model="ir.rule">
+        <field name="name">Pick-up restriction: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_restriction"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_childcare_walk_alone_company" model="ir.rule">
+        <field name="name">Permission to leave alone: my companies</field>
+        <field name="model_id" ref="model_bf_school_childcare_walk_alone"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

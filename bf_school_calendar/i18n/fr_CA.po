@@ -1,0 +1,260 @@
+# Translation of Symbifox École : calendrier scolaire - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_school_calendar 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 04:29+0000\n"
+"PO-Revision-Date: 2026-10-12 04:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_calendar
+#. odoo-python
+#: code:addons/bf_school_calendar/models/calendar_day.py:0
+msgid ""
+"%s class day(s) added. Mark the pedagogical days, breaks and holidays in the"
+" calendar."
+msgstr ""
+"%s jour(s) de classe ajouté(s). Marquez au calendrier les journées "
+"pédagogiques, les congés et les jours fériés."
+
+#. module: bf_school_calendar
+#: model:ir.model.constraint,message:bf_school_calendar.constraint_bf_school_calendar_day_school_date_unique
+msgid "A date appears once in a school's calendar."
+msgstr "Une date figure une seule fois au calendrier d'une école."
+
+#. module: bf_school_calendar
+#. odoo-python
+#: code:addons/bf_school_calendar/models/calendar_day.py:0
+msgid "An early dismissal is a time of day, between 00:00 and 23:59."
+msgstr "Une sortie hâtive est une heure de la journée, entre 00:00 et 23:59."
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_year__calendar_day_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_view_form_calendar
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Child care closed"
+msgstr "Service de garde fermé"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__childcare_open
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Child care open"
+msgstr "Service de garde ouvert"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields.selection,name:bf_school_calendar.selection__bf_school_calendar_day__kind__class
+msgid "Class day"
+msgstr "Jour de classe"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Class days"
+msgstr "Jours de classe"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Current school year"
+msgstr "Année scolaire en cours"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_school_calendar
+#: model:ir.model,name:bf_school_calendar.model_bf_school_calendar_day
+msgid "Day of the school calendar"
+msgstr "Jour du calendrier scolaire"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__weekday
+msgid "Day of the week"
+msgstr "Jour de la semaine"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_year__calendar_day_count
+msgid "Days in the calendar"
+msgstr "Jours au calendrier"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__early_dismissal_time
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Early dismissal"
+msgstr "Sortie hâtive"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields.selection,name:bf_school_calendar.selection__bf_school_calendar_day__kind__closure
+msgid "Emergency closure"
+msgstr "Fermeture d'urgence"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields.selection,name:bf_school_calendar.selection__bf_school_calendar_day__kind__holiday
+msgid "Holiday (closed)"
+msgstr "Jour férié (école fermée)"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Holidays and closures"
+msgstr "Jours fériés et fermetures"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__kind
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Kind of day"
+msgstr "Type de journée"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_view_form_calendar
+msgid "Make the class days"
+msgstr "Créer les jours de classe"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_school_calendar
+#: model_terms:ir.actions.act_window,help:bf_school_calendar.bf_school_calendar_day_action
+msgid "No day in the calendar yet"
+msgstr "Aucun jour au calendrier pour l'instant"
+
+#. module: bf_school_calendar
+#. odoo-python
+#: code:addons/bf_school_calendar/models/calendar_day.py:0
+msgid "No school year of %(school)s covers %(date)s: create the year first."
+msgstr ""
+"Aucune année scolaire de %(school)s ne couvre le %(date)s : créez d'abord "
+"l'année."
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_calendar
+#: model_terms:ir.actions.act_window,help:bf_school_calendar.bf_school_calendar_day_action
+msgid ""
+"On the school form, the button of a school year makes its class days, Monday to Friday.\n"
+"                Then mark the pedagogical days, the breaks and the holidays."
+msgstr ""
+"Sur la fiche de l'école, le bouton d'une année scolaire crée ses jours de "
+"classe, du lundi au vendredi. Marquez ensuite les journées pédagogiques, les"
+" congés et les jours fériés."
+
+#. module: bf_school_calendar
+#: model:ir.model.fields.selection,name:bf_school_calendar.selection__bf_school_calendar_day__kind__pedagogical
+msgid "Pedagogical day"
+msgstr "Journée pédagogique"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "Pedagogical days"
+msgstr "Journées pédagogiques"
+
+#. module: bf_school_calendar
+#: model:ir.model,name:bf_school_calendar.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__school_id
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields.selection,name:bf_school_calendar.selection__bf_school_calendar_day__kind__break
+msgid "School break"
+msgstr "Congé scolaire"
+
+#. module: bf_school_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "School breaks"
+msgstr "Congés scolaires"
+
+#. module: bf_school_calendar
+#. odoo-python
+#: code:addons/bf_school_calendar/models/calendar_day.py:0
+#: model:ir.actions.act_window,name:bf_school_calendar.bf_school_calendar_day_action
+#: model:ir.ui.menu,name:bf_school_calendar.menu_school_calendar
+msgid "School calendar"
+msgstr "Calendrier scolaire"
+
+#. module: bf_school_calendar
+#: model:ir.model,name:bf_school_calendar.model_bf_school_year
+#: model:ir.model.fields,field_description:bf_school_calendar.field_bf_school_calendar_day__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_calendar.bf_school_calendar_day_view_search
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,help:bf_school_calendar.field_bf_school_calendar_day__year_id
+msgid "The school year of the school that covers this date."
+msgstr "L'année scolaire de l'école qui couvre cette date."
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,help:bf_school_calendar.field_bf_school_calendar_day__early_dismissal_time
+msgid ""
+"The time classes end that day when it is earlier than usual. Empty (00:00) "
+"when classes end at the usual time."
+msgstr ""
+"L'heure de fin des classes ce jour-là, quand elle est plus tôt que "
+"d'habitude. Vide (00:00) quand les classes finissent à l'heure habituelle."
+
+#. module: bf_school_calendar
+#: model:ir.model.fields,help:bf_school_calendar.field_bf_school_calendar_day__childcare_open
+msgid ""
+"Yes by default on class and pedagogical days. The office may open child care"
+" on a school break, or close it on any day."
+msgstr ""
+"Oui par défaut les jours de classe et les journées pédagogiques. Le "
+"secrétariat peut ouvrir le service de garde pendant un congé scolaire, ou le"
+" fermer n'importe quel jour."

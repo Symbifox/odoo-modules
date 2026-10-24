@@ -1,0 +1,2988 @@
+# Translation template for Symbifox École : service de garde.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_school_childcare 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 04:59+0000\n"
+"PO-Revision-Date: 2026-10-12 04:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_sheet_action
+msgid ""
+"\"Today\" opens the sheets of the periods that run today, with the children "
+"expected."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%(adult)s may not pick up %(student)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid ""
+"%(count)s child(ren) booked, %(min)s needed: wait, or cancel the activity."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "%(days)s, from %(time)s, %(validity)s. Signed by %(signer)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "%(period)s: %(days)s"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid ""
+"%(person)s may not pick up %(student)s. Keep the child and call the child "
+"care manager."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%(slot)s does not run on %(date)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "%(slot)s is full on %(date)s (%(places)s places)."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "%(slot)s is full on %(date)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "%(slot)s is not for the level of %(student)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "%(student)s is already booked for %(slot)s that day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "%(student)s is already registered for %(slot)s that day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%(student)s left with someone not on file: %(note)s"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%(student)s removed from the sheet by %(user)s (added by mistake)."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid ""
+"%s already has a child care registration or a request over these dates: end "
+"it first."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%s arrived: record the departure instead."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%s child(ren) added."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "%s does not run on one of the days ticked."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "%s is a period of another school."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "%s is enrolled in no school: enrol the student first."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%s is here without registration nor booking."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%s may not leave alone today at this time."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "%s, ID to check"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_activity__places
+msgid "0: the places of the period."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,body_html:bf_school_childcare.mail_template_childcare_activity_cancelled
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The child care activity <strong t-out=\"object.activity_id.name or ''\"/> of <t t-out=\"object._school_date_label() or ''\"/> is cancelled. The booking of <strong t-out=\"object.student_id.name or ''\"/> is cancelled at no charge.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">To book child care another way that day, look at the family portal or call the school office.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/childcare\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Child care on the portal\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,body_html:bf_school_childcare.mail_template_childcare_registration_confirmed
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The child care registration of <strong t-out=\"object.student_id.name or ''\"/> at <t t-out=\"object.school_id.name or ''\"/> is confirmed, <t t-out=\"object._school_period_label() or ''\"/>:</p>\n"
+"    <ul style=\"margin:0 0 12px 0;\">\n"
+"        <li t-foreach=\"object._school_schedule_lines()\" t-as=\"schedule_line\" t-out=\"schedule_line\">\n"
+"    </li></ul>\n"
+"    <p style=\"margin:0 0 12px 0;\">On the family portal, you book another day, declare an absence and choose who may pick up the child.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/childcare\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Child care on the portal\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,body_html:bf_school_childcare.mail_template_childcare_person_change
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p t-if=\"ctx.get('childcare_change') == 'removed'\" style=\"margin:0 0 12px 0;\"><strong t-out=\"object.name or ''\"/> may no longer pick up <strong t-out=\"object.student_id.name or ''\"/> at child care. Change made by <t t-out=\"object.revoked_by_id.name or ''\"/>.</p>\n"
+"    <p t-else=\"\" style=\"margin:0 0 12px 0;\"><strong t-out=\"object.display_name or ''\"/> may now pick up <strong t-out=\"object.student_id.name or ''\"/> at child care, <t t-out=\"object._validity_label() or ''\"/>. An ID is checked the first time. Change made by <t t-out=\"object.added_by_id.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Every adult with parental authority receives this notice. If you did not expect this change, contact the school at once.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/childcare\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See who may pick up the child\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,body_html:bf_school_childcare.mail_template_childcare_walk_alone_change
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p t-if=\"ctx.get('childcare_change') == 'revoked'\" style=\"margin:0 0 12px 0;\">The permission for <strong t-out=\"object.student_id.name or ''\"/> to leave child care alone is revoked. Change made by <t t-out=\"object.revoked_by_id.name or ''\"/>. From now on, an adult picks up the child.</p>\n"
+"    <p t-else=\"\" style=\"margin:0 0 12px 0;\"><t t-out=\"object.signed_by_id.name or ''\"/> signed the permission for <strong t-out=\"object.student_id.name or ''\"/> to leave child care alone on <t t-out=\"object._weekday_label() or ''\"/>, from <t t-out=\"object._school_time_label() or ''\"/>, <t t-out=\"object._validity_label() or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Every adult with parental authority receives this notice. If you did not expect this change, contact the school at once.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/childcare\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See who may pick up the child\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_my_school_childcare_link
+msgid "<i class=\"fa fa-child me-1\"/>Child care"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "<option value=\"\">The whole day</option>"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_slot_view_form
+msgid "<span>-</span>"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school__childcare_cancel_notice_hours
+msgid ""
+"A booking cancelled later than this many hours before the period stays due."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid ""
+"A booking is cancelled, not deleted: it is the trace of what was asked."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "A booking is not moved: cancel it and book again."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "A booking names a child, a period and a date."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.constraint,message:bf_school_childcare.constraint_bf_school_childcare_sheet_line_one_line
+msgid "A child appears once on a sheet."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "A child is added to an open sheet."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school__childcare_walk_alone_min_age
+msgid ""
+"A child younger than this cannot be allowed to leave child care alone. 0: no"
+" minimum."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school__childcare_booking_notice_hours
+msgid ""
+"A family books an occasional period on the portal at least this many hours "
+"before it starts. Later, only the office books it, marked as late notice."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "A line is not moved: add the child again."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/slot.py:0
+msgid ""
+"A period already used stays at its school: archive it and create another."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.constraint,message:bf_school_childcare.constraint_bf_school_childcare_registration_line_one_line_per_slot
+msgid "A period appears once in a registration."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/slot.py:0
+msgid "A period ends after it starts, within the day."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.constraint,message:bf_school_childcare.constraint_bf_school_childcare_sheet_one_sheet
+msgid "A period has one sheet per date."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A permission ends after it starts."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid ""
+"A permission is revoked, not deleted: it is the trace of who could come."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A permission starts during a school year the child is enrolled in."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A permission starts today or later."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "A registration ends after it starts."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "A registration in force is not edited: end it and register again."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "A registration starts today or later."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "A registration stays within its school year."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_registration_action
+msgid ""
+"A regular place: some periods, some weekdays. Families ask on the portal; "
+"the manager puts the request in force."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A restriction ends after it starts."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A restriction is archived, not deleted."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "A sheet is not moved to another period or date."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "A sheet with arrivals is kept: it is the record of who came."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A signed permission is not edited: revoke it and sign a new one."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "A signed permission is revoked, not deleted."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_absence_declaration
+msgid "Absence declared by the family"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "Absence declared to the school for %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Absence noted"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "Absence notice for %(student)s: %(reason)s"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_absence_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_absences
+msgid "Absence notices"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__absent_count
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__presence__absent
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Absent"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_needaction
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_needaction
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__active
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__activity_id
+msgid "Activity"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_type_icon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_type_icon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Add"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Add a person"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__added_by_id
+msgid "Added by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Added by mistake"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Added. Every adult with parental authority is told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_slot__kind__after
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_slot_view_form
+msgid "After school"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet_line__late_minutes
+msgid "After the end of the period and its grace minutes, school's clock."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__alert
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__alert
+msgid "Alert"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Allergies: %s"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Allow the child to leave alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_pickup_person__state__active
+msgid "Allowed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_departure_choice__kind__walk_alone
+msgid "Alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__departure_kind__walk_alone
+msgid "Alone (signed permission)"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Alone, from %s"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "An absence is declared for today or later."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "An absence notice is not moved: delete it and declare another."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "An activity takes place on a day without class."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "An activity with bookings is not moved: cancel it and plan another."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_restriction_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_slot_view_form
+msgid "Archived"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Arrival"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__arrived_on
+msgid "Arrived On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__arrived_time
+msgid "Arrived at"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Ask for a regular registration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_line_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_lines
+msgid "Attendance and departures"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_person_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_persons
+msgid "Authorized people"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departure_person_id
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_departure_choice__kind__authorized
+msgid "Authorized person"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Authorized person to review"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_slot__kind__before
+msgid "Before school"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__slot_kind
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_slot__kind
+msgid ""
+"Before school, lunch time and after school run on class days; a day without "
+"class runs on the open days without class."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_slot_action
+msgid ""
+"Before school, lunch time, after school, and the days without class: hours, "
+"days, levels and places."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_activity__min_registrations
+msgid "Below this number of children, the activity does not take place."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Book"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid ""
+"Book at least %s hours ahead. For a later booking, call the school office."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__deadline
+msgid "Book by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_booking__state__booked
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Booked"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__booked_by_id
+msgid "Booked by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_booking__late_notice
+msgid ""
+"Booked by the office later than the school's notice allows the families."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__booked_count
+msgid "Booked places"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Booked."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__booking_id
+msgid "Booking"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school__childcare_booking_notice_hours
+msgid "Booking notice (hours)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_booking_action
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__booking_ids
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_bookings
+msgid "Bookings"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Bookings close on or before the day of the activity."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Bookings for %s are closed."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_list
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_activity_view_form
+msgid "Cancel the activity"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_activity_view_form
+msgid ""
+"Cancel the activity? Its bookings are cancelled at no charge and the "
+"families are told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Cancel the booking"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_form
+msgid "Cancel the request"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_activity__state__cancelled
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_booking__state__cancelled
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__cancelled_on
+msgid "Cancelled On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__cancelled_by_id
+msgid "Cancelled by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_booking__cancel_late
+msgid ""
+"Cancelled later than the free cancellation notice: the place stays due."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Cancelled."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Cancelled. It was late: the place stays due."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Check the ID of %s first, then tick the box."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__student_name
+msgid "Child"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_root
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_view_form_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_breadcrumbs_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Child care"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_absence
+msgid "Child care absence notice"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_activity
+msgid "Child care activity"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_booking
+msgid "Child care booking"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Child care closed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_sheet
+msgid "Child care daily sheet"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Child care is closed on %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/slot.py:0
+msgid "Child care is for preschool and elementary levels only."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+#: code:addons/bf_school_childcare/models/booking.py:0
+#: code:addons/bf_school_childcare/models/pickup.py:0
+#: code:addons/bf_school_childcare/models/registration.py:0
+#: code:addons/bf_school_childcare/models/sheet.py:0
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Child care is for the preschool and elementary students of the school."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid ""
+"Child care is for the preschool and elementary students of the school: %s "
+"has no such enrolment on %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid ""
+"Child care is managed by the adults with parental authority. The school has not linked any child to\n"
+"                your account with this role."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school__childcare_manager_id
+msgid "Child care manager"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_notify
+msgid "Child care notices to the families"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_slot
+msgid "Child care period"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school__childcare_slot_ids
+msgid "Child care periods"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_student_company
+msgid "Child care record that follows the student's school"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_guarded
+msgid "Child care record with reserved fields"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_registration
+msgid "Child care registration"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Child care registration requested"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_sheet_line
+msgid "Child on a child care sheet"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__line_ids
+msgid "Children"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_slot__capacity
+msgid "Children at most on one date. 0: no limit."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Children leave this period with an adult, not to class."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Choose at least one period and one day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Choose at least one period."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Choose the adult who signed the paper."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Choose who takes the child."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Close the sheet"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Close the sheet? Every child must have left."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet__state__closed
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_search
+msgid "Closed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__closed_on
+msgid "Closed On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_booking__state__closed
+msgid "Closed day"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__company_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_activity_view_form
+msgid "Confirm"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_activity__state__confirmed
+msgid "Confirmed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__confirmed_on
+msgid "Confirmed On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__confirmed_by_id
+msgid "Confirmed by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_res_partner
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__partner_id
+msgid "Contact"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Contact the school for this change."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Covered by the registration."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__create_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__create_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_sheet_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_sheets
+msgid "Daily sheets"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__date
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Date"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_calendar_day
+msgid "Day of the school calendar"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_slot__kind__full_day
+msgid "Day without class"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_slot_view_form
+msgid "Days"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_weekdays
+msgid "Days of the week (child care)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_activity_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_activities
+msgid "Days without class"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Declare"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Declare an absence"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__declared_by_id
+msgid "Declared by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departed_on
+msgid "Departed On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departure_kind
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_departure_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Departure"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_departure
+msgid "Departure from child care"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Departure of %(student)s recorded afterwards by %(user)s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Departure of %s"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Departure to review"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__departed_count
+msgid "Departures"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Departures, last 30 days"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__detail
+msgid "Detail"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_departure_view_form
+msgid "Discard"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__display_name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__document
+msgid "Document"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__document_name
+msgid "Document Name"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__periods_per_week
+msgid ""
+"Each period ticked on each weekday counts once: after school four days a "
+"week is 4."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:res.groups,name:bf_school_childcare.group_school_childcare
+msgid "Educator"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_slot__level_ids
+msgid "Empty: every preschool and elementary level."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_restriction__date_from
+msgid "Empty: in force now."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_absence__slot_id
+msgid "Empty: the whole day."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_restriction__date_to
+msgid "Empty: until archived."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__date_to
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__date_to
+msgid "Empty: until revoked."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_form
+msgid "End"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_form
+msgid "End this registration today?"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__state__ended
+msgid "Ended"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__end_time
+msgid "Ends"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__expected_count
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__presence__expected
+msgid "Expected"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_families
+msgid "Families"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_activity__deadline
+msgid "Families book on the portal until this date."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_absence__channel__portal
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_booking__channel__portal
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_pickup_person__channel__portal
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__channel__portal
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_walk_alone__channel__portal
+msgid "Family portal"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__text_hash
+msgid "Fingerprint of the text signed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_type_icon
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__activity_type_icon
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__paper_signer_id
+msgid ""
+"For a paper permission: the adult with parental authority who signed it."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_slot__name
+msgid "For example: After school, or Pedagogical day."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__relationship
+msgid "For example: aunt, neighbour, babysitter."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school__childcare_cancel_notice_hours
+msgid "Free cancellation (hours before)"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__fri
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__fri
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__fri
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_weekdays__fri
+msgid "Fri."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+msgid "Friday"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__date_from
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__date_start
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__date_from
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__date_from
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "From"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__from_time
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "From (time)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Full"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__name
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Full name"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Give the person's full name."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__grace_minutes
+msgid "Grace (minutes)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__has_message
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__has_message
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_slot_view_form
+msgid "Hours"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid ""
+"I allow %(student)s to leave child care alone on %(days)s, from %(time)s, "
+"%(validity)s. Once the child has left, the school is no longer responsible "
+"for the way home."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid ""
+"I allow the child to leave child care alone on these days, from this time. Once the\n"
+"                                        child has left, the school is no longer responsible for the way home."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__id_checked
+msgid "I checked the ID of the person who came"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__id_checked_by_id
+msgid "ID checked by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__id_checked_on
+msgid "ID checked on"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__needs_id_check
+msgid "ID to check"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_exception_icon
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__activity_exception_icon
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__message_needaction
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__message_needaction
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_error
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__message_has_error
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__message_has_error
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__state__active
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "In force"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_form
+msgid "Internal note, never shown to the family"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__note
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet_line__note
+msgid "Internal. Never shown to the family."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__kind
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__kind
+msgid "Kind"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__slot_kind
+msgid "Kind of period"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__write_uid
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__write_date
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__cancel_late
+msgid "Late cancellation"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__late_notice
+msgid "Late notice"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_search
+msgid "Late notice or cancellation"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+msgid "Late pick-up"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_departure_view_form
+msgid "Leaves with someone else"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_walk_alone_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_walk_alone
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Leaving alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departed_time
+msgid "Left at"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departure_label
+msgid "Left with"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__level_ids
+msgid "Levels"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__line_id
+msgid "Line"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_slot__kind__noon
+msgid "Lunch time"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:res.groups,name:bf_school_childcare.group_school_childcare_manager
+msgid "Manager"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__permitted_summary
+msgid "May pick up"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__choice_ids
+msgid "May pick up today"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "May pick up:"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_error
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_has_error
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__min_registrations
+msgid "Minimum"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school__childcare_walk_alone_min_age
+msgid "Minimum age to leave alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_slot__grace_minutes
+msgid "Minutes after the end before a pick-up counts as late."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__late_minutes
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_list
+msgid "Minutes late"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__mon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__mon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__mon
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_weekdays__mon
+msgid "Mon."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+msgid "Monday"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+msgid "Month"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__restriction_names
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__restriction_names
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Must not pick up"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_departure_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Must not pick up:"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_breadcrumbs_school_childcare
+msgid "My children"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__name
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_departure_view_form
+msgid "Name, and how the family let the school know"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_summary
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_summary
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_type_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_type_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_slot_action
+msgid "No child care period yet"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "No departure yet."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "No period for this child."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "No permission to leave alone."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_registration_action
+msgid "No registration yet"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "No regular registration."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.actions.act_window,help:bf_school_childcare.bf_school_childcare_sheet_action
+msgid "No sheet open"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__origin__walk_in
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+msgid "Not registered"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__note
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__origin__booking
+msgid "Occasional booking"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_walk_alone__channel__paper
+msgid "On paper, recorded by the office"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "On the schedule"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid ""
+"Only a child added by mistake, not gone yet, is removed from an open sheet."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Only a registration in force is ended."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Only a request is cancelled; a registration in force is ended."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Only a request is deleted; a registration in force is ended."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Only a request is put in force."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Only an adult with parental authority adds a person."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Only an adult with parental authority asks for a registration."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Only an adult with parental authority books child care."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Only an adult with parental authority cancels child care."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "Only an adult with parental authority declares an absence."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Only an adult with parental authority removes a person."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Only an adult with parental authority revokes this permission."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Only an adult with parental authority signs this permission."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "Only an open activity is confirmed."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Only the child care manager reopens a sheet."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_activity__state__open
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet__state__open
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__user_id
+msgid "Opened by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:res.groups,comment:bf_school_childcare.group_school_childcare
+msgid ""
+"Opens the daily sheets, records arrivals and departures. Reads neither the\n"
+"            family links nor the conduct."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__origin
+msgid "Origin"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_activity_view_form
+msgid "Outing to the sugar shack"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departure_guardian_id
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_departure_choice__kind__guardian
+msgid "Parent or guardian"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__partner_ref
+msgid "Partner Ref"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__slot_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__slot_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_booking_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Period"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_registration_line
+msgid "Period of a child care registration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_slot_action
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__line_ids
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_slots
+msgid "Periods"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__periods_per_week
+msgid "Periods per week"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:res.groups,comment:bf_school_childcare.group_school_childcare_manager
+msgid ""
+"Periods, registrations, bookings, activities, people allowed or not allowed to\n"
+"            pick up a child, permissions to leave alone; reopens a closed sheet."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_walk_alone
+msgid "Permission to leave alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__person_ref
+msgid "Person Ref"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_pickup_person
+msgid "Person allowed to pick up a child"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__name
+msgid "Person's full name"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__phone
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Phone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_pickup
+msgid "Pick-up"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_restriction
+msgid "Pick-up restriction"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_restriction_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_restrictions
+msgid "Pick-up restrictions"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__places
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__capacity
+msgid "Places"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__presence
+msgid "Presence"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__presence__present
+msgid "Present"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__terms
+msgid "Preview of the text"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_form
+msgid "Put in force"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__rating_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__rating_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__reason
+msgid "Reason"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Reason (optional)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__channel
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__channel
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__channel
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__channel
+msgid "Received by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school__childcare_manager_id
+msgid ""
+"Receives the registration requests and the departures to review. Empty: the "
+"first person of the child care manager role."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Record the arrival of %s first."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "Record the departure of every child first: %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_walk_alone_view_form
+msgid "Record the signed paper"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Refresh"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__registration_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__registration_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Registration"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Registration put in force."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.actions.act_window,name:bf_school_childcare.bf_school_childcare_registration_action
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_registrations
+msgid "Registrations"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__origin__registration
+msgid "Regular registration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__relationship
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Relationship to the child"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Remove"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Remove this child, added by mistake, from the sheet?"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Removed. Every adult with parental authority is told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "Reopen"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Requested"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__requested_by_id
+msgid "Requested by"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Requested on the family portal by %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_search
+msgid "Requests"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_restriction_view_form
+msgid "Reserved to the child care manager and the Administration"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_user_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__activity_user_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__has_restriction
+msgid "Restriction"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_person_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_walk_alone_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Revoke"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_person_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_walk_alone_view_form
+msgid "Revoke this permission? The adults with parental authority are told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_pickup_person__state__revoked
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_walk_alone__state__revoked
+msgid "Revoked"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__revoked_on
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__revoked_on
+msgid "Revoked On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__revoked_by_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__revoked_by_id
+msgid "Revoked by"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Revoked. Every adult with parental authority is told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__text_hash
+msgid "SHA-256 of the text accepted: the proof it did not change afterwards."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__school_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__school_id
+msgid "School"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_calendar
+msgid "School calendar"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.module.category,name:bf_school_childcare.module_category_school_childcare
+msgid "School child care"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_absence__channel__office
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_booking__channel__office
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_pickup_person__channel__office
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_registration__channel__office
+msgid "School office"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_search
+msgid "School year"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,name:bf_school_childcare.mail_template_childcare_activity_cancelled
+msgid "School: child care activity cancelled"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,name:bf_school_childcare.mail_template_childcare_registration_confirmed
+msgid "School: child care registration confirmed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,name:bf_school_childcare.mail_template_childcare_walk_alone_change
+msgid "School: who may pick up a child (leaving alone)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,name:bf_school_childcare.mail_template_childcare_person_change
+msgid "School: who may pick up a child (person)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Send the request"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__sheet_id
+msgid "Sheet"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_activity__description
+msgid "Shown to the families on the portal."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Sign"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_walk_alone__state__active
+msgid "Signed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__signed_on
+msgid "Signed On"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__signed_by_id
+msgid "Signed by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__paper_signer_id
+msgid "Signed on paper by"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__channel
+msgid "Signed through"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Signed. Every adult with parental authority is told."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__signer_candidate_ids
+msgid "Signer Candidate"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure__other_note
+msgid "Someone else"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__start_time
+msgid "Starts"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_activity__state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__state
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__state
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_registration_view_search
+msgid "State"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_state
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__activity_state
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__present_count
+msgid "Still here"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_absence__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_booking__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__student_id
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__student_id
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+msgid "Student"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__text_signed
+msgid "Text accepted"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid ""
+"Thank you: the absence is noted. A place booked or registered stays due."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Thank you: the request is sent. The school confirms it by email."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "The arrival of %s is already recorded."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/school.py:0
+msgid "The child care notices and the minimum age are zero or more."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__from_time
+msgid "The child may leave alone from this time."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "The date is not valid."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "The dates are not valid."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "The departure of %s is already recorded."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "The educator opens today's sheets only."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__text_signed
+msgid "The exact text the adult accepted, in the language it was read in."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__id_checked_on
+msgid "The first time this person came, the educator checked an ID."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "The next two weeks"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_restriction__detail
+msgid ""
+"The order and what it says. Reserved to the child care manager and the "
+"Administration."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/slot.py:0
+msgid "The places and the grace minutes are zero or more."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "The places and the minimum are zero or more."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "The school allows leaving alone from %s years old."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "The school checks an ID the first time."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "The school needs %s's birth date to allow leaving alone."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "The school year belongs to another school."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_walk_alone__terms
+msgid ""
+"The text as it reads now, in your language. What was signed is the text "
+"accepted."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "The time is a time of day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "The time or the dates are not valid."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_departure__other_note
+msgid "Their name, and how the family let the school know."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "These fields are set by the school's process, not by hand: %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "This booking is no longer active."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "This date is past."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "This name matches a pick-up restriction of the child."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "This period already has an activity that day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "This period belongs to another school."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/booking.py:0
+msgid "This period has started: call the school office."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "This period is not offered at the school."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "This permission is already signed or revoked."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "This person may not pick up %s today."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "This sheet is already closed."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "This sheet is closed."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid ""
+"This sheet is for a later date: arrivals and departures are recorded on the "
+"day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "This sheet is for a later date: it closes on its day or after."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+msgid "This sheet is from a past day: the child care manager corrects it."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__thu
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__thu
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__thu
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_weekdays__thu
+msgid "Thu."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+msgid "Thursday"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "Tick at least one day for %s."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "Tick at least one day."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+msgid "Tick the box to sign."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__departure_kind__class
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "To class"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_walk_alone__state__draft
+msgid "To sign"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+#: model:ir.actions.server,name:bf_school_childcare.action_childcare_today
+#: model:ir.ui.menu,name:bf_school_childcare.menu_childcare_today
+msgid "Today"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Too late to book here: call the office"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__tue
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__tue
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__tue
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_weekdays__tue
+msgid "Tue."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+msgid "Tuesday"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__activity_exception_decoration
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__activity_exception_decoration
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__date_to
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__date_end
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_restriction__date_to
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__date_to
+msgid "Until"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Until (optional)"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_pickup_person__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_pickup_person__website_message_ids
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_registration__website_message_ids
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_sheet__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/controllers/portal.py:0
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_registration_line__wed
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_slot__wed
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_walk_alone__wed
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_weekdays__wed
+msgid "Wed."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/common.py:0
+msgid "Wednesday"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_activity_view_form
+msgid "What the children will do, what to bring"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,help:bf_school_childcare.field_bf_school_childcare_restriction__partner_id
+msgid ""
+"When the person is a contact of the school (a parent, for example): the "
+"school refuses the pick-up even under another spelling of the name."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__label
+msgid "Who"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_sheet_line__departure_note
+msgid "Who came"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid ""
+"Who may pick up a child is not edited: revoke the permission and add it "
+"again."
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Who may pick up the child"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model,name:bf_school_childcare.model_bf_school_childcare_departure_choice
+msgid "Who may take the child"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "Whole day"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "Will be absent"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__departure_kind__guardian
+msgid "With a parent or guardian"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__departure_kind__authorized
+msgid "With an authorized person"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields.selection,name:bf_school_childcare.selection__bf_school_childcare_sheet_line__departure_kind__other
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_line_view_search
+msgid "With someone else"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:ir.model.fields,field_description:bf_school_childcare.field_bf_school_childcare_departure_choice__wizard_id
+msgid "Wizard"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/sheet.py:0
+#: code:addons/bf_school_childcare/wizard/departure.py:0
+msgid "Write who came and why."
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+#: code:addons/bf_school_childcare/models/registration.py:0
+msgid "from %(start)s to %(end)s"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/pickup.py:0
+msgid "from %s, until revoked"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.portal_school_childcare
+msgid "min late"
+msgstr ""
+
+#. module: bf_school_childcare
+#. odoo-python
+#: code:addons/bf_school_childcare/models/absence.py:0
+msgid "no reason given"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,subject:bf_school_childcare.mail_template_childcare_activity_cancelled
+msgid ""
+"{{ object.student_id.name }}: activity cancelled, {{ object.activity_id.name"
+" }}"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,subject:bf_school_childcare.mail_template_childcare_registration_confirmed
+msgid "{{ object.student_id.name }}: child care registration confirmed"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,subject:bf_school_childcare.mail_template_childcare_walk_alone_change
+msgid "{{ object.student_id.name }}: leaving child care alone"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model:mail.template,subject:bf_school_childcare.mail_template_childcare_person_change
+msgid "{{ object.student_id.name }}: who may pick up the child at child care"
+msgstr ""
+
+#. module: bf_school_childcare
+#: model_terms:ir.ui.view,arch_db:bf_school_childcare.bf_school_childcare_sheet_view_form
+msgid "· Departure"
+msgstr ""

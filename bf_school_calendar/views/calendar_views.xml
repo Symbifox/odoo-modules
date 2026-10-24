@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_calendar_day_view_list" model="ir.ui.view">
+        <field name="name">bf.school.calendar.day.list</field>
+        <field name="model">bf.school.calendar.day</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" decoration-muted="not childcare_open"
+                  decoration-info="kind == 'pedagogical'" decoration-warning="kind in ('holiday', 'closure')">
+                <field name="date"/>
+                <field name="weekday"/>
+                <field name="school_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="year_id" optional="hide" options="{'no_open': True}"/>
+                <field name="kind"/>
+                <field name="childcare_open"/>
+                <field name="early_dismissal_time" widget="float_time" optional="show"/>
+                <field name="note"/>
+                <field name="company_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_calendar_day_view_form" model="ir.ui.view">
+        <field name="name">bf.school.calendar.day.form</field>
+        <field name="model">bf.school.calendar.day</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="school_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="date"/>
+                            <field name="weekday"/>
+                            <field name="year_id" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="childcare_open"/>
+                            <field name="early_dismissal_time" widget="float_time"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_calendar_day_view_calendar" model="ir.ui.view">
+        <field name="name">bf.school.calendar.day.calendar</field>
+        <field name="model">bf.school.calendar.day</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date" mode="month" quick_create="0" color="kind" event_open_popup="1">
+                <field name="kind"/>
+                <field name="childcare_open"/>
+                <field name="note"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="bf_school_calendar_day_view_search" model="ir.ui.view">
+        <field name="name">bf.school.calendar.day.search</field>
+        <field name="model">bf.school.calendar.day</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field name="school_id"/>
+                <field name="year_id"/>
+                <field name="note"/>
+                <filter name="class" string="Class days" domain="[('kind', '=', 'class')]"/>
+                <filter name="pedagogical" string="Pedagogical days" domain="[('kind', '=', 'pedagogical')]"/>
+                <filter name="break" string="School breaks" domain="[('kind', '=', 'break')]"/>
+                <filter name="closed" string="Holidays and closures" domain="[('kind', 'in', ('holiday', 'closure'))]"/>
+                <separator/>
+                <filter name="childcare_open" string="Child care open" domain="[('childcare_open', '=', True)]"/>
+                <filter name="childcare_closed" string="Child care closed" domain="[('childcare_open', '=', False)]"/>
+                <filter name="early_dismissal" string="Early dismissal" domain="[('early_dismissal_time', '>', 0)]"/>
+                <separator/>
+                <filter name="current_year" string="Current school year" domain="[('year_id.state', '=', 'current')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_school" string="School" context="{'group_by': 'school_id'}"/>
+                    <filter name="by_year" string="School year" context="{'group_by': 'year_id'}"/>
+                    <filter name="by_kind" string="Kind of day" context="{'group_by': 'kind'}"/>
+                    <filter name="by_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_calendar_day_action" model="ir.actions.act_window">
+        <field name="name">School calendar</field>
+        <field name="res_model">bf.school.calendar.day</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_current_year': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No day in the calendar yet</p>
+            <p>On the school form, the button of a school year makes its class days, Monday to Friday.
+                Then mark the pedagogical days, the breaks and the holidays.</p>
+        </field>
+    </record>
+
+    <!-- The years are edited in the school form: the button makes the class days of one year. -->
+    <record id="bf_school_view_form_calendar" model="ir.ui.view">
+        <field name="name">bf.school.form.calendar</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='year_ids']/list/button[@name='action_set_current']" position="after">
+                <field name="calendar_day_count" string="Calendar"/>
+                <button name="action_school_view_calendar" type="object" string="Calendar"
+                        icon="fa-calendar"/>
+                <button name="action_school_generate_calendar" type="object" string="Make the class days"
+                        icon="fa-calendar-plus-o" groups="bf_school_core.group_school_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_calendar" name="School calendar" parent="bf_school_core.menu_school_root"
+              action="bf_school_calendar_day_action" sequence="25"/>
+</odoo>

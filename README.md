@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**250 modules are BUSL-1.1.** The source is published and auditable, and **you
+**253 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -334,7 +334,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.4.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.7 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |
 | `bf_school_attendance` | Symbifox École : présences | 18.0.1.0.3 | BUSL-1.1 | Roll call by half-day or period, absences declared and justified by the families on the portal, same-day notice of an unjustified absence |
+| `bf_school_calendar` | Symbifox École : calendrier scolaire | 18.0.1.0.0 | BUSL-1.1 | The school calendar of each school and year: class days, pedagogical days, breaks, holidays and closures, and whether child care opens |
 | `bf_school_charlemagne` | Symbifox École : transmission à Charlemagne | 18.0.1.0.0 | BUSL-1.1 | The student headcount, the local results and the ministerial exams sent to the Ministry of Education's Charlemagne system: XML, signed and encrypted, by SFTP |
+| `bf_school_childcare` | Symbifox École : service de garde | 18.0.1.0.0 | BUSL-1.1 | School child care: periods and places, regular registrations, occasional bookings, daily sheets with arrivals and departures, who may pick up a child, leaving alone |
 | `bf_school_conduct` | Symbifox École : conduite et suivi mensuel | 18.0.1.0.3 | BUSL-1.1 | Breaches of the rules of conduct with graduated sanctions, parents' notices under the law, and the monthly news of Régime pédagogique s. 29.2 |
 | `bf_school_contract` | Symbifox École : contrat de services éducatifs | 18.0.1.0.3 | BUSL-1.1 | Québec private school contract for educational services: the Act's caps enforced, mandatory mentions printed, signed with Symbifox Sign |
 | `bf_school_core` | Symbifox École | 18.0.1.0.2 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
@@ -353,6 +355,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_slides` | Symbifox École : contenus de cours | 18.0.1.0.0 | BUSL-1.1 | Course contents in the eLearning app, given to the students of school groups and their parents, and renewed from one school year to the next |
 | `bf_school_student_portal` | Symbifox École : l'élève au portail | 18.0.1.0.2 | BUSL-1.1 | Students sign in to the family portal with their school directory account, the one that opens the school's computers |
 | `bf_school_timetable` | Symbifox École : horaire | 18.0.1.0.0 | BUSL-1.1 | The timetable in a cycle of school days, rooms with no double booking, the family's week in the portal and a calendar link for each child |
+| `bf_school_timetable_calendar` | Symbifox École : horaire et calendrier scolaire | 18.0.1.0.0 | BUSL-1.1 | The timetable follows the school calendar: the office enters each day once |
 | `bf_school_work` | Symbifox École : remise de travaux | 18.0.1.0.2 | BUSL-1.1 | Students hand in their work on the portal, the teacher returns a corrected copy with a mark; scored quizzes through Surveys |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.22.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.3.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
@@ -469,7 +472,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **250 modules: BUSL-1.1.** Production use for your own internal business
+- **253 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

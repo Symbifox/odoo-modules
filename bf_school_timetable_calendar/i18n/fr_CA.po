@@ -1,0 +1,65 @@
+# Translation of Symbifox École : horaire et calendrier scolaire - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_school_timetable_calendar 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 09:37+0000\n"
+"PO-Revision-Date: 2026-10-24 09:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_timetable_calendar
+#: model_terms:ir.ui.view,arch_db:bf_school_timetable_calendar.bf_school_timetable_view_form_calendar
+msgid ""
+"The days follow the school calendar: a pedagogical day, a break or a holiday"
+" is entered there. Here, mark the exam days."
+msgstr ""
+"Les jours suivent le calendrier scolaire : une journée pédagogique, un congé"
+" ou un jour férié s'y inscrit. Ici, marquez les jours d'examen."
+
+#. module: bf_school_timetable_calendar
+#: model:ir.model,name:bf_school_timetable_calendar.model_bf_school_calendar_day
+msgid "Day of the school calendar"
+msgstr "Jour du calendrier scolaire"
+
+#. module: bf_school_timetable_calendar
+#: model:ir.model,name:bf_school_timetable_calendar.model_bf_school_timetable_day
+msgid "Day of the timetable calendar"
+msgstr "Jour du calendrier de l'horaire"
+
+#. module: bf_school_timetable_calendar
+#: model:ir.model.fields,field_description:bf_school_timetable_calendar.field_bf_school_timetable__calendar_kept
+msgid "Follows the school calendar"
+msgstr "Suit le calendrier scolaire"
+
+#. module: bf_school_timetable_calendar
+#. odoo-python
+#: code:addons/bf_school_timetable_calendar/models/timetable.py:0
+msgid ""
+"The days of this timetable follow the school calendar: change the day there."
+" Here, a class day only becomes an exam day, and back."
+msgstr ""
+"Les jours de cet horaire suivent le calendrier scolaire : changez le jour "
+"dans le calendrier. Ici, un jour de classe devient seulement un jour "
+"d'examen, et l'inverse."
+
+#. module: bf_school_timetable_calendar
+#: model:ir.model.fields,help:bf_school_timetable_calendar.field_bf_school_timetable__calendar_kept
+msgid ""
+"The school keeps its calendar for this year: the days of the timetable "
+"follow it."
+msgstr ""
+"L'école tient son calendrier pour cette année : les jours de l'horaire le "
+"suivent."
+
+#. module: bf_school_timetable_calendar
+#: model:ir.model,name:bf_school_timetable_calendar.model_bf_school_timetable
+msgid "Timetable"
+msgstr "Horaire"
