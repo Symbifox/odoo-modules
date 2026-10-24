@@ -271,6 +271,11 @@ class BfStepbystepDashboard(models.AbstractModel):
             proj.check_access("read")
         except Exception:
             return {"error": "Project not found"}
+        # The task queries below are raw SQL: restrict them to the tasks the
+        # user may read (company rules included), archived ones kept for the
+        # chatter history.
+        task_ids = self.env["project.task"].with_context(active_test=False).search(
+            [("project_id", "=", project_id)]).ids
 
 
         self.env.cr.execute("""
@@ -307,12 +312,14 @@ class BfStepbystepDashboard(models.AbstractModel):
             FROM project_task pt
             JOIN project_task_type ptt ON ptt.id = pt.stage_id
             WHERE pt.project_id = %(project_id)s
+              AND pt.id = ANY(%(task_ids)s::int[])
               AND pt.active = true
               AND ptt.progression_step_number > 0
             GROUP BY ptt.progression_step_number, ptt.progression_step_name,
                      ptt.name, pt.state
             ORDER BY ptt.progression_step_number
-        """, {"lang": self._display_lang(), "project_id": project_id})
+        """, {"lang": self._display_lang(), "project_id": project_id,
+              "task_ids": task_ids})
         rows = self.env.cr.dictfetchall()
 
         step_data = {}
@@ -362,12 +369,14 @@ class BfStepbystepDashboard(models.AbstractModel):
             FROM project_task pt
             LEFT JOIN project_task_type ptt ON ptt.id = pt.stage_id
             WHERE pt.project_id = %(project_id)s
+              AND pt.id = ANY(%(task_ids)s::int[])
               AND pt.active = true
               AND pt.state NOT IN ('1_done', '1_canceled')
               AND pt.date_deadline < %(today)s
             ORDER BY pt.date_deadline
             LIMIT 20
-        """, {"lang": self._display_lang(), "project_id": project_id, "today": str(today)})
+        """, {"lang": self._display_lang(), "project_id": project_id,
+              "today": str(today), "task_ids": task_ids})
         overdue_tasks = [
             {
                 "id": r["id"],
@@ -386,6 +395,7 @@ class BfStepbystepDashboard(models.AbstractModel):
             FROM project_task pt
             LEFT JOIN project_task_type ptt ON ptt.id = pt.stage_id
             WHERE pt.project_id = %(project_id)s
+              AND pt.id = ANY(%(task_ids)s::int[])
               AND pt.active = true
               AND pt.state NOT IN ('1_done', '1_canceled')
               AND pt.date_deadline >= %(today)s
@@ -394,7 +404,7 @@ class BfStepbystepDashboard(models.AbstractModel):
             LIMIT 20
         """, {
             "lang": self._display_lang(), "project_id": project_id,
-            "today": str(today), "future": str(future),
+            "today": str(today), "future": str(future), "task_ids": task_ids,
         })
         upcoming_tasks = [
             {
@@ -406,21 +416,24 @@ class BfStepbystepDashboard(models.AbstractModel):
             for r in self.env.cr.dictfetchall()
         ]
 
-        # Recent activity: timesheets + chatter messages
-        self.env.cr.execute("""
-            SELECT aal.date::text AS activity_date,
-                   COALESCE(he.name, '') AS user_name,
-                   COALESCE(pt.name, '') AS description,
-                   aal.unit_amount AS hours,
-                   'timesheet' AS activity_type
-            FROM account_analytic_line aal
-            LEFT JOIN hr_employee he ON he.id = aal.employee_id
-            LEFT JOIN project_task pt ON pt.id = aal.task_id
-            WHERE aal.project_id = %s
-            ORDER BY aal.date DESC
-            LIMIT 10
-        """, (project_id,))
-        ts_rows = self.env.cr.dictfetchall()
+        # Recent activity: timesheets + chatter messages.
+        # Timesheet lines go through the ORM so the timesheet record rules
+        # apply: a user allowed only their own timesheets must not read their
+        # colleagues' entries here.
+        Line = self.env["account.analytic.line"]
+        lines = Line.browse()
+        if Line.has_access("read"):
+            lines = Line.search(
+                [("project_id", "=", project_id)], order="date desc, id desc", limit=10)
+        ts_rows = [
+            {
+                "activity_date": str(line.date) if line.date else "",
+                "user_name": line.employee_id.name or "",
+                "description": line.task_id.name or "",
+                "hours": line.unit_amount or 0.0,
+            }
+            for line in lines.sudo()
+        ]
 
         self.env.cr.execute("""
             SELECT mm.date::date::text AS activity_date,
@@ -433,10 +446,11 @@ class BfStepbystepDashboard(models.AbstractModel):
                 AND mm.model = 'project.task'
             LEFT JOIN res_partner rp ON rp.id = mm.author_id
             WHERE pt.project_id = %s
+              AND pt.id = ANY(%s::int[])
               AND mm.message_type IN ('email', 'comment')
             ORDER BY mm.date DESC
             LIMIT 10
-        """, (project_id,))
+        """, (project_id, task_ids))
         msg_rows = self.env.cr.dictfetchall()
 
         all_activity = []

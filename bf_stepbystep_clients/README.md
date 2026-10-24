@@ -132,6 +132,16 @@ project users; a portal client who follows a shared project can read the project
 itself but not its dashboard detail (tasks, hours, internal stages).
 The **Progress** menu itself now shows only to project users.
 
+## Timesheets in the detail (v18.0.2.4.5)
+
+The recent activity of a mandate detail lists only the timesheet entries the user
+may read under the Timesheets access rights: a user limited to their own
+timesheets sees their own entries, not their colleagues'. The hours consumed
+against the budget remain the project total for everyone.
+In the same way, the overdue and upcoming tasks, the step counts and the chatter
+messages of the detail cover only the tasks the user can read (company rules
+included).
+
 ## Installation
 
 ```bash

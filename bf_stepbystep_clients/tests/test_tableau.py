@@ -3,6 +3,8 @@
 Avant la 18.0.2.4.3, un projet sans heures allouées prenait un budget de 40 h :
 chaque mandat sans budget sortait « Dépassé », à des milliers de pour cent.
 """
+from datetime import date, timedelta
+
 from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, new_test_user, tagged
 
@@ -121,3 +123,91 @@ class TestBudgetDuTableau(TransactionCase):
         projet.with_user(portail).check_access("read")
         with self.assertRaises(AccessError):
             self.tableau.with_user(portail).get_client_detail(projet.id)
+
+    def test_activite_limitee_aux_feuilles_lisibles(self):
+        """L'activité récente du détail lisait les feuilles de temps en SQL brut : un usager
+        limité à ses propres feuilles y lisait celles de ses collègues (18.0.2.4.5)."""
+        projet = self._projet("Mandat partagé à l'équipe", 50, 0)
+        projet.privacy_visibility = "employees"
+        Ligne = self.env["account.analytic.line"]
+
+        moi = new_test_user(self.env, login="feuilles_miennes",
+                            groups="project.group_project_user,hr_timesheet.group_hr_timesheet_user")
+        mon_employe = self.env["hr.employee"].create({
+            "name": "Employé lui-même", "user_id": moi.id, "company_id": self.env.company.id,
+        })
+        collegue = self.env["hr.employee"].create({
+            "name": "Collègue discret", "company_id": self.env.company.id,
+        })
+        Ligne.create({"name": "Le mien", "project_id": projet.id,
+                      "employee_id": mon_employe.id, "unit_amount": 1})
+        Ligne.create({"name": "Le sien", "project_id": projet.id,
+                      "employee_id": collegue.id, "unit_amount": 3})
+
+        def employes(usager):
+            detail = self.tableau.with_user(usager).get_client_detail(projet.id)
+            return {a["employee"] for a in detail["recent_activity"] if a["type"] == "timesheet"}
+
+        self.assertEqual(employes(moi), {"Employé lui-même"})
+
+        approbateur = new_test_user(
+            self.env, login="feuilles_toutes",
+            groups="project.group_project_user,hr_timesheet.group_hr_timesheet_approver")
+        self.assertEqual(employes(approbateur), {"Employé lui-même", "Collègue discret"})
+
+        # Les heures du mandat restent le total du projet, pour tous : c'est le budget.
+        self.assertEqual(
+            self.tableau.with_user(moi).get_client_detail(projet.id)["project"]["hours_consumed"], 4)
+
+    def test_detail_sans_droit_aux_feuilles(self):
+        """Un usager des projets sans aucun droit sur les feuilles de temps ouvre le détail
+        quand même, sans activité de feuilles de temps."""
+        projet = self._projet("Mandat sans feuilles lisibles", 10, 2)
+        projet.privacy_visibility = "employees"
+        chef = new_test_user(self.env, login="sans_feuilles", groups="project.group_project_user")
+        chef.groups_id -= self.env.ref("hr_timesheet.group_hr_timesheet_user")
+        detail = self.tableau.with_user(chef).get_client_detail(projet.id)
+        self.assertNotIn("error", detail)
+        self.assertFalse([a for a in detail["recent_activity"] if a["type"] == "timesheet"])
+
+    def test_taches_d_une_autre_societe_hors_du_detail(self):
+        """Les tâches et le chatter du détail se lisaient en SQL brut : sur un projet sans
+        société, la tâche d'une autre société y paraissait (18.0.2.4.5)."""
+        ici = self.env.company
+        ailleurs = self.env["res.company"].create({"name": "Société voisine"})
+        chef = new_test_user(
+            self.env, login="chef_une_societe",
+            groups="project.group_project_user,hr_timesheet.group_hr_timesheet_approver",
+            company_id=ici.id, company_ids=[(6, 0, ici.ids)])
+        projet = self.env["project.project"].create({
+            "name": "Mandat sans société", "company_id": False, "allow_timesheets": True,
+        })
+        hier = date.today() - timedelta(days=3)
+        Tache = self.env["project.task"]
+        visible = Tache.create({"name": "Tâche d'ici", "project_id": projet.id,
+                                "company_id": ici.id, "date_deadline": hier})
+        cachee = Tache.with_company(ailleurs).create({
+            "name": "Tâche voisine", "project_id": projet.id,
+            "company_id": ailleurs.id, "date_deadline": hier})
+        etape = self.env["project.task.type"].create({
+            "name": "Étape voisine", "progression_step_number": 1,
+            "project_ids": [(4, projet.id)],
+        })
+        Tache.with_company(ailleurs).create({
+            "name": "Tâche voisine à venir", "project_id": projet.id, "stage_id": etape.id,
+            "company_id": ailleurs.id, "date_deadline": date.today() + timedelta(days=5)})
+        visible.message_post(body="ok", subject="Sujet d'ici", message_type="comment")
+        cachee.message_post(body="non", subject="Sujet voisin", message_type="comment")
+        self.assertFalse(Tache.with_user(chef).search_count([("id", "=", cachee.id)]))
+
+        detail = self.tableau.with_user(chef).get_client_detail(projet.id)
+        self.assertEqual([t["name"] for t in detail["overdue_tasks"]], ["Tâche d'ici"])
+        self.assertFalse(detail["upcoming_tasks"])
+        self.assertFalse(sum(m["total_tasks"] for m in detail["modules"]))
+        sujets = {a["task"] for a in detail["recent_activity"]}
+        self.assertIn("Sujet d'ici", sujets)
+        self.assertNotIn("Sujet voisin", sujets)
+
+        # Un mandat sans aucune tâche lisible s'ouvre quand même.
+        vide = self.env["project.project"].create({"name": "Mandat vide", "company_id": False})
+        self.assertNotIn("error", self.tableau.with_user(chef).get_client_detail(vide.id))

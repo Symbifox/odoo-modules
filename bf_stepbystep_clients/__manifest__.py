@@ -17,7 +17,10 @@
     #   français ; séparateur neutre (point médian) entre le rang et le nom de l'étape.
     # 18.0.2.4.3: un mandat sans heures allouées n'a plus de budget inventé de 40 h
     #   (« Sans budget », hors des alertes) ; le tableau est réservé aux usagers des projets.
-    "version": "18.0.2.4.4",
+    # 18.0.2.4.5: l'activité récente du détail ne montre que les feuilles de temps que
+    #   l'usager a le droit de lire (règles des feuilles de temps) ; tâches, étapes et
+    #   chatter du détail, seulement les tâches qu'il peut lire (règles de société).
+    "version": "18.0.2.4.5",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
