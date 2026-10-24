@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Une heure du certificat : UTC, puis l'heure locale nommée. -->
+    <template id="cert_time">
+        <t t-set="parts" t-value="doc._cert_time_parts(value)"/>
+        <t t-if="parts[0]">
+            <span t-out="parts[0]"/>
+            <t t-if="parts[1]"><br/><span style="color:#6b7280; font-size:9pt;" t-out="parts[1]"/></t>
+        </t>
+        <t t-else="">—</t>
+    </template>
+
     <template id="report_sign_certificate">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -95,25 +105,36 @@
                             <div class="cert-h2">Document signé</div>
                             <table class="cert-grid">
                                 <tr><td class="l">Document</td><td t-out="doc.document_filename or doc.name"/></tr>
-                                <tr><td class="l">Finalisé le (UTC)</td>
-                                    <td><span t-field="doc.signed_on" t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/></td></tr>
+                                <!-- Jamais de t-field sur une heure ici. Il convertit
+                                     dans le fuseau de la session qui rend le certificat (dernier
+                                     signataire connecté, ou personne qui réimprime). -->
+                                <tr><td class="l">Finalisé le</td>
+                                    <td><t t-call="bf_sign.cert_time"><t t-set="value" t-value="doc.signed_on"/></t></td></tr>
                                 <tr><td class="l">Méthode de signature</td>
                                     <td>Signature électronique simple (SES) — signature manuscrite numérisée + lien sécurisé personnel</td></tr>
                                 <tr><td class="l">Ordre de signature</td>
                                     <td><t t-if="doc.signing_order == 'sequential'">Séquentiel</t><t t-else="">En parallèle</t></td></tr>
                             </table>
+                            <div class="note" t-if="doc._cert_tz()">
+                                Les heures sont données en temps universel coordonné (UTC), qui fait foi,
+                                puis à l'heure locale (fuseau <t t-out="doc._cert_tz().zone"/>) à titre indicatif.
+                                La piste de vérification est en UTC.
+                            </div>
+                            <div class="note" t-else="">
+                                Les heures sont données en temps universel coordonné (UTC).
+                            </div>
 
                             <div class="cert-h2">Signataires (<t t-out="doc.signed_count"/>/<t t-out="doc.signer_count"/>)</div>
                             <table class="cert-signers">
                                 <thead>
-                                    <tr><th>Nom</th><th>Courriel</th><th>Signé le (UTC)</th><th>IP</th><th>Signature</th></tr>
+                                    <tr><th>Nom</th><th>Courriel</th><th>Signé le</th><th>IP</th><th>Signature</th></tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="doc.signer_ids" t-as="s">
                                         <tr>
                                             <td t-out="s.name"/>
                                             <td t-out="s.email"/>
-                                            <td><span t-field="s.signed_on" t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/></td>
+                                            <td><t t-call="bf_sign.cert_time"><t t-set="value" t-value="s.signed_on"/></t></td>
                                             <td t-out="s.signer_ip or '—'"/>
                                             <td><img t-if="s.signature_image" t-att-src="image_data_uri(s.signature_image)" alt="Signature"/></td>
                                         </tr>
@@ -170,12 +191,8 @@
                                     opposable et indépendante de la plateforme.</div>
                                 <table class="cert-grid">
                                     <tr><td class="l">Autorité (TSA)</td><td t-out="doc.tsa_url"/></tr>
-                                    <tr><td class="l">Heure attestée (UTC)</td>
-                                        <td>
-                                            <span t-if="doc.tsa_gentime" t-field="doc.tsa_gentime"
-                                                  t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/>
-                                            <t t-else="">—</t>
-                                        </td></tr>
+                                    <tr><td class="l">Heure attestée</td>
+                                        <td><t t-call="bf_sign.cert_time"><t t-set="value" t-value="doc.tsa_gentime"/></t></td></tr>
                                 </table>
                                 <div style="font-size:10pt; margin-top:6pt;">Empreinte SHA-256 du contenu horodaté :</div>
                                 <div class="hash-box" t-out="doc.hash_stamped"/>

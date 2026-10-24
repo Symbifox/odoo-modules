@@ -82,6 +82,7 @@ signed document is then **posted back into the source record's thread**.
 - **An optional verification QR stamped on the document itself** (choice of corner and pages), drawn as vector geometry so it survives printing, and **clickable** — the whole card is a link annotation, because on screen nobody wants to scan a code they could click.
 - **Structural locking**: recipients and fields frozen once the request is sent (editable only in "draft").
 - **Reset to draft starts from a blank page**: a request that is not signed can go back to draft (the form offers it once the request is cancelled, expired or refused), and every signer starts over (signature, consent, code and open tracking cleared, typed values emptied) with a **new personal link**, the old one stops working. A signature already given is never stamped on a document its signer has not seen; the audit trail keeps a "reset to draft" entry naming the signatures set aside. An expiry date already past is cleared, so the next send sets a fresh one.
+- **Certificate times that do not depend on who renders it** (3.29): every time on the completion certificate (finalised, each signature, the time attested by the TSA) prints in **UTC, which is authoritative**, then in local time with its zone named, e.g. `2026-10-20 07:40:46 UTC` over `2026-10-20 03:40:46 HAE (UTC−04:00)`. The verification page lists the same times.
 - **RFC 3161 trusted timestamping** *(optional)*: a TSA token over the signed content, **shown in the certificate**, giving independent proof of date.
 - **The verification link and a QR on the completion certificate**, so the pointer to the proof travels inside the signed bundle even when the QR on the document pages is off (it is, by default). Embedded as a `data:` URI, so rendering never depends on an HTTP callback into the server.
 - **"Share the verification link"** from the Proof tab, which opens a prefilled composer. It refuses to mint a token for a request finalised before the verification page existed, rather than quietly altering a signed record to make a button work.
@@ -168,6 +169,28 @@ The templates are `noupdate`: migration 18.0.3.27.0 strips every stored
 language with the same tool as the source, all or nothing per template, and
 leaves a body rebuilt by hand as it is.
 
+## Certificate times (3.29)
+
+Before 18.0.3.29.0 the completion certificate printed its times through Odoo's
+`t-field`, which converts to the time zone of the session rendering it: the last
+signer if they were logged in to Odoo at sealing, or whoever reprinted it. The
+labels nevertheless said "(UTC)", so a certificate could contradict its own
+audit trail (which has always been UTC). "Finalised on" also came out empty,
+because the date was written after the certificate was rendered.
+
+- Times are formatted by the module, never by `t-field`: UTC first, then the
+  local time in a fixed, configured zone, never the viewer's.
+- The finalisation date is written **before** the certificate is rendered, so
+  "Finalised on" is filled in. If the rendering fails, the date is cleared again.
+- The **"date" field** stamped on the document carries the signer's local day in
+  the certificate's zone, not the UTC date: a signature at 21:00 in Montreal
+  (01:00 UTC the next day) carries the day it was signed.
+- **Certificates already sealed are not modified** (doing so would break their
+  hash and seal). A proof field, `cert_times_utc`, tells the two apart: for an
+  older certificate, the public verification page says that its "Finalised on",
+  "Signed on" and "Attested time" headings may show local time, and that the UTC
+  times listed on the page are authoritative.
+
 ## Dependencies
 
 **Odoo modules**: `mail`, `portal`, `bf_lexend`, `bf_onboarding_base`.
@@ -199,6 +222,10 @@ leaves a body rebuilt by hand as it is.
 - **Default deadline** (days) before a link expires.
 - **Size limits**: caps on signature images (KB) and the uploaded document (MB).
 - **Default consent text**.
+- **Local time zone of the certificate** — system parameter
+  `bf_sign.certificate_tz` (default `America/Toronto`). Set it to `UTC` to print
+  UTC only. An unknown zone falls back to UTC only and is logged; sealing never
+  fails because of it.
 - **RFC 3161 timestamping**: enable plus the **TSA URL**. Off by default (it
   adds a synchronous network call at finalisation).
 
@@ -306,7 +333,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-16, this version converts automatically to
+- **Change Date**: on 2030-10-24, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 Embedded third-party works (typefaces) remain under their own licences: see

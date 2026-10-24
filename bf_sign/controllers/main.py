@@ -147,10 +147,19 @@ class BfSignController(Controller):
         # page is a poor place to discover that it is not.
         signed_on_label = (
             match.signed_on.strftime("%Y-%m-%d %H:%M UTC") if match.signed_on else "")
+        # Heure de chaque signature, en UTC puis à l'heure locale nommée : elles
+        # figurent déjà sur le certificat que le détenteur a en main. Pour un
+        # certificat d'avant 18.0.3.29.0, ce sont les seules justes.
+        signer_times = {
+            s.id: match._cert_time_parts(s.signed_on)
+            for s in match.signer_ids if s.state == "signed" and s.signed_on}
+        tsa_time = match._cert_time_parts(match.tsa_gentime) if match.tsa_gentime else None
         return request.render("bf_sign.verify_page", {
             "req": match,
             "checks": checks,
             "signed_on_label": signed_on_label,
+            "signer_times": signer_times,
+            "tsa_time": tsa_time,
             "genuine": bool(checks) and checks.get("chain_ok") and checks.get("content_ok")
             and checks.get("seal_ok") is not False and checks.get("tsa_ok") is not False,
         })

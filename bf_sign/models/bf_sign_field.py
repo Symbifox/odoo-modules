@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -138,7 +140,16 @@ class BfSignField(models.Model):
         self.ensure_one()
         signer = self.signer_id
         if self.field_type == "date":
-            return (signer.signed_on and fields.Date.to_string(signer.signed_on.date())) or ""
+            # La date du jour où la personne a signé, chez elle, et non
+            # la date UTC. Une signature à 21 h à Montréal (01 h UTC) portait la
+            # date du lendemain sur le contrat. Même fuseau que le certificat.
+            if not signer.signed_on:
+                return ""
+            moment = signer.signed_on.replace(tzinfo=timezone.utc)
+            tz = self.request_id._cert_tz()
+            if tz is not None:
+                moment = moment.astimezone(tz)
+            return fields.Date.to_string(moment.date())
         if self.field_type == "name":
             return signer.name or ""
         if self.field_type == "email":

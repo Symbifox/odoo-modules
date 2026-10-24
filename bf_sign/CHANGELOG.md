@@ -2,6 +2,42 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.29.1
+
+La case « date » du document porte la date du jour de la signature, chez le signataire.
+
+- Elle prenait la date UTC : une signature entre 20 h et minuit, heure de Montréal,
+  portait la date du lendemain sur le document signé. Elle suit maintenant le fuseau
+  du certificat (`bf_sign.certificate_tz`, Montréal par défaut). Les documents déjà
+  scellés ne changent pas.
+- Page de vérification : l'heure locale suit l'heure UTC après un point médian, au lieu
+  de parenthèses emboîtées.
+
+## 18.0.3.29.0
+
+Les heures du certificat ne dépendent plus de la session qui le rend.
+
+- Le certificat imprimait ses heures dans le fuseau de la session qui le
+  rendait, sous l'étiquette « (UTC) » : celui du dernier signataire connecté à
+  Odoo au scellement, ou de la personne qui le réimprime. Une signature
+  pouvait ainsi porter +12 h (session de Nouvelle-Zélande) ou
+  -4 h (session de Montréal), alors que la piste de vérification du même
+  certificat, en UTC, donnait l'heure juste.
+- Chaque heure (finalisation, signataires, heure attestée par la TSA) s'imprime
+  désormais en UTC, qui fait foi, puis à l'heure locale avec son fuseau nommé :
+  `2026-10-20 07:40:46 UTC`, puis `2026-10-20 03:40:46 HAE (UTC−04:00)`. Le
+  fuseau local se règle par le paramètre `bf_sign.certificate_tz` (défaut
+  `America/Toronto`, `UTC` pour l'UTC seul).
+- « Finalisé le » sortait vide sur tous les certificats : la date de
+  scellement s'écrivait après le rendu. Elle s'écrit avant, une seule fois, et
+  c'est la même qui reste sur la demande.
+- Un certificat déjà scellé ne se corrige pas sans casser son empreinte. Le
+  nouveau champ `cert_times_utc` marque les certificats rendus avec les heures
+  justes ; pour les autres, la page publique de vérification affiche l'heure de
+  chaque signature en UTC et dit que les tableaux du certificat peuvent être
+  décalés. Le champ fait partie de la preuve : il ne s'écrit que par le
+  parcours, comme l'état et les empreintes.
+
 ## 18.0.3.28.1
 
 Un lien de signature ne se lit plus que par la révélation journalisée.

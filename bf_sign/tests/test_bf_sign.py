@@ -2,7 +2,7 @@ import base64
 import hashlib
 import io
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 _FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -1258,8 +1258,10 @@ class TestBfSign(BaseNeuve, TransactionCase):
         req.action_send()
         with self._mock_cert():
             self._sign(req, s)
-        self.assertEqual(df._display_value(),
-                         fields.Date.to_string(s.signed_on.date()))
+        # La date du jour chez le signataire (fuseau du certificat), pas la date
+        # UTC : cet essai tombait de 20 h à minuit, heure de Montréal.
+        expected = s.signed_on.replace(tzinfo=timezone.utc).astimezone(req._cert_tz()).date()
+        self.assertEqual(df._display_value(), fields.Date.to_string(expected))
 
     def test_auto_mode_rejected_on_free_text(self):
         req = self._new_request(signers=1)
@@ -1936,3 +1938,185 @@ class TestBfSign(BaseNeuve, TransactionCase):
         self.assertIn(as_basic.has_cert(), (True, False))
         # And an administrator still reaches the real logic.
         self.assertIn(Seal.fernet_key_source(), (None, "conf", "db"))
+
+    # ── heures du certificat ──────────────────────────────────────
+    # Avant 18.0.3.29.0, le certificat imprimait ses heures par t-field, donc
+    # dans le fuseau de la session qui le rendait, sous l'étiquette « (UTC) » :
+    # +12 h pour une session NZ, -4 h pour une de Montréal. Et
+    # « Finalisé le » sortait vide, la date s'écrivant après le rendu.
+    _T_SIGNED = datetime(2026, 10, 20, 7, 40, 46)
+
+    def _cert_html(self, req, **ctx):
+        Report = req.env["ir.actions.report"].with_context(**ctx)
+        html, _t = Report._render_qweb_html(
+            "bf_sign.action_report_sign_certificate", req.ids)
+        return html.decode() if isinstance(html, bytes) else html
+
+    def test_certificate_times_are_utc_whatever_the_session_zone(self):
+        req = self._signed_request()
+        req.signer_ids.sudo().signed_on = self._T_SIGNED
+        req.sudo().signed_on = self._T_SIGNED
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_sign.certificate_tz", "America/Toronto")
+        for tz in ("Pacific/Auckland", "America/Toronto", "UTC", False):
+            html = self._cert_html(req, tz=tz) if tz else self._cert_html(req)
+            self.assertIn("2026-10-20 07:40:46 UTC", html, tz)
+            # L'heure locale suit le réglage du certificat, pas la session.
+            self.assertIn("2026-10-20 03:40:46 HAE (UTC−04:00)", html, tz)
+            # Ni l'heure NZ (20:40), ni l'heure locale sous l'étiquette UTC.
+            self.assertNotIn("20:40:46", html, tz)
+            self.assertNotIn("03:40:46 UTC", html, tz)
+            self.assertNotIn("Signé le (UTC)", html, tz)
+            self.assertNotIn("Finalisé le (UTC)", html, tz)
+        # Même dans la session d'un usager dont le fuseau est l'autre bout du monde.
+        user = self.env["res.users"].create({
+            "name": "Préparateur NZ", "login": "bf_sign_nz", "tz": "Pacific/Auckland",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        html = self._cert_html(req.with_user(user).sudo())
+        self.assertIn("2026-10-20 07:40:46 UTC", html)
+        self.assertNotIn("20:40:46", html)
+
+    def test_certificate_local_zone_setting(self):
+        req = self._signed_request()
+        req.signer_ids.sudo().signed_on = self._T_SIGNED
+        ICP = self.env["ir.config_parameter"].sudo()
+        # Défaut : Montréal (America/Toronto), en heure normale l'hiver.
+        ICP.set_param("bf_sign.certificate_tz", "")
+        self.assertEqual(
+            req._cert_time_parts(datetime(2026, 1, 20, 7, 40, 46)),
+            ("2026-01-20 07:40:46 UTC", "2026-01-20 02:40:46 HNE (UTC−05:00)"))
+        # « UTC » : UTC seul, sans ligne locale.
+        ICP.set_param("bf_sign.certificate_tz", "UTC")
+        self.assertEqual(req._cert_time_parts(self._T_SIGNED),
+                         ("2026-10-20 07:40:46 UTC", ""))
+        html = self._cert_html(req)
+        self.assertIn("2026-10-20 07:40:46 UTC", html)
+        # « HAE » seul peut tomber dans le QR en base64 (3 % des tirages).
+        self.assertNotIn("HAE (", html)
+        # Un fuseau inconnu ne casse pas le scellement : UTC seul.
+        ICP.set_param("bf_sign.certificate_tz", "Mars/Olympus")
+        self.assertEqual(req._cert_time_parts(self._T_SIGNED),
+                         ("2026-10-20 07:40:46 UTC", ""))
+        # Un fuseau sans abréviation française garde son décalage, et la date
+        # locale peut être celle du lendemain.
+        ICP.set_param("bf_sign.certificate_tz", "Pacific/Auckland")
+        utc_txt, local_txt = req._cert_time_parts(self._T_SIGNED)
+        self.assertEqual(utc_txt, "2026-10-20 07:40:46 UTC")
+        self.assertTrue(local_txt.startswith("2026-10-20 20:40:46"), local_txt)
+        self.assertTrue(local_txt.endswith("(UTC+13:00)"), local_txt)
+        # Un fuseau sans nom court français garde son décalage, une seule fois.
+        ICP.set_param("bf_sign.certificate_tz", "America/Montreal")
+        self.assertEqual(req._cert_time_parts(self._T_SIGNED)[1],
+                         "2026-10-20 03:40:46 HAE (UTC−04:00)")
+        ICP.set_param("bf_sign.certificate_tz", "Europe/Paris")
+        self.assertEqual(req._cert_time_parts(self._T_SIGNED)[1],
+                         "2026-10-20 09:40:46 (UTC+02:00)")
+        # Etc/UTC ne répète pas l'UTC en « heure locale ».
+        ICP.set_param("bf_sign.certificate_tz", "Etc/UTC")
+        self.assertEqual(req._cert_time_parts(self._T_SIGNED)[1], "")
+        # Rien à afficher : un tiret, jamais une heure inventée.
+        self.assertEqual(req._cert_time_parts(False), ("", ""))
+
+    def test_certificate_rendered_at_seal_carries_the_finalized_time(self):
+        """Le rendu au scellement voit la date de scellement : elle s'écrit avant."""
+        req = self._new_request(signers=1)
+        req.action_send()
+        seen = {}
+        Report = type(self.env["ir.actions.report"])
+        pdf = self._make_pdf()
+
+        def fake(report_self, report_ref, res_ids=None, data=None):
+            if report_ref == "bf_sign.action_report_sign_certificate":
+                doc = report_self.env["bf.sign.request"].browse(res_ids)
+                seen["signed_on"] = doc.signed_on
+                seen["flag"] = doc.cert_times_utc
+                seen["html"] = report_self._render_qweb_html(report_ref, res_ids)[0]
+            return pdf, "pdf"
+
+        with patch.object(Report, "_render_qweb_pdf", fake):
+            self._sign(req, req.signer_ids[0])
+        self.assertEqual(req.state, "signed")
+        self.assertTrue(seen.get("signed_on"))
+        self.assertTrue(seen.get("flag"))
+        # La date vue au rendu est celle qui reste en base.
+        self.assertEqual(seen["signed_on"], req.signed_on)
+        html = seen["html"].decode() if isinstance(seen["html"], bytes) else seen["html"]
+        self.assertIn(req.signed_on.strftime("%Y-%m-%d %H:%M:%S") + " UTC", html)
+        self.assertTrue(req.cert_times_utc)
+        # Une seule date : celle du rendu reste en base, même une seconde plus tard.
+        self.assertIn("Finalisé le", html)
+
+    def test_failed_certificate_render_leaves_no_finalized_date(self):
+        req = self._new_request(signers=1)
+        req.action_send()
+        Report = type(self.env["ir.actions.report"])
+        # Pas d'assertRaises : celui d'Odoo annule jusqu'au point de sauvegarde, et
+        # l'essai ne verrait jamais l'état que le contrôleur, lui, valide.
+        raised = False
+        with patch.object(Report, "_render_qweb_pdf", side_effect=UserError("wkhtmltopdf")):
+            try:
+                self._sign(req, req.signer_ids[0])
+            except UserError:
+                raised = True
+        self.assertTrue(raised)
+        req.invalidate_recordset()
+        self.assertNotEqual(req.state, "signed")
+        self.assertFalse(req.signed_on)
+        self.assertFalse(req.cert_times_utc)
+
+    def test_certificate_tsa_time_is_utc(self):
+        req = self._signed_request()
+        req.sudo().write({"tsa_url": "https://tsa.example", "tsa_gentime": self._T_SIGNED})
+        html = self._cert_html(req, tz="Pacific/Auckland")
+        self.assertIn("Heure attestée", html)
+        self.assertIn("2026-10-20 07:40:46 UTC", html)
+        self.assertNotIn("20:40:46", html)
+
+    def test_cert_times_flag_is_part_of_the_proof(self):
+        """Le drapeau ne s'écrit que par le parcours, comme le reste."""
+        req = self._signed_request()
+        basic = self.env["res.users"].create({
+            "name": "Gestionnaire", "login": "bf_sign_flag_mgr",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_sign.group_sign_manager").id])]})
+        with self.assertRaises(AccessError):
+            req.with_user(basic).write({"cert_times_utc": False})
+        draft = self.Request.with_user(basic).create({"cert_times_utc": True})
+        self.assertFalse(draft.cert_times_utc)
+
+    def test_verify_page_lifts_the_contradiction_of_an_old_certificate(self):
+        req = self._signed_request()
+        req.signer_ids.sudo().signed_on = self._T_SIGNED
+        times = {s.id: req._cert_time_parts(s.signed_on) for s in req.signer_ids}
+        render = lambda: self.env["ir.qweb"]._render("bf_sign.verify_page", {
+            "req": req, "checks": req._verify_integrity(), "signed_on_label": "",
+            "signer_times": times, "genuine": True})
+        html = render()
+        self.assertIn("2026-10-20 07:40:46 UTC", html)
+        self.assertNotIn("émis avant une correction", html)
+        # Un certificat scellé avant 18.0.3.29.0 : la page le dit.
+        req.sudo().cert_times_utc = False
+        self.assertIn("émis avant une correction", render())
+        # Sans les heures (ancien appelant), la page se rend quand même.
+        self.assertIn(req.name, self._render_verify(req))
+
+    def test_date_pad_carries_the_signer_local_day(self):
+        """21 h 38 à Montréal le 21, soit 01 h 38 UTC le 22 : la case dit le 21."""
+        req = self._new_request(signers=1)
+        signer = req.signer_ids[0]
+        pad = self._add_fill_field(req, signer, field_type="date", fill_mode="auto", required=False)
+        ICP = self.env["ir.config_parameter"].sudo()
+        ICP.set_param("bf_sign.certificate_tz", "America/Toronto")
+        signer.sudo().signed_on = datetime(2026, 10, 22, 1, 38, 50)
+        self.assertEqual(pad._auto_value(), "2026-10-21")
+        # Le jour même passe au lendemain à minuit heure locale, pas à 20 h.
+        signer.sudo().signed_on = datetime(2026, 10, 22, 4, 5, 0)
+        self.assertEqual(pad._auto_value(), "2026-10-22")
+        # « UTC » garde l'ancien comportement.
+        ICP.set_param("bf_sign.certificate_tz", "UTC")
+        signer.sudo().signed_on = datetime(2026, 10, 22, 1, 38, 50)
+        self.assertEqual(pad._auto_value(), "2026-10-22")
+        # Pas encore signé : rien, jamais la date de préparation.
+        signer.sudo().signed_on = False
+        self.assertEqual(pad._auto_value(), "")
+

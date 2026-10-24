@@ -6,8 +6,10 @@ import logging
 import os
 import re
 import uuid
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
+import babel.dates
+import pytz
 from markupsafe import Markup, escape
 
 from odoo import api, fields, models, _
@@ -27,6 +29,12 @@ def _b64_bytes(value):
 _logger = logging.getLogger(__name__)
 
 CERTIFICATE_REPORT = "bf_sign.action_report_sign_certificate"
+# Fuseau de l'heure locale imprimée sous l'heure UTC du certificat, quand le
+# paramètre bf_sign.certificate_tz n'est pas posé (« UTC » : UTC seul).
+CERT_DEFAULT_TZ = "America/Toronto"
+# Alias que babel ne nomme pas (« -0400 ») : le nom court se prend sur la zone de
+# référence, l'heure reste celle de l'alias (mêmes règles).
+_CERT_TZ_ABBR_ALIAS = {"America/Montreal": "America/Toronto"}
 
 # Magic header of a PNG file — the only image format the signing canvas produces.
 _PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
@@ -50,7 +58,7 @@ _FLOW_FIELDS = {
     "hash_stamped": False, "signed_on": False, "tsa_token": False, "tsa_url": False,
     "tsa_timestamp": False, "tsa_gentime": False, "sealed": False,
     "verify_token": False, "signed_attachment_id": False,
-    "certificate_attachment_id": False,
+    "certificate_attachment_id": False, "cert_times_utc": False,
 }
 # Ce que les signataires ont reçu : figé dès l'envoi, hors administrateur. Le
 # scellement appose le document tel qu'il est au dernier signataire.
@@ -187,6 +195,12 @@ class BfSignRequest(models.Model):
     tsa_gentime = fields.Datetime(
         string="Heure attestée (TSA)", readonly=True, copy=False,
         help="Heure attestée par l'autorité d'horodatage (genTime du jeton RFC 3161).")
+    cert_times_utc = fields.Boolean(
+        string="Certificat aux heures UTC", readonly=True, copy=False,
+        help="Vrai pour un certificat rendu depuis 18.0.3.29.0 : ses heures sont en UTC, "
+             "suivies de l'heure locale avec son fuseau, et « Finalisé le » est rempli. "
+             "Faux pour un certificat plus ancien, dont les tableaux pouvaient porter "
+             "l'heure de la session qui l'a scellé sous l'étiquette « (UTC) ».")
     sealed = fields.Boolean(
         string="Scellé numériquement (PAdES)", readonly=True, copy=False,
         help="Une signature numérique a été apposée sur le document scellé.")
@@ -250,6 +264,52 @@ class BfSignRequest(models.Model):
         self.ensure_one()
         return "%s/sign/verify/%s/%s" % (
             self._get_base_url(), self.id, self.verify_token or "")
+
+    # ── Heures du certificat ────────────────────────────────────
+    # Le certificat est une pièce de preuve : ses heures ne doivent pas dépendre
+    # de la session qui le rend. Un t-field convertit un Datetime dans le fuseau
+    # du contexte, soit celui du dernier signataire connecté à Odoo, soit celui
+    # de la personne qui réimprime, sous une étiquette qui promettait « UTC ».
+    # Les heures se formatent donc ici : UTC d'abord, puis un fuseau nommé fixe.
+    def _cert_tz(self):
+        """Fuseau de l'heure locale du certificat, ou None pour l'UTC seul."""
+        name = (self.env["ir.config_parameter"].sudo().get_param(
+            "bf_sign.certificate_tz") or CERT_DEFAULT_TZ).strip()
+        if not name or name.upper() == "UTC":
+            return None
+        try:
+            tz = pytz.timezone(name)
+        except pytz.UnknownTimeZoneError:
+            _logger.warning("bf_sign: fuseau du certificat inconnu %r, UTC seul", name)
+            return None
+        # Etc/UTC, GMT, Zulu… : une ligne « locale » qui répète l'UTC n'apprend rien.
+        if tz.utcoffset(datetime(2026, 1, 1)) == tz.utcoffset(datetime(2026, 7, 1)) \
+                and not tz.utcoffset(datetime(2026, 1, 1)):
+            return None
+        return tz
+
+    def _cert_time_parts(self, value):
+        """Un Datetime (naïf, en UTC) en deux textes : l'heure UTC, qui fait foi,
+        et l'heure locale avec son fuseau (vide si le certificat est en UTC seul)."""
+        if not value:
+            return "", ""
+        utc = (value.replace(tzinfo=timezone.utc) if value.tzinfo is None
+               else value.astimezone(timezone.utc))
+        utc_txt = utc.strftime("%Y-%m-%d %H:%M:%S") + " UTC"
+        tz = self._cert_tz()
+        if tz is None:
+            return utc_txt, ""
+        loc = utc.astimezone(tz)
+        off = loc.strftime("%z")
+        off_txt = "UTC%s%s:%s" % ("−" if off[0] == "-" else "+", off[1:3], off[3:5])
+        abbr_tz = pytz.timezone(_CERT_TZ_ABBR_ALIAS.get(tz.zone, tz.zone))
+        abbr = babel.dates.format_datetime(loc, "z", tzinfo=abbr_tz, locale="fr_CA")
+        local_txt = loc.strftime("%Y-%m-%d %H:%M:%S")
+        # Sans nom court français, babel rend « +1300 » ou « UTC+13 » : le
+        # décalage entre parenthèses suffit alors.
+        if abbr and not abbr.startswith(("UTC", "GMT", "+", "-")):
+            return utc_txt, "%s %s (%s)" % (local_txt, abbr, off_txt)
+        return utc_txt, "%s (%s)" % (local_txt, off_txt)
 
     def verify_qr_data_uri(self, px=132):
         """The verification URL as an inline PNG QR, for the certificate.
@@ -1350,11 +1410,23 @@ class BfSignRequest(models.Model):
         if self._tsa_enabled():
             self._request_tsa_timestamp(stamped_bytes)
 
+        # La date de scellement s'écrivait après le rendu du
+        # certificat, qui sortait donc avec « Finalisé le » vide (tous les
+        # certificats scellés jusque-là). Elle s'écrit avant, une seule fois.
+        finalized_on = fields.Datetime.now()
+        self.write({"signed_on": finalized_on, "cert_times_utc": True})
+
         # The certificate is always produced and kept as its own attachment.
         # ``append_certificate`` only decides whether it is also bound into the
         # signed document, so turning it off costs nothing in evidence.
-        cert_pdf, _ext = self.env["ir.actions.report"]._render_qweb_pdf(
-            CERTIFICATE_REPORT, self.ids)
+        try:
+            cert_pdf, _ext = self.env["ir.actions.report"]._render_qweb_pdf(
+                CERTIFICATE_REPORT, self.ids)
+        except Exception:
+            # Le contrôleur rend l'erreur sans annuler la transaction : une demande
+            # non scellée ne doit pas garder une date de scellement.
+            self.write({"signed_on": False, "cert_times_utc": False})
+            raise
         signed_pdf = merge_pdf([stamped_bytes, cert_pdf]) \
             if self.append_certificate else stamped_bytes
 
@@ -1391,7 +1463,7 @@ class BfSignRequest(models.Model):
             "signed_attachment_id": att_signed.id,
             "certificate_attachment_id": att_cert.id,
             "hash_signed": hash_signed,
-            "signed_on": fields.Datetime.now(),
+            "signed_on": finalized_on,
             "state": "signed",
             "sealed": sealed,
         })

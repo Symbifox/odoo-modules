@@ -1027,14 +1027,37 @@
                             <dd>
                                 <t t-foreach="req.signer_ids" t-as="s">
                                     <div><t t-esc="s.name"/>
-                                        <span class="bf-note" t-if="s.state == 'signed'"> — signé</span>
+                                        <t t-if="s.state == 'signed'">
+                                            <span class="bf-note"> — signé</span>
+                                            <t t-set="st" t-value="signer_times and signer_times.get(s.id)"/>
+                                            <div class="bf-note" t-if="st">
+                                                le <t t-esc="st[0]"/>
+                                                <t t-if="st[1]"> · <t t-esc="st[1]"/></t>
+                                            </div>
+                                        </t>
                                         <span class="bf-note" t-else=""> — en attente</span>
                                     </div>
                                 </t>
                             </dd>
+                            <t t-if="tsa_time">
+                                <dt>Heure attestée (horodatage)</dt>
+                                <dd><t t-esc="tsa_time[0]"/>
+                                    <t t-if="tsa_time[1]"> · <t t-esc="tsa_time[1]"/></t></dd>
+                            </t>
                             <dt t-if="req.hash_signed">Empreinte SHA-256</dt>
                             <dd t-if="req.hash_signed"><code t-esc="req.hash_signed"/></dd>
                         </dl>
+                        <!-- Un certificat scellé ne se corrige pas sans casser
+                             son empreinte. La page lève donc la contradiction à sa place. -->
+                        <p class="bf-note" style="margin-top:16px;"
+                           t-if="req.state == 'signed' and not req.cert_times_utc">
+                            Le certificat de ce document a été émis avant une correction de
+                            l'affichage des heures. Ses rubriques « Finalisé le », « Signé le » et
+                            « Heure attestée » peuvent montrer l'heure locale de la session qui l'a scellé sous
+                            l'étiquette « (UTC) », et « Finalisé le » y est vide. Les heures
+                            indiquées ici, comme celles de la piste de vérification du
+                            certificat, sont en UTC et font foi.
+                        </p>
                         <p class="bf-note" style="margin-top:16px;">
                             Cette empreinte est celle de l'exemplaire conservé ici. Aucun fichier
                             n'est téléversé sur cette page, et le document n'y est jamais servi.
