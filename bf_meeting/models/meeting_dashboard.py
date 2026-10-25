@@ -687,6 +687,76 @@ class MeetingDashboardLine(models.Model):
             WHERE active = true AND allday = false AND bf_skip_agenda = false
         """)
         tools.drop_view_if_exists(self.env.cr, self._table)
+        self._bf_create_view(self._bf_has_event_status())
+
+    def _bf_has_event_status(self):
+        """La colonne `bf_event_status` existe-t-elle sur `calendar_event` ?
+
+        ⚠️ Elle vient de `bf_calendar_invite`, que ce module ne requiert pas
+        (même règle que `meeting.agenda._bf_dead_event_domain`). On lit la
+        table, pas `_fields` : c'est la colonne que la vue citera.
+        """
+        self.env.cr.execute("""
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = current_schema()
+              AND table_name = 'calendar_event'
+              AND column_name = 'bf_event_status'
+        """)
+        return bool(self.env.cr.fetchone())
+
+    def _register_hook(self):
+        """Refaire la vue quand la colonne d'annulation apparaît ou disparaît.
+
+        `init()` ne tourne qu'à la pose de ce module. Deux cas lui échappent :
+        - `bf_calendar_invite` posé APRÈS : la vue ne lirait pas l'annulation,
+          et une rencontre annulée reviendrait au tableau de bord et au digest
+          jusqu'au prochain `-u bf_meeting` ;
+        - `bf_calendar_invite` désinstallé : Odoo retire la colonne par
+          `DROP COLUMN … CASCADE` (ir_model.py), ce qui EMPORTE la vue. Le
+          tableau de bord et le bloc « Rencontres » du digest tomberaient sur
+          une relation absente.
+        Le rechargement du registre suit chaque installation et
+        désinstallation : on compare la vue à la table et on ne refait la vue
+        qu'en cas d'écart. La vue garde les mêmes colonnes, donc le
+        `CREATE OR REPLACE` suffit, sans `DROP`.
+        """
+        super()._register_hook()
+        cr = self.env.cr
+        try:
+            with cr.savepoint():
+                has_status = self._bf_has_event_status()
+                # NULL quand la vue manque (ou n'est pas une vue) : on la refait.
+                cr.execute("SELECT pg_get_viewdef(to_regclass(%s))", [self._table])
+                definition = cr.fetchone()[0]
+                if definition and ('bf_event_status' in definition) == has_status:
+                    return
+                self._bf_create_view(has_status)
+            _logger.info("meeting_dashboard_line refaite (annulation lue : %s)", has_status)
+        except Exception:
+            # Le registre doit se charger quand même : lever ici arrêterait
+            # tout Odoo pour un tableau de bord. Deux processus qui démarrent
+            # ensemble peuvent se croiser sur le catalogue, ou attendre un
+            # verrou au-delà du `lock_timeout` du chargement.
+            cr.execute("SELECT to_regclass(%s)", [self._table])
+            if cr.fetchone()[0]:
+                _logger.warning("meeting_dashboard_line non refaite : "
+                                "l'ancienne vue reste servie", exc_info=True)
+            else:
+                _logger.error("meeting_dashboard_line ABSENTE et non refaite : "
+                              "tableau de bord et digest en erreur jusqu'au "
+                              "prochain démarrage ou `-u bf_meeting`", exc_info=True)
+
+    def _bf_create_view(self, has_event_status):
+        """Écrire la vue. Rencontre annulée = absente du tableau de bord.
+
+        Annulée, c'est un OdJ `cancelled` (« Rencontre annulée », voir
+        `meeting.agenda.action_cancel`) ou un événement que le calendrier dit
+        annulé (`bf_event_status`, que bf_calendar_invite pose sans archiver
+        l'événement). La source 2 (OdJ orphelins) écartait déjà l'OdJ
+        annulé, mais pas la source 1 : la rencontre revenait chaque matin au
+        digest, dans « CR à compléter ».
+        """
+        status = SQL("ce.bf_event_status") if has_event_status else SQL("NULL::varchar")
         self.env.cr.execute(SQL("""
             CREATE OR REPLACE VIEW %s AS
             -- ============================================================
@@ -697,10 +767,13 @@ class MeetingDashboardLine(models.Model):
                     ce.id                                       AS event_id,
                     ce.name                                     AS name,
                     ce.start                                    AS date,
+                    -- Un OdJ vivant passe devant un OdJ annulé : l'OdJ retenu
+                    -- n'est annulé que si tous ceux de la rencontre le sont.
                     (SELECT id FROM meeting_agenda ma
                        WHERE ma.calendar_event_id = ce.id
                          AND ma.active = true
-                       ORDER BY ma.id LIMIT 1)                  AS agenda_id,
+                       ORDER BY (ma.state = 'cancelled'), ma.id
+                       LIMIT 1)                                 AS agenda_id,
                     (SELECT id FROM meeting_record mr
                        WHERE mr.calendar_event_id = ce.id
                          AND mr.active = true
@@ -712,6 +785,7 @@ class MeetingDashboardLine(models.Model):
                     ce.bf_minutes_responsible_id                AS minutes_resp_id,
                     ce.allday                                   AS allday,
                     ce.active                                   AS active,
+                    %s                                          AS event_status,
                     (
                         (SELECT COUNT(*) FROM calendar_event_res_partner_rel cerp
                          WHERE cerp.calendar_event_id = ce.id) >= 2
@@ -745,6 +819,12 @@ class MeetingDashboardLine(models.Model):
                   AND b.skip_agenda IS NOT TRUE
                   AND b.skip_dashboard IS NOT TRUE
                   AND b.has_partner = true
+                  -- Annulée = hors du tableau de bord, sauf si un CR existe :
+                  -- une rencontre tenue malgré l'annulation (absence notée,
+                  -- OdJ annulé puis CR rédigé) a encore un CR à finir.
+                  AND (b.record_id IS NOT NULL OR (
+                      b.event_status IS DISTINCT FROM 'cancelled'
+                      AND (ma.state IS NULL OR ma.state != 'cancelled')))
                   AND (
                       (b.date >= NOW() AT TIME ZONE 'UTC'
                        AND b.date <= (NOW() AT TIME ZONE 'UTC') + INTERVAL '90 days')
@@ -867,7 +947,7 @@ class MeetingDashboardLine(models.Model):
             LEFT JOIN res_partner rp     ON rp.id = s.partner_id
             WHERE COALESCE(pj.bf_skip_dashboard, FALSE) = FALSE
               AND COALESCE(rp.bf_skip_dashboard, FALSE) = FALSE
-        """, SQL.identifier(self._table)))
+        """, SQL.identifier(self._table), status))
 
     def action_open_event(self):
         self.ensure_one()
