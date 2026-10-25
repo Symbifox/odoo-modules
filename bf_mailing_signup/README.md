@@ -56,6 +56,8 @@ cron. Un lien plus vieux ne confirme plus, il faut refaire une demande.
 | POST | `/infolettre` | Crée l'inscription désactivée et envoie le lien. Redirige vers la page de remerciement, sauf deux cas : plafond GLOBAL atteint (page « occupé ») et `Origin` étranger (403). |
 | GET | `/infolettre/confirmer?e=&j=&lang=` | Si le jeton vaut, rend une page à un bouton « Confirmer mon inscription » ; n'active RIEN. Sinon renvoie au formulaire. |
 | POST | `/infolettre/confirmer` (`e`, `j`, `lang`) | Le bouton : lève l'`opt_out` si le jeton vaut. Sinon renvoie au formulaire. |
+| GET | `/infolettre/desabonner?e=&l=&j=&lang=` | Lien de chaque courriel de la séquence d'accueil. Si le jeton vaut, rend une page à un bouton « Me désabonner » ; ne désabonne RIEN. Sinon renvoie au formulaire. |
+| POST | `/infolettre/desabonner` (`e`, `l`, `j`, `lang`) | Le bouton, ou le désabonnement en un clic d'un client de messagerie (RFC 8058, corps `List-Unsubscribe=One-Click`) : pose l'`opt_out` si le jeton vaut. Répond 200 avec la page « Vous êtes désabonné ». |
 
 ⚠️ Le POST rend la **même** réponse quoi qu'il arrive à une ADRESSE : adresse
 connue, adresse refusée, pot de miel rempli, seau ou plafond de la boîte atteint.
@@ -185,8 +187,9 @@ inscription, ni attendre. Un essai le vérifie en le faisant échouer exprès.
 Le site est servi en statique. Deux réglages sont nécessaires sur l'hôte, et le
 formulaire échoue en silence sans eux :
 
-1. un renvoi étroit de `/infolettre` vers Odoo, sur le modèle des blocs `/r/` et
-   `/m/` déjà présents ;
+1. un renvoi étroit de `/infolettre`, de `/infolettre/confirmer` et, pour la séquence
+   d'accueil, de `/infolettre/desabonner` vers Odoo (trois blocs à correspondance
+   EXACTE), sur le modèle des blocs `/r/` et `/m/` déjà présents ;
 2. `form-action 'self'` dans la CSP — elle dit `'none'` par défaut, et un
    navigateur bloque alors l'envoi **sans rien afficher**.
 
@@ -210,6 +213,98 @@ adresse.
 `/infolettre-merci.html`, `/infolettre-confirme.html`, `/infolettre-occupe.html`,
 et leurs jumelles sous `/en/`. Le module n'ajoute aucune vue : c'est tout son intérêt, la page reste
 celle du site, avec sa charte et sa CSP.
+
+## La séquence d'accueil
+
+Odoo Community n'a pas l'automatisation marketing. Le module en tient la partie dont
+une infolettre a besoin : à chaque personne qui CONFIRME par le lien, une suite de
+courriels, le premier à la confirmation, les autres selon un délai en jours.
+
+* **Les étapes** sont des enregistrements `bf.mailing.signup.step`, que le module ne
+  montre dans aucune vue (il n'en ajoute pas) : on les pose par RPC ou par import.
+  Une étape : liste, langue, rang, délai en jours depuis la confirmation, sujet et
+  corps HTML complet. Le module n'en livre AUCUNE, et sans étape la tâche planifiée
+  ne fait rien. Le corps DOIT contenir `{{desabonnement}}`, remplacé à l'envoi par le
+  lien de la personne : une étape sans ce marqueur ne s'enregistre pas.
+* **La langue** est celle du formulaire, retenue sur l'inscription (`bf_lang`), pas
+  sur une liste de plus. Avec la date de confirmation (`bf_confirmed_at`), le rang du
+  dernier courriel parti (`bf_step`) et sa date (`bf_step_sent_at`), le compte des échecs
+  (`bf_failures`) et la date du dernier (`bf_attempt_at`), ce sont les champs que le
+  module ajoute à `mailing.subscription`. 🔴 Un désabonnement EFFACE `bf_confirmed_at`,
+  par n'importe quel chemin (lien de la séquence, page d'Odoo, import, case décochée) :
+  une réinscription sans double consentement (route du site web, geste d'administrateur)
+  ne relance donc jamais la séquence, seule une confirmation par le lien le fait.
+* **Qui la reçoit** : seulement celles dont `bf_confirmed_at` est posé, donc qui ont
+  confirmé par le lien. Un contact importé, ajouté à la main ou déjà abonné avant la
+  pose du module n'en reçoit pas, tant qu'il n'a pas confirmé par le formulaire. Une
+  réinscription après un désabonnement relance la séquence du début ; un lien de
+  confirmation rechargé ne la relance pas.
+* **Quand** : le premier courriel part au clic de confirmation ; la tâche planifiée
+  (toutes les 15 minutes) envoie les suivants et reprend ce qui n'est pas parti. Après
+  un retard (serveur arrêté), le courriel suivant ne part pas dans la foulée : l'écart
+  prévu entre les deux étapes est compté depuis le dernier envoi réel, et la tâche
+  n'envoie qu'un courriel par personne et par passage (cent au plus par passage).
+* **Un échec ne passe pas pour un succès** : le rang n'avance que si le courriel est
+  réellement parti, c'est-à-dire que le cœur a passé le `mail.mail` à l'état `sent`
+  (lu dans `_postprocess_sent_message`, juste avant que le cœur ne l'efface : l'absence
+  du courriel après l'envoi ne prouve rien). Sinon le rang reste, l'échec est compté, et
+  l'envoi est retenté après 1, 2, 4, 8, 16 puis 24 heures (plafond) ; au huitième échec
+  de suite (environ trois jours) la séquence s'arrête pour cette inscription (remettre `bf_failures`
+  à 0 la relance). Rien ne distingue un refus propre à une adresse d'une panne du serveur sortant :
+  l'alerte est la ligne ERROR du journal, une panne de plus de trois jours abandonne les personnes dues. Le rang est
+  validé AVANT la note du fil du contact : une note qui échoue ne renvoie pas un courriel
+  déjà parti. Un serveur SMTP qui coupe en plein envoi compte comme un échec (le courriel
+  a pu partir : au pire un doublon, jamais un trou). La ligne `mail.mail` n'est jamais
+  gardée : elle porte l'adresse.
+* **Une étape retirée** au milieu (rangs 1, 2, 4) ne bloque personne : la séquence passe
+  au prochain rang qui existe. Une liste archivée n'envoie plus rien.
+* **Se désabonner** : chaque courriel porte le lien `/infolettre/desabonner` à jeton, un
+  jeton par personne et par liste (HMAC du secret de la base, sans stockage, sans
+  péremption : un courriel vieux de deux mois désabonne encore). Pas de connexion, pas
+  d'adresse à saisir. La liste est DANS le lien (`l=`, couverte par le jeton) : changer le
+  paramètre `list_id` ne rend pas mortes les liens déjà envoyés. Le désabonnement pose
+  l'`opt_out` sur TOUTES les inscriptions de cette liste portant l'adresse
+  (`mailing.contact` n'a pas de contrainte d'unicité sur le courriel), et seulement cette
+  liste. Le lien est aussi dans `List-Unsubscribe`, avec
+  `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058). 🔴 Ces deux en-têtes ne se
+  plient JAMAIS : la politique SMTP d'Odoo plie tout en-tête non structuré de plus de 78
+  caractères, et Python coupe alors une URL (sans espace) en mots encodés RFC 2047 que les
+  clients de messagerie ne reconnaissent pas. `ir.mail_server.build_email` pose donc une
+  politique qui les laisse sur une seule ligne. Un essai le vérifie sur les octets
+  sérialisés, pas sur l'objet en mémoire. Pas de plafond par IP sur cette route : un
+  fournisseur de messagerie poste les clics uniques de tous ses abonnés depuis quelques
+  adresses, et refuser un désabonnement est la seule défaillance inacceptable. 🔴 Le GET ne
+  désabonne pas : les passerelles de courriel ouvrent chaque lien avant la personne, et
+  feraient taire sans qu'elle le sache tous les abonnés d'une entreprise qui en a une.
+  Le POST (le bouton, ou le clic unique du client de messagerie) désabonne, et pose
+  l'`opt_out` de la liste : l'inscription reste, son refus aussi. Le jeton de
+  désabonnement ne vaut pas pour la confirmation, ni l'inverse.
+* **Aucun pixel ni lien suivi** : les courriels portent `X-BF-Sans-Suivi` (voir plus bas).
+  L'adresse d'expédition reste celle de l'instance, la seule alignée en SPF et DKIM : le courriel est
+  créé avec `email_from` explicitement vide, sans quoi `mail.message` prêterait à l'adresse le nom
+  d'affichage de l'usager qui l'envoie (celui de la tâche planifiée, `__system__`).
+* **Pas de `base_url`, pas de courriel** : le lien de désabonnement s'écrit avec le paramètre
+  `bf_mailing_signup.base_url` et n'a AUCUN site de repli. Sans lui rien ne part (journal en ERROR,
+  rien de compté contre les inscriptions) : un lien qui ne marche pas serait pire que pas de courriel.
+* Une adresse sur la liste noire ne reçoit rien. Chaque courriel envoyé laisse une note
+  sur la fiche du contact, comme la preuve du consentement.
+* ⚠️ **Un autre module qui garde une copie des courriels sortants** (un historique de courriels,
+  comme `bf_email_management` chez Blue Fox) la garde aussi. Le courriel part en `auto_delete`
+  pour qu'il n'en garde que l'enveloppe, jamais le corps ni le lien à jeton, mais l'enveloppe (adresse
+  du destinataire, objet, date) reste tant que ce module-là ne l'écarte pas : le module qui envoie
+  ne la voit pas et ne la purge pas. Les courriels envoyés par la tâche planifiée y laissent une
+  ligne chacun (le premier, envoyé au clic de confirmation par l'usager public, aucune). Chez un
+  locataire qui garde un historique, lui faire ignorer les courriels marqués `X-BF-Sans-Suivi`.
+* Le courriel et le jeton sont dans l'URL du lien, donc dans les journaux d'accès d'Odoo et du
+  proxy (inhérent à un lien sans connexion, et au POST en un clic de la RFC 8058, qui vise cette
+  URL). Le jeton ne périme pas : il ne sert qu'à désabonner l'adresse qu'il nomme.
+* Des rebonds ne reviennent jamais sur la fiche : le courriel est effacé et l'enveloppe d'erreur est
+  l'adresse de retour de l'instance. Une adresse morte reçoit donc les dix courriels.
+* **Effet sur les autres envois** : la politique qui garde `List-Unsubscribe` sur une seule ligne
+  s'applique à TOUT courriel qui porte cet en-tête, donc aussi aux infolettres natives d'Odoo
+  (`mass_mailing`), qui partaient avec l'en-tête encodé en RFC 2047 : leurs clients afficheront
+  désormais leur bouton de désabonnement natif. Une URL de plus de 998 caractères reste une ligne
+  trop longue (limite de la RFC 5322).
 
 ## Aucun pixel de suivi, relevés effacés à sept jours
 
@@ -252,7 +347,34 @@ Depuis la 18.0.1.2.2, le module a des modèles (traces, relevés), des données 
 tâche planifiée : un `-u` est nécessaire, PUIS un redémarrage (les contrôleurs ne se
 rechargent qu'au démarrage). Libellés en anglais, traduits dans `i18n/fr_CA.po`.
 
+La 18.0.1.3.0 ajoute un modèle, six champs, une tâche planifiée et la route
+`/infolettre/desabonner` : même séquence (`-u`, redémarrage), et un bloc `location =
+/infolettre/desabonner` sur le proxy, sans quoi le lien des courriels tombe sur le site
+statique. Les étapes se posent après, avec la tâche planifiée à l'œil : elle n'envoie
+rien tant qu'aucune inscription n'a de date de confirmation.
+
 ## Journal
+
+- **18.0.1.3.1** : le titre de la page de désabonnement ne s'accorde plus au genre de la personne
+  (« Désabonnement confirmé », et non « Vous êtes désabonné »).
+- **18.0.1.3.0** : séquence d'accueil (étapes par liste et par langue, tâche planifiée
+  de 15 minutes, premier courriel au clic de confirmation), désabonnement à jeton par
+  personne (`/infolettre/desabonner`, GET à bouton, POST et désabonnement en un clic),
+  en-têtes `List-Unsubscribe` jamais pliés, aucun pixel ni lien suivi. Relecture adverse :
+  en-tête `List-Unsubscribe` qui partait encodé en RFC 2047 ; réinscription sans double
+  consentement qui relançait la séquence (la date de confirmation s'efface au
+  désabonnement) ; désabonnement qui ne touchait qu'une des fiches en double ; rang non
+  validé avant la note du fil (courriel renvoyé à chaque passage) ; échecs retentés sans fin
+  (reprise à 1, 2, 4, 8 heures puis abandon) ; étape retirée qui bloquait ; liste archivée
+  encore servie ; lien lié au paramètre de liste ; expression du pixel quadratique dans
+  `build_email` (200 Ko en 14 secondes, appelable par tout usager connecté). Deuxième relecture :
+  l'expression corrigée restait quadratique avec l'attribut répété dans une balise jamais fermée
+  (464 Ko en 20 secondes) ; elle isole maintenant chaque balise puis cherche l'attribut ; un
+  `_postprocess_sent_message` plus interne qui lève après un envoi réussi écrasait l'état `sent` et
+  le courriel repartait (le premier état gagne) ; l'expéditeur prêtait le nom de l'usager de la tâche ;
+  `l=²` rendait une 500 ; pas de repli sur un site pour le lien ; reprise après échec jusqu'à huit
+  échecs avec attente plafonnée à 24 heures (cinq échecs abandonnaient tout le monde après 15 heures
+  de panne).
 
 - **18.0.1.2.2, troisième passe** (relecture adverse) : `build_email` n'écrit plus rien
   (un usager portail y faisait noter n'importe quel relevé) ; les relevés se notent à

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Inscription publique à une liste d'envoi",
-    "version": "18.0.1.2.2",
+    "version": "18.0.1.3.1",
     "category": "Marketing",
     "summary": "Formulaire d'infolettre en HTML pur, à double consentement, "
                "sans reCaptcha ni ressource tierce",
@@ -50,6 +50,15 @@ Le jeton est ``HMAC(secret de la base, liste:adresse:jour)``, tronqué. Rien à
 sept derniers quantièmes. Un lien plus vieux ne confirme plus rien : il faut
 refaire une demande, ce qui est le comportement voulu.
 
+La séquence d'accueil
+---------------------
+
+À chaque personne qui confirme, une suite de courriels (étapes à poser par
+liste et par langue), le premier au clic de confirmation, les autres à
+leur délai. Aucun pixel, aucun lien suivi, un lien de désabonnement à jeton dans
+chaque courriel et dans ``List-Unsubscribe`` (désabonnement en un clic). Sans
+étape enregistrée, rien ne part.
+
 Ce que le module ne fait pas
 ----------------------------
 
@@ -57,8 +66,9 @@ Ce que le module ne fait pas
   vit dans la page appelante, en HTML ordinaire. Le seul HTML qu'il produise
   est celui du courriel de confirmation, qui porte la marque parce qu'un
   premier courriel en texte nu ne se fait pas reconnaitre.
-* Il ne désinscrit pas — Odoo sert déjà ``/mailing/...`` pour ça, et chaque envoi
-  porte le lien.
+* Son lien de désabonnement (à jeton, dont le GET n'écrit rien) retire la personne de LA
+  LISTE visée, donc aussi de l'infolettre mensuelle qui s'y ajoute : c'est le même refus
+  que celui du désabonnement habituel d'Odoo (``/mailing/...``), qui reste en place.
 * Il ne tient aucun tableau de bord : ce qui se passe s'annonce par courriel à
   l'adresse de son choix, et se relit ensuite sur la fiche du contact.
 * Il ne crée pas de ``res.partner``. Une adresse d'infolettre n'est pas un

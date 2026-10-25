@@ -3,7 +3,7 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_mailing_signup 18.0.1.2.2\n"
+"Project-Id-Version: bf_mailing_signup 18.0.1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-11 10:32+0000\n"
 "PO-Revision-Date: 2026-10-11 10:32+0000\n"
@@ -24,12 +24,14 @@ msgstr "Au plus trois confirmations par boîte et par jour."
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__create_uid
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__create_uid
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__create_date
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__create_date
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -41,6 +43,7 @@ msgstr "Jour"
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__display_name
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__display_name
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
@@ -52,18 +55,21 @@ msgstr "HMAC de la boîte normalisée, jamais l'adresse elle-même."
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__id
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__id
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__id
 msgid "ID"
 msgstr "ID"
 
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__write_uid
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__write_uid
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__write_date
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_tracking__write_date
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
@@ -87,11 +93,12 @@ msgstr "Courriels sortants"
 msgid ""
 "Public signup: erase caps traces, tracking records and unconfirmed contacts"
 msgstr ""
-"Inscription publique : effacer les traces des plafonds, les relevés de suivi "
-"et les contacts non confirmés"
+"Inscription publique : effacer les traces des plafonds, les relevés de suivi"
+" et les contacts non confirmés"
 
 #. module: bf_mailing_signup
 #: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_trace__rank
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__rank
 msgid "Rank"
 msgstr "Rang"
 
@@ -109,3 +116,156 @@ msgstr "Relevé de suivi"
 #: model:ir.model,name:bf_mailing_signup.model_bf_mailing_signup_tracking
 msgid "Tracking record to erase (mail_tracking)"
 msgstr "Relevé de suivi à effacer (mail_tracking)"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_bf_mailing_signup_step__rank
+msgid "1 for the first email, 2 for the second, and so on."
+msgstr "1 pour le premier courriel, 2 pour le deuxième, et ainsi de suite."
+
+#. module: bf_mailing_signup
+#: model:ir.model.constraint,message:bf_mailing_signup.constraint_bf_mailing_signup_step_rang_unique
+msgid "A list has one step per rank and per language."
+msgstr "Une liste a une étape par rang et par langue."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__body_html
+msgid "Body"
+msgstr "Corps"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_bf_mailing_signup_step__body_html
+msgid ""
+"Complete HTML of the email. It must contain {{desabonnement}}, replaced at "
+"sending by the recipient's own unsubscribe link."
+msgstr ""
+"HTML complet du courriel. Il doit contenir {{desabonnement}}, remplacé à "
+"l'envoi par le lien de désabonnement propre au destinataire."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_confirmed_at
+msgid "Confirmed by email link"
+msgstr "Confirmé par lien courriel"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__delay_days
+msgid "Days after confirmation"
+msgstr "Jours après la confirmation"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields.selection,name:bf_mailing_signup.selection__bf_mailing_signup_step__lang__en
+#: model:ir.model.fields.selection,name:bf_mailing_signup.selection__mailing_subscription__bf_lang__en
+msgid "English"
+msgstr "Anglais"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields.selection,name:bf_mailing_signup.selection__bf_mailing_signup_step__lang__fr
+#: model:ir.model.fields.selection,name:bf_mailing_signup.selection__mailing_subscription__bf_lang__fr
+msgid "Français"
+msgstr "Français"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__lang
+msgid "Language"
+msgstr "Langue"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_step
+msgid "Last welcome email sent"
+msgstr "Dernier courriel d'accueil envoyé"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_step_sent_at
+msgid "Last welcome email sent on"
+msgstr "Date du dernier courriel d'accueil envoyé"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__list_id
+msgid "Mailing list"
+msgstr "Liste d'envoi"
+
+#. module: bf_mailing_signup
+#: model:ir.actions.server,name:bf_mailing_signup.cron_sequence_ir_actions_server
+msgid "Public signup: send the welcome sequence"
+msgstr "Inscription publique : envoyer la séquence d'accueil"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_bf_mailing_signup_step__subject
+msgid "Subject"
+msgstr "Sujet"
+
+#. module: bf_mailing_signup
+#. odoo-python
+#: code:addons/bf_mailing_signup/models/sequence.py:0
+msgid "The body of a step must contain %s, where the unsubscribe link goes."
+msgstr ""
+"Le corps d'une étape doit contenir %s, là où va le lien de désabonnement."
+
+#. module: bf_mailing_signup
+#: model:ir.model.constraint,message:bf_mailing_signup.constraint_bf_mailing_signup_step_delai_positif
+msgid "The delay cannot be negative."
+msgstr "Le délai ne peut pas être négatif."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_bf_mailing_signup_step__delay_days
+msgid ""
+"The email is due this many days after the sign-up was confirmed. After a "
+"delay (server down), the gap to the previous email is kept: a late email "
+"never brings the next one forward."
+msgstr ""
+"Le courriel est dû ce nombre de jours après la confirmation de "
+"l'inscription. Après un retard (serveur arrêté), l'écart avec le courriel "
+"précédent est conservé : un courriel en retard ne fait jamais avancer le "
+"suivant."
+
+#. module: bf_mailing_signup
+#: model:ir.model.constraint,message:bf_mailing_signup.constraint_bf_mailing_signup_step_rang_positif
+msgid "The rank starts at 1."
+msgstr "Le rang commence à 1."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_lang
+msgid "Welcome sequence language"
+msgstr "Langue de la séquence d'accueil"
+
+#. module: bf_mailing_signup
+#: model:ir.model,name:bf_mailing_signup.model_bf_mailing_signup_step
+msgid "Welcome sequence step"
+msgstr "Étape de la séquence d'accueil"
+
+#. module: bf_mailing_signup
+#. odoo-python
+#: code:addons/bf_mailing_signup/models/sequence.py:0
+msgid "Welcome sequence: email %(rang)s sent (%(sujet)s)."
+msgstr "Séquence d'accueil : courriel %(rang)s envoyé (%(sujet)s)."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_failures
+msgid "Failed welcome email attempts"
+msgstr "Essais d'envoi du courriel d'accueil échoués"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,field_description:bf_mailing_signup.field_mailing_subscription__bf_attempt_at
+msgid "Last failed welcome email attempt"
+msgstr "Dernier essai échoué du courriel d'accueil"
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_mailing_subscription__bf_confirmed_at
+msgid ""
+"Set by the confirmation link of the public form. Empty for a contact added "
+"any other way: it does not get the welcome sequence. Cleared whenever the "
+"subscription is opted out."
+msgstr ""
+"Posée par le lien de confirmation du formulaire public. Vide pour un contact"
+" ajouté autrement : il ne reçoit pas la séquence d'accueil. Effacée chaque "
+"fois que l'inscription est désabonnée."
+
+#. module: bf_mailing_signup
+#: model:ir.model.fields,help:bf_mailing_signup.field_mailing_subscription__bf_failures
+msgid ""
+"Consecutive failed sends of the next welcome email, retried after a growing "
+"delay. After several, the sequence stops for this subscription until this is"
+" reset to 0."
+msgstr ""
+"Envois consécutifs du prochain courriel d'accueil qui ont échoué, retentés "
+"après une attente croissante. Après plusieurs, la séquence s'arrête pour "
+"cette inscription jusqu'à ce que ce nombre soit remis à 0."

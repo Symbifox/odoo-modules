@@ -219,6 +219,19 @@ class TestAvis(MobileApiCase):
         for champ in ("body_html", "body_text", "body_preview"):
             self.assertNotIn("jeton-secret", avis[champ] or "", champ)
 
+    def test_un_courriel_marque_sans_suivi_ne_laisse_aucune_copie(self):
+        """La séquence d'accueil de l'infolettre part d'une tâche planifiée (compte système, pas
+        `share`) : sans l'exclusion, chaque courriel laissait une ligne (adresse, objet, date)."""
+        message = self._message(auteur=self.owner)
+        self._envoyer(message, headers=repr({"X-BF-Sans-Suivi": "1"}))
+        self.assertFalse(self._avis(message))
+
+    def test_un_en_tete_illisible_ou_etranger_n_est_pas_un_marqueur(self):
+        for entetes in ("pas un dict", repr({"X-Autre": "1"}), repr(["X-BF-Sans-Suivi"]), "{"):
+            message = self._message(auteur=self.owner)
+            self._envoyer(message, headers=entetes)
+            self.assertEqual(len(self._avis(message)), 1, entetes)
+
     def test_une_notification_au_corps_vide_ne_laisse_que_l_enveloppe(self):
         """Le message garde un corps vide,
         Odoo supprime le courriel, et le rendu de ce courriel porte un lien

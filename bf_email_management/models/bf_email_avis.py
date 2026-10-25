@@ -37,6 +37,7 @@ plusieurs semaines après l'envoi. La capture ne crée rien si une copie existe
 déjà pour ce message et cet usager, et une copie qui arrive ensuite remplace
 l'avis.
 """
+import ast
 import logging
 
 from odoo import api, fields, models
@@ -45,6 +46,10 @@ from odoo.tools import email_normalize_all
 _logger = logging.getLogger(__name__)
 
 AVIS = "notice"
+# L'en-tête interne qu'un module pose sur un courriel qui ne doit laisser aucune trace de la
+# personne (ni pixel d'ouverture, ni lien suivi : `bf_mailing_signup`, `bf_perso_signup`). Le même
+# vœu vaut ici : pas de copie dans l'historique d'un contact.
+ENTETE_SANS_SUIVI = "X-BF-Sans-Suivi"
 # Les types que la projection du chatter ne copie pas d'elle-même. « email » et
 # « comment » ont leur propre chemin (`_cron_sync_emails`) : les capturer ici
 # ferait double emploi.
@@ -52,6 +57,19 @@ TYPES_AVIS = ("email_outgoing", "notification", "user_notification", "auto_comme
 # Les courriels de compte : lien de mot de passe, invitation au portail (lien
 # d'inscription valide 144 h), deuxième facteur. Jamais gardés chez un autre.
 MODELES_DE_COMPTE = ("res.users", "portal.wizard", "portal.wizard.user")
+
+
+def _sans_suivi(mail):
+    """Vrai si le `mail.mail` porte l'en-tête interne `X-BF-Sans-Suivi`.
+
+    Même lecture que l'envoi d'Odoo (`ast.literal_eval` du champ `headers`) : un champ
+    illisible n'est pas marqué.
+    """
+    try:
+        entetes = ast.literal_eval(mail.headers or "{}")
+    except (ValueError, SyntaxError, TypeError, MemoryError, RecursionError):
+        return False
+    return isinstance(entetes, dict) and ENTETE_SANS_SUIVI in entetes
 
 
 class BfEmailAvis(models.Model):
@@ -221,6 +239,12 @@ class BfEmailAvis(models.Model):
             # trace par destinataire, et une instance en envoie des dizaines
             # de milliers par trimestre.
             if masse and mail.mailing_id:
+                continue
+            # Un courriel marqué « sans suivi » ne laisse aucune copie. La séquence d'accueil de
+            # l'infolettre part d'une tâche planifiée (un compte système, jamais `share`) : sans
+            # ceci, chaque courriel y laissait une ligne (adresse, objet, date) chez le compte de
+            # repli, sans limite de durée et hors du désabonnement de la personne.
+            if _sans_suivi(mail):
                 continue
             adresses = set(email_normalize_all(mail.email_to or ""))
             adresses |= set(email_normalize_all(mail.email_cc or ""))

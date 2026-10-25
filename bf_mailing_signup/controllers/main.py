@@ -326,6 +326,43 @@ def _token_valid(env, list_id, email, token):
                for d in range(CONFIRM_DAYS))
 
 
+# Ce que les gabarits de la séquence portent là où le lien de désabonnement doit
+# aller (`models/sequence.py` le remplace à l'envoi, un jeton par personne).
+MARQUEUR_DESABONNEMENT = "{{desabonnement}}"
+
+
+def _token_desabonnement(env, list_id, email):
+    """Le jeton de désabonnement de CETTE personne sur CETTE liste.
+
+    Même famille que le jeton de confirmation (HMAC du secret de la base, rien à
+    stocker), avec deux différences voulues : il ne périme pas, parce qu'un
+    courriel vieux de deux mois doit désabonner encore ; et son message commence
+    par `desabonner:`, que le jeton de confirmation ne peut pas produire (il
+    commence par un numéro de liste), donc l'un ne vaut jamais pour l'autre.
+    """
+    payload = f"desabonner:{list_id}:{email.strip().lower()}".encode()
+    return hmac.new(_secret(env), payload, sha256).hexdigest()[:32]
+
+
+def _token_desabonnement_valid(env, list_id, email, token):
+    if not isinstance(token, str) or not _JETON_RE.match(token):
+        return False
+    return hmac.compare_digest(_token_desabonnement(env, list_id, email), token)
+
+
+def _url_desabonnement(env, list_id, email, lang):
+    """Le lien que porte chaque courriel de la séquence, et son en-tête `List-Unsubscribe`."""
+    base = (env["ir.config_parameter"].sudo().get_param(ICP_BASE_URL) or "").strip().rstrip("/")
+    if not base:
+        # Pas de repli sur un site qui n'est pas le sien : chez un autre locataire, le lien
+        # d'un courriel (qui doit marcher 60 jours) pointerait sur un site mort.
+        return None
+    # La liste est dans le lien, et le jeton la couvre : un lien envoyé il y a deux mois
+    # désabonne de LA liste qui l'a envoyé, même si le paramètre `list_id` a changé depuis.
+    return (f"{base}/infolettre/desabonner?e={quote(email)}&l={int(list_id)}"
+            f"&j={_token_desabonnement(env, list_id, email)}&lang={lang}")
+
+
 def _texte(valeur):
     """Une valeur de formulaire en texte, ou "" si elle n'en est pas une.
 
@@ -457,7 +494,43 @@ def _marque(env):
     }
 
 
-def _habiller(env, url, lang):
+# Ce que la personne consent à recevoir, dit AVANT son clic. Le formulaire promet des « nouveautés » et rien
+# d'autre : si le locataire a posé une séquence d'accueil, le courriel de confirmation et la page de son
+# bouton le disent (nombre, rythme), sans quoi la séquence dépasse l'objet du consentement (LCAP). La
+# phrase vient des ÉTAPES enregistrées (aucun texte propre à un locataire dans le code) ; sans étape pour
+# la liste et la langue, elle est vide.
+PHRASES_SERIE = {
+    "fr": {
+        "une": "Après votre confirmation, vous recevrez un courriel d'accueil, puis les nouveautés {marque}.",
+        "serie": "Après votre confirmation, vous recevrez {n} courriels d'accueil, {rythme}, puis les "
+                 "nouveautés {marque}.",
+        "semaine": "un par semaine", "libre": "espacés dans le temps",
+    },
+    "en": {
+        "une": "After you confirm, you will receive one welcome email, then the {marque} updates.",
+        "serie": "After you confirm, you will receive {n} welcome emails, {rythme}, then the {marque} "
+                 "updates.",
+        "semaine": "one a week", "libre": "spread over time",
+    },
+}
+
+
+def _phrase_serie(env, list_id, lang, marque):
+    """La phrase qui annonce la séquence d'accueil de cette liste dans cette langue, ou \"\"."""
+    etapes = env["bf.mailing.signup.step"].sudo().search(
+        [("list_id", "=", list_id), ("lang", "=", lang)], order="rank")
+    if not etapes:
+        return ""
+    t = PHRASES_SERIE[lang]
+    if len(etapes) == 1:
+        return t["une"].format(marque=marque)
+    delais = etapes.mapped("delay_days")
+    ecarts = {b - a for a, b in zip(delais, delais[1:])}
+    rythme = t["semaine"] if ecarts == {7} else t["libre"]
+    return t["serie"].format(n=len(etapes), rythme=rythme, marque=marque)
+
+
+def _habiller(env, url, lang, serie=""):
     """Sujet et corps HTML du courriel de confirmation.
 
     Tout en tableaux `role="presentation"` et en style EN LIGNE : les clients
@@ -470,6 +543,9 @@ def _habiller(env, url, lang):
          for k, v in TEXTES[lang].items()}
 
     marque, societe = _att(b["marque"]), _att(b["societe"])
+    serie_html = (
+        f'<p style="margin:0 0 16px;font-family:{POLICE};font-size:16px;line-height:1.65;'
+        f'color:{ENCRE}">{_ech(serie)}</p>' if serie else "")
     lien_href = _att(url)
     lien = _ech(url)
     sujet = t["sujet"]
@@ -537,6 +613,7 @@ def _habiller(env, url, lang):
                font-weight:600;letter-spacing:-.015em;color:{ENCRE}">{_ech(t["titre"])}</h1>
     <p style="margin:0 0 16px;font-family:{POLICE};font-size:16px;line-height:1.65;
               color:{ENCRE}">{_ech(t["intro"])}</p>
+    {serie_html}
 
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"
            style="margin:28px 0 6px">
@@ -691,7 +768,7 @@ def _aviser(env, moment, email, lang, contact=None):
 
 
 
-def _page_bouton(env, email, jeton, lang):
+def _page_bouton(env, email, jeton, lang, serie=""):
     """La page que le lien de confirmation ouvre : un bouton, rien d'autre.
 
     ⚠️ Pas de script qui soumet tout seul : un robot d'analyse qui exécute le
@@ -709,6 +786,7 @@ def _page_bouton(env, email, jeton, lang):
 <main style="max-width:32rem;margin:10vh auto;padding:0 16px">
 <h1 style="font-size:1.5rem">{_ech(t["titre"])}</h1>
 <p>{_ech(t["intro"])}</p>
+{"<p>" + _ech(serie) + "</p>" if serie else ""}
 <form method="post" action="/infolettre/confirmer">
 <input type="hidden" name="e" value="{_att(email)}">
 <input type="hidden" name="j" value="{_att(jeton)}">
@@ -717,6 +795,76 @@ def _page_bouton(env, email, jeton, lang):
 </form>
 <p style="font-size:.9rem;color:#5A5F61">{_ech(t["note"])}</p>
 </main></body></html>"""
+
+TEXTES_DESABONNEMENT = {
+    "fr": {
+        "titre": "Se désabonner",
+        "intro": "Vous recevez les nouveautés {marque}. Un clic, et cette adresse "
+                 "ne les recevra plus.",
+        "bouton": "Me désabonner",
+        "fait_titre": "Désabonnement confirmé",
+        "fait": "C'est fait : cette adresse ne recevra plus les nouveautés {marque}. "
+                "Si c'était une erreur, le formulaire de {site} vous réinscrit quand "
+                "vous voulez.",
+    },
+    "en": {
+        "titre": "Unsubscribe",
+        "intro": "You receive the {marque} updates. One click, and this address "
+                 "will no longer receive them.",
+        "bouton": "Unsubscribe me",
+        "fait_titre": "You are unsubscribed",
+        "fait": "Done: this address will no longer receive the {marque} updates. If it "
+                "was a mistake, the form on {site} signs you up again whenever you "
+                "like.",
+    },
+}
+
+
+def _page_desabonnement(env, email, jeton, lang, liste, fait=False):
+    """La page du lien de désabonnement : un bouton (GET), puis la confirmation (POST).
+
+    ⚠️ Le GET ne désabonne pas, comme celui de la confirmation n'inscrit pas : une
+    passerelle de courriel qui ouvre chaque lien d'un message avant la personne
+    ferait taire, sans qu'elle le sache, tous les abonnés d'une entreprise qui en
+    a une. Le désabonnement en un clic des clients de messagerie (RFC 8058) passe
+    par un POST sur la même adresse, qui désabonne tout de suite.
+    """
+    b = _marque(env)
+    t = {k: v.format(marque=b["marque"], site=_site(env))
+         for k, v in TEXTES_DESABONNEMENT[lang].items()}
+    if fait:
+        corps = (f'<h1 style="font-size:1.5rem">{_ech(t["fait_titre"])}</h1>'
+                 f'<p>{_ech(t["fait"])}</p>')
+        titre = t["fait_titre"]
+    else:
+        corps = f"""<h1 style="font-size:1.5rem">{_ech(t["titre"])}</h1>
+<p>{_ech(t["intro"])}</p>
+<form method="post" action="/infolettre/desabonner">
+<input type="hidden" name="e" value="{_att(email)}">
+<input type="hidden" name="l" value="{int(liste)}">
+<input type="hidden" name="j" value="{_att(jeton)}">
+<input type="hidden" name="lang" value="{_att(lang)}">
+<button type="submit" style="font:inherit;font-weight:600;padding:12px 22px;border:0;border-radius:8px;background:#2E3132;color:#FFFFFF;cursor:pointer">{_ech(t["bouton"])}</button>
+</form>"""
+        titre = t["titre"]
+    return f"""<!doctype html>
+<html lang="{lang}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{_ech(titre)}</title></head>
+<body style="margin:0;background:#FFFFFF;color:#2E3132;font-family:{POLICE}">
+<main style="max-width:32rem;margin:10vh auto;padding:0 16px">
+{corps}
+</main></body></html>"""
+
+
+def _reponse_page(page):
+    return request.make_response(
+        page, headers=[("Content-Type", "text/html; charset=utf-8"),
+                       ("Cache-Control", "no-store"),
+                       ("X-Robots-Tag", "noindex"),
+                       ("Referrer-Policy", "no-referrer")])
+
 
 class BfMailingSignup(http.Controller):
 
@@ -801,7 +949,8 @@ class BfMailingSignup(http.Controller):
             return werkzeug.utils.redirect(pages["retour"], 303)
         if request.httprequest.method != "POST":
             return request.make_response(
-                _page_bouton(env, email, j, lang),
+                _page_bouton(env, email, j, lang,
+                             _phrase_serie(env, list_id, lang, _marque(env)["marque"])),
                 headers=[("Content-Type", "text/html; charset=utf-8"),
                          ("Cache-Control", "no-store"),
                          ("X-Robots-Tag", "noindex"),
@@ -811,6 +960,40 @@ class BfMailingSignup(http.Controller):
         except Exception:               # noqa: BLE001
             _logger.exception("bf_mailing_signup : échec de confirmation")
         return werkzeug.utils.redirect(pages["confirme"], 303)
+
+    # Le lien de chaque courriel de la séquence d'accueil, et la cible de son
+    # en-tête `List-Unsubscribe`. Le GET montre un bouton et n'écrit rien ; le POST
+    # désabonne, qu'il vienne du bouton ou du désabonnement en un clic d'un client
+    # de messagerie (corps `List-Unsubscribe=One-Click`, RFC 8058). Le jeton est
+    # celui de la personne : ni connexion ni adresse à saisir.
+    @http.route("/infolettre/desabonner", type="http", auth="public",
+                methods=["GET", "POST"], csrf=False, website=False, sitemap=False,
+                max_content_length=MAX_CORPS)
+    def unsubscribe(self, e=None, j=None, l=None, lang=None, **kw):
+        lang = _lang(lang)
+        email = _texte(e).strip().lower()
+        env = request.env
+        # La liste vient du LIEN (couverte par le jeton), pas du paramètre système.
+        liste = _texte(l).strip()
+        list_id = int(liste) if liste.isascii() and liste.isdigit() and len(liste) <= 9 else 0
+        # ⚠️ Pas de seau par IP ici, à la différence de la confirmation. Un
+        # fournisseur de messagerie poste le désabonnement en un clic de TOUS ses
+        # abonnés depuis quelques adresses : un plafond refuserait des
+        # désabonnements, la seule défaillance inacceptable. Le jeton (128 bits)
+        # ne se devine pas, et l'écriture est unique et sans courriel.
+        if (not email or not list_id
+                or not _token_desabonnement_valid(env, list_id, email, j)):
+            # Lien fabriqué ou tronqué : rien à dire de plus qu'au formulaire.
+            return werkzeug.utils.redirect(PAGES[lang]["retour"], 303)
+        if request.httprequest.method != "POST":
+            return _reponse_page(_page_desabonnement(env, email, j, lang, list_id))
+        try:
+            self._desabonner(env, list_id, email)
+        except Exception:               # noqa: BLE001
+            _logger.exception("bf_mailing_signup : échec de désabonnement")
+            return request.make_response(
+                "", status=500, headers=[("Cache-Control", "no-store")])
+        return _reponse_page(_page_desabonnement(env, email, j, lang, list_id, fait=True))
 
     # ------------------------------------------------------------------ interne
 
@@ -893,7 +1076,8 @@ class BfMailingSignup(http.Controller):
                f"&j={token}&lang={lang}")
         reply_to = icp.get_param(
             ICP_REPLY_TO_EN if lang == "en" else ICP_REPLY_TO_FR) or ""
-        subject, body = _habiller(env, url, lang)
+        subject, body = _habiller(
+            env, url, lang, _phrase_serie(env, list_id, lang, _marque(env)["marque"]))
         mail = env["mail.mail"].sudo().create({
             "subject": subject,
             "body_html": body,
@@ -910,6 +1094,39 @@ class BfMailingSignup(http.Controller):
         except Exception:               # noqa: BLE001
             _logger.exception("bf_mailing_signup : envoi différé de la confirmation")
 
+    def _desabonner(self, env, list_id, email):
+        """Pose l'`opt_out` de la liste sur TOUTES les inscriptions de cette adresse.
+
+        `mailing.contact` n'a aucune contrainte d'unicité sur le courriel : une adresse peut
+        avoir deux fiches, dont une seule porte l'inscription active. Désabonner « le »
+        contact trouvé laissait l'autre recevoir l'infolettre sous la page « vous êtes
+        désabonné ». Sans effet pour une inscription qui l'est déjà.
+
+        Les inscriptions restent : le refus doit rester, et c'est lui qui empêche une
+        resoumission du formulaire de la réinscrire sans son lien de confirmation. La
+        séquence d'accueil s'arrête d'elle-même (elle ne regarde que les inscriptions
+        actives).
+        """
+        Subs = env["mailing.subscription"].sudo().with_context(active_test=False)
+        toutes = Subs.search([("list_id", "=", list_id),
+                              ("contact_id.email_normalized", "=", email)])
+        if not toutes:
+            # Un jeton valide pour une adresse qui n'est plus (ou n'est plus écrite pareil) au
+            # dossier, par exemple une fiche dont on a changé le courriel. La page répond comme
+            # toujours (jamais un oracle d'appartenance), mais l'inscription de la personne, sous
+            # sa nouvelle adresse, n'a PAS été touchée : le journal est le seul à le dire.
+            _logger.warning("bf_mailing_signup : désabonnement demandé par un lien valide pour une "
+                            "adresse sans inscription à la liste %s (fiche modifiée ?)", list_id)
+            return
+        subs = toutes.filtered(lambda r: not r.opt_out)
+        if not subs:
+            return
+        subs.write({"opt_out": True})
+        for contact in subs.contact_id:
+            contact.message_post(body=(
+                "Désabonné par le lien de désabonnement d'un courriel le "
+                f"{fields.Datetime.now()} UTC."))
+
     def _activate(self, env, list_id, email, lang="fr"):
         """Lève l'`opt_out` et date le consentement dans le fil du contact."""
         contact = env["mailing.contact"].sudo().search(
@@ -923,8 +1140,15 @@ class BfMailingSignup(http.Controller):
             sub.write({"opt_out": False})
         else:
             nouvelle = True
-            env["mailing.subscription"].sudo().create({
+            sub = env["mailing.subscription"].sudo().create({
                 "contact_id": contact.id, "list_id": list_id, "opt_out": False})
+        # La séquence d'accueil part de CE clic : langue du formulaire et date de
+        # la confirmation. Un lien rechargé (déjà active, déjà datée) ne la
+        # relance pas ; une réinscription après un désabonnement, si.
+        if nouvelle or not sub.bf_confirmed_at:
+            sub.write({"bf_lang": lang, "bf_confirmed_at": fields.Datetime.now(),
+                       "bf_step": 0, "bf_step_sent_at": False,
+                       "bf_failures": 0, "bf_attempt_at": False})
         # La preuve du consentement exprès, datée, là où quelqu'un la cherchera.
         # Elle est posée à CHAQUE passage, même si le lien est rechargé : chaque
         # clic est un acte de consentement de plus, et une trace en double coûte
@@ -938,3 +1162,10 @@ class BfMailingSignup(http.Controller):
         # même personne apprend à ignorer l'avis.
         if nouvelle:
             _aviser(env, "confirmation", email, lang, contact)
+        # Le premier courriel de la séquence part tout de suite, sous savepoint :
+        # un échec ne défait pas la confirmation, et la tâche planifiée reprend.
+        try:
+            with env.cr.savepoint():
+                sub._bf_envoyer_suivant()
+        except Exception:               # noqa: BLE001
+            _logger.exception("bf_mailing_signup : premier courriel de la séquence non parti")

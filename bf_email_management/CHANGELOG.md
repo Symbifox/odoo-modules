@@ -4,6 +4,17 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.64.2] - 2026-10-25
+
+### Fixed
+
+- A mail stamped `X-BF-Sans-Suivi` (the internal header that `bf_mailing_signup`
+  and `bf_perso_signup` put on what must leave no trace of the person) no
+  longer leaves a notice in a contact's history. A welcome sequence is sent
+  from a scheduled job, that is a system account, not a visitor: each mail left
+  one row (address, subject, date) with the fallback account, kept without limit
+  and out of reach of the person's unsubscribing. Nothing else is affected.
+
 ## [18.0.11.64.1] - 2026-10-19
 
 ### Added

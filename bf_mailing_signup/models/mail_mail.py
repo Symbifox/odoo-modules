@@ -38,13 +38,40 @@ def _sans_suivi(mail):
     return isinstance(entetes, dict) and ENTETE_SANS_SUIVI in entetes
 
 
+# Où l'état de chaque courriel marqué est noté AVANT que le cœur ne le supprime. Clé du
+# cache du curseur : il vit le temps de la transaction et ne passe pas par le contexte
+# (un dict dans le contexte le rend non hachable).
+CLE_ETATS = "bf_mailing_signup.etats_apres_envoi"
+
+
 class MailMail(models.Model):
     _inherit = "mail.mail"
 
     def _postprocess_sent_message(self, success_pids, failure_reason=False, failure_type=None):
+        self._bf_noter_etats()
         self._bf_noter_releves()
         return super()._postprocess_sent_message(
             success_pids, failure_reason=failure_reason, failure_type=failure_type)
+
+    def _bf_noter_etats(self):
+        """Noter l'état de chaque courriel marqué, avant que `super()` ne l'efface.
+
+        La séquence d'accueil envoie ses courriels en `auto_delete` (le cœur les efface
+        après l'envoi, et un module qui garde une copie des envois sortants n'en garde
+        alors que l'enveloppe), mais elle doit savoir s'ils sont VRAIMENT partis. Le cœur
+        passe l'état à `sent` juste avant ce crochet, `exception` sinon : on le lit ici,
+        pas après. Ne lève jamais.
+        """
+        try:
+            etats = self.env.cr.cache.setdefault(CLE_ETATS, {})
+            for mail in self.sudo().filtered(_sans_suivi):
+                # setdefault : le PREMIER état gagne. Si un `_postprocess_sent_message` plus
+                # interne lève après un envoi réussi, le cœur rappelle ce crochet avec l'état
+                # `exception` : sans ça, ce second appel écrasait `sent` et le courriel, déjà
+                # parti, repartait à chaque reprise.
+                etats.setdefault(mail.id, mail.state)
+        except Exception:               # noqa: BLE001 — l'envoi passe avant tout
+            _logger.exception("bf_mailing_signup : état d'envoi non noté")
 
     def _bf_noter_releves(self):
         """Noter les relevés des courriels marqués de ce lot. Ne lève jamais.
