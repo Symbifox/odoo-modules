@@ -75,6 +75,15 @@
             <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
         </record>
 
+        <!-- Les défis du jour d'une personne ne se lisent que par elle, gestionnaires
+             compris (comme les journées « à jour ») : le catalogue, lui, est ouvert. -->
+        <record id="rule_challenge_line_user" model="ir.rule">
+            <field name="name">D&#233;fi du jour : les siens</field>
+            <field name="model_id" ref="model_bf_gamification_challenge_line"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+        </record>
+
         <!-- Reward claims: users see own -->
         <record id="rule_reward_claim_user" model="ir.rule">
             <field name="name">Réclamation: voir les siennes</field>

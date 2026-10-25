@@ -3,7 +3,7 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
-from . import fq_days
+from . import fq_days, fq_savepoint
 from .gamification_constance import CAUGHT_UP_KINDS
 
 CAUGHT_UP_LISTS = {
@@ -58,6 +58,13 @@ class GamificationDashboard(models.AbstractModel):
         Profile = self.env['bf.gamification.profile']
         profile = Profile._get_or_create_profile(user)
 
+        achievements = self._get_achievements_data(user)
+        # Les défis du jour ne cassent jamais le tableau de bord : la barre du haut
+        # l'appelle à chaque page.
+        challenges = {'enabled': False, 'lines': [], 'stamps': 0, 'per_card': 0,
+                      'cards_completed': 0, 'rest_day': False, 'all_done': False}
+        with fq_savepoint.isolated(self.env, "défis du jour (tableau de bord)"):
+            challenges = Profile._bf_challenges_data(user)
         return {
             'profile': self._get_profile_data(profile),
             'leaderboard': self._get_leaderboard(),
@@ -65,9 +72,64 @@ class GamificationDashboard(models.AbstractModel):
             'xp_history': self._get_xp_history(user),
             'stats': self._get_global_stats(),
             'available_rewards': self._get_available_rewards(),
-            'achievements': self._get_achievements_data(user),
+            'achievements': achievements,
+            'next_goals': self._get_next_goals(achievements),
+            'challenges': challenges,
             'constance': self._get_constance_data(profile),
         }
+
+    @api.model
+    def set_worn_title(self, badge_id):
+        """Porter, ou retirer (`False`), le nom d'un badge obtenu comme titre.
+
+        Toujours le profil de qui appelle, et jamais sous usurpation du support :
+        le titre est un trait de la personne.
+        """
+        Profile = self.env['bf.gamification.profile']
+        Profile._bf_refuse_if_impersonated(
+            _("Le support ne change pas le titre d'une personne."))
+        if not self.env.user._is_internal():
+            raise AccessError(_("Les titres sont réservés aux usagers internes."))
+        if badge_id is None or badge_id is False:
+            badge_id = False
+        elif type(badge_id) is not int or not 0 < badge_id < 2 ** 31:
+            raise AccessError(_("Badge invalide."))
+        profile = Profile._get_or_create_profile(self.env.user)
+        profile._bf_set_worn_title(badge_id)
+        return self._get_worn_title(profile)
+
+    @api.model
+    def _get_worn_title(self, profile):
+        badge = profile.sudo().worn_badge_id
+        if not badge:
+            return False
+        return {'badge_id': badge.id, 'name': badge.name, 'rarity': badge.rarity}
+
+    @api.model
+    def _get_next_goals(self, achievements, limit=3):
+        """Les prochains objectifs : les badges à compteur les plus avancés.
+
+        Un badge caché reste une surprise, un badge manuel n'a pas de compteur.
+        """
+        goals = []
+        for category in achievements['categories']:
+            for badge in category['badges']:
+                progress = badge['progress'] or {}
+                if (badge['earned'] or badge['hidden'] or badge['kind'] == 'manual'
+                        or not progress.get('target') or progress.get('percent', 0) >= 100):
+                    continue
+                goals.append({
+                    'id': badge['id'],
+                    'name': badge['name'],
+                    'description': badge['description'],
+                    'rarity': badge['rarity'],
+                    'xp_reward': badge['xp_reward'],
+                    'current': progress['current'],
+                    'target': progress['target'],
+                    'percent': progress['percent'],
+                })
+        goals.sort(key=lambda goal: (-goal['percent'], goal['target'], goal['id']))
+        return goals[:limit]
 
     @api.model
     def set_leave_opt_in(self, flag):
@@ -126,6 +188,9 @@ class GamificationDashboard(models.AbstractModel):
     @api.model
     def toggle_showcase_badge(self, user_badge_id):
         """Pin or unpin a badge from the user's showcase. Returns updated showcase list."""
+        # Comme le titre porté : un trait de la personne, que le support ne change pas.
+        self.env['bf.gamification.profile']._bf_refuse_if_impersonated(
+            _("Le support ne change pas la vitrine d'une personne."))
         user = self.env.user
         profile = self.env['bf.gamification.profile']._get_or_create_profile(user)
         user_badge = self.env['bf.gamification.user.badge'].browse(user_badge_id)
@@ -169,6 +234,7 @@ class GamificationDashboard(models.AbstractModel):
             'xp_this_week': profile.xp_this_week,
             'xp_this_month': profile.xp_this_month,
             'showcase_badges': showcase,
+            'worn_title': self._get_worn_title(profile),
         }
 
     @api.model
@@ -187,6 +253,7 @@ class GamificationDashboard(models.AbstractModel):
                 'level_css_class': p.level_id.css_class if p.level_id else '',
                 'badge_count': p.badge_count,
                 'current_streak': p.current_streak,
+                'worn_title': p.worn_badge_id.name or '',
             })
         return result
 
@@ -278,7 +345,7 @@ class GamificationDashboard(models.AbstractModel):
                 }
 
             earned = badge.id in earned_badge_ids
-            progress = badge._get_user_progress(user)
+            progress = badge._get_user_progress(user, earned_ids=earned_badge_ids, profile=profile)
             ub = ub_map.get(badge.id)
 
             badge_data = {
@@ -288,6 +355,7 @@ class GamificationDashboard(models.AbstractModel):
                 'description': (badge.description or '') if (earned or not badge.hidden) else '',
                 'image': badge.image if earned else (badge.image_locked or False),
                 'rarity': badge.rarity,
+                'kind': badge.condition_type,
                 'xp_reward': badge.xp_reward,
                 'earned': earned,
                 'hidden': badge.hidden and not earned,

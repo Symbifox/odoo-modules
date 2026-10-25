@@ -6,6 +6,7 @@ from . import gamification_xp_transaction
 from . import gamification_xp_rule
 from . import gamification_profile
 from . import gamification_constance
+from . import gamification_challenge
 from . import gamification_reward
 from . import gamification_dashboard
 from . import res_config_settings

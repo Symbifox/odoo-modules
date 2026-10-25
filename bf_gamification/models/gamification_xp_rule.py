@@ -24,6 +24,7 @@ class GamificationXpRule(models.Model):
         ('email_triage', 'Triage courriel'),
         ('on_time', 'À temps'),
         ('caught_up', 'À jour'),
+        ('challenge', 'Défi du jour'),
     ], string="Source", required=True)
     trigger = fields.Selection([
         ('create', 'Création'),

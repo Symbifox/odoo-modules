@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 # Ce qui ne fait pas un jour de constance : ce n'est pas du travail
 # (badge, récompense), ou ça découle déjà de la constance ou d'un geste compté
 # ailleurs (la constance elle-même, la fête « à jour »).
-CONSTANCE_EXCLUDED_SOURCES = ('badge', 'reward', 'streak', 'caught_up')
+CONSTANCE_EXCLUDED_SOURCES = ('badge', 'reward', 'streak', 'caught_up', 'challenge')
 # Clé que `bf_impersonate` pose dans la session quand le support voit Symbifox
 # sous le compte d'une personne. Lue telle quelle : Fox Quest ne
 # dépend pas de ce module, et sans lui la clé n'existe jamais.
@@ -92,10 +92,13 @@ class GamificationProfile(models.Model):
     # `readonly` n'arrête que le formulaire : un gestionnaire Fox Quest, qui a
     # le droit d'écrire les profils, posait par RPC la participation ou la
     # marche d'un collègue. Seul le code de Fox Quest, en sudo, y touche.
+    _BF_PROTECTED_FIELDS = ('stamp_count', 'cards_completed', 'worn_badge_id')
+
     def _bf_check_leave_fields(self, names):
-        if not self.env.su and any(name.startswith('leave_') for name in names):
-            raise AccessError(_("La participation aux congés de constance et sa progression "
-                                "ne se modifient pas à la main."))
+        if not self.env.su and any(
+                name.startswith('leave_') or name in self._BF_PROTECTED_FIELDS for name in names):
+            raise AccessError(_("La participation aux congés de constance, la carte de défis et le "
+                                "titre porté ne se modifient pas à la main."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -178,10 +181,11 @@ class GamificationProfile(models.Model):
         Les crons d'ingestion et de miroir IMAP tournent souvent sous le compte
         d'une personne : se fier à `env.user` faisait sortir le renard plusieurs
         fois par jour et comptait des jours de constance sans elle. Un cron, un
-        import ou un script lancé hors d'Odoo n'ont pas de requête (un appel
-        XML-RPC, d'un script ou d'un assistant, en a une : il compte comme le geste
-        de la personne dont il porte le compte). Une méthode, et non une clé de contexte : un appel RPC poserait
-        la clé lui-même pour se donner des points.
+        import ou un script lancé hors d'Odoo n'ont pas de requête, ni un appel
+        XML-RPC (d'un script ou d'un assistant : `request` y est vide sur Odoo 18) ;
+        une requête web en a une, appels JSON sous la session compris. Une méthode,
+        et non une clé de contexte : un appel RPC poserait la clé lui-même pour se
+        donner des points.
 
         Sous usurpation (`bf_impersonate`, le support voit l'écran de la personne),
         la requête et l'identité sont celles de la personne, mais le geste est
@@ -233,16 +237,18 @@ class GamificationProfile(models.Model):
             today = fq_days.user_today(user) or fields.Date.today()
             week_start = today - timedelta(days=today.weekday())
             month_start = today.replace(day=1)
-            week_txns = self.env['bf.gamification.xp.transaction'].search([
-                ('user_id', '=', user.id),
-                ('date', '>=', fq_days.local_midnight_utc(user, week_start)),
-            ])
-            profile.xp_this_week = sum(week_txns.mapped('xp_amount'))
-            month_txns = self.env['bf.gamification.xp.transaction'].search([
-                ('user_id', '=', user.id),
-                ('date', '>=', fq_days.local_midnight_utc(user, month_start)),
-            ])
-            profile.xp_this_month = sum(month_txns.mapped('xp_amount'))
+            Txn = self.env['bf.gamification.xp.transaction']
+
+            def earned_since(day):
+                # Une somme en SQL : le joueur le plus actif compte des milliers de lignes
+                # par mois, et la barre du haut le demande à chaque page.
+                return Txn._read_group([
+                    ('user_id', '=', user.id),
+                    ('date', '>=', fq_days.local_midnight_utc(user, day)),
+                ], [], ['xp_amount:sum'])[0][0] or 0
+
+            profile.xp_this_week = earned_since(week_start)
+            profile.xp_this_month = earned_since(month_start)
 
     def _get_or_create_profile(self, user):
         """Get or create a gamification profile for the given user."""
@@ -312,6 +318,9 @@ class GamificationProfile(models.Model):
 
         # Check automatic badges
         self._check_automatic_badges()
+
+        # Le geste vient-il d'accomplir un défi du jour ?
+        self._bf_progress_challenges(txn)
 
     def _notify_level_up(self, old_level, new_level):
         """Send level-up notification via bus."""

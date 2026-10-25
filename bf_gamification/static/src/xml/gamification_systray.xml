@@ -2,17 +2,27 @@
 <templates xml:space="preserve">
     <t t-name="bf_gamification.Systray">
         <div class="bf-gamification-systray" t-if="state.loaded" t-on-click="openDashboard"
-             role="button" title="Fox Quest">
+             role="button" t-att-title="tooltip">
             <div class="d-flex align-items-center gap-1 px-2 py-1">
                 <!-- Streak -->
                 <span class="bf-streak-badge" t-if="state.current_streak > 0">
                     <i class="fa fa-fire text-warning"/>
                     <span class="fw-bold small" t-esc="state.current_streak"/>
                 </span>
+                <!-- Défis du jour -->
+                <span class="bf-challenge-systray small" t-if="state.challenges_total">
+                    <i t-attf-class="fa fa-paw {{ state.challenges_done === state.challenges_total ? 'text-success' : 'text-muted' }}"/>
+                    <span t-esc="state.challenges_done"/>/<span t-esc="state.challenges_total"/>
+                </span>
                 <!-- XP + Level -->
                 <span class="bf-xp-systray small">
                     <i class="fa fa-star text-warning"/>
                     <span t-esc="state.total_xp"/> XP
+                </span>
+                <!-- Prochain objectif -->
+                <span class="bf-goal-systray small text-muted d-none d-xl-inline" t-if="state.next_goal">
+                    <i class="fa fa-flag-checkered"/>
+                    <t t-esc="state.next_goal.name"/> <t t-esc="state.next_goal.current"/>/<t t-esc="state.next_goal.target"/>
                 </span>
                 <!-- Mini progress bar -->
                 <div class="bf-mini-progress" t-att-title="state.level_name + ' - ' + Math.round(state.progress_percent) + '%'">

@@ -66,6 +66,22 @@
                                                   t-att-class="state.data.profile.level_css_class"
                                                   t-esc="state.data.profile.level_name"/>
                                             <span class="text-muted" t-esc="state.data.profile.level_title"/>
+                                            <div class="mt-2 small d-flex align-items-center gap-2 bf-fq-title">
+                                                <i class="fa fa-certificate text-warning"/>
+                                                <span class="text-muted">Titre :</span>
+                                                <select class="form-select form-select-sm w-auto" t-on-change="setWornTitle"
+                                                        t-att-disabled="!earnedBadges().length">
+                                                    <option value="" t-att-selected="!state.data.profile.worn_title">
+                                                        <t t-if="earnedBadges().length">Aucun titre</t>
+                                                        <t t-else="">Gagnez un badge pour porter son nom</t>
+                                                    </option>
+                                                    <t t-foreach="earnedBadges()" t-as="eb" t-key="eb.id">
+                                                        <option t-att-value="eb.id"
+                                                                t-att-selected="state.data.profile.worn_title and state.data.profile.worn_title.badge_id === eb.id"
+                                                                t-esc="eb.name"/>
+                                                    </t>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-auto text-end">
                                             <div class="fs-2 fw-bold text-warning">
@@ -113,6 +129,95 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Défis du jour et prochains objectifs -->
+                    <div class="row mb-4 g-3"
+                         t-if="(state.data.challenges and state.data.challenges.enabled and (state.data.challenges.lines.length or state.data.challenges.rest_day)) or (state.data.next_goals and state.data.next_goals.length)">
+                        <div t-if="state.data.challenges and state.data.challenges.enabled and (state.data.challenges.lines.length or state.data.challenges.rest_day)"
+                             t-attf-class="{{ state.data.next_goals and state.data.next_goals.length ? 'col-lg-7' : 'col-12' }}">
+                            <t t-set="ch" t-value="state.data.challenges"/>
+                            <div class="card shadow-sm h-100 bf-fq-challenges">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-paw me-2"/>D&#233;fis du jour</h5>
+                                    <span class="small text-muted" t-if="ch.cards_completed">
+                                        <i class="fa fa-trophy text-warning me-1"/><t t-esc="ch.cards_completed"/> carte<t t-if="ch.cards_completed > 1">s</t> compl&#232;te<t t-if="ch.cards_completed > 1">s</t>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="ch.rest_day">
+                                        <p class="mb-0 text-muted bf-fq-rest">
+                                            <i class="fa fa-moon-o me-2"/>Jour de repos : le renard fait la sieste. Les d&#233;fis reviennent le prochain jour ouvrable.
+                                        </p>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="mb-3 bf-fq-greeting">
+                                            <t t-if="ch.all_done">Tous les d&#233;fis du jour sont faits. Le renard est ravi, <t t-esc="firstName()"/>&#160;!</t>
+                                            <t t-else="">Bonjour <t t-esc="firstName()"/>, voici vos d&#233;fis du jour. Le premier vaut le double.</t>
+                                        </p>
+                                        <ul class="list-unstyled mb-3">
+                                            <t t-foreach="ch.lines" t-as="line" t-key="line.id">
+                                                <li t-attf-class="bf-fq-challenge d-flex align-items-center gap-3 mb-2 {{ line.done ? 'bf-fq-challenge-done' : '' }}">
+                                                    <i t-attf-class="fa {{ line.done ? 'fa-check-circle text-success' : line.icon }} fa-lg bf-fq-challenge-icon"/>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span class="fw-bold" t-esc="line.name"/>
+                                                            <span class="small text-nowrap">
+                                                                <span t-if="line.bonus" class="badge text-bg-warning me-1" title="Le premier d&#233;fi du jour vaut le double">&#215;2</span>
+                                                                <span class="badge text-bg-success">+<t t-esc="line.xp"/> XP</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="small text-muted" t-if="line.description" t-esc="line.description"/>
+                                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                                            <div class="progress flex-grow-1" style="height: 6px;">
+                                                                <div class="progress-bar bg-success" role="progressbar"
+                                                                     t-attf-style="width: {{ Math.round(100 * line.progress / line.target) }}%"/>
+                                                            </div>
+                                                            <small class="text-muted text-nowrap"><t t-esc="line.progress"/>/<t t-esc="line.target"/></small>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                        <div class="d-flex align-items-center gap-2 bf-fq-stamps" title="Chaque d&#233;fi accompli donne un tampon ; la carte compl&#232;te paie un bonus">
+                                            <span class="small text-muted">Carte &#224; tampons</span>
+                                            <t t-foreach="stampSlots()" t-as="stamp" t-key="stamp.n">
+                                                <span t-attf-class="bf-fq-stamp {{ stamp.on ? 'bf-fq-stamp-on' : '' }}">
+                                                    <i t-if="stamp.on" class="fa fa-paw"/>
+                                                </span>
+                                            </t>
+                                            <small class="text-muted"><t t-esc="ch.stamps"/>/<t t-esc="ch.per_card"/></small>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-if="state.data.next_goals and state.data.next_goals.length"
+                             t-attf-class="{{ state.data.challenges and state.data.challenges.enabled and (state.data.challenges.lines.length or state.data.challenges.rest_day) ? 'col-lg-5' : 'col-12' }}">
+                            <div class="card shadow-sm h-100 bf-fq-next-goals">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-flag-checkered me-2"/>Prochains objectifs</h5>
+                                    <button class="btn btn-sm btn-outline-primary" t-on-click="showAchievements">Tous les badges</button>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <t t-foreach="state.data.next_goals" t-as="goal" t-key="goal.id">
+                                        <li class="list-group-item bf-fq-goal" t-att-title="goal.description">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="fw-bold" t-esc="goal.name"/>
+                                                <small class="text-muted text-nowrap">
+                                                    <t t-esc="goal.current"/>/<t t-esc="goal.target"/>
+                                                    <t t-if="goal.xp_reward"> &#183; +<t t-esc="goal.xp_reward"/> XP</t>
+                                                </small>
+                                            </div>
+                                            <div class="progress mt-1" style="height: 6px;">
+                                                <div class="progress-bar bg-warning" role="progressbar"
+                                                     t-attf-style="width: {{ goal.percent }}%"/>
+                                            </div>
+                                        </li>
+                                    </t>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -263,7 +368,10 @@
                                                                  class="rounded-circle me-2" width="28" height="28"/>
                                                             <div>
                                                                 <div t-esc="player.user_name"/>
-                                                                <small class="text-muted" t-esc="player.level_title"/>
+                                                                <small class="text-muted">
+                                                                    <t t-esc="player.level_title"/>
+                                                                    <t t-if="player.worn_title"> &#183; <i class="fa fa-certificate text-warning"/> <t t-esc="player.worn_title"/></t>
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </td>

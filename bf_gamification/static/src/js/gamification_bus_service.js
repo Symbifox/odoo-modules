@@ -10,6 +10,7 @@ export const gamificationBusService = {
         const state = reactive({
             pendingBadge: null,
             pendingLevelUp: null,
+            challengeTick: 0,
         });
 
         bus_service.subscribe("bf_gamification/badge_earned", (payload) => {
@@ -38,6 +39,24 @@ export const gamificationBusService = {
                 img_url: payload.img_url,
                 fadeout: payload.big ? "slow" : "medium",
             });
+        });
+
+        // Un défi du jour accompli : un petit mot du renard ; la carte complète, elle, a sa fête.
+        bus_service.subscribe("bf_gamification/challenge_done", (payload) => {
+            state.challengeTick += 1;
+            if (payload.card_complete) {
+                effect.add({
+                    type: "rainbow_man",
+                    message: payload.message,
+                    img_url: payload.img_url,
+                    fadeout: "slow",
+                });
+            } else {
+                notification.add(
+                    `${payload.message} +${payload.xp} XP \u00b7 tampons ${payload.stamps}/${payload.per_card}`,
+                    { type: "success", sticky: false }
+                );
+            }
         });
 
         bus_service.subscribe("bf_gamification/xp_gained", (payload) => {

@@ -1288,7 +1288,10 @@ class TestConstance(TransactionCase):
                 ("_apply_rules", (False, None, "neuf"), {"extra": 1}),
                 ("_sync_account", ("compte", "neuf"), {"extra": 1}),
                 ("_cron_sync_emails", ("neuf",), {"extra": 1}),
-                ("_ingest_rfc822", (b"", 1, "INBOX", "compte", "neuf"), {"extra": 1})):
+                ("_ingest_rfc822", (b"", 1, "INBOX", "compte", "neuf"), {"extra": 1}),
+                ("action_sync_now", (), {}),
+                ("_sync_own_accounts", (), {"extra": 1}),
+                ("_mirror_own_accounts", (), {"extra": 1})):
             self.patch(next(klass for klass in below if name in vars(klass)), name, record(name))
             getattr(ours.BfEmail, name)(BfEmail, *args, **kwargs)
             self.assertEqual(calls[-1], (name, args, kwargs, True), name)

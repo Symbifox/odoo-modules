@@ -31,6 +31,7 @@ class GamificationXpTransaction(models.Model):
         ('email_triage', 'Triage courriel'),
         ('on_time', 'À temps'),
         ('caught_up', 'À jour'),
+        ('challenge', 'Défi du jour'),
     ], string="Source", required=True, index=True)
     description = fields.Char(string="Description")
     reference = fields.Reference(
@@ -50,6 +51,7 @@ class GamificationXpTransaction(models.Model):
             ('corporate.resolution', 'Résolution corporative'),
             ('bf.email', 'Courriel BF'),
             ('bf.gamification.caught.up', 'Journée à jour'),
+            ('bf.gamification.challenge.line', 'Défi du jour'),
         ],
         string="Référence",
     )
@@ -103,7 +105,12 @@ class GamificationXpTransaction(models.Model):
         personne elle-même dans une requête.
         """
         if from_request is None:
-            from_request = self.env['bf.gamification.profile']._bf_is_own_gesture(user)
+            # Les moteurs de la boîte (synchronisation, règles, ingestion) tournent dans la requête
+            # de la personne quand elle clique « Synchroniser maintenant » : ce qu'ils traitent
+            # n'est pas son geste, même si l'XP lui est crédité.
+            from .gamification_constance import NO_CELEBRATION
+            from_request = (self.env['bf.gamification.profile']._bf_is_own_gesture(user)
+                            and not self.env.context.get(NO_CELEBRATION))
         vals = {
             'user_id': user.id,
             'xp_amount': amount,

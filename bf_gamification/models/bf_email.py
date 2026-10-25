@@ -80,3 +80,15 @@ class BfEmail(models.Model):
     @api.model
     def _ingest_rfc822(self, *args, **kwargs):
         return super(BfEmail, self._bf_fq_engine())._ingest_rfc822(*args, **kwargs)
+
+    # Le bouton lui-même et ses deux passes propres à la personne : le miroir y passe « Traité »
+    # ce qu'elle a rangé dans Thunderbird, dans sa requête. Les poser ici couvre aussi les passes
+    # que `bf_email_management` y ajoutera.
+    def action_sync_now(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine()).action_sync_now(*args, **kwargs)
+
+    def _sync_own_accounts(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._sync_own_accounts(*args, **kwargs)
+
+    def _mirror_own_accounts(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._mirror_own_accounts(*args, **kwargs)

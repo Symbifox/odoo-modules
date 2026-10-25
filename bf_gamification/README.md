@@ -22,6 +22,9 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
   - [Streaks (constance)](#streaks-constance)
   - [On time](#on-time)
   - [Caught up](#caught-up)
+  - [Daily challenges](#daily-challenges)
+  - [Next goals](#next-goals)
+  - [Worn title](#worn-title)
   - [Rewards](#rewards)
   - [Constance time off](#constance-time-off)
   - [Known limits](#known-limits)
@@ -53,6 +56,9 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 - **Streak tracking** — consecutive *working days* of activity, in each person's time zone; weekends, public holidays and declared absences pause it instead of breaking it
 - **On-time rewards** — meeting reports sent within 24 h, agendas sent 24 h ahead, activities and tasks done by their due date
 - **Caught-up fox** — when one of your work lists empties, a fox congratulates you (Odoo's rainbow-man effect, the one that ends a bank reconciliation)
+- **Daily challenges** — three small challenges every working day, drawn from what each person can really do; the first pays double, and five stamps fill a card that pays a bonus
+- **Next goals** — the badges closest to being earned, on the dashboard and in the top bar
+- **Worn title** — wear the name of a badge you earned under your name, on your profile and the leaderboard
 - **Constance time off** — optional, off by default: after a set number of working days of constance, a time-off request goes to a manager for approval; each employee chooses to take part
 - **Service accounts out of the game** — integration and portal accounts earn nothing and stay off the leaderboard
 - **Real-time popups** — animated achievement and level-up overlays via Odoo `bus.bus`
@@ -121,13 +127,16 @@ Navigate to **Settings > Fox Quest** (visible to Fox Quest managers).
 | Setting | Default | Description |
 |---|---|---|
 | Activer Fox Quest | On | Master toggle — disables all XP awarding when off |
-| Afficher le classement | On | Show/hide the leaderboard |
+| Afficher le classement | On | Reserved: the leaderboard is always shown, no code reads this switch yet |
 | Popups d'achievement | On | Show animated overlays on badge/level-up events |
 | Sons | On | Enable audio effects (reserved for future use) |
-| Confettis | On | Enable confetti visual effects |
+| Confettis | On | Reserved: no code reads this switch yet |
+| Proposer des défis du jour | On | Offer the daily challenges and the stamp card (the challenges themselves are managed under **Fox Quest > Configuration > Daily challenges**) |
 | Jours ouvrables avant reset du streak | 2 | Working days without activity that break the streak (2 = one missed working day is tolerated) |
 
-All settings are stored as `ir.config_parameter` keys prefixed with `bf_gamification.*`.
+All settings are stored as `ir.config_parameter` keys prefixed with `bf_gamification.*`. The on/off switches
+are stored as the text `True` or `False`, so that a switch turned off stays off when the screen is opened again
+(Odoo drops the value of an unchecked box, and the default, on, came back).
 
 ---
 
@@ -232,8 +241,8 @@ setting keeps its meaning: with the default of 2, one missed working day is tole
 "Streak quotidien" rule pays its XP once on each working day the streak continues.
 
 Only the person's own actions count: a day counts when it carries XP earned during the person's own
-request (a click, or a call made under their own account: a script or an assistant calling Odoo over
-XML-RPC as that person is a request like any other and counts as theirs), never from a scheduled job,
+web request (a click in the browser, including the JSON calls the interface makes itself; a script or an
+assistant calling Odoo over XML-RPC has no web request in Odoo 18 and does not count), never from a scheduled job,
 a colleague or a service account acting on their work (a colleague closing their task, or a robot
 reviewing their meeting report, still credits them, but makes no day of constance), nor from a support
 session seeing Odoo as that person (`bf_impersonate`): the XP is still credited, but the support's
@@ -279,11 +288,56 @@ celebrates once per day and per list: a fox appears in Odoo's rainbow-man effect
 is recorded. When all five are empty at once, a bigger celebration, once a day. Nothing fires from a
 cron, a sorting rule or a service account acting on its own, nor from a support session seeing Odoo
 as you (`bf_impersonate`), nor from the mailbox engines run from your own click (« Synchroniser
-maintenant », re-applying rules). A call made under your own account (a script or an assistant over
-XML-RPC) is a request like any other: it counts as your action. For tasks, only closing an overdue
+maintenant », re-applying rules), nor from a call made over XML-RPC (a script or an assistant: Odoo
+gives it no web request). For tasks, only closing an overdue
 task counts (not postponing it or leaving it); a task in a folded stage is closed. A celebration that
 fails never breaks the action that triggered it. The effect follows Fox Quest's popup setting and
 Odoo's "Show effects" setting (when effects are off, Odoo shows a plain notification).
+
+### Daily challenges
+
+Every working day of a person, Fox Quest offers three small challenges drawn from what that person
+can really do: close two tasks, log time, resolve a ticket, move a report along... The first one
+pays double. Each finished challenge gives a **stamp**; a card of five stamps pays a bonus (the XP
+rule *Carte de défis complète*, editable under **Fox Quest > Configuration > XP rules**) and starts
+again.
+
+- **What counts.** A challenge counts a person's own gestures of one XP source, on their own day (in
+  their time zone), read from the XP journal. It follows the same guard as the streak: only a
+  gesture of the person themselves, in their own web request, counts. A scheduled job, a mailbox
+  rule, a colleague, a robot, a support session seeing Odoo as them (`bf_impersonate`) or an
+  XML-RPC call (Odoo gives it no web request) does not. A task closed on time pays two XP lines but is
+  one gesture. Chat messages never count, and no challenge is ever paid in messages.
+- **When and which.** The three challenges are drawn the first time the day is looked at (the top bar,
+  the dashboard, or the first gesture of the day): no scheduled job. Only on a working day of the
+  person: weekends, public holidays and declared absences are a real rest. The draw is seeded with
+  the person and the day, so it is the same everywhere, and it does not repeat yesterday's challenges
+  while enough others remain. A challenge is only offered to people who may write the record it
+  needs (its *Required model*).
+- **A day does not move.** The target and the reward are copied into the day's lines when they are
+  drawn: editing the catalogue later changes tomorrow, not today.
+- **Who sees what.** Only the person reads their own challenges and stamps, managers included (like
+  the caught-up days). Colleagues and the leaderboard see nothing of it, and nobody writes a line
+  by hand: the lines are written by the module only.
+- **The catalogue.** Twelve challenges ship with the module (**Fox Quest > Configuration > Daily
+  challenges**). Managers rename, retune or archive them; one already offered is archived, not
+  deleted. A company that does not want them turns *Daily challenges* off in the settings.
+- **The fox.** Each finished challenge gets a small word from the fox and, with popups on, a stamp
+  on the card; a full card gets the fox's rainbow-man celebration. The dashboard and the top bar
+  update by themselves.
+
+### Next goals
+
+The dashboard and the top bar show the badges closest to being earned: the three most advanced
+badges with a counter (for example *Renard Implacable: 37 / 50 tasks*). A hidden badge stays a
+surprise until you earn it, and a manual badge has no counter, so neither is shown.
+
+### Worn title
+
+A person can wear the name of any badge they earned as a title (*Archiviste*, *Maître de la
+Tanière*...), chosen on the dashboard. It shows under their name on their profile and on the
+leaderboard. Nobody wears a badge they did not earn, and a support session seeing Odoo as them
+cannot change it.
 
 ### Rewards
 
@@ -341,11 +395,22 @@ a time-off allocation.
 
 ### Known limits
 
-- A call made under your own account (a script or an assistant over XML-RPC) counts as your action:
-  it can count a day of constance and show the fox.
+- Gestures made by a script, an AI assistant or any other tool over XML-RPC (Odoo gives such a call
+  no web request) credit XP but never count as your own gesture: no day of constance, no fox, no
+  challenge. Only what you do in the browser counts.
 - Any internal user can declare an absence (`bf_contact_absence`) on any contact, which pauses that
   person's constance.
 - The fox ignores a do-not-disturb mode, as badges do.
+- Daily challenges count XP lines, one gesture per record. The XP lines that name no record (the daily
+  productive bonus, the caught-up lines) each count as one gesture: keep a target of 1 for the *Timesheet*
+  and *Caught up* sources. A challenge is offered only while an active XP rule pays its source, but not
+  every rule: if only the *task before deadline* rule stays active, an ordinary closed task pays nothing.
+- A timesheet line pays XP from half an hour (2 XP per hour, rounded down): shorter lines count for nothing.
+- Editing the catalogue changes tomorrow's targets and rewards, not today's; a challenge's name and
+  description are shown as currently written.
+- Changing your time zone in the middle of a day can offer a second set of challenges that day.
+- Any badge you earned can be worn as a title, hidden ones included (their names are already listed in
+  the classic badge views).
 - Turning constance time off off and back on: the count kept going while it was off, so requests
   open right away (one per recount, within the yearly cap).
 - Service accounts are excluded on upgrade for `__system__` and a short list of known integration
@@ -423,6 +488,9 @@ overview built as an OWL component:
 - **Leaderboard** — top 10 players with trophy icons for positions 1-3
 - **Recent badges** — last 6 earned badges with rarity-colored icons
 - **Activity feed** — last 8 XP transactions with source icons and dates
+- **Daily challenges** — today's three challenges with their progress, the stamp card, and a word from the fox
+- **Next goals** — the three badges closest to being earned, with their counters
+- **Worn title** — a drop-down of the badges you earned, to wear one as your title
 - **Global stats** — total players, total XP awarded, total badges unlocked
 
 ### Systray Widget
@@ -432,6 +500,8 @@ A compact widget in the top navigation bar (sequence 80), always visible:
 - Fire icon + streak count (when streak > 0)
 - Star icon + total XP
 - Mini progress bar (40px wide) showing progress to next level
+- Paw icon + challenges done today (for example `1/3`), when challenges are on
+- Your next goal and its counter, on wide screens; the tooltip also gives the stamp card
 - Click opens the dashboard
 
 ### Achievement Popup
@@ -501,6 +571,8 @@ Fox Quest (root, sequence 65)
 | XP Transaction | Read own | All but the "À jour" entries of others; created entries are dated now and never "from a gesture"; person, date, source, amount and reference cannot be rewritten; nothing is deleted |
 | Reward Claim | Read own, create (always *pending*, whatever the caller's context says) | Full access (constance requests cannot be deleted, nor decided under impersonation) |
 | Caught-up day | Own only | Own only |
+| Daily challenge line | Own only, read-only | None (like the caught-up days); written by the module only, even for an administrator |
+| Daily challenge (catalogue) | Read | Full access |
 
 ---
 
@@ -517,6 +589,8 @@ Fox Quest (root, sequence 65)
 | `bf.gamification.xp.rule` | Configurable XP rules | Yes |
 | `bf.gamification.reward` | Redeemable rewards | Yes |
 | `bf.gamification.reward.claim` | Reward claims (workflow) | Yes |
+| `bf.gamification.challenge` | Daily challenge catalogue | Yes |
+| `bf.gamification.challenge.line` | A person's challenges for a day | Yes |
 | `bf.gamification.dashboard` | Dashboard data provider | No (`_auto=False`) |
 | `bf.gamification.grant.badge.wizard` | Badge granting wizard | TransientModel |
 
@@ -542,7 +616,12 @@ and on upgrade (via migration).
 **`bf.gamification.dashboard.get_dashboard_data()`**
 
 Single RPC call returning all dashboard data: profile, leaderboard (top 10), recent badges,
-XP history (30 days), global stats, and available rewards.
+XP history (30 days), global stats, available rewards, the day's challenges and the next goals.
+
+**`bf.gamification.dashboard.set_worn_title(badge_id)`**
+
+Wears (or, with `False`, removes) the name of a badge the caller earned. Always the caller's own profile,
+refused under support impersonation.
 
 ---
 
@@ -562,6 +641,8 @@ XP history (30 days), global stats, and available rewards.
 |---|---|---|
 | `bf_gamification/badge_earned` | badge name, description, XP, rarity, effect, sound, message | Badge granted |
 | `bf_gamification/level_up` | old level, new level (name, title, CSS class), total XP | Level threshold crossed |
+| `bf_gamification/caught_up` | kind, message, image, big | A work list was emptied by its owner |
+| `bf_gamification/challenge_done` | challenge name, XP, stamps, stamps per card, card complete, message | A daily challenge was finished |
 | `bf_gamification/xp_gained` | amount, description | XP awarded (reserved) |
 
 ---
@@ -594,6 +675,7 @@ bf_gamification/
 |   |-- gamification_reward.py          # Rewards + claims
 |   |-- gamification_dashboard.py       # Dashboard data (_auto=False)
 |   |-- gamification_constance.py       # Caught-up fox, constance time off
+|   |-- gamification_challenge.py       # Daily challenges, stamp card, worn title
 |   |-- fq_days.py                      # The person's day and working days
 |   |-- fq_savepoint.py                 # Savepoint that never breaks the triggering action
 |   |-- res_users.py                    # "Hors Fox Quest" flag for service accounts
@@ -666,6 +748,22 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v3.1.0 — Daily challenges, next goals, worn title
+
+- **Daily challenges.** Three small challenges every working day, drawn from what the person can really do, the first
+  paying double. Five stamps fill a card that pays a bonus. Only the person's own gestures count; the catalogue is managed
+  under **Fox Quest > Configuration > Daily challenges** and can be turned off in the settings.
+- **Next goals** on the dashboard and in the top bar; a **worn title** (the name of a badge you earned) on the profile and
+  the leaderboard; a word from the fox on each finished challenge.
+- **A gesture is a web request.** A mailbox processed by itself when you click *Synchroniser maintenant* (the engines of
+  `bf_email_management`) is no longer counted as your gesture (the XP is still credited). The README of 3.0 said an XML-RPC
+  call counted as yours; it never did (Odoo gives it no web request), and the text is corrected.
+- **The switches in Settings turn off.** *Activate Fox Quest*, the leaderboard, popups, sounds and confetti kept coming back on
+  when the screen was reopened. (The leaderboard, sound and confetti switches are not read by any code yet.)
+- **A lighter top bar.** The call the top bar makes on every page no longer recounts the records behind every badge you
+  already earned, and the week's and month's XP are sums: about two to three times faster for the most active player.
+- Service accounts get no challenges, and the support cannot pin a badge for someone.
 
 ### v3.0.2 — A zero setting means the default
 

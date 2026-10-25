@@ -32,6 +32,12 @@ PG_CONCURRENCY_ERRORS = (errors.SerializationFailure, errors.LockNotAvailable,
                          errors.DeadlockDetected)
 
 
+class Outcome:
+    """Ce que `isolated` rend à qui veut savoir si le bloc est allé au bout : `ok` reste faux
+    tant que le point de sauvegarde n'est pas fermé sans erreur."""
+    ok = False
+
+
 @contextmanager
 def isolated(env, label, replay=True):
     """Exécute le bloc dans un point de sauvegarde ; une erreur est journalisée et
@@ -41,10 +47,11 @@ def isolated(env, label, replay=True):
     alors annulée comme les autres : un profil en conflit n'emporte pas ceux
     déjà refaits, il se refera à son prochain geste ou au prochain passage.
     """
+    outcome = Outcome()
     env.flush_all()
     savepoint = env.cr.savepoint(flush=False)
     try:
-        yield
+        yield outcome
         env.flush_all()
     except PG_CONCURRENCY_ERRORS:
         savepoint.close(rollback=True)
@@ -59,6 +66,7 @@ def isolated(env, label, replay=True):
         _logger.warning("Fox Quest : erreur ignorée (%s)", label, exc_info=True)
     else:
         savepoint.close(rollback=False)
+        outcome.ok = True
 
 
 @contextmanager

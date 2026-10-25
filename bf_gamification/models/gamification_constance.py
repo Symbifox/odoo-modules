@@ -6,9 +6,10 @@ l'effet « rainbow man » du cœur (celui de la fin d'un rapprochement bancaire)
 avec un renard, et un petit bonus d'XP. Les cinq vides à la fois : une fête plus
 grande, une fois par jour. Rien ne sort d'un cron, d'une règle de tri, d'un compte
 de service ni d'une usurpation du support : seul compte le geste de la personne
-dont c'est la liste, dans sa propre requête. Un script ou un assistant qui appelle
-Odoo sous son compte (XML-RPC) fait une requête comme une autre : son appel compte
-comme son geste.
+dont c'est la liste, dans sa propre requête web. Un appel XML-RPC (un script ou un
+assistant sous le compte de la personne) n'a pas de requête web liée dans cette
+version d'Odoo : il ne compte pas comme son geste. Seule compte une requête web :
+un clic, ou tout appel JSON fait sous la session de la personne.
 
 Congés de constance : éteints par défaut. La société les allume et fixe le
 palier ; chaque employé choisit d'y participer. Le palier atteint ouvre une

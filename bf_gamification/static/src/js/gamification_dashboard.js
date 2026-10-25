@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, useState, onWillStart } from "@odoo/owl";
+import { Component, useState, useEffect, onWillStart } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
@@ -12,6 +12,8 @@ export class GamificationDashboard extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.notification = useService("notification");
+        // Un défi accompli met l'écran à jour sans le faire clignoter.
+        this.busState = useState(useService("bf_gamification_bus").state);
         this.state = useState({
             loading: true,
             data: null,
@@ -22,6 +24,41 @@ export class GamificationDashboard extends Component {
         onWillStart(async () => {
             await this.loadData();
         });
+
+        // Un rechargement par défi accompli, jamais au montage (le tick d'une page précédente).
+        this.seenTick = this.busState.challengeTick;
+        useEffect(
+            (tick) => {
+                if (tick !== this.seenTick) {
+                    this.seenTick = tick;
+                    this.reloadQuietly();
+                }
+            },
+            () => [this.busState.challengeTick]
+        );
+    }
+
+    async reloadQuietly() {
+        try {
+            this.state.data = await this.orm.call(
+                "bf.gamification.dashboard",
+                "get_dashboard_data",
+                []
+            );
+        } catch (e) {
+            // L'écran déjà affiché reste tel quel.
+        }
+    }
+
+    firstName() {
+        const name = (this.state.data && this.state.data.profile && this.state.data.profile.user_name) || "";
+        return name.split(" ")[0];
+    }
+
+    stampSlots() {
+        const ch = this.state.data && this.state.data.challenges;
+        if (!ch) return [];
+        return Array.from({ length: ch.per_card }, (_, n) => ({ n, on: n < ch.stamps }));
     }
 
     async loadData() {
@@ -95,6 +132,40 @@ export class GamificationDashboard extends Component {
                 type: "danger",
             });
         }
+    }
+
+    earnedBadges() {
+        // Les badges obtenus : chacun peut devenir le titre porté.
+        const data = this.state.data;
+        if (!data || !data.achievements) return [];
+        const earned = [];
+        for (const category of data.achievements.categories) {
+            for (const badge of category.badges) {
+                if (badge.earned) earned.push({ id: badge.id, name: badge.name });
+            }
+        }
+        // Le titre déjà porté reste dans la liste même si son badge est archivé depuis.
+        const worn = data.profile && data.profile.worn_title;
+        if (worn && !earned.some((badge) => badge.id === worn.badge_id)) {
+            earned.push({ id: worn.badge_id, name: worn.name });
+        }
+        return earned.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    async setWornTitle(ev) {
+        const badgeId = ev.target.value ? parseInt(ev.target.value, 10) : false;
+        try {
+            await this.orm.call("bf.gamification.dashboard", "set_worn_title", [badgeId]);
+            this.notification.add(
+                badgeId ? "Titre mis \u00e0 jour." : "Titre retir\u00e9.",
+                { type: "success" }
+            );
+        } catch (e) {
+            this.notification.add(e.data?.message || "Erreur lors du changement de titre", {
+                type: "danger",
+            });
+        }
+        await this.reloadQuietly();
     }
 
     async setLeaveOptIn(flag) {
@@ -171,6 +242,7 @@ export class GamificationDashboard extends Component {
             reward: "fa-gift",
             on_time: "fa-clock-o",
             caught_up: "fa-check-circle-o",
+            challenge: "fa-paw",
         };
         return icons[source] || "fa-star";
     }
@@ -187,6 +259,7 @@ export class GamificationDashboard extends Component {
             reward: "R\u00e9compense",
             on_time: "\u00c0 temps",
             caught_up: "\u00c0 jour",
+            challenge: "D\u00e9fi du jour",
         };
         return labels[source] || source;
     }

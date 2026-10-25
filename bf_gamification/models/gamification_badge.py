@@ -103,22 +103,37 @@ class GamificationBadge(models.Model):
             else:
                 badge.earned_percentage = 0.0
 
-    def _get_user_progress(self, user):
+    def _get_user_progress(self, user, earned_ids=None, profile=None):
         """Return {current, target, percent} for a badge and a user.
         - automatic: search_count(domain + create_uid) / condition_threshold
         - threshold: total_xp / condition_threshold
         - manual: {current: 0 or 1, target: 1} (binary)
+
+        `earned_ids` (les identifiants des badges que la personne a déjà) et `profile` : un
+        appelant qui passe en revue tous les badges les lit une fois pour toutes, au lieu de
+        les chercher à nouveau pour chaque badge (la barre du haut appelle le tableau de bord
+        à chaque page).
         """
         self.ensure_one()
-        UserBadge = self.env['bf.gamification.user.badge']
-        earned = UserBadge.search_count([
-            ('user_id', '=', user.id),
-            ('badge_id', '=', self.id),
-        ]) > 0
+        if earned_ids is None:
+            earned = self.env['bf.gamification.user.badge'].search_count([
+                ('user_id', '=', user.id),
+                ('badge_id', '=', self.id),
+            ]) > 0
+        else:
+            earned = self.id in earned_ids
+
+        if earned and self.condition_type != 'manual':
+            # Un badge déjà obtenu est à 100 % : recompter ses fiches (des milliers de messages,
+            # de tâches) ne sert à rien, et un compte qui baisse depuis (fiches supprimées) ne
+            # doit pas montrer un badge gagné à moitié rempli.
+            target = self.condition_threshold or 1
+            return {'current': target, 'target': target, 'percent': 100.0, 'earned': True}
 
         if self.condition_type == 'threshold' and self.condition_threshold:
-            profile = self.env['bf.gamification.profile'].search(
-                [('user_id', '=', user.id)], limit=1)
+            if profile is None:
+                profile = self.env['bf.gamification.profile'].search(
+                    [('user_id', '=', user.id)], limit=1)
             check_field = self.threshold_field or 'total_xp'
             current = getattr(profile, check_field, 0) if profile else 0
             target = self.condition_threshold

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Défis du jour. `noupdate` : un gestionnaire peut les renommer, les ajuster ou les
+         archiver sans qu'une mise à jour du module les remette. -->
+    <data noupdate="1">
+        <record id="challenge_close_tasks" model="bf.gamification.challenge">
+            <field name="name">Fermer deux t&#226;ches</field>
+            <field name="description">Deux t&#226;ches termin&#233;es aujourd'hui</field>
+            <field name="icon">fa-check-square-o</field>
+            <field name="source">task</field>
+            <field name="model_name">project.task</field>
+            <field name="target">2</field>
+            <field name="xp_reward">10</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="challenge_do_activities" model="bf.gamification.challenge">
+            <field name="name">Faire trois activit&#233;s</field>
+            <field name="description">Trois de vos activit&#233;s faites aujourd'hui</field>
+            <field name="icon">fa-tasks</field>
+            <field name="source">activity</field>
+            <field name="target">3</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="challenge_log_time" model="bf.gamification.challenge">
+            <field name="name">Saisir son temps</field>
+            <field name="description">Au moins une demi-heure saisie aujourd'hui sur une feuille de temps</field>
+            <field name="icon">fa-clock-o</field>
+            <field name="source">timesheet</field>
+            <field name="model_name">account.analytic.line</field>
+            <field name="target">1</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="challenge_triage_mail" model="bf.gamification.challenge">
+            <field name="name">R&#233;pondre &#224; cinq courriels</field>
+            <field name="description">Cinq courriels auxquels vous avez r&#233;pondu aujourd'hui</field>
+            <field name="icon">fa-inbox</field>
+            <field name="source">email_triage</field>
+            <field name="model_name">bf.email</field>
+            <field name="target">5</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="challenge_advance_report" model="bf.gamification.challenge">
+            <field name="name">Faire avancer un compte rendu</field>
+            <field name="description">Cr&#233;er, r&#233;viser ou envoyer un compte rendu de rencontre</field>
+            <field name="icon">fa-file-text-o</field>
+            <field name="source">meeting</field>
+            <field name="model_name">meeting.record</field>
+            <field name="target">1</field>
+            <field name="xp_reward">10</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="challenge_prepare_agenda" model="bf.gamification.challenge">
+            <field name="name">Pr&#233;parer un ordre du jour</field>
+            <field name="description">Un ordre du jour cr&#233;&#233; ou confirm&#233;</field>
+            <field name="icon">fa-list-ol</field>
+            <field name="source">agenda</field>
+            <field name="model_name">meeting.agenda</field>
+            <field name="target">1</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="challenge_resolve_ticket" model="bf.gamification.challenge">
+            <field name="name">R&#233;soudre un ticket</field>
+            <field name="description">Un ticket de support r&#233;solu aujourd'hui</field>
+            <field name="icon">fa-life-ring</field>
+            <field name="source">helpdesk</field>
+            <field name="model_name">helpdesk.ticket</field>
+            <field name="target">1</field>
+            <field name="xp_reward">10</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="challenge_write_document" model="bf.gamification.challenge">
+            <field name="name">Documenter</field>
+            <field name="description">Un document cr&#233;&#233; ou r&#233;vis&#233; aujourd'hui</field>
+            <field name="icon">fa-book</field>
+            <field name="source">document</field>
+            <field name="model_name">project.document</field>
+            <field name="target">1</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="challenge_keep_deadlines" model="bf.gamification.challenge">
+            <field name="name">Tenir ses &#233;ch&#233;ances</field>
+            <field name="description">Deux &#233;ch&#233;ances respect&#233;es aujourd'hui</field>
+            <field name="icon">fa-calendar-check-o</field>
+            <field name="source">on_time</field>
+            <field name="target">2</field>
+            <field name="xp_reward">10</field>
+            <field name="sequence">90</field>
+        </record>
+        <record id="challenge_clear_a_list" model="bf.gamification.challenge">
+            <field name="name">Vider une liste</field>
+            <field name="description">Une liste de travail &#224; z&#233;ro : le renard approuve</field>
+            <field name="icon">fa-paw</field>
+            <field name="source">caught_up</field>
+            <field name="target">1</field>
+            <field name="xp_reward">12</field>
+            <field name="sequence">100</field>
+        </record>
+        <record id="challenge_record_decision" model="bf.gamification.challenge">
+            <field name="name">Documenter une d&#233;cision</field>
+            <field name="description">Une d&#233;cision de rencontre not&#233;e</field>
+            <field name="icon">fa-gavel</field>
+            <field name="source">decision</field>
+            <field name="model_name">meeting.decision</field>
+            <field name="target">1</field>
+            <field name="xp_reward">8</field>
+            <field name="sequence">110</field>
+        </record>
+        <record id="challenge_do_maintenance" model="bf.gamification.challenge">
+            <field name="name">Faire une maintenance</field>
+            <field name="description">Une maintenance d'h&#233;bergement compl&#233;t&#233;e</field>
+            <field name="icon">fa-wrench</field>
+            <field name="source">hosting</field>
+            <field name="model_name">hosting.maintenance.schedule</field>
+            <field name="target">1</field>
+            <field name="xp_reward">10</field>
+            <field name="sequence">120</field>
+        </record>
+
+        <record id="xp_rule_challenge_card" model="bf.gamification.xp.rule">
+            <field name="name">Carte de d&#233;fis compl&#232;te</field>
+            <field name="source">challenge</field>
+            <field name="trigger">complete</field>
+            <field name="xp_amount">25</field>
+            <field name="condition_description">Cinq d&#233;fis du jour accomplis : la carte &#224; tampons repart &#224; z&#233;ro</field>
+        </record>
+    </data>
+</odoo>

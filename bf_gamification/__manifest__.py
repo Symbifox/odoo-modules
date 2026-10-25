@@ -32,7 +32,16 @@
     # 18.0.3.0.2: a zero, an empty value or a negative number in the constance
     #   settings (step, days per step, yearly cap) reads as the default, whichever
     #   way the Odoo core stores a zero.
-    "version": "18.0.3.0.2",
+    # 18.0.3.1.0: daily challenges (three per working day, drawn from what the person can do,
+    #   the first pays double) and a stamp card (five stamps pay a bonus); next goals (the
+    #   closest badges with a counter) on the dashboard and in the top bar; a worn title (the
+    #   name of a badge you earned); a word from the fox on every finished challenge. Only the
+    #   person's own gesture in their own web request counts: not a scheduled job, a robot, a
+    #   colleague, the support, an XML-RPC call, nor what the mailbox engines process by
+    #   themselves when the person clicks "Synchroniser maintenant". The top-bar call is two to
+    #   three times lighter (badge progress without recounting earned badges, the week's XP as
+    #   a sum). The switches in Settings can now be turned off.
+    "version": "18.0.3.1.0",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -69,6 +78,7 @@
         "data/gamification_xp_rule_data.xml",
         "data/gamification_badge_data.xml",
         "data/gamification_constance_data.xml",
+        "data/gamification_challenge_data.xml",
         "data/gamification_cron.xml",
         "data/bf_onboarding.xml",
         # Wizard
@@ -82,6 +92,7 @@
         "views/gamification_reward_views.xml",
         "views/gamification_reward_claim_views.xml",
         "views/gamification_xp_rule_views.xml",
+        "views/gamification_challenge_views.xml",
         "views/gamification_xp_transaction_views.xml",
         "views/gamification_dashboard_views.xml",
         "views/res_config_settings_views.xml",

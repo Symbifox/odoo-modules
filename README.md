@@ -224,7 +224,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.3.0 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.1.0 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
-| `bf_gamification` | Fox Quest | 18.0.3.0.2 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification` | Fox Quest | 18.0.3.1.0 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_gamification_contact_absence` | Fox Quest : absences déclarées et constance | 18.0.1.0.0 | BUSL-1.1 | A declared, corrected, archived or removed absence recomputes the Fox Quest streak |
 | `bf_gamification_hr_holidays` | Fox Quest : congés de constance dans Congés | 18.0.1.0.0 | BUSL-1.1 | An approved constance day off becomes a Time Off allocation |
 | `bf_gantt` | Échéancier | 18.0.1.7.0 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |

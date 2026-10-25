@@ -38,6 +38,13 @@
                             <field name="gamification_confetti_enabled"/>
                         </setting>
                     </block>
+                    <block title="D&#233;fis du jour">
+                        <setting id="gamification_challenges"
+                                 string="Proposer des d&#233;fis du jour"
+                                 help="Chaque jour ouvrable, trois petits d&#233;fis tir&#233;s de ce que la personne peut faire, et une carte &#224; tampons. Seuls ses propres gestes comptent, et elle seule voit ses d&#233;fis. Les d&#233;fis se g&#232;rent dans Configuration.">
+                            <field name="gamification_challenges_enabled"/>
+                        </setting>
+                    </block>
                     <block title="Constance">
                         <setting id="gamification_streak"
                                  string="R&#233;initialisation du streak"

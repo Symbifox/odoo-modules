@@ -322,3 +322,52 @@
     font-size: 0.7em;
     padding: 2px 8px;
 }
+
+// Défis du jour, carte à tampons et prochains objectifs
+.bf-gamification-systray {
+    .bf-challenge-systray,
+    .bf-goal-systray {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
+    }
+
+    .bf-goal-systray {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.bf-fq-challenges {
+    .bf-fq-challenge-icon {
+        width: 28px;
+        text-align: center;
+    }
+
+    .bf-fq-challenge-done {
+        .fw-bold {
+            text-decoration: line-through;
+            text-decoration-thickness: 1px;
+        }
+    }
+
+    .bf-fq-stamp {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px dashed #ced4da;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+
+        &.bf-fq-stamp-on {
+            border-style: solid;
+            border-color: #f0ad4e;
+            background-color: #fff3d6;
+            color: #d98200;
+        }
+    }
+}

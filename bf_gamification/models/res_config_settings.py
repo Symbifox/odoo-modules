@@ -67,11 +67,47 @@ class ResConfigSettings(models.TransientModel):
              "n'y a pas de réglage « sans plafond », pour ne pas limiter saisir une "
              "grande valeur (999).",
     )
+    gamification_challenges_enabled = fields.Boolean(
+        string="Défis du jour",
+        config_parameter='bf_gamification.challenges_enabled',
+        default=True,
+    )
     gamification_confetti_enabled = fields.Boolean(
         string="Activer les confettis",
         config_parameter='bf_gamification.confetti_enabled',
         default=True,
     )
+
+    # Odoo range une case cochée en « True » et SUPPRIME la valeur d'une case décochée : le défaut
+    # (activé) revenait alors à la réouverture de l'écran, et la case ne s'éteignait jamais. Les
+    # interrupteurs de Fox Quest écrivent donc « False » en toutes lettres, et l'écran le relit.
+    _BF_TOGGLES = {
+        'gamification_enabled': 'bf_gamification.gamification_enabled',
+        'gamification_show_leaderboard': 'bf_gamification.show_leaderboard',
+        'gamification_popup_enabled': 'bf_gamification.popup_enabled',
+        'gamification_sound_enabled': 'bf_gamification.sound_enabled',
+        'gamification_confetti_enabled': 'bf_gamification.confetti_enabled',
+        'gamification_challenges_enabled': 'bf_gamification.challenges_enabled',
+    }
+
+    def _bf_store_toggles(self):
+        ICP = self.env['ir.config_parameter'].sudo()
+        for name, key in self._BF_TOGGLES.items():
+            ICP.set_param(key, 'True' if self[name] else 'False')
+
+    def set_values(self):
+        res = super().set_values()
+        self._bf_store_toggles()
+        return res
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        ICP = self.env['ir.config_parameter'].sudo()
+        for name, key in self._BF_TOGGLES.items():
+            if name in fields_list:
+                res[name] = ICP.get_param(key, 'True') == 'True'
+        return res
 
     def action_reset_all_progress(self):
         """Wipe all XP, badges, streaks, and reward claims for every user
@@ -107,6 +143,7 @@ class ResConfigSettings(models.TransientModel):
         # Les journées « à jour » et la marche vers le prochain congé
         # repartent aussi ; le choix de participer, lui, appartient à la personne.
         cr.execute("DELETE FROM bf_gamification_caught_up")
+        cr.execute("DELETE FROM bf_gamification_challenge_line")
         cr.execute("""
             UPDATE bf_gamification_profile
             SET total_xp = 0,
@@ -118,7 +155,10 @@ class ResConfigSettings(models.TransientModel):
                 xp_to_next_level = 0,
                 progress_percent = 0,
                 title = NULL,
-                leave_progress = 0
+                leave_progress = 0,
+                stamp_count = 0,
+                cards_completed = 0,
+                worn_badge_id = NULL
         """)
         profile_count = cr.rowcount
         self.env.invalidate_all(flush=False)
