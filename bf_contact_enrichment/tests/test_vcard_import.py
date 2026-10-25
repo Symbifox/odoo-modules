@@ -45,7 +45,10 @@ def _upload(vcf):
 class TestVcardImport(TransactionCase):
 
     def _run(self, vcf):
-        wizard = self.env["bf.contact.vcard.wizard"].create({
+        # Le résumé se lit dans la langue de l'usager : épinglée, pour que
+        # l'essai tienne sur une base fr_CA seule comme sur une base neuve.
+        wizard = self.env["bf.contact.vcard.wizard"].with_context(
+            lang="en_US").create({
             "vcf_file": _upload(vcf), "vcf_filename": "essai.vcf",
         })
         return wizard.action_import()
@@ -149,8 +152,8 @@ NOTE:ni nom ni courriel\r
 END:VCARD\r
 """)
         message = action["params"]["message"]
-        self.assertIn("1 créé", message)
-        self.assertIn("1 fiche(s) sans nom ni courriel", message)
+        self.assertIn("1 created", message)
+        self.assertIn("1 record(s) with no name or email", message)
 
     def test_linkedin_survives_both_lineages(self):
         """La ligne Blue Fox range le profil LinkedIn sur la fiche. La variante

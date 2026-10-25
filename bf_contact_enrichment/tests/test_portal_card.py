@@ -18,7 +18,7 @@ from unittest.mock import patch
 
 from odoo.addons.bf_contact_enrichment.controllers import portal_card
 
-from odoo.tests import HttpCase, tagged
+from odoo.tests import HttpCase, TransactionCase, tagged
 
 # La lecture de carte part sur la socket du pont. On remplace l'envoi lui-même,
 # donc le dernier geste avant le réseau : ce qui est au-dessus est éprouvé, et
@@ -52,12 +52,31 @@ CARD = {
 }
 
 
+def url_carte(env):
+    """Le chemin de la page des cartes, selon ce que la base porte.
+
+    Seule, cette page EST ``/scan``. Avec ``bf_scan`` installé, ``/scan``
+    devient l'accueil à trois tuiles et la page des cartes vit sous
+    ``/scan/carte`` — mêmes routes JSON, même script, même gabarit. L'essai
+    suit la base plutôt que de figer l'un des deux mondes : sans ça, il
+    tomberait sur tout locataire qui installe l'extension, et ce serait
+    l'essai qui aurait tort.
+    """
+    module = env["ir.module.module"].sudo().search(
+        [("name", "=", "bf_scan")], limit=1)
+    return "/scan/carte" if module.state == "installed" else "/scan"
+
+
 @tagged("post_install", "-at_install")
 class TestPortalCard(HttpCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Les textes de la page se lisent dans la langue de l'usager : ces essais
+        # les attendent en anglais, sur une base fr_CA seule (BF) comme sur une
+        # base neuve ; le français est éprouvé dans TestPortalCardLangue.
+        cls.env["res.lang"]._activate_lang("en_US")
         Users = cls.env["res.users"].with_context(no_reset_password=True)
         enrich_group = cls.env.ref("bf_contact_enrichment.group_bf_contact_enrich")
         # « Création de contacts » est indispensable et n'est PAS impliqué par le
@@ -66,6 +85,7 @@ class TestPortalCard(HttpCase):
         partner_manager = cls.env.ref("base.group_partner_manager")
         cls.scanner = Users.create({
             "name": "Porteuse de carte",
+            "lang": "en_US",
             "login": "scan.member@test.invalid",
             "password": "scan.member@test.invalid",
             # Sans adresse, message_post refuse de journaliser la création
@@ -77,6 +97,7 @@ class TestPortalCard(HttpCase):
         # contact : c'est le trou de configuration le plus probable en clientèle.
         cls.half_rights = Users.create({
             "name": "Droits partiels",
+            "lang": "en_US",
             "login": "scan.half@test.invalid",
             "password": "scan.half@test.invalid",
             # Sans adresse, message_post refuse de journaliser la création
@@ -86,6 +107,7 @@ class TestPortalCard(HttpCase):
         })
         cls.outsider = Users.create({
             "name": "Sans droit",
+            "lang": "en_US",
             "login": "scan.outsider@test.invalid",
             "password": "scan.outsider@test.invalid",
             # Sans adresse, message_post refuse de journaliser la création
@@ -147,13 +169,13 @@ class TestPortalCard(HttpCase):
     # ── La page ─────────────────────────────────────────────────────
 
     def test_an_anonymous_visitor_is_sent_to_the_login(self):
-        response = self.url_open("/scan", timeout=30)
+        response = self.url_open(url_carte(self.env), timeout=30)
         self.assertIn("/web/login", response.url,
                       "la page ne doit jamais s'ouvrir sans session")
 
     def test_a_member_gets_the_capture_step(self):
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        response = self.url_open("/scan", timeout=30)
+        response = self.url_open(url_carte(self.env), timeout=30)
         self.assertEqual(response.status_code, 200)
         body = response.text
         self.assertIn("step-capture", body)
@@ -164,18 +186,18 @@ class TestPortalCard(HttpCase):
 
     def test_a_non_member_is_told_what_is_missing(self):
         self.authenticate("scan.outsider@test.invalid", "scan.outsider@test.invalid")
-        response = self.url_open("/scan", timeout=30)
+        response = self.url_open(url_carte(self.env), timeout=30)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Accès requis", response.text)
+        self.assertIn("Access required", response.text)
         self.assertNotIn("step-capture", response.text)
 
     def test_a_member_who_cannot_write_contacts_is_stopped_at_the_door(self):
         # Sinon la carte serait lue — donc payée — avant de buter sur le refus
         # d'écriture, ce qui est la pire des deux façons d'échouer.
         self.authenticate("scan.half@test.invalid", "scan.half@test.invalid")
-        response = self.url_open("/scan", timeout=30)
+        response = self.url_open(url_carte(self.env), timeout=30)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Création de contacts", response.text)
+        self.assertIn("Contact Creation", response.text)
         self.assertNotIn("step-capture", response.text)
 
     def test_a_member_who_cannot_write_contacts_cannot_spend_a_scan(self):
@@ -244,6 +266,19 @@ class TestPortalCard(HttpCase):
         self.assertIn("navigate", source,
                       "le worker doit reconnaître une navigation")
 
+    def test_the_worker_refreshes_its_shell_and_keeps_the_anchors_of_bf_scan(self):
+        """Le module `bf_scan` réécrit cet agent par `str.replace` sur trois ancres : un
+        changement de forme les rend inopérantes SANS erreur (relecture adverse, tour 1).
+        Et le shell se recharge du réseau : `addAll` lit le cache HTTP (`/static/` : une semaine)."""
+        if self.env["ir.module.module"].sudo().search_count(
+                [("name", "=", "bf_scan"), ("state", "=", "installed")]):
+            self.skipTest("avec bf_scan, c'est son agent qui est servi")
+        source = self.url_open("/scan/sw.js", timeout=30).text
+        for ancre in ("'bf-scan-v2'", "  OFFLINE,\n];",
+                      "startsWith('/bf_contact_enrichment/static/')) {"):
+            self.assertEqual(source.count(ancre), 1, ancre)
+        self.assertIn("{cache: 'reload'}", source)
+
     def test_the_offline_shell_is_served_and_says_nothing_personal(self):
         response = self.url_open(
             "/bf_contact_enrichment/static/src/scan/offline.html", timeout=30)
@@ -251,7 +286,8 @@ class TestPortalCard(HttpCase):
         # Cette page est mise en cache sur l'appareil : elle doit rester la même
         # pour tout le monde. Ni nom, ni session, ni champ d'une carte.
         self.assertNotIn("t-esc", response.text)
-        self.assertIn("Hors ligne", response.text)
+        self.assertIn("Offline", response.text)
+        self.assertIn("Hors ligne", response.text, "la coquille se dit deux fois")
 
     # ── Lecture ─────────────────────────────────────────────────────
 
@@ -282,7 +318,7 @@ class TestPortalCard(HttpCase):
         # trace de pile.
         self.assertIsInstance(error, str)
         self.assertNotIn("Traceback", error)
-        self.assertIn("Lecture impossible", error)
+        self.assertIn("Could not read the card", error)
 
     # ── La marque du locataire ──────────────────────────────────────
 
@@ -294,7 +330,7 @@ class TestPortalCard(HttpCase):
         téléphone de quelqu'un qui n'a rien demandé.
         """
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        body = self.url_open("/scan", timeout=30).text
+        body = self.url_open(url_carte(self.env), timeout=30).text
         accent = re.search(r"--accent:\s*(#[0-9a-fA-F]{6})\s*;", body)
         self.assertIsNotNone(accent, "la page ne pose aucun accent")
         encre = re.search(r"--accent-ink:\s*(#[0-9a-fA-F]{6})\s*;", body)
@@ -305,7 +341,7 @@ class TestPortalCard(HttpCase):
         quelqu'un porte SA marque, pas celle de l'éditeur."""
         self._pose_marque("#5c6e5b")
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        body = self.url_open("/scan", timeout=30).text
+        body = self.url_open(url_carte(self.env), timeout=30).text
         self.assertIn("--accent: #5c6e5b;", body)
         self.assertIn("--accent-ink: #ffffff;", body,
                       "une marque foncée garde l'encre presque noire d'origine")
@@ -313,7 +349,7 @@ class TestPortalCard(HttpCase):
     def test_a_tenant_that_declares_no_brand_keeps_the_page_readable(self):
         self._pose_marque(False)
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        response = self.url_open("/scan", timeout=30)
+        response = self.url_open(url_carte(self.env), timeout=30)
         self.assertEqual(response.status_code, 200)
         self.assertIn("--accent: %s;" % portal_card.ACCENT_PAR_DEFAUT, response.text)
 
@@ -323,7 +359,7 @@ class TestPortalCard(HttpCase):
         téléphone de quelqu'un qui n'a rien demandé."""
         self._pose_marque("#c00; } body { display: none")
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        body = self.url_open("/scan", timeout=30).text
+        body = self.url_open(url_carte(self.env), timeout=30).text
         self.assertIn("--accent: %s;" % portal_card.ACCENT_PAR_DEFAUT, body)
         self.assertNotIn("display: none", body)
 
@@ -463,4 +499,146 @@ class TestPortalCard(HttpCase):
         payload = self._rpc("/scan/save", {
             "wizard_id": 999999999, "fields": {}, "mode": "create",
         })
-        self.assertIn("expiré", payload["result"]["error"])
+        self.assertIn("expired", payload["result"]["error"])
+
+
+@tagged("post_install", "-at_install")
+class EssaiJournalEnrichissement(TransactionCase):
+    """Le résumé d'enrichissement doit arriver au fil comme du HTML.
+
+    🔴 Trouvé sur la seule carte jamais numérisée en production :
+    le fil montrait « <p>Contact enrichi via <b>carte d'affaires</b> » en
+    toutes lettres, balises comprises.
+    """
+
+    def test_le_resume_est_du_html_rendu(self):
+        contact = self.env["res.partner"].create({"name": "Fiche d'essai"})
+        contact._apply_contact_vals({"function": "Directrice"},
+                                    source="carte d'affaires")
+        message = self.env["mail.message"].search(
+            [("model", "=", "res.partner"), ("res_id", "=", contact.id)],
+            order="id desc", limit=1)
+        self.assertIn("<b>", message.body)
+        self.assertNotIn("&lt;", message.body,
+                         "le fil ne doit jamais porter de balise échappée")
+
+    def test_un_libelle_hostile_ne_casse_pas_le_fil(self):
+        """Ce qu'on substitue reste échappé, même venant d'une traduction."""
+        contact = self.env["res.partner"].create({"name": "Fiche d'essai"})
+        corps = contact._enrichment_log_html("<script>x</script>", ["function"])
+        self.assertIn("&lt;script&gt;", corps)
+        self.assertIn("<li>", corps)
+
+
+@tagged("post_install", "-at_install")
+class TestPortalCardLangue(HttpCase):
+    """La page de numérisation se lit dans la langue de l'usager.
+
+    Le script de la page est statique : il ne peut pas se traduire. Ses deux
+    messages (session expirée, réponse du serveur) arrivent donc avec la page,
+    dans la langue de qui la demande.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        for code in ("fr_CA", "en_US"):
+            cls.env["res.lang"]._activate_lang(code)
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_contact_enrichment"], ["fr_CA"], overwrite=True)
+        Users = cls.env["res.users"].with_context(no_reset_password=True)
+        groupe = cls.env.ref("bf_contact_enrichment.group_bf_contact_enrich")
+        droits = [groupe.id, cls.env.ref("base.group_partner_manager").id]
+        sans_creation = [groupe.id]
+        for lang, groupes in (("fr_CA", droits), ("en_US", droits)):
+            login = "scan.langue.%s@test.invalid" % lang.lower()
+            Users.create({"name": "Lecteur " + lang, "login": login,
+                          "password": login, "email": login, "lang": lang,
+                          "groups_id": [(6, 0, groupes)]})
+        login = "scan.langue.demi@test.invalid"
+        Users.create({"name": "Demi-droits", "login": login, "password": login,
+                      "email": login, "lang": "fr_CA",
+                      "groups_id": [(6, 0, sans_creation)]})
+
+    def _page(self, login):
+        self.authenticate(login, login)
+        response = self.url_open(url_carte(self.env), timeout=30)
+        self.assertEqual(response.status_code, 200)
+        return response.text
+
+    def test_every_script_sentence_travels_with_the_page(self):
+        """Le script est statique : les dix phrases qu'il montre arrivent avec la page,
+        dans la langue du lecteur (``#texts``), et il n'en garde aucune en dur."""
+        import re
+        attendu = {
+            "fr_CA": {"session": "Votre session Odoo a expiré. Rechargez la page.",
+                      "server": "Le serveur a répondu %s.",
+                      "confidence": "Confiance de lecture : %s %",
+                      "saving": "Enregistrement…",
+                      "updated": "Contact mis à jour",
+                      "created": "Contact créé"},
+            "en_US": {"session": "Your Odoo session has expired. Reload the page.",
+                      "server": "The server answered %s.",
+                      "confidence": "Reading confidence: %s%",
+                      "saving": "Saving…",
+                      "updated": "Contact updated",
+                      "created": "Contact created"},
+        }
+        cles = {"session", "server", "unexpected", "timeout", "unreadable",
+                "notimage", "confidence", "saving", "updated", "created"}
+        for lang, textes in attendu.items():
+            with self.subTest(lecteur=lang):
+                corps = self._page("scan.langue.%s@test.invalid" % lang.lower())
+                trouves = dict(re.findall(r'<div data-k="(\w+)">([^<]*)</div>', corps))
+                self.assertEqual(set(trouves), cles)
+                for cle, texte in textes.items():
+                    self.assertEqual(trouves[cle], texte, cle)
+                self.assertIn('<html lang="%s"' % lang.replace("_", "-"), corps,
+                              "la page déclare la langue de son lecteur")
+                self.assertIn('crossorigin="use-credentials"', corps,
+                              "le manifeste est demandé avec la session, sinon il ne suit pas la langue")
+
+    def test_the_page_title_follows_the_reader(self):
+        """🔴 ``<title>`` n'est jamais traduit par QWeb : le texte passe par un t-set."""
+        attendu = {"fr_CA": "<title>Numériser une carte</title>",
+                   "en_US": "<title>Scan a card</title>"}
+        for lang, titre in attendu.items():
+            with self.subTest(lecteur=lang):
+                corps = self._page("scan.langue.%s@test.invalid" % lang.lower())
+                self.assertIn(titre, corps)
+
+    def test_the_script_has_no_french_left_in_it(self):
+        import re
+        source = self.url_open(
+            "/bf_contact_enrichment/static/src/scan/scan.js", timeout=30).text
+        code = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
+        code = re.sub(r"//.*", "", code)
+        self.assertFalse(re.findall(r".*[àâçéèêëîïôûùÀÉÈÊ].*", code),
+                         "une phrase française est restée dans le script")
+        for fragment in ("Votre session", "Le serveur a", "carte.jpg", "Confiance",
+                         "Enregistre", "Contact créé", "Contact mis à jour"):
+            self.assertNotIn(fragment, code)
+
+    def test_the_access_page_follows_the_reader(self):
+        corps = self._page("scan.langue.demi@test.invalid")
+        self.assertIn("Accès requis", corps)
+        self.assertIn("Création de contacts", corps)
+        self.assertIn("Enrichissement de contacts", corps)
+
+    def test_the_manifest_follows_the_reader(self):
+        """Le nom de l'application installée se lit dans la langue de qui l'installe."""
+        if self.env["ir.module.module"].sudo().search_count(
+                [("name", "=", "bf_scan"), ("state", "=", "installed")]):
+            self.skipTest("avec bf_scan, c'est son manifeste qui est servi")
+        attendu = {"fr_CA": ("Numériser une carte", "Carte", "fr-CA"),
+                   "en_US": ("Scan a card", "Scan", "en-US")}
+        for lang, (nom, court, code) in attendu.items():
+            with self.subTest(lecteur=lang):
+                login = "scan.langue.%s@test.invalid" % lang.lower()
+                self.authenticate(login, login)
+                manifest = self.url_open(
+                    "/scan/manifest.webmanifest", timeout=30).json()
+                self.assertEqual(manifest["name"], nom)
+                self.assertEqual(manifest["short_name"], court)
+                self.assertEqual(manifest["lang"], code)
+

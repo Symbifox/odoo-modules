@@ -2,25 +2,25 @@
 <odoo>
 
     <menuitem id="menu_bf_contact_enrichment"
-              name="Enrichissement"
+              name="Enrichment"
               parent="contacts.menu_contacts"
               sequence="20"/>
 
     <menuitem id="menu_bf_contact_card"
-              name="Numériser une carte"
+              name="Scan a card"
               parent="menu_bf_contact_enrichment"
               action="action_bf_contact_card_wizard"
               groups="bf_contact_enrichment.group_bf_contact_enrich"
               sequence="10"/>
 
     <menuitem id="menu_bf_contact_vcard"
-              name="Importer une vCard"
+              name="Import a vCard"
               parent="menu_bf_contact_enrichment"
               action="action_bf_contact_vcard_wizard"
               sequence="20"/>
 
     <menuitem id="menu_bf_contact_dedup"
-              name="Détecter les doublons"
+              name="Find duplicates"
               parent="menu_bf_contact_enrichment"
               action="action_bf_contact_dedup_wizard"
               sequence="30"/>

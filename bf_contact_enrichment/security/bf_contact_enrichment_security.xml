@@ -7,10 +7,10 @@
          members afterwards without an upgrade overwriting their choices. -->
     <data noupdate="1">
         <record id="group_bf_contact_enrich" model="res.groups">
-            <field name="name">Enrichissement de contacts</field>
-            <field name="comment">Permet de lancer l'enrichissement de contacts par IA
-                (carte d'affaires, signatures courriel, domaine web) et le
-                traitement en lot.</field>
+            <field name="name">Contact Enrichment</field>
+            <field name="comment">Allows running AI contact enrichment
+                (business card, email signatures, web domain) and
+                batch processing.</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>

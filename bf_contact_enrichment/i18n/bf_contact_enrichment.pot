@@ -1,0 +1,1481 @@
+# Translation template for Contact Enrichment.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_contact_enrichment 18.0.2.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-25 04:08+0000\n"
+"PO-Revision-Date: 2026-10-25 04:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid " %(skipped)d record(s) with no name or email skipped."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "%(created)d created, %(updated)d updated."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "%d contact(s) queued; processed in the background."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "<p>Contact enriched via <b>%(source)s</b>:</p><ul>%(items)s</ul>"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid ""
+"<p>Online search by Gen, requested by %(user)s. Sources "
+"read:</p><ul>%(items)s</ul>"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "<span class=\"ico\">📷</span> Take a photo"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"<strong>Contact already known:</strong>\n"
+"                                    <span id=\"match-name\"/>"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"About fifteen seconds, sometimes\n"
+"                                longer on a slow network."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Accepted formats: JPG, PNG or PDF (front of the card)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Access denied: the “Contact Enrichment” group is required."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Access required"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__match_mode
+msgid "Action"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Address and status"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:res.groups,comment:bf_contact_enrichment.group_bf_contact_enrich
+msgid ""
+"Allows running AI contact enrichment\n"
+"                (business card, email signatures, web domain) and\n"
+"                batch processing."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Analysis failed: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Analyze"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Apply"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Ask an administrator for them."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Batch enrichment"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_bf_gen_proposal
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__x_bf_gen_proposal
+msgid "Bridge response (JSON), awaiting confirmation."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__image
+msgid "Business card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_bf_contact_enrich_wizard__overwrite
+msgid "By default, only the fields that are currently empty are filled in."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_vcard_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "Cannot create a contact without a name or a company."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "Card reading failed: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Check before saving"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Choose an existing photo"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__city
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_city
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "City"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Click “Analyze” to retrieve the contact details."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_dedup_wizard_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__bf_gen_company_mode
+msgid "Companies completed by Gen"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__company
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_company
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Company"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__source__web
+msgid "Company website"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/bf_email.py:0
+msgid "Complete the new contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Complete with Gen"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__done
+msgid "Completed"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_enrichment_completeness
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_enrichment_completeness
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Completeness"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_gen_state
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_gen_state
+msgid "Completion by Gen"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_gen_requested_by
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_gen_requested_by
+msgid "Completion requested by"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__confidence
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__confidence
+msgid "Confidence"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_res_partner
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__partner_id
+msgid "Contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:res.groups,name:bf_contact_enrichment.group_bf_contact_enrich
+#: model:ir.module.module,shortdesc:base.module_bf_contact_enrichment
+msgid "Contact Enrichment"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Contact created"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "Contact created from a scanned business card."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "Contact created from a vCard import."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/bf_email.py:0
+msgid "Contact created from an incoming email."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Contact details read"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_bf_contact_dedup_wizard
+msgid "Contact duplicate finder"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Contact enriched from email signatures."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.actions.server,name:bf_contact_enrichment.ir_cron_bf_gen_companies_ir_actions_server
+msgid "Contact enrichment: companies for Gen to complete"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.actions.server,name:bf_contact_enrichment.ir_cron_bf_enrich_signatures_ir_actions_server
+msgid "Contact enrichment: queued signatures"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Contact saved"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Contact saved, but it could not be found afterwards."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__target_partner_id
+msgid "Contact to enrich"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Contact updated"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__partner_ids
+msgid "Contacts"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Could not read the card."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "Could not read the card: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__count
+msgid "Count"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__country
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_country
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Country"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_email_form_enrichment
+msgid "Create / enrich the contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Create a contact from a business card."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_card_wizard__match_mode__create
+msgid "Create a new contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Create a new contact anyway"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__create_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__create_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__create_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__create_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__create_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Current values"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Dismiss the proposal"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__display_name
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__display_name
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__display_name
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__display_name
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_users__bf_gen_company_mode__off
+msgid "Do nothing on creation"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_bf_contact_dedup_line
+msgid "Duplicate group"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__line_ids
+msgid "Duplicates found"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_dedup_wizard.py:0
+msgid "Duplicates: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__email
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_email
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Email"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_email
+msgid "Email (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__source__signature
+msgid "Email signatures"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Enrich (LinkedIn)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Enrich (review)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Enrich (website)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+#: model:ir.model,name:bf_contact_enrichment.model_bf_contact_enrich_wizard
+msgid "Enrich a contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Enrich from LinkedIn"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.actions.server,name:bf_contact_enrichment.action_bf_batch_enrich_signatures
+msgid "Enrich from email signatures"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Enrich from emails"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Enrich from the website"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Enrich now (signatures)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/bf_email.py:0
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Enrich the contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+#: model:ir.ui.menu,name:bf_contact_enrichment.menu_bf_contact_enrichment
+msgid "Enrichment"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Enrichment failed (service unavailable)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Enrichment failed: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Enter the profile URL, or switch to search mode."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__error
+msgid "Error"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__matched_partner_id
+msgid "Existing contact detected"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_users__bf_gen_company_mode__fill
+msgid "Fill in the empty fields"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_dedup_wizard.py:0
+#: model:ir.actions.act_window,name:bf_contact_enrichment.action_bf_contact_dedup_wizard
+#: model:ir.ui.menu,name:bf_contact_enrichment.menu_bf_contact_dedup
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_dedup_wizard_form
+msgid "Find duplicates"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__first_name
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "First name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_bf_enrich_queued
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__x_bf_enrich_queued
+msgid "Flagged for background enrichment from the email signature (cron)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__full_name
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Full name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen completed “%(name)s” (%(n)s field(s))."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Gen could not complete this company:"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen could not complete “%s” (service unavailable)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen could not complete “%s”."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen found nothing reliable for “%s”."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen has a proposal for “%s”: open the record to review it."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid ""
+"Gen is searching for this company online. The result arrives in about\n"
+"                    a minute; reload the record to see it."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid ""
+"Gen is searching online for “%s”. The result will appear on the record in "
+"about a minute."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen only completes companies."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Gen service unavailable."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_gen_message
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_gen_message
+msgid "Gen's message"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_gen_proposal
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_gen_proposal
+msgid "Gen's proposal"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__id
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__id
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__id
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__id
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__image_filename
+msgid "Image Filename"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_vcard_wizard_form
+msgid "Import"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.actions.act_window,name:bf_contact_enrichment.action_bf_contact_vcard_wizard
+#: model:ir.model,name:bf_contact_enrichment.model_bf_contact_vcard_wizard
+#: model:ir.ui.menu,name:bf_contact_enrichment.menu_bf_contact_vcard
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_vcard_wizard_form
+msgid "Import a vCard"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_res_partner_filter_enrichment
+msgid "Incomplete contacts"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Invalid scan session."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__function
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_function
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Job title"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_function
+msgid "Job title (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__key
+msgid "Key"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__write_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__write_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__write_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__write_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__write_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__last_name
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Last name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "Linked to %s, a company already in the address book."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_linkedin_url
+msgid "LinkedIn (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "LinkedIn lookup"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_linkedin_url
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_linkedin_url
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_linkedin_url
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__source__linkedin
+msgid "LinkedIn profile"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "LinkedIn profile (RocketReach)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "LinkedIn search"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_dedup_wizard_form
+msgid "Looks for duplicate contacts by email and by name."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__mobile
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_mobile
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Mobile"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_mobile
+msgid "Mobile (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__linkedin_mode
+msgid "Mode"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_name
+msgid "Name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Name completed from %(src)s: %(name)s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Name completed from the signature: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "No empty field to fill in from the signature."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "No existing contact to update."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "No image received."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "No incoming email found for this contact."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "No pending proposal from Gen."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "No profile URL to read."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "No usable company domain (email or website)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "No usable incoming email for this contact."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/bf_email.py:0
+msgid "No usable sender address on this email."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "No vCard record found in the file."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__nothing
+msgid "Nothing reliable found"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Nothing reliable found online (confidence %s)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Nothing to dismiss."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__source__gen
+msgid "Online search (Gen)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Open in Odoo"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_bf_contact_card_wizard__target_partner_id
+msgid "Optional. If set, the card updates this existing contact."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "Other emails read on the card, not kept: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__linkedin_candidates
+msgid "Other profiles found"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__overwrite
+msgid "Overwrite existing values"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_enrichment_completeness
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__x_enrichment_completeness
+msgid ""
+"Percentage of contact details filled in (email, phone, job title, company, "
+"address, website)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__phone
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_phone
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Phone"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_phone
+msgid "Phone (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_bf_contact_enrich_wizard__linkedin_candidates
+msgid "Plausible namesakes set aside by the search."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__linkedin_url_input
+msgid "Profile URL"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_linkedin_url
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_linkedin_url
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__x_linkedin_url
+msgid ""
+"Profile URL (https://www.linkedin.com/in/…). Found by the search, and the "
+"key to reading the exact profile."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__dismissed
+msgid "Proposal dismissed"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__proposed
+msgid "Proposal to review"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_users__bf_gen_company_mode__propose
+msgid "Propose the values to me (I confirm)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Proposed values"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_state
+msgid "Province / State"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__res_partner__x_bf_gen_state__queued
+msgid "Queued"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_enrich_queued
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_enrich_queued
+msgid "Queued for enrichment"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__linkedin_mode__url
+msgid "Read a known profile (RocketReach, 1 credit)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Read the card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Read the profile (1 credit)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Reading confidence: %s%"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid ""
+"Reading failed. Try again with a sharper photo, or enter the contact by "
+"hand."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Reading the card…"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Reading this profile through RocketReach uses one credit. Continue?"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Reading took too long. Try again."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid ""
+"Reads the profile through RocketReach: title, employer, email\n"
+"                        and phone. Uses one credit per reading."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__reason
+msgid "Reason"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__result_summary
+msgid "Result Summary"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Retake the photo"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_card_wizard__state__review
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__state__review
+msgid "Review"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_dedup_wizard_form
+msgid "Run the detection"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_dedup_wizard.py:0
+msgid "Same email"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_dedup_wizard.py:0
+msgid "Same name"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Save the contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Saving failed."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Saving refused."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Saving…"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Scan"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+#: model:ir.actions.act_window,name:bf_contact_enrichment.action_bf_contact_card_wizard
+#: model:ir.model,name:bf_contact_enrichment.model_bf_contact_card_wizard
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_card_wizard_form
+msgid "Scan a business card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+#: model:ir.ui.menu,name:bf_contact_enrichment.menu_bf_contact_card
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "Scan a card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Scan another card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_wizard__scanned
+msgid "Scanned"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Scanned card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"Scanning a card takes two rights, and you\n"
+"                                are missing at least one:"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "Search failed: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__linkedin_mode__search
+msgid "Search for the profile (free)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid ""
+"Searches the public index for the profile from the name,\n"
+"                        company and job title already on file. Free, and the\n"
+"                        URL found still needs a visual check before applying."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "See Gen's proposal"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid "Signature not reliable enough. Nothing applied."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Signed in as"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__source
+msgid "Source"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_sources
+msgid "Source addresses"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_sources_html
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_enrich_wizard_form
+msgid "Sources read by Gen"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__state
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__state
+msgid "State"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__street
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_street
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Street"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"Take a photo of the card. The fields\n"
+"                                will be read, then you correct them before\n"
+"                                saving."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__raw_text
+msgid "Text read"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "The company has no name to search for."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "The contact has no name to search for."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "The email management module is not installed."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "The file could not be read."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "The photo on the card was dropped: unrecognized format."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "The server answered %s."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "This contact is no longer a company."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "This file is not a readable image."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "This scan session has expired. Take the photo again."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_enrich_wizard__state__draft
+msgid "To analyze"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "Unexpected error."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Unexpected server error."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "Unreadable file: %s"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_card_wizard__match_mode__update
+msgid "Update the detected contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Update this contact"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields.selection,name:bf_contact_enrichment.selection__bf_contact_card_wizard__state__upload
+msgid "Upload"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_vcard_wizard_form
+msgid "Upload a .vcf file (one or more records)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "Upload an image of a business card."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__vcf_filename
+msgid "Vcf Filename"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_bf_contact_dedup_wizard_form
+msgid "View / merge"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__website
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_website
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Website"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__cur_website
+msgid "Website (current)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__bf_gen_company_mode
+msgid ""
+"When an incomplete company is created, Gen searches online for its website, "
+"phone and address. “Propose” waits for your confirmation; “Fill in” writes "
+"the empty fields when confidence is high enough; “Do nothing” keeps only the"
+" “Complete with Gen” button."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_dedup_line__wizard_id
+msgid "Wizard"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "Your Odoo session has expired. Reload the page."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid ""
+"Your account can read contacts but not create them. Ask for the “Contact "
+"Creation” right."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Your account does not have access to contact enrichment."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/controllers/portal_card.py:0
+msgid "Your account is not allowed to edit this contact."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_card_wizard__zip
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_zip
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid "ZIP code"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "a user"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_card_wizard.py:0
+msgid "business card"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "company website"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid "email signature"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.view_partner_form_enrichment
+msgid "https://www.linkedin.com/in/…"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_bf_contact_enrich_wizard__linkedin_url_input
+msgid "https://www.linkedin.com/in/… (required in “known profile” mode)."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "none"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner_gen.py:0
+msgid "online search (Gen)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"the group <strong>Contact Enrichment</strong>, which allows reading\n"
+"                                    the card;"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
+msgid ""
+"the right <strong>Contact Creation</strong>,\n"
+"                                    without which the contact cannot be\n"
+"                                    saved."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__vcf_file
+msgid "vCard file (.vcf)"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "vCard import"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
+msgid "vCard import finished"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.module.module,summary:base.module_bf_contact_enrichment
+msgid ""
+"Business cards (OCR, with an installable mobile page), email signatures, "
+"LinkedIn profiles, companies completed by an online search, vCard import, "
+"duplicate detection and completeness score, through Claude"
+msgstr ""

@@ -4,10 +4,22 @@
     <!-- Drains the signature-enrichment queue in chunks. Triggered immediately
          by the batch list action; the interval is just a backstop. -->
     <record id="ir_cron_bf_enrich_signatures" model="ir.cron">
-        <field name="name">Enrichissement de contacts : signatures en file</field>
+        <field name="name">Contact enrichment: queued signatures</field>
         <field name="model_id" ref="base.model_res_partner"/>
         <field name="state">code</field>
         <field name="code">model._cron_bf_enrich_signatures()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Sociétés à compléter par une recherche en ligne de Gen.
+         Déclenchée à la mise en file ; l'intervalle n'est qu'un filet. -->
+    <record id="ir_cron_bf_gen_companies" model="ir.cron">
+        <field name="name">Contact enrichment: companies for Gen to complete</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_gen_companies()</field>
         <field name="interval_number">30</field>
         <field name="interval_type">minutes</field>
         <field name="active" eval="True"/>

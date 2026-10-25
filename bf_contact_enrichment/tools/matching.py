@@ -112,9 +112,10 @@ def find_partner_match(env, name=None, email=None, company=None):
 def find_duplicate_groups(env, limit=200):
     """Scan ``res.partner`` for likely duplicates.
 
-    Returns a list of dicts ``{"key", "reason", "partner_ids"}``. Groups by
-    exact email and by normalized significant-words name. Name-only groups
-    already fully covered by an email group are skipped.
+    Returns a list of dicts ``{"key", "reason", "partner_ids"}`` where
+    ``reason`` is ``"email"`` or ``"name"`` (the caller words it for the
+    reader). Groups by exact email and by normalized significant-words name.
+    Name-only groups already fully covered by an email group are skipped.
     """
     partners = env["res.partner"].search_read(
         [("active", "=", True)],
@@ -137,11 +138,11 @@ def find_duplicate_groups(env, limit=200):
     seen = set()
     for email, ids in by_email.items():
         if len(ids) > 1:
-            groups.append({"key": email, "reason": "Même courriel", "partner_ids": ids})
+            groups.append({"key": email, "reason": "email", "partner_ids": ids})
             seen.update(ids)
     for key, ids in by_name.items():
         if len(ids) > 1:
             fresh = [i for i in ids if i not in seen]
             if len(fresh) > 1:
-                groups.append({"key": key, "reason": "Même nom", "partner_ids": ids})
+                groups.append({"key": key, "reason": "name", "partner_ids": ids})
     return groups[:limit]

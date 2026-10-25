@@ -4,8 +4,8 @@
     <!-- Standalone page: it carries its own <html> shell rather than extending
          website.layout, so the module keeps no dependency on the website app
          and the backend chrome never reaches a phone screen. -->
-    <template id="scan_page" name="Numériser une carte">
-        <html lang="fr-CA">
+    <template id="scan_page" name="Scan a card">
+        <html t-att-lang="(request.env.lang or 'en_US').replace('_', '-')">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport"
@@ -14,9 +14,13 @@
                 <meta name="mobile-web-app-capable" content="yes"/>
                 <meta name="apple-mobile-web-app-capable" content="yes"/>
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-                <meta name="apple-mobile-web-app-title" content="Carte"/>
-                <title>Numériser une carte</title>
-                <link rel="manifest" href="/scan/manifest.webmanifest"/>
+                <t t-set="msg_title">Scan</t>
+                <meta name="apple-mobile-web-app-title" t-att-content="msg_title"/>
+                <!-- <title> is never translated by QWeb: the text goes through t-set. -->
+                <t t-set="msg_page_title">Scan a card</t>
+                <title t-out="msg_page_title"/>
+                <link rel="manifest" href="/scan/manifest.webmanifest"
+                      crossorigin="use-credentials"/>
                 <link rel="apple-touch-icon"
                       href="/bf_contact_enrichment/static/src/scan/icon-192.png"/>
                 <link rel="icon" type="image/png"
@@ -32,18 +36,17 @@
                 <t t-if="not has_access">
                     <main class="shell">
                         <div class="card denied">
-                            <h1>Accès requis</h1>
-                            <p>Numériser une carte demande deux droits, et il
-                                vous en manque au moins un :</p>
+                            <h1>Access required</h1>
+                            <p>Scanning a card takes two rights, and you
+                                are missing at least one:</p>
                             <ul>
-                                <li>le groupe <strong>Enrichissement de
-                                    contacts</strong>, qui autorise la lecture
-                                    de la carte;</li>
-                                <li>le droit <strong>Création de contacts</strong>,
-                                    sans lequel le contact ne peut pas être
-                                    enregistré.</li>
+                                <li>the group <strong>Contact Enrichment</strong>, which allows reading
+                                    the card;</li>
+                                <li>the right <strong>Contact Creation</strong>,
+                                    without which the contact cannot be
+                                    saved.</li>
                             </ul>
-                            <p>Demandez-les à un administrateur.</p>
+                            <p>Ask an administrator for them.</p>
                         </div>
                     </main>
                 </t>
@@ -53,55 +56,55 @@
 
                         <!-- Step 1 — capture -->
                         <section id="step-capture" class="step">
-                            <h1>Numériser une carte</h1>
-                            <p class="lede">Prenez la carte en photo. Les champs
-                                seront lus, puis vous les corrigez avant
-                                d'enregistrer.</p>
+                            <h1>Scan a card</h1>
+                            <p class="lede">Take a photo of the card. The fields
+                                will be read, then you correct them before
+                                saving.</p>
 
                             <!-- capture="environment" hands off to the phone's
                                  own camera app: no getUserMedia, so no camera
                                  permission is ever requested by this page. -->
                             <label class="btn btn-primary" for="shot">
-                                <span class="ico">📷</span> Prendre en photo
+                                <span class="ico">📷</span> Take a photo
                             </label>
                             <input id="shot" type="file" accept="image/*"
                                    capture="environment" hidden="hidden"/>
 
                             <label class="btn btn-ghost" for="pick">
-                                Choisir une photo existante
+                                Choose an existing photo
                             </label>
                             <input id="pick" type="file" accept="image/*,application/pdf"
                                    hidden="hidden"/>
 
-                            <p class="signed-in">Connecté comme
+                            <p class="signed-in">Signed in as
                                 <strong t-esc="user_name"/></p>
                         </section>
 
                         <!-- Step 2 — working -->
                         <section id="step-working" class="step hidden">
                             <div class="spinner"></div>
-                            <h2>Lecture de la carte…</h2>
-                            <p class="lede">Une quinzaine de secondes, parfois
-                                davantage sur un réseau lent.</p>
-                            <img id="preview" alt="Carte numérisée" class="preview"/>
+                            <h2>Reading the card…</h2>
+                            <p class="lede">About fifteen seconds, sometimes
+                                longer on a slow network.</p>
+                            <img id="preview" alt="Scanned card" class="preview"/>
                         </section>
 
                         <!-- Step 3 — review -->
                         <section id="step-review" class="step hidden">
-                            <h2>Vérifiez avant d'enregistrer</h2>
+                            <h2>Check before saving</h2>
 
                             <div id="match-banner" class="banner hidden">
-                                <p><strong>Contact déjà connu :</strong>
+                                <p><strong>Contact already known:</strong>
                                     <span id="match-name"></span></p>
                                 <div class="choice">
                                     <label>
                                         <input type="radio" name="mode" value="update"
                                                checked="checked"/>
-                                        Mettre à jour ce contact
+                                        Update this contact
                                     </label>
                                     <label>
                                         <input type="radio" name="mode" value="create"/>
-                                        Créer quand même un nouveau contact
+                                        Create a new contact anyway
                                     </label>
                                 </div>
                             </div>
@@ -109,64 +112,79 @@
                             <div id="confidence" class="chip hidden"></div>
 
                             <form id="review-form" autocomplete="off">
-                                <label>Nom complet
+                                <label>Full name
                                     <input name="full_name" type="text"/></label>
                                 <div class="row">
-                                    <label>Prénom
+                                    <label>First name
                                         <input name="first_name" type="text"/></label>
-                                    <label>Nom
+                                    <label>Last name
                                         <input name="last_name" type="text"/></label>
                                 </div>
-                                <label>Fonction
+                                <label>Job title
                                     <input name="function" type="text"/></label>
-                                <label>Société
+                                <label>Company
                                     <input name="company" type="text"/></label>
-                                <label>Courriel
+                                <label>Email
                                     <input name="email" type="email"
                                            inputmode="email" autocapitalize="off"/></label>
                                 <div class="row">
-                                    <label>Téléphone
+                                    <label>Phone
                                         <input name="phone" type="tel" inputmode="tel"/></label>
                                     <label>Mobile
                                         <input name="mobile" type="tel" inputmode="tel"/></label>
                                 </div>
-                                <label>Site web
+                                <label>Website
                                     <input name="website" type="text"
                                            inputmode="url" autocapitalize="off"/></label>
-                                <label>Rue
+                                <label>Street
                                     <input name="street" type="text"/></label>
                                 <div class="row">
-                                    <label>Ville
+                                    <label>City
                                         <input name="city" type="text"/></label>
-                                    <label>Code postal
+                                    <label>ZIP code
                                         <input name="zip" type="text"
                                                autocapitalize="characters"/></label>
                                 </div>
-                                <label>Pays
+                                <label>Country
                                     <input name="country" type="text"/></label>
                             </form>
 
                             <button id="save" class="btn btn-primary" type="button">
-                                Enregistrer le contact
+                                Save the contact
                             </button>
                             <button id="restart" class="btn btn-ghost" type="button">
-                                Reprendre la photo
+                                Retake the photo
                             </button>
                         </section>
 
                         <!-- Step 4 — done -->
                         <section id="step-done" class="step hidden">
                             <div class="tick">✓</div>
-                            <h2 id="done-title">Contact enregistré</h2>
+                            <h2 id="done-title">Contact saved</h2>
                             <p class="lede" id="done-name"></p>
                             <a id="done-link" class="btn btn-primary" href="#">
-                                Ouvrir dans Odoo
+                                Open in Odoo
                             </a>
                             <button id="again" class="btn btn-ghost" type="button">
-                                Numériser une autre carte
+                                Scan another card
                             </button>
                         </section>
 
+                        <!-- The script is static and cannot be translated: the page carries
+                             every sentence it shows, in the reader's language (read by
+                             scan.js through its `T()` helper). -->
+                        <div id="texts" hidden="hidden" aria-hidden="true">
+                            <div data-k="session">Your Odoo session has expired. Reload the page.</div>
+                            <div data-k="server">The server answered %s.</div>
+                            <div data-k="unexpected">Unexpected server error.</div>
+                            <div data-k="timeout">Reading took too long. Try again.</div>
+                            <div data-k="unreadable">The file could not be read.</div>
+                            <div data-k="notimage">This file is not a readable image.</div>
+                            <div data-k="confidence">Reading confidence: %s%</div>
+                            <div data-k="saving">Saving…</div>
+                            <div data-k="updated">Contact updated</div>
+                            <div data-k="created">Contact created</div>
+                        </div>
                         <div id="error" class="error hidden" role="alert"></div>
 
                     </main>

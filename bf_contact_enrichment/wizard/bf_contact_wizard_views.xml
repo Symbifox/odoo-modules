@@ -6,7 +6,7 @@
         <field name="name">bf.contact.card.wizard.form</field>
         <field name="model">bf.contact.card.wizard</field>
         <field name="arch" type="xml">
-            <form string="Numériser une carte d'affaires">
+            <form string="Scan a business card">
                 <field name="state" invisible="1"/>
                 <field name="image_filename" invisible="1"/>
 
@@ -15,12 +15,12 @@
                            class="oe_avatar"/>
                     <field name="target_partner_id"/>
                     <div class="text-muted" colspan="2">
-                        Formats acceptés : JPG, PNG ou PDF (carte recto).
+                        Accepted formats: JPG, PNG or PDF (front of the card).
                     </div>
                 </group>
 
                 <group invisible="state != 'review'">
-                    <group string="Coordonnées lues">
+                    <group string="Contact details read">
                         <field name="full_name"/>
                         <field name="first_name"/>
                         <field name="last_name"/>
@@ -31,7 +31,7 @@
                         <field name="mobile"/>
                         <field name="website"/>
                     </group>
-                    <group string="Adresse et statut">
+                    <group string="Address and status">
                         <field name="street"/>
                         <field name="city"/>
                         <field name="zip"/>
@@ -44,19 +44,19 @@
                 </group>
 
                 <footer>
-                    <button name="action_scan" type="object" string="Lire la carte"
+                    <button name="action_scan" type="object" string="Read the card"
                             class="btn-primary" invisible="state != 'upload'"/>
                     <button name="action_apply" type="object"
-                            string="Enregistrer le contact" class="btn-primary"
+                            string="Save the contact" class="btn-primary"
                             invisible="state != 'review'"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_contact_card_wizard" model="ir.actions.act_window">
-        <field name="name">Numériser une carte d'affaires</field>
+        <field name="name">Scan a business card</field>
         <field name="res_model">bf.contact.card.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -67,45 +67,89 @@
         <field name="name">bf.contact.enrich.wizard.form</field>
         <field name="model">bf.contact.enrich.wizard</field>
         <field name="arch" type="xml">
-            <form string="Enrichir le contact">
+            <form string="Enrich the contact">
                 <field name="state" invisible="1"/>
                 <field name="source" invisible="1"/>
                 <group>
                     <field name="partner_id" readonly="1"/>
                     <field name="confidence" invisible="state != 'review'"/>
                 </group>
+                <group invisible="state != 'draft' or source != 'linkedin'"
+                       string="LinkedIn lookup">
+                    <field name="linkedin_mode" widget="radio"/>
+                    <field name="linkedin_url_input"
+                           required="linkedin_mode == 'url'"
+                           invisible="linkedin_mode != 'url'"/>
+                    <div class="text-muted" colspan="2"
+                         invisible="linkedin_mode != 'search'">
+                        Searches the public index for the profile from the name,
+                        company and job title already on file. Free, and the
+                        URL found still needs a visual check before applying.
+                    </div>
+                    <div class="text-muted" colspan="2"
+                         invisible="linkedin_mode != 'url'">
+                        Reads the profile through RocketReach: title, employer, email
+                        and phone. Uses one credit per reading.
+                    </div>
+                </group>
                 <div class="text-muted" invisible="state != 'draft'">
-                    Cliquez sur « Analyser » pour récupérer les coordonnées.
+                    Click “Analyze” to retrieve the contact details.
                 </div>
                 <group invisible="state != 'review'">
-                    <group string="Valeurs actuelles">
-                        <field name="cur_function"/>
+                    <group string="Current values">
+                        <field name="cur_function" invisible="source == 'gen'"/>
                         <field name="cur_email"/>
                         <field name="cur_phone"/>
-                        <field name="cur_mobile"/>
+                        <field name="cur_mobile" invisible="source == 'gen'"/>
                         <field name="cur_website"/>
+                        <field name="cur_linkedin_url" widget="url"
+                               invisible="source != 'linkedin'"/>
                     </group>
-                    <group string="Valeurs proposées">
-                        <field name="proposed_name"/>
-                        <field name="proposed_function"/>
+                    <group string="Proposed values">
+                        <field name="proposed_name" invisible="source == 'gen'"/>
+                        <field name="proposed_function" invisible="source == 'gen'"/>
                         <field name="proposed_company"/>
                         <field name="proposed_email"/>
                         <field name="proposed_phone"/>
-                        <field name="proposed_mobile"/>
+                        <!-- d'un tiers, rien de personnel. Masqués en
+                             LinkedIn pour qu'un cellulaire tapé à la main ne soit
+                             pas inscrit au fil comme venu de LinkedIn. -->
+                        <field name="proposed_mobile" invisible="source in ('linkedin', 'gen')"/>
                         <field name="proposed_website"/>
-                        <field name="proposed_street"/>
-                        <field name="proposed_city"/>
-                        <field name="proposed_zip"/>
-                        <field name="proposed_country"/>
+                        <field name="proposed_street" invisible="source == 'linkedin'"/>
+                        <field name="proposed_city" invisible="source == 'linkedin'"/>
+                        <field name="proposed_zip" invisible="source == 'linkedin'"/>
+                        <field name="proposed_country" invisible="source == 'linkedin'"/>
+                        <field name="proposed_state" invisible="source != 'gen'"/>
+                        <field name="proposed_linkedin_url" widget="url"
+                               invisible="source != 'linkedin'"/>
                     </group>
-                    <field name="overwrite"/>
+                    <field name="proposed_sources" invisible="1"/>
+                    <separator string="Sources read by Gen" colspan="2"
+                               invisible="source != 'gen' or not proposed_sources_html"/>
+                    <field name="proposed_sources_html" nolabel="1" colspan="2"
+                           invisible="source != 'gen' or not proposed_sources_html"/>
+                    <field name="linkedin_candidates" colspan="2" readonly="1"
+                           invisible="not linkedin_candidates"/>
+                    <!-- Dans son propre groupe : un booléen posé directement dans le groupe
+                         extérieur s'affiche sans libellé (vu au tournage). -->
+                    <group colspan="2">
+                        <field name="overwrite"/>
+                    </group>
                 </group>
                 <footer>
-                    <button name="action_analyze" type="object" string="Analyser"
+                    <button name="action_analyze" type="object" string="Analyze"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_apply" type="object" string="Appliquer"
+                    <button name="action_apply" type="object" string="Apply"
                             class="btn-primary" invisible="state != 'review'"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button name="action_linkedin_lookup" type="object"
+                            string="Read the profile (1 credit)" class="btn-secondary"
+                            confirm="Reading this profile through RocketReach uses one credit. Continue?"
+                            invisible="state != 'review' or source != 'linkedin' or not proposed_linkedin_url"/>
+                    <button name="action_dismiss_gen" type="object"
+                            string="Dismiss the proposal" class="btn-secondary"
+                            invisible="state != 'review' or source != 'gen'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -116,27 +160,27 @@
         <field name="name">bf.contact.vcard.wizard.form</field>
         <field name="model">bf.contact.vcard.wizard</field>
         <field name="arch" type="xml">
-            <form string="Importer une vCard">
+            <form string="Import a vCard">
                 <group>
                     <field name="vcf_file" filename="vcf_filename"/>
                     <field name="vcf_filename" invisible="1"/>
                     <div class="text-muted" colspan="2">
-                        Téléversez un fichier .vcf (une ou plusieurs fiches).
+                        Upload a .vcf file (one or more records).
                     </div>
                 </group>
                 <field name="result_summary" readonly="1"
                        invisible="not result_summary"/>
                 <footer>
-                    <button name="action_import" type="object" string="Importer"
+                    <button name="action_import" type="object" string="Import"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_contact_vcard_wizard" model="ir.actions.act_window">
-        <field name="name">Importer une vCard</field>
+        <field name="name">Import a vCard</field>
         <field name="res_model">bf.contact.vcard.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -147,10 +191,10 @@
         <field name="name">bf.contact.dedup.wizard.form</field>
         <field name="model">bf.contact.dedup.wizard</field>
         <field name="arch" type="xml">
-            <form string="Détecter les doublons">
+            <form string="Find duplicates">
                 <field name="scanned" invisible="1"/>
                 <div class="text-muted" invisible="scanned">
-                    Recherche les contacts en double par courriel et par nom.
+                    Looks for duplicate contacts by email and by name.
                 </div>
                 <field name="line_ids" invisible="not scanned" readonly="1">
                     <list>
@@ -159,20 +203,20 @@
                         <field name="count"/>
                         <field name="partner_ids" widget="many2many_tags"/>
                         <button name="action_open_partners" type="object"
-                                string="Voir / fusionner" icon="fa-external-link"/>
+                                string="View / merge" icon="fa-external-link"/>
                     </list>
                 </field>
                 <footer>
                     <button name="action_scan" type="object"
-                            string="Lancer la détection" class="btn-primary"/>
-                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                            string="Run the detection" class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_contact_dedup_wizard" model="ir.actions.act_window">
-        <field name="name">Détecter les doublons</field>
+        <field name="name">Find duplicates</field>
         <field name="res_model">bf.contact.dedup.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

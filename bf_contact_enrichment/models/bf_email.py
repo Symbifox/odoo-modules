@@ -33,7 +33,7 @@ class BfEmail(models.Model):
         if not partner:
             if not addr:
                 raise UserError(
-                    _("Aucune adresse d'expéditeur exploitable sur ce courriel.")
+                    _("No usable sender address on this email.")
                 )
             partner = self.env["res.partner"].create({
                 "name": display or addr,
@@ -43,13 +43,13 @@ class BfEmail(models.Model):
             if "partner_id" in self._fields and not self.partner_id:
                 self.partner_id = partner.id
             partner.message_post(
-                body=_("Contact créé depuis un courriel entrant.")
+                body=_("Contact created from an incoming email.")
             )
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Enrichir le contact") if not created
-                    else _("Compléter le nouveau contact"),
+            "name": _("Enrich the contact") if not created
+                    else _("Complete the new contact"),
             "res_model": "bf.contact.enrich.wizard",
             "view_mode": "form",
             "target": "new",

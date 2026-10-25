@@ -367,7 +367,7 @@ def _parse_vcards(text):
         try:
             parsed = _parse_line(line)
         except Exception:  # noqa: BLE001, une ligne tordue n'emporte pas le fichier
-            _logger.warning("vCard : ligne illisible, ignorée", exc_info=True)
+            _logger.warning("vCard: unreadable line, skipped", exc_info=True)
             continue
         if parsed:
             _absorb(cur, *parsed)
@@ -394,9 +394,9 @@ def _photo_b64(card):
 
 class BfContactVcardWizard(models.TransientModel):
     _name = "bf.contact.vcard.wizard"
-    _description = "Importer une vCard"
+    _description = "Import a vCard"
 
-    vcf_file = fields.Binary(string="Fichier vCard (.vcf)", required=True)
+    vcf_file = fields.Binary(string="vCard file (.vcf)", required=True)
     vcf_filename = fields.Char()
     result_summary = fields.Text(readonly=True)
 
@@ -468,13 +468,15 @@ class BfContactVcardWizard(models.TransientModel):
         """Ce que l'import a déduit ou laissé de côté, à dire au chatter."""
         lines = []
         if parent:
-            lines.append(_("Rattaché à %s, société déjà au carnet.")
+            lines.append(_("Linked to %s, a company already in the "
+                           "address book.")
                          % parent.display_name)
         if card.get("other_emails"):
-            lines.append(_("Autres courriels lus dans la fiche, non repris : %s")
+            lines.append(_("Other emails read on the card, not kept: %s")
                          % ", ".join(card["other_emails"]))
         if card.get("photo") and not _photo_b64(card):
-            lines.append(_("La photo de la fiche a été écartée : format non reconnu."))
+            lines.append(_("The photo on the card was dropped: "
+                           "unrecognized format."))
         return lines
 
     # ── Import ────────────────────────────────────────────────────────
@@ -484,11 +486,11 @@ class BfContactVcardWizard(models.TransientModel):
         try:
             data = base64.b64decode(self.vcf_file)
         except (binascii.Error, ValueError) as exc:
-            raise UserError(_("Fichier illisible : %s") % exc)
+            raise UserError(_("Unreadable file: %s") % exc)
 
         cards = _parse_vcards(_decode_file(data))
         if not cards:
-            raise UserError(_("Aucune fiche vCard trouvée dans le fichier."))
+            raise UserError(_("No vCard record found in the file."))
 
         Partner = self.env["res.partner"]
         created, updated, skipped = [], [], 0
@@ -502,7 +504,7 @@ class BfContactVcardWizard(models.TransientModel):
             # l'ORG ne doit pas récolter le courriel et le titre de son employé.
             match = matching.find_partner_match(self.env, name=name, email=email)
             if match:
-                match._apply_contact_vals(vals, source=_("import vCard"))
+                match._apply_contact_vals(vals, source=_("vCard import"))
                 extras = self._import_extras(card)
                 if extras:
                     match.message_post(body=self._note_html(extras))
@@ -518,22 +520,23 @@ class BfContactVcardWizard(models.TransientModel):
                 create_vals["company_name"] = card["org"]
             partner = Partner.create(create_vals)
             partner.message_post(body=self._note_html(
-                [_("Contact créé depuis un import vCard.")]
+                [_("Contact created from a vCard import.")]
                 + self._import_extras(card, parent=parent)))
             created.append(partner.display_name)
 
-        summary = _("%(created)d créé(s), %(updated)d mis à jour.") % {
+        summary = _("%(created)d created, %(updated)d updated.") % {
             "created": len(created), "updated": len(updated),
         }
         if skipped:
-            summary += _(" %(skipped)d fiche(s) sans nom ni courriel ignorée(s).") % {
+            summary += _(" %(skipped)d record(s) with no name or email "
+                         "skipped.") % {
                 "skipped": skipped,
             }
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Import vCard terminé"),
+                "title": _("vCard import finished"),
                 "message": summary,
                 "type": "success",
                 "sticky": False,

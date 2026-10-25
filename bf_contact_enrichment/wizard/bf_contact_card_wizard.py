@@ -6,41 +6,41 @@ from ..tools import bridge, matching
 
 class BfContactCardWizard(models.TransientModel):
     _name = "bf.contact.card.wizard"
-    _description = "Numériser une carte d'affaires"
+    _description = "Scan a business card"
 
     state = fields.Selection(
-        [("upload", "Téléversement"), ("review", "Révision")],
+        [("upload", "Upload"), ("review", "Review")],
         default="upload", required=True,
     )
-    image = fields.Binary(string="Carte d'affaires", attachment=False)
+    image = fields.Binary(string="Business card", attachment=False)
     image_filename = fields.Char()
     target_partner_id = fields.Many2one(
-        "res.partner", string="Contact à enrichir",
-        help="Optionnel — si fourni, la carte met à jour ce contact existant.",
+        "res.partner", string="Contact to enrich",
+        help="Optional. If set, the card updates this existing contact.",
     )
 
     # Parsed result (editable before saving)
-    full_name = fields.Char(string="Nom complet")
-    first_name = fields.Char(string="Prénom")
-    last_name = fields.Char(string="Nom")
-    function = fields.Char(string="Fonction")
-    company = fields.Char(string="Société")
-    email = fields.Char(string="Courriel")
-    phone = fields.Char(string="Téléphone")
+    full_name = fields.Char(string="Full name")
+    first_name = fields.Char(string="First name")
+    last_name = fields.Char(string="Last name")
+    function = fields.Char(string="Job title")
+    company = fields.Char(string="Company")
+    email = fields.Char(string="Email")
+    phone = fields.Char(string="Phone")
     mobile = fields.Char(string="Mobile")
-    website = fields.Char(string="Site web")
-    street = fields.Char(string="Rue")
-    city = fields.Char(string="Ville")
-    zip = fields.Char(string="Code postal")
-    country = fields.Char(string="Pays")
-    raw_text = fields.Text(string="Texte lu", readonly=True)
-    confidence = fields.Integer(string="Confiance")
+    website = fields.Char(string="Website")
+    street = fields.Char(string="Street")
+    city = fields.Char(string="City")
+    zip = fields.Char(string="ZIP code")
+    country = fields.Char(string="Country")
+    raw_text = fields.Text(string="Text read", readonly=True)
+    confidence = fields.Integer(string="Confidence")
 
     matched_partner_id = fields.Many2one(
-        "res.partner", string="Contact existant détecté")
+        "res.partner", string="Existing contact detected")
     match_mode = fields.Selection(
-        [("create", "Créer un nouveau contact"),
-         ("update", "Mettre à jour le contact détecté")],
+        [("create", "Create a new contact"),
+         ("update", "Update the detected contact")],
         default="create", required=True, string="Action",
     )
 
@@ -49,7 +49,7 @@ class BfContactCardWizard(models.TransientModel):
     def action_scan(self):
         self.ensure_one()
         if not self.image:
-            raise UserError(_("Veuillez téléverser une image de carte d'affaires."))
+            raise UserError(_("Upload an image of a business card."))
         image_b64 = self.image.decode() if isinstance(self.image, bytes) else self.image
         # Le schéma d'extraction vit côté pont (``/ocr/business-card``), avec ses
         # garde-fous d'injection : une carte est une image fournie par un tiers.
@@ -65,9 +65,9 @@ class BfContactCardWizard(models.TransientModel):
             # pour un humain, il ne gagne rien à être enrobé.
             raise
         except Exception as exc:  # noqa: BLE001 — jamais de trace sur un téléphone
-            raise UserError(_("Échec de la lecture de la carte : %s") % exc)
+            raise UserError(_("Card reading failed: %s") % exc)
         if result.get("error"):
-            raise UserError(_("Lecture impossible : %s") % result["error"])
+            raise UserError(_("Could not read the card: %s") % result["error"])
         data = result.get("data") or {}
 
         vals = {
@@ -112,12 +112,12 @@ class BfContactCardWizard(models.TransientModel):
 
         if self.match_mode == "update" and self.matched_partner_id:
             partner = self.matched_partner_id
-            partner._apply_contact_vals(vals, source=_("carte d'affaires"))
+            partner._apply_contact_vals(vals, source=_("business card"))
         else:
             name = self._full_name()
             if not name and not self.company:
                 raise UserError(
-                    _("Impossible de créer un contact sans nom ni société."))
+                    _("Cannot create a contact without a name or a company."))
             create_vals = dict(vals)
             if name:
                 create_vals["name"] = name
@@ -129,7 +129,7 @@ class BfContactCardWizard(models.TransientModel):
                 create_vals.pop("parent_id", None)
             partner = Partner.create(create_vals)
             partner.message_post(
-                body=_("Contact créé depuis une carte d'affaires numérisée."))
+                body=_("Contact created from a scanned business card."))
 
         self._attach_card(partner)
         return {
@@ -182,7 +182,7 @@ class BfContactCardWizard(models.TransientModel):
         if not self.image:
             return
         self.env["ir.attachment"].create({
-            "name": self.image_filename or "carte_affaires.jpg",
+            "name": self.image_filename or "business-card.jpg",
             "datas": self.image,
             "res_model": "res.partner",
             "res_id": partner.id,
@@ -191,6 +191,7 @@ class BfContactCardWizard(models.TransientModel):
     def _reopen(self):
         return {
             "type": "ir.actions.act_window",
+            "name": _("Scan a business card"),
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",

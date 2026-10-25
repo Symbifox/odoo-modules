@@ -17,9 +17,31 @@
     var JPEG_QUALITY = 0.85;
     var TIMEOUT_MS = 150000; // the server side may take up to ~100 s
 
-    var state = {wizardId: null, mode: "create", filename: "carte.jpg"};
+    var state = {wizardId: null, mode: "create", filename: "card.jpg"};
 
     function $(id) { return document.getElementById(id); }
+
+    /* The script is static and cannot be translated: every sentence it shows
+     * travels with the page, in the reader's language, as a <span data-k="…">
+     * inside #texts. `%s` stands for a number the script puts in. */
+    var FALLBACK = {
+        session: "Your Odoo session has expired. Reload the page.",
+        server: "The server answered %s.",
+        unexpected: "Unexpected server error.",
+        timeout: "Reading took too long. Try again.",
+        unreadable: "The file could not be read.",
+        notimage: "This file is not a readable image.",
+        confidence: "Reading confidence: %s%",
+        saving: "Saving…",
+        updated: "Contact updated",
+        created: "Contact created",
+    };
+
+    function T(key, n) {
+        var node = document.querySelector('#texts [data-k="' + key + '"]');
+        var text = node ? node.textContent.trim() : FALLBACK[key];
+        return n === undefined ? text : text.replace("%s", n);
+    }
 
     function show(stepId) {
         ["step-capture", "step-working", "step-review", "step-done"]
@@ -48,10 +70,10 @@
         }).then(function (response) {
             clearTimeout(timer);
             if (response.status === 401 || response.status === 403) {
-                throw new Error("Votre session Odoo a expiré. Rechargez la page.");
+                throw new Error(T("session"));
             }
             if (!response.ok) {
-                throw new Error("Le serveur a répondu " + response.status + ".");
+                throw new Error(T("server", response.status));
             }
             return response.json();
         }).then(function (payload) {
@@ -60,7 +82,7 @@
             if (payload.error) {
                 var data = payload.error.data || {};
                 throw new Error(data.message || payload.error.message ||
-                                "Erreur inattendue du serveur.");
+                                T("unexpected"));
             }
             var result = payload.result || {};
             if (result.error) { throw new Error(result.error); }
@@ -68,7 +90,7 @@
         }, function (err) {
             clearTimeout(timer);
             if (err.name === "AbortError") {
-                throw new Error("La lecture a été trop longue. Réessayez.");
+                throw new Error(T("timeout"));
             }
             throw err;
         });
@@ -83,7 +105,7 @@
                 // strip the "data:...;base64," prefix the server does not want
                 resolve(String(reader.result).split(",")[1]);
             };
-            reader.onerror = function () { reject(new Error("Lecture du fichier impossible.")); };
+            reader.onerror = function () { reject(new Error(T("unreadable"))); };
             reader.readAsDataURL(blob);
         });
     }
@@ -117,7 +139,7 @@
             };
             img.onerror = function () {
                 URL.revokeObjectURL(url);
-                reject(new Error("Ce fichier n'est pas une image lisible."));
+                reject(new Error(T("notimage")));
             };
             img.src = url;
         });
@@ -128,7 +150,7 @@
     function onFile(file) {
         if (!file) { return; }
         clearError();
-        state.filename = file.name || "carte.jpg";
+        state.filename = file.name || "card.jpg";
         show("step-working");
 
         var previewUrl = file.type === "application/pdf" ? null : URL.createObjectURL(file);
@@ -171,7 +193,7 @@
 
         var chip = $("confidence");
         var score = result.confidence || 0;
-        chip.textContent = "Confiance de lecture : " + score + " %";
+        chip.textContent = T("confidence", score);
         chip.className = "chip " + (score >= 75 ? "good" : score >= 50 ? "fair" : "poor");
     }
 
@@ -186,13 +208,13 @@
         var mode = picked ? picked.value : state.mode;
 
         var button = $("save");
+        var label = button.textContent;
         button.disabled = true;
-        button.textContent = "Enregistrement…";
+        button.textContent = T("saving");
 
         call("/scan/save", {wizard_id: state.wizardId, fields: fields, mode: mode})
             .then(function (result) {
-                $("done-title").textContent = result.updated
-                    ? "Contact mis à jour" : "Contact créé";
+                $("done-title").textContent = T(result.updated ? "updated" : "created");
                 $("done-name").textContent = result.name || "";
                 $("done-link").href = result.url;
                 show("step-done");
@@ -200,7 +222,7 @@
             .catch(function (err) { fail(err.message); })
             .finally(function () {
                 button.disabled = false;
-                button.textContent = "Enregistrer le contact";
+                button.textContent = label;
             });
     }
 

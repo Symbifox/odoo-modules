@@ -92,16 +92,19 @@ MANIFEST = {
     # ``start_url``, so the day that URL moves the launcher treats it as a
     # different app and installs a second icon beside the first.
     "id": "/scan",
-    "name": "Numériser une carte",
-    "short_name": "Carte",
-    "description": "Créer un contact à partir d'une carte d'affaires.",
+    # ``name``, ``short_name``, ``description`` and ``lang`` are worded for the
+    # reader when the manifest is served (``scan_manifest``): a module-level
+    # constant cannot go through ``_()``. ``bf_scan`` copies this dict, words its
+    # own texts and no longer carries a ``lang`` key.
+    "name": "Scan a card",
+    "short_name": "Scan",
+    "description": "Create a contact from a business card.",
     "start_url": "/scan",
     "scope": "/scan",
     "display": "standalone",
     "orientation": "portrait",
     "background_color": "#12161a",
     "theme_color": "#12161a",
-    "lang": "fr-CA",
     # Both purposes at both sizes. A launcher that wants a maskable icon and
     # finds only a 512 downscales it; Android asks for 192 far more often.
     "icons": [
@@ -127,6 +130,10 @@ MANIFEST = {
 # declares a fetch handler but never responds to navigations — the shape this
 # file had at 18.0.1.1.1 — fails that check silently: no prompt, and the
 # browser degrades to a bookmark shortcut carrying whatever icon it can find.
+# The shell is loaded with ``cache: 'reload'``: ``addAll`` reads the HTTP cache, and
+# Odoo serves ``/static/`` for a week, so without it a phone that opened the page last
+# week would keep the old script. The cache name stays ``bf-scan-v2`` on purpose:
+# ``bf_scan`` rewrites it (and two other anchors below) with ``str.replace``.
 SERVICE_WORKER = """\
 const CACHE = 'bf-scan-v2';
 const OFFLINE = '/bf_contact_enrichment/static/src/scan/offline.html';
@@ -138,7 +145,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((u) => new Request(u, {cache: 'reload'})))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -163,8 +170,9 @@ self.addEventListener('fetch', (e) => {
       url.pathname.startsWith('/scan')) {
     e.respondWith(fetch(e.request).catch(() => caches.match(OFFLINE).then(
       (hit) => hit || new Response(
-        '<!DOCTYPE html><meta charset="utf-8"><title>Hors ligne</title>' +
-        '<p>Hors ligne. Reprenez quand le r\\u00e9seau revient.',
+        '<!DOCTYPE html><meta charset="utf-8"><title>Offline / Hors ligne</title>' +
+        '<p>Offline. Pick up again when the network is back.</p>' +
+        '<p lang="fr">Hors ligne. Reprenez quand le r\\u00e9seau revient.',
         {status: 200, headers: {'Content-Type': 'text/html; charset=utf-8'}}))));
     return;
   }
@@ -199,11 +207,11 @@ class BfContactScanPortal(http.Controller):
         """Raise unless the caller may both spend a scan and write a contact."""
         if not request.env.user.has_group(ENRICH_GROUP):
             raise AccessError(
-                _("Votre compte n'a pas accès à l'enrichissement de contacts."))
+                _("Your account does not have access to contact enrichment."))
         if not request.env["res.partner"].has_access("create"):
             raise AccessError(
-                _("Votre compte peut lire les contacts, mais pas en créer. "
-                  "Demandez le droit « Création de contacts »."))
+                _("Your account can read contacts but not create them. "
+                  "Ask for the “Contact Creation” right."))
 
     @staticmethod
     def _wizard(wizard_id):
@@ -216,10 +224,10 @@ class BfContactScanPortal(http.Controller):
         try:
             wiz = request.env["bf.contact.card.wizard"].browse(int(wizard_id))
         except (TypeError, ValueError):
-            raise UserError(_("Session de numérisation invalide."))
+            raise UserError(_("Invalid scan session."))
         if not wiz.exists():
             raise UserError(
-                _("Cette session de numérisation a expiré. Reprenez la photo."))
+                _("This scan session has expired. Take the photo again."))
         return wiz
 
     # ── The page ────────────────────────────────────────────────────
@@ -248,22 +256,24 @@ class BfContactScanPortal(http.Controller):
         self._check_group()
         image_b64 = (image_b64 or "").strip()
         if not image_b64:
-            return {"error": _("Aucune image reçue.")}
+            return {"error": _("No image received.")}
 
         wiz = request.env["bf.contact.card.wizard"].create({
             "image": image_b64,
-            "image_filename": filename or "carte.jpg",
+            "image_filename": filename or "card.jpg",
         })
         try:
             wiz.action_scan()
         except UserError as exc:
             # The wizard already phrases these for a human (unreadable card,
             # bridge down, unsupported file); pass them through as-is.
-            return {"error": exc.args[0] if exc.args else _("Lecture impossible.")}
+            return {"error": exc.args[0] if exc.args else _("Could not "
+                                                            "read the "
+                                                            "card.")}
         except Exception:  # noqa: BLE001 — never leak a traceback to a phone
             _logger.exception("Card scan failed for user %s", request.env.user.login)
-            return {"error": _("La lecture a échoué. Réessayez avec une photo "
-                               "plus nette, ou saisissez le contact à la main.")}
+            return {"error": _("Reading failed. Try again with a sharper "
+                               "photo, or enter the contact by hand.")}
 
         match = wiz.matched_partner_id
         return {
@@ -294,27 +304,29 @@ class BfContactScanPortal(http.Controller):
         if mode in ("create", "update"):
             vals["match_mode"] = mode
         if mode == "update" and not wiz.matched_partner_id:
-            return {"error": _("Aucun contact existant à mettre à jour.")}
+            return {"error": _("No existing contact to update.")}
         if vals:
             wiz.write(vals)
 
         try:
             action = wiz.action_apply()
         except UserError as exc:
-            return {"error": exc.args[0] if exc.args else _("Enregistrement refusé.")}
+            return {"error": exc.args[0] if exc.args else _("Saving refused.")}
         except AccessError:
             # A record rule can still refuse this particular contact even when
             # the model-level right is held — multi-company, most often.
-            return {"error": _("Votre compte n'a pas le droit d'écrire ce contact.")}
+            return {"error": _("Your account is not allowed to edit this "
+                               "contact.")}
         except Exception:  # noqa: BLE001
             _logger.exception("Card save failed for user %s", request.env.user.login)
-            return {"error": _("L'enregistrement a échoué.")}
+            return {"error": _("Saving failed.")}
 
         # action_apply already resolved the partner and handed it back in its
         # act_window; read it from there rather than guessing at the last id.
         partner_id = (action or {}).get("res_id")
         if not partner_id:
-            return {"error": _("Contact enregistré, mais introuvable ensuite.")}
+            return {"error": _("Contact saved, but it could not be found "
+                               "afterwards.")}
         partner = request.env["res.partner"].browse(partner_id)
         return {
             "partner_id": partner.id,
@@ -330,14 +342,26 @@ class BfContactScanPortal(http.Controller):
     def scan_manifest(self, **kw):
         """Serve the web app manifest.
 
-        Public on purpose: a manifest is fetched without credentials unless the
-        link tag opts in, it holds nothing private, and an authenticated 303 to
-        the login page would silently make the page non-installable.
+        Public on purpose: it holds nothing private, and an authenticated 303 to
+        the login page would silently make the page non-installable. A browser
+        fetches a manifest without credentials unless the link tag says
+        ``crossorigin="use-credentials"``, which the page's tag does: that is
+        what lets the name follow the reader's language. Signed out, it falls
+        back to the instance's default language and still installs.
         """
+        manifest = dict(
+            MANIFEST,
+            name=_("Scan a card"),
+            short_name=_("Scan"),
+            description=_("Create a contact from a business card."),
+            lang=(request.env.lang or "en_US").replace("_", "-"),
+        )
+        # ``private`` : le texte suit la langue de la requête (cookie, quand le
+        # navigateur en envoie un), et un cache partagé la servirait à tous.
         return request.make_response(
-            json.dumps(MANIFEST, ensure_ascii=False),
+            json.dumps(manifest, ensure_ascii=False),
             headers=[("Content-Type", "application/manifest+json; charset=utf-8"),
-                     ("Cache-Control", "public, max-age=3600")],
+                     ("Cache-Control", "private, max-age=3600")],
         )
 
     @http.route("/scan/sw.js", type="http", auth="public", methods=["GET"],

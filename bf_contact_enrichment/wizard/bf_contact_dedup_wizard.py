@@ -5,10 +5,10 @@ from ..tools import matching
 
 class BfContactDedupWizard(models.TransientModel):
     _name = "bf.contact.dedup.wizard"
-    _description = "Détecteur de doublons de contacts"
+    _description = "Contact duplicate finder"
 
     line_ids = fields.One2many(
-        "bf.contact.dedup.line", "wizard_id", string="Doublons détectés")
+        "bf.contact.dedup.line", "wizard_id", string="Duplicates found")
     scanned = fields.Boolean(default=False)
 
     def action_scan(self):
@@ -22,13 +22,15 @@ class BfContactDedupWizard(models.TransientModel):
             Line.create({
                 "wizard_id": self.id,
                 "key": group["key"],
-                "reason": group["reason"],
+                "reason": (_("Same email") if group["reason"] == "email"
+                           else _("Same name")),
                 "partner_ids": [(6, 0, partners.ids)],
                 "count": len(partners),
             })
         self.scanned = True
         return {
             "type": "ir.actions.act_window",
+            "name": _("Find duplicates"),
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",
@@ -38,13 +40,13 @@ class BfContactDedupWizard(models.TransientModel):
 
 class BfContactDedupLine(models.TransientModel):
     _name = "bf.contact.dedup.line"
-    _description = "Groupe de doublons"
+    _description = "Duplicate group"
     _order = "count desc"
 
     wizard_id = fields.Many2one("bf.contact.dedup.wizard", ondelete="cascade")
-    key = fields.Char(string="Clé")
-    reason = fields.Char(string="Motif")
-    count = fields.Integer(string="Nombre")
+    key = fields.Char(string="Key")
+    reason = fields.Char(string="Reason")
+    count = fields.Integer(string="Count")
     partner_ids = fields.Many2many("res.partner", string="Contacts")
 
     def action_open_partners(self):
@@ -53,7 +55,7 @@ class BfContactDedupLine(models.TransientModel):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Doublons : %s") % self.key,
+            "name": _("Duplicates: %s") % self.key,
             "res_model": "res.partner",
             "view_mode": "list,form",
             "domain": [("id", "in", self.partner_ids.ids)],

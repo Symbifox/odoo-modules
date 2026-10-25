@@ -1,7 +1,7 @@
 # Contact enrichment (`bf_contact_enrichment`)
 
 Cuts down manual data entry on `res.partner` records by enriching them
-automatically from four sources. Every AI call goes through the **`bf_ai_bridge`**
+automatically from five sources. Every AI call goes through the **`bf_ai_bridge`**
 gateway — the local `claude-chatbot-bridge` socket, and behind it `claude -p`,
 which means the tenant's own Claude subscription rather than a per-token API
 key.
@@ -26,7 +26,28 @@ key.
 3. **Create a contact from an email** — a "Create / enrich the contact" button
    on a `bf.email` record: finds or creates the sender, then runs signature
    enrichment.
-4. **Mobile scan page** (`/scan`) — the same card flow on a phone, as a
+4. **LinkedIn profile** — "Enrich (LinkedIn)" button on the record, or the
+   *LinkedIn profile* source in the wizard. Two modes, because linkedin.com is
+   closed to robots: any `/in/` or `/company/` URL answers **HTTP 999
+   "authwall"** to a non-browser client, and its `robots.txt` forbids automated
+   access. Fetching the page gets nothing.
+   - **Search (free)** — `/enrich/linkedin` in `search` mode queries the public
+     index (WebSearch) from the name, company and job title already on file, and
+     reports the profile URL, title and employer read in the snippets. Namesakes
+     that were set aside are listed under "Other profiles found". City and
+     country are not reported.
+   - **Reading a known profile (paid)** — `url` mode: RocketReach
+     `/person/lookup`, keyed on the profile URL, which also reports the
+     **professional** email and phone. **One credit per reading.** The "Read the
+     profile" button on the review screen chains the two: the search finds the
+     URL, the reading hooks onto it.
+
+   The URL kept is stored in `x_linkedin_url` on the record and keys later
+   readings. ⚠️ **A URL found by search must be checked by eye**: LinkedIn
+   answers 999 to everyone, so a real profile and an invented one cannot be told
+   apart from here, and only the shape of the URL is checked. That is what the
+   review screen is for.
+5. **Mobile scan page** (`/scan`) — the same card flow on a phone, as a
    standalone installable page rather than a native app. Scanning a card is a
    ten-second, foreground, occasional gesture: it needs no push, no offline
    store and no background work, so a page costs one install-free URL instead
@@ -47,7 +68,30 @@ key.
      shell, which is what browsers require before offering to install. Nothing
      personalised is ever cached; the authenticated page always goes to the
      network.
-5. **Quick wins**
+6. **Company completed by Gen** — when an incomplete company is created
+   (no website, phone or street), including when it is picked from Odoo's
+   autocomplete, the record joins a queue; the "Complete with Gen" button does
+   the same on demand. A scheduled job calls `/enrich/company-search`: the
+   bridge searches the company online by name and city (WebSearch) and, when it
+   finds a domain while the address or phone is still missing, reads the site
+   after the host check. Allow 20 to 60 s per company. The outcome follows the
+   preference of the user who asked (*My profile ▸ Companies completed by
+   Gen*):
+   - **Propose the values to me** (default): the record shows "See Gen's
+     proposal", which opens the current/proposed comparison; nothing is written
+     without "Apply", and "Dismiss the proposal" closes it;
+   - **Fill empty fields**: writes directly when confidence reaches 60,
+     otherwise proposes;
+   - **Do nothing on creation**: only the button remains.
+
+   Below a confidence of 30, or with nothing usable, the record says "Nothing
+   reliable found". The sources read are posted on the chatter with the name of
+   the user who asked. Only members of the "Contact enrichment" group start a
+   search (it uses the tenant's Claude plan); a programmatic creation (sudo,
+   import, installation) never starts one. ⚠️ A chain with many branches comes
+   out poorly, and Quebec's enterprise number (NEQ) never comes out: the
+   Quebec registry is not in search engines' indexes.
+7. **Quick wins**
    - **vCard import** (`.vcf`) — built-in parser, no external dependency. It
      reads the dialects real exports actually produce: Apple's group prefixes
      (`item1.TEL`), `QUOTED-PRINTABLE` accents from Android and Outlook 2.1,
@@ -82,13 +126,78 @@ what is actually present (never a surname guessed from the email
 address) and ignore quoted history in emails. The content being read (cards,
 emails) is treated as untrusted DATA, never as instructions.
 
+### Third-party collection (18.0.2.3.0)
+
+Email signatures and business cards come from the person themselves. LinkedIn
+(search) and RocketReach (profile lookup) are **third parties**. From them the
+module keeps **workplace contact details only**: name, title, employer,
+employer website, profile URL. Email and phone come only from the
+**RocketReach lookup**, and **only when the bridge tags them `professional`**
+(`email_type`, `phone_type`); an address at a consumer provider (gmail,
+outlook…) is dropped even when tagged. In search mode the tag is ignored: that
+answer is written by a language model from web snippets. Never a mobile
+number, a personal email, or the person's city, country or address; the review
+screen hides those fields for a LinkedIn source.
+
+The filter runs on receipt, before the answer is stored on the wizard: a
+proposed field is already collected information, even if it is never applied.
+A bridge that does not tag types lets neither email nor phone through.
+
+Why this line: in Quebec, s. 1 par. 5 of the *Act respecting the protection of
+personal information in the private sector* (P-39.1) excludes from Divisions
+II (collection) and III (use, retention, communication, destruction)
+information about a person's role within a business: name, title, and the
+address, email and phone number of their workplace. Anything else, collected
+from a third party, would in principle require the person's consent (s. 6).
+
+Where each addition came from stays on the record's chatter ("Contact enriched
+via <source>", with the list of fields).
+
+Company completion by Gen (`/enrich/company-search`) only targets `is_company`
+records, and the prompt asks the model to report no person's name, title or
+mobile number.
+
 ## Changelog
 
-- **18.0.2.1.2** — vCard import reads a URL's host with `urlparse` instead of a
-  substring match: `linkedin.com.example.net` was taken for a LinkedIn profile.
-  The host must be the domain itself or one of its subdomains, `\` is read as
-  `/` (as browsers do), and only http, https or no scheme are accepted. Same
-  rule for the social networks that are never taken for the website.
+- **18.0.2.5.0** — The source is now written in English; French lives in
+  `i18n/fr_CA.po` (Odoo never translates *to* `en_US`, so a French source read
+  French for every user set to English). The Gen proposal window carries its
+  title ("Enrich a contact", it opened as "Odoo") and lists the sources it read
+  as links under a heading, instead of an unlabelled text box that showed one;
+  the "Overwrite existing values" box no longer hides its label. What the
+  scheduled job writes (status message, notification, chatter note) is now in
+  the language of the user who asked, not of the job's user. Every sentence of
+  the scan page's script, which cannot be translated, now travels with the page;
+  the page's title, language and web app name follow the reader, and the cache
+  of the installed page is refreshed from the network (Odoo serves `/static/`
+  for a week). Countries are looked up in English first, then in the reader's
+  language, and a name no longer matches a country *code* (the code is
+  truncated to two characters: "États-Unis" used to find Ethiopia); common
+  abbreviations ("USA", "UK", "CAN") are mapped. The duplicate finder words its
+  reasons for the reader, and the field names in the chatter summary are
+  translated.
+
+- **18.0.2.4.0** — Companies completed by an online search by Gen: queue on
+  creation and a button, a scheduled job, a per-user preference (propose by
+  default, fill, start nothing), sources on the chatter. Needs a bridge with
+  `/enrich/company-search`; without it the record shows "Gen service
+  unavailable".
+
+- **18.0.2.2.1** — The enrichment summary posted on the chatter was an ordinary
+  string, which `message_post` escapes: the one contact ever enriched showed its
+  tags in the clear. It is now real HTML, with the substituted values still
+  escaped.
+
+- **18.0.2.2.0** — The two lineages meet. The Blue Fox line (1.5.x) brings the
+  LinkedIn enrichment; the published line (2.x) brings the tenant stamped by the
+  bridge (no call site carries a tenant name any more) and the tenant's accent
+  colour on the `/scan` page.
+
+- **18.0.2.3.0** — Third-party collection: the LinkedIn lanes keep workplace
+  contact details only, filtered on receipt; email and phone pass only from the
+  RocketReach lookup, tagged `professional` by the bridge. vCard import: a URL's
+  host is read with `urlparse` (exact domain or subdomain, `\` read as `/`,
+  http and https only) instead of a substring match (CodeQL #8).
 
 - **18.0.2.1.0** — The scan page wears the tenant's accent colour instead of a
   hardcoded one. The page stays dark by design (it gets used at arm's length in

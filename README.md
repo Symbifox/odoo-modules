@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**259 modules are BUSL-1.1.** The source is published and auditable, and **you
+**260 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -152,7 +152,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.1.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
 | `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.1.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.1.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
-| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.2 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
+| `bf_contact_enrichment` | Contact Enrichment | 18.0.2.5.0 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, LinkedIn profiles, companies completed by an online search by Gen, vCard import, duplicate detection and completeness scoring, powered by Gen |
+| `bf_contact_enrichment_autocomplete` | Contact Enrichment: Odoo Autocomplete | 18.0.1.1.0 | BUSL-1.1 | Without autocomplete credit, a company picked from Odoo's suggestions is completed by Gen after it is saved, instead of an invitation to buy credit |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.2.0 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.2.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_credit_identity` | Credit & Identity | 18.0.1.1.0 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
@@ -478,7 +479,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **259 modules: BUSL-1.1.** Production use for your own internal business
+- **260 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
