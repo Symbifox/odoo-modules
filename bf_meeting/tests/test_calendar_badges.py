@@ -246,6 +246,166 @@ class TestCalendarBadges(TransactionCase):
         self.assertIn('name="bf_agenda_state"', arch)
         self.assertIn('name="bf_minutes_state"', arch)
 
+    # --- un OdJ annulé éteint la pastille -----------------
+
+    def test_odj_annule_sans_compte_rendu_eteint_les_deux_pastilles(self):
+        event = self._event()
+        agenda = self._agenda(event)
+        self.assertEqual(event.bf_agenda_state, 'draft')
+
+        agenda.state = 'cancelled'
+        self.assertEqual(event.bf_agenda_state, 'skipped',
+                         "l'OdJ annulé garde sa pastille « rédigé »")
+        self.assertEqual(event.bf_minutes_state, 'skipped',
+                         "la rencontre annulée garde une pastille de compte rendu")
+
+    def test_odj_annule_a_la_creation_eteint_la_pastille(self):
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+
+    def test_odj_annule_avec_compte_rendu_garde_celui_ci(self):
+        """Même règle que la vue : une rencontre tenue malgré l'annulation
+        (absence notée, CR rédigé ensuite) a encore un compte rendu à finir."""
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        record = self._record(event)
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'draft')
+
+        record.report_state = 'sent'
+        self.assertEqual(event.bf_minutes_state, 'sent')
+
+    def test_odj_annule_puis_refait_garde_la_pastille_vivante(self):
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        self._agenda(event, email_sent_date=fields.Datetime.now())
+        self.assertEqual(event.bf_agenda_state, 'sent',
+                         "l'OdJ annulé a masqué l'OdJ refait")
+
+    def test_odj_annule_puis_refait_meme_s_il_est_le_plus_recent(self):
+        event = self._event()
+        vivant = self._agenda(event)
+        self._agenda(event, state='cancelled')
+        self.assertEqual(event.bf_agenda_state, 'draft')
+        self.assertEqual(vivant.state, 'draft')
+
+    def test_odj_vivant_a_cote_du_temoin_n_est_pas_eteint(self):
+        """Témoin : la garde discrimine, elle n'éteint pas toute rencontre."""
+        event = self._event()
+        self._agenda(event)
+        self.assertEqual(event.bf_agenda_state, 'draft')
+        self.assertEqual(event.bf_minutes_state, 'none')
+
+    def test_remettre_l_odj_en_brouillon_rallume_la_pastille(self):
+        event = self._event()
+        agenda = self._agenda(event, state='cancelled')
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        agenda.action_reset_draft()
+        self.assertEqual(event.bf_agenda_state, 'draft')
+        self.assertEqual(event.bf_minutes_state, 'none')
+
+    def test_odj_annule_deja_envoye_eteint_quand_meme_la_pastille(self):
+        """L'envoi ne sauve pas un OdJ annulé : la rencontre n'aura pas lieu."""
+        event = self._event()
+        self._agenda(event, state='cancelled',
+                     email_sent_date=fields.Datetime.now())
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+
+    def test_tous_les_odj_annules_eteignent_la_pastille(self):
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        self._agenda(event, state='cancelled')
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+
+    def test_la_dispense_passe_avant_l_annulation(self):
+        """Une rencontre dispensée reste « non requis » des deux côtés, même
+        avec un OdJ annulé et un compte rendu : la dispense retire la LIGNE."""
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        self._record(event)
+        self.assertEqual(event.bf_minutes_state, 'draft')
+        event.bf_skip_dashboard = True
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+
+    def test_archiver_le_compte_rendu_d_un_odj_annule_eteint_la_pastille(self):
+        """La vue retire la ligne dès que le dernier compte rendu est archivé ;
+        la pastille doit suivre (dépendance sur `active`, que l'ORM ne déduit
+        pas de `meeting_record_ids`)."""
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        record = self._record(event)
+        self.assertEqual(event.bf_minutes_state, 'draft')
+        record.active = False
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+        record.active = True
+        self.assertEqual(event.bf_minutes_state, 'draft')
+
+    def test_archiver_l_odj_annule_rend_l_etat_absent(self):
+        event = self._event()
+        agenda = self._agenda(event, state='cancelled')
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        agenda.active = False
+        self.assertEqual(event.bf_agenda_state, 'none')
+        self.assertEqual(event.bf_minutes_state, 'none')
+
+    def test_un_odj_archive_ne_masque_pas_l_odj_vivant_meme_sans_filtre_actif(self):
+        """Un recalcul joué sous `active_test=False` ne doit pas retenir l'OdJ
+        archivé (plus petit `id`) devant l'OdJ vivant."""
+        # Archivé en BROUILLON, pas annulé : un OdJ annulé passe de toute façon
+        # derrière le vivant par la clé de tri, et l'essai ne prouverait rien.
+        event = self._event()
+        archive = self._agenda(event)
+        self._agenda(event, email_sent_date=fields.Datetime.now())
+        archive.active = False
+        event.with_context(active_test=False)._compute_bf_doc_states()
+        self.assertEqual(event.bf_agenda_state, 'sent')
+
+    def test_un_compte_rendu_archive_n_est_pas_retenu_sans_filtre_actif(self):
+        event = self._event()
+        self._agenda(event)
+        record = self._record(event, report_state='sent')
+        record.active = False
+        event.with_context(active_test=False)._compute_bf_doc_states()
+        self.assertEqual(event.bf_minutes_state, 'none')
+
+    def test_la_migration_recalcule_les_pastilles_deja_stockees(self):
+        """Les pastilles stockées avant la correction ne se recalculent pas
+        d'elles-mêmes : la migration les refait pour les OdJ déjà annulés.
+
+        Joue le VRAI fichier `post-migrate.py` (chargé par son chemin : le
+        dossier de version porte des points), pas la seule méthode qu'il
+        appelle. Les lectures se font après une invalidation du cache : une
+        valeur seulement calculée en mémoire, jamais écrite, ferait échouer.
+        """
+        import importlib.util
+        import pathlib
+        event = self._event()
+        self._agenda(event, state='cancelled')
+        # Ramener la valeur à ce que l'ancien code avait stocké. Écrire d'abord
+        # ce que l'ORM garde en attente, sinon son flush recouvre le SQL brut.
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE calendar_event SET bf_agenda_state='draft', bf_minutes_state='none' WHERE id=%s",
+            [event.id])
+        event.invalidate_recordset(['bf_agenda_state', 'bf_minutes_state'])
+        self.assertEqual(event.bf_agenda_state, 'draft')
+
+        chemin = (pathlib.Path(__file__).resolve().parent.parent
+                  / 'migrations' / '18.0.3.71.0' / 'post-migrate.py')
+        spec = importlib.util.spec_from_file_location('bf_meeting_post_3_71_0', chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.migrate(self.env.cr, '18.0.3.70.0')
+
+        event.invalidate_recordset(['bf_agenda_state', 'bf_minutes_state'])
+        self.assertEqual(event.bf_agenda_state, 'skipped')
+        self.assertEqual(event.bf_minutes_state, 'skipped')
+
 
 @tagged('post_install', '-at_install')
 class TestTagSkips(TransactionCase):

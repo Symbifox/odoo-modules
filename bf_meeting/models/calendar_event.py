@@ -385,7 +385,9 @@ class CalendarEvent(models.Model):
     # a bel et bien un OdJ. Le calcul rend déjà 'none' quand il n'y a rien.
     @api.depends('meeting_agenda_ids', 'meeting_agenda_ids.state',
                  'meeting_agenda_ids.email_sent_date',
+                 'meeting_agenda_ids.active',
                  'meeting_record_ids', 'meeting_record_ids.report_state',
+                 'meeting_record_ids.active',
                  'bf_skip_agenda', 'bf_skip_dashboard')
     def _compute_bf_doc_states(self):
         """Les deux états, stockés.
@@ -417,10 +419,38 @@ class CalendarEvent(models.Model):
                 event.bf_minutes_state = 'skipped'
                 continue
 
-            agenda = event.meeting_agenda_ids[:1]
-            record = event.meeting_record_ids[:1]
+            # Un OdJ vivant passe devant un OdJ annulé, comme dans la vue du
+            # tableau de bord (`ORDER BY (ma.state = 'cancelled'), ma.id`) :
+            # un OdJ annulé puis refait garde sa rencontre.
+            #
+            # Les archivés sont écartés À LA MAIN, comme le fait la vue
+            # (`ma.active = true`) : la lecture d'un One2many ne les filtre que
+            # si le contexte de l'appelant porte `active_test`, et un recalcul
+            # joué sous `active_test=False` retiendrait un OdJ archivé.
+            agenda = event.meeting_agenda_ids.filtered('active').sorted(
+                lambda a: (a.state == 'cancelled', a.id))[:1]
+            record = event.meeting_record_ids.filtered('active')[:1]
 
-            if agenda:
+            # Un OdJ annulé (« Rencontre annulée ») sort la
+            # rencontre du tableau de bord et du digest, sauf si son compte
+            # rendu existe déjà. La pastille suit : sans compte rendu, plus rien
+            # à faire, donc « non requis » des deux côtés ; avec un compte rendu
+            # (OdJ annulé pour absence, compte rendu rédigé ensuite), l'OdJ est
+            # « non requis » et le compte rendu garde son avancement.
+            #
+            # Seul l'OdJ annulé est lu ici. L'annulation du calendrier
+            # (`bf_event_status`) vient de bf_calendar_invite, que ce module ne
+            # requiert pas : un champ qui n'est pas le nôtre ne se met pas dans
+            # un `@api.depends`.
+            cancelled = agenda.state == 'cancelled'
+            if cancelled and not record:
+                event.bf_agenda_state = 'skipped'
+                event.bf_minutes_state = 'skipped'
+                continue
+
+            if cancelled:
+                event.bf_agenda_state = 'skipped'
+            elif agenda:
                 if agenda.email_sent_date:
                     event.bf_agenda_state = 'sent'
                 elif agenda.state in ('confirmed', 'done'):
@@ -439,6 +469,22 @@ class CalendarEvent(models.Model):
                     event.bf_minutes_state = 'draft'
             else:
                 event.bf_minutes_state = 'none'
+
+    @api.model
+    def _bf_recompute_cancelled_agenda_states(self):
+        """Refaire les deux pastilles STOCKÉES des rencontres dont un OdJ est annulé.
+
+        Une pastille stockée ne se recalcule qu'au changement d'une de ses
+        dépendances : celles que l'ancien code avait posées sur des OdJ déjà
+        annulés (« rédigé », « absent ») resteraient. Appelé par la migration
+        18.0.3.71.0 ; rejouable sans effet.
+        """
+        events = self.with_context(active_test=False).search(
+            [('meeting_agenda_ids.state', '=', 'cancelled')])
+        for name in ('bf_agenda_state', 'bf_minutes_state'):
+            self.env.add_to_compute(self._fields[name], events)
+        self.env.flush_all()
+        return len(events)
 
     # ------------------------------------------------------------------
     # Étiquettes qui dispensent d'OdJ et de compte rendu
