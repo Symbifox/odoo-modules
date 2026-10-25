@@ -51,6 +51,12 @@ class TestPortail(HttpCase):
             })],
         })
 
+    def _jeton(self, projet=None):
+        """Le jeton de l'échéancier (pas l'access_token du projet)."""
+        projet = projet or self.projet
+        projet._bf_gantt_assurer_le_jeton()
+        return projet.bf_gantt_token
+
     def _url(self, kind, enregistrement, token=None, suffixe=""):
         base = "/mon/echeancier/%s/%s%s" % (kind, enregistrement.id, suffixe)
         return base + ("?access_token=%s" % token if token else "")
@@ -78,7 +84,7 @@ class TestPortail(HttpCase):
         self.projet.bf_gantt_published = False
         self.env.flush_all()
         reponse = self.url_open(
-            self._url("project", self.projet, token=self.projet.access_token),
+            self._url("project", self.projet, token=self._jeton()),
             allow_redirects=False)
         self.assertIn(reponse.status_code, (301, 302, 303))
 
@@ -94,7 +100,7 @@ class TestPortail(HttpCase):
         self.projet.action_bf_gantt_publier()
         self.env.flush_all()
         reponse = self.url_open(
-            self._url("project", self.projet, token=self.projet.access_token))
+            self._url("project", self.projet, token=self._jeton()))
         self.assertEqual(reponse.status_code, 200)
         corps = reponse.text
         self.assertIn("<svg", corps)
@@ -104,7 +110,7 @@ class TestPortail(HttpCase):
     def test_le_pied_ne_double_pas_le_point_final_du_nom(self):
         """« servie par Boréal inc.. » : le nom de la société porte déjà son point."""
         self.projet.action_bf_gantt_publier()
-        url = self._url("project", self.projet, token=self.projet.access_token)
+        url = self._url("project", self.projet, token=self._jeton())
         # La page suit la langue du site : on regarde la ponctuation, pas la phrase.
         for nom, motif in (("Banc Gantt inc.", r"Banc Gantt inc\.</span>\s+[A-Z]"),
                            ("Banc Gantt", r"Banc Gantt</span>\.\s+[A-Z]")):
@@ -156,7 +162,7 @@ class TestPortail(HttpCase):
         self.env.flush_all()
         corps = self.url_open(
             self._url("project", self.projet,
-                      token=self.projet.access_token)).text
+                      token=self._jeton())).text
         self.assertNotIn("<?xml", corps)
 
     def test_un_plan_autonome_se_publie_pareil(self):
@@ -179,7 +185,7 @@ class TestPortail(HttpCase):
         }
         for format_, signature in attendus.items():
             reponse = self.url_open(self._url(
-                "project", self.projet, token=self.projet.access_token,
+                "project", self.projet, token=self._jeton(),
                 suffixe="/" + format_))
             self.assertEqual(reponse.status_code, 200, format_)
             self.assertTrue(reponse.content.startswith(signature), format_)
@@ -201,7 +207,7 @@ class TestPortail(HttpCase):
             l, h, vw, vh = (float(v) for v in m.groups())
             return l / vw
 
-        base = self._url("project", self.projet, token=self.projet.access_token)
+        base = self._url("project", self.projet, token=self._jeton())
         self.assertAlmostEqual(boite(base), 1.5, places=2)          # défaut
         self.assertAlmostEqual(boite(base + "&zoom=2.5"), 2.5, places=2)
         self.assertAlmostEqual(boite(base + "&zoom=1"), 1.0, places=2)
@@ -224,16 +230,16 @@ class TestPortail(HttpCase):
         self.projet.action_bf_gantt_publier()
         self.env.flush_all()
         reponse = self.url_open(self._url(
-            "project", self.projet, token=self.projet.access_token,
+            "project", self.projet, token=self._jeton(),
             suffixe="/exe"), allow_redirects=False)
         self.assertNotEqual(reponse.status_code, 200)
 
     def test_regenerer_le_token_coupe_l_ancienne_adresse(self):
         self.projet.action_bf_gantt_publier()
-        ancien = self.projet.access_token
+        ancien = self._jeton()
         self.projet.action_bf_gantt_regenerer_token()
         self.env.flush_all()
-        self.assertNotEqual(ancien, self.projet.access_token)
+        self.assertNotEqual(ancien, self._jeton())
         reponse = self.url_open(
             self._url("project", self.projet, token=ancien),
             allow_redirects=False)
@@ -332,10 +338,114 @@ class TestPortail(HttpCase):
 
     def test_depublier_referme_sans_changer_le_token(self):
         self.projet.action_bf_gantt_publier()
-        token = self.projet.access_token
+        token = self._jeton()
         self.projet.action_bf_gantt_depublier()
         self.env.flush_all()
-        self.assertEqual(token, self.projet.access_token)
+        self.assertEqual(token, self._jeton())
         reponse = self.url_open(self._url("project", self.projet, token=token),
                                 allow_redirects=False)
         self.assertIn(reponse.status_code, (301, 302, 303))
+
+    # ------------------------- 18.0.1.7.0 : un jeton propre à l'échéancier
+
+    def test_l_access_token_du_projet_n_ouvre_plus_l_echeancier(self):
+        self.projet.action_bf_gantt_publier()
+        self.projet._portal_ensure_token()
+        self.env.flush_all()
+        reponse = self.url_open(
+            self._url("project", self.projet, token=self.projet.access_token),
+            allow_redirects=False)
+        self.assertIn(reponse.status_code, (301, 302, 303))
+
+    def test_publier_ne_frappe_pas_l_access_token_du_projet(self):
+        projet = self.env["project.project"].create({"name": "Projet neuf"})
+        projet.action_bf_gantt_publier()
+        projet.action_bf_gantt_copier_lien()
+        self.assertFalse(projet.access_token)
+        self.assertTrue(projet.bf_gantt_token)
+
+    def test_le_jeton_de_l_echeancier_n_ouvre_ni_le_projet_ni_ses_taches(self):
+        """Le défaut d'origine : le lien de l'échéancier ouvrait chaque tâche."""
+        self.projet.action_bf_gantt_publier()
+        tache = self.projet.task_ids[:1]
+        jeton = self._jeton()
+        self.env.flush_all()
+        self.assertEqual(self.url_open(
+            self._url("project", self.projet, token=jeton)).status_code, 200)
+        for adresse in ("/my/projects/%s" % self.projet.id,
+                        "/my/projects/%s/task/%s" % (self.projet.id, tache.id),
+                        "/my/tasks/%s" % tache.id):
+            reponse = self.url_open("%s?access_token=%s" % (adresse, jeton),
+                                    allow_redirects=False)
+            self.assertNotEqual(reponse.status_code, 200, adresse)
+            self.assertNotIn("Tâche visible au portail", reponse.text, adresse)
+
+    def test_le_client_qui_suit_le_projet_l_ouvre_sans_jeton(self):
+        usager, partenaire = self._client_portail()
+        self.projet.privacy_visibility = "portal"
+        self.projet.message_subscribe(partner_ids=[partenaire.id])
+        self.projet.action_bf_gantt_publier()
+        self.env.flush_all()
+        self.authenticate(usager.login, usager.login)
+        reponse = self.url_open("/mon/echeancier/project/%s" % self.projet.id,
+                                allow_redirects=False)
+        self.assertEqual(reponse.status_code, 200)
+
+    def test_un_client_qui_ne_suit_pas_le_projet_est_refuse_sans_jeton(self):
+        usager, _partenaire = self._client_portail("Client étranger")
+        self.projet.action_bf_gantt_publier()
+        self.env.flush_all()
+        self.authenticate(usager.login, usager.login)
+        reponse = self.url_open("/mon/echeancier/project/%s" % self.projet.id,
+                                allow_redirects=False)
+        self.assertIn(reponse.status_code, (301, 302, 303))
+
+    def test_le_jeton_est_reserve_au_groupe_de_gestion(self):
+        from odoo.exceptions import AccessError
+        lecteur = new_test_user(self.env, login="lecteur_echeancier",
+                                groups="project.group_project_manager")
+        self.projet.action_bf_gantt_publier()
+        with self.assertRaises(AccessError):
+            self.projet.with_user(lecteur).read(["bf_gantt_token"])
+
+    def test_la_migration_change_le_jeton_des_echeanciers_publies(self):
+        import importlib.util
+        from odoo.tools import file_path
+        chemin = file_path("bf_gantt/migrations/18.0.1.7.0/post-migrate.py")
+        spec = importlib.util.spec_from_file_location("bf_gantt_migration_170", chemin)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+
+        publie = self.projet
+        publie.bf_gantt_published = True
+        publie._portal_ensure_token()
+        # Publié puis dépublié en 1.6.1 : le lien distribué gardait son jeton.
+        depublie = self.env["project.project"].create({"name": "Projet dépublié"})
+        depublie.bf_gantt_published = True
+        self.env.flush_all()
+        depublie.bf_gantt_published = False
+        depublie._portal_ensure_token()
+        tache = self.env["project.task"].create({"name": "Tâche vue", "project_id": depublie.id})
+        tache._portal_ensure_token()
+        piece = self.env["ir.attachment"].create({
+            "name": "piece.txt", "raw": b"x", "res_model": "project.task", "res_id": tache.id})
+        piece.generate_access_token()
+        jamais = self.env["project.project"].create({"name": "Projet jamais publié"})
+        jamais._portal_ensure_token()
+        tache_jamais = self.env["project.task"].create({"name": "Autre", "project_id": jamais.id})
+        tache_jamais._portal_ensure_token()
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE project_project SET bf_gantt_published = NULL WHERE id = %s", (jamais.id,))
+        gardes = (jamais.access_token, tache_jamais.access_token)
+
+        migration.migrate(self.env.cr, "18.0.1.6.1")
+        self.env.invalidate_all()
+
+        self.assertFalse(publie.access_token)
+        self.assertTrue(publie.bf_gantt_token)
+        self.assertFalse(depublie.access_token)
+        self.assertFalse(depublie.bf_gantt_token)
+        self.assertFalse(tache.access_token)
+        self.assertFalse(piece.access_token)
+        self.assertEqual((jamais.access_token, tache_jamais.access_token), gardes)

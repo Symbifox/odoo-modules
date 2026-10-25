@@ -40,7 +40,19 @@ class EcheancierPortail(CustomerPortal):
         if kind not in MODELES:
             raise MissingError(_("Unknown timeline."))
         modele, drapeau = MODELES[kind]
-        enregistrement = self._document_check_access(modele, res_id, access_token)
+        if kind == "project":
+            # 🔴 Jamais l'`access_token` du projet : il ouvre aussi /my/projects
+            # et chaque tâche. Seul le jeton de l'échéancier ouvre la page à un
+            # anonyme ; sans lui, ce sont les droits de l'usager connecté.
+            projet = request.env[modele].sudo().browse(res_id).exists()
+            if not projet:
+                raise MissingError(_("Unknown timeline."))
+            if projet._bf_gantt_jeton_valide(access_token):
+                enregistrement = projet
+            else:
+                enregistrement = self._document_check_access(modele, res_id, None)
+        else:
+            enregistrement = self._document_check_access(modele, res_id, access_token)
         if not enregistrement[drapeau]:
             # Le token est bon mais la publication est fermée. On refuse comme
             # si de rien n'était : distinguer les deux cas renseignerait un
@@ -100,7 +112,7 @@ class EcheancierPortail(CustomerPortal):
             # ⚠️ Le libellé est fabriqué ici, pas dans le gabarit : un `%` dans
             # une expression QWeb part en « incomplete format » à la compilation.
             "zooms": [(z, "%d %%" % round(z * 100)) for z in geo.ZOOMS_OFFERTS],
-            "access_token": access_token,
+            "access_token": access_token or "",
             "formats": [("pdf", "PDF"), ("png", "PNG"), ("svg", "SVG"),
                         ("xlsx", "Excel"), ("mspdi", "MS Project")],
             "page_name": "echeancier",

@@ -52,7 +52,12 @@ change the time scale; the client caches them.
 
 ## The portal's three guards
 
-1. the **token**, checked by Odoo's own `_document_check_access`;
+1. the **token**, a project's own timeline token (`bf_gantt_token`, compared in
+   constant time), never the project's `access_token`: that one also opens Odoo's
+   standard `/my/projects/<id>` pages and every task in them, so a timeline link
+   that carried it opened the whole project to whoever received it. A schedule
+   plan, which has no such pages, keeps the plan's own `access_token`, checked by
+   Odoo's `_document_check_access`;
 2. the **published flag**: a token that exists is not permission to publish, and
    you must be able to close a schedule again without changing its address;
 3. **the same check on the files as on the page**, otherwise guessing the PDF's
@@ -132,6 +137,7 @@ Labels and messages are written in English in the source; the French ships in `i
 
 | Version | Notes |
 |---|---|
+| 18.0.1.7.0 | A published project timeline carries its own token instead of the project's `access_token`, which also opened `/my/projects/<id>` and each task, description included, to anyone holding the timeline link. The token is readable only by the manage group. On upgrade, every project whose timeline was ever published (still published, or published then removed, which kept its token) has its `access_token` cleared, along with those of its tasks and of their attachments, which the leaked task pages handed out; Odoo makes new ones when needed. This also ends the anonymous links Odoo itself sent for these projects (share wizard, "View" buttons in notifications): signed-in users are not affected, and the next mail carries a fresh link. Projects still published get a new timeline token: **addresses handed out before stop working; hand out the one shown by "Show the full address"**. A signed-in portal customer opens the timeline from their project page without any token, through the record rules. |
 | 18.0.1.6.1 | The portal footer no longer doubles the full stop after a company name that already ends with one ("Inc.."); the upgrade removes the stray leading full stop the French translation kept from the previous wording. A lane's progress is the average of its bars (a closed bar counts as 100 %), instead of the share of closed lines only, which showed 0 % on a lane whose lines were well under way. |
 | 18.0.1.6.0 | Labels written in English in the source, French in `i18n/fr_CA.po`; the drawn schedule follows the reader's language (see *Languages*). |
 | 18.0.1.5.7 | SVG text and accents read `--brand-dark`/`--brand-primary` instead of fixed hex values. |
@@ -153,6 +159,6 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Licence
 
-BUSL-1.1, Change Date **2030-10-19**, Change Licence LGPL-3.0-or-later. Internal
+BUSL-1.1, Change Date **2030-10-24**, Change Licence LGPL-3.0-or-later. Internal
 use stays free; reselling or hosting it for a third party needs a written
 agreement. See `LICENSE`.

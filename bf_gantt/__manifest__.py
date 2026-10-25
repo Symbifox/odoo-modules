@@ -52,7 +52,9 @@ seule bibliothèque capable de lire le ``.mpp`` exige une machine virtuelle Java
     #   en français.
     # 18.0.1.6.1 : pied du portail sans point doublé ; avancement d'un couloir = moyenne de ses
     #   barres.
-    "version": "18.0.1.6.1",
+    # 18.0.1.7.0 : le lien publié porte un jeton propre à l'échéancier, plus l'access_token
+    #   du projet, qui ouvrait aussi /my/projects et chaque tâche à qui recevait le lien.
+    "version": "18.0.1.7.0",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

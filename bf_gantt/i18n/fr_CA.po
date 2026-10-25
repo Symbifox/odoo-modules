@@ -1669,3 +1669,13 @@ msgstr "aujourd'hui"
 #: code:addons/bf_gantt/models/gantt_source.py:0
 msgid "truncated list"
 msgstr "liste tronquée"
+
+#. module: bf_gantt
+#: model:ir.model.fields,field_description:bf_gantt.field_project_project__bf_gantt_token
+msgid "Timeline token"
+msgstr "Jeton de l'échéancier"
+
+#. module: bf_gantt
+#: model:ir.model.fields,help:bf_gantt.field_project_project__bf_gantt_token
+msgid "Opens this project's timeline, and only the timeline."
+msgstr "Ouvre l'échéancier de ce projet, et rien d'autre."

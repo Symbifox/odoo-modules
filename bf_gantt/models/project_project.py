@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """Ce que le projet gagne : un bouton, et une adresse à donner.
 
-`project.project` hérite déjà de `portal.mixin`, donc il a son `access_token` et
-son `_document_check_access`. On ne réinvente rien : on pose seulement le
-drapeau qui dit si l'échéancier est ouvert, parce qu'un token qui existe n'est
-pas une permission de publier.
+🔴 Le lien publié porte un jeton PROPRE à l'échéancier (`bf_gantt_token`), jamais
+l'`access_token` du projet (`portal.mixin`) : celui-là ouvre aussi les pages
+standard d'Odoo, `/my/projects/<id>` et chacune de ses tâches, description
+comprise. Qui recevait le lien de l'échéancier pouvait lire tout le projet
+(18.0.1.7.0). Le drapeau de publication reste : un jeton qui existe n'est pas une
+permission de publier.
 """
-import uuid
+import secrets
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
+from odoo.tools import consteq
 
 GROUPE_GESTION = "bf_gantt.group_bf_gantt_manager"
 
@@ -22,6 +25,13 @@ class ProjectProject(models.Model):
         copy=False,
         help="Opens the token address in read-only mode. Unchecked, the "
              "address answers \"access denied\" even with the right token.",
+    )
+    bf_gantt_token = fields.Char(
+        string="Timeline token",
+        copy=False,
+        readonly=True,
+        groups=GROUPE_GESTION,
+        help="Opens this project's timeline, and only the timeline.",
     )
     bf_gantt_grouping = fields.Selection(
         selection=[
@@ -89,11 +99,22 @@ class ProjectProject(models.Model):
         }
         return action
 
+    def _bf_gantt_assurer_le_jeton(self):
+        for projet in self.sudo():
+            if not projet.bf_gantt_token:
+                projet.bf_gantt_token = secrets.token_urlsafe(32)
+
+    def _bf_gantt_jeton_valide(self, jeton):
+        """Le jeton de l'échéancier, comparé en temps constant. Rien d'autre."""
+        self.ensure_one()
+        attendu = self.sudo().bf_gantt_token
+        return bool(jeton and attendu and consteq(str(jeton), attendu))
+
     def action_bf_gantt_publier(self):
         self._bf_gantt_exiger_le_droit_de_publier()
         for projet in self:
             projet.bf_gantt_published = True
-            projet._portal_ensure_token()
+        self._bf_gantt_assurer_le_jeton()
         return True
 
     def action_bf_gantt_depublier(self):
@@ -103,8 +124,8 @@ class ProjectProject(models.Model):
 
     def action_bf_gantt_regenerer_token(self):
         self._bf_gantt_exiger_le_droit_de_publier()
-        for projet in self:
-            projet.access_token = uuid.uuid4().hex
+        for projet in self.sudo():
+            projet.bf_gantt_token = secrets.token_urlsafe(32)
         return True
 
     def action_bf_gantt_copier_lien(self):
@@ -119,10 +140,10 @@ class ProjectProject(models.Model):
         """
         self.ensure_one()
         self._bf_gantt_exiger_le_droit_de_publier()
-        self._portal_ensure_token()
+        self._bf_gantt_assurer_le_jeton()
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         lien = "%s/mon/echeancier/project/%s?access_token=%s" % (
-            base.rstrip("/"), self.id, self.access_token)
+            base.rstrip("/"), self.id, self.sudo().bf_gantt_token)
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

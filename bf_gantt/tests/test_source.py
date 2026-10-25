@@ -351,5 +351,9 @@ class TestCopierLien(TransactionCase):
             self.env, login="banc_gantt_gestion_lien",
             groups="project.group_project_manager,bf_gantt.group_bf_gantt_manager")
         action = self.projet.with_user(gestionnaire).action_bf_gantt_copier_lien()
-        self.assertIn("/mon/echeancier/project/", action["params"]["message"])
-        self.assertTrue(self.projet.access_token)
+        message = action["params"]["message"]
+        self.assertIn("/mon/echeancier/project/", message)
+        # Le jeton de l'échéancier, jamais l'access_token du projet (18.0.1.7.0).
+        self.assertTrue(self.projet.bf_gantt_token)
+        self.assertIn(self.projet.bf_gantt_token, message)
+        self.assertFalse(self.projet.access_token)
