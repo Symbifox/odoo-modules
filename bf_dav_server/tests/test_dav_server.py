@@ -7,6 +7,7 @@ from lxml import etree
 
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.tests import HttpCase, TransactionCase, tagged
 
 from ..dav import ical, vcard
@@ -316,6 +317,7 @@ class TestCalDav(DavCase):
         uid = "an-%s" % uuid.uuid4()
         stop = self.start + datetime.timedelta(hours=1)
         guests = "ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE;CN=G:mailto:guest.an@example.com\r\n"
+        self.env["ir.config_parameter"].sudo().set_param("bf_calendar_invite.auto_change_notice", "1")
         self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=ALARM15)))
         calls = []
         with patch.object(Event, "_bf_announce_remote_change", lambda recs: calls.append(recs.ids)):
@@ -609,6 +611,370 @@ class TestCalDav(DavCase):
                          "/dav/calendars/%d/" % self.user.id)
         self.assertIn("mailto:dav.owner@example.com",
                       [h.text for h in root.findall(".//c:calendar-user-address-set/d:href", NS)])
+
+
+def apple_alarm(minutes, ack=None, uid="A1"):
+    return ("BEGIN:VALARM\r\nUID:%s\r\nACTION:DISPLAY\r\nTRIGGER:-PT%dM\r\nDESCRIPTION:x\r\n%sEND:VALARM\r\n"
+            % (uid, minutes, ("ACKNOWLEDGED:%s\r\n" % f(ack)) if ack else ""))
+
+
+@tagged("post_install", "-at_install")
+class TestRemindersAndPhone(DavCase):
+    """A reminder handled in an app is handled everywhere, the
+    phone rings the person's own reminders, and a change made on a device
+    leaves a to-do instead of a silent change."""
+
+    def setUp(self):
+        super().setUp()
+        if "bf_dismissed_at" not in self.env["calendar.attendee"]._fields:
+            self.skipTest("bf_email_management not installed")
+        self.Att = type(self.env["calendar.attendee"])
+
+    def mine(self, ev, user=None):
+        partner = (user or self.user).partner_id
+        return ev.attendee_ids.filtered(lambda a: a.partner_id == partner)
+
+    def test_dismiss_in_an_app_closes_the_reminder_everywhere(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        ev = self.event(uid)
+        closed = []
+        ack = self.start - datetime.timedelta(minutes=10)
+        with patch.object(self.Att, "_bf_broadcast_reminder_closed",
+                          lambda atts, event_id, reason: closed.append((atts.ids, event_id, reason))):
+            self.put(uid, vcal(vevent(uid, self.start, stop, extra="X-MOZ-LASTACK:%s\r\n" % f(ack),
+                                      alarms=ALARM15)))
+            self.assertEqual(closed, [], "the phone hears about it only after the commit")
+            # The callback opens its own cursor, as after a real commit: here it
+            # must see the test's uncommitted rows.
+            self.registry.enter_test_mode(self.env.cr)
+            try:
+                self.env.cr.postcommit.run()
+            finally:
+                self.registry.leave_test_mode()
+        self.assertEqual(closed, [(self.mine(ev).ids, ev.id, "dismiss")])
+        record = self.env["bf.calendar.reminder.ack"].sudo()._bf_find(self.user.partner_id, ev)
+        self.assertEqual(record.dismissed_at, ack)
+        self.assertTrue(self.user.partner_id.calendar_last_notif_ack)
+
+    def test_refused_put_never_clears_the_phone(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        closed = []
+        with patch.object(self.Att, "_bf_broadcast_reminder_closed",
+                          lambda atts, event_id, reason: closed.append(reason)):
+            body = vcal(vevent(uid, self.start, stop, alarms=ALARM15,
+                               extra="X-MOZ-LASTACK:%s\r\n" % f(self.start)))
+            self.assertEqual(self.put(uid, body, **{"If-Match": '"stale"'})[0], 412)
+            ours = [fn for fn in self.env.cr.postcommit._funcs
+                    if fn.__qualname__.endswith("_close_reminder_after_commit.<locals>.close")]
+            self.assertEqual(ours, [], "a refused request leaves nothing for the phone")
+        self.assertEqual(closed, [])
+
+    def test_dismiss_on_the_mac_cancels_a_snooze_set_on_the_phone(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=apple_alarm(15))))
+        ev = self.event(uid)
+        att = self.mine(ev)
+        trig = self.start - datetime.timedelta(minutes=15)
+        # "15 min" on the phone, after the reminder rang.
+        att.write({"bf_snoozed_until": trig + datetime.timedelta(minutes=20)})
+        att._bf_record_reminder_ack(snoozed_until=trig + datetime.timedelta(minutes=20))
+        # Then "Dismiss" on the Mac, five minutes later; like any client, it
+        # sends back the properties it was served (the snooze, Thunderbird-style).
+        served = "X-MOZ-SNOOZE-TIME:%s\r\n" % f(trig + datetime.timedelta(minutes=20))
+        self.assertIn(served.strip().encode(), self.get(uid)[2])
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=served,
+                                  alarms=apple_alarm(15, ack=trig + datetime.timedelta(minutes=5)))))
+        att.invalidate_recordset()
+        self.assertFalse(att.bf_snoozed_until, "the phone must not ring again at the end of the snooze")
+        self.assertEqual(att.bf_dismissed_at, trig + datetime.timedelta(minutes=5))
+
+    def test_an_older_dismiss_keeps_a_later_snooze(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=apple_alarm(15))))
+        ev = self.event(uid)
+        att = self.mine(ev)
+        trig = self.start - datetime.timedelta(minutes=15)
+        until = trig + datetime.timedelta(minutes=20)
+        att.write({"bf_snoozed_until": until})
+        att._bf_record_reminder_ack(snoozed_until=until)
+        record = self.env["bf.calendar.reminder.ack"].sudo()._bf_find(self.user.partner_id, ev)
+        # The snooze was set after the moment the Mac says it was dismissed.
+        self.env.cr.execute("UPDATE bf_calendar_reminder_ack SET write_date = %s WHERE id = %s",
+                            [trig + datetime.timedelta(minutes=8), record.id])
+        record.invalidate_recordset()
+        served = "X-MOZ-SNOOZE-TIME:%s\r\n" % f(until)
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=served,
+                                  alarms=apple_alarm(15, ack=trig + datetime.timedelta(minutes=5)))))
+        att.invalidate_recordset()
+        self.assertEqual(att.bf_snoozed_until, until)
+
+    def test_phone_rings_the_attendees_own_reminders(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        guests = ("ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE:mailto:dav.owner@example.com\r\n"
+                  "ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:dav.colleague@example.com\r\n")
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=ALARM15)))
+        ev = self.event(uid)
+        mine, theirs = self.mine(ev), self.mine(ev, self.other)
+        self.assertEqual([(t, a.duration_minutes) for t, a in theirs._bf_reminder_triggers(ev)],
+                         [(self.start - datetime.timedelta(minutes=15), 15)], "nothing of their own yet")
+        own = apple_alarm(60, uid="OWN1") + ("BEGIN:VALARM\r\nUID:DEF\r\nACTION:DISPLAY\r\nTRIGGER:-PT5M\r\n"
+                                             "X-APPLE-DEFAULT-ALARM:TRUE\r\nDESCRIPTION:x\r\nEND:VALARM\r\n")
+        self.assertEqual(self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests.replace(
+            "PARTSTAT=NEEDS-ACTION", "PARTSTAT=ACCEPTED"), alarms=own)), user=self.other)[0], 204)
+        self.assertEqual([(t, a.duration_minutes) for t, a in theirs._bf_reminder_triggers(ev)],
+                         [(self.start - datetime.timedelta(minutes=60), 60)])
+        self.assertEqual([a.duration_minutes for _t, a in mine._bf_reminder_triggers(ev)], [15],
+                         "the organizer keeps the meeting's reminders")
+        # An event whose only reminder is someone's own is still a candidate.
+        ev.alarm_ids = [(5, 0, 0)]
+        now = datetime.datetime.now()
+        self.assertIn(ev, self.env["calendar.attendee"]._bf_reminder_candidate_events(now))
+
+    def test_phone_stamp_moves_neither_etag_nor_journal(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        ev = self.event(uid)
+        # write_date is the transaction's time in a test: moved back, the old
+        # code's write would show in the ETag.
+        self.env.cr.execute("UPDATE calendar_attendee SET write_date = '2000-01-01' WHERE event_id = %s", [ev.id])
+        ev.attendee_ids.invalidate_recordset()
+        etag = self.get(uid)[1]["ETag"]
+        changes = self.env["bf.dav.change"].search_count([])
+        self.mine(ev).write({"bf_ntfy_pushed_at": datetime.datetime.now()})
+        self.env.flush_all()
+        self.assertTrue(self.mine(ev).bf_ntfy_pushed_at)
+        self.assertEqual(self.get(uid)[1]["ETag"], etag)
+        self.assertEqual(self.env["bf.dav.change"].search_count([]), changes)
+        # Thunderbird's "Dismiss" right after the reminder rang still lands.
+        body = vcal(vevent(uid, self.start, stop, alarms=ALARM15, extra="X-MOZ-LASTACK:%s\r\n" % f(self.start)))
+        self.assertEqual(self.put(uid, body, **{"If-Match": etag})[0], 204)
+
+    def test_phone_stamp_keeps_access_rights(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        att = self.mine(self.event(uid))
+        portal = self.env["res.users"].create({
+            "name": "Portal P", "login": "portal.p@example.com", "email": "portal.p@example.com",
+            "groups_id": [(6, 0, [self.env.ref("base.group_portal").id])]})
+        from odoo.exceptions import AccessError
+        with self.assertRaises(AccessError):
+            att.with_user(portal).write({"bf_ntfy_pushed_at": "2099-01-01 00:00:00"})
+        att.invalidate_recordset()
+        self.assertFalse(att.bf_ntfy_pushed_at)
+
+    def test_guest_dismissing_their_own_earlier_reminder_is_heard(self):
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        guests = ("ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE:mailto:dav.owner@example.com\r\n"
+                  "ATTENDEE;PARTSTAT=ACCEPTED:mailto:dav.colleague@example.com\r\n")
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=ALARM15)))
+        ev = self.event(uid)
+        theirs = self.mine(ev, self.other)
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=apple_alarm(60, uid="OWN1"))),
+                 user=self.other)
+        ack = self.start - datetime.timedelta(minutes=58)
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=apple_alarm(60, ack=ack, uid="OWN1"))),
+                 user=self.other)
+        theirs.invalidate_recordset()
+        self.assertEqual(theirs.bf_dismissed_at, ack)
+
+    def test_phone_stamp_written_by_the_reminder_cron_user(self):
+        # The reminder crons run as the administrator, not as the superuser.
+        uid = "g-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        att = self.mine(self.event(uid))
+        att.with_user(self.env.ref("base.user_admin")).write({"bf_ntfy_pushed_at": "2026-10-25 12:00:00"})
+        att.invalidate_recordset()
+        self.assertEqual(att.bf_ntfy_pushed_at, datetime.datetime(2026, 10, 25, 12, 0))
+
+    def test_apple_snooze_of_own_reminder_on_a_series_reaches_the_occurrence(self):
+        uid = "sn-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        guests = ("ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE:mailto:dav.owner@example.com\r\n"
+                  "ATTENDEE;PARTSTAT=ACCEPTED:mailto:dav.colleague@example.com\r\n")
+        rule = "RRULE:FREQ=WEEKLY;COUNT=3\r\n"
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests + rule, alarms=ALARM15)))
+        _rec, occs = self.series(uid)
+        first = occs.sorted("start")[:1]
+        theirs = self.mine(first, self.other)
+        own = apple_alarm(60, uid="OWN1")
+        self.assertEqual(self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests + rule, alarms=own)),
+                                  user=self.other)[0], 204)
+        until = self.start - datetime.timedelta(minutes=55)
+        snooze = ("BEGIN:VALARM\r\nUID:SN1\r\nACTION:DISPLAY\r\nTRIGGER;VALUE=DATE-TIME:%s\r\n"
+                  "RELATED-TO;RELTYPE=SNOOZE:OWN1\r\nDESCRIPTION:x\r\nEND:VALARM\r\n" % f(until))
+        self.assertEqual(self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests + rule,
+                                                   alarms=own + snooze)), user=self.other)[0], 204)
+        occs.attendee_ids.invalidate_recordset()
+        self.assertEqual(theirs.bf_snoozed_until, until)
+
+    def test_own_alarms_leave_contacts_out_and_read_pending_writes(self):
+        UD = self.env["bf.dav.user.data"].sudo()
+        UD._store(self.user, "p%d" % self.user.partner_id.id, {"": ["NOTE:" + "x" * 5000]}, {})
+        self.assertFalse([k for k in UD._bf_own_alarms() if k[1][:1] not in ("e", "r")])
+        UD._store(self.other, "r900001", {"": [apple_alarm(60)]}, {})
+        self.env.flush_all()
+        UD._get(self.other, "r900001").write({"resource_key": "r900002"})
+        self.env.cr.cache.pop("bf_dav_own_alarms", None)
+        self.assertIn((self.other.id, "r900002"), UD._bf_own_alarms())
+
+    def test_own_reminder_on_an_all_day_meeting_rings_when_the_app_does(self):
+        import pytz
+        day = (self.start + datetime.timedelta(days=1)).date()
+        uid = "ad-%s" % uuid.uuid4()
+        guests = ("ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE:mailto:dav.owner@example.com\r\n"
+                  "ATTENDEE;PARTSTAT=ACCEPTED:mailto:dav.colleague@example.com\r\n")
+
+        def allday(alarms=""):
+            return vcal("BEGIN:VEVENT\r\nUID:%s\r\nDTSTAMP:20261024T000000Z\r\nSUMMARY:Day\r\n"
+                        "DTSTART;VALUE=DATE:%s\r\nDTEND;VALUE=DATE:%s\r\n%s%sEND:VEVENT\r\n" % (
+                            uid, day.strftime("%Y%m%d"), (day + datetime.timedelta(days=1)).strftime("%Y%m%d"),
+                            guests, alarms))
+        self.put(uid, allday())
+        ev = self.event(uid)
+        own = "BEGIN:VALARM\r\nUID:AD1\r\nACTION:DISPLAY\r\nTRIGGER:-PT15H\r\nDESCRIPTION:x\r\nEND:VALARM\r\n"
+        self.assertEqual(self.put(uid, allday(own), user=self.other)[0], 204)
+        tz = pytz.timezone(self.other.tz)
+        expected = tz.localize(datetime.datetime.combine(day - datetime.timedelta(days=1), datetime.time(9))
+                               ).astimezone(pytz.utc).replace(tzinfo=None)
+        self.assertEqual([t for t, _a in self.mine(ev, self.other)._bf_reminder_triggers(ev)], [expected])
+
+    def test_late_snooze_from_thunderbird_keeps_the_desktop_catch_up(self):
+        uid = "ls-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        now = fields.Datetime.now()
+        partner = self.user.partner_id.sudo()
+        partner.calendar_last_notif_ack = now - datetime.timedelta(hours=3)
+        until = now - datetime.timedelta(hours=2)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15,
+                                  extra="X-MOZ-SNOOZE-TIME:%s\r\n" % f(until))))
+        partner.invalidate_recordset()
+        self.assertLessEqual(partner.calendar_last_notif_ack, until)
+
+    def test_refused_after_the_state_never_clears_the_phone(self):
+        from ..models.dav_service import DavError
+        Svc = type(self.env["bf.dav.service"])
+        uid = "rf-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15)))
+        att = self.mine(self.event(uid))
+        att.write({"bf_dismissed_at": self.start - datetime.timedelta(minutes=30)})
+        self.env.flush_all()
+        closed = []
+        with patch.object(self.Att, "_bf_broadcast_reminder_closed", lambda a, e, r: closed.append(r)), \
+                patch.object(Svc, "_store_raw", side_effect=DavError(403)):
+            body = vcal(vevent(uid, self.start, stop, alarms=ALARM15,
+                               extra="X-MOZ-LASTACK:%s\r\n" % f(self.start - datetime.timedelta(minutes=10))))
+            self.assertEqual(self.put(uid, body)[0], 403)
+            self.registry.enter_test_mode(self.env.cr)
+            try:
+                self.env.cr.postcommit.run()
+            finally:
+                self.registry.leave_test_mode()
+        self.assertEqual(closed, [])
+
+    def test_change_from_an_app_leaves_a_todo_not_a_notice(self):
+        Event = type(self.env["calendar.event"])
+        if not hasattr(Event, "_bf_change_notice_due"):
+            self.skipTest("bf_calendar_invite not installed")
+        act_type = self.env.ref("bf_dav_server.mail_activity_type_send_update")
+        self.env["ir.config_parameter"].sudo().set_param("bf_calendar_invite.auto_change_notice", "0")
+        uid = "td-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        guests = "ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE;CN=G:mailto:guest.td@example.com\r\n"
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests, alarms=ALARM15)))
+        ev = self.event(uid)
+        todos = lambda: self.env["mail.activity"].search([  # noqa: E731
+            ("bf_dav_event_id", "=", ev.id), ("activity_type_id", "=", act_type.id)])
+        mails = self.env["mail.mail"].search_count([])
+        announced = []
+        with patch.object(Event, "_bf_announce_remote_change", lambda recs: announced.append(recs.ids)):
+            # A dismissed reminder is not a change.
+            self.put(uid, vcal(vevent(uid, self.start, stop, alarms=ALARM15,
+                                      extra=guests + "X-MOZ-LASTACK:%s\r\n" % f(self.start))))
+            self.assertFalse(todos())
+            moved = self.start + datetime.timedelta(hours=2)
+            self.put(uid, vcal(vevent(uid, moved, moved + datetime.timedelta(hours=1), extra=guests, alarms=ALARM15)))
+            self.assertEqual(announced, [], "no notice leaves on its own")
+            todo = todos()
+            self.assertEqual(len(todo), 1)
+            self.assertEqual(todo.user_id, self.user)
+            self.assertIn('href="/odoo/calendar.event/%d"' % ev.id, str(todo.note))
+            self.assertEqual(todo.date_deadline,
+                             fields.Date.context_today(self.user.with_context(tz="Pacific/Auckland")))
+            # Moved again: still one to-do.
+            later = moved + datetime.timedelta(hours=1)
+            self.put(uid, vcal(vevent(uid, later, later + datetime.timedelta(hours=1), extra=guests, alarms=ALARM15)))
+            self.assertEqual(len(todos()), 1)
+        self.assertEqual(self.env["mail.mail"].search_count([]), mails)
+        # On the guest's contact (a meeting holds no activity), and the lists of
+        # activities still read.
+        self.assertEqual((todos().res_model, todos().res_id),
+                         ("res.partner", self.env["res.partner"].search([("email", "=", "guest.td@example.com")]).id))
+        self.env["mail.activity"].with_user(self.user).search_read([("user_id", "=", self.user.id)],
+                                                                   ["related_model_instance", "res_name"])
+        groups = self.env["res.users"].with_user(self.user)._get_activity_groups()
+        self.assertNotIn("calendar.event", [g["model"] for g in groups if g.get("type") == "activity"])
+        # Still owed: the cron keeps it; told: the cron closes it.
+        self.env["calendar.event"]._cron_bf_dav_close_sent_updates()
+        self.assertEqual(len(todos()), 1)
+        ev.sudo().write({"bf_ics_sequence_notified": ev.bf_ics_sequence})
+        self.assertFalse(ev._bf_change_notice_due())
+        self.env["calendar.event"]._cron_bf_dav_close_sent_updates()
+        self.assertFalse(todos())
+
+    def test_no_todo_when_nothing_is_owed_or_odoo_is_not_the_sender(self):
+        Event = type(self.env["calendar.event"])
+        if not hasattr(Event, "_bf_change_notice_due"):
+            self.skipTest("bf_calendar_invite not installed")
+        act_type = self.env.ref("bf_dav_server.mail_activity_type_send_update")
+        stop = self.start + datetime.timedelta(hours=1)
+        moved = self.start + datetime.timedelta(hours=2)
+
+        def todos(uid):
+            return self.env["mail.activity"].search([
+                ("bf_dav_event_id", "in", self.event(uid).ids), ("activity_type_id", "=", act_type.id)])
+
+        # Only the description changes: the guests are owed nothing.
+        uid = "td-%s" % uuid.uuid4()
+        guests = "ORGANIZER:mailto:dav.owner@example.com\r\nATTENDEE;CN=G:mailto:guest.desc@example.com\r\n"
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests)))
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests + "DESCRIPTION:New agenda\r\n")))
+        self.assertIn("New agenda", str(self.event(uid).description))
+        self.assertFalse(todos(uid))
+        # An invitation received from outside, kept in the user's calendar.
+        uid = "td-%s" % uuid.uuid4()
+        outside = ("ORGANIZER:mailto:boss@outside.example\r\nATTENDEE:mailto:boss@outside.example\r\n"
+                   "ATTENDEE;PARTSTAT=ACCEPTED:mailto:dav.owner@example.com\r\n")
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=outside)))
+        self.put(uid, vcal(vevent(uid, moved, moved + datetime.timedelta(hours=1), extra=outside)))
+        self.assertFalse(todos(uid))
+
+    def test_client_that_schedules_itself_gets_no_todo(self):
+        Event = type(self.env["calendar.event"])
+        if not hasattr(Event, "_bf_change_notice_due"):
+            self.skipTest("bf_calendar_invite not installed")
+        act_type = self.env.ref("bf_dav_server.mail_activity_type_send_update")
+        uid = "td-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        guests = ("ORGANIZER:mailto:dav.owner@example.com\r\n"
+                  "ATTENDEE;SCHEDULE-AGENT=CLIENT;CN=G:mailto:guest.sa@example.com\r\n")
+        self.put(uid, vcal(vevent(uid, self.start, stop, extra=guests)))
+        moved = self.start + datetime.timedelta(hours=2)
+        self.put(uid, vcal(vevent(uid, moved, moved + datetime.timedelta(hours=1), extra=guests)))
+        self.assertFalse(self.env["mail.activity"].search([
+            ("bf_dav_event_id", "=", self.event(uid).id), ("activity_type_id", "=", act_type.id)]))
 
 
 @tagged("post_install", "-at_install")

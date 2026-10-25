@@ -180,6 +180,32 @@ class CalendarEvent(models.Model):
         self.ensure_one()
         return "r%d" % self.recurrence_id.id if self.recurrence_id else "e%d" % self.id
 
+    @api.model
+    def _cron_bf_dav_close_sent_updates(self):
+        """Close the "send the update" to-dos whose notice is no longer owed:
+        sent, the meeting passed, cancelled or moved back. By cron and not in
+        the notice itself, which writes through ``super(CalendarEvent, …)`` of
+        bf_calendar_invite and would skip this module when it loads later."""
+        act_type = self.env.ref("bf_dav_server.mail_activity_type_send_update", raise_if_not_found=False)
+        if not act_type:
+            return
+        acts = self.env["mail.activity"].sudo().search([
+            ("activity_type_id", "=", act_type.id), ("bf_dav_event_id", "!=", False)])
+        if not acts:
+            return
+        events = acts.with_context(active_test=False).bf_dav_event_id
+        owed = events.filtered(lambda e: e.active and hasattr(e, "_bf_change_notice_due")
+                               and e._bf_change_notice_due())
+        acts.filtered(lambda a: a.bf_dav_event_id not in owed).unlink()
+
+
+class MailActivity(models.Model):
+    _inherit = "mail.activity"
+
+    bf_dav_event_id = fields.Many2one(
+        "calendar.event", string="Meeting to announce", index="btree_not_null", ondelete="cascade",
+        help="The meeting whose change, made in a calendar app, the guests have not been told about.")
+
 
 class CalendarRecurrence(models.Model):
     _inherit = "calendar.recurrence"
@@ -234,6 +260,18 @@ class CalendarAttendee(models.Model):
         if vals.get("bf_dav_calendar_id"):
             vals = dict(vals)
             self._bf_dav_color_vals(vals)
+        if set(vals) == {"bf_ntfy_pushed_at"} and "bf_ntfy_pushed_at" in self._fields:
+            # The stamp of a reminder sent to the phone (bf_email_management)
+            # is never served. Written like any field, it moved the ETag the
+            # minute the reminder rang, and the "Dismiss" Thunderbird sent
+            # right after came back 412.
+            if not self.env.su:
+                self.check_access("write")
+            self.flush_recordset(["bf_ntfy_pushed_at"])
+            self.env.cr.execute("UPDATE calendar_attendee SET bf_ntfy_pushed_at = %s WHERE id = ANY(%s)",
+                                [vals["bf_ntfy_pushed_at"] or None, self.ids])
+            self.invalidate_recordset(["bf_ntfy_pushed_at"])
+            return True
         if self.env.context.get("bf_dav_no_journal"):
             return super().write(vals)
         before = _journal_rows(self.env, self.event_id.ids) if "partner_id" in vals else []

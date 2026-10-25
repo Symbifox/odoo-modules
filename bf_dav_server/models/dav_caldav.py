@@ -14,9 +14,9 @@ from dateutil import rrule as du_rrule
 
 from urllib.parse import quote
 
-from odoo import api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools import email_normalize, html2plaintext, is_html_empty, plaintext2html
+from odoo.tools import email_normalize, html2plaintext, html_escape, is_html_empty, plaintext2html
 
 from ..dav import ical
 from ..dav import xmlutil as X
@@ -963,10 +963,68 @@ class BfDavServiceCaldav(models.AbstractModel):
             # A change made in a calendar app is a change "from outside Odoo":
             # bf_calendar_invite decides whether the guests hear about it
             # (bf_calendar_invite.auto_change_notice), exactly as for the
-            # Nextcloud pull it replaces.
+            # Nextcloud pull it replaces. Without the automatic notice, the
+            # person who made the change gets a to-do instead. Only then: an
+            # external organizer, a burst, SCHEDULE-AGENT=CLIENT or
+            # send_invitations=0 already mean nobody is to be told by Odoo.
             upcoming = events.filtered(lambda e: e.start and e.start >= fields.Datetime.now())
-            upcoming.sorted("start")[:1]._bf_announce_remote_change()
+            upcoming = upcoming.sorted("start")[:1]
+            if not hasattr(upcoming, "_bf_auto_change_notice_enabled") or upcoming._bf_auto_change_notice_enabled():
+                upcoming._bf_announce_remote_change()
+            else:
+                self._schedule_update_activity(upcoming)
         return key
+
+    def _schedule_update_activity(self, events):
+        """Without the automatic notice, nothing leaves on its own after a
+        change made on a device; the one who made it gets a to-do, due the same
+        day, to send the update ("Tell the guests" on the meeting). One per
+        meeting; closed by the cron once the notice is no longer owed."""
+        act_type = self.env.ref("bf_dav_server.mail_activity_type_send_update", raise_if_not_found=False)
+        if not act_type or not hasattr(events, "_bf_change_notice_due"):
+            return
+        user = self.env.user
+        today = fields.Date.context_today(user.with_context(tz=user.tz or "UTC"))
+        tr = self.with_context(lang=user.lang).env._
+        Activity = self.env["mail.activity"].sudo()
+        for ev in events.sudo():
+            if not ev._bf_change_notice_due():
+                continue
+            if Activity.search_count([("bf_dav_event_id", "=", ev.id), ("activity_type_id", "=", act_type.id)]):
+                continue
+            anchor = self._update_activity_anchor(ev)
+            if not anchor:
+                continue
+            lines = "".join("<li>%s : %s → %s</li>" % tuple(
+                html_escape(str(line.get(k) or "")) for k in ("label", "before", "after"))
+                for line in ev.bf_change_lines())
+            Activity.with_context(mail_activity_quick_update=True, lang=user.lang).create({
+                "res_model_id": self.env["ir.model"]._get_id(anchor._name),
+                "res_id": anchor.id,
+                "bf_dav_event_id": ev.id,
+                "activity_type_id": act_type.id,
+                "summary": "%s : %s" % (act_type.with_context(lang=user.lang).summary, ev.name or ""),
+                "user_id": user.id,
+                "date_deadline": today,
+                # The meeting itself holds no activity: the link is in the note.
+                "note": "<p>%s <a href=\"/odoo/calendar.event/%d\">%s</a></p>%s" % (
+                    html_escape(tr("Changed from an app; the guests have not been told yet.")), ev.id,
+                    html_escape(tr("Open the meeting")), ("<ul>%s</ul>" % lines) if lines else ""),
+            })
+
+    def _update_activity_anchor(self, ev):
+        """Where the to-do goes. 🔴 Not on the meeting: calendar.event is not an
+        activity mixin, and mail.activity's reference field refuses it, which
+        breaks every list of activities. The meeting's document (task, lead)
+        when it has activities, else the first guest's contact."""
+        if ev.res_model and ev.res_id and ev.res_model in self.env:
+            Model = self.env[ev.res_model]
+            if "activity_ids" in Model._fields and "activity_user_id" in Model._fields:
+                doc = Model.sudo().browse(ev.res_id).exists()
+                if doc:
+                    return doc
+        guests = ev._bf_notice_recipients() if hasattr(ev, "_bf_notice_recipients") else ev.partner_ids
+        return guests[:1]
 
     def _mark_written(self):
         self.env.cr.precommit.data["bf_dav.content_written"] = True
@@ -1247,12 +1305,16 @@ class BfDavServiceCaldav(models.AbstractModel):
                 att = by_event.get(ev.id)
                 if not att:
                     continue
-                trig = self._trigger_time(ev)
+                trig = self._trigger_time_for(att, ev)
                 if trig > when or (since and trig <= since):
                     continue
                 if not att.bf_dismissed_at or att.bf_dismissed_at < when:
                     writes[att.id]["bf_dismissed_at"] = when
-                if att.bf_snoozed_until and att.bf_snoozed_until <= when:
+                # A snooze that ends after this acknowledgment still goes if it
+                # was set before it: "15 min" on the phone, then "Dismiss" on
+                # the Mac, and the phone rang again 15 minutes later.
+                if att.bf_snoozed_until and (att.bf_snoozed_until <= when
+                                             or self._reminder_state_set_at(att) <= when):
                     writes[att.id]["bf_snoozed_until"] = False
 
         # Thunderbird: X-MOZ-LASTACK on the master.
@@ -1293,9 +1355,13 @@ class BfDavServiceCaldav(models.AbstractModel):
                 continue
             until = max(s[1] for s in fresh)
             if ck == "" and rec:
-                # The occurrence whose reminder last went off.
-                past = events.filtered(lambda e: self._trigger_time(e) <= until)
-                targets = past.sorted(lambda e: self._trigger_time(e))[-1:]
+                # The occurrence whose reminder last went off, by this
+                # person's reminders (their own ones ring earlier or later).
+                def trig_of(e):
+                    a = by_event.get(e.id)
+                    return self._trigger_time_for(a, e) if a else self._trigger_time(e)
+                past = events.filtered(lambda e: trig_of(e) <= until)
+                targets = past.sorted(trig_of)[-1:]
             else:
                 targets = events if not rec else (by_rid.get(ck) or self.env["calendar.event"])
             for ev in targets:
@@ -1303,7 +1369,78 @@ class BfDavServiceCaldav(models.AbstractModel):
                 if att:
                     writes[att.id]["bf_snoozed_until"] = until
         for att_id, vals in writes.items():
-            Att.sudo().browse(att_id).write(vals)
+            att = Att.sudo().browse(att_id)
+            att.write(vals)
+            self._reminder_gesture(att, vals)
+
+    def _trigger_time_for(self, att, event):
+        """The first reminder of this person for the event: their own when they
+        keep some (what their phone and apps ring), else the meeting's."""
+        own = self.env["bf.dav.user.data"].sudo()._bf_reminder_triggers(att, event)
+        if own:
+            return min(t for t, _r in own)
+        return self._trigger_time(event)
+
+    def _reminder_state_set_at(self, att):
+        """When this person's reminder state for the event last changed: the
+        durable acknowledgment's stamp (bf_email_management), else the
+        attendee row's. Server time, as naive UTC."""
+        if "bf.calendar.reminder.ack" in self.env:
+            ack = self.env["bf.calendar.reminder.ack"].sudo()._bf_find(att.partner_id, att.event_id)
+            if ack:
+                return ack.write_date
+        return att.write_date or datetime.datetime.max
+
+    def _reminder_gesture(self, att, vals):
+        """A reminder dismissed or snoozed in an app is closed everywhere else,
+        as when it is done in Odoo or on Symbifox Mobile (bf_snooze and
+        bf_dismiss of bf_email_management): the durable acknowledgment, the
+        partner's acknowledgment for the desktop, the other browser tabs and
+        the phone."""
+        if not hasattr(att, "_bf_record_reminder_ack"):
+            return
+        state = {k[3:]: v for k, v in vals.items() if k in ("bf_dismissed_at", "bf_snoozed_until")}
+        if not state:
+            return
+        att._bf_record_reminder_ack(**state)
+        reason = "snooze" if vals.get("bf_snoozed_until") else ("dismiss" if vals.get("bf_dismissed_at") else None)
+        if not reason:
+            return
+        now = fields.Datetime.now()
+        # The time of the gesture, not of the sync: a Thunderbird that comes back
+        # online hours later must not silence the desktop reminders due since.
+        at = min(vals.get("bf_dismissed_at") or vals.get("bf_snoozed_until") or now, now)
+        partner = att.partner_id.sudo()
+        if not partner.calendar_last_notif_ack or partner.calendar_last_notif_ack < at:
+            partner.write({"calendar_last_notif_ack": at})
+        # An upload of old events carrying their acknowledgments is not a
+        # gesture anyone is waiting to see on the phone.
+        if att.event_id.stop and att.event_id.stop < now:
+            return
+        if hasattr(att, "_bf_broadcast_reminder_closed"):
+            self._close_reminder_after_commit(att.id, att.event_id.id, reason,
+                                              vals.get("bf_snoozed_until") or vals.get("bf_dismissed_at"))
+
+    def _close_reminder_after_commit(self, att_id, event_id, reason, value):
+        """The phone hears about it once the state is committed: a request
+        refused after this point (412, 403) must not have cleared it."""
+        dbname = self.env.cr.dbname
+
+        def close():
+            from odoo.modules.registry import Registry
+            try:
+                with Registry(dbname).cursor() as cr:
+                    env = api.Environment(cr, SUPERUSER_ID, {})
+                    att = env["calendar.attendee"].browse(att_id).exists()
+                    # What was committed, not what the request meant: a write
+                    # rolled back inside it (a savepoint) leaves nothing to close.
+                    current = att and (att.bf_snoozed_until if reason == "snooze" else att.bf_dismissed_at)
+                    if current and current >= value:
+                        att._bf_broadcast_reminder_closed(event_id, reason)
+            except Exception:  # noqa: BLE001 - after the commit, the PUT stands
+                _logger.warning("bf_dav_server: closing reminder %s elsewhere failed", att_id, exc_info=True)
+
+        self.env.cr.postcommit.add(close)
 
     def _store_raw(self, key, obj, is_org):
         valarms = {}

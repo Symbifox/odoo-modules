@@ -722,3 +722,36 @@ msgid ""
 msgstr ""
 "Le carnet de la société sert les contacts d'Odoo à Thunderbird, à Contacts "
 "d'Apple et à DAVx5 ; chaque usager a aussi son carnet privé."
+
+#. module: bf_dav_server
+#: model:ir.actions.server,name:bf_dav_server.cron_close_sent_updates_ir_actions_server
+msgid "CalDAV: close the \"send the update\" to-dos once the guests are told"
+msgstr "CalDAV : fermer les « Envoyer la mise à jour » une fois les invités avisés"
+
+#. module: bf_dav_server
+#: model:mail.activity.type,name:bf_dav_server.mail_activity_type_send_update
+#: model:mail.activity.type,summary:bf_dav_server.mail_activity_type_send_update
+msgid "Send the update to the guests"
+msgstr "Envoyer la mise à jour aux invités"
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_caldav.py:0
+msgid "Changed from an app; the guests have not been told yet."
+msgstr "Modifiée depuis une application ; les invités n'en ont pas encore été avisés."
+
+#. module: bf_dav_server
+#. odoo-python
+#: code:addons/bf_dav_server/models/dav_caldav.py:0
+msgid "Open the meeting"
+msgstr "Ouvrir la rencontre"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,field_description:bf_dav_server.field_mail_activity__bf_dav_event_id
+msgid "Meeting to announce"
+msgstr "Rencontre à annoncer"
+
+#. module: bf_dav_server
+#: model:ir.model.fields,help:bf_dav_server.field_mail_activity__bf_dav_event_id
+msgid "The meeting whose change, made in a calendar app, the guests have not been told about."
+msgstr "La rencontre dont le changement, fait dans une application d'agenda, n'a pas encore été annoncé aux invités."

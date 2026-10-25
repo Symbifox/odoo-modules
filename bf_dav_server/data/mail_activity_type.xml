@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- After a change made on a device, the guests are not told on their own:
+         the one who made it gets this to-do, on the meeting's document or on the
+         first guest's contact (a meeting cannot hold activities). -->
+    <record id="mail_activity_type_send_update" model="mail.activity.type">
+        <field name="name">Send the update to the guests</field>
+        <field name="summary">Send the update to the guests</field>
+        <field name="icon">fa-paper-plane</field>
+        <field name="delay_count">0</field>
+        <field name="category">default</field>
+    </record>
+</odoo>

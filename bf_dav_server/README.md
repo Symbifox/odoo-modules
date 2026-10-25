@@ -57,7 +57,18 @@ app wrote them (their `UID`, `X-WR-ALARMUID`).
 | Android | stays on the phone (Android does not sync it) |
 
 The server translates between the three, per person: dismissing a reminder in
-Thunderbird dismisses it in Odoo and on the Mac, and the other way round.
+Thunderbird dismisses it in Odoo and on the Mac, and the other way round. With
+`bf_email_management`, a reminder dismissed or snoozed in an app is also closed
+in Odoo's other tabs and on Symbifox Mobile, once the write is committed, and a
+dismissal newer than a snooze set elsewhere ends that snooze.
+
+On Android, reminders are best left to Symbifox Mobile, with the calendar read
+there and DAVx5 used for contacts only: Android keeps a reminder's state on the
+phone, and a phone that also syncs the calendar rings twice. Symbifox Mobile
+rings the reminders a person's apps hold for a meeting they were invited to
+(what Thunderbird or Apple sent back last, all-day ones counted from midnight
+in their zone), and otherwise the meeting's own. The time the
+phone was reached is not served to apps and does not change an event's ETag.
 
 Apple's own default reminder (`X-APPLE-DEFAULT-ALARM`) stays on the device that
 added it, and a `CLASS:PUBLIC` an app writes on everything does not make public
@@ -77,7 +88,12 @@ Thunderbird and Apple do not send invitations themselves.
 * Changes made in an app: handed to `bf_calendar_invite`
   (`_bf_announce_remote_change`), which sends its notice only when
   `bf_calendar_invite.auto_change_notice` is on, exactly as for the Nextcloud
-  pull.
+  pull. When it is off and a notice is owed, the person who made the change
+  gets a to-do, *Send the update to the guests*, due the same day, on the
+  meeting's document (a task, a lead) or else on the first guest's contact,
+  since a meeting cannot hold activities; its note links to the meeting. It
+  closes itself once the guests are told, the meeting has started or the change
+  is undone. For a series, the next occurrence is the one looked at.
 * Never: for an event organized by someone outside the company (an invitation
   the user received), for guests the app marks `SCHEDULE-AGENT=CLIENT`, when a
   device uploads more than 5 objects in 2 minutes (first sync of a device that
@@ -154,6 +170,14 @@ request leaves nothing behind (savepoint).
 
 ## Changelog
 
+* **18.0.1.2.0**: a reminder dismissed or snoozed in an app is closed in Odoo
+  and on Symbifox Mobile too, and a dismissal ends a snooze set before it;
+  Symbifox Mobile rings an attendee's own reminders; the phone's delivery stamp
+  no longer changes the ETag (an app's dismissal right after a reminder rang no
+  longer met a 412); without the automatic change notice, a change made in an
+  app gives its author a *Send the update to the guests* to-do (on the meeting's
+  document or the first guest's contact). Needs
+  `bf_email_management` 18.0.11.65.0 or later for the phone's part.
 * **18.0.1.1.4**: the app password window keeps its title once the password
   is shown.
 * **18.0.1.1.3**: a meeting deleted in an app goes to the trash when
@@ -174,4 +198,4 @@ request leaves nothing behind (savepoint).
 ## Licence
 
 Business Source License 1.1, see `LICENSE`. This version becomes available
-under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-24).
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-25).

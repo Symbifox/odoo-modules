@@ -1,8 +1,14 @@
 # Part of bf_dav_server. See LICENSE file for full copyright and licensing details.
+import collections
+import datetime
 import json
 import logging
 
+import pytz
+
 from odoo import api, fields, models
+
+from ..dav import ical
 
 _logger = logging.getLogger(__name__)
 
@@ -155,12 +161,101 @@ class BfDavUserData(models.Model):
     @api.model
     def _store(self, user, resource_key, valarms, moz):
         rec = self._get(user, resource_key)
+        self.env.cr.cache.pop("bf_dav_own_alarms", None)
         vals = {"valarms": json.dumps(valarms, sort_keys=True), "moz": json.dumps(moz, sort_keys=True)}
         if rec:
             if rec.valarms != vals["valarms"] or rec.moz != vals["moz"]:
                 rec.write(vals)
         elif valarms or moz:
             self.sudo().create(dict(vals, user_id=user.id, resource_key=resource_key))
+
+    # -- Symbifox Mobile (bf_email_management) -----------------------------
+    # An attendee's own reminders, set in Thunderbird or Apple, live here and
+    # not in the meeting's alarm_ids: without these two, the phone rang the
+    # organizer's reminders instead.
+
+    @api.model
+    def _bf_own_alarms(self):
+        """(user id, resource key) -> stored VALARMs, for the rows that hold
+        some: read once per transaction (the phone's cron asks for every
+        attendee of every upcoming meeting, each minute)."""
+        cache = self.env.cr.cache
+        if "bf_dav_own_alarms" not in cache:
+            self.flush_model(["user_id", "resource_key", "valarms"])
+            # CardDAV keeps a card's extra lines in the same column (keys "p<id>"):
+            # meetings only.
+            self.env.cr.execute("SELECT user_id, resource_key, valarms FROM bf_dav_user_data "
+                                "WHERE (resource_key LIKE 'e%%' OR resource_key LIKE 'r%%') "
+                                "AND valarms IS NOT NULL AND valarms NOT IN ('', '{}')")
+            cache["bf_dav_own_alarms"] = {(uid, key): stored for uid, key, text in self.env.cr.fetchall()
+                                          if any((stored := _loads(text)).values())}
+        return cache["bf_dav_own_alarms"]
+
+    @api.model
+    def _bf_reminder_events(self, now):
+        """Upcoming events where someone keeps reminders of their own. Starts
+        a pass of the phone's cron: the cursor's cache outlives a commit."""
+        self.env.cr.cache.pop("bf_dav_own_alarms", None)
+        ev_ids, rec_ids = set(), set()
+        for _uid, key in self._bf_own_alarms():
+            if key[:1] == "e" and key[1:].isdigit():
+                ev_ids.add(int(key[1:]))
+            elif key[:1] == "r" and key[1:].isdigit():
+                rec_ids.add(int(key[1:]))
+        Event = self.env["calendar.event"].sudo()
+        if not ev_ids and not rec_ids:
+            return Event
+        return Event.search([("active", "=", True), ("start", ">", now),
+                             "|", ("id", "in", list(ev_ids)), ("recurrence_id", "in", list(rec_ids))])
+
+    @api.model
+    def _bf_reminder_triggers(self, attendee, event):
+        """(time, reminder) pairs from the attendee's own reminders, the way
+        the server serves them to that person (``_valarms_out``); None when the
+        meeting's reminders apply: the organizer or the calendar's owner, or
+        nobody kept anything for this occurrence."""
+        from .dav_caldav import _rid_key
+        user = attendee.partner_id.user_ids.filtered(lambda u: u.active and not u.share)[:1]
+        ev = event.sudo()
+        if not user or not ev.start or ev.user_id == user or ev.bf_dav_calendar_id.owner_id == user:
+            return None
+        key = ("r%d" % ev.recurrence_id.id) if ev.recurrence_id else ("e%d" % ev.id)
+        stored = self._bf_own_alarms().get((user.id, key))
+        if not stored:
+            return None
+        ck = ""
+        if ev.recurrence_id:
+            ck = _rid_key(ev.bf_dav_recurrence_id or ev.start, ev.allday)
+            if not stored.get(ck):
+                ck = ""
+        parsed = [ical.parse_alarm(raw) for raw in stored.get(ck, [])]
+        if not parsed:
+            return None
+        base = ev.start
+        if ev.allday and ev.start_date:
+            # Odoo puts an all-day meeting at 08:00; apps count from midnight,
+            # in the person's zone.
+            tz = pytz.timezone(user.tz or ev.event_tz or "UTC")
+            base = tz.localize(datetime.datetime.combine(ev.start_date, datetime.time())
+                               ).astimezone(pytz.utc).replace(tzinfo=None)
+        out = []
+        for alarm in parsed:
+            # A snooze is bf_snoozed_until's business; Apple's default reminder
+            # belongs to the device that added it.
+            if alarm.snooze_of or alarm.default_alarm or alarm.action not in ("DISPLAY", "AUDIO"):
+                continue
+            if alarm.minutes_before is not None:
+                when = base - datetime.timedelta(minutes=alarm.minutes_before)
+            elif alarm.absolute and not ev.recurrence_id:
+                # A fixed time on a series would ring every occurrence at once.
+                when = alarm.absolute
+            else:
+                continue
+            minutes = max(int((base - when).total_seconds() // 60), 0)
+            out.append((when, _Reminder(minutes)))
+        # Nothing the phone can ring (only END-related, Apple's default...):
+        # the meeting's reminders rather than silence.
+        return out or None
 
 
 class BfDavResourceExtra(models.Model):
@@ -198,6 +293,9 @@ class BfDavResourceExtra(models.Model):
             "SELECT resource_key, write_date FROM bf_dav_resource_extra WHERE resource_key = ANY(%s)",
             [list(resource_keys)])
         return dict(self.env.cr.fetchall())
+
+
+_Reminder = collections.namedtuple("_Reminder", "duration_minutes")
 
 
 def _loads(text):
