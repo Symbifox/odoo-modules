@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reward_claim_form" model="ir.ui.view">
+        <field name="name">bf.gamification.reward.claim.form.hr.holidays</field>
+        <field name="model">bf.gamification.reward.claim</field>
+        <field name="inherit_id" ref="bf_gamification.view_reward_claim_form"/>
+        <field name="arch" type="xml">
+            <field name="leave_days" position="after">
+                <field name="allocation_id" invisible="not allocation_id"
+                       groups="hr_holidays.group_hr_holidays_user,bf_gamification.group_gamification_manager"/>
+            </field>
+        </field>
+    </record>
+</odoo>

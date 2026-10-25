@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**257 modules are BUSL-1.1.** The source is published and auditable, and **you
+**259 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -223,7 +223,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.3.0 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.1.0 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
-| `bf_gamification` | Fox Quest | 18.0.2.7.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification` | Fox Quest | 18.0.3.0.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification_contact_absence` | Fox Quest : absences déclarées et constance | 18.0.1.0.0 | BUSL-1.1 | A declared, corrected, archived or removed absence recomputes the Fox Quest streak |
+| `bf_gamification_hr_holidays` | Fox Quest : congés de constance dans Congés | 18.0.1.0.0 | BUSL-1.1 | An approved constance day off becomes a Time Off allocation |
 | `bf_gantt` | Échéancier | 18.0.1.7.0 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |
 | `bf_health` | Healthy Fox | 18.0.2.6.1 | LGPL-3 | Personal health, training and nutrition: medications, vitals, lab results, screenings, workouts (GPX import), food log (Open Food Facts barcodes), daily metrics and a private mood journal; every record private to its owner |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.6 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
@@ -476,7 +478,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **257 modules: BUSL-1.1.** Production use for your own internal business
+- **259 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
