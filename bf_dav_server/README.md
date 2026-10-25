@@ -93,7 +93,8 @@ organized by the owner of the calendar they live in.
 ## Contacts
 
 The company book serves the Odoo contacts (persons and companies) that are
-active, not portal users, and not tagged with one of the book's excluded tags.
+active, not portal users, and not tagged with one of the book's excluded tags
+(Calendar → Configuration → *Address books for apps*, administrators).
 Name, company, job title, first email, phone, mobile, first address, website,
 tags and photo map to Odoo fields; everything else (more emails and numbers,
 birthday, notes, profiles) is kept on the side for that user and handed back to
@@ -125,6 +126,8 @@ request leaves nothing behind (savepoint).
   them. The master of a series is its most common shape.
 * Other people's private events are shown as busy blocks, as in Odoo.
 * Outlook does not speak CalDAV/CardDAV.
+* Deleting a meeting from an app does not notify its guests (as in Odoo);
+  with `bf_calendar_trash`, the meeting goes to the trash.
 
 ## Technical notes
 
@@ -151,6 +154,12 @@ request leaves nothing behind (savepoint).
 
 ## Changelog
 
+* **18.0.1.1.3**: a meeting deleted in an app goes to the trash when
+  `bf_calendar_trash` is installed, as when it is deleted in Odoo; an
+  *Address books for apps* screen (administrators) to set the tags the company
+  book leaves out; labels: the Calendar app's section is "Calendars" in every
+  language, the app password window has a title, readable field names; the
+  French catalogue is reloaded over the database on update.
 * **18.0.1.1.2**: comments and documentation only.
 * **18.0.1.1.1**: the Calendars section of the Calendar app lists every calendar
   of the user, even those with no meeting in the period shown; each checkbox

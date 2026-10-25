@@ -1335,11 +1335,19 @@ class BfDavServiceCaldav(models.AbstractModel):
         self._lock_rows("calendar_event", events.ids)
         if self._is_organizer_view(node, events[:1]):
             try:
-                events.unlink()
+                if hasattr(events, "_bf_trash"):
+                    # bf_calendar_trash: a meeting deleted in an app goes to
+                    # the trash, as when it is deleted in Odoo. Its own door
+                    # stays shut to requests that never feed Nextcloud.
+                    events._bf_trash("all_events", nextcloud=False, origin="odoo")
+                else:
+                    events.unlink()
+                    if rec.exists():
+                        rec.unlink()
             except AccessError as err:
                 raise DavError(403, D("need-privileges")) from err
-            if rec.exists():
-                rec.unlink()
+            except UserError as err:
+                raise DavError(403) from err
         else:
             # An attendee removing someone else's event from their calendar:
             # decline it, then leave it.

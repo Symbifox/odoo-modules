@@ -67,7 +67,6 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model:ir.model,name:bf_dav_server.model_bf_dav_calendar
-#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_calendar_id
 msgid "CalDAV calendar"
 msgstr ""
 
@@ -94,7 +93,7 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__caldav_url
-msgid "Caldav Url"
+msgid "CalDAV address"
 msgstr ""
 
 #. module: bf_dav_server
@@ -141,6 +140,7 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_calendar_event_calendar_dav
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_calendar_id
 msgid "Calendars"
 msgstr ""
 
@@ -179,7 +179,7 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__carddav_url
-msgid "Carddav Url"
+msgid "CardDAV address"
 msgstr ""
 
 #. module: bf_dav_server
@@ -209,6 +209,7 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_list
 msgid "Color in apps"
 msgstr ""
 
@@ -351,17 +352,13 @@ msgid "Etag"
 msgstr ""
 
 #. module: bf_dav_server
-#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__event_count
-msgid "Event Count"
-msgstr ""
-
-#. module: bf_dav_server
 #: model:ir.model,name:bf_dav_server.model_calendar_recurrence
 msgid "Event Recurrence Rule"
 msgstr ""
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__event_count
 msgid "Events"
 msgstr ""
 
@@ -492,8 +489,10 @@ msgid "New"
 msgstr ""
 
 #. module: bf_dav_server
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_users_form_simple_modif_dav
+#: code:addons/bf_dav_server/models/res_users.py:0
 msgid "New app password"
 msgstr ""
 
@@ -582,7 +581,7 @@ msgstr ""
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__server_url
-msgid "Server Url"
+msgid "Server address"
 msgstr ""
 
 #. module: bf_dav_server
@@ -593,7 +592,7 @@ msgstr ""
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__slug
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__slug
-msgid "Slug"
+msgid "Short address"
 msgstr ""
 
 #. module: bf_dav_server
@@ -617,7 +616,7 @@ msgstr ""
 msgid ""
 "Thunderbird, Apple Calendar and Contacts, and Android (with DAVx5) can read and\n"
 "                        write your Odoo calendar and contacts. Give each device its own app password:\n"
-"                        it opens your calendars and contacts only, and you can revoke it above, in the\n"
+"                        it opens your calendars and contacts only, and you can revoke it below, in the\n"
 "                        list of keys."
 msgstr ""
 
@@ -664,4 +663,34 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_dav_server.field_res_partner__bf_dav_uid
 #: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_uid
 msgid "vCard UID"
+msgstr ""
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_list
+#: model:ir.actions.act_window,name:bf_dav_server.action_bf_dav_addressbook
+#: model:ir.ui.menu,name:bf_dav_server.menu_bf_dav_addressbook
+msgid "Address books for apps"
+msgstr ""
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_form
+msgid "Address book for apps"
+msgstr ""
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_list
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_form
+msgid "Cards"
+msgstr ""
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_addressbook
+msgid "No address book yet"
+msgstr ""
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_addressbook
+msgid ""
+"The company book serves the Odoo contacts to Thunderbird, Apple Contacts and DAVx5;\n"
+"               each user also gets a private book."
 msgstr ""

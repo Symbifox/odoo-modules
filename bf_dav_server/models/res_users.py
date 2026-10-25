@@ -4,7 +4,7 @@ import logging
 import threading
 import time
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.addons.base.models.res_users import INDEX_SIZE, KEY_CRYPT_CONTEXT
 
 _logger = logging.getLogger(__name__)
@@ -76,6 +76,7 @@ class ResUsers(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
+            "name": _("New app password"),
             "res_model": "bf.dav.password.wizard",
             "view_mode": "form",
             "target": "new",

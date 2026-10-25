@@ -22,9 +22,9 @@ class BfDavPasswordWizard(models.TransientModel):
     name = fields.Char("Device", required=True, help="For example: Thunderbird office, Android phone.")
     key = fields.Char(readonly=True)
     login = fields.Char(related="user_id.login")
-    server_url = fields.Char(compute="_compute_server_url")
-    caldav_url = fields.Char(compute="_compute_server_url")
-    carddav_url = fields.Char(compute="_compute_server_url")
+    server_url = fields.Char("Server address", compute="_compute_server_url")
+    caldav_url = fields.Char("CalDAV address", compute="_compute_server_url")
+    carddav_url = fields.Char("CardDAV address", compute="_compute_server_url")
     state = fields.Selection([("new", "New"), ("done", "Done")], default="new")
 
     @api.model

@@ -30,7 +30,7 @@ class BfDavCalendar(models.Model):
     owner_id = fields.Many2one(
         "res.users", required=True, ondelete="cascade", index=True,
         default=lambda self: self.env.user, domain=[("share", "=", False)])
-    slug = fields.Char(required=True, copy=False,
+    slug = fields.Char("Short address", required=True, copy=False,
                        help="Last part of the collection address. Changing it makes "
                             "clients see a new calendar.")
     color = fields.Char(default="#29ABE2", help="Color proposed to calendar apps (hex).")
@@ -46,7 +46,7 @@ class BfDavCalendar(models.Model):
     dead_props = fields.Text(
         default="{}", copy=False,
         help="Client properties stored as is (PROPPATCH), JSON.")
-    event_count = fields.Integer(compute="_compute_event_count")
+    event_count = fields.Integer("Events", compute="_compute_event_count")
 
     _sql_constraints = [
         ("owner_slug_uniq", "unique (owner_id, slug)", "Each calendar address must be unique per user."),

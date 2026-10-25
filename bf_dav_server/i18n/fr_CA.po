@@ -66,7 +66,6 @@ msgstr "Occupé"
 
 #. module: bf_dav_server
 #: model:ir.model,name:bf_dav_server.model_bf_dav_calendar
-#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_calendar_id
 msgid "CalDAV calendar"
 msgstr "Agenda CalDAV"
 
@@ -93,7 +92,7 @@ msgstr "CalDAV/CardDAV : oublier les anciens changements de synchronisation"
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__caldav_url
-msgid "Caldav Url"
+msgid "CalDAV address"
 msgstr "Adresse CalDAV"
 
 #. module: bf_dav_server
@@ -140,6 +139,7 @@ msgstr "Agenda dans lequel les applications CalDAV voient cet événement."
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_calendar_event_calendar_dav
+#: model:ir.model.fields,field_description:bf_dav_server.field_calendar_event__bf_dav_calendar_id
 msgid "Calendars"
 msgstr "Agendas"
 
@@ -178,7 +178,7 @@ msgstr "Nom de la ressource CardDAV"
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__carddav_url
-msgid "Carddav Url"
+msgid "CardDAV address"
 msgstr "Adresse CardDAV"
 
 #. module: bf_dav_server
@@ -208,6 +208,7 @@ msgstr "Couleur dans Odoo"
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_list
 msgid "Color in apps"
 msgstr "Couleur dans les applications"
 
@@ -359,17 +360,13 @@ msgid "Etag"
 msgstr "Étiquette de version"
 
 #. module: bf_dav_server
-#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__event_count
-msgid "Event Count"
-msgstr "Nombre d'événements"
-
-#. module: bf_dav_server
 #: model:ir.model,name:bf_dav_server.model_calendar_recurrence
 msgid "Event Recurrence Rule"
 msgstr "Règle de récurrence de l'événement"
 
 #. module: bf_dav_server
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_calendar_form
+#: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__event_count
 msgid "Events"
 msgstr "Événements"
 
@@ -506,8 +503,10 @@ msgid "New"
 msgstr "Nouveau"
 
 #. module: bf_dav_server
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_password_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_dav_server.view_users_form_simple_modif_dav
+#: code:addons/bf_dav_server/models/res_users.py:0
 msgid "New app password"
 msgstr "Nouveau mot de passe d'application"
 
@@ -601,7 +600,7 @@ msgstr "Serveur (Thunderbird, Apple)"
 
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_password_wizard__server_url
-msgid "Server Url"
+msgid "Server address"
 msgstr "Adresse du serveur"
 
 #. module: bf_dav_server
@@ -612,7 +611,7 @@ msgstr "Affichée dans les applications d'agenda"
 #. module: bf_dav_server
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_addressbook__slug
 #: model:ir.model.fields,field_description:bf_dav_server.field_bf_dav_calendar__slug
-msgid "Slug"
+msgid "Short address"
 msgstr "Adresse courte"
 
 #. module: bf_dav_server
@@ -636,13 +635,13 @@ msgstr "Thunderbird du bureau, téléphone Android..."
 msgid ""
 "Thunderbird, Apple Calendar and Contacts, and Android (with DAVx5) can read and\n"
 "                        write your Odoo calendar and contacts. Give each device its own app password:\n"
-"                        it opens your calendars and contacts only, and you can revoke it above, in the\n"
+"                        it opens your calendars and contacts only, and you can revoke it below, in the\n"
 "                        list of keys."
 msgstr ""
 "Thunderbird, Calendrier et Contacts d'Apple, et Android (avec DAVx5) peuvent"
 " lire et modifier votre agenda et vos contacts Odoo. Donnez à chaque "
 "appareil son propre mot de passe d'application : il n'ouvre que votre agenda"
-" et vos contacts, et vous pouvez le révoquer plus haut, dans la liste des "
+" et vos contacts, et vous pouvez le révoquer plus bas, dans la liste des "
 "clés."
 
 #. module: bf_dav_server
@@ -690,3 +689,35 @@ msgstr "UID iCalendar"
 #: model:ir.model.fields,field_description:bf_dav_server.field_res_users__bf_dav_uid
 msgid "vCard UID"
 msgstr "UID vCard"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_list
+#: model:ir.actions.act_window,name:bf_dav_server.action_bf_dav_addressbook
+#: model:ir.ui.menu,name:bf_dav_server.menu_bf_dav_addressbook
+msgid "Address books for apps"
+msgstr "Carnets d'adresses pour les applications"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_form
+msgid "Address book for apps"
+msgstr "Carnet d'adresses pour les applications"
+
+#. module: bf_dav_server
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_list
+#: model_terms:ir.ui.view,arch_db:bf_dav_server.view_bf_dav_addressbook_form
+msgid "Cards"
+msgstr "Fiches"
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_addressbook
+msgid "No address book yet"
+msgstr "Aucun carnet d'adresses pour l'instant"
+
+#. module: bf_dav_server
+#: model_terms:ir.actions.act_window,help:bf_dav_server.action_bf_dav_addressbook
+msgid ""
+"The company book serves the Odoo contacts to Thunderbird, Apple Contacts and DAVx5;\n"
+"               each user also gets a private book."
+msgstr ""
+"Le carnet de la société sert les contacts d'Odoo à Thunderbird, à Contacts "
+"d'Apple et à DAVx5 ; chaque usager a aussi son carnet privé."

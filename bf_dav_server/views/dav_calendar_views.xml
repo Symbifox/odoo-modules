@@ -10,7 +10,7 @@
                 <field name="owner_id" groups="base.group_system"/>
                 <field name="slug"/>
                 <field name="is_default"/>
-                <field name="color" widget="color"/>
+                <field name="color" widget="color" string="Color in apps"/>
                 <field name="odoo_color" widget="color_picker"/>
                 <field name="event_count"/>
             </list>

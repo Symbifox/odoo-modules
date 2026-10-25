@@ -33,7 +33,7 @@ class BfDavAddressbook(models.Model):
                             required=True, default="personal")
     owner_id = fields.Many2one("res.users", ondelete="cascade", index=True,
                                domain=[("share", "=", False)])
-    slug = fields.Char(required=True, copy=False)
+    slug = fields.Char("Short address", required=True, copy=False)
     exclude_tag_ids = fields.Many2many(
         "res.partner.category", string="Excluded tags",
         help="Company book: contacts carrying one of these tags are not served.")

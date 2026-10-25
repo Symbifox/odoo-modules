@@ -367,6 +367,22 @@ class TestCalDav(DavCase):
         self.assertTrue(self.event(uid))
         self.assertNotIn(self.other.partner_id, self.event(uid).partner_ids)
 
+    def test_deleted_in_an_app_goes_to_the_trash(self):
+        uid = "del-%s" % uuid.uuid4()
+        stop = self.start + datetime.timedelta(hours=1)
+        self.assertEqual(self.put(uid, vcal(vevent(uid, self.start, stop)))[0], 201)
+        ev = self.event(uid)
+        self.assertEqual(self.call("DELETE", self.path(uid + ".ics"))[0], 204)
+        self.assertEqual(self.get(uid)[0], 404)
+        if "bf_trashed_at" not in ev._fields:
+            self.assertFalse(ev.exists())
+            return
+        self.assertTrue(ev.exists(), "bf_calendar_trash: the meeting is in the trash, not destroyed")
+        self.assertFalse(ev.active)
+        self.assertTrue(ev.bf_trashed_at)
+        ev._bf_restore(nextcloud=False)
+        self.assertEqual(self.get(uid)[0], 200, "restored from the trash, the app sees it again")
+
     def test_private_event_of_someone_else_is_masked(self):
         ev = self.env["calendar.event"].with_user(self.other).create({
             "name": "Secret", "description": "<p>secret</p>", "privacy": "private",
