@@ -28,6 +28,16 @@ infrastructure, certificates, domain names, recurring professional services.
   dashboard is **not** provided by this module. It is added by the separate
   `bf_subscription_dashboard` bridge, which auto-installs when
   `bf_subscription` and `bf_dashboard` are both present.
+- **Shared layout**: the recap email goes out under the shared mail layout
+  (`bf_onboarding_base.bf_mail_layout`, 18.0.2.1.1 or later), like the other
+  in-house emails. Without it, the content goes out undressed.
+- **Renewal dates stay current**: the stored next renewal date is recomputed
+  every day by the renewal-reminder job, and before each recap.
+- **Subscriptions paid through expense reports**: see the
+  `bf_subscription_expense` bridge.
+- **A recap stays in its company**: it can be read, printed and test-sent only
+  by users of its company, and only a subscription manager sends it to its
+  recipients.
 
 ## Dependencies
 
@@ -46,10 +56,21 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-18, this version converts automatically to
+- **Change Date**: on 2030-10-25, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.8.1
+
+- **Multi-company isolation of the recap.** A user of another company could test-send or print a recap, which reads its company's subscriptions with full rights. A record rule now confines each recap to its company.
+- **Only a manager sends a recap to its recipients.** A read-only user could trigger the send before failing on the write that follows it.
+
+### 18.0.1.8.0
+
+- **The recap uses the shared mail layout** instead of building its own header and footer.
+- **The next renewal date no longer stays in the past.** It is recomputed daily and before each recap, so the "Upcoming renewals" table no longer comes out empty.
+- **Margin per managed client counts only rebilled subscriptions**; the others show "—" instead of a negative margin.
 
 ### 18.0.1.7.0
 

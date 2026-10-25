@@ -287,6 +287,19 @@ class Subscription(models.Model):
             else:
                 rec.next_billing_date = nbd
 
+    def _refresh_next_billing_date(self):
+        """Recalculer la date de renouvellement stockée.
+
+        Elle dépend du jour, qu'aucun `depends` ne voit : Odoo ne la recalcule qu'à
+        l'écriture d'une dépendance. Une fois l'échéance passée, elle restait au passé,
+        et le renouvellement suivant n'entrait plus dans aucun horizon. La tâche des relances
+        et le récapitulatif l'appellent avant de lire la date.
+        """
+        subs = self.filtered(lambda s: s.state not in ('cancelled', 'expired'))
+        if subs:
+            self.env.add_to_compute(self._fields['next_billing_date'], subs)
+            subs._recompute_recordset(['next_billing_date'])
+
     @api.depends('state', 'auto_renew', 'next_billing_date', 'renewal_decision_date')
     def _compute_renewal_decision_needed(self):
         for rec in self:
@@ -568,6 +581,7 @@ class Subscription(models.Model):
             _logger.warning("bf_subscription: no activity type available, skipping cron")
             return 0
 
+        self.search([('state', '=', 'active')])._refresh_next_billing_date()
         subs = self.search([
             ('state', '=', 'active'),
             ('next_billing_date', '!=', False),

@@ -4,7 +4,13 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.1.7.0',
+    # 18.0.1.8.0: le récapitulatif part sous la mise en page commune
+    #   (bf_onboarding_base.bf_mail_layout) au lieu de sa propre coquille, la
+    #   date de renouvellement stockée est recalculée chaque jour (elle restait
+    #   au passé), et la marge par client ne compte que le refacturé.
+    # 18.0.1.8.1: un récapitulatif ne se lit que dans sa société, et seul un
+    #   gestionnaire l'envoie à ses destinataires.
+    'version': '18.0.1.8.1',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """

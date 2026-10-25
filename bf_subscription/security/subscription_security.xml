@@ -59,5 +59,13 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- Un récapitulatif lit en sudo les abonnements de sa société : sans cette
+             règle, un interne d'une autre société pouvait se l'envoyer ou l'imprimer. -->
+        <record id="rule_subscription_digest_company" model="ir.rule">
+            <field name="name">Subscription digest: multi-company isolation</field>
+            <field name="model_id" ref="model_subscription_digest"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
     </data>
 </odoo>

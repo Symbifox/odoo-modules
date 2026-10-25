@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="subscription_subscription_form_expense" model="ir.ui.view">
+        <field name="name">subscription.subscription.form.expense</field>
+        <field name="model">subscription.subscription</field>
+        <field name="inherit_id" ref="bf_subscription.subscription_subscription_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_vendor_bills']" position="after">
+                <button class="oe_stat_button" icon="fa-credit-card"
+                        name="action_view_expenses" type="object"
+                        invisible="expense_count == 0">
+                    <field name="expense_count" widget="statinfo" string="Expenses"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -82,6 +82,9 @@ class SubscriptionDigest(models.Model):
 
     def action_send_now(self):
         self.ensure_one()
+        # Envoyer aux destinataires est un geste de gestionnaire : sans ce contrôle, un
+        # lecteur faisait partir le courriel avant de buter sur l'écriture de last_sent.
+        self.check_access('write')
         if not self.user_ids:
             raise UserError(_("No recipient configured."))
         self._send_digest()
@@ -90,6 +93,9 @@ class SubscriptionDigest(models.Model):
 
     def action_send_test(self):
         self.ensure_one()
+        # Le récapitulatif se lit en sudo : vérifier d'abord qu'on a le droit de le voir
+        # (règle multi-société), pas seulement de l'appeler.
+        self.check_access('read')
         user = self.env.user
         if not user.email:
             raise UserError(_("Your user has no email address."))
@@ -109,6 +115,7 @@ class SubscriptionDigest(models.Model):
     def action_print_report(self):
         """On-demand: render and download the branded PDF report."""
         self.ensure_one()
+        self.check_access('read')
         return self.env.ref('bf_subscription.action_report_subscription').report_action(self)
 
     def _get_pdf_binary(self):
@@ -157,8 +164,8 @@ class SubscriptionDigest(models.Model):
             except Exception:
                 _logger.exception("subscription digest %s: PDF generation failed", self.name)
             subject = lu.env._("Subscription digest: %s") % fields.Date.today().strftime('%Y-%m-%d')
+            body = tpl.dress(lu.env, lu._generate_html(data), self.company_id, record=self, lang=lang)
             for user in users:
-                body = lu._generate_html(data)
                 mail = self.env['mail.mail'].sudo().create({
                     'subject': subject,
                     'email_from': sender,
@@ -177,6 +184,9 @@ class SubscriptionDigest(models.Model):
         Sub = self.env['subscription.subscription'].sudo()
         company_domain = [('company_id', '=', self.company_id.id)]
         active = Sub.search(company_domain + [('state', '=', 'active')])
+        # La date stockée reste au passé une fois l'échéance franchie : sans ce
+        # recalcul, un renouvellement passé sortait de l'horizon pour de bon.
+        active._refresh_next_billing_date()
 
         # Spend
         monthly = sum(active.mapped('monthly_equivalent'))
@@ -193,14 +203,20 @@ class SubscriptionDigest(models.Model):
         dormant = active.filtered('is_dormant').sorted('name') if self.include_dormant else Sub.browse()
 
         # Managed clients aggregation
-        managed = defaultdict(lambda: {'count': 0, 'monthly': 0.0, 'rebilled': 0.0, 'margin': 0.0})
+        # La marge ne compte que les abonnements refacturés : un abonnement géré
+        # mais pas refacturé n'a pas de marge, et son coût cumulé s'affichait en
+        # marge négative.
+        managed = defaultdict(lambda: {'count': 0, 'monthly': 0.0, 'rebilled': 0.0,
+                                       'margin': 0.0, 'rebilled_count': 0})
         if self.include_managed_clients:
             for s in active.filtered('managed_for_id'):
                 m = managed[s.managed_for_id]
                 m['count'] += 1
                 m['monthly'] += s.monthly_equivalent
-                m['rebilled'] += s.total_rebilled_lifetime
-                m['margin'] += s.rebill_margin
+                if s.rebilled:
+                    m['rebilled_count'] += 1
+                    m['rebilled'] += s.total_rebilled_lifetime
+                    m['margin'] += s.rebill_margin
 
         has_content = bool(
             (self.include_spend_summary and active)
@@ -218,6 +234,9 @@ class SubscriptionDigest(models.Model):
 
     def _fmt(self, amount, currency):
         return "%s %s" % ('{:,.2f}'.format(amount).replace(',', ' '), currency.name or '')
+
+    def _fmt_margin(self, m, currency):
+        return self._fmt(m['margin'], currency) if m['rebilled_count'] else "—"
 
     def _get_report_payload(self):
         """Flat, QWeb-friendly payload for the PDF report template."""
@@ -244,7 +263,7 @@ class SubscriptionDigest(models.Model):
                 'client': partner.name,
                 'count': m['count'],
                 'monthly': self._fmt(m['monthly'], cur),
-                'margin': self._fmt(m['margin'], cur),
+                'margin': self._fmt_margin(m, cur),
             })
         return {
             'generated_on': fields.Date.context_today(self),
@@ -262,7 +281,10 @@ class SubscriptionDigest(models.Model):
         from markupsafe import escape as esc
         company = self.company_id
         cur = data['currency']
-        parts = []
+        parts = [
+            tpl.heading(_("Subscription digest"), company),
+            tpl.lead(fields.Date.context_today(self).isoformat(), company),
+        ]
 
         if self.include_spend_summary:
             parts.append(tpl.section_title(_("Summary"), company))
@@ -291,7 +313,7 @@ class SubscriptionDigest(models.Model):
                                                                                "before"), _("Amount")],
                     rows, company))
             else:
-                parts.append(tpl.empty_note(_("No renewal within the horizon.")))
+                parts.append(tpl.empty_note(_("No renewal within the horizon."), company))
 
         if self.include_dormant:
             parts.append(tpl.section_title(_("Dormant subscriptions"), company))
@@ -304,7 +326,7 @@ class SubscriptionDigest(models.Model):
                 parts.append(tpl.data_table(
                     [_("Subscription"), _("Vendor"), _("Last bill")], rows, company))
             else:
-                parts.append(tpl.empty_note(_("No dormant subscription.")))
+                parts.append(tpl.empty_note(_("No dormant subscription."), company))
 
         if self.include_managed_clients and data['managed']:
             parts.append(tpl.section_title(_("Cost per managed client"), company))
@@ -314,11 +336,11 @@ class SubscriptionDigest(models.Model):
                     esc(partner.name),
                     esc(str(m['count'])),
                     esc(self._fmt(m['monthly'], cur)),
-                    esc(self._fmt(m['margin'], cur)),
+                    esc(self._fmt_margin(m, cur)),
                 ])
             parts.append(tpl.data_table(
                 [_("Client"), _("# Subscriptions"), _("Monthly cost"), _("Margin "
                                                                           "(lifetime)")], rows, company))
 
-        return tpl.wrapper(_("Subscription digest"), "".join(parts), company,
-                           footer=_("Automatic subscription digest."))
+        parts.append(tpl.empty_note(_("Automatic subscription digest."), company))
+        return "".join(parts)

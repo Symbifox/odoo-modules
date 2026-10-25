@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**261 modules are BUSL-1.1.** The source is published and auditable, and **you
+**262 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -381,7 +381,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.4.5 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression, plus a token-protected client portal where the client sees their steps and deposits the expected documents. |
 | `bf_stepbystep_securetransfer` | Progression: deposit through secure transfer storage | 18.0.1.0.2 | BUSL-1.1 | Client portal deposits go straight to the S3 storage of the secure transfer when it is configured; large files stay there. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.7.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription` | Abonnements | 18.0.1.8.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.1.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
@@ -480,7 +481,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **261 modules: BUSL-1.1.** Production use for your own internal business
+- **262 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
