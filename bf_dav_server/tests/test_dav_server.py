@@ -719,6 +719,15 @@ class TestDavHttp(HttpCase):
         self.assertEqual(wiz.server_url, "https://dav.example.com")
         self.assertEqual(wiz.caldav_url, "https://dav.example.com/dav/calendars/%d/" % self.user.id)
 
+    def test_wizard_windows_have_a_title(self):
+        self.assertTrue(self.user.with_user(self.user).action_bf_dav_new_password().get("name"))
+        wiz = self.env["bf.dav.password.wizard"].with_user(self.user).create({"name": "x"})
+        # Past the identity check (it needs a browser session): the window that
+        # shows the password keeps its title.
+        shown = type(wiz).action_generate.__wrapped__(wiz)
+        self.assertTrue(shown.get("name"))
+        self.assertTrue(wiz.key)
+
     def test_well_known_redirects(self):
         res = self.url_open("/.well-known/caldav", allow_redirects=False)
         self.assertEqual(res.status_code, 301)

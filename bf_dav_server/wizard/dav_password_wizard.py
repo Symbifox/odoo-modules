@@ -62,6 +62,7 @@ class BfDavPasswordWizard(models.TransientModel):
         self.write({"key": key, "state": "done"})
         return {
             "type": "ir.actions.act_window",
+            "name": _("New app password"),
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",

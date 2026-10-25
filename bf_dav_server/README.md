@@ -154,6 +154,8 @@ request leaves nothing behind (savepoint).
 
 ## Changelog
 
+* **18.0.1.1.4**: the app password window keeps its title once the password
+  is shown.
 * **18.0.1.1.3**: a meeting deleted in an app goes to the trash when
   `bf_calendar_trash` is installed, as when it is deleted in Odoo; an
   *Address books for apps* screen (administrators) to set the tags the company

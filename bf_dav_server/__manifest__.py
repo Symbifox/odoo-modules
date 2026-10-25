@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Calendar and contacts sync (CalDAV, CardDAV)",
-    "version": "18.0.1.1.3",
+    "version": "18.0.1.1.4",
     "category": "Productivity/Calendar",
     "summary": "Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write "
                "the Odoo agenda and contacts directly, reminders and their state included",
