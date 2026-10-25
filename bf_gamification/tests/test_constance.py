@@ -239,9 +239,13 @@ class TestConstance(TransactionCase):
 
     def _fox_messages(self):
         # Odoo 18 garde les messages du bus en attente jusqu'à la validation
-        # (précommit) : l'essai lit la file, pas la table.
+        # (précommit) : l'essai lit la file, ET ce qu'un vidage de la file a déjà
+        # écrit dans la table. Mesuré sur une base neuve : un geste de l'essai vide la
+        # file en cours de route, et lire la seule file perdait les messages déjà partis.
         pending = self.env.cr.precommit.data.get("bus.bus.values", [])
-        return [v for v in pending if "bf_gamification/caught_up" in v["message"]]
+        written = self.env["bus.bus"].sudo().search([("message", "ilike", "bf_gamification/caught_up")])
+        return ([v for v in pending if "bf_gamification/caught_up" in v["message"]]
+                + [{"message": text} for text in written.mapped("message")])
 
     def test_emptying_one_s_own_activities_brings_the_fox_once_a_day(self):
         with freeze_time("2026-10-08 15:00:00"):
@@ -345,15 +349,19 @@ class TestConstance(TransactionCase):
         claim = self._claims()
         self.assertEqual(claim.display_name, "Journ\u00e9e de cong\u00e9 (constance) \u2013 Fox Constance")
         self.assertEqual(claim.activity_ids.res_name, claim.display_name)
-        self.env.flush_all()
-        mails = self.env["mail.mail"].sudo().search([
-            ("model", "=", "bf.gamification.reward.claim"), ("res_id", "=", claim.id)])
-        self.assertEqual(mails.recipient_ids, self.boss.partner_id,
+        # Le message de l'avis (celui dont le courriel est tiré), pas le `mail.mail` : en
+        # mode test, sur une base sans serveur d'envoi, Odoo « envoie » le courriel puis le
+        # supprime, et la file est vide selon la base où l'essai tourne.
+        messages = self.env["mail.message"].sudo().search([
+            ("model", "=", "bf.gamification.reward.claim"), ("res_id", "=", claim.id),
+            ("message_type", "=", "user_notification")])
+        self.assertEqual(messages.partner_ids, self.boss.partner_id,
                          "le gestionnaire est le seul prévenu")
-        for mail in mails:
-            self.assertNotIn("bf.gamification", mail.subject or "")
-            self.assertNotIn("bf.gamification", mail.reply_to or "")
-            self.assertIn(claim.display_name, mail.subject)
+        for message in messages:
+            self.assertEqual(message.record_name, claim.display_name)
+            self.assertNotIn("bf.gamification", message.subject or "")
+            self.assertNotIn("bf.gamification", message.reply_to or "")
+            self.assertIn(claim.display_name, message.subject)
 
     def test_no_claim_once_the_company_turns_it_off(self):
         self._enable_leave(step=2)
