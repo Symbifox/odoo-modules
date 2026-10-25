@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Client OIDC de la clé live, à côté de celui de l'installation. -->
+  <record id="view_bf_policy_org_form_live" model="ir.ui.view">
+    <field name="name">bf.policy.org.form.live</field>
+    <field name="model">bf.policy.org</field>
+    <field name="inherit_id" ref="bf_policy.view_bf_policy_org_form"/>
+    <field name="arch" type="xml">
+      <field name="oidc_client_id" position="after">
+        <field name="live_oidc_client_id" placeholder="blue-fox-os-live"/>
+      </field>
+    </field>
+  </record>
+
+  <!--
+    Profils persistants de clé live. ⚠️ key_enc n'apparaît dans AUCUNE vue :
+    le client web lit tous les champs d'une vue, invisibles compris, et un champ
+    sous groups= sans le même groups= sur le nœud empêcherait d'ouvrir la fiche.
+    Personne n'a à le voir, même chiffré.
+  -->
+  <record id="view_bf_policy_live_profile_list" model="ir.ui.view">
+    <field name="name">bf.policy.live.profile.list</field>
+    <field name="model">bf.policy.live.profile</field>
+    <field name="arch" type="xml">
+      <list string="Profils de clé live" create="false" edit="false"
+            decoration-muted="revoked">
+        <field name="user_id"/>
+        <field name="created_on"/>
+        <field name="last_served_on"/>
+        <field name="serve_count"/>
+        <field name="revoked"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_live_profile_form" model="ir.ui.view">
+    <field name="name">bf.policy.live.profile.form</field>
+    <field name="model">bf.policy.live.profile</field>
+    <field name="arch" type="xml">
+      <form string="Profil de clé live" create="false" edit="false">
+        <header>
+          <button name="action_revoke" type="object" string="Révoquer"
+                  class="btn-danger" invisible="revoked"
+                  groups="bf_policy.group_disk_escrow_read"
+                  confirm="Révoquer ce profil efface sa clé : le profil chiffré resté sur la clé USB devient illisible, définitivement. Continuer ?"/>
+          <button name="action_reset_subject" type="object"
+                  string="Réépingler le compte" class="btn-secondary"
+                  invisible="revoked"
+                  groups="bf_policy.group_disk_escrow_read"
+                  confirm="La prochaine remise de la clé acceptera le compte Authentik qui la demandera, à condition qu'il désigne la même personne. Continuer ?"/>
+        </header>
+        <sheet>
+          <widget name="web_ribbon" title="Révoqué" bg_color="text-bg-danger"
+                  invisible="not revoked"/>
+          <group>
+            <group string="Personne">
+              <field name="user_id"/>
+              <field name="idp_subject" groups="bf_policy.group_disk_escrow_read"/>
+              <field name="created_on"/>
+            </group>
+            <group string="Remises">
+              <field name="last_served_on"/>
+              <field name="serve_count"/>
+              <field name="revoked"/>
+              <field name="revoked_on" invisible="not revoked"/>
+              <field name="revoked_by" invisible="not revoked"/>
+            </group>
+          </group>
+          <div class="text-muted">
+            La clé de ce profil est séquestrée chiffrée et ne s'affiche jamais :
+            seule la clé USB live la reçoit, après le QR. Révoquer l'efface ;
+            supprimer une fiche révoquée lève la révocation (la personne repart
+            d'un profil neuf).
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_live_profile" model="ir.actions.act_window">
+    <field name="name">Profils de clé live</field>
+    <field name="res_model">bf.policy.live.profile</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem id="menu_bf_policy_live_profile" name="Profils de clé live"
+            parent="bf_policy.menu_bf_policy_root"
+            action="action_bf_policy_live_profile" sequence="45"/>
+
+</odoo>

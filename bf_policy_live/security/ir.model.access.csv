@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_policy_live_profile_manager,bf.policy.live.profile gestionnaires,model_bf_policy_live_profile,base.group_system,1,0,0,0
+access_bf_policy_live_profile_escrow,bf.policy.live.profile sequestre,model_bf_policy_live_profile,bf_policy.group_disk_escrow_read,1,0,0,1
+access_bf_policy_live_login_manager,bf.policy.live.login gestionnaires,model_bf_policy_live_login,base.group_system,1,0,0,0
