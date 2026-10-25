@@ -29,7 +29,10 @@
     # 18.0.3.0.1: the reward claim has a readable name (reward – person): the
     #   activity email sent to the approver, its "Document" column and the reply-to
     #   address showed the technical model name.
-    "version": "18.0.3.0.1",
+    # 18.0.3.0.2: a zero, an empty value or a negative number in the constance
+    #   settings (step, days per step, yearly cap) reads as the default, whichever
+    #   way the Odoo core stores a zero.
+    "version": "18.0.3.0.2",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

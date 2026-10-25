@@ -225,10 +225,14 @@ class GamificationProfileConstance(models.Model):
         ICP = self.env['ir.config_parameter'].sudo()
 
         def number(key, default):
+            # Zéro, vide ou négatif remettent le défaut, que le cœur d'Odoo garde un 0
+            # dans un paramètre (les versions récentes de la 18) ou le retire (les
+            # anciennes) : l'écran promet le défaut dans les deux cas.
             try:
-                return max(float(ICP.get_param(key, default)), 0)
+                value = float(ICP.get_param(key, default))
             except ValueError:
                 return float(default)
+            return value if value > 0 else float(default)
 
         return {
             'enabled': ICP.get_param('bf_gamification.leave_enabled', 'False') == 'True',

@@ -1293,8 +1293,22 @@ class TestConstance(TransactionCase):
             getattr(ours.BfEmail, name)(BfEmail, *args, **kwargs)
             self.assertEqual(calls[-1], (name, args, kwargs, True), name)
 
+    def test_a_stored_zero_restores_the_defaults(self):
+        # Le cœur d'Odoo garde un 0 dans un paramètre depuis une version récente de la 18
+        # (la CI publique, image `odoo:18`) et le retire dans les anciennes : le module
+        # ne doit pas dépendre de l'une ou de l'autre.
+        ICP = self.env["ir.config_parameter"].sudo()
+        for key in ("leave_streak_days", "leave_days_per_step", "leave_max_per_year"):
+            for stored in ("0", "", "-3", "pas un nombre"):
+                ICP.set_param("bf_gamification." + key, stored)
+                settings_now = self.Profile._bf_leave_settings()
+                settings_now.pop("enabled")
+                self.assertEqual(settings_now, {"step": 60, "days_per_step": 1.0, "max_per_year": 5},
+                                 "%s=%r" % (key, stored))
+            ICP.set_param("bf_gamification." + key, False)
+
     def test_t3_zero_is_not_unlimited_in_the_settings(self):
-        # Odoo ne garde pas un 0 dans un paramètre : le défaut revient. Les aides le disent.
+        # Zéro ne veut pas dire « sans plafond » : le défaut revient. Les aides le disent.
         settings = self.env["res.config.settings"].create({
             "gamification_leave_max_per_year": 0, "gamification_leave_streak_days": 0,
             "gamification_leave_days_per_step": 0})

@@ -312,8 +312,8 @@ claimed.
 
 Off by default (**Settings > Fox Quest > Constance**). The company sets the step (working days of
 constance, default 60), the days granted per step (default 1) and a yearly cap (default 5). Odoo
-keeps no 0 in a setting: 0 or an empty field restores the default (so 0 does not mean "no cap"; to
-not limit, enter a large number).
+0 or an empty field restores the default, whichever way Odoo's core stores a zero (so 0 does not mean
+"no cap"; to not limit, enter a large number).
 
 Each employee then chooses to take part from their dashboard, after reading what is counted. Nobody
 else can turn it on for them (not even a Fox Quest manager), nor can the support seeing Odoo as them
@@ -666,6 +666,10 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v3.0.2 — A zero setting means the default
+
+- The step, the days per step and the yearly cap read a zero, an empty value or a negative number as their default (60, 1 and 5), as the settings screen says. Recent Odoo 18 cores keep a stored zero, which silently turned the constance days off (step 0) or removed their cap (cap 0) instead.
 
 ### v3.0.1 — Readable claim name
 
