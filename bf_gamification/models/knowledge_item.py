@@ -1,8 +1,6 @@
-import logging
-
 from odoo import models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class ProjectKnowledgeItem(models.Model):
@@ -22,7 +20,7 @@ class ProjectKnowledgeItem(models.Model):
         if not self.env['ir.config_parameter'].sudo().get_param(
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
-        try:
+        with fq_savepoint.tolerated("XP élément de matrice"):
             user = rec.assigned_user_id or rec.create_uid
             if not user:
                 return
@@ -40,5 +38,3 @@ class ProjectKnowledgeItem(models.Model):
                     'Élément de matrice complété : %s' % (rec.name or ''),
                     reference=rec,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP item matrice", exc_info=True)

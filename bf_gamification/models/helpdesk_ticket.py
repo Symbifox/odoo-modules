@@ -1,8 +1,6 @@
-import logging
-
 from odoo import models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class HelpdeskTicket(models.Model):
@@ -22,7 +20,7 @@ class HelpdeskTicket(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
 
-        try:
+        with fq_savepoint.tolerated("XP ticket"):
             new_stage = ticket.stage_id
             if not new_stage or not new_stage.fold:
                 return
@@ -48,5 +46,3 @@ class HelpdeskTicket(models.Model):
                     'Ticket r\u00e9solu : %s' % ticket.name,
                     reference=ticket,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP ticket", exc_info=True)

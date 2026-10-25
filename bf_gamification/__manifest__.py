@@ -10,7 +10,26 @@
     # 18.0.2.7.0: badge categories and levels take a free color (bf_color).
     # 18.0.2.7.1: the displayed color opens "My color"; badge categories get
     #   a form of their own.
-    "version": "18.0.2.7.1",
+    # 18.0.3.0.0: the streak counts the person's working days, in their time
+    #   zone (weekends, public holidays and declared absences pause it, they no
+    #   longer break it), and is derived from the XP history, so an absence or
+    #   a time off validated afterwards repairs it. The "Streak quotidien" rule
+    #   finally pays; the "task before deadline" bonus is repaired (it never
+    #   paid) and a task closed by its state counts too. Service and portal
+    #   accounts are out of the game and of the leaderboard; the XP of a send
+    #   goes to the human who sends. On-time sends (report within 24 h, agenda
+    #   24 h ahead, activity by its deadline). The fox that congratulates when
+    #   a work list empties. Constance days off, off by default, opted into by
+    #   the employee, approved by a human. Only the person's own gesture, in a
+    #   request, counts: not a cron, a colleague, a robot or support
+    #   impersonation. The XP journal sets its own date and cannot be
+    #   backdated, rewritten or deleted by hand; nothing Fox Quest creates
+    #   takes defaults from the caller's context; managers no longer read the
+    #   "caught up" days; the reset keeps constance time off.
+    # 18.0.3.0.1: the reward claim has a readable name (reward – person): the
+    #   activity email sent to the approver, its "Document" column and the reply-to
+    #   address showed the technical model name.
+    "version": "18.0.3.0.1",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -46,6 +65,7 @@
         "data/gamification_badge_category_data.xml",
         "data/gamification_xp_rule_data.xml",
         "data/gamification_badge_data.xml",
+        "data/gamification_constance_data.xml",
         "data/gamification_cron.xml",
         "data/bf_onboarding.xml",
         # Wizard
@@ -62,6 +82,7 @@
         "views/gamification_xp_transaction_views.xml",
         "views/gamification_dashboard_views.xml",
         "views/res_config_settings_views.xml",
+        "views/res_users_views.xml",
         "views/menu_views.xml",
     ],
     "assets": {

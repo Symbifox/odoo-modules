@@ -1,9 +1,7 @@
-import logging
-
 from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 # Models allowed for automatic badge condition evaluation (sudo search_count)
 ALLOWED_CONDITION_MODELS = {
@@ -133,7 +131,8 @@ class GamificationBadge(models.Model):
         elif (self.condition_type == 'automatic' and self.condition_model
               and self.condition_domain
               and self.condition_model in ALLOWED_CONDITION_MODELS):
-            try:
+            with fq_savepoint.tolerated("domaine du badge %s : %s" % (
+                    self.name, self.condition_domain)):
                 domain = safe_eval(self.condition_domain, {"uid": user.id}, mode="eval", nocopy=True)
                 if not isinstance(domain, list):
                     raise ValueError("Domain must be a list")
@@ -147,12 +146,6 @@ class GamificationBadge(models.Model):
                     'percent': min(round(count / target * 100, 1), 100) if target else 100,
                     'earned': earned,
                 }
-            except Exception:
-                _logger.warning(
-                    "Badge %s: invalid condition_domain: %s",
-                    self.name, self.condition_domain,
-                )
-                pass
         # manual or fallback
         return {
             'current': 1 if earned else 0,

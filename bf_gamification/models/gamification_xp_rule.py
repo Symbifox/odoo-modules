@@ -22,6 +22,8 @@ class GamificationXpRule(models.Model):
         ('knowledge_item', 'Élément de matrice'),
         ('resolution', 'Résolution corporative'),
         ('email_triage', 'Triage courriel'),
+        ('on_time', 'À temps'),
+        ('caught_up', 'À jour'),
     ], string="Source", required=True)
     trigger = fields.Selection([
         ('create', 'Création'),

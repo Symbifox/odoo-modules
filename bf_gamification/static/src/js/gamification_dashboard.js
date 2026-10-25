@@ -97,13 +97,33 @@ export class GamificationDashboard extends Component {
         }
     }
 
+    async setLeaveOptIn(flag) {
+        try {
+            await this.orm.call("bf.gamification.dashboard", "set_leave_opt_in", [flag]);
+            this.notification.add(
+                flag ? "Participation activ\u00e9e : vos jours ouvrables comptent \u00e0 partir d'aujourd'hui."
+                     : "Participation retir\u00e9e.",
+                { type: "success" }
+            );
+        } catch (e) {
+            this.notification.add(e.data?.message || "Erreur lors de la mise \u00e0 jour de la participation", {
+                type: "danger",
+            });
+        }
+        await this.loadData();
+    }
+
     openLeaderboard() {
         this.action.doAction({
             type: "ir.actions.act_window",
             name: "Classement",
             res_model: "bf.gamification.profile",
             views: [[false, "list"], [false, "form"]],
-            domain: [],
+            domain: [
+                ["user_id.share", "=", false],
+                ["user_id.bf_gamification_excluded", "=", false],
+                ["user_id", "!=", 1],
+            ],
         });
     }
 
@@ -149,6 +169,8 @@ export class GamificationDashboard extends Component {
             manual: "fa-hand-paper-o",
             hosting: "fa-server",
             reward: "fa-gift",
+            on_time: "fa-clock-o",
+            caught_up: "fa-check-circle-o",
         };
         return icons[source] || "fa-star";
     }
@@ -163,6 +185,8 @@ export class GamificationDashboard extends Component {
             manual: "Manuel",
             hosting: "H\u00e9bergement",
             reward: "R\u00e9compense",
+            on_time: "\u00c0 temps",
+            caught_up: "\u00c0 jour",
         };
         return labels[source] || source;
     }

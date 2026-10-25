@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Envois à temps, listes à jour, congé de constance. -->
+    <data noupdate="1">
+        <record id="xp_rule_on_time_report" model="bf.gamification.xp.rule">
+            <field name="name">CR envoy&#233; sous 24 h</field>
+            <field name="source">on_time</field>
+            <field name="trigger">complete</field>
+            <field name="xp_amount">6</field>
+            <field name="condition_description">Compte rendu envoy&#233; au plus tard 24 h apr&#232;s la fin de la rencontre</field>
+        </record>
+        <record id="xp_rule_on_time_agenda" model="bf.gamification.xp.rule">
+            <field name="name">OdJ envoy&#233; 24 h avant</field>
+            <field name="source">on_time</field>
+            <field name="trigger">create</field>
+            <field name="xp_amount">5</field>
+            <field name="condition_description">Ordre du jour envoy&#233; au moins 24 h avant le d&#233;but de la rencontre</field>
+        </record>
+        <record id="xp_rule_on_time_activity" model="bf.gamification.xp.rule">
+            <field name="name">Activit&#233; faite &#224; l'&#233;ch&#233;ance</field>
+            <field name="source">on_time</field>
+            <field name="trigger">write</field>
+            <field name="xp_amount">1</field>
+            <field name="condition_description">Sa propre activit&#233;, planifi&#233;e la veille ou avant, faite au plus tard le jour d&#251;</field>
+        </record>
+        <record id="xp_rule_caught_up" model="bf.gamification.xp.rule">
+            <field name="name">Liste &#224; jour</field>
+            <field name="source">caught_up</field>
+            <field name="trigger">daily</field>
+            <field name="xp_amount">3</field>
+            <field name="condition_description">Une liste de travail vid&#233;e par la personne (une fois par jour et par liste)</field>
+        </record>
+        <record id="xp_rule_caught_up_all" model="bf.gamification.xp.rule">
+            <field name="name">Tout &#224; jour</field>
+            <field name="source">caught_up</field>
+            <field name="trigger">complete</field>
+            <field name="xp_amount">10</field>
+            <field name="condition_description">Activit&#233;s, courriels, t&#226;ches, comptes rendus et ordres du jour &#224; z&#233;ro en m&#234;me temps (une fois par jour)</field>
+        </record>
+
+        <record id="reward_leave_constance" model="bf.gamification.reward">
+            <field name="name">Journ&#233;e de cong&#233; (constance)</field>
+            <field name="category">time_off</field>
+            <field name="xp_cost">0</field>
+            <field name="available" eval="False"/>
+            <field name="is_constance_leave" eval="True"/>
+            <field name="description">&lt;p&gt;Ouverte par Fox Quest quand une personne qui participe aux cong&#233;s de constance atteint le palier. Un gestionnaire l'approuve ou la refuse.&lt;/p&gt;</field>
+        </record>
+    </data>
+</odoo>

@@ -1,8 +1,6 @@
-import logging
-
 from odoo import models
 
-_logger = logging.getLogger(__name__)
+from . import fq_days, fq_savepoint
 
 
 class MailActivity(models.Model):
@@ -12,13 +10,26 @@ class MailActivity(models.Model):
         """Award XP when a scheduled activity is marked as done."""
         # Capture info before super() unlinks the records
         users_activities = []
+        actor = self.env.user
+        own_due = False
         for activity in self:
             if activity.user_id:
                 summary = activity.summary or (
                     activity.activity_type_id.name
-                    if activity.activity_type_id else 'Activit\u00e9'
+                    if activity.activity_type_id else 'Activité'
                 )
-                users_activities.append((activity.user_id, summary))
+                user = activity.user_id
+                # À l'échéance : faite au plus tard le jour dû, dans le fuseau
+                # de la personne. Seulement une activité planifiée la
+                # veille ou avant : créer et clore la sienne le même jour ne
+                # prouve aucune ponctualité.
+                today = fq_days.user_today(user)
+                on_time = bool(activity.date_deadline and today <= activity.date_deadline
+                               and fq_days.local_date(user, activity.create_date) < today)
+                users_activities.append((user, summary, on_time))
+                if user == actor and activity.date_deadline \
+                        and activity.date_deadline <= fq_days.user_today(user):
+                    own_due = True
 
         res = super()._action_done(feedback=feedback, attachment_ids=attachment_ids)
 
@@ -26,9 +37,9 @@ class MailActivity(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return res
 
-        for user, summary in users_activities:
-            try:
-                Profile = self.env['bf.gamification.profile']
+        Profile = self.env['bf.gamification.profile']
+        for user, summary, on_time in users_activities:
+            with fq_savepoint.tolerated("XP activité"):
                 profile = Profile._get_or_create_profile(user)
                 Rule = self.env['bf.gamification.xp.rule']
 
@@ -40,9 +51,16 @@ class MailActivity(models.Model):
                 if rule:
                     profile._award_xp(
                         rule.xp_amount, 'activity',
-                        'Activit\u00e9 compl\u00e9t\u00e9e : %s' % summary,
+                        'Activité complétée : %s' % summary,
                     )
-            except Exception:
-                _logger.warning("Fox Quest: erreur XP activit\u00e9", exc_info=True)
+                # Le bonus « à temps » va à qui fait sa propre activité : une
+                # activité close par un tiers ou un robot ne prouve rien.
+                if on_time and user == self.env.user:
+                    profile._bf_award_rule(
+                        'bf_gamification.xp_rule_on_time_activity', 'on_time',
+                        'Activité faite à l’échéance : %s' % summary)
 
+        # La personne vient de faire une de SES activités dues : sa liste est-elle vide ?
+        if own_due:
+            Profile._bf_caught_up_check(actor, 'activity')
         return res

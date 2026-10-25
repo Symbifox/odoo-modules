@@ -6,14 +6,15 @@
         <field name="arch" type="xml">
             <form string="R&#233;clamation">
                 <header>
+                    <!-- Sans gestionnaire Fox Quest, un administrateur décide. -->
                     <button name="action_approve" string="Approuver" type="object"
                             class="btn-primary"
                             invisible="state != 'pending'"
-                            groups="bf_gamification.group_gamification_manager"/>
+                            groups="bf_gamification.group_gamification_manager,base.group_system"/>
                     <button name="action_refuse" string="Refuser" type="object"
                             class="btn-danger"
                             invisible="state != 'pending'"
-                            groups="bf_gamification.group_gamification_manager"/>
+                            groups="bf_gamification.group_gamification_manager,base.group_system"/>
                     <button name="action_consume" string="Consommer" type="object"
                             invisible="state != 'approved'"
                             groups="bf_gamification.group_gamification_manager"/>
@@ -23,14 +24,18 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="user_id"/>
-                            <field name="reward_id"/>
-                            <field name="xp_spent"/>
+                            <!-- Figés après la création. -->
+                            <field name="user_id" readonly="id"/>
+                            <field name="reward_id" readonly="id"/>
+                            <field name="xp_spent" invisible="is_constance_leave" readonly="id"/>
+                            <field name="is_constance_leave" invisible="1"/>
+                            <field name="leave_days" invisible="not is_constance_leave"/>
                         </group>
                         <group>
                             <field name="date_claimed"/>
                             <field name="date_processed"/>
-                            <field name="approved_by"/>
+                            <!-- Posé par « Approuver » seulement. -->
+                            <field name="approved_by" readonly="1"/>
                         </group>
                     </group>
                     <group invisible="state != 'refused'">
@@ -51,6 +56,7 @@
                 <field name="user_id" widget="many2one_avatar"/>
                 <field name="reward_id"/>
                 <field name="xp_spent"/>
+                <field name="leave_days" optional="hide"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'pending'"
                        decoration-success="state == 'approved'"

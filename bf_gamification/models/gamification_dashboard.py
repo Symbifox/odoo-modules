@@ -1,6 +1,25 @@
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
+
+from . import fq_days
+from .gamification_constance import CAUGHT_UP_KINDS
+
+CAUGHT_UP_LISTS = {
+    'activity': ("Activités en retard ou du jour", 'fa-tasks'),
+    'inbox': ("Courriels à traiter", 'fa-inbox'),
+    'task': ("Tâches en retard", 'fa-check-square-o'),
+    'report': ("Comptes rendus à envoyer", 'fa-file-text-o'),
+    'agenda': ("Ordres du jour des 48 h à envoyer", 'fa-list-ol'),
+}
+CLAIM_STATES = {'pending': "en attente", 'approved': "approuvée",
+                'refused': "refusée", 'consumed': "prise"}
+
+
+def _days_label(days):
+    text = ('%g' % days).replace('.', ',')
+    return '%s jour%s' % (text, 's' if days > 1 else '')
 
 
 class GamificationDashboard(models.AbstractModel):
@@ -47,6 +66,61 @@ class GamificationDashboard(models.AbstractModel):
             'stats': self._get_global_stats(),
             'available_rewards': self._get_available_rewards(),
             'achievements': self._get_achievements_data(user),
+            'constance': self._get_constance_data(profile),
+        }
+
+    @api.model
+    def set_leave_opt_in(self, flag):
+        """Participer, ou ne plus participer, aux congés de constance.
+
+        Toujours le profil de qui appelle : la participation ne se pose pour
+        personne d'autre.
+        """
+        if not self.env.user._is_internal():
+            raise AccessError(_("Les congés de constance sont réservés aux usagers internes."))
+        profile = self.env['bf.gamification.profile']._get_or_create_profile(self.env.user)
+        profile._bf_set_leave_opt_in(bool(flag))
+        return self._get_constance_data(profile)
+
+    @api.model
+    def _get_constance_data(self, profile):
+        Profile = self.env['bf.gamification.profile']
+        user = profile.user_id
+        lists = []
+        for kind in CAUGHT_UP_KINDS:
+            label, icon = CAUGHT_UP_LISTS[kind]
+            lists.append({'kind': kind, 'label': label, 'icon': icon,
+                          'pending': Profile._bf_pending_count(user, kind)})
+        settings = Profile._bf_leave_settings()
+        leave = {'enabled': settings['enabled']}
+        if settings['enabled']:
+            sprofile = profile.sudo()
+            reward = self.env.ref('bf_gamification.reward_leave_constance',
+                                  raise_if_not_found=False)
+            claims = self.env['bf.gamification.reward.claim'].sudo().search([
+                ('user_id', '=', user.id), ('reward_id', '=', reward.id if reward else 0),
+            ], order='date_claimed desc', limit=5)
+            step = settings['step'] or 1
+            leave.update({
+                'opt_in': sprofile.leave_opt_in,
+                'can_join': Profile._bf_is_player(user),
+                'progress': sprofile.leave_progress,
+                'step': settings['step'],
+                'percent': min(round(100.0 * sprofile.leave_progress / step, 1), 100),
+                'days_label': _days_label(settings['days_per_step']),
+                'max_per_year': settings['max_per_year'],
+                'claims': [{
+                    'id': c.id,
+                    'date': str(fq_days.local_date(user, c.date_claimed)),
+                    'days_label': _days_label(c.leave_days),
+                    'state': c.state,
+                    'state_label': CLAIM_STATES.get(c.state, c.state),
+                } for c in claims],
+            })
+        return {
+            'lists': lists,
+            'all_clear': not any(item['pending'] for item in lists),
+            'leave': leave,
         }
 
     @api.model
@@ -99,8 +173,8 @@ class GamificationDashboard(models.AbstractModel):
 
     @api.model
     def _get_leaderboard(self, limit=10):
-        profiles = self.env['bf.gamification.profile'].search(
-            [], order='total_xp desc', limit=limit)
+        Profile = self.env['bf.gamification.profile']
+        profiles = Profile.search(Profile._bf_player_domain(), order='total_xp desc', limit=limit)
         result = []
         for idx, p in enumerate(profiles):
             result.append({
@@ -146,8 +220,9 @@ class GamificationDashboard(models.AbstractModel):
     @api.model
     def _get_global_stats(self):
         Profile = self.env['bf.gamification.profile']
-        total_profiles = Profile.search_count([])
-        total_xp = sum(Profile.search([]).mapped('total_xp'))
+        players = Profile._bf_player_domain()
+        total_profiles = Profile.search_count(players)
+        total_xp = sum(Profile.search(players).mapped('total_xp'))
         total_badges = self.env['bf.gamification.user.badge'].search_count([])
         return {
             'total_players': total_profiles,

@@ -1,8 +1,6 @@
-import logging
-
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class ProjectDocument(models.Model):
@@ -30,7 +28,7 @@ class ProjectDocument(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
 
-        try:
+        with fq_savepoint.tolerated("XP document"):
             Profile = self.env['bf.gamification.profile']
             profile = Profile._get_or_create_profile(doc.create_uid)
             Rule = self.env['bf.gamification.xp.rule']
@@ -47,5 +45,3 @@ class ProjectDocument(models.Model):
                     desc % doc.name,
                     reference=doc,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP document", exc_info=True)

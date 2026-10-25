@@ -19,8 +19,12 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
   - [XP System](#xp-system)
   - [Levels](#levels)
   - [Badges](#badges)
-  - [Streaks](#streaks)
+  - [Streaks (constance)](#streaks-constance)
+  - [On time](#on-time)
+  - [Caught up](#caught-up)
   - [Rewards](#rewards)
+  - [Constance time off](#constance-time-off)
+  - [Known limits](#known-limits)
 - [Integrations](#integrations)
 - [User Interface](#user-interface)
   - [Dashboard](#dashboard)
@@ -46,7 +50,11 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 - **Badge system** — 15 default badges across 6 fox-themed categories with automatic, threshold, and manual conditions
 - **Reward store** — users redeem XP for perks, time off, or recognition
 - **Leaderboard** — real-time ranking by total XP with avatars and level titles
-- **Streak tracking** — consecutive days of activity with configurable reset threshold
+- **Streak tracking** — consecutive *working days* of activity, in each person's time zone; weekends, public holidays and declared absences pause it instead of breaking it
+- **On-time rewards** — meeting reports sent within 24 h, agendas sent 24 h ahead, activities and tasks done by their due date
+- **Caught-up fox** — when one of your work lists empties, a fox congratulates you (Odoo's rainbow-man effect, the one that ends a bank reconciliation)
+- **Constance time off** — optional, off by default: after a set number of working days of constance, a time-off request goes to a manager for approval; each employee chooses to take part
+- **Service accounts out of the game** — integration and portal accounts earn nothing and stay off the leaderboard
 - **Real-time popups** — animated achievement and level-up overlays via Odoo `bus.bus`
 - **Systray widget** — persistent XP, streak, and progress bar in the top navigation
 - **Full audit trail** — every XP gain and loss is recorded with source references
@@ -74,6 +82,13 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 | `bf_onboarding_base` | Shared onboarding-panel helpers (guided setup step) |
 | `bf_meeting` | Meeting record/agenda/decision XP integration |
 | `bf_email_management` | Email (`bf.email`) XP integration |
+
+Optional, through bridges that install themselves when both sides are present:
+
+| Bridge | With | Purpose |
+|---|---|---|
+| `bf_gamification_contact_absence` | `bf_contact_absence` | A declared absence changed afterwards (declared late, corrected, archived, removed) recomputes the streak |
+| `bf_gamification_hr_holidays` | `hr_holidays` | An approved constance time-off request becomes a time-off allocation |
 
 Odoo 18 Community Edition.
 
@@ -110,7 +125,7 @@ Navigate to **Settings > Fox Quest** (visible to Fox Quest managers).
 | Popups d'achievement | On | Show animated overlays on badge/level-up events |
 | Sons | On | Enable audio effects (reserved for future use) |
 | Confettis | On | Enable confetti visual effects |
-| Jours avant reset du streak | 2 | Days of inactivity before streak resets to 0 |
+| Jours ouvrables avant reset du streak | 2 | Working days without activity that break the streak (2 = one missed working day is tolerated) |
 
 All settings are stored as `ir.config_parameter` keys prefixed with `bf_gamification.*`.
 
@@ -204,15 +219,71 @@ Automatic and threshold badges are checked on every XP award and by a scheduled 
 
 **Popup effects** (configurable per badge): `confetti`, `fireworks`, `glow`, `shake`, or `none`.
 
-### Streaks
+### Streaks (constance)
 
-A streak counts consecutive days where a user earns XP. The streak increments when XP is awarded
-on a new day, provided the gap since the last activity is within the configured reset threshold
-(default: 2 days).
+A streak counts consecutive **working days** on which a person earns XP, in that person's own time
+zone. A working day is a day worked in the person's resource calendar (their employee record, else
+their company's, else Monday to Friday) that is neither a public holiday of that calendar, nor a time
+off on their resource (validated `hr_holidays` leaves land there), nor a declared absence on their
+contact (`bf_contact_absence`, when installed).
 
-A daily cron job resets streaks for users who have been inactive beyond the threshold.
+A non-working day pauses the streak: activity on a Saturday neither increases nor breaks it. The reset
+setting keeps its meaning: with the default of 2, one missed working day is tolerated. The
+"Streak quotidien" rule pays its XP once on each working day the streak continues.
+
+Only the person's own actions count: a day counts when it carries XP earned during the person's own
+request (a click, or a call made under their own account: a script or an assistant calling Odoo over
+XML-RPC as that person is a request like any other and counts as theirs), never from a scheduled job,
+a colleague or a service account acting on their work (a colleague closing their task, or a robot
+reviewing their meeting report, still credits them, but makes no day of constance), nor from a support
+session seeing Odoo as that person (`bf_impersonate`): the XP is still credited, but the support's
+actions make no day of constance. History from before 3.0 counts as such. The date of an XP entry
+is always the moment it is recorded: no context default can backdate it, and no context default
+fills what Fox Quest creates (XP entries, badges, requests, allocations) in the caller's place.
+
+The streak is derived from the XP history rather than incremented: it is recomputed on the first
+action of each day, by a daily cron job, and whenever a time off changes or (with the bridge
+`bf_gamification_contact_absence`) a declared absence is created, corrected, archived or deleted. An
+absence declared afterwards (sick on Monday and Tuesday, declared on Wednesday) or a time off
+validated late repairs the streak instead of leaving it broken. The daily job recomputes each person
+on their own: a failure on one never cancels the others.
 
 The streak counter is visible in the systray widget and on the dashboard.
+
+### On time
+
+| Rule | Condition |
+|---|---|
+| CR envoyé sous 24 h | Meeting report sent at most 24 h after the meeting ends |
+| OdJ envoyé 24 h avant | Agenda sent at least 24 h before the meeting starts |
+| Activité faite à l'échéance | Your own activity, planned the day before or earlier, done by its due day |
+| Tâche avant deadline | Task closed (folded stage or *done* state) by its deadline day |
+
+The XP of a sent report or agenda goes to the person who sends it, or to the organizer when a service
+account sends it. A task pays its completion XP once, even if reopened and closed again.
+
+### Caught up
+
+Five work lists, each in the person's own day:
+
+| List | Empty when |
+|---|---|
+| Activities | no activity of yours is overdue or due today |
+| Inbox | your `bf_email` inbox is empty (Inbox Zero) |
+| Tasks | none of your open tasks is past its deadline day |
+| Reports | every report of a *planned* meeting you organized (linked to a calendar event, ended within 30 days) is sent; unplanned calls do not count |
+| Agendas | every agenda of yours for a meeting in the next 48 hours is sent |
+
+When **your own action** removes an item from one of your lists and the list becomes empty, Fox Quest
+celebrates once per day and per list: a fox appears in Odoo's rainbow-man effect and a small XP bonus
+is recorded. When all five are empty at once, a bigger celebration, once a day. Nothing fires from a
+cron, a sorting rule or a service account acting on its own, nor from a support session seeing Odoo
+as you (`bf_impersonate`), nor from the mailbox engines run from your own click (« Synchroniser
+maintenant », re-applying rules). A call made under your own account (a script or an assistant over
+XML-RPC) is a request like any other: it counts as your action. For tasks, only closing an overdue
+task counts (not postponing it or leaving it); a task in a folded stage is closed. A celebration that
+fails never breaks the action that triggered it. The effect follows Fox Quest's popup setting and
+Odoo's "Show effects" setting (when effects are off, Odoo shows a plain notification).
 
 ### Rewards
 
@@ -237,13 +308,57 @@ With `bf_avatar` installed, `bf_avatar_gamification` adds six packs of
 decorative avatar parts as ordinary rewards, approved as soon as they are
 claimed.
 
+### Constance time off
+
+Off by default (**Settings > Fox Quest > Constance**). The company sets the step (working days of
+constance, default 60), the days granted per step (default 1) and a yearly cap (default 5). Odoo
+keeps no 0 in a setting: 0 or an empty field restores the default (so 0 does not mean "no cap"; to
+not limit, enter a large number).
+
+Each employee then chooses to take part from their dashboard, after reading what is counted. Nobody
+else can turn it on for them (not even a Fox Quest manager), nor can the support seeing Odoo as them
+(`bf_impersonate`: turning it on or off is refused under impersonation, as is approving or refusing a
+request). Colleagues cannot see who takes part or their progress; Fox Quest managers can, and so can
+the person who decides on the requests. From that day, each working day of constance counts towards
+the step; a broken streak starts the count again, and a repaired one (absence declared afterwards)
+gets it back. A step already reached is never counted twice. At the step, a "Journée de congé
+(constance)" request opens as *pending* with an activity for the person's manager (the manager on
+their employee record if they manage Fox Quest, else a Fox Quest manager, else an administrator other
+than the person; with nobody, the request waits and says so). Only the person and the approver follow
+the request; the request, its note and the approver's activity are signed by the system, not by
+whoever triggered the recount.
+
+**Nothing is granted without a person deciding**, and nobody approves their own request: once
+created, a request cannot change person, reward, number of days or approver (set by *Approve* only),
+approving or refusing reads its current state, and a constance request cannot be deleted. The
+constance reward sells no avatar parts (a manager cannot add any: they would approve every request
+without anyone deciding). Lowering the step opens one request per recount, never a burst.
+Withdrawing stops the count; requests already open stay for the manager to decide. Resetting all
+progress keeps constance time-off requests.
+
+With `hr_holidays` installed, the bridge `bf_gamification_hr_holidays` turns an approved request into
+a time-off allocation.
+
+### Known limits
+
+- A call made under your own account (a script or an assistant over XML-RPC) counts as your action:
+  it can count a day of constance and show the fox.
+- Any internal user can declare an absence (`bf_contact_absence`) on any contact, which pauses that
+  person's constance.
+- The fox ignores a do-not-disturb mode, as badges do.
+- Turning constance time off off and back on: the count kept going while it was off, so requests
+  open right away (one per recount, within the yearly cap).
+- Service accounts are excluded on upgrade for `__system__` and a short list of known integration
+  logins; any other service or integration account is ticked "Hors Fox Quest" by hand on the user.
+
 ---
 
 ## Integrations
 
-Fox Quest hooks into existing modules via model inheritance. All hooks are wrapped in
-try/except blocks with warning-level logging to never disrupt core business operations.
-A master `gamification_enabled` config parameter acts as a kill switch.
+Fox Quest hooks into existing modules via model inheritance. All hooks go through one helper
+(`fq_savepoint.tolerated`) that logs and swallows an error so as never to disrupt the business
+operation, except a database concurrency error (serialization, lock, deadlock), which goes up so that
+Odoo replays the request. A master `gamification_enabled` config parameter acts as a kill switch.
 
 ### Timesheets (`account.analytic.line`)
 
@@ -382,9 +497,10 @@ Fox Quest (root, sequence 65)
 
 | Model | User | Manager |
 |---|---|---|
-| Profile | Read all (leaderboard), write own | Full access |
-| XP Transaction | Read own | Full access |
-| Reward Claim | Read own, create | Full access |
+| Profile | Read all (leaderboard) | Full access (time-off participation and progress: Fox Quest only; no context default can set them) |
+| XP Transaction | Read own | All but the "À jour" entries of others; created entries are dated now and never "from a gesture"; person, date, source, amount and reference cannot be rewritten; nothing is deleted |
+| Reward Claim | Read own, create (always *pending*, whatever the caller's context says) | Full access (constance requests cannot be deleted, nor decided under impersonation) |
+| Caught-up day | Own only | Own only |
 
 ---
 
@@ -454,7 +570,7 @@ XP history (30 days), global stats, and available rewards.
 
 | Job | Interval | Method | Purpose |
 |---|---|---|---|
-| Fox Quest : mise a jour des streaks | Daily | `_cron_update_streaks()` | Reset streaks for inactive users |
+| Fox Quest : mise a jour des streaks | Daily | `_cron_update_streaks()` | Recompute streaks and time-off progress from the XP history |
 | Fox Quest : verification des badges | Every 6 hours | `_cron_check_badges()` | Evaluate automatic/threshold badges for all users |
 
 ---
@@ -477,6 +593,11 @@ bf_gamification/
 |   |-- gamification_xp_rule.py         # Configurable XP rules
 |   |-- gamification_reward.py          # Rewards + claims
 |   |-- gamification_dashboard.py       # Dashboard data (_auto=False)
+|   |-- gamification_constance.py       # Caught-up fox, constance time off
+|   |-- fq_days.py                      # The person's day and working days
+|   |-- fq_savepoint.py                 # Savepoint that never breaks the triggering action
+|   |-- res_users.py                    # "Hors Fox Quest" flag for service accounts
+|   |-- resource_calendar_leaves.py     # Holidays and time off recompute the streak
 |   |-- res_config_settings.py          # Settings section
 |   |-- account_analytic_line.py        # Timesheet XP hook
 |   |-- project_task.py                 # Task completion XP hook
@@ -501,7 +622,8 @@ bf_gamification/
 |   |-- gamification_xp_rule_views.xml  # Editable list
 |   |-- gamification_xp_transaction_views.xml
 |   |-- gamification_dashboard_views.xml
-|   +-- res_config_settings_views.xml
+|   |-- res_config_settings_views.xml
+|   +-- res_users_views.xml             # "Hors Fox Quest" on the user form
 |-- security/
 |   |-- gamification_security.xml       # Groups + record rules
 |   +-- ir.model.access.csv            # CRUD rights
@@ -510,13 +632,19 @@ bf_gamification/
 |   |-- gamification_badge_category_data.xml  # 6 categories
 |   |-- gamification_badge_data.xml     # 15 badges
 |   |-- gamification_xp_rule_data.xml   # 11 rules
+|   |-- gamification_constance_data.xml # On-time rules, caught-up and constance rewards
 |   +-- gamification_cron.xml          # 2 scheduled jobs
 |-- migrations/
-|   +-- 18.0.2.0.0/
-|       +-- post-migrate.py            # Fox theming + new sources + backfill
+|   |-- 18.0.2.0.0/
+|   |   +-- post-migrate.py            # Fox theming + new sources + backfill
+|   +-- 18.0.3.0.0/
+|       +-- post-migrate.py            # Service accounts out, streaks recomputed in working days
+|-- tests/                              # XP balance, reset, free colors, constance
 +-- static/
     |-- description/
     |   +-- icon.png                    # Module icon
+    |-- img/
+    |   +-- renard_a_jour.svg           # The caught-up fox
     +-- src/
         |-- js/
         |   |-- gamification_bus_service.js
@@ -538,6 +666,41 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v3.0.1 — Readable claim name
+
+- A reward claim is named after its reward and its person (for example "Journée de congé (constance) – Sam"). The activity email sent to the approver, the "Document" column of the activity and the reply-to address used to show the model's technical name. The activity summary no longer repeats the person's name.
+
+### v3.0.0 — Constance, on time, caught up
+
+- Streaks count working days in the person's time zone; weekends, public holidays and declared
+  absences pause them. They are derived from the XP history, so an absence or a time off recorded
+  afterwards repairs them; existing streaks are recomputed from history on upgrade.
+- The "Streak quotidien" rule now pays (no code read it). "Tâche avant deadline" now pays: it
+  compared a date to a datetime and failed silently. Tasks closed through the *done* state count too,
+  and a task pays once.
+- Service accounts ("Hors Fox Quest" on the user, set on upgrade for `__system__` and known
+  integration accounts) and portal users earn nothing and leave the leaderboard. Report and agenda XP
+  goes to the person who sends, not to whoever created the record.
+- New on-time rules, the caught-up fox, and constance time off (off by default, employee opt-in,
+  approval by a person). New bridges `bf_gamification_contact_absence` and
+  `bf_gamification_hr_holidays`.
+- Only the person's own action, in a request, counts: not a scheduled job, a colleague, a service
+  account, the mailbox engines (ingestion, rules, sync) or a support session seeing Odoo as them
+  (`bf_impersonate`), which also cannot take part in constance time off for them nor approve or refuse
+  a request.
+- The XP journal sets the date and the "from a gesture" flag itself; managers can no longer backdate,
+  rewrite or delete XP entries, nor read others' caught-up entries. Nothing Fox Quest creates takes
+  defaults from the caller's context (`default_*`): a claim is always *pending* and unapproved, a
+  profile never starts with time-off participation, a request is dated now and counted against the
+  yearly cap, a badge is dated now.
+- A constance request cannot be deleted, its approver cannot be rewritten, one opens per recount, and
+  the request, its note and the approver's activity are signed by the system. With no Fox Quest
+  manager, an administrator decides. The progress reset keeps constance time-off requests. The
+  constance reward takes no avatar parts.
+- Concurrency errors go up to be replayed instead of being swallowed; the daily streak job isolates
+  each person. The mailbox engine wrappers pass any signature through. Settings help no longer says
+  "0 = no cap" (0 restores the default). Dead code removed.
 
 ### v2.7.1
 

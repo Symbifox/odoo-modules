@@ -1,8 +1,6 @@
-import logging
-
 from odoo import models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class CorporateResolution(models.Model):
@@ -22,7 +20,7 @@ class CorporateResolution(models.Model):
         if not self.env['ir.config_parameter'].sudo().get_param(
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
-        try:
+        with fq_savepoint.tolerated("XP résolution"):
             user = rec.create_uid
             if not user:
                 return
@@ -40,5 +38,3 @@ class CorporateResolution(models.Model):
                     'Résolution adoptée : %s' % (rec.name or rec.sequence or ''),
                     reference=rec,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP résolution", exc_info=True)

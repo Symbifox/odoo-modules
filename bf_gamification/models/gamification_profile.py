@@ -1,13 +1,27 @@
 import logging
 from datetime import datetime, timedelta
 
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from psycopg2 import errors
+
+from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo.exceptions import AccessError, ValidationError
+from odoo.http import request
+from odoo.tools.misc import clean_context
 from odoo.tools.safe_eval import safe_eval
 
+from . import fq_days, fq_savepoint
 from .gamification_badge import ALLOWED_CONDITION_MODELS
 
 _logger = logging.getLogger(__name__)
+
+# Ce qui ne fait pas un jour de constance : ce n'est pas du travail
+# (badge, récompense), ou ça découle déjà de la constance ou d'un geste compté
+# ailleurs (la constance elle-même, la fête « à jour »).
+CONSTANCE_EXCLUDED_SOURCES = ('badge', 'reward', 'streak', 'caught_up')
+# Clé que `bf_impersonate` pose dans la session quand le support voit Symbifox
+# sous le compte d'une personne. Lue telle quelle : Fox Quest ne
+# dépend pas de ce module, et sans lui la clé n'existe jamais.
+IMPERSONATION_SESSION_KEY = 'bf_impersonate'
 
 
 class GamificationProfile(models.Model):
@@ -49,9 +63,54 @@ class GamificationProfile(models.Model):
     xp_this_week = fields.Integer(string="XP cette semaine", compute='_compute_xp_periods')
     xp_this_month = fields.Integer(string="XP ce mois", compute='_compute_xp_periods')
 
+    # Jours de congé de constance. La participation ne se pose que
+    # par la personne elle-même (`set_leave_opt_in` du tableau de bord), et
+    # ni elle ni sa progression ne se lisent par les collègues : le profil,
+    # lui, est lisible de tous (classement).
+    leave_opt_in = fields.Boolean(
+        string="Participe aux congés de constance", readonly=True,
+        groups='bf_gamification.group_gamification_manager')
+    leave_opt_in_date = fields.Datetime(
+        string="Participation activée le", readonly=True,
+        groups='bf_gamification.group_gamification_manager')
+    leave_opt_out_date = fields.Datetime(
+        string="Participation retirée le", readonly=True,
+        groups='bf_gamification.group_gamification_manager')
+    leave_progress = fields.Integer(
+        string="Jours ouvrables vers le prochain congé", readonly=True,
+        groups='bf_gamification.group_gamification_manager')
+    # La marche se recompte depuis l'historique ; le dernier palier atteint, lui,
+    # ne se recompte jamais : pas deux demandes pour le même palier.
+    leave_last_step_day = fields.Date(
+        string="Dernier palier atteint le", readonly=True,
+        groups='bf_gamification.group_gamification_manager')
+
     _sql_constraints = [
         ('user_unique', 'UNIQUE(user_id)', 'Un seul profil par utilisateur.'),
     ]
+
+    # `readonly` n'arrête que le formulaire : un gestionnaire Fox Quest, qui a
+    # le droit d'écrire les profils, posait par RPC la participation ou la
+    # marche d'un collègue. Seul le code de Fox Quest, en sudo, y touche.
+    def _bf_check_leave_fields(self, names):
+        if not self.env.su and any(name.startswith('leave_') for name in names):
+            raise AccessError(_("La participation aux congés de constance et sa progression "
+                                "ne se modifient pas à la main."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._bf_check_leave_fields(vals)
+        if not self.env.su:
+            # La garde ne lit que `vals` : un `default_leave_opt_in` du contexte de
+            # l'appelant posait la participation d'un collègue.
+            return super(GamificationProfile, self.with_context(
+                clean_context(self.env.context))).create(vals_list)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self._bf_check_leave_fields(vals)
+        return super().write(vals)
 
     @api.constrains('showcase_badge_ids')
     def _check_showcase_limit(self):
@@ -96,25 +155,92 @@ class GamificationProfile(models.Model):
             profile.badge_ids = badges
             profile.badge_count = len(badges)
 
+    @api.model
+    def _bf_player_domain(self):
+        """Les profils qui jouent : ni compte de service, ni portail."""
+        return [('user_id.share', '=', False),
+                ('user_id.bf_gamification_excluded', '=', False),
+                ('user_id', '!=', SUPERUSER_ID)]
+
+    @api.model
+    def _bf_is_player(self, user):
+        """Un humain de l'interne. Un message posté par le système au nom d'un
+        client portail lui faisait gagner niveaux et badges, et le
+        robot des rencontres était 2e au classement."""
+        user = user.sudo()
+        return (bool(user) and user.id != SUPERUSER_ID and user.active
+                and not user.share and not user.bf_gamification_excluded)
+
+    @api.model
+    def _bf_is_interactive(self):
+        """Le geste vient-il d'une personne, dans une requête ?
+
+        Les crons d'ingestion et de miroir IMAP tournent souvent sous le compte
+        d'une personne : se fier à `env.user` faisait sortir le renard plusieurs
+        fois par jour et comptait des jours de constance sans elle. Un cron, un
+        import ou un script lancé hors d'Odoo n'ont pas de requête (un appel
+        XML-RPC, d'un script ou d'un assistant, en a une : il compte comme le geste
+        de la personne dont il porte le compte). Une méthode, et non une clé de contexte : un appel RPC poserait
+        la clé lui-même pour se donner des points.
+
+        Sous usurpation (`bf_impersonate`, le support voit l'écran de la personne),
+        la requête et l'identité sont celles de la personne, mais le geste est
+        celui du support : il ne fait ni jour de constance ni renard.
+        """
+        return bool(request) and not self._bf_is_impersonated()
+
+    @api.model
+    def _bf_is_impersonated(self):
+        """La requête sert-elle une personne sous usurpation du support ?
+
+        On ne cherche que la marque de la session, sans comparer l'identité à la
+        charge : `bf_impersonate` retire lui-même une charge périmée avant que le
+        code métier ne s'exécute, et dans le doute on refuse plutôt que de laisser
+        passer le geste de quelqu'un d'autre.
+        """
+        try:
+            session = request.session if request else None
+        except RuntimeError:
+            return False
+        return bool(session is not None and session.get(IMPERSONATION_SESSION_KEY))
+
+    @api.model
+    def _bf_refuse_if_impersonated(self, message):
+        if self._bf_is_impersonated():
+            raise AccessError(message)
+
+    @api.model
+    def _bf_is_own_gesture(self, user):
+        """Le geste de la personne ELLE-MÊME, dans une requête.
+
+        Une requête ne suffit pas : le robot des rencontres (XML-RPC) qui fait
+        passer le CR d'une personne en « Révisé », un collègue qui ferme sa tâche ou
+        fait son activité agissent dans LEUR requête. Leur geste crédite encore
+        la personne, mais ne lui fait ni un jour de constance ni sortir son renard.
+        """
+        return bool(user) and self.env.uid == user.id and self._bf_is_interactive()
+
     def _compute_rank(self):
-        all_profiles = self.search([], order='total_xp desc')
+        all_profiles = self.search(self._bf_player_domain(), order='total_xp desc')
         rank_map = {p.id: idx + 1 for idx, p in enumerate(all_profiles)}
         for profile in self:
             profile.rank = rank_map.get(profile.id, 0)
 
     def _compute_xp_periods(self):
-        today = fields.Date.today()
-        week_start = today - timedelta(days=today.weekday())
-        month_start = today.replace(day=1)
         for profile in self:
+            # La semaine et le mois de la personne, pas ceux du serveur.
+            user = profile.user_id
+            today = fq_days.user_today(user) or fields.Date.today()
+            week_start = today - timedelta(days=today.weekday())
+            month_start = today.replace(day=1)
             week_txns = self.env['bf.gamification.xp.transaction'].search([
-                ('user_id', '=', profile.user_id.id),
-                ('date', '>=', fields.Datetime.to_datetime(week_start)),
+                ('user_id', '=', user.id),
+                ('date', '>=', fq_days.local_midnight_utc(user, week_start)),
             ])
             profile.xp_this_week = sum(week_txns.mapped('xp_amount'))
             month_txns = self.env['bf.gamification.xp.transaction'].search([
-                ('user_id', '=', profile.user_id.id),
-                ('date', '>=', fields.Datetime.to_datetime(month_start)),
+                ('user_id', '=', user.id),
+                ('date', '>=', fq_days.local_midnight_utc(user, month_start)),
             ])
             profile.xp_this_month = sum(month_txns.mapped('xp_amount'))
 
@@ -127,7 +253,28 @@ class GamificationProfile(models.Model):
         Profile = self.sudo()
         profile = Profile.search([('user_id', '=', user.id)], limit=1)
         if not profile:
-            profile = Profile.create({'user_id': user.id})
+            # À la première visite, la barre du haut et le tableau de bord
+            # créaient le profil en même temps : la seconde requête butait sur
+            # l'unicité, qu'Odoo ne rejoue pas, et l'usager voyait une erreur
+            # (vu en essai). En lecture répétable, ON CONFLICT lève à la
+            # place une erreur de sérialisation : Odoo rejoue la requête, qui
+            # trouve alors le profil créé par l'autre.
+            self.env.flush_all()
+            self.env.cr.execute("""
+                INSERT INTO bf_gamification_profile
+                       (user_id, current_streak, longest_streak,
+                        create_uid, create_date, write_uid, write_date)
+                VALUES (%s, 0, 0, %s, now() AT TIME ZONE 'UTC', %s, now() AT TIME ZONE 'UTC')
+                ON CONFLICT (user_id) DO NOTHING
+                RETURNING id
+            """, (user.id, self.env.uid, self.env.uid))
+            row = self.env.cr.fetchone()
+            if row:
+                profile = Profile.browse(row[0])
+                profile._compute_xp()
+                profile._compute_level()
+            else:
+                profile = Profile.search([('user_id', '=', user.id)], limit=1)
         return profile
 
     def _award_xp(self, amount, source, description, reference=None):
@@ -138,36 +285,25 @@ class GamificationProfile(models.Model):
         if not self.env['ir.config_parameter'].sudo().get_param(
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
+        if not self._bf_is_player(self.user_id):
+            return
 
         old_level = self.level_id
 
-        # Create XP transaction
-        vals = {
-            'user_id': self.user_id.id,
-            'xp_amount': amount,
-            'source': source,
-            'description': description,
-        }
-        if reference:
-            vals['reference'] = '%s,%s' % (reference._name, reference.id)
-        self.env['bf.gamification.xp.transaction'].sudo().create(vals)
+        # Date et « née d'un geste » posées par le journal, pas par le contexte
+        # de l'appelant ; seul le geste de la personne
+        # elle-même est « né d'un geste ».
+        txn = self.env['bf.gamification.xp.transaction']._bf_create_entry(
+            self.user_id, amount, source, description, reference=reference)
+
+        # La constance d'abord : elle peut verser l'XP du streak. Seul un geste
+        # de travail, dans une requête, fait un jour de constance.
+        if txn.from_request and amount > 0 and source not in CONSTANCE_EXCLUDED_SOURCES:
+            self._bf_mark_active_day()
 
         # Recompute XP and level
         self._compute_xp()
         self._compute_level()
-
-        # Update activity date and streak
-        today = fields.Date.today()
-        if self.last_activity_date != today:
-            streak_reset_days = int(self.env['ir.config_parameter'].sudo().get_param(
-                'bf_gamification.streak_reset_days', '2'))
-            if self.last_activity_date and (today - self.last_activity_date).days <= streak_reset_days:
-                self.current_streak += 1
-            else:
-                self.current_streak = 1
-            if self.current_streak > self.longest_streak:
-                self.longest_streak = self.current_streak
-            self.last_activity_date = today
 
         # Check for level-up
         new_level = self.level_id
@@ -243,7 +379,8 @@ class GamificationProfile(models.Model):
             elif (badge.condition_type == 'automatic' and badge.condition_model
                   and badge.condition_domain
                   and badge.condition_model in ALLOWED_CONDITION_MODELS):
-                try:
+                with fq_savepoint.tolerated("domaine du badge %s : %s" % (
+                        badge.name, badge.condition_domain)):
                     domain = safe_eval(
                         badge.condition_domain,
                         {"uid": self.user_id.id},
@@ -256,11 +393,6 @@ class GamificationProfile(models.Model):
                     count = self.env[badge.condition_model].sudo().search_count(domain)
                     if count >= (badge.condition_threshold or 1):
                         awarded = True
-                except Exception:
-                    _logger.warning(
-                        "Badge %s: invalid condition_domain in profile check: %s",
-                        badge.name, badge.condition_domain,
-                    )
 
             if awarded:
                 self._grant_badge(badge)
@@ -276,7 +408,9 @@ class GamificationProfile(models.Model):
             if existing:
                 return existing
 
-        user_badge = UserBadge.sudo().create({
+        # Sans contexte de l'appelant : un `default_date_earned` passé par RPC à un
+        # geste antidatait le badge.
+        user_badge = UserBadge.sudo().with_context(clean_context(self.env.context)).create({
             'user_id': self.user_id.id,
             'badge_id': badge.id,
             'granted_by': granted_by.id if granted_by else False,
@@ -285,13 +419,9 @@ class GamificationProfile(models.Model):
 
         # Award XP for the badge
         if badge.xp_reward:
-            self.env['bf.gamification.xp.transaction'].sudo().create({
-                'user_id': self.user_id.id,
-                'xp_amount': badge.xp_reward,
-                'source': 'badge',
-                'description': 'Badge obtenu : %s' % badge.name,
-                'reference': 'bf.gamification.badge,%s' % badge.id,
-            })
+            self.env['bf.gamification.xp.transaction']._bf_create_entry(
+                self.user_id, badge.xp_reward, 'badge', 'Badge obtenu : %s' % badge.name,
+                reference=badge)
             self._compute_xp()
             self._compute_level()
 
@@ -302,22 +432,152 @@ class GamificationProfile(models.Model):
 
     @api.model
     def _cron_update_streaks(self):
-        """Cron job to reset streaks for inactive users."""
-        streak_reset_days = int(self.env['ir.config_parameter'].sudo().get_param(
-            'bf_gamification.streak_reset_days', '2'))
-        cutoff = fields.Date.today() - timedelta(days=streak_reset_days)
-        profiles = self.search([
-            ('current_streak', '>', 0),
-            ('last_activity_date', '<', cutoff),
-        ])
-        profiles.write({'current_streak': 0})
+        """Refait chaque jour la constance depuis l'historique.
+
+        Avant la 18.0.3.0.0, le seuil se lisait en jours de calendrier : toute fin de
+        semaine de congé cassait le streak. On ne compte plus que les jours
+        ouvrables de la personne, et seulement ceux qui sont finis chez elle.
+        Refaite et non plus remise à zéro : une absence déclarée après coup
+        répare ce qu'une nuit avait cassé.
+        """
+        profiles = self.search(self._bf_player_domain()) | self.search([('current_streak', '>', 0)])
+        for profile in profiles:
+            # Chaque profil à part, conflits de concurrence compris : rien ne
+            # rejoue un cron, et un profil en conflit n'annule pas les autres
+            #.
+            with fq_savepoint.isolated(self.env, "constance de %s" % profile.user_id.login,
+                                       replay=False):
+                profile._bf_recompute_constance()
 
     @api.model
     def _cron_check_badges(self):
         """Cron job to check and award automatic badges for all users."""
-        profiles = self.search([])
+        profiles = self.search(self._bf_player_domain())
         for profile in profiles:
             profile._check_automatic_badges()
+
+    # ------------------------------------------------------------------
+    # Constance en jours ouvrables
+    # ------------------------------------------------------------------
+
+    def _bf_streak_tolerance(self):
+        """Jours ouvrables manqués tolérés. La clé garde son sens d'avant :
+        2 = un jour manqué ne casse pas la constance."""
+        try:
+            days = int(self.env['ir.config_parameter'].sudo().get_param(
+                'bf_gamification.streak_reset_days', '2'))
+        except ValueError:
+            days = 2
+        return max(days - 1, 0)
+
+    def _bf_mark_active_day(self):
+        """Le premier geste du jour refait la constance depuis l'historique.
+
+        Un jour non ouvrable (fin de semaine, férié, absence déclarée) ne monte
+        ni ne casse le compteur, et ne devient pas la « dernière activité » :
+        travailler le samedi ne rapporte pas de constance.
+        """
+        self.ensure_one()
+        user = self.user_id
+        today = fq_days.user_today(user)
+        last = self.last_activity_date
+        if last and last >= today:
+            return
+        if not fq_days.is_working_day(self.env, user, today):
+            return
+        # Le geste qui verse l'XP (poster un message, fermer une tâche) passe
+        # même si la constance échoue (comme la fête « à jour »).
+        with fq_savepoint.isolated(self.env, "constance de %s" % user.login):
+            self._bf_recompute_constance()
+            if self.last_activity_date == today and self.current_streak > 1:
+                self._bf_pay_streak_rule()
+
+    def _bf_pay_streak_rule(self):
+        """« Streak quotidien » : une fois par jour ouvrable où la constance continue."""
+        self.ensure_one()
+        user = self.user_id
+        rule = self.env['bf.gamification.xp.rule'].search([
+            ('source', '=', 'streak'), ('trigger', '=', 'daily'),
+            ('active', '=', True)], limit=1)
+        if not rule or not rule.xp_amount:
+            return
+        # Une fois par jour : `_bf_mark_active_day` ne revient qu'au premier
+        # geste d'un jour encore non compté.
+        self.env['bf.gamification.xp.transaction']._bf_create_entry(
+            user, rule.xp_amount, 'streak',
+            'Constance : %d jours ouvrables' % self.current_streak)
+
+    def _bf_active_days(self):
+        """Les jours de la personne qui portent de l'XP de travail né d'un geste.
+
+        En SQL, dans le fuseau de la personne : une année d'historique, c'est
+        quelques milliers de transactions, mais au plus 365 jours.
+        """
+        self.ensure_one()
+        user = self.user_id
+        self.env['bf.gamification.xp.transaction'].flush_model(
+            ['user_id', 'xp_amount', 'source', 'date', 'from_request'])
+        where = """
+              FROM bf_gamification_xp_transaction
+             WHERE user_id = %s AND xp_amount > 0 AND from_request IS TRUE
+               AND date IS NOT NULL AND source NOT IN %s
+        """
+        params = (user.id, CONSTANCE_EXCLUDED_SOURCES)
+        try:
+            with self.env.cr.savepoint(flush=False):
+                self.env.cr.execute(
+                    "SELECT DISTINCT (date AT TIME ZONE 'UTC' AT TIME ZONE %s)::date AS day"
+                    + where + " ORDER BY day", (fq_days.user_tz(user).zone,) + params,
+                    log_exceptions=False)
+                return [row[0] for row in self.env.cr.fetchall()]
+        except errors.InvalidParameterValue:
+            # Un fuseau que pytz connaît et Postgres pas (sa base de fuseaux est
+            # la sienne) : on convertit ici, plus lentement, sans faire échouer
+            # le geste ni la migration.
+            self.env.cr.execute("SELECT DISTINCT date" + where, params)
+            return sorted({fq_days.local_date(user, row[0]) for row in self.env.cr.fetchall()})
+
+    def _bf_recompute_constance(self):
+        """Refait constance et marche vers le congé depuis l'historique, en jours ouvrables.
+
+        Dérivées, et non plus incrémentées : une absence déclarée après
+        coup (malade lundi et mardi, déclaré mercredi) ou un congé validé en
+        retard répare la constance et la marche, au lieu de les laisser cassées
+        par le premier XP du mercredi. Refaite au premier geste du jour, par le
+        cron, et quand une absence ou un congé change. Sert aussi à la migration
+        vers 18.0.3.0.0 : le streak d'avant comptait des jours de calendrier.
+        """
+        for profile in self.sudo():
+            user = profile.user_id
+            today = fq_days.user_today(user)
+            days = [day for day in profile._bf_active_days() if day <= today]
+            run, longest, last = [], 0, False
+            if days:
+                off = fq_days.non_working_days(self.env, user, days[0], today)
+                tolerance = profile._bf_streak_tolerance()
+
+                def missed(first, then):
+                    return sum(1 for n in range(1, (then - first).days)
+                               if first + timedelta(days=n) not in off)
+
+                for day in days:
+                    if day in off:
+                        continue
+                    if last and missed(last, day) <= tolerance:
+                        run.append(day)
+                    else:
+                        run = [day]
+                    longest = max(longest, len(run))
+                    last = day
+                if last and last < today and missed(last, today) > tolerance:
+                    run = []
+            vals = {'current_streak': len(run), 'longest_streak': longest,
+                    'last_activity_date': last}
+            changed = {name: value for name, value in vals.items() if profile[name] != value}
+            if changed:
+                profile.write(changed)
+            if self._bf_is_player(user):
+                profile._bf_leave_sync(run)
 
     @api.model
     def _backfill_recent_xp(self, hours=96):
@@ -331,6 +591,12 @@ class GamificationProfile(models.Model):
         cutoff_str = cutoff.strftime('%Y-%m-%d %H:%M:%S')
         Txn = self.env['bf.gamification.xp.transaction'].sudo()
         Rule = self.env['bf.gamification.xp.rule']
+
+        def credit(user, amount, source, description, ref, when):
+            # Daté du travail rattrapé, et jamais « né d'un geste » : posé à
+            # l'installation, il ne fait pas de jour de constance.
+            Txn._bf_create_entry(user, amount, source, description, reference=ref,
+                                 date=when, from_request=False)
 
         # Pre-load existing references for fast dedup
         existing_refs = set(Txn.search([
@@ -360,14 +626,9 @@ class GamificationProfile(models.Model):
                     continue
                 xp = int(line.unit_amount * hourly_rule.xp_amount)
                 if xp > 0:
-                    Txn.create({
-                        'user_id': user.id,
-                        'xp_amount': xp,
-                        'source': 'timesheet',
-                        'description': '%.1fh feuille de temps (r\u00e9troactif)' % line.unit_amount,
-                        'reference': ref,
-                        'date': line.create_date,
-                    })
+                    credit(user, xp, 'timesheet',
+                           '%.1fh feuille de temps (r\u00e9troactif)' % line.unit_amount,
+                           ref, line.create_date)
                     created += 1
 
         # --- Tasks completed ---
@@ -387,14 +648,9 @@ class GamificationProfile(models.Model):
                 ref = 'project.task,%s' % task.id
                 if _has_txn(ref):
                     continue
-                Txn.create({
-                    'user_id': user.id,
-                    'xp_amount': task_rule.xp_amount,
-                    'source': 'task',
-                    'description': 'T\u00e2che compl\u00e9t\u00e9e : %s (r\u00e9troactif)' % task.name,
-                    'reference': ref,
-                    'date': task.write_date,
-                })
+                credit(user, task_rule.xp_amount, 'task',
+                       'T\u00e2che compl\u00e9t\u00e9e : %s (r\u00e9troactif)' % task.name,
+                       ref, task.write_date)
                 created += 1
 
         # --- Documents created ---
@@ -410,14 +666,9 @@ class GamificationProfile(models.Model):
                 ref = 'project.document,%s' % doc.id
                 if _has_txn(ref):
                     continue
-                Txn.create({
-                    'user_id': doc.create_uid.id,
-                    'xp_amount': doc_rule.xp_amount,
-                    'source': 'document',
-                    'description': 'Document cr\u00e9\u00e9 : %s (r\u00e9troactif)' % doc.name,
-                    'reference': ref,
-                    'date': doc.create_date,
-                })
+                credit(doc.create_uid, doc_rule.xp_amount, 'document',
+                       'Document cr\u00e9\u00e9 : %s (r\u00e9troactif)' % doc.name,
+                       ref, doc.create_date)
                 created += 1
 
         # --- Messages posted ---
@@ -442,14 +693,8 @@ class GamificationProfile(models.Model):
                 ref = 'mail.message,%s' % msg.id
                 if _has_txn(ref):
                     continue
-                Txn.create({
-                    'user_id': user.id,
-                    'xp_amount': msg_rule.xp_amount,
-                    'source': 'message',
-                    'description': 'Message post\u00e9 (r\u00e9troactif)',
-                    'reference': ref,
-                    'date': msg.create_date,
-                })
+                credit(user, msg_rule.xp_amount, 'message',
+                       'Message post\u00e9 (r\u00e9troactif)', ref, msg.create_date)
                 created += 1
 
         # --- Helpdesk tickets resolved ---
@@ -458,7 +703,7 @@ class GamificationProfile(models.Model):
             ('active', '=', True),
         ], limit=1)
         if ticket_rule:
-            try:
+            with fq_savepoint.tolerated("rattrapage des tickets"):
                 tickets = self.env['helpdesk.ticket'].search([
                     ('write_date', '>=', cutoff_str),
                     ('stage_id.fold', '=', True),
@@ -470,17 +715,10 @@ class GamificationProfile(models.Model):
                     ref = 'helpdesk.ticket,%s' % ticket.id
                     if _has_txn(ref):
                         continue
-                    Txn.create({
-                        'user_id': user.id,
-                        'xp_amount': ticket_rule.xp_amount,
-                        'source': 'helpdesk',
-                        'description': 'Ticket r\u00e9solu : %s (r\u00e9troactif)' % ticket.name,
-                        'reference': ref,
-                        'date': ticket.write_date,
-                    })
+                    credit(user, ticket_rule.xp_amount, 'helpdesk',
+                           'Ticket r\u00e9solu : %s (r\u00e9troactif)' % ticket.name,
+                           ref, ticket.write_date)
                     created += 1
-            except Exception:
-                _logger.warning("Fox Quest: helpdesk backfill skipped", exc_info=True)
 
         # --- Recompute profiles ---
         if created:

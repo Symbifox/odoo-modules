@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cocher les comptes de service (robot des rencontres, assistant...). -->
+    <record id="view_users_form_bf_gamification" model="ir.ui.view">
+        <field name="name">res.users.form.bf.gamification</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="inside">
+                <group string="Fox Quest" name="bf_gamification">
+                    <field name="bf_gamification_excluded"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -76,7 +76,7 @@
         <field name="name">Classement</field>
         <field name="res_model">bf.gamification.profile</field>
         <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
+        <field name="domain">[('user_id.share', '=', False), ('user_id.bf_gamification_excluded', '=', False), ('user_id', '!=', 1)]</field>
         <field name="context">{'create': False}</field>
     </record>
 </odoo>

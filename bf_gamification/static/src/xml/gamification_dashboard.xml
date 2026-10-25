@@ -124,7 +124,7 @@
                                 <div class="card-body">
                                     <i class="fa fa-fire fa-2x text-danger mb-2"/>
                                     <h4 t-esc="state.data.profile.current_streak"/>
-                                    <small class="text-muted">Streak actuel</small>
+                                    <small class="text-muted">Constance (jours ouvrables)</small>
                                 </div>
                             </div>
                         </div>
@@ -152,6 +152,78 @@
                                     <i class="fa fa-calendar fa-2x text-info mb-2"/>
                                     <h4 t-esc="state.data.profile.xp_this_month"/>
                                     <small class="text-muted">XP ce mois</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- À jour et congés de constance -->
+                    <div class="row mb-4 g-3" t-if="state.data.constance">
+                        <div t-attf-class="{{ state.data.constance.leave.enabled ? 'col-md-6' : 'col-md-12' }}">
+                            <div class="card shadow-sm h-100 bf-fq-caught-up">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-check-circle-o me-2"/>&#192; jour aujourd'hui</h5>
+                                    <span t-if="state.data.constance.all_clear" class="badge text-bg-success">Tout est &#224; jour</span>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <t t-foreach="state.data.constance.lists" t-as="item" t-key="item.kind">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span><i t-attf-class="fa {{ item.icon }} me-2 text-muted"/><t t-esc="item.label"/></span>
+                                            <span t-if="!item.pending" class="text-success"><i class="fa fa-check me-1"/>&#192; jour</span>
+                                            <span t-else="" class="badge text-bg-warning" t-esc="item.pending"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6" t-if="state.data.constance.leave.enabled">
+                            <t t-set="leave" t-value="state.data.constance.leave"/>
+                            <div class="card shadow-sm h-100 bf-fq-leave">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fa fa-sun-o me-2"/>Cong&#233;s de constance</h5>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="!leave.opt_in">
+                                        <p class="mb-2">
+                                            Votre soci&#233;t&#233; offre <strong t-esc="leave.days_label"/> de cong&#233;
+                                            apr&#232;s <strong t-esc="leave.step"/> jours ouvrables de constance.
+                                        </p>
+                                        <ul class="small text-muted mb-3">
+                                            <li>Un jour compte quand vous faites, un jour ouvrable de votre calendrier, au moins une action qui rapporte de l'XP (poster un message, fermer une t&#226;che, faire une activit&#233;, saisir du temps...). Ce qu'un coll&#232;gue ou un robot fait sur votre travail ne compte pas.</li>
+                                            <li>Fins de semaine, f&#233;ri&#233;s et absences d&#233;clar&#233;es mettent le compteur en pause : ils ne le cassent pas.</li>
+                                            <li>Au palier, une demande part &#224; un gestionnaire, qui l'approuve ou la refuse. Rien n'est accord&#233; sans lui.</li>
+                                            <li>Vos coll&#232;gues ne voient ni votre participation ni votre progression. Les gestionnaires Fox Quest les voient, et la personne qui d&#233;cide de vos demandes voit chaque demande.</li>
+                                            <li>Vous pouvez retirer votre participation en tout temps : le compteur s'arr&#234;te.</li>
+                                        </ul>
+                                        <button t-if="leave.can_join" class="btn btn-primary" t-on-click="() => this.setLeaveOptIn(true)">
+                                            Participer
+                                        </button>
+                                        <p t-else="" class="small text-muted mb-0">Ce compte ne participe pas &#224; Fox Quest.</p>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span>Vers le prochain cong&#233;</span>
+                                            <span><t t-esc="leave.progress"/> / <t t-esc="leave.step"/> jours ouvrables</span>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 10px;">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                 t-attf-style="width: {{ leave.percent }}%"/>
+                                        </div>
+                                        <t t-if="leave.claims.length">
+                                            <div class="small fw-bold mb-1">Vos demandes</div>
+                                            <ul class="list-unstyled small mb-3">
+                                                <t t-foreach="leave.claims" t-as="claim" t-key="claim.id">
+                                                    <li>
+                                                        <t t-esc="claim.date"/> : <t t-esc="claim.days_label"/>,
+                                                        <span t-attf-class="{{ claim.state === 'refused' ? 'text-danger' : (claim.state === 'pending' ? 'text-warning' : 'text-success') }}" t-esc="claim.state_label"/>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <button class="btn btn-link btn-sm px-0 text-muted" t-on-click="() => this.setLeaveOptIn(false)">
+                                            Retirer ma participation
+                                        </button>
+                                    </t>
                                 </div>
                             </div>
                         </div>

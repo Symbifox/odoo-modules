@@ -4,9 +4,9 @@ import { registry } from "@web/core/registry";
 import { reactive } from "@odoo/owl";
 
 export const gamificationBusService = {
-    dependencies: ["bus_service", "notification"],
+    dependencies: ["bus_service", "notification", "effect"],
 
-    start(env, { bus_service, notification }) {
+    start(env, { bus_service, notification, effect }) {
         const state = reactive({
             pendingBadge: null,
             pendingLevelUp: null,
@@ -26,6 +26,18 @@ export const gamificationBusService = {
                 `Niveau supérieur ! ${payload.new_level.title}`,
                 { type: "success", sticky: false }
             );
+        });
+
+        // Une liste de travail vient de se vider. L'effet « rainbow man »
+        // du cœur, celui de la fin d'un rapprochement bancaire, avec un renard.
+        // Si l'usager a coupé les effets d'Odoo, le cœur en fait une notification.
+        bus_service.subscribe("bf_gamification/caught_up", (payload) => {
+            effect.add({
+                type: "rainbow_man",
+                message: payload.message,
+                img_url: payload.img_url,
+                fadeout: payload.big ? "slow" : "medium",
+            });
         });
 
         bus_service.subscribe("bf_gamification/xp_gained", (payload) => {

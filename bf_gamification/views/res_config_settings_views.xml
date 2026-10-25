@@ -38,17 +38,36 @@
                             <field name="gamification_confetti_enabled"/>
                         </setting>
                     </block>
-                    <block title="Streaks">
+                    <block title="Constance">
                         <setting id="gamification_streak"
                                  string="R&#233;initialisation du streak"
-                                 help="Nombre de jours d'inactivit&#233; avant r&#233;initialisation">
+                                 help="Jours ouvrables sans activit&#233; qui cassent la constance (2 = un jour manqu&#233; est tol&#233;r&#233;). Fins de semaine, f&#233;ri&#233;s et absences d&#233;clar&#233;es ne comptent pas.">
                             <field name="gamification_streak_reset_days"/>
+                        </setting>
+                        <setting id="gamification_leave"
+                                 string="Jours de cong&#233; de constance"
+                                 help="Chaque employ&#233; qui choisit d'y participer re&#231;oit une demande de cong&#233; quand il atteint le palier ; un gestionnaire l'approuve ou la refuse. Aucun jour n'est accord&#233; sans approbation.">
+                            <field name="gamification_leave_enabled"/>
+                            <div class="mt-2" invisible="not gamification_leave_enabled">
+                                <div class="row">
+                                    <label for="gamification_leave_streak_days" class="col-lg-7 o_light_label"/>
+                                    <field name="gamification_leave_streak_days" class="col-lg-3"/>
+                                </div>
+                                <div class="row">
+                                    <label for="gamification_leave_days_per_step" class="col-lg-7 o_light_label"/>
+                                    <field name="gamification_leave_days_per_step" class="col-lg-3"/>
+                                </div>
+                                <div class="row">
+                                    <label for="gamification_leave_max_per_year" class="col-lg-7 o_light_label"/>
+                                    <field name="gamification_leave_max_per_year" class="col-lg-3"/>
+                                </div>
+                            </div>
                         </setting>
                     </block>
                     <block title="Maintenance">
                         <setting id="gamification_reset"
                                  string="R&#233;initialiser la progression"
-                                 help="Supprimer toutes les donn&#233;es XP, badges, streaks et r&#233;clamations pour tous les utilisateurs. Cette action est irr&#233;versible.">
+                                 help="Supprimer toutes les donn&#233;es XP, badges, streaks et r&#233;clamations pour tous les utilisateurs. Les demandes de cong&#233; de constance sont gard&#233;es. Cette action est irr&#233;versible.">
                             <button name="action_reset_all_progress"
                                     type="object"
                                     string="R&#233;initialiser toute la progression"

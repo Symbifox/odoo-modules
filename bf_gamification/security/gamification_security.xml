@@ -65,10 +65,13 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
+        <!-- Sauf les journées « à jour » d'une personne, qu'elle
+             seule lit (comme bf.gamification.caught.up). Règle `noupdate` : la
+             migration vers 18.0.3.0.0 pose ce domaine sur une base existante. -->
         <record id="rule_xp_transaction_manager" model="ir.rule">
-            <field name="name">XP Transaction: gestionnaire voit tout</field>
+            <field name="name">XP Transaction: gestionnaire voit tout (sauf « à jour »)</field>
             <field name="model_id" ref="model_bf_gamification_xp_transaction"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[('source', '!=', 'caught_up')]</field>
             <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
         </record>
 
@@ -83,11 +86,27 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
+        <record id="rule_caught_up_user" model="ir.rule">
+            <field name="name">Journée à jour : les siennes</field>
+            <field name="model_id" ref="model_bf_gamification_caught_up"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+        </record>
+        <!-- Les journées « à jour » d'une personne ne se lisent que par elle,
+             pas par les gestionnaires (la règle d'avant est retirée à la migration). -->
         <record id="rule_reward_claim_manager" model="ir.rule">
             <field name="name">Réclamation: gestionnaire voit tout</field>
             <field name="model_id" ref="model_bf_gamification_reward_claim"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
+        </record>
+        <!-- Sans gestionnaire Fox Quest, un administrateur tranche
+             les demandes de congé de constance. -->
+        <record id="rule_reward_claim_system" model="ir.rule">
+            <field name="name">Réclamation : administrateur voit tout</field>
+            <field name="model_id" ref="model_bf_gamification_reward_claim"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
         </record>
     </data>
 </odoo>

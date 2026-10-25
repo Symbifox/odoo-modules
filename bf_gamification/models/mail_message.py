@@ -1,8 +1,6 @@
-import logging
-
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class MailMessage(models.Model):
@@ -22,7 +20,7 @@ class MailMessage(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
 
-        try:
+        with fq_savepoint.tolerated("XP message"):
             user = self.env['res.users'].sudo().search([
                 ('partner_id', '=', msg.author_id.id),
                 ('active', '=', True),
@@ -49,5 +47,3 @@ class MailMessage(models.Model):
                     desc,
                     reference=msg,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP message", exc_info=True)

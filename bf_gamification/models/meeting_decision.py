@@ -1,8 +1,6 @@
-import logging
-
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class MeetingDecision(models.Model):
@@ -19,7 +17,7 @@ class MeetingDecision(models.Model):
         if not self.env['ir.config_parameter'].sudo().get_param(
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
-        try:
+        with fq_savepoint.tolerated("XP décision"):
             user = rec.create_uid
             if not user:
                 return
@@ -37,5 +35,3 @@ class MeetingDecision(models.Model):
                     'Décision documentée : %s' % (rec.name or ''),
                     reference=rec,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP décision", exc_info=True)

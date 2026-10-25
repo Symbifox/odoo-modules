@@ -1,8 +1,7 @@
-import logging
+from odoo import api, models
 
-from odoo import models
-
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
+from .gamification_constance import NO_CELEBRATION
 
 
 class BfEmail(models.Model):
@@ -10,6 +9,10 @@ class BfEmail(models.Model):
 
     def write(self, vals):
         old_statuses = {rec.id: rec.status for rec in self}
+        # Inbox Zero : la boîte se vide par `is_handled`, pas par le
+        # statut. Ne compte que le geste de la personne sur SA boîte.
+        handling = bool(vals.get('is_handled')) and bool(
+            self.filtered(lambda r: r.user_id == self.env.user and not r.is_handled))
         res = super().write(vals)
         if 'status' in vals:
             for rec in self:
@@ -23,13 +26,15 @@ class BfEmail(models.Model):
                 elif new == 'archived':
                     self._award_email_xp(rec, trigger='write',
                                          description='Courriel archivé : %s' % (rec.subject or ''))
+        if handling:
+            self.env['bf.gamification.profile']._bf_caught_up_check(self.env.user, 'inbox')
         return res
 
     def _award_email_xp(self, rec, trigger, description):
         if not self.env['ir.config_parameter'].sudo().get_param(
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
-        try:
+        with fq_savepoint.tolerated("XP courriel"):
             user = rec.user_id or rec.create_uid
             if not user:
                 return
@@ -45,5 +50,33 @@ class BfEmail(models.Model):
                 profile._award_xp(
                     rule.xp_amount, 'email_triage', description, reference=rec,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP courriel", exc_info=True)
+
+    # ------------------------------------------------------------------
+    # Les moteurs de la boîte ne font pas sortir le renard
+    # ------------------------------------------------------------------
+    # « Synchroniser maintenant » et « Réappliquer les règles » tournent dans la
+    # requête de la personne : une règle qui traite un courriel y passait pour
+    # son geste, et le renard « Inbox Zero » sortait pour un tri automatique.
+    # Ingestion, règles et synchronisation posent la marque qui coupe la fête.
+
+    def _bf_fq_engine(self):
+        return self.with_context(**{NO_CELEBRATION: True})
+
+    # Les enveloppes laissent passer tous les arguments : `bf_email_management`
+    # change la signature de ces moteurs sans cesse, et une enveloppe aux
+    # paramètres figés cassait la synchronisation de la boîte au premier ajout
+    #.
+    def _apply_rules(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._apply_rules(*args, **kwargs)
+
+    @api.model
+    def _sync_account(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._sync_account(*args, **kwargs)
+
+    @api.model
+    def _cron_sync_emails(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._cron_sync_emails(*args, **kwargs)
+
+    @api.model
+    def _ingest_rfc822(self, *args, **kwargs):
+        return super(BfEmail, self._bf_fq_engine())._ingest_rfc822(*args, **kwargs)

@@ -1,8 +1,8 @@
-import logging
+from datetime import timedelta
 
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
+from . import fq_days, fq_savepoint
 
 
 class AccountAnalyticLine(models.Model):
@@ -22,7 +22,7 @@ class AccountAnalyticLine(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
 
-        try:
+        with fq_savepoint.tolerated("XP feuille de temps"):
             Profile = self.env['bf.gamification.profile']
             profile = Profile._get_or_create_profile(line.user_id or line.create_uid)
 
@@ -49,26 +49,25 @@ class AccountAnalyticLine(models.Model):
                 ('active', '=', True),
             ], limit=1)
             if daily_rule and daily_rule.min_value > 0:
-                from datetime import date
-                today = date.today()
+                # Le jour de la personne, pas celui du serveur.
+                worker = line.user_id or line.create_uid
+                today = fq_days.user_today(worker)
                 daily_hours = sum(self.search([
-                    ('user_id', '=', (line.user_id or line.create_uid).id),
+                    ('user_id', '=', worker.id),
                     ('date', '=', today),
                     ('project_id', '!=', False),
                 ]).mapped('unit_amount'))
                 if daily_hours >= daily_rule.min_value:
                     # Check if bonus already given today
                     existing = self.env['bf.gamification.xp.transaction'].search([
-                        ('user_id', '=', (line.user_id or line.create_uid).id),
+                        ('user_id', '=', worker.id),
                         ('source', '=', 'timesheet'),
                         ('description', 'like', 'Journée productive'),
-                        ('date', '>=', str(today) + ' 00:00:00'),
-                        ('date', '<=', str(today) + ' 23:59:59'),
+                        ('date', '>=', fq_days.local_midnight_utc(worker, today)),
+                        ('date', '<', fq_days.local_midnight_utc(worker, today + timedelta(days=1))),
                     ], limit=1)
                     if not existing:
                         profile._award_xp(
                             daily_rule.xp_amount, 'timesheet',
                             'Journée productive (%.1fh)' % daily_hours,
                         )
-        except Exception:
-            _logger.warning("Fox Quest: erreur lors de l'attribution XP timesheet", exc_info=True)

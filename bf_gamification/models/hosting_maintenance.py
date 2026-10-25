@@ -1,8 +1,6 @@
-import logging
-
 from odoo import api, models
 
-_logger = logging.getLogger(__name__)
+from . import fq_savepoint
 
 
 class HostingMaintenanceSchedule(models.Model):
@@ -21,7 +19,7 @@ class HostingMaintenanceSchedule(models.Model):
                 'bf_gamification.gamification_enabled', 'True') == 'True':
             return
 
-        try:
+        with fq_savepoint.tolerated("XP maintenance"):
             Profile = self.env['bf.gamification.profile']
             profile = Profile._get_or_create_profile(self.env.user)
             Rule = self.env['bf.gamification.xp.rule']
@@ -36,5 +34,3 @@ class HostingMaintenanceSchedule(models.Model):
                     rule.xp_amount, 'hosting',
                     'Maintenance complétée : %s' % schedule.display_name,
                 )
-        except Exception:
-            _logger.warning("Fox Quest: erreur XP maintenance", exc_info=True)
