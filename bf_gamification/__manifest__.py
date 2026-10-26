@@ -41,7 +41,10 @@
     #   themselves when the person clicks "Synchroniser maintenant". The top-bar call is two to
     #   three times lighter (badge progress without recounting earned badges, the week's XP as
     #   a sum). The switches in Settings can now be turned off.
-    "version": "18.0.3.1.0",
+    # 18.0.3.1.1: a profile, an earned badge, an XP transaction and a person's daily challenge
+    #   read by what they are. The "My profile" title and the showcase pills used to show
+    #   "model,id"; they now show the person's name and the badge's name.
+    "version": "18.0.3.1.1",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

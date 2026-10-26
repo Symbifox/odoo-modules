@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import _, api, fields, models
 
 
 class GamificationUserBadge(models.Model):
@@ -11,6 +11,12 @@ class GamificationUserBadge(models.Model):
     date_earned = fields.Datetime(string="Date d'obtention", default=fields.Datetime.now)
     granted_by = fields.Many2one('res.users', string="Accordé par")
     note = fields.Text(string="Note")
+
+    @api.depends('badge_id.name')
+    def _compute_display_name(self):
+        # Les pastilles de la vitrine disaient « bf.gamification.user.badge,38 ».
+        for user_badge in self:
+            user_badge.display_name = user_badge.badge_id.name or _("Badge obtenu")
 
     # No SQL unique constraint — badges with unique=False can be earned multiple times.
     # Uniqueness is enforced in _grant_badge() when badge.unique is True.

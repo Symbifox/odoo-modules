@@ -4,3 +4,4 @@ from . import test_couleur_libre
 from . import test_constance
 from . import test_challenges
 from . import test_manifest
+from . import test_noms_affiches

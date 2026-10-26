@@ -94,6 +94,13 @@ class GamificationProfile(models.Model):
     # marche d'un collègue. Seul le code de Fox Quest, en sudo, y touche.
     _BF_PROTECTED_FIELDS = ('stamp_count', 'cards_completed', 'worn_badge_id')
 
+    @api.depends('user_id.name')
+    def _compute_display_name(self):
+        # Sans nom, le titre du formulaire « Mon profil » et le fil d'Ariane disaient
+        # « bf.gamification.profile,33 ».
+        for profile in self:
+            profile.display_name = profile.user_id.name or _("Profil Fox Quest")
+
     def _bf_check_leave_fields(self, names):
         if not self.env.su and any(
                 name.startswith('leave_') or name in self._BF_PROTECTED_FIELDS for name in names):

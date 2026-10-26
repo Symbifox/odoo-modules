@@ -111,6 +111,11 @@ class GamificationChallengeLine(models.Model):
     done = fields.Boolean(string="Accompli", default=False)
     done_date = fields.Datetime(string="Accompli le")
 
+    @api.depends('challenge_id.name')
+    def _compute_display_name(self):
+        for line in self:
+            line.display_name = line.challenge_id.name or _("Défi du jour")
+
     _sql_constraints = [
         ('one_per_slot', 'UNIQUE(user_id, day, slot)',
          "Un seul défi par emplacement et par jour."),

@@ -73,6 +73,11 @@ class GamificationXpTransaction(models.Model):
     # ou effaçait les siennes. Seul le code de Fox Quest, en sudo, y touche.
     _BF_LOCKED = ('user_id', 'date', 'from_request', 'source', 'xp_amount', 'reference')
 
+    @api.depends('description')
+    def _compute_display_name(self):
+        for transaction in self:
+            transaction.display_name = transaction.description or _("Transaction XP")
+
     @api.model_create_multi
     def create(self, vals_list):
         if not self.env.su:

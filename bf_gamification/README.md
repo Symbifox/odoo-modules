@@ -50,7 +50,7 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 - **10-tier fox-themed level system** — Renardeau through Kitsune (0 to 20,000 XP)
 - **Configurable XP rules** — award XP for timesheets, tasks, documents, hosting, messages, helpdesk tickets, activities, and streaks
-- **Badge system** — 15 default badges across 6 fox-themed categories with automatic, threshold, and manual conditions
+- **Badge system** — 28 default badges across 6 fox-themed categories with automatic, threshold, and manual conditions
 - **Reward store** — users redeem XP for perks, time off, or recognition
 - **Leaderboard** — real-time ranking by total XP with avatars and level titles
 - **Streak tracking** — consecutive *working days* of activity, in each person's time zone; weekends, public holidays and declared absences pause it instead of breaking it
@@ -112,8 +112,10 @@ Then restart Odoo to load the web assets (OWL components, SCSS).
 On first install, the module creates:
 - 10 fox-themed levels (Renardeau through Kitsune)
 - 6 badge categories (La Chasse, Le Terrier, La Meute, La Taniere, Les Etoiles, Le Glapissement)
-- 15 default badges
-- 11 default XP rules
+- 28 default badges
+- 27 default XP rules
+- 12 daily challenges
+- 1 reward, the constance time-off day (kept out of the catalogue until the setting is turned on)
 - 2 scheduled jobs (streak reset + badge check)
 - Security groups for all internal users
 - Retroactive XP backfill for the last 96 hours of work
@@ -549,6 +551,7 @@ Fox Quest (root, sequence 65)
     +-- Categories de badges (editable list)
     +-- Regles XP            (editable list)
     +-- Gerer les recompenses
+    +-- Defis du jour        (editable list of the daily challenges)
     +-- Attribuer un badge   (wizard dialog)
 ```
 
@@ -748,6 +751,13 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v3.1.1 — Readable names
+
+- A profile, an earned badge, an XP transaction and a person's daily challenge now read by what they are. The *My profile*
+  form used to be titled `bf.gamification.profile,33` and the showcase pills said `bf.gamification.user.badge,38`: the profile
+  carries the person's name, the earned badge the badge's name, the transaction its description and the daily challenge its name.
+- The README lists what the install really creates (28 badges, 27 XP rules, 12 daily challenges) and the *Défis du jour* menu.
 
 ### v3.1.0 — Daily challenges, next goals, worn title
 
