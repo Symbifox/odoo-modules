@@ -38,6 +38,19 @@ class IrAttachment(models.Model):
         string='Visible maintenant',
         compute='_compute_bf_is_visible_now',
     )
+    # Posé par l'onglet « Documents » (`bf.meeting.document.mixin`), et par la
+    # migration 18.0.3.72.0 pour les pièces d'avant. Le même `res_model` /
+    # `res_id` porte aussi les pièces du chatter, la copie d'échange du compte
+    # rendu et les images collées dans un champ texte : seules les pièces
+    # marquées partent aux participants.
+    bf_meeting_document = fields.Boolean(
+        string='Envoyé aux participants',
+        copy=False,
+        help="Repris dans le courriel et le PDF envoyés aux participants "
+             "(ordre du jour : documents d'avant la rencontre ; compte rendu : "
+             "d'après). Coché pour un document ajouté à l'onglet ; une pièce "
+             "déposée au chatter ne part que si on le coche.",
+    )
 
     @api.depends('bf_visible_from', 'bf_visible_until')
     def _compute_bf_is_visible_now(self):

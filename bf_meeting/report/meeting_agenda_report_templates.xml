@@ -378,6 +378,17 @@
                                 <t t-out="doc.preparation_html"/>
                             </t>
 
+                            <!-- Documents : ceux de l'onglet, fenêtre d'avant la rencontre -->
+                            <t t-set="shared_documents" t-value="doc._bf_shared_document_links()"/>
+                            <t t-if="shared_documents">
+                                <div class="ma-section-title">Documents</div>
+                                <ul>
+                                    <t t-foreach="shared_documents" t-as="document">
+                                        <li><a t-att-href="document['url']"><t t-out="document['name']"/></a></li>
+                                    </t>
+                                </ul>
+                            </t>
+
                         </div>
 
                         <!-- Footer -->

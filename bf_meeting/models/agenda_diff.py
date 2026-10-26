@@ -1,6 +1,7 @@
 """Repère de l'ordre du jour tel qu'il est PARTI, et écart avec ce qu'il est devenu.
 
-Deux fonctions pures, sans ORM, pour qu'elles se lisent et se mutent seules.
+Deux fonctions sans écriture, pour qu'elles se lisent et se mutent seules ;
+`build_snapshot` lit la fiche (dont ses documents), `diff_snapshots` est pure.
 
 Pourquoi un repère de contenu, et pas une comparaison d'horodatages : mesuré sur
 un parc réel de 53 ordres du jour réellement envoyés avant leur rencontre, un
@@ -27,7 +28,12 @@ HEAD_LABELS = (
     ('objectives', 'Objectifs'),
     ('preparation', 'Préparation'),
     ('context', 'Contexte'),
+    ('documents', 'Documents'),
 )
+
+# Les champs d'en-tête qui sont des LISTES de noms : l'écart dit qui est entré
+# et qui est sorti, pas « avant → après ».
+LISTED_HEAD = ('participants', 'documents')
 
 # Les champs d'en-tête dont la valeur est une EMPREINTE : on sait qu'ils ont
 # changé, on ne sait pas en quoi, et c'est voulu.
@@ -54,8 +60,12 @@ def build_snapshot(agenda):
     La source est ``_get_report_data()``, celle-là même que le PDF consomme :
     le repère et l'artefact envoyé ne peuvent donc pas raconter deux histoires
     différentes. Ce que le destinataire ne voit pas (notes en direct, décisions
-    saisies pendant la rencontre, état du pré-remplissage, pièces jointes hors
-    fenêtre) n'entre pas dans le repère, donc ne peut pas produire d'écart.
+    saisies pendant la rencontre, état du pré-remplissage, documents non cochés
+    ou d'une fenêtre qui ne part pas avec l'OdJ) n'entre pas dans le repère,
+    donc ne peut pas produire d'écart. Les documents y entrent par leur NOM et
+    leur fenêtre, sans l'heure : un lien remplacé sous le même nom ne fait pas
+    d'écart, et un document dont la fenêtre n'est pas encore ouverte peut être
+    annoncé « ajouté » avant de paraître dans la liste.
     """
     data = agenda._get_report_data()
     return {
@@ -69,6 +79,10 @@ def build_snapshot(agenda):
             'objectives': digest(agenda.objectives),
             'preparation': digest(agenda.preparation_html),
             'context': digest(agenda.context_html),
+            # Les noms, pas les liens : le lien d'un fichier porte un jeton,
+            # qui n'a rien à faire dans un repère. Sans l'heure : un pre-read
+            # échu à l'ouverture de la rencontre n'a pas été « retiré ».
+            'documents': sorted(agenda._bf_shared_documents(at_now=False).mapped('name')),
         },
         'topics': [
             {
@@ -125,11 +139,19 @@ def diff_snapshots(before, after, include_tasks=True):
     b_head = before.get('head') or {}
     a_head = after.get('head') or {}
     for key, label in HEAD_LABELS:
+        # Un repère pris avant qu'un champ y entre ne dit rien de ce champ :
+        # le comparer à la fiche annoncerait comme ajouté tout ce qu'elle porte.
+        if key not in b_head:
+            continue
         old, new = b_head.get(key), a_head.get(key)
         if old == new:
             continue
-        if key == 'participants':
+        if key in LISTED_HEAD:
             old_set, new_set = set(old or ()), set(new or ())
+            # Deux entrées du même nom : les listes diffèrent, les ensembles
+            # non. Rien à dire plutôt qu'une ligne « Documents : » vide.
+            if old_set == new_set:
+                continue
             out['head'].append({
                 'key': key,
                 'label': label,

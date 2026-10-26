@@ -207,6 +207,8 @@ class MeetingRecord(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin',
                 'bf.meeting.lang.mixin']
     _order = 'date desc, id desc'
+    # Documents envoyés avec le compte rendu : ceux d'après la rencontre.
+    _bf_shared_windows = ('always', 'post', 'custom')
 
     name = fields.Char(
         string='Titre',

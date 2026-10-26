@@ -13,7 +13,7 @@ from odoo.osv import expression
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
-from .agenda_diff import SNAPSHOT_VERSION, build_snapshot, diff_snapshots
+from .agenda_diff import LISTED_HEAD, SNAPSHOT_VERSION, build_snapshot, diff_snapshots
 from .meeting_record import (
     _MAX_REFINE_MESSAGE,
     _REFINE_STALE_MINUTES,
@@ -108,6 +108,8 @@ class MeetingAgenda(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin',
                 'bf.meeting.lang.mixin']
     _order = 'date desc, id desc'
+    # Documents envoyés avec l'OdJ : ceux d'avant la rencontre.
+    _bf_shared_windows = ('always', 'pre', 'custom')
 
     name = fields.Char(
         string='Titre',
@@ -1472,6 +1474,7 @@ class MeetingAgenda(models.Model):
             'objectives': _('Objectives'),
             'preparation': _('Preparation'),
             'context': _('Context'),
+            'documents': _('Documents'),
         }
         what_labels = {
             'durée': _('duration'),
@@ -1486,7 +1489,7 @@ class MeetingAgenda(models.Model):
 
         for entry in diff['head']:
             label = escape(head_labels.get(entry['key'], entry['label']))
-            if entry['key'] == 'participants':
+            if entry['key'] in LISTED_HEAD:
                 bits = []
                 if entry['added']:
                     added = (_('added: %s') if len(entry['added']) == 1

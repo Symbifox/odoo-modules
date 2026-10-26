@@ -283,6 +283,14 @@ class TestMigrationCoquille(TransactionCase):
         self.env['ir.module.module']._load_module_terms(['bf_meeting'], ['fr_CA'])
         francais = self._valeurs(self.env.ref('bf_meeting.meeting_agenda_mail_template')).get('fr_CA')
         self.assertTrue(francais, "le français du courriel doit exister en fr_CA")
+        # 18.0.3.72.0 y ajoute la section Documents, absente de la 3.62.2.
+        documents = importlib.util.spec_from_file_location(
+            'bf_meeting_mig_3_72_0', DONNEES.parent.parent / 'migrations' / '18.0.3.72.0'
+            / 'post-migrate.py')
+        mig_3_72 = importlib.util.module_from_spec(documents)
+        documents.loader.exec_module(mig_3_72)
+        self.assertEqual(francais.count(mig_3_72.BLOCK), 1)
+        francais = francais.replace(mig_3_72.BLOCK, '')
         self.assertEqual(''.join(self.post.retirer_coquille(odj).split()),
                          ''.join(francais.split()))
 

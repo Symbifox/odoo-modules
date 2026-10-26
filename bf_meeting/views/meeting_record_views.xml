@@ -356,8 +356,12 @@
                                 permet de masquer un document hors d'une plage temporelle relative à la date
                                 de la rencontre — utile pour les pre-reads confidentiels ou les decks éphémères.
                                 Les gestionnaires voient toujours tout, indépendamment de la fenêtre.
+                                Cochés <strong>Envoyé aux participants</strong>, les documents d'après la
+                                rencontre partent avec le courriel et le PDF du compte rendu (un fichier, par
+                                un lien que le destinataire ouvre sans compte).
                             </p>
-                            <field name="meeting_attachment_ids" nolabel="1">
+                            <field name="meeting_attachment_ids" nolabel="1"
+                                   context="{'default_bf_meeting_document': True}">
                                 <list editable="bottom">
                                     <field name="name" required="1"/>
                                     <field name="type"/>
@@ -367,6 +371,7 @@
                                            placeholder="https://..."
                                            invisible="type != 'url'"/>
                                     <field name="bf_visibility_window"/>
+                                    <field name="bf_meeting_document" widget="boolean_toggle"/>
                                     <field name="bf_visible_from" optional="hide"/>
                                     <field name="bf_visible_until" optional="hide"/>
                                     <field name="bf_is_visible_now" widget="boolean_toggle" readonly="1"/>

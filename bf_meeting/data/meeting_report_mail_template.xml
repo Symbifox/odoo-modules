@@ -132,6 +132,16 @@
 </ul>
 </t>
 
+<t t-set="shared_documents" t-value="object._bf_shared_document_links()"/>
+<t t-if="shared_documents">
+<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Documents</h3>
+<ul style="margin:0 0 20px 0; padding-left:20px; color:#374151; font-size:15px; line-height:24px;">
+    <t t-foreach="shared_documents" t-as="document">
+        <li style="margin:0 0 6px 0;"><a t-att-href="document['url']" t-attf-style="color:{{ brand_dark }}; text-decoration:underline;"><t t-out="document['name']"/></a></li>
+    </t>
+</ul>
+</t>
+
 <p style="font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;">
     Feel free to reply to this email with any correction or clarification.
 </p>

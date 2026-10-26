@@ -15,6 +15,7 @@ _DOCUMENT_FIELDS = (
     'bf_visibility_window',
     'bf_visible_from',
     'bf_visible_until',
+    'bf_meeting_document',
 )
 
 
@@ -37,6 +38,10 @@ class BfMeetingDocumentMixin(models.AbstractModel):
 
     _name = 'bf.meeting.document.mixin'
     _description = 'Documents de rencontre (socle)'
+
+    # Fenêtres de visibilité dont les documents partent aux participants avec
+    # le courriel et le PDF. Chaque modèle donne les siennes.
+    _bf_shared_windows = ('always', 'custom')
 
     meeting_attachment_ids = fields.One2many(
         'ir.attachment',
@@ -162,4 +167,71 @@ class BfMeetingDocumentMixin(models.AbstractModel):
         vals['name'] = (vals.get('name') or '').strip() or _('Document sans nom')
         vals['res_model'] = self._name
         vals['res_id'] = self.id
+        # Coché par défaut : un document ajouté à l'onglet est fait pour
+        # partir. Décoché à la main, il reste dans l'onglet sans partir.
+        # Le client web envoie toutes les colonnes d'une ligne neuve, la case
+        # comprise : c'est le contexte de l'onglet (`default_…` dans les deux
+        # vues) qui la coche à l'écran ; ce `setdefault` vaut pour l'API.
+        vals.setdefault('bf_meeting_document', True)
         return vals
+
+    def _bf_shared_documents(self, at_now=True):
+        """Documents de l'onglet que les participants reçoivent maintenant.
+
+        Trois filtres, dans cet ordre :
+
+        * la pièce vient de l'onglet (``bf_meeting_document``) — pas du
+          chatter, ni de la copie d'échange, ni d'un champ texte ;
+        * sa fenêtre convient à ce qu'on envoie (``_bf_shared_windows`` :
+          avant la rencontre pour l'OdJ, après pour le compte rendu ; une
+          fenêtre « pendant » ne part jamais) ;
+        * elle est visible à cet instant : un pre-read échu ne part plus avec
+          un renvoi. ``at_now=False`` lève ce dernier filtre : le repère
+          d'envoi (`agenda_diff`) ne doit pas voir un document « retiré »
+          du seul fait que l'heure de la rencontre est passée.
+
+        En ``sudo`` : le rendu se fait sous l'identité de l'expéditeur, ou
+        d'une tâche planifiée, et ne doit pas dépendre de ce qu'il voit.
+        """
+        self.ensure_one()
+        Attachment = self.env['ir.attachment'].sudo()
+        record_id = self._origin.id
+        if not record_id:
+            return Attachment
+        attachments = Attachment.search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', record_id),
+            ('bf_meeting_document', '=', True),
+            ('bf_visibility_window', 'in', list(self._bf_shared_windows)),
+        ], order='id')
+        return attachments.filtered(
+            lambda a: (a.bf_is_visible_now or not at_now) and (
+                (a.type == 'binary' and a.file_size) or _bf_is_web_url(a.url)))
+
+    def _bf_shared_document_links(self):
+        """Les documents à lister dans le courriel et le PDF : nom et lien.
+
+        Un lien URL part tel quel. Un fichier téléversé part par un lien à
+        jeton (``/web/content`` + ``access_token``) : un destinataire externe
+        n'a pas de session, et c'est le jeton qui lui ouvre la pièce. Le
+        jeton se crée au premier rendu et ne change plus ensuite : un renvoi
+        donne le même lien.
+        """
+        self.ensure_one()
+        base = self.get_base_url()
+        links = []
+        for attachment in self._bf_shared_documents():
+            if attachment.type == 'url':
+                url = attachment.url.strip()
+            else:
+                token = attachment.generate_access_token()[0]
+                url = '%s/web/content/%s?access_token=%s&download=true' % (
+                    base, attachment.id, token)
+            links.append({'name': attachment.name, 'url': url})
+        return links
+
+
+def _bf_is_web_url(url):
+    """Un lien qu'on peut mettre dans un courriel : http ou https, rien d'autre."""
+    url = (url or '').strip().lower()
+    return url.startswith('https://') or url.startswith('http://')

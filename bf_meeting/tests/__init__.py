@@ -15,3 +15,4 @@ from . import test_raffinage_automatique
 from . import test_langue_des_lecteurs
 from . import test_elements_d_action
 from . import test_dashboard_annulees
+from . import test_documents_partages
