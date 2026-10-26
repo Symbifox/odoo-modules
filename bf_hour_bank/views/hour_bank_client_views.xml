@@ -17,6 +17,10 @@
                     <button name="action_open_send_wizard" type="object"
                             string="Envoyer rapport" class="btn-secondary"
                             icon="fa-envelope-o"/>
+                    <button name="action_open_invoice_wizard" type="object"
+                            string="G&#233;n&#233;rer la facture" class="btn-secondary"
+                            icon="fa-file-text-o"
+                            groups="account.group_account_invoice"/>
                     <button name="action_check_thresholds_now" type="object"
                             string="V&#233;rifier les paliers maintenant"
                             icon="fa-bell-o"
@@ -71,6 +75,17 @@
                             <separator string="Factures additionnelles"/>
                             <field name="extra_invoice_ids" widget="many2many_tags"
                                    options="{'no_create': True}"/>
+                            <group string="Facture g&#233;n&#233;r&#233;e depuis la banque" name="generated_invoice">
+                                <field name="invoice_mode" widget="radio"/>
+                                <field name="invoice_block_hours"
+                                       invisible="invoice_mode != 'prepaid'"/>
+                                <field name="invoice_product_id"
+                                       domain="[('id', 'in', filter_product_ids)] if product_filter_mode == 'include' and filter_product_ids else ([('id', 'not in', filter_product_ids)] if product_filter_mode == 'exclude' and filter_product_ids else [])"
+                                       options="{'no_create': True}"/>
+                                <field name="invoice_hourly_rate"/>
+                                <field name="invoice_split_by_project"
+                                       invisible="invoice_mode != 'postpaid'"/>
+                            </group>
                         </page>
                         <page string="Ajustements" name="adjustments">
                             <field name="adjustment_ids">

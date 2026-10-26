@@ -13,6 +13,7 @@ An Odoo 18 module for automated tracking of client hour banks.
 - **Preview**: PDF preview directly from the sending wizard
 - **Automatic sending**: configurable cron (weekly, fortnightly, monthly) sending a branded report to the recipients
 - **Notification thresholds**: proactive email alerts when consumption crosses a threshold (unbilled hours, % of an allocated budget, or balance below a floor) with the XLSX attached
+- **Invoice from the bank**: a « Générer la facture » button that prepares a draft customer invoice with the right number of hours, split per project if wanted
 - **Client portal**: a `/my/hour-banks` page for portal users, with self-service PDF/Excel download
 
 ## Dependencies
@@ -198,6 +199,39 @@ email** on existing banks: the default `threshold_mode` is `disabled`, and the
 cron already filters on `threshold_mode != 'disabled'`. To switch the feature
 on, the operator has to configure each bank manually.
 
+## Invoice generated from the bank
+
+The **Générer la facture** button on the bank form (shown to the Billing group) opens a
+wizard that prepares a **draft** customer invoice. The module never posts it and never
+sends it: the bank only counts an invoice once it is posted.
+
+Bank settings (Facturation tab, « Facture générée depuis la banque » group):
+
+| Field | Purpose |
+|---|---|
+| **Mode de facturation** | Postpaid: bill the hours consumed. Prepaid: bill a block of hours in advance |
+| **Tranche (h)** | Hours billed at each renewal, in prepaid mode |
+| **Produit facturé** | Must be a product the bank credits (product filter); the form refuses any other |
+| **Taux horaire** | Unit price of the lines. On update, prefilled from the last counted invoice line of an hourly product, never from the catalogue price |
+| **Ventiler par projet** | Wizard default: one line per project, or a single line for the period |
+
+Hours proposed in postpaid mode: the **uncovered** hours logged up to the cut-off date,
+**minus those already in a draft** the bank will count. Credits (posted invoices,
+positive adjustments, negative timesheets, then drafts) cover the oldest timesheets
+first, so what is left to bill, and its per-project split, comes from the most recent
+ones. A second click therefore never proposes hours that are already in a draft. When the
+lines are split per project, the rounding remainder goes to the largest line, so the
+total matches the single-line form.
+
+The wizard also proposes the invoiced contact (the one of the last counted invoice), the
+product and the rate; everything is editable, lines included, and changing the product
+keeps edited lines. Line labels are written in the invoiced contact's language. On
+creation it refuses a product, a contact or a company the bank would not count, takes the
+journal, currency, taxes and account from the last counted line on the same product, and
+checks that every line of the new draft is one the bank will count once posted (otherwise
+nothing is created). The bank's PDF report is attached to the draft, and an internal note
+on the bank records the generated invoice.
+
 ## Installation
 
 ```bash
@@ -205,6 +239,20 @@ docker exec <container> odoo -d <db> -i bf_hour_bank --stop-after-init --no-http
 ```
 
 ## Changelog
+
+### 18.0.1.16.0
+
+- New « Générer la facture » wizard: a draft invoice from the bank, postpaid (uncovered
+  hours at a cut-off date, minus hours already in a draft) or prepaid (a block of hours),
+  optionally split per project. Never posted nor sent by the module; the bank's PDF is
+  attached and a note is left on the bank.
+- New bank fields: billing mode, block size, invoiced product (restricted to products the
+  bank credits), hourly rate, split-per-project default. The update prefills the product
+  and rate of existing banks from their last counted invoice line, hourly products only.
+- Fix: the bank's configuration (projects, company, product and partner filters, extra
+  invoices) is read with superuser rights. Read with the user's rights, a private project
+  or a company unticked in the switcher silently dropped hours from the balance, the PDF
+  and the Excel for that user. The portal and the automatic sends already read it this way.
 
 ### 18.0.1.15.4
 

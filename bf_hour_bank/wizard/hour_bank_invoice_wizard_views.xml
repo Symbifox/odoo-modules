@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hour_bank_invoice_wizard_form" model="ir.ui.view">
+        <field name="name">hour.bank.invoice.wizard.form</field>
+        <field name="model">hour.bank.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="G&#233;n&#233;rer la facture">
+                <field name="bank_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="product_filter_mode" invisible="1"/>
+                <field name="filter_product_ids" invisible="1"/>
+                <field name="invoice_partner_ids" invisible="1"/>
+                <field name="bank_commercial_partner_id" invisible="1"/>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not draft_move_ids">
+                    Des factures brouillon compt&#233;es par cette banque existent d&#233;j&#224;.
+                    <span invisible="invoice_mode != 'postpaid'">Leurs heures sont d&#233;duites
+                        de ce qui est propos&#233; ici.</span>
+                    <span invisible="invoice_mode != 'prepaid'">V&#233;rifiez qu'une tranche
+                        n'est pas d&#233;j&#224; en attente de validation.</span>
+                    <field name="draft_move_ids" widget="many2many_tags" readonly="1" nolabel="1"/>
+                </div>
+                <group>
+                    <group>
+                        <field name="invoice_mode" widget="radio"/>
+                        <field name="date_cutoff" invisible="invoice_mode != 'postpaid'"/>
+                        <field name="block_hours" invisible="invoice_mode != 'prepaid'"/>
+                        <field name="split_by_project" invisible="invoice_mode != 'postpaid'"/>
+                    </group>
+                    <group>
+                        <field name="partner_id" required="1"
+                               domain="[('id', 'in', invoice_partner_ids)] if invoice_partner_ids else [('commercial_partner_id', '=', bank_commercial_partner_id)]"
+                               options="{'no_create': True}"/>
+                        <field name="product_id" required="1"
+                               domain="[('id', 'in', filter_product_ids)] if product_filter_mode == 'include' and filter_product_ids else ([('id', 'not in', filter_product_ids)] if product_filter_mode == 'exclude' and filter_product_ids else [])"
+                               options="{'no_create': True}"/>
+                        <field name="price_unit" required="1"/>
+                    </group>
+                </group>
+                <group invisible="invoice_mode != 'postpaid'">
+                    <group>
+                        <field name="uncovered_hours" readonly="1"/>
+                        <field name="draft_hours" readonly="1" invisible="not draft_hours"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="sequence" widget="handle"/>
+                        <field name="project_id" optional="hide" options="{'no_create': True}"/>
+                        <field name="name"/>
+                        <field name="quantity"/>
+                    </list>
+                </field>
+                <group class="oe_subtotal_footer">
+                    <field name="total_hours" readonly="1"/>
+                    <field name="amount_untaxed" readonly="1"/>
+                </group>
+                <p class="text-muted">
+                    La facture est cr&#233;&#233;e en brouillon, avec le rapport de la banque
+                    en pi&#232;ce jointe. Elle n'est ni valid&#233;e ni envoy&#233;e : la banque
+                    ne la comptera qu'une fois valid&#233;e.
+                </p>
+                <footer>
+                    <button name="action_create_invoice" type="object"
+                            string="Cr&#233;er le brouillon" class="btn-primary"
+                            icon="fa-file-text-o"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

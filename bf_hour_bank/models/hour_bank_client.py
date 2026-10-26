@@ -7,7 +7,7 @@ from datetime import datetime
 from markupsafe import escape as html_escape
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -124,6 +124,33 @@ class HourBankClient(models.Model):
              "alerter les followers internes Blue Fox.",
     )
 
+    # ---- Facture générée depuis la banque ----
+    invoice_mode = fields.Selection([
+        ('postpaid', 'Postpayé : facturer les heures consommées'),
+        ('prepaid', "Prépayé : facturer une tranche d'heures"),
+    ], string="Mode de facturation", default='postpaid', required=True, tracking=True)
+    invoice_block_hours = fields.Float(
+        string="Tranche (h)", tracking=True,
+        help="Nombre d'heures facturées d'avance à chaque renouvellement, en mode prépayé.",
+    )
+    invoice_product_id = fields.Many2one(
+        'product.product', string="Produit facturé", tracking=True,
+        help="Produit des lignes de la facture générée. Il doit être un produit que "
+             "la banque crédite (filtre produits), sinon la facture validée ne "
+             "réduirait pas le solde.",
+    )
+    invoice_hourly_rate = fields.Float(
+        string="Taux horaire", digits='Product Price', tracking=True,
+        help="Prix unitaire des lignes générées. Prérempli avec le prix de la "
+             "dernière facture comptée par la banque, jamais avec le prix catalogue.",
+    )
+    invoice_split_by_project = fields.Boolean(
+        string="Ventiler par projet",
+        help="Par défaut, une ligne par projet. Sinon, une seule ligne pour la "
+             "période, le détail étant dans le rapport joint. L'assistant permet "
+             "de changer d'avis pour une facture.",
+    )
+
     # ------------------------------------------------------------------
     # Computed
     # ------------------------------------------------------------------
@@ -167,8 +194,18 @@ class HourBankClient(models.Model):
             last_update: datetime
         """
         self.ensure_one()
+        # La liste des projets se lit en sudo : c'est la configuration de la
+        # banque qui décide de ce qui compte, pas ce que voit la personne. Lue
+        # avec ses droits, un projet privé (visibilité « abonnés ») disparaissait
+        # et le solde, le PDF et la facture générée en perdaient les
+        # heures. Le portail et les envois automatiques lisaient déjà en sudo.
+        projects = self.sudo().project_ids
+        # Même règle pour les filtres : lus avec les droits de la personne, une
+        # société décochée ou un produit d'une autre société vidait le filtre,
+        # qui ne filtrait alors plus rien.
+        cfg = self.sudo()
 
-        if not self.project_ids:
+        if not projects:
             return {
                 'entries': [],
                 'balance': 0.0,
@@ -177,8 +214,8 @@ class HourBankClient(models.Model):
                 'last_update': fields.Datetime.now(),
             }
 
-        project_ids = tuple(self.project_ids.ids)
-        partner_id = self.partner_id.commercial_partner_id.id or self.partner_id.id
+        project_ids = tuple(projects.ids)
+        partner_id = cfg.partner_id.commercial_partner_id.id or cfg.partner_id.id
 
         # ---- Debits: timesheets ----
         ts_clauses = ["aal.project_id IN %s"]
@@ -198,7 +235,8 @@ class HourBankClient(models.Model):
                 pp.name->>'en_US' AS project_name,
                 pt.name AS task_name,
                 'debit' AS entry_type,
-                aal.id AS source_id
+                aal.id AS source_id,
+                aal.project_id AS project_id
             FROM account_analytic_line aal
             JOIN project_project pp ON pp.id = aal.project_id
             LEFT JOIN project_task pt ON pt.id = aal.task_id
@@ -212,17 +250,17 @@ class HourBankClient(models.Model):
         inv_params = []
 
         # Company filter
-        if self.filter_company_ids and self.company_filter_mode == 'include':
+        if cfg.filter_company_ids and cfg.company_filter_mode == 'include':
             inv_clauses.append("am.company_id IN %s")
-            inv_params.append(tuple(self.filter_company_ids.ids))
-        elif self.filter_company_ids and self.company_filter_mode == 'exclude':
+            inv_params.append(tuple(cfg.filter_company_ids.ids))
+        elif cfg.filter_company_ids and cfg.company_filter_mode == 'exclude':
             inv_clauses.append("am.company_id NOT IN %s")
-            inv_params.append(tuple(self.filter_company_ids.ids))
+            inv_params.append(tuple(cfg.filter_company_ids.ids))
 
         # Partner filter: specific partners or commercial partner fallback
-        extra_ids = tuple(self.extra_invoice_ids.ids) if self.extra_invoice_ids else ()
-        if self.invoice_partner_ids:
-            partner_filter_ids = tuple(self.invoice_partner_ids.ids)
+        extra_ids = tuple(cfg.extra_invoice_ids.ids) if cfg.extra_invoice_ids else ()
+        if cfg.invoice_partner_ids:
+            partner_filter_ids = tuple(cfg.invoice_partner_ids.ids)
             if extra_ids:
                 inv_clauses.append("(am.partner_id IN %s OR am.id IN %s)")
                 inv_params += [partner_filter_ids, extra_ids]
@@ -237,12 +275,12 @@ class HourBankClient(models.Model):
                 inv_clauses.append("am.commercial_partner_id = %s")
                 inv_params.append(partner_id)
 
-        if self.filter_product_ids and self.product_filter_mode == 'include':
+        if cfg.filter_product_ids and cfg.product_filter_mode == 'include':
             inv_clauses.append("aml.product_id IN %s")
-            inv_params.append(tuple(self.filter_product_ids.ids))
-        elif self.filter_product_ids and self.product_filter_mode == 'exclude':
+            inv_params.append(tuple(cfg.filter_product_ids.ids))
+        elif cfg.filter_product_ids and cfg.product_filter_mode == 'exclude':
             inv_clauses.append("(aml.product_id IS NULL OR aml.product_id NOT IN %s)")
-            inv_params.append(tuple(self.filter_product_ids.ids))
+            inv_params.append(tuple(cfg.filter_product_ids.ids))
 
         if date_from:
             inv_clauses.append("am.invoice_date >= %s")
@@ -261,7 +299,8 @@ class HourBankClient(models.Model):
                 'Heures factur\u00e9es' AS project_name,
                 NULL AS task_name,
                 'credit' AS entry_type,
-                aml.id AS source_id
+                aml.id AS source_id,
+                NULL AS project_id
             FROM account_move_line aml
             JOIN account_move am ON am.id = aml.move_id
             WHERE """ + " AND ".join(inv_clauses)
@@ -284,7 +323,8 @@ class HourBankClient(models.Model):
                 'Ajustement' AS project_name,
                 NULL AS task_name,
                 CASE WHEN hba.hours >= 0 THEN 'credit' ELSE 'debit' END AS entry_type,
-                hba.id + 1000000000 AS source_id
+                hba.id + 1000000000 AS source_id,
+                NULL AS project_id
             FROM hour_bank_adjustment hba
             WHERE """ + " AND ".join(adj_clauses)
 
@@ -320,6 +360,7 @@ class HourBankClient(models.Model):
                 'project': row['project_name'] or '',
                 'task': row['task_name'] or '',
                 'entry_type': row['entry_type'],
+                'project_id': row['project_id'],
             }
             entries.append(entry)
 
@@ -550,6 +591,158 @@ class HourBankClient(models.Model):
             'res_id': wizard.id,
             'views': [[False, 'form']],
             'target': 'new',
+        }
+
+    # ------------------------------------------------------------------
+    # Facture générée depuis la banque
+    # ------------------------------------------------------------------
+
+    @api.constrains('invoice_product_id', 'product_filter_mode', 'filter_product_ids')
+    def _check_invoice_product(self):
+        for rec in self:
+            if rec.invoice_product_id and not rec._bf_product_credits(rec.invoice_product_id):
+                raise ValidationError(_(
+                    "Le produit facturé « %(product)s » n'est pas compté par le filtre "
+                    "produits de cette banque : une facture validée sur ce produit ne "
+                    "réduirait pas le solde. Choisissez un produit du filtre, ou "
+                    "ajoutez-le au filtre.",
+                    product=rec.invoice_product_id.display_name,
+                ))
+
+    @api.onchange('invoice_product_id')
+    def _onchange_invoice_product_id(self):
+        if self.invoice_product_id and not self.invoice_hourly_rate:
+            line = self._bf_last_credit_line(self.invoice_product_id)
+            if line:
+                self.invoice_hourly_rate = line.price_unit
+
+    def _bf_product_credits(self, product):
+        """Vrai si une ligne sur ce produit serait comptée par _get_report_data.
+
+        Même règle que le SQL : un filtre sans produits ne filtre rien."""
+        self.ensure_one()
+        cfg = self.sudo()
+        if cfg.filter_product_ids and cfg.product_filter_mode == 'include':
+            return product in cfg.filter_product_ids
+        if cfg.filter_product_ids and cfg.product_filter_mode == 'exclude':
+            return product not in cfg.filter_product_ids
+        return True
+
+    def _bf_partner_credits(self, partner):
+        """Vrai si une facture adressée à ce partenaire serait comptée.
+
+        Le crédit se lit sur commercial_partner_id quand invoice_partner_ids est
+        vide : un contact enfant du client compte, un autre client jamais."""
+        self.ensure_one()
+        cfg = self.sudo()
+        if cfg.invoice_partner_ids:
+            return partner in cfg.invoice_partner_ids
+        commercial = cfg.partner_id.commercial_partner_id or cfg.partner_id
+        return partner.commercial_partner_id == commercial
+
+    def _bf_company_credits(self, company):
+        self.ensure_one()
+        cfg = self.sudo()
+        if cfg.filter_company_ids and cfg.company_filter_mode == 'include':
+            return company in cfg.filter_company_ids
+        if cfg.filter_company_ids and cfg.company_filter_mode == 'exclude':
+            return company not in cfg.filter_company_ids
+        return True
+
+    def _bf_credit_line_domain(self, state='posted'):
+        """Domaine des lignes de facture que la banque compte, miroir ORM du
+        côté crédit de _get_report_data. `state='draft'` donne les lignes qui
+        seront comptées une fois leur facture validée."""
+        self.ensure_one()
+        cfg = self.sudo()
+        partner_id = cfg.partner_id.commercial_partner_id.id or cfg.partner_id.id
+        domain = [
+            ('move_id.move_type', '=', 'out_invoice'),
+            ('move_id.state', '=', state),
+            ('display_type', '=', 'product'),
+            ('quantity', '>', 0),
+        ]
+        if cfg.filter_company_ids and cfg.company_filter_mode == 'include':
+            domain.append(('move_id.company_id', 'in', cfg.filter_company_ids.ids))
+        elif cfg.filter_company_ids and cfg.company_filter_mode == 'exclude':
+            domain.append(('move_id.company_id', 'not in', cfg.filter_company_ids.ids))
+        if cfg.invoice_partner_ids:
+            partner_clause = [('move_id.partner_id', 'in', cfg.invoice_partner_ids.ids)]
+        else:
+            partner_clause = [('move_id.commercial_partner_id', '=', partner_id)]
+        if cfg.extra_invoice_ids:
+            partner_clause = ['|'] + partner_clause + [('move_id', 'in', cfg.extra_invoice_ids.ids)]
+        domain += partner_clause
+        if cfg.filter_product_ids and cfg.product_filter_mode == 'include':
+            domain.append(('product_id', 'in', cfg.filter_product_ids.ids))
+        elif cfg.filter_product_ids and cfg.product_filter_mode == 'exclude':
+            domain += ['|', ('product_id', '=', False),
+                       ('product_id', 'not in', cfg.filter_product_ids.ids)]
+        return domain
+
+    def _bf_last_credit_line(self, product=None):
+        """La dernière ligne de facture validée que la banque compte (sur ce
+        produit si donné) : elle porte le taux, les taxes et le contact facturé."""
+        self.ensure_one()
+        domain = self._bf_credit_line_domain()
+        if product:
+            domain.append(('product_id', '=', product.id))
+        return self.env['account.move.line'].sudo().search(
+            domain, order='date desc, move_id desc, id desc', limit=1,
+        )
+
+    def _bf_draft_credit_lines(self):
+        """Lignes de brouillons qui créditeront la banque une fois validés."""
+        self.ensure_one()
+        return self.env['account.move.line'].sudo().search(
+            self._bf_credit_line_domain(state='draft'),
+        )
+
+    def _bf_uncovered_debits(self, date_cutoff, extra_credit=0.0):
+        """Débits non couverts portés jusqu'à `date_cutoff`, du plus ancien au
+        plus récent : [{'date', 'hours', 'project_id', 'project'}].
+
+        Les crédits (factures validées, ajustements positifs, plus
+        `extra_credit`, les heures déjà en brouillon) couvrent les débits les
+        plus anciens d'abord ; un débit peut n'être couvert qu'en partie."""
+        self.ensure_one()
+        entries = list(reversed(self._get_report_data()['entries']))
+        # Une feuille de temps négative (correction) rend des heures au lot dès
+        # le départ, comme un crédit : versée au fil de la boucle, elle arrivait
+        # après les débits plus anciens qu'elle corrige, déjà déclarés non
+        # couverts (5 h proposées pour un solde de −3 h).
+        pool = extra_credit + sum(
+            e['hours'] for e in entries
+            if e['entry_type'] == 'credit' or e['hours'] > 0
+        )
+        uncovered = []
+        for entry in entries:
+            if entry['entry_type'] != 'debit':
+                continue
+            need = -entry['hours']
+            if need <= 0:
+                continue
+            covered = min(max(pool, 0.0), need)
+            pool -= covered
+            rest = need - covered
+            if rest > 1e-6 and entry['date'] <= date_cutoff:
+                uncovered.append({
+                    'date': entry['date'],
+                    'hours': rest,
+                    'project_id': entry['project_id'],
+                    'project': entry['project'],
+                })
+        return uncovered
+
+    def action_open_invoice_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Générer la facture"),
+            'res_model': 'hour.bank.invoice.wizard',
+            'views': [[False, 'form']],
+            'target': 'new',
+            'context': {'default_bank_id': self.id},
         }
 
     # ------------------------------------------------------------------

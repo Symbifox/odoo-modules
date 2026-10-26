@@ -1,6 +1,6 @@
 {
     'name': 'Banque d\'heures',
-    'version': '18.0.1.15.4',
+    'version': '18.0.1.16.0',
     'category': 'Services/Project',
     'summary': 'Suivi automatisé des banques d\'heures client',
     'description': """
@@ -15,6 +15,7 @@ Fonctionnalités:
 * Calcul automatique du solde (débits feuilles de temps, crédits factures)
 * Génération de rapports PDF et Excel
 * Envoi par courriel avec pièces jointes
+* Facture brouillon générée depuis la banque (heures non couvertes ou tranche prépayée)
 * Sommaire par projet et synthèse mensuelle
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -37,6 +38,7 @@ Fonctionnalités:
         'data/bf_onboarding.xml',
         # Wizards
         'wizard/hour_bank_send_wizard_views.xml',
+        'wizard/hour_bank_invoice_wizard_views.xml',
         # Views
         'views/hour_bank_client_views.xml',
         'views/hour_bank_threshold_views.xml',
