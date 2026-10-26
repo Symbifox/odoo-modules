@@ -100,3 +100,38 @@ class TestRecapitulatif(TransactionCase):
         payload = self.digest._get_report_payload()
         ligne = [m for m in payload['managed'] if m['client'] == self.client.name]
         self.assertEqual(ligne[0]['margin'], '—')
+
+    def test_depense_de_la_societe_seule(self):
+        avant = self.digest._gather_data()
+        self._sub(cycle_amount=10.0)
+        self._sub(managed_for_id=self.client.id, cycle='annual', cycle_amount=120.0)
+        apres = self.digest._gather_data()
+        self.assertTrue(apres['has_managed'])
+        self.assertAlmostEqual(apres['monthly'] - avant['monthly'], 20.0)
+        self.assertAlmostEqual(apres['own_monthly'] - avant['own_monthly'], 10.0)
+        self.assertAlmostEqual(apres['own_annual'], apres['own_monthly'] * 12)
+        html = self.digest.with_context(lang='en_US')._generate_html(apres)
+        self.assertIn('%s only' % self.company.name, html)
+        self.assertIn(self.digest._fmt(apres['own_annual'], apres['currency']), html)
+        rows = self.digest._get_report_payload()['spend']
+        self.assertEqual(len(rows), 4)
+
+    def test_sans_client_gere_deux_lignes(self):
+        company = self.env['res.company'].create({'name': 'Société essai seule'})
+        digest = self.env['subscription.digest'].create({
+            'name': 'Récap seul', 'company_id': company.id, 'auto_send': False})
+        self._sub(company_id=company.id)
+        data = digest._gather_data()
+        self.assertFalse(data['has_managed'])
+        self.assertEqual([r[0] for r in digest.with_context(lang='en_US')._spend_rows(data)],
+                         ["Monthly spend", "Annual spend"])
+
+    def test_sujet_au_jour_du_corps(self):
+        self._sub()
+        jour = fields.Date.today() + relativedelta(days=1)
+        with patch.object(type(self.env['mail.mail']), 'send', lambda *a, **k: None), \
+                patch.object(fields.Date, 'context_today', lambda *a, **k: jour):
+            self.digest._send_digest()
+        mail = self.env['mail.mail'].search([('email_to', '=', self.user.email)], order='id desc', limit=1)
+        self.assertIn(jour.isoformat(), mail.subject)
+        self.assertIn(jour.isoformat(), mail.body_html)

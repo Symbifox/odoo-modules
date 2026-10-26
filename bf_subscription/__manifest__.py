@@ -10,7 +10,9 @@
     #   au passé), et la marge par client ne compte que le refacturé.
     # 18.0.1.8.1: un récapitulatif ne se lit que dans sa société, et seul un
     #   gestionnaire l'envoie à ses destinataires.
-    'version': '18.0.1.8.1',
+    # 18.0.1.8.2: le sommaire donne aussi la dépense de la société seule, sans les
+    #   abonnements tenus pour un client, et le sujet porte le jour du corps.
+    'version': '18.0.1.8.2',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """

@@ -55,8 +55,15 @@
                             <!-- KPIs -->
                             <div class="kpi-row">
                                 <div class="kpi"><div class="v"><t t-esc="p['active_count']"/></div><div class="l">Active subscriptions</div></div>
-                                <div class="kpi"><div class="v"><t t-esc="p['monthly']"/></div><div class="l">Monthly spend</div></div>
-                                <div class="kpi"><div class="v"><t t-esc="p['annual']"/></div><div class="l">Annual spend</div></div>
+                                <t t-foreach="p['spend'][:2]" t-as="row">
+                                    <div class="kpi"><div class="v"><t t-esc="row[1]"/></div><div class="l"><t t-esc="row[0]"/></div></div>
+                                </t>
+                            </div>
+                            <!-- La société seule, sans les abonnements tenus pour un client -->
+                            <div class="kpi-row" t-if="len(p['spend']) &gt; 2">
+                                <t t-foreach="p['spend'][2:]" t-as="row">
+                                    <div class="kpi"><div class="v"><t t-esc="row[1]"/></div><div class="l"><t t-esc="row[0]"/></div></div>
+                                </t>
                             </div>
 
                             <!-- Renewals -->

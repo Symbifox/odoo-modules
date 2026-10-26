@@ -149,11 +149,14 @@ class SubscriptionDigest(models.Model):
                 par_langue.setdefault(lang, []).append(user)
         for lang, users in par_langue.items():
             lu = self.with_context(lang=lang)
+            # Le jour de l'usager, comme l'en-tête du corps : fields.Date.today() lit le jour UTC,
+            # et le sujet annonçait la veille ou le lendemain du corps.
+            today = fields.Date.context_today(lu)
             attachment_ids = []
             try:
                 pdf = lu._get_pdf_binary()
                 att = self.env['ir.attachment'].sudo().create({
-                    'name': lu.env._("Subscription_report_%s.pdf") % fields.Date.today().isoformat(),
+                    'name': lu.env._("Subscription_report_%s.pdf") % today.isoformat(),
                     'type': 'binary',
                     'datas': base64.b64encode(pdf),
                     'mimetype': 'application/pdf',
@@ -163,7 +166,7 @@ class SubscriptionDigest(models.Model):
                 attachment_ids = [att.id]
             except Exception:
                 _logger.exception("subscription digest %s: PDF generation failed", self.name)
-            subject = lu.env._("Subscription digest: %s") % fields.Date.today().strftime('%Y-%m-%d')
+            subject = lu.env._("Subscription digest: %s") % today.strftime('%Y-%m-%d')
             body = tpl.dress(lu.env, lu._generate_html(data), self.company_id, record=self, lang=lang)
             for user in users:
                 mail = self.env['mail.mail'].sudo().create({
@@ -191,6 +194,9 @@ class SubscriptionDigest(models.Model):
         # Spend
         monthly = sum(active.mapped('monthly_equivalent'))
         annual = monthly * 12.0
+        # Ce que la société paie pour elle-même, sans les abonnements tenus pour un client.
+        own = active.filtered(lambda s: not s.managed_for_id)
+        own_monthly = sum(own.mapped('monthly_equivalent'))
 
         # Renewals within horizon
         today = fields.Date.context_today(self)
@@ -227,6 +233,8 @@ class SubscriptionDigest(models.Model):
         return {
             'active_count': len(active),
             'monthly': monthly, 'annual': annual,
+            'own_monthly': own_monthly, 'own_annual': own_monthly * 12.0,
+            'has_managed': len(own) != len(active),
             'renewals': renewals, 'dormant': dormant, 'managed': managed,
             'currency': self.company_id.currency_id,
             'has_content': has_content,
@@ -234,6 +242,21 @@ class SubscriptionDigest(models.Model):
 
     def _fmt(self, amount, currency):
         return "%s %s" % ('{:,.2f}'.format(amount).replace(',', ' '), currency.name or '')
+
+    def _spend_rows(self, data):
+        """(libellé, montant) du sommaire : le total, et la part de la société seule
+        dès qu'un abonnement est tenu pour un client."""
+        cur = data['currency']
+        if not data['has_managed']:
+            return [(_("Monthly spend"), self._fmt(data['monthly'], cur)),
+                    (_("Annual spend"), self._fmt(data['annual'], cur))]
+        name = self.company_id.name
+        return [
+            (_("Monthly spend, all included"), self._fmt(data['monthly'], cur)),
+            (_("Annual spend, all included"), self._fmt(data['annual'], cur)),
+            (_("Monthly spend, %s only") % name, self._fmt(data['own_monthly'], cur)),
+            (_("Annual spend, %s only") % name, self._fmt(data['own_annual'], cur)),
+        ]
 
     def _fmt_margin(self, m, currency):
         return self._fmt(m['margin'], currency) if m['rebilled_count'] else "—"
@@ -270,6 +293,7 @@ class SubscriptionDigest(models.Model):
             'active_count': data['active_count'],
             'monthly': self._fmt(data['monthly'], cur),
             'annual': self._fmt(data['annual'], cur),
+            'spend': self._spend_rows(data),
             'renewals': renewals,
             'dormant': dormant,
             'managed': managed,
@@ -288,11 +312,9 @@ class SubscriptionDigest(models.Model):
 
         if self.include_spend_summary:
             parts.append(tpl.section_title(_("Summary"), company))
-            parts.append(tpl.info_card([
-                (_("Active subscriptions"), str(data['active_count'])),
-                (_("Monthly spend"), self._fmt(data['monthly'], cur)),
-                (_("Annual spend"), self._fmt(data['annual'], cur)),
-            ], company))
+            parts.append(tpl.info_card(
+                [(_("Active subscriptions"), str(data['active_count']))] + self._spend_rows(data),
+                company))
 
         if self.include_renewals:
             parts.append(tpl.section_title(_("Upcoming renewals (%d days)") % (self.renewal_horizon_days or 30), company))

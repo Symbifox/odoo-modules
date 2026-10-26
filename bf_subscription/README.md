@@ -22,7 +22,9 @@ infrastructure, certificates, domain names, recurring professional services.
 - **Built-in recap**: this base module ships its own `subscription.digest`
   model (*Recap* menu), which generates a PDF subscription report (spend
   summary, upcoming renewals, dormant subscriptions, cost per managed client)
-  and can send it periodically. A `subscription.digest` configuration ships by
+  and can send it periodically. The spend summary gives the monthly and annual
+  spend of all active subscriptions and, as soon as one is held for a client,
+  the same two totals for the company alone. A `subscription.digest` configuration ships by
   default, in "on demand" mode (`auto_send = False`).
 - **Dashboard card (MRR)**: the Subscriptions summary card on the Symbifox
   dashboard is **not** provided by this module. It is added by the separate
@@ -60,6 +62,11 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.8.2
+
+- **The recap shows the company's own spend.** Next to the monthly and annual totals of all active subscriptions, two lines give the same totals without the subscriptions held for a client, in the email and in the PDF. A company that holds none for a client keeps the two totals only.
+- **The subject carries the same day as the body.** The subject was dated in UTC and the body in the user's time zone, so an evening recap announced the next day in one and the current day in the other.
 
 ### 18.0.1.8.1
 
