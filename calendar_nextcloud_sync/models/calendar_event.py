@@ -312,6 +312,11 @@ class CalendarEvent(models.Model):
                 continue
             if config.sync_direction == "nc_to_odoo":
                 continue
+            # An archived config is cut off: nothing is pushed to it any
+            # more, create, update or delete (events already attached to it
+            # kept syncing there after it was archived).
+            if not config.active:
+                continue
 
             # Skip create/update for events already sourced from remote
             # (anti-loop). Deletes always propagate — context prevents loops.
@@ -394,6 +399,11 @@ class CalendarEvent(models.Model):
                 continue
             if config.sync_direction == "nc_to_odoo":
                 continue
+            # An archived config is cut off: nothing is pushed to it any
+            # more, create, update or delete (events already attached to it
+            # kept syncing there after it was archived).
+            if not config.active:
+                continue
             # Anti-loop: skip push for events just pulled from Google.
             # Deletes still propagate (user-initiated) unless ctx suppresses.
             if event.x_sync_source == "google" and action != "delete":
@@ -452,12 +462,26 @@ class CalendarEvent(models.Model):
         # staff member's calendar (whichever calendar the global default points
         # at). calendar_owner_id maps each sync config to its owner.
         cfg_model = self.env["nextcloud.calendar.sync.config"].sudo()
-        default_cal_id = int(
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("calendar_nextcloud_sync.default_calendar_id", "0")
+        try:
+            default_cal_id = int(
+                self.env["ir.config_parameter"]
+                .sudo()
+                .get_param("calendar_nextcloud_sync.default_calendar_id", "0")
+                or 0
+            )
+        except ValueError:
+            default_cal_id = 0
+        default_cfg = (
+            cfg_model.browse(default_cal_id).exists() if default_cal_id else cfg_model
         )
-        default_cfg = cfg_model.browse(default_cal_id) if default_cal_id else cfg_model
+        # 🔴 A default that is archived or deleted routes nothing, exactly like a
+        # default of 0. The owner fallback below used to take over and pick the
+        # organizer's first active config, whatever calendar that was: measured
+        # in production, with the default config archived, a user's personal
+        # events went to a config mirroring another organization's calendar,
+        # title, location and call link included.
+        if not default_cfg.active:
+            default_cfg = cfg_model
         owner_cal_cache = {}
 
         def _calendar_for_organizer(organizer_uid):
@@ -471,23 +495,37 @@ class CalendarEvent(models.Model):
                 # Prefer the global default when the organizer owns it (handles
                 # owners with several calendars, e.g. a personal + a
                 # non-availability config); otherwise the organizer's own
-                # calendar; else fall back to the global default.
-                if owned and default_cfg and default_cfg in owned:
-                    owner_cal_cache[organizer_uid] = default_cal_id
+                # calendar when there is exactly one; else, for an organizer
+                # owning none, the global default. An organizer owning several
+                # configs, none of them the default, gets none: guessing one is
+                # how an event lands in the wrong calendar.
+                if default_cfg in owned:
+                    owner_cal_cache[organizer_uid] = default_cfg.id
+                elif len(owned) == 1:
+                    owner_cal_cache[organizer_uid] = owned.id
                 elif owned:
-                    owner_cal_cache[organizer_uid] = owned[0].id
+                    owner_cal_cache[organizer_uid] = False
                 else:
-                    owner_cal_cache[organizer_uid] = default_cal_id
+                    owner_cal_cache[organizer_uid] = default_cfg.id
             return owner_cal_cache[organizer_uid]
 
+        # A calendar given by the context (the « Events » screen of a config)
+        # is an explicit choice, like one in vals: taken before the routing,
+        # so the event is stamped below. Left to super().create(), it landed
+        # after the stamping, without a UID, and its push failed.
+        ctx_cal_id = self.env.context.get("default_x_nc_calendar_id")
         for vals in vals_list:
+            if ctx_cal_id and "x_nc_calendar_id" not in vals:
+                vals["x_nc_calendar_id"] = ctx_cal_id
             if (
-                default_cal_id
+                default_cfg
                 and not vals.get("x_nc_calendar_id")
                 and not vals.get("x_sync_source")
             ):
                 organizer_uid = vals.get("user_id") or self.env.uid
-                vals["x_nc_calendar_id"] = _calendar_for_organizer(organizer_uid)
+                cal_id = _calendar_for_organizer(organizer_uid)
+                if cal_id:
+                    vals["x_nc_calendar_id"] = cal_id
 
         # Set sync source to 'odoo' if not specified (means created in Odoo)
         # Also inherit color from the calendar config
@@ -495,10 +533,15 @@ class CalendarEvent(models.Model):
         uid_domain = nc_config_model._get_event_uid_domain()
         color_cache = {}
         for vals in vals_list:
-            if "x_sync_source" not in vals and "x_nc_calendar_id" in vals:
+            # Stamped only when a calendar is set: a caller may send the key
+            # set to False (a web form sends every field), and an event routed
+            # nowhere then got an x_sync_source and an x_nc_uid without any
+            # calendar. The key is kept: dropping it would let a
+            # default_x_nc_calendar_id from the context fill it afterwards.
+            if "x_sync_source" not in vals and vals.get("x_nc_calendar_id"):
                 vals["x_sync_source"] = "odoo"
             # Generate NC UID if not provided
-            if "x_nc_uid" not in vals and "x_nc_calendar_id" in vals:
+            if "x_nc_uid" not in vals and vals.get("x_nc_calendar_id"):
                 vals["x_nc_uid"] = f"{uuid.uuid4()}@{uid_domain}"
             # Inherit color from calendar config
             cal_id = vals.get("x_nc_calendar_id")
@@ -1337,6 +1380,9 @@ class CalendarEvent(models.Model):
         if not config or config.backend_type != "nextcloud":
             return config.browse()
         if config.sync_direction == "nc_to_odoo":
+            return config.browse()
+        # Archived = cut off, as in _trigger_sync_webhook.
+        if not config.active:
             return config.browse()
         if not config.nextcloud_app_password_encrypted:
             return config.browse()

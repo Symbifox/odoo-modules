@@ -133,7 +133,17 @@
     #   (une date exclue dans Nextcloud, série inchangée) et
     #   `_bf_nc_archivee_revient` (une rencontre supprimée dans Nextcloud puis
     #   restaurée là-bas). Sans ce module, rien ne change.
-    "version": "18.0.2.27.0",
+    # 18.0.2.28.0: un événement neuf n'est plus rattaché d'office à l'agenda
+    #   d'un autre quand l'agenda par défaut est archivé (le repli « première
+    #   config active de l'organisateur » choisissait n'importe laquelle).
+    #   Défaut archivé ou supprimé = aucun rattachement ; repli sur
+    #   l'organisateur seulement s'il n'a qu'UNE config active ; archiver ou
+    #   supprimer la config par défaut remet le défaut à 0 et le dit sur la
+    #   config ; une config archivée ne reçoit plus aucune poussée ; une
+    #   config donnée par le contexte l'emporte sur le routage. Limite : la
+    #   corbeille et les plages retenues appellent encore Google sans regarder
+    #   `active`.
+    "version": "18.0.2.28.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

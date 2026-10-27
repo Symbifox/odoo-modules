@@ -112,14 +112,20 @@ class ResConfigSettings(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        cal_id = int(
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("calendar_nextcloud_sync.default_calendar_id", "0")
-        )
+        try:
+            cal_id = int(
+                self.env["ir.config_parameter"]
+                .sudo()
+                .get_param("calendar_nextcloud_sync.default_calendar_id", "0")
+                or 0
+            )
+        except ValueError:
+            cal_id = 0
         if cal_id:
             cal = self.env["nextcloud.calendar.sync.config"].browse(cal_id)
-            if cal.exists():
+            # An archived default routes nothing: show none rather than a
+            # calendar that new events no longer go to.
+            if cal.exists() and cal.active:
                 res["nc_sync_default_calendar_id"] = cal_id
         cron = self.env.ref(
             "calendar_nextcloud_sync.cron_nextcloud_calendar_sync",

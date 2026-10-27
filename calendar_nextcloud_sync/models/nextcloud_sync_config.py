@@ -225,6 +225,46 @@ class NextcloudCalendarSyncConfig(models.Model):
                     vals["webhook_secret"] = default_secret
         return super().create(vals_list)
 
+    def write(self, vals):
+        res = super().write(vals)
+        if "active" in vals and not vals["active"]:
+            self._bf_leave_default(note=True)
+        return res
+
+    def unlink(self):
+        self._bf_leave_default(note=False)
+        return super().unlink()
+
+    def _bf_leave_default(self, note):
+        """Archiving or deleting the default config sets the default to 0.
+
+        A default left on an archived config is what let new events drift to
+        another calendar (the create() routing now ignores it too).
+        Clearing it says so where the admin looks, on the config itself.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        key = "calendar_nextcloud_sync.default_calendar_id"
+        try:
+            default_id = int(ICP.get_param(key, "0") or 0)
+        except ValueError:
+            return
+        if not default_id or default_id not in self.ids:
+            return
+        ICP.set_param(key, "0")
+        config = self.browse(default_id)
+        _logger.warning(
+            "Calendar sync: config %s (%s) archived or deleted while it was the "
+            "default calendar; default set to none.", default_id, config.name,
+        )
+        if note:
+            config.write({
+                "last_sync_message": (
+                    "Was the default calendar for new events: the default is now "
+                    "none. New events are not routed to any sync calendar until a "
+                    "default is chosen again in Settings."
+                ),
+            })
+
     @api.model
     def _get_event_uid_domain(self):
         """Return the domain suffix used when generating new event UIDs.
@@ -1256,6 +1296,14 @@ class NextcloudCalendarSyncConfig(models.Model):
             return self._sync_notification(
                 "Sync direction is Nextcloud \u2192 Odoo only. "
                 "Cannot push to Nextcloud.",
+                "warning",
+            )
+
+        # Archived = cut off: nothing would leave, and the events would be
+        # stamped and counted as pushed.
+        if not self.active:
+            return self._sync_notification(
+                "This calendar is archived: nothing is pushed to it.",
                 "warning",
             )
 

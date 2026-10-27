@@ -12,3 +12,4 @@ from . import test_sans_planification_nc
 from . import test_profil
 from . import test_retouche
 from . import test_classe_categories
+from . import test_routage_defaut
