@@ -128,6 +128,22 @@ class BfBudgetLine(models.Model):
              "flagged.",
     )
     overrun_reason = fields.Text(string="Overrun reason")
+    alert_raised_date = fields.Date(
+        string="Alert raised on",
+        readonly=True,
+        copy=False,
+        help="When the line crossed the alert threshold and its budget's "
+             "responsible was told. Cleared once the line stops being "
+             "flagged, so that a new crossing alerts again.",
+    )
+    alert_unassigned = fields.Boolean(
+        string="Alert not delivered",
+        readonly=True,
+        copy=False,
+        help="The crossing was noted, but nobody could be told: the budget "
+             "had no responsible able to read it. The responsible gets it "
+             "as soon as they can.",
+    )
 
     _sql_constraints = [
         (

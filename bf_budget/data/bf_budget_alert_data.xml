@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Type dédié aux alertes de budget : il permet au travail planifié de
+             reconnaître SES alertes (pour ne pas en empiler une deuxième, et
+             pour les fermer quand plus aucune ligne n'est signalée) sans toucher
+             aux autres tâches posées sur la fiche. -->
+        <record id="mail_activity_type_budget_alert" model="mail.activity.type">
+            <field name="name">Budget alert</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="res_model">bf.budget</field>
+            <field name="delay_count">0</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="ir_cron_budget_alerts" model="ir.cron">
+            <field name="name">Budgets: alert on threshold crossings</field>
+            <field name="model_id" ref="model_bf_budget"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_alerts()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

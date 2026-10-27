@@ -89,3 +89,9 @@ def post_init_hook(env):
 
 def uninstall_hook(env):
     restore_third_party_menus(env)
+    # Le type d'activité est en `ondelete="restrict"` côté activité : des
+    # alertes encore ouvertes le retiendraient, orphelin, après le départ du
+    # module.
+    activity_type = env.ref("bf_budget.mail_activity_type_budget_alert", raise_if_not_found=False)
+    if activity_type:
+        env["mail.activity"].sudo().search([("activity_type_id", "=", activity_type.id)]).unlink()

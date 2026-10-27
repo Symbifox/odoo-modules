@@ -1,14 +1,46 @@
-from dateutil.relativedelta import relativedelta
+import logging
 
-from odoo import _, api, fields, models
+from dateutil.relativedelta import relativedelta
+from markupsafe import Markup
+
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import formatLang, format_amount
 
 from .bf_budget_position import EXPENSE_TYPES, REVENUE_TYPES
+
+_logger = logging.getLogger(__name__)
 
 # Champs qu'un budget ouvert ne laisse plus toucher. Le reste (suivi, motif de
 # dépassement, abonnés) reste modifiable : geler le plan n'est pas geler la
 # conversation autour du plan.
 FROZEN_FIELDS = {"date_start", "date_end", "budget_type", "company_id", "line_ids"}
+
+# Seuils par défaut d'un budget neuf, réglables par instance. Aucune source ne
+# donne de chiffre défendable : c'est un choix, d'où le réglage.
+PARAM_DEFAULT_PCT = "bf_budget.default_alert_threshold_pct"
+PARAM_DEFAULT_AMOUNT = "bf_budget.default_alert_threshold_amount"
+DEFAULT_ALERT_PCT = 10.0
+DEFAULT_ALERT_AMOUNT = 250.0
+
+ALERT_ACTIVITY_XMLID = "bf_budget.mail_activity_type_budget_alert"
+BUDGET_USER_GROUP_XMLID = "bf_budget.group_bf_budget_user"
+
+
+def _param_float(env, key, fallback):
+    """Un paramètre numérique, avec repli.
+
+    🔴 Le repli est obligatoire : `get_param` d'une clé absente rend `False`, et
+    `float(False)` vaut 0.0 — un seuil à zéro qui signalerait tout.
+    """
+    raw = env["ir.config_parameter"].sudo().get_param(key)
+    if raw in (False, None, ""):
+        return fallback
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        _logger.warning("bf_budget: unreadable value %r for %s, using %s", raw, key, fallback)
+        return fallback
 
 
 class BfBudget(models.Model):
@@ -70,15 +102,32 @@ class BfBudget(models.Model):
                                                              "original.")
     revision_ids = fields.One2many("bf.budget", "revision_of_id", string="Revisions")
 
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible",
+        default=lambda self: self._default_user_id(),
+        domain=lambda self: self._user_id_domain(),
+        tracking=True,
+        index=True,
+        help="Receives an activity when a line crosses the alert "
+             "threshold. Without a responsible, the alert is only noted "
+             "in the chatter.",
+    )
+    alert_recipient_ok = fields.Boolean(
+        string="Responsible can be alerted",
+        compute="_compute_alert_recipient_ok",
+        help="The responsible can receive the alerts of this budget: an "
+             "active internal user of its company, with access to budgets.",
+    )
     alert_threshold_pct = fields.Float(
         string="Alert threshold (%)",
-        default=10.0,
+        default=lambda self: _param_float(self.env, PARAM_DEFAULT_PCT, DEFAULT_ALERT_PCT),
         help="Variance beyond which a line is flagged. No market practice "
              "sets this figure: it is a choice, not a truth.",
     )
     alert_threshold_amount = fields.Monetary(
         string="Alert floor",
-        default=250.0,
+        default=lambda self: _param_float(self.env, PARAM_DEFAULT_AMOUNT, DEFAULT_ALERT_AMOUNT),
         currency_field="currency_id",
         help="Below this amount, a variance is not flagged, even as a "
              "percentage. Keeps a 40% overrun on a $50 budget item from "
@@ -123,6 +172,40 @@ class BfBudget(models.Model):
     # ------------------------------------------------------------------
     # Calculs
     # ------------------------------------------------------------------
+    @api.model
+    def _default_user_id(self):
+        """Qui crée le budget en répond, sauf le superutilisateur.
+
+        Un budget créé par un script ou une migration porte uid 1 : en faire le
+        responsable enverrait chaque alerte à un compte que personne ne lit.
+        """
+        user = self.env.user
+        if user.id == SUPERUSER_ID or user.share:
+            return False
+        return user
+
+    @api.model
+    def _user_id_domain(self):
+        """Les seules personnes qui peuvent recevoir une alerte.
+
+        Même règle que `_alert_recipient`, sauf l'état actif (le champ n'offre
+        déjà que des comptes actifs). Le groupe se lit par son id : un domaine
+        de champ ne résout pas un xmlid.
+        """
+        domain = "[('share', '=', False), ('company_ids', 'in', company_id)"
+        group = self.env.ref(BUDGET_USER_GROUP_XMLID, raise_if_not_found=False)
+        if group:
+            domain += ", ('groups_id', 'in', %d)" % group.id
+        return domain + "]"
+
+    @api.depends("user_id", "company_id")
+    def _compute_alert_recipient_ok(self):
+        # sudo : la règle lit la fiche de l'usager (sociétés, groupes, état), que
+        # la personne qui ouvre le budget ne peut pas toujours lire en entier.
+        # Le booléen ne dit rien de plus que le bandeau qu'il pilote.
+        for budget in self:
+            budget.alert_recipient_ok = bool(budget.sudo()._alert_recipient())
+
     @api.depends("line_ids")
     def _compute_line_count(self):
         for budget in self:
@@ -197,7 +280,14 @@ class BfBudget(models.Model):
                         name=locked[0].display_name,
                     )
                 )
-        return super().write(vals)
+        # Réécrire le même responsable (édition de masse, import, script) ne
+        # change rien : sans cette comparaison, les dates s'effaceraient et la
+        # passe suivante redirait note et activité.
+        before = {budget.id: budget.user_id for budget in self} if "user_id" in vals else {}
+        res = super().write(vals)
+        if before:
+            self.filtered(lambda b: b.user_id != before[b.id])._on_responsible_changed()
+        return res
 
     def unlink(self):
         opened = self.filtered(lambda b: b.state != "draft")
@@ -356,6 +446,248 @@ class BfBudget(models.Model):
             end += relativedelta(years=1)
         start = end + relativedelta(days=1, years=-1)
         return start, end
+
+    # ------------------------------------------------------------------
+    # Alertes
+    # ------------------------------------------------------------------
+    @api.model
+    def _cron_check_alerts(self):
+        """Prévenir au FRANCHISSEMENT du seuil, pas à chaque passage.
+
+        Une ligne qui franchit le seuil est notée au fil du budget et donne une
+        activité à son responsable, une fois. Elle ne le refait pas tant qu'elle
+        reste signalée : la mémoire du franchissement (`alert_raised_date`) ne
+        s'efface que quand la ligne cesse de l'être, par un retour sous le seuil
+        ou un dépassement assumé. Une alerte qui revient chaque matin cesse
+        d'être lue, et une alerte qu'on ne lit plus ne protège rien.
+        """
+        Budget = self.sudo()
+        for budget in Budget.search([("state", "=", "open")]):
+            try:
+                with self.env.cr.savepoint():
+                    budget.with_company(budget.company_id)._check_alerts()
+            except Exception:
+                # Un budget qui échoue ne prive pas les autres de leurs alertes.
+                _logger.exception("bf_budget: alert check failed for budget %s", budget.id)
+                self.env.invalidate_all()
+        try:
+            with self.env.cr.savepoint():
+                Budget._release_alerts_off_open_budgets()
+        except Exception:
+            # Le ménage qui échoue n'annule pas les alertes de la passe.
+            _logger.exception("bf_budget: releasing alerts of budgets no longer open failed")
+            self.env.invalidate_all()
+        return True
+
+    def _check_alerts(self):
+        """Une passe sur un budget ouvert. Rend les lignes qui viennent de franchir."""
+        self.ensure_one()
+        lines = self.line_ids
+        flagged = lines.filtered("is_alert")
+        # Réarmer d'abord : une ligne revenue sous le seuil (ou assumée) doit
+        # pouvoir prévenir de nouveau si elle repasse au-dessus.
+        (lines - flagged).filtered(lambda line: line.alert_raised_date or line.alert_unassigned).write(
+            {"alert_raised_date": False, "alert_unassigned": False}
+        )
+        fresh = flagged.filtered(lambda line: not line.alert_raised_date)
+        recipient = self._alert_recipient()
+        if recipient:
+            # Notées quand personne ne pouvait être prévenu (responsable sans le
+            # groupe, archivé, d'une autre société) : le responsable redevenu
+            # joignable les reçoit, sinon le franchissement reste muet pour lui.
+            fresh |= flagged.filtered("alert_unassigned")
+        if fresh:
+            fresh.write({
+                "alert_raised_date": fields.Date.context_today(self),
+                "alert_unassigned": not recipient,
+            })
+            self._notify_alert(fresh)
+        if not flagged:
+            self._close_alert_activities(self._alert_env()._("No line is flagged anymore."))
+        return fresh
+
+    def _alert_env(self):
+        """L'environnement dans la langue du responsable.
+
+        Le travail planifié n'a pas de langue : l'alerte part dans celle de qui
+        devra agir.
+        """
+        self.ensure_one()
+        lang = self.user_id.lang or self.company_id.partner_id.lang or "en_US"
+        return self.with_context(lang=lang).env
+
+    def _alert_recipient(self):
+        """Le responsable, s'il peut lire le budget ; sinon personne.
+
+        Une activité confiée à quelqu'un qui ne peut pas ouvrir la fiche est une
+        alerte perdue qui a l'air livrée.
+        """
+        self.ensure_one()
+        user = self.user_id
+        nobody = self.env["res.users"]
+        if not user or not user.active or user.share:
+            return nobody
+        if self.company_id not in user.company_ids:
+            return nobody
+        if not user.has_group("bf_budget.group_bf_budget_user"):
+            return nobody
+        return user
+
+    def _on_responsible_changed(self):
+        """Un nouveau responsable hérite de l'alerte en cours.
+
+        Sans ceci, une ligne déjà notée (par exemple « personne n'a été assigné »)
+        resterait muette pour la personne nommée ensuite : sa date de
+        franchissement dit « déjà prévenu ».
+        """
+        for budget in self.filtered(lambda b: b.state == "open"):
+            activities = budget._alert_activities()
+            recipient = budget._alert_recipient()
+            if activities and recipient:
+                # Odoo prévient le nouvel assigné quand l'activité change de main.
+                activities.write({"user_id": recipient.id})
+            elif not activities and recipient:
+                # Réarmer vers un responsable qui ne peut rien recevoir ne ferait
+                # que reposter la note « personne n'a été assigné ».
+                budget.line_ids.sudo().filtered("alert_raised_date").write(
+                    {"alert_raised_date": False, "alert_unassigned": False}
+                )
+
+    def _alert_activity_type(self):
+        return self.env.ref(ALERT_ACTIVITY_XMLID, raise_if_not_found=False)
+
+    def _alert_activities(self):
+        """Les activités d'alerte encore ouvertes sur ces budgets, et seulement elles.
+
+        Le type dédié est ce qui permet de fermer SES alertes sans toucher aux
+        autres tâches posées sur la fiche.
+        """
+        activity_type = self._alert_activity_type()
+        if not activity_type or not self:
+            return self.env["mail.activity"]
+        return self.env["mail.activity"].sudo().search(
+            [
+                ("res_model", "=", self._name),
+                ("res_id", "in", self.ids),
+                ("activity_type_id", "=", activity_type.id),
+            ]
+        )
+
+    def _notify_alert(self, lines):
+        """Une note au fil du budget, et une activité au responsable s'il n'en a pas déjà une."""
+        self.ensure_one()
+        env = self._alert_env()
+        recipient = self._alert_recipient()
+        activity_type = self._alert_activity_type()
+        standing = self._alert_activities()
+        currency = self.currency_id
+
+        def money(amount):
+            return format_amount(env, amount, currency)
+
+        def percent(value, digits):
+            # Dans la langue du responsable : « 68,9 % », pas « 68.9 % ».
+            return "%s %%" % formatLang(env, value, digits=digits)
+
+        items = Markup("").join(
+            Markup("<li>%s</li>") % env._(
+                "%(line)s: committed %(committed)s, theoretical %(theoretical)s, "
+                "variance %(drift)s (%(pct)s)",
+                line=line.name or line.display_name,
+                committed=money(line.amount_committed),
+                theoretical=money(line.amount_theoretical),
+                drift=money(line.amount_drift),
+                pct=percent(line.drift_pct, 1),
+            )
+            for line in lines
+        )
+        threshold = {
+            "count": len(lines),
+            # 7,5 % ne s'arrondit pas à 8 % : une décimale quand il y en a une.
+            "pct": percent(self.alert_threshold_pct, 0 if self.alert_threshold_pct.is_integer() else 1),
+            "floor": money(self.alert_threshold_amount),
+        }
+        if len(lines) == 1:
+            crossed = env._(
+                "One line crossed the alert threshold (%(pct)s and at least %(floor)s).",
+                **threshold,
+            )
+        else:
+            crossed = env._(
+                "%(count)s lines crossed the alert threshold (%(pct)s and at least %(floor)s).",
+                **threshold,
+            )
+        body = Markup("<p><b>%s</b> %s</p><ul>%s</ul>") % (env._("Budget alert."), crossed, items)
+        if not recipient:
+            body += Markup("<p>%s</p>") % env._(
+                "No responsible who can read this budget: nobody was assigned."
+            )
+        # Une activité déjà ouverte n'en appelle pas une deuxième, et sans type
+        # d'activité (supprimé) il n'y en a pas : le responsable est alors
+        # prévenu par la note elle-même.
+        assign = bool(recipient and activity_type and not standing)
+        mention = recipient.partner_id.ids if recipient and not assign else []
+        self.with_env(env).message_post(
+            body=body,
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+            partner_ids=mention,
+        )
+        if recipient and not activity_type:
+            _logger.warning(
+                "bf_budget: alert activity type missing, budget %s: the responsible is only mentioned",
+                self.id,
+            )
+        if assign:
+            if len(lines) == 1:
+                summary = env._("One line in alert")
+            else:
+                summary = env._("%(count)s lines in alert", count=len(lines))
+            self.with_env(env).activity_schedule(
+                activity_type_id=activity_type.id,
+                date_deadline=fields.Date.context_today(self),
+                # Odoo préfixe déjà l'objet de l'avis du nom de la fiche : le
+                # résumé ne le répète pas.
+                summary=summary,
+                # Neutre : sur un budget de revenus, l'écart est un manque, pas
+                # un dépassement.
+                note=Markup("<p>%s</p>") % env._(
+                    "Check the flagged lines. A known variance is accepted on "
+                    "its line, with its reason: the line then stops being "
+                    "flagged, and this activity closes by itself once no line "
+                    "is flagged."
+                ),
+                user_id=recipient.id,
+            )
+
+    def _close_alert_activities(self, reason):
+        for budget in self:
+            activities = budget._alert_activities()
+            if activities:
+                activities.with_env(budget._alert_env()).action_feedback(feedback=reason)
+
+    @api.model
+    def _release_alerts_off_open_budgets(self):
+        """Ce qui n'est plus ouvert n'alerte plus, et ne garde pas sa mémoire.
+
+        La mémoire d'un franchissement ne vit que le temps que son budget est
+        ouvert. Sans ce ménage, un budget remis au brouillon puis rouvert
+        retrouverait ses lignes « déjà prévenues » alors que leur activité a été
+        fermée : un dépassement muet.
+        """
+        activity_type = self._alert_activity_type()
+        if activity_type:
+            activities = self.env["mail.activity"].sudo().search(
+                [("res_model", "=", self._name), ("activity_type_id", "=", activity_type.id)]
+            )
+            budgets = self.sudo().browse(set(activities.mapped("res_id"))).exists()
+            for budget in budgets.filtered(lambda b: b.state != "open"):
+                budget._close_alert_activities(
+                    budget._alert_env()._("The budget is no longer open.")
+                )
+        self.env["bf.budget.line"].sudo().search(
+            [("state", "!=", "open"), "|", ("alert_raised_date", "!=", False), ("alert_unassigned", "=", True)]
+        ).write({"alert_raised_date": False, "alert_unassigned": False})
 
     # ------------------------------------------------------------------
     # Rapport

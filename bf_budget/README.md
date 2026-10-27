@@ -60,7 +60,22 @@ missing.
 A line is flagged when its drift passes **both** a percentage and a currency
 floor. Both, never one alone: a percentage alone screams about small posts, an
 amount alone stays silent about large ones. No published practice fixes these
-numbers, so the module does not invent them: they are settings.
+numbers, so the module does not invent them: they are settings. New budgets
+take the instance defaults (10 % and 250 by default, under Settings > Budgets),
+and each budget keeps its own.
+
+Each budget has a **responsible**. A daily scheduled job tells them when a line
+**crosses** the threshold, once: a note in the budget's chatter and an activity
+assigned to them, in their language. The line does not alert again while it
+stays flagged. It is re-armed when it stops being flagged, either because
+spending falls back under the threshold or because the variance is accepted on
+the line, with its reason. The activity closes by itself once no line is
+flagged, or when the budget is no longer open.
+
+The activity goes only to a responsible who can read the budget (active,
+internal, in the budget's company, with access to budgets). Otherwise the note
+says that nobody was assigned, the budget form shows a warning, and the alert
+reaches the responsible as soon as they can be told.
 
 ## Hours logged but valued at zero
 
@@ -76,11 +91,12 @@ present and adds one thing.
 
 | Module | Adds |
 |---|---|
-| `bf_budget` | The base: positions, budgets, monthly split, the four amounts |
+| `bf_budget` | The base: positions, budgets, monthly split, the four amounts, alerts |
 | `bf_budget_subscription` | Recurring commitments: committed stops waiting for the invoice, and the theoretical follows the renewal calendar |
 | `bf_budget_forecast` | The rolling forecast: a moving horizon, an actuals cut-off, and numbered vintages you can compare |
 | `bf_budget_forecast_subscription` | Seeds forecast months from the dated calendar instead of a flat average |
 | `bf_budget_campaign` | Ties a marketing campaign to an analytic account, so a campaign knows what it spent |
+| `bf_budget_expense` | Approved expense reports enter committed before they are posted; submitted ones are shown apart, in no amount |
 
 ## Extension points
 
@@ -90,10 +106,16 @@ return nothing in the base module. `_seed_value_for()` on
 confirmed purchase orders, approved expenses and dated subscription renewals —
 and drivers, one day, without breaking anything.
 
+
 ## Languages (v18.0.1.1.0)
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The budget position is labelled **Budget item** in English, as in the rest of the family, so it no longer reads like a budget line. The positions the wizard proposes and the type shown on each report row are read in the user's language.
 
+## Alerts that reach someone (v18.0.1.2.0)
+
+A responsible per budget, told once when a line crosses the threshold (a chatter note and an activity), re-armed when the line stops being flagged. Default thresholds are set per instance under Settings. See *Alerts* above.
 ## Licence
 
-LGPL-3.
+Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
+its Change Date: 2030-10-27 for this one. In the meantime, use in production for
+your own internal business operations is permitted.

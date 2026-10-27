@@ -110,7 +110,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
-| `bf_budget` | Budgets opérationnels | 18.0.1.1.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget` | Budgets opérationnels | 18.0.1.2.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |

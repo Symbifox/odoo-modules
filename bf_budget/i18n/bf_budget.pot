@@ -1,11 +1,13 @@
-# Translation template for Budgets opérationnels.
-# The module's source strings are written in English.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_budget
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_budget 18.0.1.1.0\n"
+"Project-Id-Version: bf_budget 18.0.1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 00:01+0000\n"
-"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"POT-Creation-Date: 2026-10-27 10:39+0000\n"
+"PO-Revision-Date: 2026-10-27 10:39+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,6 +33,28 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
 msgid "%(code)s - %(name)s: %(n)s account(s)"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"%(count)s lines crossed the alert threshold (%(pct)s and at least "
+"%(floor)s)."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line crossed the alert threshold (%(pct)s and at least %(floor)s)."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"%(line)s: committed %(committed)s, theoretical %(theoretical)s, variance "
+"%(drift)s (%(pct)s)"
 msgstr ""
 
 #. module: bf_budget
@@ -190,38 +214,31 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_needaction
 msgid "Action Needed"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__active
 msgid "Active"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_ids
 msgid "Activities"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_state
 msgid "Activity State"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_type_icon
 msgid "Activity Type Icon"
 msgstr ""
@@ -254,12 +271,18 @@ msgid "Alert floor"
 msgstr ""
 
 #. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_raised_date
+msgid "Alert raised on"
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_threshold_pct
 msgid "Alert threshold (%)"
 msgstr ""
 
 #. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_list
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
 msgid "Alerts"
 msgstr ""
 
@@ -289,13 +312,11 @@ msgid "Analytic accounts"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
 msgid "Archived"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_attachment_count
 msgid "Attachment Count"
 msgstr ""
@@ -326,6 +347,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__budget_type
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__budget_type
 msgid "Budget Type"
+msgstr ""
+
+#. module: bf_budget
+#: model:mail.activity.type,name:bf_budget.mail_activity_type_budget_alert
+msgid "Budget alert"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "Budget alert."
 msgstr ""
 
 #. module: bf_budget
@@ -429,16 +461,28 @@ msgid "Budgets"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.actions.server,name:bf_budget.ir_cron_budget_alerts_ir_actions_server
+msgid "Budgets: alert on threshold crossings"
+msgstr ""
+
+#. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "Cancel"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__cancelled
 msgid "Cancelled"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"Check the flagged lines. A known variance is accepted on its line, with its "
+"reason: the line then stops being flagged, and this activity closes by "
+"itself once no line is flagged."
 msgstr ""
 
 #. module: bf_budget
@@ -452,7 +496,6 @@ msgid "Closed"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_fundraising_core
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__code
 msgid "Code"
 msgstr ""
@@ -480,9 +523,6 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__company_id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__company_id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__company_id
@@ -496,7 +536,11 @@ msgid "Competing menus"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_letter_writer, bf_music_licensing
+#: model:ir.model,name:bf_budget.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.ui.menu,name:bf_budget.menu_bf_budget_config
 msgid "Configuration"
 msgstr ""
@@ -533,8 +577,6 @@ msgid "Create your first budget item"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__create_uid
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__create_uid
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__create_uid
@@ -544,8 +586,6 @@ msgid "Created by"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__create_date
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__create_date
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__create_date
@@ -560,7 +600,6 @@ msgid "Creates budget items and budgets, opens, revises and closes them."
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_fundraising_core, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__currency_id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__currency_id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__currency_id
@@ -578,14 +617,27 @@ msgid "Date Start"
 msgstr ""
 
 #. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_res_config_settings__bf_budget_default_alert_threshold_amount
+msgid "Default alert floor"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_res_config_settings__bf_budget_default_alert_threshold_pct
+msgid "Default alert threshold (%)"
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid "Default alert thresholds"
+msgstr ""
+
+#. module: bf_budget
 #. odoo-python
 #: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
 msgid "Depreciation"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__display_name
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__display_name
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__display_name
@@ -595,7 +647,6 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__state__draft
 msgid "Draft"
 msgstr ""
@@ -612,12 +663,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
 msgid "Expenses"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__failed_message_ids
-msgid "Failed Messages"
 msgstr ""
 
 #. module: bf_budget
@@ -646,26 +691,41 @@ msgid "Flagged lines"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_follower_ids
 msgid "Followers"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_partner_ids
 msgid "Followers (Partners)"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_fundraising_core, bf_gantt, bf_letter_writer,
-#. bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_res_config_settings__bf_budget_default_alert_threshold_amount
+msgid ""
+"Given to new budgets, in the currency of their company. Below this amount, a"
+" variance is not flagged."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_res_config_settings__bf_budget_default_alert_threshold_pct
+msgid "Given to new budgets. Each budget keeps its own and can change it."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.res_config_settings_view_form
+msgid ""
+"Given to new budgets: a line is flagged when its variance from the "
+"theoretical exceeds BOTH the percentage and the floor. Each budget keeps its"
+" own thresholds and can change them."
+msgstr ""
+
+#. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_search
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
@@ -673,7 +733,6 @@ msgid "Group by"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__has_message
 msgid "Has Message"
 msgstr ""
@@ -698,8 +757,6 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__id
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__id
@@ -709,32 +766,27 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_exception_icon
 msgid "Icon"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_error
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
 msgid "In progress"
 msgstr ""
@@ -752,14 +804,11 @@ msgid "Internal cost (outside accounting)"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_is_follower
 msgid "Is Follower"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__write_uid
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__write_uid
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__write_uid
@@ -769,8 +818,6 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__write_date
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__write_date
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__write_date
@@ -780,7 +827,6 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__line_id
 msgid "Line"
 msgstr ""
@@ -791,7 +837,6 @@ msgid "Line Count"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__line_ids
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "Lines"
@@ -812,43 +857,16 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_letter_writer, bf_music_licensing
 #: model:res.groups,name:bf_budget.group_bf_budget_manager
 msgid "Manager"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_content
-msgid "Message Content"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_error
 msgid "Message Delivery error"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_search
-msgid "Message Search"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
-#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_content
-msgid "Message content, to be used only in searches"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_search
-msgid "Message search, to be used only in searches"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_ids
 msgid "Messages"
 msgstr ""
@@ -864,14 +882,16 @@ msgid "Monthly breakdown of a budget line"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
-#. bf_letter_writer, bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "My budgets"
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__name
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__name
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__name
@@ -879,25 +899,16 @@ msgid "Name"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_summary
 msgid "Next Activity Summary"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_type_id
 msgid "Next Activity Type"
 msgstr ""
@@ -909,8 +920,20 @@ msgstr ""
 
 #. module: bf_budget
 #. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "No line is flagged anymore."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
 #: code:addons/bf_budget/wizard/bf_budget_position_wizard.py:0
 msgid "No operating account of this type in this company."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "No responsible who can read this budget: nobody was assigned."
 msgstr ""
 
 #. module: bf_budget
@@ -921,25 +944,21 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_needaction_counter
 msgid "Number of Actions"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_error_counter
 msgid "Number of errors"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__message_needaction_counter
 msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr ""
@@ -1076,31 +1095,35 @@ msgid "Prorated from the breakdown"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__note
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
 msgid "Rationale"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:res.groups,name:bf_budget.group_bf_budget_user
 msgid "Read-only"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_letter_writer
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__user_id
+msgid ""
+"Receives an activity when a line crosses the alert threshold. Without a "
+"responsible, the alert is only noted in the chatter."
+msgstr ""
+
+#. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "Reset to draft"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__user_id
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
+msgid "Responsible"
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_user_id
 msgid "Responsible User"
 msgstr ""
@@ -1152,14 +1175,11 @@ msgid "Revisions"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__sequence
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line_period__sequence
 msgid "Sequence"
@@ -1199,7 +1219,6 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__source
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_line_view_search
 msgid "Source"
@@ -1211,7 +1230,6 @@ msgid "Spread evenly"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__state
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__state
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_search
@@ -1219,7 +1237,6 @@ msgid "State"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_state
 msgid ""
 "Status based on activities\n"
@@ -1247,6 +1264,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget_line.py:0
 msgid "The breakdown can only be redone on a draft budget."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "The budget is no longer open."
 msgstr ""
 
 #. module: bf_budget
@@ -1326,11 +1349,19 @@ msgstr ""
 
 #. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
+msgid ""
+"This budget has no responsible who can receive its alerts (an active "
+"internal user of its company, with access to budgets): when a line crosses "
+"the alert threshold, the alert is only noted in the chatter, and nobody is "
+"assigned."
+msgstr ""
+
+#. module: bf_budget
+#: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "This budget is a revision. The original can still be viewed:"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_music_licensing
 #: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
 msgid "Total"
 msgstr ""
@@ -1341,7 +1372,6 @@ msgid "Totals"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr ""
@@ -1399,13 +1429,11 @@ msgid "Views budgets and their variances, without changing anything."
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__website_message_ids
 msgid "Website Messages"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model:ir.model.fields,help:bf_budget.field_bf_budget__website_message_ids
 msgid "Website communication history"
 msgstr ""
@@ -1413,6 +1441,14 @@ msgstr ""
 #. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position_wizard__preview
 msgid "What will be created"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_raised_date
+msgid ""
+"When the line crossed the alert threshold and its budget's responsible was "
+"told. Cleared once the line stops being flagged, so that a new crossing "
+"alerts again."
 msgstr ""
 
 #. module: bf_budget
@@ -1434,7 +1470,84 @@ msgid "revenue"
 msgstr ""
 
 #. module: bf_budget
-#. modules: bf_budget, bf_gantt
 #: model_terms:ir.ui.view,arch_db:bf_budget.report_bf_budget
 msgid "to"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_budget
+#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "%(count)s lines in alert"
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line in alert"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_recipient_ok
+msgid "Responsible can be alerted"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_recipient_ok
+msgid ""
+"The responsible can receive the alerts of this budget: an active internal "
+"user of its company, with access to budgets."
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_unassigned
+msgid "Alert not delivered"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_unassigned
+msgid ""
+"The crossing was noted, but nobody could be told: the budget had no "
+"responsible able to read it. The responsible gets it as soon as they can."
 msgstr ""

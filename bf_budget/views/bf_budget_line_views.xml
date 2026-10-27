@@ -51,6 +51,7 @@
                             <field name="amount_committed"/>
                             <field name="amount_drift"/>
                             <field name="is_alert"/>
+                            <field name="alert_raised_date" invisible="not alert_raised_date"/>
                             <field name="has_unvalued_time" invisible="1"/>
                             <field name="unvalued_hours" invisible="not has_unvalued_time"/>
                         </group>

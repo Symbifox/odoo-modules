@@ -1,10 +1,13 @@
 {
     "name": "Budgets opérationnels",
+    # 18.0.1.2.0: les alertes. Un responsable par budget, prévenu une fois au
+    #   franchissement du seuil (note et activité), réarmé quand la ligne cesse
+    #   d'être signalée. Seuils par défaut réglables par instance.
     # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -43,6 +46,12 @@ saisie préalable.
   Il se révise : la révision est un nouvel enregistrement numéroté, l'original reste
   consultable. Un budget qu'on retouche en douce ne mesure plus rien.
 
+**Prévenir au franchissement, une fois**
+  Une ligne qui dépasse le seuil (pourcentage ET plancher en dollars) est notée au
+  fil du budget, et son responsable reçoit une activité. Elle ne le refait pas tant
+  qu'elle reste signalée. Un dépassement assumé, avec son motif, la fait taire et
+  ferme l'activité.
+
 **Contrôle de couverture**
   Le module signale les comptes de charge qu'aucun poste ne couvre et ceux que deux
   postes couvrent en double, sans quoi un budget peut paraître respecté parce qu'un
@@ -51,6 +60,7 @@ saisie préalable.
     "data": [
         "security/bf_budget_security.xml",
         "security/ir.model.access.csv",
+        "data/bf_budget_alert_data.xml",
         "views/bf_budget_position_views.xml",
         "views/bf_budget_views.xml",
         "views/bf_budget_line_views.xml",

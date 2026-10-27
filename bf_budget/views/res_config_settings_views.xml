@@ -7,6 +7,22 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app string="Budgets" name="bf_budget" logo_backgroundColor="#29ABE2">
+                    <block title="Alerts" name="bf_budget_alerts">
+                        <setting id="bf_budget_default_alert_threshold"
+                                 string="Default alert thresholds"
+                                 help="Given to new budgets: a line is flagged when its variance from the theoretical exceeds BOTH the percentage and the floor. Each budget keeps its own thresholds and can change them.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="bf_budget_default_alert_threshold_pct" class="col-lg-4 o_light_label"/>
+                                    <field name="bf_budget_default_alert_threshold_pct" class="col-lg-2"/>
+                                </div>
+                                <div class="row">
+                                    <label for="bf_budget_default_alert_threshold_amount" class="col-lg-4 o_light_label"/>
+                                    <field name="bf_budget_default_alert_threshold_amount" class="col-lg-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Competing menus" name="bf_budget_menus">
                         <setting id="bf_budget_hide_menus"
                                  string="Hide budget menus from third-party modules"

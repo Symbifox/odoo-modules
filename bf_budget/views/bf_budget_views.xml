@@ -9,6 +9,7 @@
                 <field name="budget_type"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
                 <field name="amount_planned" sum="Planned"/>
                 <field name="amount_committed" sum="Committed"/>
                 <field name="amount_variance" sum="Variance" decoration-danger="amount_variance &lt; 0"/>
@@ -50,6 +51,11 @@
                          invisible="not coverage_warning or state != 'draft'">
                         Some operating accounts are covered by no budget item of this budget, or by two budget items. A budget can look on track simply because a budget item is missing. See the "Coverage" tab.
                     </div>
+                    <field name="alert_recipient_ok" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="alert_recipient_ok or state != 'open'">
+                        This budget has no responsible who can receive its alerts (an active internal user of its company, with access to budgets): when a line crosses the alert threshold, the alert is only noted in the chatter, and nobody is assigned.
+                    </div>
                     <div class="alert alert-info" role="alert" invisible="not revision_of_id">
                         This budget is a revision. The original can still be viewed:
                         <field name="revision_of_id" readonly="1" nolabel="1" class="oe_inline"/>
@@ -66,6 +72,7 @@
                     <group>
                         <group>
                             <field name="budget_type"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
                             <field name="date_start"/>
                             <field name="date_end"/>
                         </group>
@@ -137,8 +144,11 @@
         <field name="arch" type="xml">
             <search string="Budgets">
                 <field name="name"/>
+                <field name="user_id"/>
                 <filter name="draft" string="Drafts" domain="[('state', '=', 'draft')]"/>
                 <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <separator/>
+                <filter name="my_budgets" string="My budgets" domain="[('user_id', '=', uid)]"/>
                 <separator/>
                 <filter name="expense" string="Expenses" domain="[('budget_type', '=', 'expense')]"/>
                 <filter name="revenue" string="Revenue" domain="[('budget_type', '=', 'revenue')]"/>
@@ -148,6 +158,7 @@
                 <group expand="0" string="Group by">
                     <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                     <filter name="group_type" string="Budget type" context="{'group_by': 'budget_type'}"/>
+                    <filter name="group_user" string="Responsible" context="{'group_by': 'user_id'}"/>
                 </group>
             </search>
         </field>
