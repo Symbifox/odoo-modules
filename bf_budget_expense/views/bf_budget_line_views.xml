@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_line_form_expense" model="ir.ui.view">
+        <field name="name">bf.budget.line.form.expense</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Expense reports"
+                       invisible="not expense_committed_count and not expense_pending_count">
+                    <group>
+                        <field name="expense_committed_count"/>
+                        <field name="expense_committed"/>
+                    </group>
+                    <group>
+                        <field name="expense_pending_count"/>
+                        <field name="expense_pending"/>
+                        <button name="action_view_expenses" type="object"
+                                string="View expenses" class="btn-link"
+                                groups="hr_expense.group_hr_expense_team_approver"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_list_expense" model="ir.ui.view">
+        <field name="name">bf.budget.line.list.expense</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_list"/>
+        <field name="arch" type="xml">
+            <field name="amount_committed" position="after">
+                <field name="expense_committed" optional="hide" sum="Approved expenses"/>
+            </field>
+        </field>
+    </record>
+</odoo>

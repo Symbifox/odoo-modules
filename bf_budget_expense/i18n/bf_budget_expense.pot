@@ -1,0 +1,76 @@
+# Translation template for Budgets opérationnels : notes de frais.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_expense 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 07:30+0000\n"
+"PO-Revision-Date: 2026-10-20 07:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,help:bf_budget_expense.field_bf_budget_line__expense_committed
+msgid ""
+"Approved expense reports whose journal entry is not posted yet. The money "
+"will go out: it is already committed."
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,field_description:bf_budget_expense.field_bf_budget_line__expense_committed
+#: model_terms:ir.ui.view,arch_db:bf_budget_expense.bf_budget_line_list_expense
+msgid "Approved expenses"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,field_description:bf_budget_expense.field_bf_budget_line__expense_committed_count
+msgid "Approved expenses (count)"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model,name:bf_budget_expense.model_bf_budget_line
+msgid "Budget line"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model,name:bf_budget_expense.model_hr_expense
+msgid "Expense"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model_terms:ir.ui.view,arch_db:bf_budget_expense.bf_budget_line_form_expense
+msgid "Expense reports"
+msgstr ""
+
+#. module: bf_budget_expense
+#. odoo-python
+#: code:addons/bf_budget_expense/models/bf_budget_line.py:0
+msgid "Expenses not yet posted"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,help:bf_budget_expense.field_bf_budget_line__expense_pending
+msgid ""
+"Submitted but not yet approved. Shown for information only: an expense "
+"nobody has approved is not a decision, so it is in no amount of the budget."
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,field_description:bf_budget_expense.field_bf_budget_line__expense_pending
+msgid "Submitted expenses"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model:ir.model.fields,field_description:bf_budget_expense.field_bf_budget_line__expense_pending_count
+msgid "Submitted expenses (count)"
+msgstr ""
+
+#. module: bf_budget_expense
+#: model_terms:ir.ui.view,arch_db:bf_budget_expense.bf_budget_line_form_expense
+msgid "View expenses"
+msgstr ""
