@@ -10,7 +10,7 @@ are the ones a lenient implementation quietly turns into "confirmed".
 from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
-from .test_calendar_invite import _speak_french
+from .test_calendar_invite import _company_tz, _speak_french
 
 
 @tagged("post_install", "-at_install")
@@ -264,6 +264,126 @@ class TestCalendarPoke(TransactionCase):
         body = self._composer(event).body
         self.assertNotIn("Just checking that we are still meeting", body,
                          "a French guest was poked in English")
+
+    # --- what the message says (6.3.0) ---------------------------------
+
+    def _speak_english(self):
+        _speak_french(self.env)
+        self.guest.lang = "en_US"
+
+    def _sentence(self, body):
+        """The paragraph that asks the question, as the composer renders it."""
+        start = body.index("Just checking") if "Just checking" in body \
+            else body.index("Je voulais simplement")
+        return body[body.rindex("<p", 0, start):body.index("</p>", start)]
+
+    def test_the_sentence_names_no_meeting_and_bolds_nothing(self):
+        """The name, long and formal, used to sit in bold mid-sentence. An
+        organiser who rewrote it sent everything typed in its place in bold,
+        inherited from the tag."""
+        self._speak_english()
+        event = self._make_event(name="Quarterly review of the mapping project - Guest x Company",
+                                 videocall_location="https://meet.example.com/r")
+        sentence = self._sentence(self._composer(event).body)
+        self.assertNotIn("Quarterly review", sentence)
+        self.assertNotIn("<strong", sentence)
+        self.assertNotIn("<b>", sentence)
+        self.assertIn("Here is the link if you need it:", sentence)
+
+    def test_the_hour_is_asked_and_does_not_wrap(self):
+        self._speak_english()
+        event = self._make_event()
+        when = event.with_context(lang="en_US")._bf_poke_when()
+        self.assertTrue(when)
+        self.assertNotIn(" ", when, "a line could wrap inside the hour")
+        sentence = self._sentence(self._composer(event).body)
+        self.assertIn("still meeting at", sentence)
+        self.assertIn(when.replace("\N{NO-BREAK SPACE}", "&nbsp;"), sentence)
+
+    def test_the_hour_is_the_meetings_in_the_companys_timezone(self):
+        """Written out, not recomputed by the code under test: 14:00 UTC is
+        10 a.m. in Montreal, whoever presses the button."""
+        _speak_french(self.env)
+        _company_tz(self.env, "America/Toronto")
+        self.organiser.tz = "Pacific/Auckland"
+        event = self._make_event().with_user(self.organiser)
+        nbsp = "\N{NO-BREAK SPACE}"
+        self.assertEqual(event.with_context(lang="fr_CA")._bf_poke_when(),
+                         f"10{nbsp}h{nbsp}00")
+        self.assertEqual(event.with_context(lang="en_US")._bf_poke_when(),
+                         f"10:00{nbsp}AM")
+        self.guest.lang = "fr_CA"
+        self.assertEqual(self._composer(event).subject,
+                         f"On se voit toujours à 10{nbsp}h{nbsp}00? · Weekly sync")
+
+    def test_no_link_no_link_sentence(self):
+        self._speak_english()
+        sentence = self._sentence(self._composer(self._make_event()).body)
+        self.assertNotIn("Here is the link", sentence)
+
+    def test_the_subject_asks_then_names(self):
+        """The name alone was the invitation's subject too: in the inbox, the
+        poke read as the invitation sent a second time."""
+        self._speak_english()
+        event = self._make_event()
+        self.assertEqual(self._composer(event).subject,
+                         f"Still on for {event.with_context(lang='en_US')._bf_poke_when()}?"
+                         " · Weekly sync")
+
+    def test_the_subject_is_written_in_the_guests_language(self):
+        _speak_french(self.env)
+        self.guest.lang = "fr_CA"
+        event = self._make_event()
+        when = event.with_context(lang="fr_CA")._bf_poke_when()
+        self.assertEqual(self._composer(event).subject,
+                         f"On se voit toujours à {when}? · Weekly sync")
+        self.assertIn("rencontrons toujours à", self._composer(event).body)
+
+    def test_the_forced_templates_switch_the_subject_too(self):
+        _speak_french(self.env)
+        event = self._make_event()
+        for xmlid, start in (("mail_template_calendar_poke_fr", "On se voit toujours"),
+                             ("mail_template_calendar_poke_en", "Still on for")):
+            with self.subTest(template=xmlid):
+                template = self.env.ref("bf_calendar_invite." + xmlid)
+                subject = template._render_field("subject", event.ids,
+                                                 compute_lang=True)[event.id]
+                self.assertTrue(subject.startswith(start), subject)
+
+    def test_an_all_day_meeting_is_asked_about_today(self):
+        """Core stores an all-day start at midnight: the poke asked whether we
+        were still meeting at midnight."""
+        self._speak_english()
+        event = self._make_event(allday=True, start_date="2026-09-10",
+                                 stop_date="2026-09-10")
+        self.assertFalse(event._bf_poke_when())
+        composer = self._composer(event)
+        self.assertEqual(composer.subject, "Still on for today? · Weekly sync")
+        self.assertIn("still meeting today?", composer.body)
+        self.assertNotIn("still meeting at", composer.body)
+
+    def test_the_migration_replaces_the_inherited_translation(self):
+        """🔴 On upgrade, Odoo carries the translation of the old "… for" over to
+        "… at", and the corrected `.po`, loaded without overwriting, does not
+        replace it: the French read "toujours pour 17 h 30"."""
+        import importlib.util
+        from odoo.modules.module import get_module_path
+        _speak_french(self.env)
+        view = self.env.ref("bf_calendar_invite.mail_body_calendar_poke")
+        source = "Just checking that we are still meeting at"
+        view.update_field_translations("arch_db", {"fr_CA": {
+            source: "Je voulais simplement m'assurer que nous nous rencontrons toujours pour"}})
+        path = (get_module_path("bf_calendar_invite")
+                + "/migrations/18.0.6.3.0/post-migration.py")
+        spec = importlib.util.spec_from_file_location("bf_poke_mig_6_3_0", path)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        migration.migrate(self.env.cr, "18.0.6.2.2")
+        self.env.invalidate_all()
+        french = view.with_context(lang="fr_CA").arch_db
+        self.assertIn("rencontrons toujours à", french)
+        self.assertNotIn("toujours pour", french)
+        self.assertIn(source, view.with_context(lang="en_US").arch_db)
 
 
 @tagged("post_install", "-at_install")

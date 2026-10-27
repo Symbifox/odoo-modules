@@ -132,7 +132,15 @@ The SMS button opens the composer with an empty body.
   their own language. No `.ics` is attached: the event has not changed, and
   re-attaching one reads as a reschedule. The message repeats where to join
   instead, because the commonest reason someone is missing is that they cannot
-  find the link.
+  find the link. Since 6.3 the sentence names no meeting and sets nothing in
+  bold ("Just checking that we are still meeting at 5:30 PM? Here is the link
+  if you need it:"): an event's name is often long and formal, and in bold
+  mid-sentence it lent its bold to whatever the organiser typed in its place.
+  The hour carries non-breaking spaces, and an all-day meeting is poked about
+  "today". The subject asks the question, then names the meeting ("Still on
+  for 5:30 PM? · <name>", the computed `bf_poke_subject`, in the message's
+  language): the name alone, the invitation's subject, made the poke read as
+  the invitation sent a second time.
 
 Both remain drafts: the composer opens, the user edits and sends.
 
@@ -255,7 +263,13 @@ whitespace changed would no longer match its msgid and would reach
 French-speaking guests in English on a fresh install. A test checks that every
 translated term of the bodies still exists in them. The change notice, added in
 6.0, now also gets the French greeting, closing and button label the other three
-bodies had.
+bodies had. Since 6.3 the four greet at 15 px, the body size of the shared
+layout (it was 16 px, and the first line looked set in another font).
+
+⚠️ Rewording a term of a translated view: on upgrade, Odoo carries the
+translation of the most similar old term over to the new one, and the `.po`,
+loaded without overwriting, does not replace it. 6.3 therefore sets the
+translation of the poke's reworded sentence itself, in a migration.
 
 ## Changing the language of one message
 

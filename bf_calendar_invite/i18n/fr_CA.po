@@ -347,9 +347,16 @@ msgstr "Rejoindre la rencontre"
 
 #. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
-msgid "Just checking that we are still meeting for"
+msgid "Just checking that we are still meeting at"
 msgstr ""
-"Je voulais simplement m'assurer que nous nous rencontrons toujours pour"
+"Je voulais simplement m'assurer que nous nous rencontrons toujours à"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "Just checking that we are still meeting today?"
+msgstr ""
+"Je voulais simplement m'assurer que nous nous rencontrons toujours "
+"aujourd'hui?"
 
 #. module: bf_calendar_invite
 #: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_mail_lang
@@ -393,7 +400,6 @@ msgstr ""
 #: code:addons/bf_calendar_invite/models/calendar_event.py:0
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
-#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Meeting"
 msgstr "Rencontre"
@@ -704,11 +710,6 @@ msgid "You can confirm or decline your attendance from that page."
 msgstr "Vous pouvez y confirmer ou décliner votre présence."
 
 #. module: bf_calendar_invite
-#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
-msgid "at"
-msgstr "à"
-
-#. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 msgid "https://example.com/call/xyz"
 msgstr ""
@@ -727,10 +728,14 @@ msgstr "bureau"
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_invite
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_invite_en
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_invite_fr
+msgid "{{ object.name }}"
+msgstr ""
+
+#. module: bf_calendar_invite
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_poke
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_poke_en
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_poke_fr
-msgid "{{ object.name }}"
+msgid "{{ object.bf_poke_subject }}"
 msgstr ""
 
 #. module: bf_calendar_invite
@@ -1006,3 +1011,34 @@ msgid ""
 "The attached file removes these meetings from your calendar. If your\n"
 "                                                calendar still shows one of them after opening the file, delete the entry by hand."
 msgstr "Le fichier joint retire ces rencontres de votre agenda. Si l'une d'elles s'affiche encore après que vous l'avez ouvert, supprimez l'entrée à la main."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "Here is the link if you need it:"
+msgstr "Revoici le lien au besoin :"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_poke_subject
+msgid "Poke subject"
+msgstr "Objet de la relance"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_poke_subject
+msgid ""
+"Subject of the POKE message: the question with the hour, then the meeting's "
+"name, in the language the message is rendered in."
+msgstr ""
+"Objet de la relance : la question avec l'heure, puis le nom de la rencontre,"
+" dans la langue du message."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Still on for %s?"
+msgstr "On se voit toujours à %s?"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Still on for today?"
+msgstr "On se voit toujours aujourd'hui?"

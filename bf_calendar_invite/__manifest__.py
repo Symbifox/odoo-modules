@@ -70,7 +70,16 @@
     #   An all-day meeting no longer makes the cancellation and change notices
     #   fail to render as soon as a guest has an address: `format_date(value=...)`,
     #   where core's helper is `format_date(date, ...)`.
-    "version": "18.0.6.2.2",
+    # 18.0.6.3.0: the poke reads like a note someone wrote. The sentence no longer
+    #   names the meeting: an event's name is often long and formal, and set in
+    #   bold mid-sentence it lent its bold to whatever the organiser typed after
+    #   it. It asks about the hour, in plain text, and announces the link. The
+    #   subject is no longer the name alone, which made the poke read as the
+    #   invitation sent twice: "Still on for 5:30 PM? · <name>" (`bf_poke_subject`,
+    #   computed in the message's language). An all-day meeting is poked about
+    #   "today" rather than midnight. The four emails greet at 15 px, the body size
+    #   of the shared layout, instead of 16.
+    "version": "18.0.6.3.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

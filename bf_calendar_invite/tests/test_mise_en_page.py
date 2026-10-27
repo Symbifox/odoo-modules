@@ -78,6 +78,16 @@ class TestMiseEnPage(TransactionCase):
                 self.assertNotIn('width="600"', arch)
                 self.assertFalse(re.search(r"(?<![\w-])(background|border-left|border-right):", arch))
 
+    def test_the_greeting_is_written_at_the_body_size(self):
+        """The four greetings were 16 px over a 15 px body: the first
+        line of every message looked set in another font."""
+        for xmlid in ("mail_body_calendar_invite", "mail_body_calendar_poke",
+                      "mail_body_calendar_cancellation", "mail_body_calendar_change"):
+            with self.subTest(view=xmlid):
+                arch = self.env.ref("bf_calendar_invite." + xmlid).arch_db or ""
+                greeting = arch[arch.rindex("<p", 0, arch.index("Hello")):arch.index("Hello")]
+                self.assertIn("font-size:15px;line-height:24px", greeting)
+
     def test_every_french_term_of_the_bodies_still_matches(self):
         """Odoo loads a view's translation by exact term: a msgid no longer in the
         view is silently dropped on a fresh install."""

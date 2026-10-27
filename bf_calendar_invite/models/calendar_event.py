@@ -664,6 +664,49 @@ class CalendarEvent(models.Model):
             return self.location
         return False
 
+    bf_poke_subject = fields.Char(
+        string="Poke subject",
+        compute="_compute_bf_poke_subject",
+        help="Subject of the POKE message: the question with the hour, then the "
+             "meeting's name, in the language the message is rendered in.",
+    )
+
+    @api.depends("name", "start", "allday", "event_tz")
+    @api.depends_context("lang")
+    def _compute_bf_poke_subject(self):
+        for event in self:
+            event.bf_poke_subject = event._bf_poke_subject()
+
+    def _bf_poke_when(self):
+        """The hour the guest is asked about, as the body and the subject write it.
+
+        False for an all-day meeting: it has no hour, and core stores its start
+        at midnight, which the poke used to print as the hour of the meeting.
+
+        Non-breaking spaces: the French short format is « 17 h 30 », and a
+        line that wrapped after the « h » left the minutes alone on the next.
+        """
+        self.ensure_one()
+        if self.allday or not self.start:
+            return False
+        return format_time(self.env, self.start, tz=self._bf_mail_tz(),
+                           time_format="short", lang_code=self.env.lang
+                           ).replace(" ", "\N{NO-BREAK SPACE}")
+
+    def _bf_poke_subject(self):
+        """The question first, the meeting's name after.
+
+        The name alone was the subject until 6.3.0, the same as the
+        invitation's: in the guest's inbox the poke read as the invitation sent
+        twice. The question is what a phone shows in its preview; the name
+        stays, after it, so the guest still knows which meeting it is.
+        """
+        self.ensure_one()
+        when = self._bf_poke_when()
+        question = (_("Still on for %s?", when) if when
+                    else _("Still on for today?"))
+        return f"{question} · {self.name}" if self.name else question
+
 
     # ------------------------------------------------------------
     # Telling the guests that a meeting moved

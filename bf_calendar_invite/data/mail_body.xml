@@ -32,7 +32,7 @@
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <div>
                                             <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Invitation</p>
-                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                            <p style="margin:0 0 12px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
                                             </p>
@@ -121,16 +121,23 @@
         <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
+        <t t-set="when" t-value="object._bf_poke_when()"/>
         <div>
-                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                            <p style="margin:0 0 12px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
                                             </p>
+                                            <!--
+                                              Ni le nom de la rencontre ni gras dans cette phrase (6.3.0).
+                                              Le nom d'un événement est souvent long et formel, et l'objet le
+                                              porte déjà ; en gras au milieu de la phrase, il prêtait aussi son
+                                              gras à tout ce que l'organisateur tapait juste après.
+                                            -->
                                             <p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
-                                                Just checking that we are still meeting for
-                                                <strong t-attf-style="color:{{ brand['dark'] }};" t-out="object.name or ''">Meeting</strong>
-                                                at
-                                                <strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="format_time(time=object.start, tz=mail_tz, time_format='short', lang_code=object.env.lang) or ''">11:00 AM</t></strong>?
+                                                <t t-if="when">Just checking that we are still meeting at
+                                                <t t-out="when">11:00 AM</t>?</t>
+                                                <t t-else="">Just checking that we are still meeting today?</t>
+                                                <t t-if="join_url">Here is the link if you need it:</t>
                                             </p>
 
                                             <div t-if="join_url" style="text-align:center;padding:4px 0 8px 0;">
@@ -174,7 +181,7 @@
         <t t-set="batch" t-value="object._bf_cancellation_batch()"/>
         <div>
                                             <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Cancelled</p>
-                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                            <p style="margin:0 0 12px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
                                             </p>
@@ -268,7 +275,7 @@
         <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
         <div>
                                             <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Updated</p>
-                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                            <p style="margin:0 0 12px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
                                             </p>

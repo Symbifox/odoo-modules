@@ -75,11 +75,15 @@
       has not changed, and a second .ics for the same UID is read by most
       clients as an update — some redraw the entry, some re-prompt every guest.
       A note asking whether we are still meeting would then move the meeting.
+
+      The subject is computed (`calendar.event.bf_poke_subject`) rather than
+      written here: it asks the question with the hour, then names the meeting,
+      and an all-day meeting has no hour to ask about.
     -->
     <record id="mail_template_calendar_poke" model="mail.template">
         <field name="name">Calendar: Are we still meeting?</field>
         <field name="model_id" ref="calendar.model_calendar_event"/>
-        <field name="subject">{{ object.name }}</field>
+        <field name="subject">{{ object.bf_poke_subject }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -92,7 +96,7 @@
     <record id="mail_template_calendar_poke_fr" model="mail.template">
         <field name="name">Calendar: Are we still meeting? — Français</field>
         <field name="model_id" ref="calendar.model_calendar_event"/>
-        <field name="subject">{{ object.name }}</field>
+        <field name="subject">{{ object.bf_poke_subject }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_fr }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -105,7 +109,7 @@
     <record id="mail_template_calendar_poke_en" model="mail.template">
         <field name="name">Calendar: Are we still meeting? — English</field>
         <field name="model_id" ref="calendar.model_calendar_event"/>
-        <field name="subject">{{ object.name }}</field>
+        <field name="subject">{{ object.bf_poke_subject }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_en }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
