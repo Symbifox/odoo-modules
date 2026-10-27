@@ -10,7 +10,7 @@ way DocuSeal does it).
 - **Licence**: **BUSL-1.1**. Production use is allowed for your **own internal
   business operations**; providing the module as a product or service to third
   parties (hosted, managed or resold) requires a written agreement. Converts to
-  **LGPL-3.0-or-later** on **2030-10-16**. See [`LICENSE`](LICENSE). It does not
+  **LGPL-3.0-or-later** on **2030-10-27**. See [`LICENSE`](LICENSE). It does not
   cover embedded third-party works (typefaces): see
   [`THIRD-PARTY.md`](THIRD-PARTY.md).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
@@ -83,6 +83,8 @@ signed document is then **posted back into the source record's thread**.
 - **Structural locking**: recipients and fields frozen once the request is sent (editable only in "draft").
 - **Reset to draft starts from a blank page**: a request that is not signed can go back to draft (the form offers it once the request is cancelled, expired or refused), and every signer starts over (signature, consent, code and open tracking cleared, typed values emptied) with a **new personal link**, the old one stops working. A signature already given is never stamped on a document its signer has not seen; the audit trail keeps a "reset to draft" entry naming the signatures set aside. An expiry date already past is cleared, so the next send sets a fresh one.
 - **Certificate times that do not depend on who renders it** (3.29): every time on the completion certificate (finalised, each signature, the time attested by the TSA) prints in **UTC, which is authoritative**, then in local time with its zone named, e.g. `2026-10-20 07:40:46 UTC` over `2026-10-20 03:40:46 HAE (UTC−04:00)`. The verification page lists the same times.
+- **Later signers see what earlier ones filled in** (3.30): in sequential order, the signing page shows the document with the marks already settled by the signers before (values, ticks, signatures), built on request and never stored, so the original's hash is untouched. In parallel order everyone sees the original. The form of a sent request gains a **Valeurs saisies** (filled values) tab where the preparer reviews what has been entered so far; it does not hold back the next signer's invitation.
+- **Repeat a pad's value elsewhere** (3.30): the **Recopie d'un autre pavé** (copy of another pad) fill mode makes a pad repeat another pad of the same request (a name or an address asked on page 1 and again on page 3), chosen pad by pad in the placement editor or on a template line. A tick repeats a tick, written text repeats written text. The link is explicit because a label is not unique: a form can carry several "Postal code" boxes. Sending refuses a copy whose value would not be known yet when its signer signs, and a row of boxes shorter than a value already known.
 - **RFC 3161 trusted timestamping** *(optional)*: a TSA token over the signed content, **shown in the certificate**, giving independent proof of date.
 - **The verification link and a QR on the completion certificate**, so the pointer to the proof travels inside the signed bundle even when the QR on the document pages is off (it is, by default). Embedded as a `data:` URI, so rendering never depends on an HTTP callback into the server.
 - **"Share the verification link"** from the Proof tab, which opens a prefilled composer. It refuses to mint a token for a request finalised before the verification page existed, rather than quietly altering a signed record to make a button work.
@@ -333,7 +335,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-24, this version converts automatically to
+- **Change Date**: on 2030-10-27, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 Embedded third-party works (typefaces) remain under their own licences: see

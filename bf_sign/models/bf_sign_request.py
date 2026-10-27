@@ -798,6 +798,31 @@ class BfSignRequest(models.Model):
                             "%s p.%s" % (f.signer_id.name or "?", f.page)
                             for f in hors),
                     ))
+                orphelines, trop_tot, trop_longues = rec._copy_problems()
+                if orphelines:
+                    raise UserError(_(
+                        "Ces recopies n'ont plus de pavé source : %s. Choisissez-leur "
+                        "une source, ou passez-les en « Rempli par le signataire ».")
+                        % ", ".join("%s p.%s" % (f._marker_label(), f.page)
+                                    for f in orphelines))
+                if trop_tot:
+                    raise UserError(_(
+                        "Ces recopies seraient signées avant que leur source soit "
+                        "remplie : %s. Le signataire verrait une case vide qui se "
+                        "remplirait après sa signature. Donnez la recopie au même "
+                        "signataire que sa source, ou faites signer la source avant "
+                        "(ordre séquentiel).")
+                        % ", ".join("%s p.%s (%s)" % (f._marker_label(), f.page,
+                                                      f.signer_id.name or "?")
+                                    for f in trop_tot))
+                if trop_longues:
+                    raise UserError(_(
+                        "Ces recopies en cases sont plus courtes que la valeur qu'elles "
+                        "reprennent : %s. Elle serait coupée au scellement. Ajoutez des "
+                        "cases, ou raccourcissez la valeur ou les choix de la source.")
+                        % ", ".join("%s p.%s (%s cases)" % (f._marker_label(), f.page,
+                                                            f.cell_count)
+                                    for f in trop_longues))
             rec._ensure_signer_partners()
             rec.check_access("write")
             # L'empreinte se prend au PREMIER envoi : un renvoi ne la recalcule
@@ -831,6 +856,50 @@ class BfSignRequest(models.Model):
                 rec, "sent", actor=self.env.user.name, identity_method="internal_user",
                 hash_before=rec.hash_original, note=note)
         return True
+
+    def _copy_problems(self):
+        """Recopies qui ne peuvent pas partir : (sans source, source trop tardive,
+        rangée de cases trop courte pour une valeur déjà connue).
+
+        La valeur d'une recopie doit être CONNUE quand son signataire
+        signe, sinon la personne signe une case vide que le scellement remplit
+        après coup avec une valeur qu'elle n'a jamais vue. Connue : source du
+        même signataire (saisie sur la même page), valeur fixe, nom ou courriel
+        automatiques, ou source d'un signataire qui signe AVANT en séquentiel.
+        """
+        self.ensure_one()
+        copies = self.field_ids.filtered(lambda f: f.fill_mode == "copy")
+        orphelines = copies.filtered(lambda f: not f.copy_from_id)
+        rang = {s.id: i for i, s in enumerate(self.signer_ids.sorted("sequence"))}
+
+        def connue(f):
+            src = f.copy_from_id
+            if src.signer_id == f.signer_id or src.fill_mode == "fixed" or (
+                    src.fill_mode == "auto" and src.field_type in ("name", "email")):
+                return True
+            return (self.signing_order == "sequential"
+                    and rang.get(src.signer_id.id, 0) < rang.get(f.signer_id.id, 0))
+
+        trop_tot = (copies - orphelines).filtered(lambda f: not connue(f))
+
+        def plus_longue(src):
+            # La valeur la plus longue que la source peut porter, quand elle est
+            # connue avant la signature. Une saisie libre se contrôle à la
+            # signature (`_apply_field_values`), où la personne peut la corriger ;
+            # une valeur fixe, un nom, un courriel ou un choix de liste, non : le
+            # signataire n'y peut rien, c'est au préparateur de régler la rangée.
+            if src.fill_mode == "fixed":
+                return len(src.value_text or "")
+            if src.fill_mode == "auto" and src.field_type in ("name", "email"):
+                return len(src._auto_value())
+            if src.field_type == "select":
+                return max((len(o) for o in src._options_list()), default=0)
+            return 0
+
+        trop_longues = (copies - orphelines).filtered(
+            lambda f: f.field_type == "cells" and f.cell_count > 0
+            and plus_longue(f.copy_from_id) > f.cell_count)
+        return orphelines, trop_tot, trop_longues
 
     def _email_signer(self, signer, template_xmlid="bf_sign.mail_template_sign_request",
                       mark_invited=True):
@@ -916,9 +985,19 @@ class BfSignRequest(models.Model):
             for field in source.field_ids:
                 vals = field.copy_data()[0]
                 vals.update(request_id=dup.id, signer_id=by_signer[field.signer_id.id])
+                # La source d'une recopie se rattache après coup, sur
+                # le pavé neuf ; laissée telle quelle elle viserait l'ANCIENNE
+                # demande, ce que la contrainte refuse.
+                if vals.get("fill_mode") == "copy":
+                    vals.update(fill_mode="signer", copy_from_id=False)
                 vals_list.append(vals)
             if vals_list:
-                Field.create(vals_list)
+                news = Field.create(vals_list)
+                by_field = dict(zip(source.field_ids.ids, news))
+                for old, new in zip(source.field_ids, news):
+                    if old.fill_mode == "copy" and old.copy_from_id.id in by_field:
+                        new.write({"fill_mode": "copy",
+                                   "copy_from_id": by_field[old.copy_from_id.id].id})
         return copies
 
     def get_field_order(self):
@@ -951,6 +1030,7 @@ class BfSignRequest(models.Model):
         signers = self.signer_ids.sorted("sequence")
         idx = {s.id: i for i, s in enumerate(signers)}
         page_count = self._document_page_count() if anchor_last_page else None
+        ordered = list(self.field_ids)
         lines = [(0, 0, {
             "signer_index": idx.get(f.signer_id.id, 0),
             "field_type": f.field_type, "page": f.page,
@@ -966,10 +1046,13 @@ class BfSignRequest(models.Model):
                 "last" if page_count and page_count > 1 and f.page == page_count
                 else "absolute"),
             "pos_x": f.pos_x, "pos_y": f.pos_y, "width": f.width, "height": f.height,
-            "fill_mode": f.fill_mode, "required": f.required, "value_text": f.value_text,
+            "required": f.required, "value_text": f.value_text,
             "cell_count": f.cell_count, "option_values": f.option_values,
             "sequence": f.sequence,
-        }) for f in self.field_ids]
+            # La ligne source n'a pas encore d'identifiant : la recopie naît en
+            # saisie et le lien se pose après la création, plus bas.
+            "fill_mode": "signer" if f.fill_mode == "copy" else f.fill_mode,
+        }) for f in ordered]
         vals = {
             "name": name or _("Modèle — %s") % (self.document_filename or self.name),
             "line_ids": lines,
@@ -983,6 +1066,14 @@ class BfSignRequest(models.Model):
             vals.update(document_file=doc.document_file,
                         document_filename=doc.document_filename)
         tmpl = self.env["bf.sign.field.template"].create(vals)
+        # `line_ids` garde l'ordre des commandes (0, 0, …) : la ligne i est le pavé i.
+        line_by_field = dict(zip([f.id for f in ordered],
+                                 tmpl.line_ids.sorted("id")))
+        for f in ordered:
+            if f.fill_mode == "copy" and f.copy_from_id.id in line_by_field:
+                line_by_field[f.id].write({
+                    "fill_mode": "copy",
+                    "copy_from_line_id": line_by_field[f.copy_from_id.id].id})
         return tmpl.id
 
     def apply_field_template(self, template_id, replace=True):
@@ -1006,24 +1097,35 @@ class BfSignRequest(models.Model):
         # pavé absolu tombe hors du document visé.
         page_count = self._document_page_count()
         created = skipped = moved = 0
+        by_line = {}
         for line in tmpl.line_ids:
             if line.signer_index >= len(signers):
                 skipped += 1
                 continue
             if page_count and line.page_mode == "absolute" and (line.page or 1) > page_count:
                 moved += 1
-            Field.create({
+            by_line[line.id] = Field.create({
                 "request_id": self.id, "signer_id": signers[line.signer_index].id,
                 "field_type": line.field_type,
                 "page": line.page or 1,
                 "page_mode": line.page_mode,
                 "pos_x": line.pos_x, "pos_y": line.pos_y,
                 "width": line.width, "height": line.height,
-                "fill_mode": line.fill_mode, "required": line.required,
+                # La source d'une recopie n'existe pas encore : posée plus bas.
+                "fill_mode": "signer" if line.fill_mode == "copy" else line.fill_mode,
+                "required": line.required,
                 "value_text": line.value_text, "cell_count": line.cell_count,
                 "option_values": line.option_values, "sequence": line.sequence,
             })
             created += 1
+        # Une recopie dont la source n'a pas été posée (signataire
+        # absent de cette demande) reste une case à remplir, plutôt qu'un pavé
+        # qui n'apposerait rien.
+        for line in tmpl.line_ids:
+            field = by_line.get(line.id)
+            source = by_line.get(line.copy_from_line_id.id)
+            if field and line.fill_mode == "copy" and source:
+                field.write({"fill_mode": "copy", "copy_from_id": source.id})
         # Un modèle appliqué à la main règle aussi l'attente de la pose
         # automatique : sans quoi l'ajout d'un signataire viendrait, plus
         # tard, remplacer les pavés que la personne a déjà ajustés.
@@ -1275,6 +1377,18 @@ class BfSignRequest(models.Model):
                 raise UserError(_(
                     "« %s » compte %s cases, la valeur en demande %s.")
                     % (f._marker_label(), f.cell_count, len(raw)))
+            # La valeur est aussi apposée par ses recopies. Une rangée de cases
+            # plus courte la tronquerait au scellement (« H0H 0H0 » dans 6 cases
+            # donnait « H0H 0H ») : refusée ici, où la personne la corrige.
+            for cible in f.copy_target_ids.filtered(
+                    lambda t: t.field_type == "cells" and t.cell_count > 0):
+                if len(raw) > cible.cell_count:
+                    raise UserError(_(
+                        "« %(champ)s » est repris dans %(n)s cases (page %(page)s), la "
+                        "valeur en demande %(long)s. Raccourcissez-la (sans espace, "
+                        "par exemple).",
+                        champ=f._marker_label(), n=cible.cell_count,
+                        page=cible.page, long=len(raw)))
             f.filled_value = raw
 
     def register_signer_signature(self, signer, signature_b64, initials_b64,
@@ -1566,11 +1680,15 @@ class BfSignRequest(models.Model):
         return "%s - signé.pdf" % base
 
     # ── Stamping engine ──────────────────────────────────────────────────────
-    def _stamp_document(self, original_bytes):
+    def _stamp_document(self, original_bytes, only_fields=None, with_qr=True):
         """Overlay each placed field onto the document at its page/coordinates.
 
         Coordinates are fractions of the page from the top-left; we convert to
         PDF's bottom-left origin per page using each page's media box.
+
+        ``only_fields`` restricts the marks to those pads and ``with_qr=False``
+        leaves the verification QR off: both serve the signing preview
+        (`_signing_preview`), which is never sealed nor stored.
         """
         self.ensure_one()
         from PyPDF2 import PdfReader, PdfWriter
@@ -1587,11 +1705,11 @@ class BfSignRequest(models.Model):
         # 0 image là où un pavé valide en appose 1.
         nb_pages = len(reader.pages)
         fields_by_page = {}
-        for f in self.field_ids:
+        for f in (self.field_ids if only_fields is None else only_fields):
             fields_by_page.setdefault(f.effective_page(nb_pages), []).append(f)
 
         qr_pages = set()
-        if self.verify_qr:
+        if self.verify_qr and with_qr:
             self._ensure_verify_token()
             qr_pages = self._qr_pages_for(len(reader.pages))
 
@@ -1619,6 +1737,53 @@ class BfSignRequest(models.Model):
         out = io.BytesIO()
         writer.write(out)
         return out.getvalue()
+
+    def _signing_preview_fields(self, signer):
+        """Pads already settled by the OTHER signers, as ``signer`` should see them.
+
+        En ordre séquentiel, la page de signature servait le PDF d'origine. Ce
+        que le premier signataire avait saisi (un organisme remplit la page 1
+        d'un formulaire, la personne concernée signe la page 2) n'apparaissait
+        qu'au document final : la personne signait sans voir ce qu'elle signait.
+
+        Retenus, en ordre SÉQUENTIEL seulement : les pavés des signataires qui
+        précèdent ``signer`` et ont signé, plus les siens s'il a déjà signé (la
+        personne qui revient relit ses propres marques). Une saisie en cours n'est
+        pas encore une valeur. En ordre parallèle, rien : personne ne précède
+        personne, et un signataire n'a pas à lire ce qu'un autre a saisi (un NAS)
+        avant que tous aient signé, ni s'il refuse ensuite.
+        """
+        self.ensure_one()
+        if self.signing_order != "sequential":
+            return self.env["bf.sign.field"]
+        ordre = self.signer_ids.sorted("sequence")
+        rang = {s.id: i for i, s in enumerate(ordre)}
+        moi = rang.get(signer.id, -1)
+        vus = ordre.filtered(lambda s: s.state == "signed" and (
+            rang[s.id] < moi or s == signer))
+        return self.field_ids.filtered(lambda f: f.signer_id in vus)
+
+    def _signing_preview(self, signer):
+        """Bytes of the document ``signer`` reviews on the signing page.
+
+        The original when nobody else has signed yet; otherwise the original
+        with the other signers' marks, without the verification QR (the
+        document is not sealed). Built on request, never stored: the integrity
+        check keeps comparing the ORIGINAL document with ``hash_original``.
+        """
+        self.ensure_one()
+        original = base64.b64decode(self.document_file)
+        settled = self._signing_preview_fields(signer)
+        if not settled:
+            return original
+        try:
+            return self._stamp_document(original, only_fields=settled, with_qr=False)
+        except Exception:  # noqa: BLE001 — l'aperçu ne doit pas fermer la page
+            # Le document reste signable : on sert l'original et on le dit au
+            # journal, plutôt que d'empêcher la personne de lire ce qu'elle signe.
+            _logger.exception("bf_sign: aperçu rempli impossible pour la demande %s",
+                              self.id)
+            return original
 
     def _draw_field(self, c, field, x, y, w, h, ImageReader):
         signer = field.signer_id

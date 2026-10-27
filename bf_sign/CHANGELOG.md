@@ -2,6 +2,36 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.30.0
+
+Ordre séquentiel et formulaires qui répètent une case.
+
+- La page de signature montre le document avec ce que les signataires précédents ont
+  déjà apposé (valeurs, cases, signatures). Elle servait le PDF d'origine : quand un
+  organisme remplit la page 1 d'un formulaire et que la personne concernée signe la
+  page 2, celle-ci signait sans voir la page 1 remplie. L'aperçu se construit à la
+  demande, sans le code QR de vérification, et n'est jamais enregistré : l'empreinte
+  de l'original ne change pas.
+- Nouvel onglet « Valeurs saisies » dans la fiche d'une demande envoyée : le
+  préparateur relit ce que les signataires ont saisi. Ces valeurs ne se lisaient
+  qu'au PDF final. L'onglet ne retient pas l'invitation du signataire suivant.
+- Nouveau mode de remplissage « Recopie d'un autre pavé » : la case reprend la valeur
+  d'un autre pavé de la même demande (un nom ou une adresse demandés en page 1, puis
+  de nouveau en page 3). Le lien se choisit pavé à pavé, dans l'éditeur ou sur une
+  ligne de modèle, et suit la duplication d'une demande, l'enregistrement et
+  l'application d'un modèle. Une case à cocher recopie une case à cocher, une valeur
+  écrite une valeur écrite. Retirer la source fait redevenir ses recopies des cases à
+  remplir.
+- Page de signature : la marque d'une case à cocher affichait « on » même décochée.
+- Gardes de la recopie : l'envoi refuse une recopie sans source, une recopie que son
+  signataire signerait avant que la source soit remplie (en ordre parallèle, seule une
+  source du même signataire, fixe, ou un nom ou un courriel automatique est admise) et
+  une rangée de cases plus courte qu'une valeur déjà connue ; la signature refuse une
+  saisie plus longue que les cases d'une de ses recopies. Retirer un signataire rend à
+  la saisie les recopies de ses pavés ; dupliquer un modèle garde ses recopies.
+  L'aperçu ne montre que les signataires précédents, en séquentiel.
+- Éditeur de placement : un refus du serveur affiche sa raison.
+
 ## 18.0.3.29.1
 
 La case « date » du document porte la date du jour de la signature, chez le signataire.

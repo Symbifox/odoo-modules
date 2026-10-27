@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox — Signature électronique',
-    'version': '18.0.3.29.1',
+    'version': '18.0.3.30.0',
     'category': 'Productivity/Sign',
     'summary': "Signature électronique native (SES) : demande, signature par lien public, "
                "certificat de complétion et piste de vérification inaltérable",

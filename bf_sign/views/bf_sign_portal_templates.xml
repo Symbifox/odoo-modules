@@ -155,19 +155,29 @@
                                 <t t-set="is_fill" t-value="of.field_type in value_types"/>
                                 <t t-set="is_input"
                                    t-value="is_fill and of.fill_mode == 'signer'"/>
+                                <!-- Une recopie dont la source se saisit sur cette
+                                     page suit cette saisie en direct (même miroir que les
+                                     marqueurs ordinaires) ; sinon elle montre la valeur déjà
+                                     apposée par la source. -->
+                                <t t-set="copy_src" t-value="of.fill_mode == 'copy' and of.copy_from_id"/>
+                                <t t-set="copy_live"
+                                   t-value="copy_src and copy_src.signer_id == signer and copy_src.fill_mode == 'signer'"/>
                                 <div t-attf-class="bf-marker#{is_fill and ' bf-marker-fill' or ''}"
                                      t-att-data-page="field_pages[of.id]"
                                      t-att-data-x="of.pos_x" t-att-data-y="of.pos_y"
                                      t-att-data-w="of.width" t-att-data-h="of.height"
                                      t-att-data-type="of.field_type"
-                                     t-att-data-input="is_input and ('field_%s' % of.id) or ''">
+                                     t-att-data-input="(is_input and ('field_%s' % of.id)) or (copy_live and ('field_%s' % copy_src.id)) or ''">
                                     <span class="bf-marker-badge"><t t-esc="n"/></span>
                                     <span class="bf-marker-label">
                                         <t t-esc="of._marker_label()"/>
+                                        <t t-if="copy_src and copy_src.id in field_numbers"> (= <t t-esc="field_numbers[copy_src.id]"/>)</t>
                                     </span>
                                     <span class="bf-marker-value">
                                         <t t-if="of.fill_mode == 'fixed'"><t t-esc="of.value_text or ''"/></t>
                                         <t t-elif="of.fill_mode == 'auto'"><t t-esc="of._auto_placeholder()"/></t>
+                                        <t t-elif="copy_src and not copy_live and of.field_type == 'checkbox'"><t t-esc="of._is_checked() and '✓' or ''"/></t>
+                                        <t t-elif="copy_src and not copy_live"><t t-esc="of._display_value() or (copy_src.fill_mode == 'auto' and copy_src._auto_placeholder()) or ''"/></t>
                                     </span>
                                 </div>
                             </t>
@@ -599,8 +609,12 @@
                                     var valEl = m.querySelector('.bf-marker-value');
                                     if (!input || !valEl) { return; }
                                     var sync = function () {
-                                        valEl.textContent = input.value || '';
-                                        m.classList.toggle('bf-marker-filled', !!input.value);
+                                        // Une case à cocher porte toujours value="on" :
+                                        // c'est `checked` qui dit si elle l'est.
+                                        var v = input.type === 'checkbox'
+                                            ? (input.checked ? '✓' : '') : (input.value || '');
+                                        valEl.textContent = v;
+                                        m.classList.toggle('bf-marker-filled', !!v);
                                     };
                                     input.addEventListener('input', sync);
                                     input.addEventListener('change', sync);

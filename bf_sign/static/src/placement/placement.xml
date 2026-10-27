@@ -142,7 +142,23 @@
                                     t-att-selected="sel.fill_mode === 'auto' ? 'selected' : undefined">
                                 Automatique
                             </option>
+                            <option value="copy"
+                                    t-att-selected="sel.fill_mode === 'copy' ? 'selected' : undefined">
+                                Recopie d'un autre pavé
+                            </option>
                         </select>
+                        <t t-if="sel.fill_mode === 'copy'">
+                            <span class="bf-props-lbl">Recopie de</span>
+                            <select class="form-select form-select-sm bf-props-copy"
+                                    t-on-change="(ev) => this.setCopyFrom(sel, ev.target.value)">
+                                <t t-foreach="copySources(sel)" t-as="c" t-key="c.id">
+                                    <option t-att-value="c.id"
+                                            t-att-selected="c.id === sel.copyFromId ? 'selected' : undefined">
+                                        <t t-esc="copySourceLabel(c)"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </t>
                         <t t-if="sel.fill_mode !== 'auto'">
                             <span class="bf-props-lbl" t-esc="valueLabelFor(sel)"/>
                             <input type="text" class="form-control form-control-sm bf-props-value"

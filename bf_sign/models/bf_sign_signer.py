@@ -208,6 +208,11 @@ class BfSignSigner(models.Model):
 
     def unlink(self):
         self._assert_draft(self.request_id)
+        # `signer_id` est en cascade côté base, qui supprimerait les
+        # pavés sans passer par l'ORM. Une recopie qui visait l'un d'eux resterait
+        # en mode « copie » sans source, et s'apposerait vide. Par l'ORM, ses
+        # recopies redeviennent des saisies (`bf.sign.field.unlink`).
+        self.field_ids.unlink()
         return super().unlink()
 
     @api.onchange("partner_id")

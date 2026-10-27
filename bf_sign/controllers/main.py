@@ -231,7 +231,7 @@ class BfSignController(Controller):
             signer._otp_send()
         return request.redirect("/sign/%s/%s" % (request_id, access_token))
 
-    # ── Serve the original PDF inline ──────────────────────────────────────────
+    # ── Serve the document inline (original, plus marks already settled) ───────
     @route("/sign/<int:request_id>/<access_token>/document", type="http",
            auth="public", methods=["GET"], csrf=False)
     def sign_document(self, request_id, access_token, **kw):
@@ -245,10 +245,14 @@ class BfSignController(Controller):
             return request.not_found()
         if signer._otp_required():
             return request.not_found()
-        pdf = base64.b64decode(req_sudo.document_file)
+        # Avec ce que les signataires précédents ont déjà apposé.
+        pdf = req_sudo._signing_preview(signer)
         filename = req_sudo.document_filename or "document.pdf"
         return request.make_response(pdf, headers=[
             ("Content-Type", "application/pdf"),
+            # Construit à la demande et changeant à chaque signature : jamais
+            # repris d'un cache, ni du navigateur ni d'un mandataire.
+            ("Cache-Control", "no-store"),
             ("Content-Disposition", http.content_disposition(filename).replace(
                 "attachment", "inline")),
             ("Content-Length", len(pdf))])

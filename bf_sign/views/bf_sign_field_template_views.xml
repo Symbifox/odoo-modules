@@ -50,6 +50,10 @@
                                  une valeur que personne ne maintient. -->
                             <field name="page" readonly="page_mode == 'last'"/>
                             <field name="fill_mode"/>
+                            <field name="copy_from_line_id"
+                                   invisible="fill_mode != 'copy'"
+                                   required="fill_mode == 'copy'"
+                                   options="{'no_create': True, 'no_open': True}"/>
                             <field name="required"/>
                             <field name="value_text"/>
                             <field name="pos_x" optional="hide"/>

@@ -14,6 +14,18 @@ VALUE_TYPES = frozenset({"date", "text", "number", "email", "name", "checkbox",
 AUTO_TYPES = frozenset({"date", "name", "email"})
 
 
+def copy_compatible(source_type, target_type):
+    """Whether a ``copy`` pad of ``target_type`` can repeat a ``source_type`` pad.
+
+    A tick is not text and text is not a tick; any written value (text, cells,
+    date, choice…) can be repeated as any other written value, which is what a
+    form does when it asks for the postal code once in boxes and once inline.
+    """
+    if source_type not in VALUE_TYPES or target_type not in VALUE_TYPES:
+        return False
+    return (source_type == "checkbox") == (target_type == "checkbox")
+
+
 class BfSignField(models.Model):
     """A signature pad placed on the document.
 
@@ -72,14 +84,54 @@ class BfSignField(models.Model):
     #            (date → signing date, name → signer name, email → signer email)
     #   fixed  — value set here by the preparer (``value_text``)
     #   signer — the signer types it on the signing page (stored in ``filled_value``)
+    #   copy   — repeats another pad of the same request (``copy_from_id``)
     fill_mode = fields.Selection(
         selection=[
             ("auto", "Automatique (signataire / date de signature)"),
             ("fixed", "Valeur fixe (préparateur)"),
             ("signer", "Rempli par le signataire"),
+            ("copy", "Recopie d'un autre pavé"),
         ],
         string="Mode de remplissage", default="signer", required=True,
     )
+    # Un formulaire répète souvent la même case (nom, adresse, date de
+    # naissance en page 1 puis en page 3), qui ne doit se saisir qu'une
+    # fois. Le lien est EXPLICITE, pavé à pavé : lier par étiquette se trompait
+    # dès le premier vrai formulaire, dont la page 1 porte quatre « Code postal »
+    # distincts (adresse actuelle et trois anciennes).
+    # La valeur se résout au rendu (`_display_value`), jamais recopiée en base :
+    # le pavé recopié suit sa source même si elle appartient à un autre
+    # signataire, ou si elle est fixe ou automatique.
+    copy_from_id = fields.Many2one(
+        "bf.sign.field", string="Recopie de", ondelete="set null", index=True,
+        help="Pavé de la même demande dont ce pavé reprend la valeur.")
+    copy_target_ids = fields.One2many(
+        "bf.sign.field", "copy_from_id", string="Recopié par")
+    # Ce que les signataires ont saisi ne se lisait qu'au PDF final. Le
+    # préparateur relit maintenant la saisie dans la fiche de la demande (rien
+    # n'y retient l'invitation du suivant). Calculés, jamais stockés : la valeur
+    # reste celle de `_display_value`, la même qui s'appose.
+    marker_label = fields.Char(string="Champ", compute="_compute_value_view")
+    value_display = fields.Char(string="Valeur", compute="_compute_value_view")
+
+    @api.depends("field_type", "fill_mode", "value_text", "filled_value",
+                 "copy_from_id", "signer_id.state")
+    def _compute_value_view(self):
+        for rec in self:
+            rec.marker_label = rec._marker_label()
+            if rec.field_type == "checkbox":
+                # « Non cochée » ne se dit qu'une fois la personne passée : avant,
+                # la case n'est pas décochée, elle n'est pas encore remplie.
+                origin = rec.copy_from_id if rec.fill_mode == "copy" else rec
+                pending = (origin.fill_mode == "signer"
+                           and origin.signer_id.state != "signed")
+                rec.value_display = "" if pending else (
+                    _("Cochée") if rec._is_checked() else _("Non cochée"))
+            elif rec.field_type in VALUE_TYPES:
+                rec.value_display = rec._display_value()
+            else:
+                rec.value_display = (_("Signée") if rec.signer_id.state == "signed"
+                                     else "")
     required = fields.Boolean(
         string="Obligatoire", default=True,
         help="Pour un champ rempli par le signataire : la saisie est obligatoire.")
@@ -116,6 +168,38 @@ class BfSignField(models.Model):
                     "Le mode automatique n'existe que pour les pavés Date, Nom et "
                     "Courriel. Choisissez « Valeur fixe » ou « Rempli par le "
                     "signataire »."))
+
+    @api.constrains("fill_mode", "copy_from_id", "field_type", "request_id")
+    def _check_copy_from(self):
+        # Les cibles sont relues aussi : changer le type ou le mode d'une SOURCE
+        # peut casser le lien que portent ses copies.
+        for rec in self | self.copy_target_ids:
+            src = rec.copy_from_id
+            if rec.fill_mode != "copy":
+                if src:
+                    raise ValidationError(_(
+                        "Seul un pavé en mode « Recopie d'un autre pavé » désigne "
+                        "un pavé source."))
+                continue
+            if rec.field_type not in VALUE_TYPES:
+                raise ValidationError(_(
+                    "Une signature ou un paraphe ne se recopie pas : chaque "
+                    "signataire appose le sien."))
+            if not src:
+                raise ValidationError(_(
+                    "Choisissez le pavé dont « %s » reprend la valeur.")
+                    % rec._marker_label())
+            if src == rec or src.request_id != rec.request_id:
+                raise ValidationError(_(
+                    "Un pavé recopie un AUTRE pavé de la même demande."))
+            if src.fill_mode == "copy":
+                raise ValidationError(_(
+                    "Le pavé source est lui-même une recopie : désignez le pavé "
+                    "d'origine."))
+            if not copy_compatible(src.field_type, rec.field_type):
+                raise ValidationError(_(
+                    "Une case à cocher ne recopie qu'une case à cocher, et une "
+                    "valeur écrite qu'une valeur écrite."))
 
     @api.constrains("field_type", "option_values")
     def _check_select_options(self):
@@ -170,6 +254,10 @@ class BfSignField(models.Model):
             return self._auto_value()
         if self.fill_mode == "fixed":
             return self.value_text or ""
+        if self.fill_mode == "copy":
+            # La contrainte interdit la recopie d'une recopie : un seul saut.
+            src = self.copy_from_id
+            return src._display_value() if src and src.fill_mode != "copy" else ""
         return self.filled_value or ""
 
     def _type_label(self):
@@ -205,6 +293,9 @@ class BfSignField(models.Model):
             return False
         if self.fill_mode == "fixed":
             return bool(self.value_text)
+        if self.fill_mode == "copy":
+            src = self.copy_from_id
+            return src._is_checked() if src and src.fill_mode != "copy" else False
         return (self.filled_value or "").strip().lower() in ("1", "on", "true", "oui", "yes")
 
     # ── Presentation order & duplication ───────────────────────────────────────
@@ -319,6 +410,12 @@ class BfSignField(models.Model):
     def unlink(self):
         self._assert_draft(self.request_id)
         self._settle_template_wait()
+        # Retirer une source ne doit ni bloquer la suppression, ni
+        # laisser une recopie sans origine qui n'apposerait rien sans le dire.
+        # Ses recopies redeviennent des cases à remplir par le signataire.
+        orphans = self.copy_target_ids - self
+        if orphans:
+            orphans.write({"fill_mode": "signer", "copy_from_id": False})
         return super().unlink()
 
     def _settle_template_wait(self):

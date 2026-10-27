@@ -109,6 +109,22 @@
                             </div>
                             <widget name="bf_sign_placement"/>
                         </page>
+                        <!-- En ordre séquentiel, le préparateur relit ici ce que les
+                             signataires ont déjà saisi. -->
+                        <page string="Valeurs saisies" name="valeurs_saisies"
+                              invisible="state == 'draft'">
+                            <field name="field_ids" readonly="1" nolabel="1">
+                                <list create="0" delete="0" edit="0"
+                                      decoration-muted="not value_display">
+                                    <field name="signer_id"/>
+                                    <field name="page"/>
+                                    <field name="marker_label"/>
+                                    <field name="field_type" optional="hide"/>
+                                    <field name="fill_mode" optional="hide"/>
+                                    <field name="value_display"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Consentement">
                             <field name="consent_text" nolabel="1" readonly="state != 'draft'"/>
                         </page>

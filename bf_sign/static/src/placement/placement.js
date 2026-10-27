@@ -173,11 +173,12 @@ export class BfSignPlacement extends Component {
             "bf.sign.field", [["request_id", "=", id]],
             ["signer_id", "field_type", "page", "pos_x", "pos_y", "width", "height",
              "fill_mode", "value_text", "required", "sequence",
-             "cell_count", "option_values"]
+             "cell_count", "option_values", "copy_from_id"]
         );
         this.state.fields = raw.map((f) => ({
             ...f,
             signerId: Array.isArray(f.signer_id) ? f.signer_id[0] : f.signer_id,
+            copyFromId: Array.isArray(f.copy_from_id) ? f.copy_from_id[0] : (f.copy_from_id || false),
         }));
         await this._loadOrder();
     }
@@ -414,7 +415,13 @@ export class BfSignPlacement extends Component {
             return true;
         } catch (e) {
             Object.assign(f, before);
-            this.notification.add("Échec de l'enregistrement du pavé.", { type: "danger" });
+            // Le refus du serveur dit pourquoi (une source ne devient pas une
+            // recopie, une case ne recopie pas un texte…) ; le taire laissait la
+            // personne réessayer à l'aveugle.
+            const why = e && e.data && e.data.message;
+            this.notification.add(
+                why ? `Échec de l'enregistrement du pavé : ${why}` : "Échec de l'enregistrement du pavé.",
+                { type: "danger" });
             return false;
         }
     }
@@ -445,7 +452,51 @@ export class BfSignPlacement extends Component {
     }
 
     async setFillMode(f, mode) {
-        await this._writeField(f, { fill_mode: mode });
+        if (mode === "copy") {
+            // Une recopie naît avec sa source, la contrainte du
+            // modèle refuse une recopie qui ne désigne rien.
+            const first = this.copySources(f)[0];
+            if (!first) {
+                this.notification.add(
+                    "Aucun autre pavé compatible à recopier sur cette demande.",
+                    { type: "warning" });
+                return;
+            }
+            if (await this._writeField(f, { fill_mode: "copy", copy_from_id: first.id })) {
+                f.copyFromId = first.id;
+            }
+            return;
+        }
+        const vals = { fill_mode: mode };
+        if (f.fill_mode === "copy") {
+            vals.copy_from_id = false;
+        }
+        if (await this._writeField(f, vals)) {
+            f.copyFromId = false;
+        }
+    }
+    // Pads this one may repeat: same request, carrying a value, not itself a
+    // copy, and of a compatible kind (a tick repeats a tick, text repeats text).
+    // Mirrors `copy_compatible` in bf_sign_field.py.
+    copySources(f) {
+        const isBox = f.field_type === "checkbox";
+        return this.state.fields
+            .filter((c) => c.id !== f.id && c.id > 0 && VALUE_TYPES.has(c.field_type)
+                && c.fill_mode !== "copy" && (c.field_type === "checkbox") === isBox)
+            .sort((a, b) => (a.page - b.page) || (this.orderIndexFor(a) - this.orderIndexFor(b)));
+    }
+    copySourceLabel(c) {
+        const n = this.orderIndexFor(c);
+        return `${n ? n + ". " : ""}${this.labelFor(c)} (p. ${c.page})`;
+    }
+    async setCopyFrom(f, value) {
+        const id = parseInt(value, 10);
+        if (!id || id === f.copyFromId) {
+            return;
+        }
+        if (await this._writeField(f, { copy_from_id: id })) {
+            f.copyFromId = id;
+        }
     }
     async setFieldSigner(f, signerId) {
         const id = parseInt(signerId, 10);
@@ -749,6 +800,13 @@ export class BfSignPlacement extends Component {
         const idx = this.state.fields.indexOf(f);
         if (idx >= 0) {
             this.state.fields.splice(idx, 1);
+        }
+        // Ses recopies sont redevenues des saisies côté serveur.
+        for (const c of this.state.fields) {
+            if (c.copyFromId === f.id) {
+                c.fill_mode = "signer";
+                c.copyFromId = false;
+            }
         }
         if (this.state.selectedId === f.id) {
             this.clearSelection();
