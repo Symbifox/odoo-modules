@@ -487,8 +487,14 @@ class SmsMessenger extends Component {
     openBubbleLink(msg) {
         this.state.bubbleLinkFor = msg.id;
         this.state.bubbleSearch = "";
-        // Les fiches déjà rattachées au fil sont le premier réflexe : les
-        // proposer d'emblée évite de retaper un nom qu'on vient de choisir.
+        this._showBubbleDefaults();
+    }
+
+    /** Les fiches déjà rattachées au fil sont le premier réflexe : les
+     *  proposer d'emblée évite de retaper un nom qu'on vient de choisir.
+     *  Ne touche pas à la saisie : la vider ici effaçait chaque première
+     *  lettre tapée, et le champ ne gardait jamais rien. */
+    _showBubbleDefaults() {
         this.state.bubbleGroups = this.state.taskTargets.length
             ? [{
                   model: "project.task",
@@ -513,13 +519,17 @@ class SmsMessenger extends Component {
         this.state.bubbleSearch = ev.target.value;
         const term = this.state.bubbleSearch.trim();
         if (term.length < 2) {
-            this.openBubbleLink({ id: this.state.bubbleLinkFor });
+            this._showBubbleDefaults();
             return;
         }
         try {
-            this.state.bubbleGroups = await this.orm.call(
+            const groups = await this.orm.call(
                 MODEL, "messenger_search_targets", [term]
             );
+            // Une réponse lente ne remplace pas celle d'une saisie plus récente.
+            if (this.state.bubbleSearch.trim() === term) {
+                this.state.bubbleGroups = groups;
+            }
         } catch (e) {
             this.state.bubbleGroups = [];
             this.notification.add(this._rpcError(e), { type: "danger" });

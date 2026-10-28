@@ -22,7 +22,8 @@
     #   en français.
     # 18.0.5.27.1: le manifeste PWA et les erreurs VOIP.ms suivent la langue
     #   du lecteur.
-    "version": "18.0.5.27.1",
+    # 18.0.5.27.3: la recherche « Rattacher » sous une bulle garde la saisie.
+    "version": "18.0.5.27.3",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

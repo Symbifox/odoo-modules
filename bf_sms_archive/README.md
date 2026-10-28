@@ -505,6 +505,14 @@ The web app manifest (`/bf_sms_archive/manifest.webmanifest`) gives its name, de
 
 ## Changelog
 
+### Version 18.0.5.27.3
+
+- **Fix:** in the Messenger, the search box of a message's "Link to a record"
+  picker no longer clears itself while you type. Below two characters it
+  reset the typed text along with the suggestions, so only a paste of two or
+  more characters ever reached the search. A slow search answer no longer
+  overwrites the results of a more recent one.
+
 ### Version 18.0.5.27.1
 
 - The web app manifest and the VOIP.ms transport errors follow the reader's language, and `i18n/fr.po` is regenerated from `fr_CA.po`. See the Languages section.
@@ -904,7 +912,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-21, this version converts automatically to
+- **Change Date**: on 2030-10-27, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---
