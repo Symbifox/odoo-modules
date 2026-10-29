@@ -12,7 +12,7 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - **Streaming parser** -- Uses `iterparse` for memory-efficient processing of large files (200 MB+)
 - **SHA-256 deduplication** -- Hash of `phone|timestamp|body` (SMS) or `phone|timestamp|duration|type` (calls) prevents duplicate imports
 - **Batch processing** -- Creates records in batches of 500 for performance
-- **Auto-match contacts** -- Links threads to existing Odoo contacts by phone number after import
+- **Auto-match contacts** -- Links threads to existing Odoo contacts by phone number after import. The last ten digits are compared on both sides, so a contact saved as "418 555-0101" is found. A thread is linked only when exactly ONE active contact carries the number (or the company whose main line it is), and only if the thread's owner can read that contact
 - **Multi-file ZIP** -- ZIP archives containing both `sms-*.xml` and `calls-*.xml` are processed in a single import
 
 ### Conversations & Search
@@ -28,6 +28,7 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - **Call type badges** -- Colour-coded badges: green (incoming), blue (outgoing), salmon (missed), yellow (voicemail), grey (rejected/blocked)
 - **Duration display** -- Human-readable format: "45s", "2m 05s", "1h 23m 10s"
 - **Integrated view** -- Call history visible in the thread form alongside SMS messages
+- **Calls on the contact form** (v18.0.5.27.4+) -- A **Calls** smart button on the contact form (under **More** when the button bar is full) lists the calls of the contact and its employees, following the caller's access rules
 - **Recording link** (`recording_url`) -- Nextcloud internal link to the audio file for VOIP.ms-sourced calls (set by the external `sync_voipms_recordings.py` sync job). File itself stays on Nextcloud so the Odoo filestore doesn't bloat.
 
 ### Dashboard
@@ -566,6 +567,17 @@ The web app manifest (`/bf_sms_archive/manifest.webmanifest`) gives its name, de
   parameter, without a dependency on that module), falling back to the
   company's contact time zone; a name pytz does not know returns `""`, and the
   app then shows nothing rather than a wrong time.
+
+### Version 18.0.5.27.4
+
+- A call thread is linked to its contact even when the contact form carries a formatted number
+  ("418 555-0101"); the previous `ilike` on ten digits never found it.
+- Linking requires exactly one active contact for the number (or the company whose main line it
+  is). Archived contacts are ignored, ambiguity is judged on all contacts (not only those the
+  caller sees), and a contact the thread's owner cannot read is never linked. The import wizard
+  follows the same rule.
+- **Calls** smart button on the contact form; the count is computed per user.
+- The upgrade links the threads left without a contact, keeping the name the thread already had.
 
 ### Version 18.0.5.23.2
 

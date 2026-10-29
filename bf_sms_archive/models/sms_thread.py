@@ -331,12 +331,50 @@ class SmsArchiveThread(models.Model):
         phone = self.phone_normalized
         if not phone:
             return
-        partner = self.env["res.partner"].search(
-            ["|", ("phone", "ilike", phone[-10:]), ("mobile", "ilike", phone[-10:])],
-            limit=1,
-        )
+        partner = self._match_partner(phone)
         if partner:
             self.partner_id = partner
+
+    @api.model
+    def _match_partner(self, phone):
+        """Le contact qui porte ce numéro, ou rien s'il n'y en a pas UN seul.
+
+        Les fiches gardent le numéro tel qu'on l'a tapé (« 418 555-0101 ») :
+        un ``ilike`` sur les dix chiffres ne le trouvait jamais. On compare donc
+        les dix derniers chiffres de chaque côté, comme ``_phone_key``.
+
+        Un rattachement affirme « ce numéro, c'est lui » : plusieurs fiches pour
+        un même numéro ne désignent personne, sauf quand c'est le standard d'une
+        entreprise inscrit sur sa fiche et sur celles de ses employés. Le fil va
+        alors à l'entreprise.
+
+        Seules les fiches actives comptent : une fiche archivée garde souvent un
+        numéro réattribué depuis. L'unicité se juge sur TOUTES les fiches
+        actives, pas sur celles que l'appelant voit : sinon deux fiches de deux
+        sociétés deviendraient « une seule » pour qui n'en voit qu'une. La fiche
+        retenue n'est rendue que si l'appelant peut la lire (le chemin
+        d'ingestion passe par sudo)."""
+        Partner = self.env["res.partner"]
+        key = self._phone_key(phone)
+        if len(key) < 10:
+            return Partner
+        Partner.flush_model(["phone", "mobile", "active"])
+        self.env.cr.execute(
+            """SELECT id FROM res_partner
+                WHERE active
+                  AND (right(regexp_replace(coalesce(mobile, ''), '\\D', '', 'g'), 10) = %s
+                       OR right(regexp_replace(coalesce(phone, ''), '\\D', '', 'g'), 10) = %s)""",
+            (key, key),
+        )
+        partners = Partner.sudo().browse([r[0] for r in self.env.cr.fetchall()])
+        if len(partners) > 1:
+            company = partners.commercial_partner_id
+            if not (len(company) == 1 and company in partners):
+                return Partner
+            partners = company
+        if not partners:
+            return Partner
+        return Partner.with_context(active_test=True).search([("id", "in", partners.ids)])
 
     # ── Exports ────────────────────────────────────────────────
 
@@ -788,10 +826,11 @@ class SmsArchiveThread(models.Model):
         # Best-effort: auto-match an Odoo contact by phone so names/avatars populate.
         if not thread.partner_id and phone_normalized:
             try:
-                tail = phone_normalized[-10:]
-                partner = self.env["res.partner"].sudo().search(
-                    ["|", ("phone", "ilike", tail), ("mobile", "ilike", tail)], limit=1,
-                )
+                # Juger la lisibilité pour le PROPRIÉTAIRE du fil, pas pour sudo :
+                # une fiche qu'il ne peut pas lire ferait tomber sa Messagerie
+                # (partner_id.name lu sous son identité, _messenger_thread_dict).
+                juge = self.with_user(owner_id) if owner_id else self.sudo()
+                partner = juge._match_partner(phone_normalized)
                 if partner:
                     thread.partner_id = partner.id
             except Exception:  # noqa: BLE001 — un échec de matching ne doit pas bloquer l'ingestion

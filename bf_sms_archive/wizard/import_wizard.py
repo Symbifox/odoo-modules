@@ -473,7 +473,6 @@ class SmsArchiveImportWizard(models.TransientModel):
     def _match_partners(self, thread_map, owner_id):
         """Match threads to Odoo contacts by phone number."""
         Thread = self.env["sms.archive.thread"]
-        Partner = self.env["res.partner"]
         matched = 0
 
         # active_test=False : un fil né d'un appel naît désormais archivé, et
@@ -488,11 +487,7 @@ class SmsArchiveImportWizard(models.TransientModel):
             phone = thread.phone_normalized
             if not phone or len(phone) < 7:
                 continue
-            suffix = phone[-10:]
-            partner = Partner.search(
-                ["|", ("phone", "ilike", suffix), ("mobile", "ilike", suffix)],
-                limit=1,
-            )
+            partner = Thread._match_partner(phone)
             if partner:
                 thread.partner_id = partner
                 matched += 1

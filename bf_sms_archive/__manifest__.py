@@ -23,7 +23,12 @@
     # 18.0.5.27.1: le manifeste PWA et les erreurs VOIP.ms suivent la langue
     #   du lecteur.
     # 18.0.5.27.3: la recherche « Rattacher » sous une bulle garde la saisie.
-    "version": "18.0.5.27.3",
+    # 18.0.5.27.4: un fil d'appel se rattache au contact dont la fiche porte le
+    #   numéro formaté (« 418 555-0101 » : l'ilike sur dix chiffres ne le
+    #   trouvait jamais), seulement s'il y en a UN (ou l'entreprise dont c'est le
+    #   standard) ; la fiche contact montre ses appels (bouton « Appels ») ; la
+    #   montée rattache les fils restés sans contact.
+    "version": "18.0.5.27.4",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
@@ -59,6 +64,7 @@
         "views/res_config_settings_views.xml",
         "views/sms_messenger_views.xml",
         "views/project_task_views.xml",
+        "views/res_partner_views.xml",
         # Data
         "data/sms_nc_watch_cron.xml",
         "data/voipms_poll_cron.xml",

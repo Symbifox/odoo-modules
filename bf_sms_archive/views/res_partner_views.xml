@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_view_form_calls" model="ir.ui.view">
+        <field name="name">res.partner.form.call.archive</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_call_archive" type="object"
+                        class="oe_stat_button" icon="fa-phone"
+                        invisible="call_archive_count == 0"
+                        groups="bf_sms_archive.group_sms_user">
+                    <field name="call_archive_count" widget="statinfo"
+                           string="Calls"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>
